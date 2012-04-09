@@ -1,0 +1,86 @@
+ /*
+  *  SPDTextFileImporter.h
+  *  spdlib
+  *
+  *  Created by Pete Bunting on 28/11/2010.
+  *  Copyright 2010 SPDLib. All rights reserved.
+  *
+  *  This file is part of SPDLib.
+  *
+  *  SPDLib is free software: you can redistribute it and/or modify
+  *  it under the terms of the GNU General Public License as published by
+  *  the Free Software Foundation, either version 3 of the License, or
+  *  (at your option) any later version.
+  *
+  *  SPDLib is distributed in the hope that it will be useful,
+  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  *  GNU General Public License for more details.
+  *
+  *  You should have received a copy of the GNU General Public License
+  *  along with SPDLib.  If not, see <http://www.gnu.org/licenses/>.
+  *
+  */
+
+#ifndef SPDTextFileImporter_H
+#define SPDTextFileImporter_H
+
+#include <string>
+#include <iostream>
+#include <fstream>
+#include <list>
+
+#include <boost/algorithm/string/trim.hpp>
+#include <boost/cstdint.hpp>
+
+#include "ogrsf_frmts.h"
+
+#include "spd/SPDFile.h"
+#include "spd/SPDPulse.h"
+#include "spd/SPDIOException.h"
+#include "spd/SPDDataImporter.h"
+#include "spd/SPDTextFileUtilities.h"
+
+using namespace std;
+using namespace boost::algorithm;
+
+namespace spdlib
+{
+	class SPDTextLineProcessor
+	{
+	public:
+		SPDTextLineProcessor():headerRead(false){};
+		virtual bool haveReadheader()=0;
+		virtual void parseHeader(string strLine) throw(SPDIOException)=0;
+		virtual bool parseLine(string line, SPDPulse *pl,boost::uint_fast16_t indexCoords) throw(SPDIOException)=0;
+		virtual bool isFileType(string fileType)=0;
+		virtual void saveHeaderValues(SPDFile *spdFile)=0;
+		virtual void reset()=0;
+        virtual void parseSchema(string schema)throw(SPDIOException)=0;
+		virtual ~SPDTextLineProcessor(){};
+	protected:
+		bool headerRead;
+	};
+	
+	
+	class SPDTextFileImporter : public SPDDataImporter
+	{
+	public:
+		SPDTextFileImporter(SPDTextLineProcessor *lineParser, bool convertCoords=false, string outputProjWKT="", string schema="", boost::uint_fast16_t indexCoords=SPD_FIRST_RETURN, bool defineOrigin=false, double originX=0, double originY=0, float originZ=0, float waveNoiseThreshold=0);
+		SPDTextFileImporter(const SPDTextFileImporter &textFileImporter);
+		SPDDataImporter* getInstance(bool convertCoords, string outputProjWKT, string schema, boost::uint_fast16_t indexCoords, bool defineOrigin, double originX, double originY, float originZ, float waveNoiseThreshold);
+        list<SPDPulse*>* readAllDataToList(string, SPDFile *spdFile)throw(SPDIOException);
+		vector<SPDPulse*>* readAllDataToVector(string inputFile, SPDFile *spdFile)throw(SPDIOException);
+		void readAndProcessAllData(string inputFile, SPDFile *spdFile, SPDImporterProcessor *processor) throw(SPDIOException);
+        void readHeaderInfo(string inputFile, SPDFile *spdFile) throw(SPDIOException);
+        void readSchema()throw(SPDIOException);
+		bool isFileType(string fileType);
+		SPDTextFileImporter& operator=(const SPDTextFileImporter& textFileImporter);
+		~SPDTextFileImporter();
+	private:
+		SPDTextLineProcessor *lineParser;
+	};
+}
+
+#endif
+

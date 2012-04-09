@@ -1,0 +1,158 @@
+#! /usr/bin/env python
+
+############################################################################
+# Copyright (c) 2009 Dr. Peter Bunting, Aberystwyth University
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+# The above copyright notice and this permission notice shall be included in
+# all copies or substantial portions of the Software.
+# 
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+# THE SOFTWARE.
+#
+#
+# Purpose:  A class to generate XML for the RSGISLib library based 
+#           on a supplied template.
+# Author: Pete Bunting
+# Email: pete.bunting@aber.ac.uk
+# Date: 01/08/2009
+# Version: 1.1
+#
+# History:
+# Version 1.0 - Created.
+# Version 1.1 - Added <PATH> option with the $ template charater
+# Version 1.2 - Added full file header to the outputted XML file
+#
+#############################################################################
+
+import os.path
+import sys
+from time import strftime
+
+class SPDLibBatchGenerator (object):
+
+    def checkFileExtension(self, filename, extension):
+        foundExtension = False;
+        filenamesplit = os.path.splitext(filename)
+        fileExtension = filenamesplit[1].strip()
+        if(fileExtension == extension):
+            foundExtension = True
+        return foundExtension
+    
+    def findFilesIterative(self, filelist, directory, extension):
+        if os.path.exists(directory):
+            if os.path.isdir(directory):
+                dirFileList = os.listdir(directory)
+                for filename in dirFileList:
+                    if(os.path.isdir(os.path.join(directory,filename))):
+                        self.findFiles(filelist, os.path.join(directory,filename), extension)
+                    elif(os.path.isfile(os.path.join(directory,filename))):
+                        if(self.checkFileExtension(filename, extension)):
+                            filelist.append(os.path.join(directory,filename))
+                    else:
+                        print filename + ' is NOT a file or directory!'
+            else:
+                print directory + ' is not a directory!'
+        else:
+            print directory + ' does not exist!'
+            
+            
+    def findFiles(self, filelist, directory, extension):
+        if os.path.exists(directory):
+            if os.path.isdir(directory):
+                dirFileList = os.listdir(directory)
+                for filename in dirFileList:
+                    if(os.path.isdir(os.path.join(directory,filename))):
+                        print os.path.join(directory,filename) + ' is a directory and therefore ignored!'
+                    elif(os.path.isfile(os.path.join(directory,filename))):
+                        if(self.checkFileExtension(filename, extension)):
+                            filelist.append(os.path.join(directory,filename))
+                    else:
+                        print filename + ' is NOT a file or directory!'
+            else:
+                print directory + ' is not a directory!'
+        else:
+            print directory + ' does not exist!'
+            
+    def readInputTemplate(self, inputFile):
+        outline = str()
+        inputXMLFile = open(inputFile, 'r')
+        for eachLine in inputXMLFile:
+            outline = outline + eachLine
+        return outline  
+    
+    def constructOutputFile(self, filelist, outline, outputfile, path):
+        outputXMLFile = open(outputfile, 'w')
+        for file in filelist:
+            basefile = os.path.basename(file)
+            basename = os.path.splitext(basefile)[0]
+            comment = '\t# ' + basename + '\n'
+            outlinereplacepath = outline.replace('$', path, outline.count('$'))
+            outlinereplaceinput = outlinereplacepath.replace('@', file, outlinereplacepath.count('@'))
+            outlinereplacename = outlinereplaceinput.replace('?', basename, outlinereplaceinput.count('?'))
+            outputXMLFile.write(comment)
+            outputXMLFile.write(outlinereplacename)
+            outputXMLFile.write('\n\n')
+        outputXMLFile.flush()
+        outputXMLFile.close()
+    
+    def run(self):
+        numArgs = len(sys.argv)
+        if numArgs == 7:
+            dir = sys.argv[1].strip()
+            extension = sys.argv[2].strip()
+            path = sys.argv[3].strip()
+            outfile = sys.argv[4].strip()
+            outlineFile = sys.argv[5].strip()
+            recurse = sys.argv[6].strip()
+            filelist = list()
+            
+            if(str(recurse) == '--recurse=yes'):
+                self.findFilesIterative(filelist, dir, extension)
+            elif(str(recurse) == '--recurse=no'):
+                self.findFiles(filelist, dir, extension)
+            else:
+                print 'Need to provide a recurse option (with no spaces).'
+                print '--recurse=yes or --recurse=no'
+            
+            if os.path.exists(outlineFile):
+                outline = self.readInputTemplate(outlineFile)
+                self.constructOutputFile(filelist, outline, outfile, path)
+            else:
+                print 'Input File does not exist'
+            
+            
+            
+        else:
+            self.help()
+    
+    def help(self):
+        print 'spdbatchgen.py script generates the XML commands for the '
+        print 'SPD software library from a user defined template'
+        print 'Usage: python spdbatchgen.py <DIR> <EXT> <PATH> <OUTPUT> <TEMPLATE> --recurse=yes|no'
+        print '\t<DIR> - input directory of the files to be processed.'
+        print '\t<EXT> - file extension of the files of interest.'
+        print '\t<PATH> - path used for subsitution'
+        print '\t<OUTPUT> - the output file'
+        print '\t<TEMPLETE> - the template'
+        print '\t\t @ - Replaced with full file path'
+        print '\t\t ? - Replaced with file name'
+        print '\t\t $ - Replaced with <PATH>'
+        print '\t --recurse - whether the input <DIR> should be iteratively recused for files ending <EXT>.'
+        print '\nThis script was distributed with version XXXX of XXXX library.'
+        print 'For maintainance email ....'
+
+if __name__ == '__main__':
+    obj = SPDLibBatchGenerator()
+    obj.run()
+    

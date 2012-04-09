@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<line delimiter="," comment="#" ignorelines="1" >
+    <field name="X" type="spd_double" index="0" />
+    <field name="Y" type="spd_double" index="1" />
+    <field name="Z" type="spd_float" index="2" />
+    <field name="RED" type="spd_uint" index="3" />
+    <field name="GREEN" type="spd_uint" index="4" />
+    <field name="BLUE" type="spd_uint" index="5" />
+</line>

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<line delimiter="," comment="#" ignorelines="0" >
+    <field name="X" type="spd_double" index="0" />
+    <field name="Y" type="spd_double" index="1" />
+    <field name="Z" type="spd_float" index="2" />
+    <field name="AMPLITUDE_RETURN" type="spd_uint" index="3" />
+</line>
