@@ -2976,7 +2976,7 @@ namespace spdlib
                         this->readPulseData(pulses[i][j], offsets[col], plsInBins[col]);
                         ++j;
                     }
-                    j = 0;
+                    j = xOff;
                     ++i;
                 }
                 
@@ -3381,7 +3381,7 @@ namespace spdlib
                         this->readPulseData(pulses[i][j], offsets[col], plsInBins[col]);
                         ++j;
                     }
-                    j = 0;
+                    j = xOff;
                     ++i;
                 }
                 
