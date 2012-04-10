@@ -95,7 +95,7 @@ namespace spdlib
 					pulseUtils.initSPDPulse(pulse);
 					pulse->numberOfReturns = textFileUtils.strto16bitUInt(lineTokens->at(10));
                     gpsTime = (textFileUtils.strtodouble(lineTokens->at(5))*1000000);
-					rangeTime = (textFileUtils.strtodouble(lineTokens->at(13))/SPD_SPEED_OF_LIGHT_NS);
+					rangeTime = (textFileUtils.strtodouble(lineTokens->at(13))/SPD_SPEED_OF_LIGHT_NS)*2;
                     pulse->gpsTime = gpsTime - rangeTime;
 
                     /* Retain the info on scan direction */
@@ -341,7 +341,7 @@ namespace spdlib
 					pulseUtils.initSPDPulse(pulse);
 					pulse->numberOfReturns = textFileUtils.strto16bitUInt(lineTokens->at(10));
                     gpsTime = (textFileUtils.strtodouble(lineTokens->at(5))*1000000);
-					rangeTime = (textFileUtils.strtodouble(lineTokens->at(13))/SPD_SPEED_OF_LIGHT_NS);
+					rangeTime = (textFileUtils.strtodouble(lineTokens->at(13))/SPD_SPEED_OF_LIGHT_NS)*2;
                     pulse->gpsTime = gpsTime - rangeTime;
                           
                     /* Retain the info on scan direction */
@@ -585,7 +585,7 @@ namespace spdlib
 					pulseUtils.initSPDPulse(pulse);
 					pulse->numberOfReturns = textFileUtils.strto16bitUInt(lineTokens->at(10));
                     gpsTime = (textFileUtils.strtodouble(lineTokens->at(5))*1000000);
-					rangeTime = (textFileUtils.strtodouble(lineTokens->at(13))/SPD_SPEED_OF_LIGHT_NS);
+					rangeTime = (textFileUtils.strtodouble(lineTokens->at(13))/SPD_SPEED_OF_LIGHT_NS)*2;
                     pulse->gpsTime = gpsTime - rangeTime;
                     
                     /* Retain the info on scan direction */
