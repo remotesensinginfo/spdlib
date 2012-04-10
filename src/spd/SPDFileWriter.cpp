@@ -3413,7 +3413,7 @@ namespace spdlib
 					unsigned long long transValCounter = 0;
 					unsigned long long receiveValCounter = 0;
                     
-					for(iterPulses = plsBuffer->begin(); iterPulses != plsBuffer->end(); ++plsBuffer)
+					for(iterPulses = plsBuffer->begin(); iterPulses != plsBuffer->end(); ++iterPulses)
 					{
                         if(spdFile->getPulseVersion() == 1)
                         {
@@ -3461,7 +3461,7 @@ namespace spdlib
                                 zenMaxWritten = (*iterPulses)->zenith;
                             }
                         }
-                        
+
 						for(boost::uint_fast16_t n = 0; n < (*iterPulses)->numberOfReturns; ++n)
 						{
                             if(spdFile->getPointVersion() == 1)

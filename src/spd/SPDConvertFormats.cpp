@@ -778,7 +778,8 @@ namespace spdlib
 	}
 	
     void SPDConvertFormats::convertToSPDUsingBlockTiles(string input, string output, string inFormat, string schema, float binsize, string inSpatialRef, bool convertCoords, string outputProjWKT, boost::uint_fast16_t indexCoords, string tempdir,boost::uint_fast16_t numRowsInTile, boost::uint_fast16_t numColsInTile, bool defineTL, double tlX, double tlY, bool defineOrigin, double originX, double originY, float originZ, bool useSphericIdx, bool usePolarIdx, bool useScanIdx, float waveNoiseThreshold,boost::uint_fast16_t waveformBitRes, bool keepTmpFiles, boost::uint_fast16_t pointVersion, boost::uint_fast16_t pulseVersion) throw(SPDException)
-    {        
+    {
+        //cout.precision(10);
         if(usePolarIdx)
         {
             throw SPDException("Gridding data using a polar coordinate index is not currently supported while generating SPD file using a temporary directory.");
@@ -983,8 +984,10 @@ namespace spdlib
                 {
                     filePath = tempdir + txtUtils.uInt32bittostring(i) + string("_") + txtUtils.uInt32bittostring(j) + string(".spd");
                     //cout << "File: " << filePath << endl;
-                    //cout << "File: " << yMax << endl;
-                    //cout << "File: " <<  yMin << endl;		
+                    //cout << "xMax: " << xMax << endl;
+                    //cout << "xMin: " << xMin << endl;
+                    //cout << "yMax: " << yMax << endl;
+                    //cout << "yMin: " << yMin << endl;
                     tiles[tileCounter].exporter = new SPDNoIdxFileWriter();
                     tiles[tileCounter].pulses = new list<SPDPulse*>();
                     tiles[tileCounter].env = new OGREnvelope();
@@ -1035,8 +1038,10 @@ namespace spdlib
                 {
                     filePath = tempdir + txtUtils.uInt32bittostring(i) + string("_") + txtUtils.uInt32bittostring(j) + string(".spd");
                     //cout << "File: " << filePath << endl;
-                    //cout << "File: " << yMax << endl;
-                    //cout << "File: " <<  yMin << endl;		
+                    //cout << "xMax: " << xMax << endl;
+                    //cout << "xMin: " << xMin << endl;
+                    //cout << "yMax: " << yMax << endl;
+                    //cout << "yMin: " << yMin << endl;		
                     tiles[tileCounter].exporter = new SPDNoIdxFileWriter();
                     tiles[tileCounter].pulses = new list<SPDPulse*>();
                     tiles[tileCounter].env = new OGREnvelope();
@@ -1088,8 +1093,10 @@ namespace spdlib
                 {
                     filePath = tempdir + txtUtils.uInt32bittostring(i) + string("_") + txtUtils.uInt32bittostring(j) + string(".spd");
                     //cout << "File: " << filePath << endl;
-                    //cout << "File: " << yMax << endl;
-                    //cout << "File: " <<  yMin << endl;		
+                    //cout << "xMax: " << xMax << endl;
+                    //cout << "xMin: " << xMin << endl;
+                    //cout << "yMax: " << yMax << endl;
+                    //cout << "yMin: " << yMin << endl;		
                     tiles[tileCounter].exporter = new SPDNoIdxFileWriter();
                     tiles[tileCounter].pulses = new list<SPDPulse*>();
                     tiles[tileCounter].env = new OGREnvelope();
@@ -1303,10 +1310,10 @@ namespace spdlib
                         for(boost::uint_fast32_t m = 0; m < numCols; ++m)
                         {
                             exporterSPD->writeDataColumn(griddedPls[n][m], cCol, cRow);
-                            for(iterPulses = griddedPls[n][m]->begin(); iterPulses != griddedPls[n][m]->end(); )
+                            /*for(iterPulses = griddedPls[n][m]->begin(); iterPulses != griddedPls[n][m]->end(); )
                             {
                                 iterPulses = griddedPls[n][m]->erase(iterPulses);
-                            }
+                            }*/
                             delete griddedPls[n][m];
                             ++cCol;
                         }
