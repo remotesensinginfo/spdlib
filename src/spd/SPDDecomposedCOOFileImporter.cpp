@@ -56,6 +56,10 @@ namespace spdlib
 		double zenithMax = 0;
 		bool first = true;
 		bool firstZ = true;
+        double zenith = 0;
+        double gpsTime = 0;
+        double rangeTime = 0;
+        
 		string pointLine = "";
 		
 		boost::uint_fast64_t numPulses = 0;
@@ -78,7 +82,7 @@ namespace spdlib
 			cout << "Read ." << flush;
 			while(!lineReader.endOfFile())
 			{
-				if((numPulses % 10000) == 0)
+				if((numPulses % 100000) == 0)
 				{
 					cout << "." << numPulses << "." << flush;
 				}
@@ -92,9 +96,24 @@ namespace spdlib
 					pulse = new SPDPulse();
 					pulseUtils.initSPDPulse(pulse);
 					pulse->numberOfReturns = textFileUtils.strto16bitUInt(lineTokens->at(9));
-					pulse->gpsTime = (textFileUtils.strtodouble(lineTokens->at(1))*1000000000);
-					
-					double x = textFileUtils.strtodouble(lineTokens->at(17));
+					gpsTime = (textFileUtils.strtodouble(lineTokens->at(1))*1000000000);
+					rangeTime = (textFileUtils.strtodouble(lineTokens->at(20))/SPD_SPEED_OF_LIGHT_NS)*2;
+                    pulse->gpsTime = gpsTime - rangeTime;
+                    
+                    /* Retain the info on scan direction */
+                    zenith = textFileUtils.strtodouble(lineTokens->at(10));
+                    pulse->zenith = (M_PI - abs(zenith-M_PI/2.0));
+                    if(zenith < (M_PI/2.0))
+                    {
+                        pulse->user = 0;
+                    }
+                    else
+                    {
+                        pulse->user = 1;                    
+                    }
+                    
+					/*
+                    double x = textFileUtils.strtodouble(lineTokens->at(17));
 					double y = textFileUtils.strtodouble(lineTokens->at(18));
 					double z = textFileUtils.strtodouble(lineTokens->at(19));
 					if(convertCoords)
@@ -103,7 +122,8 @@ namespace spdlib
 					}
 					pulse->x0 = x;
 					pulse->y0 = y;
-					pulse->z0 = z;
+					pulse->z0 = z
+                    */
 					
 					point = this->createSPDPoint(pointLine, pulse);
 					
@@ -304,7 +324,7 @@ namespace spdlib
 			spdFile->setNumberOfPulses(numPulses);
 			spdFile->setNumberOfPoints(totalNumPoints);
 			spdFile->setOriginDefined(SPD_FALSE);
-			spdFile->setDiscretePtDefined(SPD_TRUE);
+			spdFile->setDiscretePtDefined(SPD_FALSE);
 			spdFile->setDecomposedPtDefined(SPD_TRUE);
 			spdFile->setTransWaveformDefined(SPD_FALSE);
             spdFile->setReceiveWaveformDefined(SPD_FALSE);
@@ -353,6 +373,9 @@ namespace spdlib
 		double zenithMax = 0;
 		bool first = true;
 		bool firstZ = true;
+        double zenith = 0;
+        double gpsTime = 0;
+        double rangeTime = 0;
 		string pointLine = "";
 		
 		boost::uint_fast64_t numPulses = 0;
@@ -375,7 +398,7 @@ namespace spdlib
 			cout << "Read ." << flush;
 			while(!lineReader.endOfFile())
 			{
-				if((numPulses % 10000) == 0)
+				if((numPulses % 100000) == 0)
 				{
 					cout << "." << numPulses << "." << flush;
 				}
@@ -389,9 +412,24 @@ namespace spdlib
 					pulse = new SPDPulse();
 					pulseUtils.initSPDPulse(pulse);
 					pulse->numberOfReturns = textFileUtils.strto16bitUInt(lineTokens->at(9));
-					pulse->gpsTime = (textFileUtils.strtodouble(lineTokens->at(1))*1000000000);
-					
-					double x = textFileUtils.strtodouble(lineTokens->at(17));
+					gpsTime = (textFileUtils.strtodouble(lineTokens->at(1))*1000000000);
+					rangeTime = (textFileUtils.strtodouble(lineTokens->at(20))/SPD_SPEED_OF_LIGHT_NS)*2;
+                    pulse->gpsTime = gpsTime - rangeTime;
+                    
+                    /* Retain the info on scan direction */
+                    zenith = textFileUtils.strtodouble(lineTokens->at(10));
+                    pulse->zenith = (M_PI - abs(zenith-M_PI/2.0));
+                    if(zenith < (M_PI/2.0))
+                    {
+                        pulse->user = 0;
+                    }
+                    else
+                    {
+                        pulse->user = 1;                    
+                    }
+                    
+					/*
+                    double x = textFileUtils.strtodouble(lineTokens->at(17));
 					double y = textFileUtils.strtodouble(lineTokens->at(18));
 					double z = textFileUtils.strtodouble(lineTokens->at(19));
 					if(convertCoords)
@@ -400,7 +438,8 @@ namespace spdlib
 					}
 					pulse->x0 = x;
 					pulse->y0 = y;
-					pulse->z0 = z;
+					pulse->z0 = z
+                    */
 					
 					point = this->createSPDPoint(pointLine, pulse);
 					
@@ -601,7 +640,7 @@ namespace spdlib
 			spdFile->setNumberOfPulses(numPulses);
 			spdFile->setNumberOfPoints(totalNumPoints);
 			spdFile->setOriginDefined(SPD_FALSE);
-			spdFile->setDiscretePtDefined(SPD_TRUE);
+			spdFile->setDiscretePtDefined(SPD_FALSE);
 			spdFile->setDecomposedPtDefined(SPD_TRUE);
 			spdFile->setTransWaveformDefined(SPD_FALSE);
             spdFile->setReceiveWaveformDefined(SPD_FALSE);
@@ -650,6 +689,9 @@ namespace spdlib
 		double zenithMax = 0;
 		bool first = true;
 		bool firstZ = true;
+        double zenith = 0;
+        double gpsTime = 0;
+        double rangeTime = 0;
 		string pointLine = "";
 		
 		boost::uint_fast64_t numPulses = 0;
@@ -685,9 +727,24 @@ namespace spdlib
 					pulse = new SPDPulse();
 					pulseUtils.initSPDPulse(pulse);
 					pulse->numberOfReturns = textFileUtils.strto16bitUInt(lineTokens->at(9));
-					pulse->gpsTime = (textFileUtils.strtodouble(lineTokens->at(1))*1000000000);
-					
-					double x = textFileUtils.strtodouble(lineTokens->at(17));
+					gpsTime = (textFileUtils.strtodouble(lineTokens->at(1))*1000000000);
+					rangeTime = (textFileUtils.strtodouble(lineTokens->at(20))/SPD_SPEED_OF_LIGHT_NS)*2;
+                    pulse->gpsTime = gpsTime - rangeTime;
+                    
+                    /* Retain the info on scan direction */
+                    zenith = textFileUtils.strtodouble(lineTokens->at(10));
+                    pulse->zenith = (M_PI - abs(zenith-M_PI/2.0));
+                    if(zenith < (M_PI/2.0))
+                    {
+                        pulse->user = 0;
+                    }
+                    else
+                    {
+                        pulse->user = 1;                    
+                    }
+                    
+					/*
+                    double x = textFileUtils.strtodouble(lineTokens->at(17));
 					double y = textFileUtils.strtodouble(lineTokens->at(18));
 					double z = textFileUtils.strtodouble(lineTokens->at(19));
 					if(convertCoords)
@@ -696,7 +753,8 @@ namespace spdlib
 					}
 					pulse->x0 = x;
 					pulse->y0 = y;
-					pulse->z0 = z;
+					pulse->z0 = z
+                    */
 					
 					point = this->createSPDPoint(pointLine, pulse);
 					
@@ -897,7 +955,7 @@ namespace spdlib
 			spdFile->setNumberOfPulses(numPulses);
 			spdFile->setNumberOfPoints(totalNumPoints);
 			spdFile->setOriginDefined(SPD_FALSE);
-			spdFile->setDiscretePtDefined(SPD_TRUE);
+			spdFile->setDiscretePtDefined(SPD_FALSE);
 			spdFile->setDecomposedPtDefined(SPD_TRUE);
 			spdFile->setTransWaveformDefined(SPD_FALSE);
             spdFile->setReceiveWaveformDefined(SPD_FALSE);
@@ -963,16 +1021,24 @@ namespace spdlib
 			point->y = y;
 			point->z = z;
 			
-			double zenith = 0;
-			double azimuth = 0;
-			double range = 0;
-			
-			SPDConvertToSpherical(pulse->x0, pulse->y0, pulse->z0, point->x, point->y, point->z, &zenith, &azimuth, &range);
-			pulse->zenith = zenith;
-			pulse->azimuth = azimuth;
-			point->range = range;
-			
-			point->gpsTime = textFileUtils.strtodouble(lineTokens->at(1))*1000000000;
+			/*
+            double zenith = 0;
+            double azimuth = 0;
+            double range = 0;
+            SPDConvertToSpherical(pulse->x0, pulse->y0, pulse->z0, point->x, point->y, point->z, &zenith, &azimuth, &range);
+            point->range = range;
+            pulse->zenith = zenith;
+            pulse->azimuth = azimuth;
+            zenith = textFileUtils.strtodouble(lineTokens->at(10));
+            pulse->zenith = M_PI - abs(zenith-M_PI/2.0);
+            if(zenith < (M_PI/2.0)) {
+                pulse->user = 0;
+            } else {
+                pulse->user = 1;
+            }
+            */
+            point->range = textFileUtils.strtodouble(lineTokens->at(20));
+            point->gpsTime = textFileUtils.strtodouble(lineTokens->at(1))*1000000000;
 			try 
 			{
 				point->user = textFileUtils.strtofloat(lineTokens->at(5)); // Range corrected amplitude
