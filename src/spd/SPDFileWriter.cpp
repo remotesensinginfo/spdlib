@@ -4427,9 +4427,7 @@ namespace spdlib
             spdFile->setNumberOfPulses(numPulses);
             
             spdFile->setFileType(SPD_NONSEQ_TYPE);
-            
-            spdFile->setIndexType(SPD_NO_IDX);
-            
+                        
             this->writeHeaderInfo(spdOutH5File, spdFile);
             
 			// Write attributes to Quicklook
