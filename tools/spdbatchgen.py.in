@@ -97,9 +97,9 @@ class SPDLibBatchGenerator (object):
             basefile = os.path.basename(file)
             basename = os.path.splitext(basefile)[0]
             comment = '\t# ' + basename + '\n'
-            outlinereplacepath = outline.replace('$', path, outline.count('$'))
-            outlinereplaceinput = outlinereplacepath.replace('@', file, outlinereplacepath.count('@'))
-            outlinereplacename = outlinereplaceinput.replace('?', basename, outlinereplaceinput.count('?'))
+            outlinereplacepath = outline.replace('$PATH', path, outline.count('$PATH'))
+            outlinereplaceinput = outlinereplacepath.replace('$FILEPATH', file, outlinereplacepath.count('$FILEPATH'))
+            outlinereplacename = outlinereplaceinput.replace('$FILENAME', basename, outlinereplaceinput.count('$FILENAME'))
             outputXMLFile.write(comment)
             outputXMLFile.write(outlinereplacename)
             outputXMLFile.write('\n\n')
@@ -145,9 +145,9 @@ class SPDLibBatchGenerator (object):
         print '\t<PATH> - path used for subsitution'
         print '\t<OUTPUT> - the output file'
         print '\t<TEMPLETE> - the template'
-        print '\t\t @ - Replaced with full file path'
-        print '\t\t ? - Replaced with file name'
-        print '\t\t $ - Replaced with <PATH>'
+        print '\t\t $FILEPATH - Replaced with full file path'
+        print '\t\t $FILENAME - Replaced with file name'
+        print '\t\t $PATH - Replaced with <PATH>'
         print '\t --recurse - whether the input <DIR> should be iteratively recused for files ending <EXT>.'
         print '\nThis script was distributed with version XXXX of XXXX library.'
         print 'For maintainance email ....'
