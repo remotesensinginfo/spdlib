@@ -149,8 +149,8 @@ class SPDLibBatchGenerator (object):
         print '\t\t $FILENAME - Replaced with file name'
         print '\t\t $PATH - Replaced with <PATH>'
         print '\t --recurse - whether the input <DIR> should be iteratively recused for files ending <EXT>.'
-        print '\nThis script was distributed with version XXXX of XXXX library.'
-        print 'For maintainance email ....'
+        print '\nThis script was distributed with version @SPDLIB_PACKAGE_VERSION@ of the @SPDLIB_PACKAGE@ library.'
+        print 'For maintenance email @SPDLIB_PACKAGE_BUGREPORT@'
 
 if __name__ == '__main__':
     obj = SPDLibBatchGenerator()
