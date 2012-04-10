@@ -140,9 +140,9 @@ int main (int argc, char * const argv[])
         }
         else if(spdPrettyArg.isSet())
         {
-            SPDFile *spdFile = new SPDFile(spdArg.getValue());
+            SPDFile *spdFile = new SPDFile(spdPrettyArg.getValue());
             SPDFileReader spdReader;
-            spdReader.readHeaderInfo(spdArg.getValue(), spdFile);
+            spdReader.readHeaderInfo(spdPrettyArg.getValue(), spdFile);
             
             OGRSpatialReference ogrSpatial = OGRSpatialReference(spdFile->getSpatialReference().c_str());
             
