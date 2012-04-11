@@ -58,22 +58,33 @@ namespace spdlib
     {
         try 
 		{
-            interpolator->initInterpolator(pulses, xSize, ySize, SPD_GROUND);
-            
-            double elevVal = 0;
-            
-            for(boost::uint_fast32_t i = 0; i < ySize; ++i)
+            bool ptsAvail = true;
+            try 
             {
-                for(boost::uint_fast32_t j = 0; j < xSize; ++j)
+                interpolator->initInterpolator(pulses, xSize, ySize, SPD_GROUND);
+            }
+            catch (SPDException &e) 
+            {
+                ptsAvail = false;
+            }
+            
+            if(ptsAvail)
+            {
+                double elevVal = 0;
+                
+                for(boost::uint_fast32_t i = 0; i < ySize; ++i)
                 {
-                    for(vector<SPDPulse*>::iterator iterPulses = pulses[i][j]->begin(); iterPulses != pulses[i][j]->end(); ++iterPulses)
+                    for(boost::uint_fast32_t j = 0; j < xSize; ++j)
                     {
-                        elevVal = interpolator->getValue((*iterPulses)->x0, (*iterPulses)->y0);
-                        (*iterPulses)->h0 = (*iterPulses)->z0 - elevVal;
-                        for(vector<SPDPoint*>::iterator iterPts = (*iterPulses)->pts->begin(); iterPts != (*iterPulses)->pts->end(); ++iterPts)
+                        for(vector<SPDPulse*>::iterator iterPulses = pulses[i][j]->begin(); iterPulses != pulses[i][j]->end(); ++iterPulses)
                         {
-                            elevVal = interpolator->getValue((*iterPts)->x, (*iterPts)->y);
-                            (*iterPts)->height = (*iterPts)->z - elevVal;
+                            elevVal = interpolator->getValue((*iterPulses)->x0, (*iterPulses)->y0);
+                            (*iterPulses)->h0 = (*iterPulses)->z0 - elevVal;
+                            for(vector<SPDPoint*>::iterator iterPts = (*iterPulses)->pts->begin(); iterPts != (*iterPulses)->pts->end(); ++iterPts)
+                            {
+                                elevVal = interpolator->getValue((*iterPts)->x, (*iterPts)->y);
+                                (*iterPts)->height = (*iterPts)->z - elevVal;
+                            }
                         }
                     }
                 }
