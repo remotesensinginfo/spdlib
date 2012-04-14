@@ -113,10 +113,10 @@ int main (int argc, char * const argv[])
         ValueArg<string> shapefileArg("","shpfile","A shapefile to which the dataset should be subsetted to",false,"","string");
 		cmd.add( shapefileArg );
         
-        ValueArg<uint_fast32_t> startArg("","start","First pulse in the block",true,0,"uint_fast32_t");
+        ValueArg<uint_fast32_t> startArg("","start","First pulse in the block",false,0,"uint_fast32_t");
 		cmd.add( startArg );
 		
-		ValueArg<uint_fast32_t> numArg("","num","Number of pulses to be exported",true,0,"uint_fast32_t");
+		ValueArg<uint_fast32_t> numArg("","num","Number of pulses to be exported",false,0,"uint_fast32_t");
 		cmd.add( numArg );
 		
 		UnlabeledMultiArg<string> multiFileNames("Files", "File names for the input and output files", true, "string");
