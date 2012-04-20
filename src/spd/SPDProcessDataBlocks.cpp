@@ -1225,7 +1225,7 @@ namespace spdlib
                             blockMinXScaled = blockMinX / binScaling;
                             blockMinYScaled = blockMinY / binScaling;
                         }
-                        this->writeImageData(imageBands, imageBlockVals, pulsesScaledBlockSizeX, pulsesScaledBlockSizeY, numImgBands, scaledOverlap, scaledOverlap, blockMinXScaled, blockMinYScaled);
+                        this->writeImageData(imageBands, imageBlockVals, procResXBlockSize, procResYBlockSize, numImgBands, scaledOverlap, scaledOverlap, blockMinXScaled, blockMinYScaled);
                         this->clearPulses(pulses, pulsesBlockSizeX, pulsesBlockSizeY);
                         this->clearPulsesNoDelete(pulseScaled, pulsesScaledBlockSizeX, pulsesScaledBlockSizeY);
                     }
@@ -1318,7 +1318,7 @@ namespace spdlib
                             blockMinYScaled = blockMinY / binScaling;
                             remainingColsScaled = remainingCols / binScaling;
                         }
-                        this->writeImageData(imageBands, imageBlockVals, remainingColsScaled, pulsesScaledBlockSizeY, numImgBands, scaledOverlap, scaledOverlap, blockMinXScaled, blockMinYScaled);
+                        this->writeImageData(imageBands, imageBlockVals, remainingColsScaled, procResYBlockSize, numImgBands, scaledOverlap, scaledOverlap, blockMinXScaled, blockMinYScaled);
                         this->clearPulses(pulses, pulsesBlockSizeX, pulsesBlockSizeY);
                         this->clearPulsesNoDelete(pulseScaled, pulsesScaledBlockSizeX, pulsesScaledBlockSizeY);
                     }
@@ -1435,7 +1435,7 @@ namespace spdlib
                             blockMinYScaled = blockMinY / binScaling;
                             remainingRowsScaled = remainingRows / binScaling;
                         }
-                        this->writeImageData(imageBands, imageBlockVals, pulsesScaledBlockSizeX, remainingRowsScaled, numImgBands, scaledOverlap, scaledOverlap, blockMinXScaled, blockMinYScaled);
+                        this->writeImageData(imageBands, imageBlockVals, procResXBlockSize, remainingRowsScaled, numImgBands, scaledOverlap, scaledOverlap, blockMinXScaled, blockMinYScaled);
                         this->clearPulses(pulses, pulsesBlockSizeX, pulsesBlockSizeY);
                         this->clearPulsesNoDelete(pulseScaled, pulsesScaledBlockSizeX, pulsesScaledBlockSizeY);
                     }
