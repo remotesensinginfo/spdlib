@@ -29,7 +29,7 @@ set (PROJECT_HEADER_DIR include)
 set (PROJECT_TOOLS_DIR tools)
 
 # The version number.
-set (SPDLIB_SVN_VERSION 490)
+set (SPDLIB_SVN_VERSION 491)
 set (SPDLIB_VERSION_MAJOR 3)
 set (SPDLIB_VERSION_MINOR 0)
 set (SPDLIB_VERSION_PATCH 0)
@@ -137,7 +137,7 @@ else()
   # Recommended C++ compilation flags
   # -Weffc++
   set(SPDLIB_COMMON_CXX_FLAGS
-	"-ansi -Wall -frounding-math -Wpointer-arith -Wcast-align -Wcast-qual -Wredundant-decls -Wno-long-long")
+	"-ansi -Wall -frounding-math -Wpointer-arith -Wcast-align -Wcast-qual -Wredundant-decls -Wno-long-long -DNDEBUG")
 	#"-pedantic -ansi -Wall -Wpointer-arith -Wcast-align -Wcast-qual -Wfloat-equal -Wredundant-decls -Wno-long-long")
 
   if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)

@@ -278,6 +278,11 @@ namespace spdlib
         try
         {
             vector<SPDPoint*> *points = this->findPoints(pulses, numXBins, numYBins, ptClass);
+            if(points->size() < 3)
+            {
+                delete points;
+                throw SPDProcessingException("Not enough points, need at least 3.");
+            }
             if(thinData)
             {
                 this->thinPoints(points);
@@ -320,6 +325,11 @@ namespace spdlib
         try
         {
             vector<SPDPoint*> *points = this->findPoints(pulses, numXBins, numYBins, ptClass);
+            if(points->size() < 3)
+            {
+                delete points;
+                throw SPDProcessingException("Not enough points, need at least 3.");
+            }
             if(thinData)
             {
                 this->thinPoints(points);
@@ -362,6 +372,11 @@ namespace spdlib
         try
         {
             vector<SPDPoint*> *points = this->findPoints(pulses, ptClass);
+            if(points->size() < 3)
+            {
+                delete points;
+                throw SPDProcessingException("Not enough points, need at least 3.");
+            }
             if(thinData)
             {
                 this->thinPoints(points);
@@ -404,6 +419,11 @@ namespace spdlib
         try
         {
             vector<SPDPoint*> *points = this->findPoints(pulses, ptClass);
+            if(points->size() < 3)
+            {
+                delete points;
+                throw SPDProcessingException("Not enough points, need at least 3.");
+            }
             if(thinData)
             {
                 this->thinPoints(points);
