@@ -1976,6 +1976,7 @@ namespace spdlib
 
                     blockMinX += blockXSize;
                     blockMaxX += blockXSize;
+                    
                 }
                 if(remainingCols > 0)
                 {
