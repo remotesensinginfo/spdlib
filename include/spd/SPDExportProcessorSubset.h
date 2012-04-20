@@ -39,7 +39,6 @@
 #include "spd/SPDFileReader.h"
 
 using namespace std;
-using namespace boost;
 
 namespace spdlib
 {

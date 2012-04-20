@@ -37,7 +37,6 @@
 #include "spd/SPDDataImporter.h"
 
 using namespace std;
-using namespace boost;
 
 namespace spdlib
 {
