@@ -44,7 +44,6 @@
 #include "spd/SPDProcessingException.h"
 
 using namespace std;
-using namespace boost;
 
 namespace spdlib
 {

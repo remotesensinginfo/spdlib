@@ -45,7 +45,6 @@
 //#include "spd/cmpfit/mpfit.h"
 
 using namespace std;
-using namespace boost;
 
 namespace spdlib
 {
