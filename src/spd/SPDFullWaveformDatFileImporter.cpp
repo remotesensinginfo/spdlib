@@ -97,7 +97,7 @@ namespace spdlib
 						lineTrans = lineReader.readLine();
 					}
 					firstLine = false;
-					trim(lineTrans);
+                    boost::trim(lineTrans);
 					if(textFileUtils.blankline(lineTrans))
 					{
 						throw SPDIOException("The first line is blank please check your file.");
@@ -108,7 +108,7 @@ namespace spdlib
 					lineTrans = lineReceivedExtra;
 				}
 				lineReceived = lineReader.readLine();
-				trim(lineReceived);
+				boost::trim(lineReceived);
 				if(textFileUtils.blankline(lineReceived))
 				{
 					throw SPDIOException("There is no received line due to blank line, please check you input file.");
@@ -155,7 +155,7 @@ namespace spdlib
 						if(!lineReader.endOfFile())
 						{
 							lineReceived = lineReader.readLine();
-							trim(lineReceivedExtra);
+							boost::trim(lineReceivedExtra);
 							if(!textFileUtils.blankline(lineReceivedExtra))
 							{
 								textFileUtils.tokenizeString(lineReceived, ',', tokensReceived);
@@ -203,7 +203,7 @@ namespace spdlib
 						if(!lineReader.endOfFile())
 						{
 							lineReceivedExtra = lineReader.readLine();
-							trim(lineReceivedExtra);
+							boost::trim(lineReceivedExtra);
 							if(!textFileUtils.blankline(lineReceivedExtra))
 							{
 								textFileUtils.tokenizeString(lineReceivedExtra, ',', tokensReceivedExtra);
@@ -423,7 +423,7 @@ namespace spdlib
 						lineTrans = lineReader.readLine();
 					}
 					firstLine = false;
-					trim(lineTrans);
+					boost::trim(lineTrans);
 					if(textFileUtils.blankline(lineTrans))
 					{
 						throw SPDIOException("The first line is blank please check your file.");
@@ -434,7 +434,7 @@ namespace spdlib
 					lineTrans = lineReceivedExtra;
 				}
 				lineReceived = lineReader.readLine();
-				trim(lineReceived);
+				boost::trim(lineReceived);
 				if(textFileUtils.blankline(lineReceived))
 				{
 					throw SPDIOException("There is no received line due to blank line, please check you input file.");
@@ -481,7 +481,7 @@ namespace spdlib
 						if(!lineReader.endOfFile())
 						{
 							lineReceived = lineReader.readLine();
-							trim(lineReceivedExtra);
+							boost::trim(lineReceivedExtra);
 							if(!textFileUtils.blankline(lineReceivedExtra))
 							{
 								textFileUtils.tokenizeString(lineReceived, ',', tokensReceived);
@@ -529,7 +529,7 @@ namespace spdlib
 						if(!lineReader.endOfFile())
 						{
 							lineReceivedExtra = lineReader.readLine();
-							trim(lineReceivedExtra);
+							boost::trim(lineReceivedExtra);
 							if(!textFileUtils.blankline(lineReceivedExtra))
 							{
 								textFileUtils.tokenizeString(lineReceivedExtra, ',', tokensReceivedExtra);
@@ -747,7 +747,7 @@ namespace spdlib
 						lineTrans = lineReader.readLine();
 					}
 					firstLine = false;
-					trim(lineTrans);
+					boost::trim(lineTrans);
 					if(textFileUtils.blankline(lineTrans))
 					{
 						throw SPDIOException("The first line is blank please check your file.");
@@ -758,7 +758,7 @@ namespace spdlib
 					lineTrans = lineReceivedExtra;
 				}
 				lineReceived = lineReader.readLine();
-				trim(lineReceived);
+				boost::trim(lineReceived);
 				if(textFileUtils.blankline(lineReceived))
 				{
 					throw SPDIOException("There is no received line due to blank line, please check you input file.");
@@ -805,7 +805,7 @@ namespace spdlib
 						if(!lineReader.endOfFile())
 						{
 							lineReceived = lineReader.readLine();
-							trim(lineReceivedExtra);
+							boost::trim(lineReceivedExtra);
 							if(!textFileUtils.blankline(lineReceivedExtra))
 							{
 								textFileUtils.tokenizeString(lineReceived, ',', tokensReceived);
@@ -853,7 +853,7 @@ namespace spdlib
 						if(!lineReader.endOfFile())
 						{
 							lineReceivedExtra = lineReader.readLine();
-							trim(lineReceivedExtra);
+							boost::trim(lineReceivedExtra);
 							if(!textFileUtils.blankline(lineReceivedExtra))
 							{
 								textFileUtils.tokenizeString(lineReceivedExtra, ',', tokensReceivedExtra);
