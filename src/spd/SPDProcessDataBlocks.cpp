@@ -583,7 +583,7 @@ namespace spdlib
                     xOffset = 0;
                     yOffset = 0;
 
-                    if((((long)blockMinX)-((int)overlap)) < 0)
+                          if((((long)blockMinX)-((int)overlap)) < 0)
                     {
                         bbox[0] = 0;
                         xOffset = (((long)blockMinX)-((int)overlap)) * (-1);
@@ -902,59 +902,7 @@ namespace spdlib
             
             cout << "Bin Scaling: " << binScaling << endl;
             cout << "Process Bins: [" << procResXBins << "," << procResYBins << "]\n";
-            
-            /****** CREATE A NEW GDALDATASET *******/
-            GDALDriver *gdalDriver = GetGDALDriverManager()->GetDriverByName(gdalFormat.c_str());
-			if(gdalDriver == NULL)
-			{
-                string message = gdalFormat + string(" gdal driver cannot be found.");
-				throw SPDProcessingException(message);
-			}
-            char **papszMetadata;
-            papszMetadata = gdalDriver->GetMetadata();
-            if( CSLFetchBoolean( papszMetadata, GDAL_DCAP_CREATE, FALSE ) )
-            {
-                string message = gdalFormat + string(" does not support create method. Select a GDAL driver which does (see http://www.gdal.org/formats_list.html).");
-            }
-            GDALDataset *outImage = gdalDriver->Create(outImagePath.c_str(), procResXBins, procResYBins, numImgBands, GDT_Float32, papszMetadata);
-            
-            if(outImage == NULL)
-            {
-                string message = string("Failed to create image ") + outImagePath;
-				throw SPDProcessingException(message);
-            }
-            
-            
-            double *gdalTransform = new double[6];
-            gdalTransform[0] = spdInFile->getXMin();
-            gdalTransform[1] = processingResolution;
-            gdalTransform[2] = 0;
-            gdalTransform[3] = spdInFile->getYMax();
-            gdalTransform[4] = 0;
-            gdalTransform[5] = processingResolution;
-            outImage->SetGeoTransform(gdalTransform);
-            
-            if(spdInFile->getSpatialReference() != "")
-            {
-                outImage->SetProjection(spdInFile->getSpatialReference().c_str());
-            }
-            vector<string> bandNames = this->dataBlockProcessor->getImageBandDescriptions();
-            
-            GDALRasterBand **imageBands = new GDALRasterBand*[numImgBands];
-            for(boost::uint_fast16_t n = 0; n < numImgBands; ++n)
-            {
-                imageBands[n] = outImage->GetRasterBand(n+1);
-            }
-            
-            if(bandNames.size() == numImgBands)
-            {
-                for(boost::uint_fast16_t n = 0; n < numImgBands; ++n)
-                {
-                    imageBands[n]->SetDescription(bandNames[n].c_str());
-                }
-            }
-            /****** CREATED A NEW GDALDATASET *******/
-            
+                        
             if(usingNativeRes)
             {
                 cout << "Using native resolution for processing\n";
@@ -1013,7 +961,7 @@ namespace spdlib
             cout << "Process block size: [" << procResXBlockSize << "," << procResYBlockSize << "]\n";
             
             cout << "Block Size: [" << blockWidth << "," << blockHeight << "]\n";
-                        
+            
             boost::uint_fast32_t numBlocks = numYFullBlocks * numXFullBlocks;
             if(remainingCols > 0)
             {
@@ -1032,11 +980,10 @@ namespace spdlib
             blockMinY = 0;
             blockMaxY = blockYSize;
             
-            SPDFileIncrementalReader incReader;
-            incReader.open(spdInFile);
-            
             boost::uint_fast32_t pulsesBlockSizeX = this->blockXSize + (2 * this->overlap);
             boost::uint_fast32_t pulsesBlockSizeY = this->blockYSize + (2 * this->overlap);
+            boost::uint_fast32_t remainingColsScaled = remainingCols;
+            boost::uint_fast32_t remainingRowsScaled = remainingRows;
             
             boost::uint_fast32_t scaledOverlap = 0;
             if(binScaling != 0)
@@ -1044,18 +991,81 @@ namespace spdlib
                 if(scaleDown)
                 {
                     scaledOverlap = this->overlap * binScaling;
+                    remainingColsScaled = ceil(remainingCols * binScaling);
+                    remainingRowsScaled = ceil(remainingRows * binScaling);
                 }
                 else
                 {
                     scaledOverlap = this->overlap / binScaling;
+                    remainingColsScaled = ceil(remainingCols / binScaling);
+                    remainingRowsScaled = ceil(remainingRows / binScaling);
                 }
             }
             
             boost::uint_fast32_t pulsesScaledBlockSizeX = procResXBlockSize + (2 * scaledOverlap);
             boost::uint_fast32_t pulsesScaledBlockSizeY = procResYBlockSize + (2 * scaledOverlap);
             
-            cout << "pulsesBlockSize: [" << pulsesBlockSizeX << "," << pulsesBlockSizeY << "]\n";
+            cout << "Pulses Block Size: [" << pulsesBlockSizeX << "," << pulsesBlockSizeY << "]\n";
+            cout << "Processing Pulses Block Size: [" << procResXBlockSize << "," << procResYBlockSize << "]\n";
+            cout << "Remaining: [" << remainingColsScaled << "," << remainingRowsScaled << "]\n";
             
+            boost::uint_fast32_t imageXSize = (procResXBlockSize * numXFullBlocks) + remainingColsScaled;
+            boost::uint_fast32_t imageYSize = (procResYBlockSize * numYFullBlocks) + remainingRowsScaled;
+            
+            /****** CREATE A NEW GDALDATASET *******/
+            GDALDriver *gdalDriver = GetGDALDriverManager()->GetDriverByName(gdalFormat.c_str());
+			if(gdalDriver == NULL)
+			{
+                string message = gdalFormat + string(" gdal driver cannot be found.");
+				throw SPDProcessingException(message);
+			}
+            char **papszMetadata;
+            papszMetadata = gdalDriver->GetMetadata();
+            if( CSLFetchBoolean( papszMetadata, GDAL_DCAP_CREATE, FALSE ) )
+            {
+                string message = gdalFormat + string(" does not support create method. Select a GDAL driver which does (see http://www.gdal.org/formats_list.html).");
+            }
+            GDALDataset *outImage = gdalDriver->Create(outImagePath.c_str(), imageXSize, imageYSize, numImgBands, GDT_Float32, papszMetadata);
+            
+            if(outImage == NULL)
+            {
+                string message = string("Failed to create image ") + outImagePath;
+				throw SPDProcessingException(message);
+            }
+            
+            double *gdalTransform = new double[6];
+            gdalTransform[0] = spdInFile->getXMin();
+            gdalTransform[1] = processingResolution;
+            gdalTransform[2] = 0;
+            gdalTransform[3] = spdInFile->getYMax();
+            gdalTransform[4] = 0;
+            gdalTransform[5] = processingResolution;
+            outImage->SetGeoTransform(gdalTransform);
+            
+            if(spdInFile->getSpatialReference() != "")
+            {
+                outImage->SetProjection(spdInFile->getSpatialReference().c_str());
+            }
+            vector<string> bandNames = this->dataBlockProcessor->getImageBandDescriptions();
+            
+            GDALRasterBand **imageBands = new GDALRasterBand*[numImgBands];
+            for(boost::uint_fast16_t n = 0; n < numImgBands; ++n)
+            {
+                imageBands[n] = outImage->GetRasterBand(n+1);
+            }
+            
+            if(bandNames.size() == numImgBands)
+            {
+                for(boost::uint_fast16_t n = 0; n < numImgBands; ++n)
+                {
+                    imageBands[n]->SetDescription(bandNames[n].c_str());
+                }
+            }
+            /****** CREATED A NEW GDALDATASET *******/
+            
+            SPDFileIncrementalReader incReader;
+            incReader.open(spdInFile);
+                        
             vector<SPDPulse*> ***pulses = new vector<SPDPulse*>**[pulsesBlockSizeY];
             for(boost::uint_fast32_t i = 0; i < pulsesBlockSizeY; ++i)
             {
@@ -1065,7 +1075,6 @@ namespace spdlib
                     pulses[i][j] = new vector<SPDPulse*>();
                 }
             }
-            
             
             SPDXYPoint ***cenPts = NULL;
             vector<SPDPulse*> ***pulseScaled = NULL;
@@ -1114,10 +1123,7 @@ namespace spdlib
             
             boost::uint_fast32_t blockMinXScaled = 0;
             boost::uint_fast32_t blockMinYScaled = 0;
-            
-            boost::uint_fast32_t remainingColsScaled = 0;
-            boost::uint_fast32_t remainingRowsScaled = 0;
-            
+                        
             if(spdInFile->getIndexType() == SPD_CARTESIAN_IDX)
             {
                 blockXOrigin = spdInFile->getXMin() - (overlap * spdInFile->getBinSize());
@@ -1310,13 +1316,11 @@ namespace spdlib
                         {
                             blockMinXScaled = blockMinX * binScaling;
                             blockMinYScaled = blockMinY * binScaling;
-                            remainingColsScaled = remainingCols * binScaling;
                         }
                         else
                         {
                             blockMinXScaled = blockMinX / binScaling;
                             blockMinYScaled = blockMinY / binScaling;
-                            remainingColsScaled = remainingCols / binScaling;
                         }
                         this->writeImageData(imageBands, imageBlockVals, remainingColsScaled, procResYBlockSize, numImgBands, scaledOverlap, scaledOverlap, blockMinXScaled, blockMinYScaled);
                         this->clearPulses(pulses, pulsesBlockSizeX, pulsesBlockSizeY);
@@ -1427,13 +1431,11 @@ namespace spdlib
                         {
                             blockMinXScaled = blockMinX * binScaling;
                             blockMinYScaled = blockMinY * binScaling;
-                            remainingRowsScaled = remainingRows * binScaling;
                         }
                         else
                         {
                             blockMinXScaled = blockMinX / binScaling;
                             blockMinYScaled = blockMinY / binScaling;
-                            remainingRowsScaled = remainingRows / binScaling;
                         }
                         this->writeImageData(imageBands, imageBlockVals, procResXBlockSize, remainingRowsScaled, numImgBands, scaledOverlap, scaledOverlap, blockMinXScaled, blockMinYScaled);
                         this->clearPulses(pulses, pulsesBlockSizeX, pulsesBlockSizeY);
@@ -1518,15 +1520,11 @@ namespace spdlib
                         {
                             blockMinXScaled = blockMinX * binScaling;
                             blockMinYScaled = blockMinY * binScaling;
-                            remainingRowsScaled = remainingRows * binScaling;
-                            remainingColsScaled = remainingCols * binScaling;
                         }
                         else
                         {
                             blockMinXScaled = blockMinX / binScaling;
                             blockMinYScaled = blockMinY / binScaling;
-                            remainingRowsScaled = remainingRows / binScaling;
-                            remainingColsScaled = remainingCols / binScaling;
                         }
                         this->writeImageData(imageBands, imageBlockVals, remainingColsScaled, remainingRowsScaled, numImgBands, scaledOverlap, scaledOverlap, blockMinXScaled, blockMinYScaled);
                         this->clearPulses(pulses, pulsesBlockSizeX, pulsesBlockSizeY);
