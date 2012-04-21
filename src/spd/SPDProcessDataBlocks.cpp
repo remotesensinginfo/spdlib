@@ -124,7 +124,7 @@ namespace spdlib
                 geoHeight = spdInFile->getZenithMax() - spdInFile->getZenithMin();
             }
 
-            cout << "Geo: [" << geoWidth << "," << geoHeight << "]\n";
+            //cout << "Geo: [" << geoWidth << "," << geoHeight << "]\n";
 
             bool usingNativeRes = false;
             bool scaleDown = true;
@@ -166,8 +166,8 @@ namespace spdlib
                 binScaling = numeric_cast<boost::uint_fast32_t>(spdInFile->getBinSize()/processingResolution);
             }
 
-            cout << "Bin Scaling: " << binScaling << endl;
-            cout << "Process Bins: [" << procResXBins << "," << procResYBins << "]\n";
+            //cout << "Bin Scaling: " << binScaling << endl;
+            //cout << "Process Bins: [" << procResXBins << "," << procResYBins << "]\n";
 
             if(usingNativeRes)
             {
@@ -189,12 +189,12 @@ namespace spdlib
             boost::uint_fast32_t numXFullBlocks = floor(((double)nativeXBins)/this->blockXSize);
             boost::uint_fast32_t numYFullBlocks = floor(((double)nativeYBins)/this->blockYSize);
 
-            cout << "Number of full blocks: [" << numXFullBlocks << "," << numYFullBlocks << "]\n";
+            //cout << "Number of full blocks: [" << numXFullBlocks << "," << numYFullBlocks << "]\n";
 
             boost::uint_fast32_t remainingCols = nativeXBins - (numXFullBlocks * this->blockXSize);
             boost::uint_fast32_t remainingRows = nativeYBins - (numYFullBlocks * this->blockYSize);
 
-            cout << "Remainder: [" << remainingCols << "," << remainingRows << "]\n";
+            //cout << "Remainder: [" << remainingCols << "," << remainingRows << "]\n";
 
             double blockMinX = 0;
             double blockMaxX = 0;
@@ -223,10 +223,10 @@ namespace spdlib
                 procResYBlockSize = ceil(((double)blockYSize) / binScaling);
             }
 
-            cout << "Native block size: [" << this->blockXSize << "," << this->blockXSize << "]\n";
-            cout << "Process block size: [" << procResXBlockSize << "," << procResYBlockSize << "]\n";
+            //cout << "Native block size: [" << this->blockXSize << "," << this->blockXSize << "]\n";
+            //cout << "Process block size: [" << procResXBlockSize << "," << procResYBlockSize << "]\n";
 
-            cout << "Block Size: [" << blockWidth << "," << blockHeight << "]\n";
+            //cout << "Block Size: [" << blockWidth << "," << blockHeight << "]\n";
 
             boost::uint_fast32_t numBlocks = numYFullBlocks * numXFullBlocks;
             if(remainingCols > 0)
@@ -368,11 +368,11 @@ namespace spdlib
                         cout << "Processing block " << cBlocksIdx++ << " of " << numBlocks << " blocks\n";
                     }
 
-                    cout << "Block [" << blockMinX << "," << blockMaxX << "][" << blockMinY << "," << blockMaxY << "]\n";
+                    //cout << "Block [" << blockMinX << "," << blockMaxX << "][" << blockMinY << "," << blockMaxY << "]\n";
 
-                    cout << "Block Origin [" << blockXOrigin << "," << blockYOrigin <<"]\n";
+                    //cout << "Block Origin [" << blockXOrigin << "," << blockYOrigin <<"]\n";
 
-                    cout << "Block Size [" << blockXSize << "," << blockYSize << "]\n";
+                    //cout << "Block Size [" << blockXSize << "," << blockYSize << "]\n";
 
                     bbox[0] = blockMinX;
                     bbox[1] = blockMinY;
@@ -456,11 +456,11 @@ namespace spdlib
                         cout << "Processing block " << cBlocksIdx++ << " of " << numBlocks << " blocks\n";
                     }
                     blockMaxX -= (blockXSize-remainingCols);
-                    cout << "Block [" << blockMinX << "," << blockMaxX << "][" << blockMinY << "," << blockMaxY << "]\n";
+                    //cout << "Block [" << blockMinX << "," << blockMaxX << "][" << blockMinY << "," << blockMaxY << "]\n";
 
-                    cout << "Block Origin [" << blockXOrigin << "," << blockYOrigin <<"]\n";
+                    //cout << "Block Origin [" << blockXOrigin << "," << blockYOrigin <<"]\n";
 
-                    cout << "Block Size [" << blockXSize << "," << blockYSize << "]\n";
+                    //cout << "Block Size [" << blockXSize << "," << blockYSize << "]\n";
 
                     bbox[0] = blockMinX;
                     bbox[1] = blockMinY;
@@ -569,11 +569,11 @@ namespace spdlib
                         cout << "Processing block " << cBlocksIdx++ << " of " << numBlocks << " blocks\n";
                     }
 
-                    cout << "Block [" << blockMinX << "," << blockMaxX << "][" << blockMinY << "," << blockMaxY << "]\n";
+                    //cout << "Block [" << blockMinX << "," << blockMaxX << "][" << blockMinY << "," << blockMaxY << "]\n";
 
-                    cout << "Block Origin [" << blockXOrigin << "," << blockYOrigin << "]\n";
+                    //cout << "Block Origin [" << blockXOrigin << "," << blockYOrigin << "]\n";
 
-                    cout << "Block Size [" << blockXSize << "," << blockYSize << "]\n";
+                    //cout << "Block Size [" << blockXSize << "," << blockYSize << "]\n";
 
                     bbox[0] = blockMinX;
                     bbox[1] = blockMinY;
@@ -657,9 +657,9 @@ namespace spdlib
                     }
                     blockMaxX -= (blockXSize-remainingCols);
 
-                    cout << "Block [" << blockMinX << "," << blockMaxX << "][" << blockMinY << "," << blockMaxY << "]\n";
+                    //cout << "Block [" << blockMinX << "," << blockMaxX << "][" << blockMinY << "," << blockMaxY << "]\n";
 
-                    cout << "Block Origin [" << blockXOrigin << "," << blockYOrigin <<"]\n";
+                    //cout << "Block Origin [" << blockXOrigin << "," << blockYOrigin <<"]\n";
 
                     bbox[0] = blockMinX;
                     bbox[1] = blockMinY;
@@ -858,7 +858,7 @@ namespace spdlib
                 geoHeight = spdInFile->getZenithMax() - spdInFile->getZenithMin();
             }
             
-            cout << "Geo: [" << geoWidth << "," << geoHeight << "]\n";
+            //cout << "Geo: [" << geoWidth << "," << geoHeight << "]\n";
             
             bool usingNativeRes = false;
             bool scaleDown = true;
@@ -900,8 +900,8 @@ namespace spdlib
                 binScaling = numeric_cast<boost::uint_fast32_t>(spdInFile->getBinSize()/processingResolution);
             }
             
-            cout << "Bin Scaling: " << binScaling << endl;
-            cout << "Process Bins: [" << procResXBins << "," << procResYBins << "]\n";
+            //cout << "Bin Scaling: " << binScaling << endl;
+            //cout << "Process Bins: [" << procResXBins << "," << procResYBins << "]\n";
                         
             if(usingNativeRes)
             {
@@ -923,12 +923,12 @@ namespace spdlib
             boost::uint_fast32_t numXFullBlocks = floor(((double)nativeXBins)/this->blockXSize);
             boost::uint_fast32_t numYFullBlocks = floor(((double)nativeYBins)/this->blockYSize);
             
-            cout << "Number of full blocks: [" << numXFullBlocks << "," << numYFullBlocks << "]\n";
+            //cout << "Number of full blocks: [" << numXFullBlocks << "," << numYFullBlocks << "]\n";
             
             boost::uint_fast32_t remainingCols = nativeXBins - (numXFullBlocks * this->blockXSize);
             boost::uint_fast32_t remainingRows = nativeYBins - (numYFullBlocks * this->blockYSize);
             
-            cout << "Remainder: [" << remainingCols << "," << remainingRows << "]\n";
+            //cout << "Remainder: [" << remainingCols << "," << remainingRows << "]\n";
             
             double blockMinX = 0;
             double blockMaxX = 0;
@@ -957,10 +957,9 @@ namespace spdlib
                 procResYBlockSize = ceil(((double)blockYSize) / binScaling);
             }
             
-            cout << "Native block size: [" << this->blockXSize << "," << this->blockYSize << "]\n";
-            cout << "Process block size: [" << procResXBlockSize << "," << procResYBlockSize << "]\n";
-            
-            cout << "Block Size: [" << blockWidth << "," << blockHeight << "]\n";
+            //cout << "Native block size: [" << this->blockXSize << "," << this->blockYSize << "]\n";
+            //cout << "Process block size: [" << procResXBlockSize << "," << procResYBlockSize << "]\n";
+            //cout << "Block Size: [" << blockWidth << "," << blockHeight << "]\n";
             
             boost::uint_fast32_t numBlocks = numYFullBlocks * numXFullBlocks;
             if(remainingCols > 0)
@@ -1005,9 +1004,9 @@ namespace spdlib
             boost::uint_fast32_t pulsesScaledBlockSizeX = procResXBlockSize + (2 * scaledOverlap);
             boost::uint_fast32_t pulsesScaledBlockSizeY = procResYBlockSize + (2 * scaledOverlap);
             
-            cout << "Pulses Block Size: [" << pulsesBlockSizeX << "," << pulsesBlockSizeY << "]\n";
-            cout << "Processing Pulses Block Size: [" << procResXBlockSize << "," << procResYBlockSize << "]\n";
-            cout << "Remaining: [" << remainingColsScaled << "," << remainingRowsScaled << "]\n";
+            //cout << "Pulses Block Size: [" << pulsesBlockSizeX << "," << pulsesBlockSizeY << "]\n";
+            //cout << "Processing Pulses Block Size: [" << procResXBlockSize << "," << procResYBlockSize << "]\n";
+            //cout << "Remaining: [" << remainingColsScaled << "," << remainingRowsScaled << "]\n";
             
             boost::uint_fast32_t imageXSize = (procResXBlockSize * numXFullBlocks) + remainingColsScaled;
             boost::uint_fast32_t imageYSize = (procResYBlockSize * numYFullBlocks) + remainingRowsScaled;
@@ -1657,7 +1656,7 @@ namespace spdlib
                 geoHeight = spdInFile->getZenithMax() - spdInFile->getZenithMin();
             }
 
-            cout << "Geo: [" << geoWidth << "," << geoHeight << "]\n";
+            //cout << "Geo: [" << geoWidth << "," << geoHeight << "]\n";
 
             bool usingNativeRes = false;
             bool scaleDown = true;
@@ -1699,8 +1698,8 @@ namespace spdlib
                 binScaling = numeric_cast<boost::uint_fast32_t>(spdInFile->getBinSize()/processingResolution);
             }
 
-            cout << "Bin Scaling: " << binScaling << endl;
-            cout << "Process Bins: [" << procResXBins << "," << procResYBins << "]\n";
+            //cout << "Bin Scaling: " << binScaling << endl;
+            //cout << "Process Bins: [" << procResXBins << "," << procResYBins << "]\n";
 
             if(usingNativeRes)
             {
@@ -1722,12 +1721,12 @@ namespace spdlib
             boost::uint_fast32_t numXFullBlocks = floor(((double)nativeXBins)/this->blockXSize);
             boost::uint_fast32_t numYFullBlocks = floor(((double)nativeYBins)/this->blockYSize);
 
-            cout << "Number of full blocks: [" << numXFullBlocks << "," << numYFullBlocks << "]\n";
+            //cout << "Number of full blocks: [" << numXFullBlocks << "," << numYFullBlocks << "]\n";
 
             boost::uint_fast32_t remainingCols = nativeXBins - (numXFullBlocks * this->blockXSize);
             boost::uint_fast32_t remainingRows = nativeYBins - (numYFullBlocks * this->blockYSize);
 
-            cout << "Remainder: [" << remainingCols << "," << remainingRows << "]\n";
+            //cout << "Remainder: [" << remainingCols << "," << remainingRows << "]\n";
 
             double blockMinX = 0;
             double blockMaxX = 0;
@@ -1756,10 +1755,10 @@ namespace spdlib
                 procResYBlockSize = ceil(((double)blockYSize) / binScaling);
             }
 
-            cout << "Native block size: [" << this->blockXSize << "," << this->blockXSize << "]\n";
-            cout << "Process block size: [" << procResXBlockSize << "," << procResYBlockSize << "]\n";
+            //cout << "Native block size: [" << this->blockXSize << "," << this->blockXSize << "]\n";
+            //cout << "Process block size: [" << procResXBlockSize << "," << procResYBlockSize << "]\n";
 
-            cout << "Block Size: [" << blockWidth << "," << blockHeight << "]\n";
+            //cout << "Block Size: [" << blockWidth << "," << blockHeight << "]\n";
 
 
 
@@ -1896,11 +1895,11 @@ namespace spdlib
                         cout << "Processing block " << cBlocksIdx++ << " of " << numBlocks << " blocks\n";
                     }
 
-                    cout << "Block [" << blockMinX << "," << blockMaxX << "][" << blockMinY << "," << blockMaxY << "]\n";
+                    //cout << "Block [" << blockMinX << "," << blockMaxX << "][" << blockMinY << "," << blockMaxY << "]\n";
 
-                    cout << "Block Origin [" << blockXOrigin << "," << blockYOrigin <<"]\n";
+                    //cout << "Block Origin [" << blockXOrigin << "," << blockYOrigin <<"]\n";
 
-                    cout << "Block Size [" << blockXSize << "," << blockYSize << "]\n";
+                    //cout << "Block Size [" << blockXSize << "," << blockYSize << "]\n";
 
                     bbox[0] = blockMinX;
                     bbox[1] = blockMinY;
@@ -1983,11 +1982,11 @@ namespace spdlib
                         cout << "Processing block " << cBlocksIdx++ << " of " << numBlocks << " blocks\n";
                     }
                     blockMaxX -= (blockXSize-remainingCols);
-                    cout << "Block [" << blockMinX << "," << blockMaxX << "][" << blockMinY << "," << blockMaxY << "]\n";
+                    //cout << "Block [" << blockMinX << "," << blockMaxX << "][" << blockMinY << "," << blockMaxY << "]\n";
 
-                    cout << "Block Origin [" << blockXOrigin << "," << blockYOrigin <<"]\n";
+                    //cout << "Block Origin [" << blockXOrigin << "," << blockYOrigin <<"]\n";
 
-                    cout << "Block Size [" << blockXSize << "," << blockYSize << "]\n";
+                    //cout << "Block Size [" << blockXSize << "," << blockYSize << "]\n";
 
                     bbox[0] = blockMinX;
                     bbox[1] = blockMinY;
@@ -2094,11 +2093,11 @@ namespace spdlib
                         cout << "Processing block " << cBlocksIdx++ << " of " << numBlocks << " blocks\n";
                     }
 
-                    cout << "Block [" << blockMinX << "," << blockMaxX << "][" << blockMinY << "," << blockMaxY << "]\n";
+                    //cout << "Block [" << blockMinX << "," << blockMaxX << "][" << blockMinY << "," << blockMaxY << "]\n";
 
-                    cout << "Block Origin [" << blockXOrigin << "," << blockYOrigin << "]\n";
+                    //cout << "Block Origin [" << blockXOrigin << "," << blockYOrigin << "]\n";
 
-                    cout << "Block Size [" << blockXSize << "," << blockYSize << "]\n";
+                    //cout << "Block Size [" << blockXSize << "," << blockYSize << "]\n";
 
                     bbox[0] = blockMinX;
                     bbox[1] = blockMinY;
@@ -2180,9 +2179,9 @@ namespace spdlib
                     }
                     blockMaxX -= (blockXSize-remainingCols);
 
-                    cout << "Block [" << blockMinX << "," << blockMaxX << "][" << blockMinY << "," << blockMaxY << "]\n";
+                    //cout << "Block [" << blockMinX << "," << blockMaxX << "][" << blockMinY << "," << blockMaxY << "]\n";
 
-                    cout << "Block Origin [" << blockXOrigin << "," << blockYOrigin <<"]\n";
+                    //cout << "Block Origin [" << blockXOrigin << "," << blockYOrigin <<"]\n";
 
                     bbox[0] = blockMinX;
                     bbox[1] = blockMinY;
