@@ -29,7 +29,7 @@ set (PROJECT_HEADER_DIR include)
 set (PROJECT_TOOLS_DIR tools)
 
 # The version number.
-set (SPDLIB_SVN_VERSION 494)
+set (SPDLIB_SVN_VERSION 495)
 set (SPDLIB_VERSION_MAJOR 3)
 set (SPDLIB_VERSION_MINOR 0)
 set (SPDLIB_VERSION_PATCH 0)
@@ -59,12 +59,16 @@ set(SPDLIB_WITH_UTILITIES TRUE CACHE BOOL "Choose if SPDLib utilities should be 
 
 set(HDF5_INCLUDE_DIR /usr/local/include CACHE PATH "Include PATH for HDF5")
 set(HDF5_LIB_PATH /usr/local/lib CACHE PATH "Library PATH for HDF5")
+
 set(GSL_INCLUDE_DIR /usr/local/include CACHE PATH "Include PATH for GSL")
 set(GSL_LIB_PATH /usr/local/lib CACHE PATH "Library PATH for GSL")
+
 set(LIBLAS_INCLUDE_DIR /usr/local/include CACHE PATH "Include PATH for LibLAS")
 set(LIBLAS_LIB_PATH /usr/local/lib CACHE PATH "Library PATH for LibLAS")
+
 set(CGAL_INCLUDE_DIR /usr/local/include CACHE PATH "Include PATH for CGAL")
 set(CGAL_LIB_PATH /usr/local/lib CACHE PATH "Library PATH for CGAL")
+
 set(XERCESC_INCLUDE_DIR /usr/local/include CACHE PATH "Include PATH for Xerces-c")
 set(XERCESC_LIB_PATH /usr/local/lib CACHE PATH "Library PATH for Xerces-c")
 
@@ -182,7 +186,6 @@ endif(GDAL_FOUND)
 
 include_directories(${HDF5_INCLUDE_DIR})
 set(HDF5_LIBRARIES -L${HDF5_LIB_PATH} -lhdf5 -lhdf5_hl -lhdf5_cpp)
-
 
 include_directories(${GSL_INCLUDE_DIR})
 set(GSL_LIBRARIES -L${GSL_LIB_PATH} -lgsl -lgslcblas)
