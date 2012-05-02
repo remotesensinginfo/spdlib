@@ -42,15 +42,26 @@ namespace spdlib
 				throw SPDProcessingException("The output image needs to have at least 1 image band.");
 			}
             
-			interpolator->initInterpolator(pulses, xSize, ySize, SPD_GROUND);
-                        
-            for(boost::uint_fast32_t i = 0; i < ySize; ++i)
-			{
-				for(boost::uint_fast32_t j = 0; j < xSize; ++j)
-				{
-					imageDataBlock[i][j][0] = interpolator->getValue(cenPts[i][j]->x, cenPts[i][j]->y);
-				}
-			}
+            bool ptsAvail = true;
+            try 
+            {
+                interpolator->initInterpolator(pulses, xSize, ySize, SPD_GROUND);
+            }
+            catch (SPDException &e) 
+            {
+                ptsAvail = false;
+            }
+            
+            if(ptsAvail)
+            {
+                for(boost::uint_fast32_t i = 0; i < ySize; ++i)
+                {
+                    for(boost::uint_fast32_t j = 0; j < xSize; ++j)
+                    {
+                        imageDataBlock[i][j][0] = interpolator->getValue(cenPts[i][j]->x, cenPts[i][j]->y);
+                    }
+                }
+            }
 			
 			interpolator->resetInterpolator();
             
@@ -84,15 +95,26 @@ namespace spdlib
 				throw SPDProcessingException("The output image needs to have at least 1 image band.");
 			}
 			
-			interpolator->initInterpolator(pulses, xSize, ySize, SPD_ALL_CLASSES_TOP);
+            bool ptsAvail = true;
+            try
+            {
+                interpolator->initInterpolator(pulses, xSize, ySize, SPD_ALL_CLASSES_TOP);
+            }
+            catch (SPDException &e) 
+            {
+                ptsAvail = false;
+            }
 			
-			for(boost::uint_fast32_t i = 0; i < ySize; ++i)
-			{
-				for(boost::uint_fast32_t j = 0; j < xSize; ++j)
-				{
-					imageDataBlock[i][j][0] = interpolator->getValue(cenPts[i][j]->x, cenPts[i][j]->y);
-				}
-			}
+            if(ptsAvail)
+            {
+                for(boost::uint_fast32_t i = 0; i < ySize; ++i)
+                {
+                    for(boost::uint_fast32_t j = 0; j < xSize; ++j)
+                    {
+                        imageDataBlock[i][j][0] = interpolator->getValue(cenPts[i][j]->x, cenPts[i][j]->y);
+                    }
+                }
+            }
 			
 			interpolator->resetInterpolator();
 		}
@@ -125,15 +147,26 @@ namespace spdlib
 				throw SPDProcessingException("The output image needs to have at least 1 image band.");
 			}
 			
-			interpolator->initInterpolator(pulses, xSize, ySize, SPD_VEGETATION_TOP);
-			
-			for(boost::uint_fast32_t i = 0; i < ySize; ++i)
-			{
-				for(boost::uint_fast32_t j = 0; j < xSize; ++j)
-				{
-					imageDataBlock[i][j][0] = interpolator->getValue(cenPts[i][j]->x, cenPts[i][j]->y);
-				}
+            bool ptsAvail = true;
+            try
+            {
+                interpolator->initInterpolator(pulses, xSize, ySize, SPD_VEGETATION_TOP);
 			}
+            catch (SPDException &e) 
+            {
+                ptsAvail = false;
+            }
+			
+            if(ptsAvail)
+            {
+                for(boost::uint_fast32_t i = 0; i < ySize; ++i)
+                {
+                    for(boost::uint_fast32_t j = 0; j < xSize; ++j)
+                    {
+                        imageDataBlock[i][j][0] = interpolator->getValue(cenPts[i][j]->x, cenPts[i][j]->y);
+                    }
+                }
+            }
 			
 			interpolator->resetInterpolator();
 		}
@@ -163,15 +196,26 @@ namespace spdlib
 				throw SPDProcessingException("The output image needs to have at least 1 image band.");
 			}
             
-			interpolator->initInterpolator(pulses, xSize, ySize, SPD_ALL_CLASSES);
-            
-			for(boost::uint_fast32_t i = 0; i < ySize; ++i)
-			{
-				for(boost::uint_fast32_t j = 0; j < xSize; ++j)
-				{
-					imageDataBlock[i][j][0] = interpolator->getValue(cenPts[i][j]->x, cenPts[i][j]->y);
-				}
-			}
+            bool ptsAvail = true;
+            try
+            {
+                interpolator->initInterpolator(pulses, xSize, ySize, SPD_ALL_CLASSES);
+            }
+            catch (SPDException &e) 
+            {
+                ptsAvail = false;
+            }
+			
+            if(ptsAvail)
+            {
+                for(boost::uint_fast32_t i = 0; i < ySize; ++i)
+                {
+                    for(boost::uint_fast32_t j = 0; j < xSize; ++j)
+                    {
+                        imageDataBlock[i][j][0] = interpolator->getValue(cenPts[i][j]->x, cenPts[i][j]->y);
+                    }
+                }
+            }
 			
 			interpolator->resetInterpolator();
 		}

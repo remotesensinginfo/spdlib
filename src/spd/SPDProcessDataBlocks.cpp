@@ -1093,6 +1093,10 @@ namespace spdlib
                         pulseScaled[i][j] = new vector<SPDPulse*>();
                         cenPts[i][j] = new SPDXYPoint();
                         imageBlockVals[i][j] = new float[numImgBands];
+                        for(boost::uint_fast32_t k = 0; k < numImgBands; ++k)
+                        {
+                            imageBlockVals[i][j][k] = 0.0;
+                        }
                     }
                 }
             }
@@ -1108,6 +1112,10 @@ namespace spdlib
                     {
                         cenPts[i][j] = new SPDXYPoint();
                         imageBlockVals[i][j] = new float[numImgBands];
+                        for(boost::uint_fast32_t k = 0; k < numImgBands; ++k)
+                        {
+                            imageBlockVals[i][j][k] = 0.0;
+                        }
                     }
                 }
             }
