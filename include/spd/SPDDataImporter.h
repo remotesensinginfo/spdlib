@@ -137,10 +137,12 @@ namespace spdlib
 			
 			try 
 			{
-				if( (coordTransform == NULL) || !coordTransform->Transform( 1, x, y, ((double*)(z)) ) )
+                double val = *z;
+				if( (coordTransform == NULL) || !coordTransform->Transform( 1, x, y, &val ) )
 				{
 					throw SPDIOException("Transformation of coordinates failed.");
 				}
+                *z = val;
 			}
 			catch (SPDIOException &e) 
 			{

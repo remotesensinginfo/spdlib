@@ -33,9 +33,7 @@ namespace spdlib
 	}
 	
 	void SPDImageUtils::getImagePixelValues(GDALDataset *dataset, boost::uint_fast32_t imgX, boost::uint_fast32_t imgY, float **pxlVals, boost::uint_fast32_t winHSize, boost::uint_fast16_t band) throw(SPDImageException)
-	{
-		const char *val = "NaN";
-		
+	{		
 		boost::uint_fast32_t xSize = dataset->GetRasterXSize();
 		boost::uint_fast32_t ySize = dataset->GetRasterYSize();
 		boost::uint_fast32_t winSize = (winHSize * 2) + 1;
@@ -50,18 +48,11 @@ namespace spdlib
 		
 		for(boost::uint_fast32_t row = tlY, i = 0; row >= brY; --row, ++i)
 		{
-			if(row < 0)
+			if(row >= ySize)
 			{
 				for(boost::uint_fast32_t j = 0; j < winSize; ++j)
 				{
-					pxlVals[i][j] = nan(val);
-				}
-			}
-			else if(row >= ySize)
-			{
-				for(boost::uint_fast32_t j = 0; j < winSize; ++j)
-				{
-					pxlVals[i][j] = nan(val);
+					pxlVals[i][j] = numeric_limits<float>::signaling_NaN();
 				}
 			}
 			else 
@@ -69,13 +60,9 @@ namespace spdlib
 				rasterBand->RasterIO(GF_Read, 0, row, xSize, 1, data, xSize, 1, GDT_Float32, 0, 0);
 				for(boost::uint_fast32_t col = tlX, j = 0; col <= brX; ++col, ++j)
 				{
-					if(col < 0)
+					if(col >= xSize)
 					{
-						pxlVals[i][j] = nan(val);
-					}
-					else if(col >= xSize)
-					{
-						pxlVals[i][j] = nan(val);
+						pxlVals[i][j] = numeric_limits<float>::signaling_NaN();
 					}
 					else 
 					{
@@ -93,10 +80,10 @@ namespace spdlib
 		boost::uint_fast32_t xSize = dataset->GetRasterXSize();
 		boost::uint_fast32_t ySize = dataset->GetRasterYSize();
 		
-	boost::int_fast32_t tlX = imgX[0] - (winHSize - 1);
-	boost::int_fast32_t tlY = imgY[0] + (winHSize - 1);
-	boost::int_fast32_t brX = imgX[3] + (winHSize - 1);
-	boost::int_fast32_t brY = imgY[3] - (winHSize - 1);
+        boost::int_fast32_t tlX = imgX[0] - (winHSize - 1);
+        boost::int_fast32_t tlY = imgY[0] + (winHSize - 1);
+        boost::int_fast32_t brX = imgX[3] + (winHSize - 1);
+        boost::int_fast32_t brY = imgY[3] - (winHSize - 1);
 		
 		GDALRasterBand *rasterBand = dataset->GetRasterBand(band);
 		float *data = (float *) CPLMalloc(sizeof(float)*xSize);
