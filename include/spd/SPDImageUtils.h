@@ -38,6 +38,8 @@
 #include "spd/SPDImageException.h"
 #include "spd/SPDTextFileUtilities.h"
 
+#include "boost/math/special_functions/fpclassify.hpp"
+
 using namespace std;
 
 namespace spdlib
