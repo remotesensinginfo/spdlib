@@ -28,6 +28,8 @@
 #include <iostream>
 #include <list>
 #include <math.h>
+#include <stdexcept>
+#include <vector>
 
 #include <boost/cstdint.hpp>
 
