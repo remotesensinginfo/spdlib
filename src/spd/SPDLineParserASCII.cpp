@@ -73,137 +73,151 @@ namespace spdlib
                     SPDPoint *pt = new SPDPoint();
                     ptUtils.initSPDPoint(pt);
                     
-                    
-                    for(vector<ASCIIField>::iterator iterFields = fields.begin(); iterFields != fields.end(); ++iterFields)
+                    try 
                     {
-                        //cout << "Field: " << (*iterFields).name << endl;
-                        if((*iterFields).name == POINTMEMBERNAME_X)
+                        for(vector<ASCIIField>::iterator iterFields = fields.begin(); iterFields != fields.end(); ++iterFields)
                         {
-                            pt->x = textUtils.strtodouble(tokens->at((*iterFields).idx));
-                            definedX = true;
-                        }
-                        else if((*iterFields).name == POINTMEMBERNAME_Y)
-                        {
-                            pt->y = textUtils.strtodouble(tokens->at((*iterFields).idx));
-                            definedY = true;
-                        }
-                        else if((*iterFields).name == POINTMEMBERNAME_Z)
-                        {
-                            pt->z = textUtils.strtofloat(tokens->at((*iterFields).idx));
-                            definedZ = true;
-                        }
-                        else if((*iterFields).name == POINTMEMBERNAME_HEIGHT)
-                        {
-                            pt->height = textUtils.strtofloat(tokens->at((*iterFields).idx));
-                        }
-                        else if((*iterFields).name == POINTMEMBERNAME_RANGE)
-                        {
-                            pt->range = textUtils.strtofloat(tokens->at((*iterFields).idx));
-                        }
-                        else if((*iterFields).name == POINTMEMBERNAME_AMPLITUDE_RETURN)
-                        {
-                            pt->amplitudeReturn = textUtils.strtofloat(tokens->at((*iterFields).idx));
-                        }
-                        else if((*iterFields).name == POINTMEMBERNAME_WIDTH_RETURN)
-                        {
-                            pt->widthReturn = textUtils.strtofloat(tokens->at((*iterFields).idx));
-                        }
-                        else if((*iterFields).name == POINTMEMBERNAME_RED)
-                        {
-                            if((*iterFields).dataType == spd_int)
+                            //cout << "Field: " << (*iterFields).name << endl;
+                            if((*iterFields).name == POINTMEMBERNAME_X)
                             {
-                                pt->red = textUtils.strto16bitInt(tokens->at((*iterFields).idx));
+                                pt->x = textUtils.strtodouble(tokens->at((*iterFields).idx));
+                                definedX = true;
                             }
-                            else if((*iterFields).dataType == spd_uint)
+                            else if((*iterFields).name == POINTMEMBERNAME_Y)
                             {
-                                pt->red = textUtils.strto16bitUInt(tokens->at((*iterFields).idx));
+                                pt->y = textUtils.strtodouble(tokens->at((*iterFields).idx));
+                                definedY = true;
                             }
-                            else if(((*iterFields).dataType == spd_float) |((*iterFields).dataType == spd_double))
+                            else if((*iterFields).name == POINTMEMBERNAME_Z)
                             {
-                                pt->red = floor(textUtils.strtodouble(tokens->at((*iterFields).idx)));
+                                pt->z = textUtils.strtofloat(tokens->at((*iterFields).idx));
+                                definedZ = true;
                             }
-                        }
-                        else if((*iterFields).name == POINTMEMBERNAME_GREEN)
-                        {
-                            if((*iterFields).dataType == spd_int)
+                            else if((*iterFields).name == POINTMEMBERNAME_HEIGHT)
                             {
-                                pt->green = textUtils.strto16bitInt(tokens->at((*iterFields).idx));
+                                pt->height = textUtils.strtofloat(tokens->at((*iterFields).idx));
                             }
-                            else if((*iterFields).dataType == spd_uint)
+                            else if((*iterFields).name == POINTMEMBERNAME_RANGE)
                             {
-                                pt->green = textUtils.strto16bitUInt(tokens->at((*iterFields).idx));
+                                pt->range = textUtils.strtofloat(tokens->at((*iterFields).idx));
                             }
-                            else if(((*iterFields).dataType == spd_float) |((*iterFields).dataType == spd_double))
+                            else if((*iterFields).name == POINTMEMBERNAME_AMPLITUDE_RETURN)
                             {
-                                pt->green = floor(textUtils.strtodouble(tokens->at((*iterFields).idx)));
+                                pt->amplitudeReturn = textUtils.strtofloat(tokens->at((*iterFields).idx));
                             }
-                        }
-                        else if((*iterFields).name == POINTMEMBERNAME_BLUE)
-                        {
-                            if((*iterFields).dataType == spd_int)
+                            else if((*iterFields).name == POINTMEMBERNAME_WIDTH_RETURN)
                             {
-                                pt->blue = textUtils.strto16bitInt(tokens->at((*iterFields).idx));
+                                pt->widthReturn = textUtils.strtofloat(tokens->at((*iterFields).idx));
                             }
-                            else if((*iterFields).dataType == spd_uint)
+                            else if((*iterFields).name == POINTMEMBERNAME_RED)
                             {
-                                pt->blue = textUtils.strto16bitUInt(tokens->at((*iterFields).idx));
+                                if((*iterFields).dataType == spd_int)
+                                {
+                                    pt->red = textUtils.strto16bitInt(tokens->at((*iterFields).idx));
+                                }
+                                else if((*iterFields).dataType == spd_uint)
+                                {
+                                    pt->red = textUtils.strto16bitUInt(tokens->at((*iterFields).idx));
+                                }
+                                else if(((*iterFields).dataType == spd_float) |((*iterFields).dataType == spd_double))
+                                {
+                                    pt->red = floor(textUtils.strtodouble(tokens->at((*iterFields).idx)));
+                                }
                             }
-                            else if(((*iterFields).dataType == spd_float) |((*iterFields).dataType == spd_double))
+                            else if((*iterFields).name == POINTMEMBERNAME_GREEN)
                             {
-                                pt->blue = floor(textUtils.strtodouble(tokens->at((*iterFields).idx)));
+                                if((*iterFields).dataType == spd_int)
+                                {
+                                    pt->green = textUtils.strto16bitInt(tokens->at((*iterFields).idx));
+                                }
+                                else if((*iterFields).dataType == spd_uint)
+                                {
+                                    pt->green = textUtils.strto16bitUInt(tokens->at((*iterFields).idx));
+                                }
+                                else if(((*iterFields).dataType == spd_float) |((*iterFields).dataType == spd_double))
+                                {
+                                    pt->green = floor(textUtils.strtodouble(tokens->at((*iterFields).idx)));
+                                }
+                            }
+                            else if((*iterFields).name == POINTMEMBERNAME_BLUE)
+                            {
+                                if((*iterFields).dataType == spd_int)
+                                {
+                                    pt->blue = textUtils.strto16bitInt(tokens->at((*iterFields).idx));
+                                }
+                                else if((*iterFields).dataType == spd_uint)
+                                {
+                                    pt->blue = textUtils.strto16bitUInt(tokens->at((*iterFields).idx));
+                                }
+                                else if(((*iterFields).dataType == spd_float) |((*iterFields).dataType == spd_double))
+                                {
+                                    pt->blue = floor(textUtils.strtodouble(tokens->at((*iterFields).idx)));
+                                }
+                            }
+                            else if((*iterFields).name == POINTMEMBERNAME_CLASSIFICATION)
+                            {
+                                pt->classification = textUtils.strto16bitUInt(tokens->at((*iterFields).idx));
+                            }
+                            else if((*iterFields).name == PULSEMEMBERNAME_AZIMUTH)
+                            {
+                                pl->azimuth = textUtils.strtodouble(tokens->at((*iterFields).idx));
+                            }
+                            else if((*iterFields).name == PULSEMEMBERNAME_ZENITH)
+                            {
+                                pl->zenith = textUtils.strtodouble(tokens->at((*iterFields).idx));
+                            }
+                            else if((*iterFields).name == PULSEMEMBERNAME_AMPLITUDE_PULSE)
+                            {
+                                pl->amplitudePulse = textUtils.strtodouble(tokens->at((*iterFields).idx));
+                            }
+                            else if((*iterFields).name == PULSEMEMBERNAME_WIDTH_PULSE)
+                            {
+                                pl->widthPulse = textUtils.strtodouble(tokens->at((*iterFields).idx));
+                            }
+                            else if((*iterFields).name == PULSEMEMBERNAME_SOURCE_ID)
+                            {
+                                pl->sourceID = textUtils.strto16bitUInt(tokens->at((*iterFields).idx));
+                            }
+                            else if((*iterFields).name == PULSEMEMBERNAME_SCANLINE)
+                            {
+                                pl->scanline = textUtils.strto32bitUInt(tokens->at((*iterFields).idx));
+                            }
+                            else if((*iterFields).name == PULSEMEMBERNAME_SCANLINE_IDX)
+                            {
+                                pl->scanlineIdx = textUtils.strto16bitUInt(tokens->at((*iterFields).idx));
+                            }
+                            else
+                            {
+                                cerr << "Could not find field: \'" << (*iterFields).name << "\'\n";
+                                throw SPDIOException("Field was not recognised.");
                             }
                         }
-                        else if((*iterFields).name == POINTMEMBERNAME_CLASSIFICATION)
+                        
+                        pl->xIdx = pt->x;
+                        pl->yIdx = pt->y;
+                        pl->pts->push_back(pt);
+                        pl->numberOfReturns = 1;
+                        ++ptCount;
+                        
+                        if(!definedX | !definedY | !definedZ)
                         {
-                            pt->classification = textUtils.strto16bitUInt(tokens->at((*iterFields).idx));
+                            throw SPDIOException("At the very minimum the X, Y, Z fields must be populated.");
                         }
-                        else if((*iterFields).name == PULSEMEMBERNAME_AZIMUTH)
-                        {
-                            pl->azimuth = textUtils.strtodouble(tokens->at((*iterFields).idx));
-                        }
-                        else if((*iterFields).name == PULSEMEMBERNAME_ZENITH)
-                        {
-                            pl->zenith = textUtils.strtodouble(tokens->at((*iterFields).idx));
-                        }
-                        else if((*iterFields).name == PULSEMEMBERNAME_AMPLITUDE_PULSE)
-                        {
-                            pl->amplitudePulse = textUtils.strtodouble(tokens->at((*iterFields).idx));
-                        }
-                        else if((*iterFields).name == PULSEMEMBERNAME_WIDTH_PULSE)
-                        {
-                            pl->widthPulse = textUtils.strtodouble(tokens->at((*iterFields).idx));
-                        }
-                        else if((*iterFields).name == PULSEMEMBERNAME_SOURCE_ID)
-                        {
-                            pl->sourceID = textUtils.strto16bitUInt(tokens->at((*iterFields).idx));
-                        }
-                        else if((*iterFields).name == PULSEMEMBERNAME_SCANLINE)
-                        {
-                            pl->scanline = textUtils.strto32bitUInt(tokens->at((*iterFields).idx));
-                        }
-                        else if((*iterFields).name == PULSEMEMBERNAME_SCANLINE_IDX)
-                        {
-                            pl->scanlineIdx = textUtils.strto16bitUInt(tokens->at((*iterFields).idx));
-                        }
-                        else
-                        {
-                            cerr << "Could not find field: \'" << (*iterFields).name << "\'\n";
-                            throw SPDIOException("Field was not recognised.");
-                        }
-                    }
-                    
-                    pl->xIdx = pt->x;
-                    pl->yIdx = pt->y;
-                    pl->pts->push_back(pt);
-                    pl->numberOfReturns = 1;
-                    ++ptCount;
-                    
-                    if(!definedX | !definedY | !definedZ)
+                        
+                        returnValue = true;
+                    } 
+                    catch (out_of_range &e) 
                     {
-                        throw SPDIOException("At the very minimum the X, Y, Z fields must be populated.");
+                        cerr << "WARNING: " << e.what() << endl;
+                        cerr << "Could not parse line: " << line << endl;
+                        cerr << "Processing has continued and this line has been ignored.\n";
                     }
-                    
-                    returnValue = true;
+                    catch (exception &e) 
+                    {
+                        cerr << "WARNING: " << e.what() << endl;
+                        cerr << "Could not parse line: " << line << endl;
+                        cerr << "Processing has continued and this line has been ignored.\n";
+                    }
                 }
             
                 delete tokens;
