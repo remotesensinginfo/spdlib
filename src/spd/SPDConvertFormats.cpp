@@ -628,9 +628,7 @@ namespace spdlib
 			    {
 				    roundingAddition = 1;
 			    }
-                
-                cout << spdFileFinalOut << endl;
-                
+                                
                 xSize = numeric_cast<boost::uint_fast32_t>((((spdFileFinalOut->getAzimuthMax()-spdFileFinalOut->getAzimuthMin())/spdFileFinalOut->getBinSize())+roundingAddition)+0.5);
 			    ySize = numeric_cast<boost::uint_fast32_t>((((spdFileFinalOut->getZenithMax()-spdFileFinalOut->getZenithMin())/spdFileFinalOut->getBinSize())+roundingAddition)+0.5);                
 			}

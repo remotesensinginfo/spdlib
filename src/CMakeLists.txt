@@ -91,6 +91,7 @@ set(SPDLIB_H_Processing_Algorithms
 	${SPDLIB_HEADERS_DIR}/SPDDefineRGBValues.h
 	${SPDLIB_HEADERS_DIR}/SPDMetrics.h
 	${SPDLIB_HEADERS_DIR}/SPDMultiscaleCurvatureGrdClassification.h
+	${SPDLIB_HEADERS_DIR}/SPDParameterFreeGroundFilter.h
 	${SPDLIB_HEADERS_DIR}/SPDPointGridIndex.h
 	${SPDLIB_HEADERS_DIR}/SPDPointInterpolation.h
 	${SPDLIB_HEADERS_DIR}/SPDPolyGroundFilter.h
@@ -170,6 +171,7 @@ set(SPDLIB_CPP_Processing_Algorithms
 	${SPDLIB_SRC_DIR}/SPDDefineRGBValues.cpp
 	${SPDLIB_SRC_DIR}/SPDMetrics.cpp
 	${SPDLIB_SRC_DIR}/SPDMultiscaleCurvatureGrdClassification.cpp
+	${SPDLIB_SRC_DIR}/SPDParameterFreeGroundFilter.cpp
 	${SPDLIB_SRC_DIR}/SPDPointGridIndex.cpp
 	${SPDLIB_SRC_DIR}/SPDPointInterpolation.cpp
 	${SPDLIB_SRC_DIR}/SPDPolyGroundFilter.cpp

@@ -467,7 +467,7 @@ namespace spdlib
 				}
 				else 
 				{
-					elev[i][j] = numeric_limits<float>::signaling_NaN();
+					elevErode[i][j] = numeric_limits<float>::signaling_NaN();
 				}
                 
 				
@@ -591,7 +591,7 @@ namespace spdlib
 				}
 				else 
 				{
-					elev[i][j] = numeric_limits<float>::signaling_NaN();
+					elevDialate[i][j] = numeric_limits<float>::signaling_NaN();
 				}
 			}
 		}
