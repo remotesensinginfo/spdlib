@@ -67,16 +67,15 @@ namespace spdlib
             // Nothing to do...
         }
         
+        ~SPDProgressiveMophologicalGrdFilter();
+    protected:
         void performErosion(float **elev, float **elevErode, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast16_t filterHSize, boost::uint_fast16_t **element);
 		void performDialation(float **elev, float **elevDialate, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast16_t filterHSize, boost::uint_fast16_t **element);
 		void findMinSurface(vector<SPDPulse*> ***pulses, float **elev, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize);
 		void applyMedianFilter(float **elev, float **elevMedian, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast16_t filterHSize, boost::uint_fast16_t **element);
 		void fillHolesInMinSurface(float **elev, float **elevOut, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast16_t filterHSize);
 		void createStructuringElement(uint_fast16_t **element, boost::uint_fast16_t filterHSize);
-        
-        ~SPDProgressiveMophologicalGrdFilter();
-    protected:
-        uint_fast16_t initFilterHSize;
+        boost::uint_fast16_t initFilterHSize;
         boost::uint_fast16_t maxFilterHSize;
         float terrainSlope;
         float initElevDiff;

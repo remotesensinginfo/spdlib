@@ -46,11 +46,12 @@
 
 #include "boost/math/special_functions/fpclassify.hpp"
 
-using namespace std;
-using namespace spdlib::tps;
 
 namespace spdlib
 {
+    using namespace std;
+    using namespace spdlib::tps;
+    
     enum SPDSmoothFilterType
     {
         meanFilter = 0,
