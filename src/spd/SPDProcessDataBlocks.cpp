@@ -1032,13 +1032,15 @@ namespace spdlib
 				throw SPDProcessingException(message);
             }
             
+            //cout << spdInFile << endl;
+            
             double *gdalTransform = new double[6];
             gdalTransform[0] = spdInFile->getXMin();
             gdalTransform[1] = processingResolution;
             gdalTransform[2] = 0;
             gdalTransform[3] = spdInFile->getYMax();
             gdalTransform[4] = 0;
-            gdalTransform[5] = processingResolution;
+            gdalTransform[5] = processingResolution*(-1);
             outImage->SetGeoTransform(gdalTransform);
             
             if(spdInFile->getSpatialReference() != "")
@@ -3655,26 +3657,6 @@ namespace spdlib
         {
             float *imgRowData = new float[xSize];
             
-            //cout << "Image Start Idx: [" << startIdxX << "," << startIdxY << "]\n";
-            
-            boost::uint_fast32_t imgYSize = imageBands[0]->GetYSize()-1;
-            boost::uint_fast32_t imgY = imgYSize - startIdxY;
-            //cout << "Image Y Size = " << imgYSize << endl;
-            
-            for(boost::uint_fast32_t i = 0, y = startBinY; i < ySize; ++i, ++y, --imgY)
-            {
-                for(boost::uint_fast16_t n = 0; n < numImgBands; ++n)
-                {
-                    for(boost::uint_fast32_t j = 0, x = startBinX; j < xSize; ++j, ++x)
-                    {
-                        imgRowData[j] = imageDataBlock[y][x][n];
-                    }
-                    //cout << "imgY = " << imgY << endl;
-                    imageBands[n]->RasterIO(GF_Write, startIdxX, imgY, xSize, 1, imgRowData, xSize, 1, GDT_Float32, 0, 0);
-                } 
-            }
-
-            /*
             for(boost::uint_fast32_t i = 0, y = startBinY, imgY = startIdxY; i < ySize; ++i, ++y, ++imgY)
             {
                 for(boost::uint_fast16_t n = 0; n < numImgBands; ++n)
@@ -3683,11 +3665,9 @@ namespace spdlib
                     {
                         imgRowData[j] = imageDataBlock[y][x][n];
                     }
-                    //cout << "imgY = " << imgY << endl;
                     imageBands[n]->RasterIO(GF_Write, startIdxX, imgY, xSize, 1, imgRowData, xSize, 1, GDT_Float32, 0, 0);
                 } 
             }
-            */
 
         }
         catch(SPDProcessingException &e)
