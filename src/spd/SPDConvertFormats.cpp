@@ -278,18 +278,22 @@ namespace spdlib
             
             if(useSphericIdx)
             {
+                cout << "Converting into spherical coordinate system index\n";
                 spdFileAllIn->setIndexType(spdlib::SPD_SPHERICAL_IDX);
             }
             else if(useScanIdx)
             {
+                cout << "Converting into scanner coordinate system index\n";
                 spdFileAllIn->setIndexType(spdlib::SPD_SCAN_IDX);
             }
             else if(usePolarIdx)
             {
+                cout << "Converting into polar coordinate system index\n";
                 spdFileAllIn->setIndexType(spdlib::SPD_POLAR_IDX);
             }
             else
             {
+                cout << "Converting into cartisian coordinate system index\n";
                 spdFileAllIn->setIndexType(spdlib::SPD_CARTESIAN_IDX);
             }
             
@@ -624,10 +628,13 @@ namespace spdlib
 			    {
 				    roundingAddition = 1;
 			    }
+                
+                cout << spdFileFinalOut << endl;
+                
                 xSize = numeric_cast<boost::uint_fast32_t>((((spdFileFinalOut->getAzimuthMax()-spdFileFinalOut->getAzimuthMin())/spdFileFinalOut->getBinSize())+roundingAddition)+0.5);
 			    ySize = numeric_cast<boost::uint_fast32_t>((((spdFileFinalOut->getZenithMax()-spdFileFinalOut->getZenithMin())/spdFileFinalOut->getBinSize())+roundingAddition)+0.5);                
 			}
- 			if(spdFileFinalOut->getIndexType() == spdlib::SPD_SCAN_IDX)
+ 			else if(spdFileFinalOut->getIndexType() == spdlib::SPD_SCAN_IDX)
             {
 				if(spdFileFinalOut->getBinSize() < 1)
 			    {
@@ -639,19 +646,19 @@ namespace spdlib
 			    }
                 xSize = numeric_cast<boost::uint_fast32_t>((((spdFileFinalOut->getScanlineIdxMax()-spdFileFinalOut->getScanlineIdxMin())/spdFileFinalOut->getBinSize())+roundingAddition)+0.5);
 			    ySize = numeric_cast<boost::uint_fast32_t>((((spdFileFinalOut->getScanlineMax()-spdFileFinalOut->getScanlineMin())/spdFileFinalOut->getBinSize())+roundingAddition)+0.5);                
-			}
-           else
+            }
+            else
             {
                 if(spdFileFinalOut->getBinSize() < 1)
-			    {
-				    roundingAddition = numeric_cast<boost::uint_fast32_t>(1/spdFileFinalOut->getBinSize());
-			    }
-			    else 
-			    {
-				    roundingAddition = 1;
-			    }
-			    xSize = numeric_cast<boost::uint_fast32_t>((((spdFileFinalOut->getXMax()-spdFileFinalOut->getXMin())/spdFileFinalOut->getBinSize())+roundingAddition)+0.5);
-			    ySize = numeric_cast<boost::uint_fast32_t>((((spdFileFinalOut->getYMax()-spdFileFinalOut->getYMin())/spdFileFinalOut->getBinSize())+roundingAddition)+0.5);			
+                {
+                    roundingAddition = numeric_cast<boost::uint_fast32_t>(1/spdFileFinalOut->getBinSize());
+                }
+                else 
+                {
+                    roundingAddition = 1;
+                }
+                xSize = numeric_cast<boost::uint_fast32_t>((((spdFileFinalOut->getXMax()-spdFileFinalOut->getXMin())/spdFileFinalOut->getBinSize())+roundingAddition)+0.5);
+                ySize = numeric_cast<boost::uint_fast32_t>((((spdFileFinalOut->getYMax()-spdFileFinalOut->getYMin())/spdFileFinalOut->getBinSize())+roundingAddition)+0.5);			
             }
             
 			spdFileFinalOut->setNumberBinsX(xSize);

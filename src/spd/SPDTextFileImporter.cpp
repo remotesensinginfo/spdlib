@@ -115,11 +115,14 @@ namespace spdlib
 					
 					if(lineEnding)
 					{
-						if((numOfLines > 10) & ((numPulses % feedback) == 0))
-						{
-							cout << "." << feedbackCount << "." << flush;
-							feedbackCount += 10;
-						}
+						if(numPulses > 0)
+                        {
+                            if((numOfLines > 10) & ((numPulses % feedback) == 0))
+                            {
+                                cout << "." << feedbackCount << "." << flush;
+                                feedbackCount += 10;
+                            }
+                        }
 						
 						try 
 						{
@@ -365,11 +368,14 @@ namespace spdlib
 					
 					if(lineEnding)
 					{
-						if((numOfLines > 10) & ((numPulses % feedback) == 0))
-						{
-							cout << "." << feedbackCount << "." << flush;
-							feedbackCount += 10;
-						}
+						if(numPulses > 0)
+                        {
+                            if((numOfLines > 10) & ((numPulses % feedback) == 0))
+                            {
+                                cout << "." << feedbackCount << "." << flush;
+                                feedbackCount += 10;
+                            }
+                        }
 						
 						try 
 						{
@@ -610,11 +616,14 @@ namespace spdlib
 					
 					if(lineEnding)
 					{
-						if((numOfLines > 10) & ((numPulses % feedback) == 0))
-						{
-							cout << "." << feedbackCount << "." << flush;
-							feedbackCount += 10;
-						}
+						if(numPulses > 0)
+                        {
+                            if((numOfLines > 10) & ((numPulses % feedback) == 0))
+                            {
+                                cout << "." << feedbackCount << "." << flush;
+                                feedbackCount += 10;
+                            }
+                        }
 						
 						try 
 						{
