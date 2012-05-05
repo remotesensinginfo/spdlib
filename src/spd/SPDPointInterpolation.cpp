@@ -977,7 +977,8 @@ namespace spdlib
         }
         catch(SingularMatrixError &e)
         {
-            throw SPDProcessingException(e.what());
+            //throw SPDProcessingException(e.what());
+            newZValue = numeric_limits<float>::signaling_NaN();
         }
         catch (SPDProcessingException &e) 
         {
@@ -1037,7 +1038,8 @@ namespace spdlib
         }
         catch(SingularMatrixError &e)
         {
-            throw SPDProcessingException(e.what());
+            //throw SPDProcessingException(e.what());
+            newZValue = numeric_limits<float>::signaling_NaN();
         }
         catch (SPDProcessingException &e) 
         {
@@ -1848,7 +1850,8 @@ namespace spdlib
         }
         catch(SingularMatrixError &e)
         {
-            throw SPDProcessingException(e.what());
+            //throw SPDProcessingException(e.what());
+            newRangeValue = numeric_limits<float>::signaling_NaN();
         }
         catch (SPDProcessingException &e) 
         {
@@ -1898,7 +1901,8 @@ namespace spdlib
         }
         catch(SingularMatrixError &e)
         {
-            throw SPDProcessingException(e.what());
+            //throw SPDProcessingException(e.what());
+            newRangeValue = numeric_limits<float>::signaling_NaN();
         }
         catch (SPDProcessingException &e) 
         {
