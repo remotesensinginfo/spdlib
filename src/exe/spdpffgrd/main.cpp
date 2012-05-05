@@ -51,6 +51,10 @@ int main (int argc, char * const argv[])
 	
 	try 
 	{
+        cout << "\n\n*******************************************************************\n";
+        cout << "WARNING!!! DO NOT USE, ALL THE BUGS HAVE NOT YET BEEN WORKED OUT!!\n";
+        cout << "*******************************************************************\n\n\n";
+        
 		CmdLine cmd("Classifies the ground returns using a parameter-free filtering algorithm: spdpffgrd", ' ', "1.0.0");
 		
         ValueArg<boost::uint_fast32_t> numOfRowsBlockArg("r","blockrows","Number of rows within a block (Default 100)",false,100,"unsigned int");

@@ -1963,7 +1963,7 @@ namespace spdlib
                     if(binScaling == 0)
                     {
                         this->populateCentrePoints(cenPts, pulsesBlockSizeX, pulsesBlockSizeY, blockXOrigin, blockYOrigin, processingResolution);
-                        dataBlockProcessor->processDataBlock(spdInFile, pulses, cenPts, pulsesBlockSizeX, pulsesBlockSizeY);
+                        dataBlockProcessor->processDataBlock(spdInFile, pulses, cenPts, pulsesBlockSizeX, pulsesBlockSizeY, processingResolution);
                         this->removeNullPulses(pulses, pulsesBlockSizeX, pulsesBlockSizeY);
                         fileWriter->writeData(pulses, this->blockXSize, this->blockYSize, overlap, overlap, blockMinX, blockMinY);
                         this->clearPulses(pulses, pulsesBlockSizeX, pulsesBlockSizeY);
@@ -1972,7 +1972,7 @@ namespace spdlib
                     {
                         this->populateCentrePoints(cenPts, pulsesScaledBlockSizeX, pulsesScaledBlockSizeY, blockXOrigin, blockYOrigin, processingResolution);
                         gridData.reGridData(spdInFile->getIndexType(), pulses, pulsesBlockSizeX, pulsesBlockSizeY, pulseScaled, pulsesScaledBlockSizeX, pulsesScaledBlockSizeY, blockXOrigin, blockYOrigin, processingResolution);
-                        dataBlockProcessor->processDataBlock(spdInFile, pulseScaled, cenPts, pulsesScaledBlockSizeX, pulsesScaledBlockSizeY);
+                        dataBlockProcessor->processDataBlock(spdInFile, pulseScaled, cenPts, pulsesScaledBlockSizeX, pulsesScaledBlockSizeY, processingResolution);
                         this->removeNullPulses(pulses, pulsesBlockSizeX, pulsesBlockSizeY);
                         fileWriter->writeData(pulses, this->blockXSize, this->blockYSize, overlap, overlap, blockMinX, blockMinY);
                         this->clearPulses(pulses, pulsesBlockSizeX, pulsesBlockSizeY);
@@ -2050,7 +2050,7 @@ namespace spdlib
                     if(binScaling == 0)
                     {
                         this->populateCentrePoints(cenPts, pulsesBlockSizeX, pulsesBlockSizeY, blockXOrigin, blockYOrigin, processingResolution);
-                        dataBlockProcessor->processDataBlock(spdInFile, pulses, cenPts, pulsesBlockSizeX, pulsesBlockSizeY);
+                        dataBlockProcessor->processDataBlock(spdInFile, pulses, cenPts, pulsesBlockSizeX, pulsesBlockSizeY, processingResolution);
                         this->removeNullPulses(pulses, pulsesBlockSizeX, pulsesBlockSizeY);
                         fileWriter->writeData(pulses, remainingCols, this->blockYSize, overlap, overlap, blockMinX, blockMinY);
                         this->clearPulses(pulses, pulsesBlockSizeX, pulsesBlockSizeY);
@@ -2059,7 +2059,7 @@ namespace spdlib
                     {
                         this->populateCentrePoints(cenPts, pulsesScaledBlockSizeX, pulsesScaledBlockSizeY, blockXOrigin, blockYOrigin, processingResolution);
                         gridData.reGridData(spdInFile->getIndexType(), pulses, pulsesBlockSizeX, pulsesBlockSizeY, pulseScaled, pulsesScaledBlockSizeX, pulsesScaledBlockSizeY, blockXOrigin, blockYOrigin, processingResolution);
-                        dataBlockProcessor->processDataBlock(spdInFile, pulseScaled, cenPts, pulsesScaledBlockSizeX, pulsesScaledBlockSizeY);
+                        dataBlockProcessor->processDataBlock(spdInFile, pulseScaled, cenPts, pulsesScaledBlockSizeX, pulsesScaledBlockSizeY, processingResolution);
                         this->removeNullPulses(pulses, pulsesBlockSizeX, pulsesBlockSizeY);
                         fileWriter->writeData(pulses, remainingCols, this->blockYSize, overlap, overlap, blockMinX, blockMinY);
                         this->clearPulses(pulses, pulsesBlockSizeX, pulsesBlockSizeY);
@@ -2161,7 +2161,7 @@ namespace spdlib
                     if(binScaling == 0)
                     {
                         this->populateCentrePoints(cenPts, pulsesBlockSizeX, pulsesBlockSizeY, blockXOrigin, blockYOrigin, processingResolution);
-                        dataBlockProcessor->processDataBlock(spdInFile, pulses, cenPts, pulsesBlockSizeX, pulsesBlockSizeY);
+                        dataBlockProcessor->processDataBlock(spdInFile, pulses, cenPts, pulsesBlockSizeX, pulsesBlockSizeY, processingResolution);
                         this->removeNullPulses(pulses, pulsesBlockSizeX, pulsesBlockSizeY);
                         fileWriter->writeData(pulses, this->blockXSize, remainingRows, overlap, overlap, blockMinX, blockMinY);
                         this->clearPulses(pulses, pulsesBlockSizeX, pulsesBlockSizeY);
@@ -2170,7 +2170,7 @@ namespace spdlib
                     {
                         this->populateCentrePoints(cenPts, pulsesScaledBlockSizeX, pulsesScaledBlockSizeY, blockXOrigin, blockYOrigin, processingResolution);
                         gridData.reGridData(spdInFile->getIndexType(), pulses, pulsesBlockSizeX, pulsesBlockSizeY, pulseScaled, pulsesScaledBlockSizeX, pulsesScaledBlockSizeY, blockXOrigin, blockYOrigin, processingResolution);
-                        dataBlockProcessor->processDataBlock(spdInFile, pulseScaled, cenPts, pulsesScaledBlockSizeX, pulsesScaledBlockSizeY);
+                        dataBlockProcessor->processDataBlock(spdInFile, pulseScaled, cenPts, pulsesScaledBlockSizeX, pulsesScaledBlockSizeY, processingResolution);
                         this->removeNullPulses(pulses, pulsesBlockSizeX, pulsesBlockSizeY);
                         fileWriter->writeData(pulses, this->blockXSize, remainingRows, overlap, overlap, blockMinX, blockMinY);
                         this->clearPulses(pulses, pulsesBlockSizeX, pulsesBlockSizeY);
@@ -2245,7 +2245,7 @@ namespace spdlib
                     if(binScaling == 0)
                     {
                         this->populateCentrePoints(cenPts, pulsesBlockSizeX, pulsesBlockSizeY, blockXOrigin, blockYOrigin, processingResolution);
-                        dataBlockProcessor->processDataBlock(spdInFile, pulses, cenPts, pulsesBlockSizeX, pulsesBlockSizeY);
+                        dataBlockProcessor->processDataBlock(spdInFile, pulses, cenPts, pulsesBlockSizeX, pulsesBlockSizeY, processingResolution);
                         this->removeNullPulses(pulses, pulsesBlockSizeX, pulsesBlockSizeY);
                         fileWriter->writeData(pulses, remainingCols, remainingRows, overlap, overlap, blockMinX, blockMinY);
                         this->clearPulses(pulses, pulsesBlockSizeX, pulsesBlockSizeY);
@@ -2254,7 +2254,7 @@ namespace spdlib
                     {
                         this->populateCentrePoints(cenPts, pulsesScaledBlockSizeX, pulsesScaledBlockSizeY, blockXOrigin, blockYOrigin, processingResolution);
                         gridData.reGridData(spdInFile->getIndexType(), pulses, pulsesBlockSizeX, pulsesBlockSizeY, pulseScaled, pulsesScaledBlockSizeX, pulsesScaledBlockSizeY, blockXOrigin, blockYOrigin, processingResolution);
-                        dataBlockProcessor->processDataBlock(spdInFile, pulseScaled, cenPts, pulsesScaledBlockSizeX, pulsesScaledBlockSizeY);
+                        dataBlockProcessor->processDataBlock(spdInFile, pulseScaled, cenPts, pulsesScaledBlockSizeX, pulsesScaledBlockSizeY, processingResolution);
                         this->removeNullPulses(pulses, pulsesBlockSizeX, pulsesBlockSizeY);
                         fileWriter->writeData(pulses, remainingCols, remainingRows, overlap, overlap, blockMinX, blockMinY);
                         this->clearPulses(pulses, pulsesBlockSizeX, pulsesBlockSizeY);
@@ -2642,14 +2642,14 @@ namespace spdlib
                     if(binScaling == 0)
                     {
                         this->populateCentrePoints(cenPts, pulsesBlockSizeX, pulsesBlockSizeY, blockXOrigin, blockYOrigin, processingResolution);
-                        dataBlockProcessor->processDataBlock(spdInFile, pulses, cenPts, pulsesBlockSizeX, pulsesBlockSizeY);
+                        dataBlockProcessor->processDataBlock(spdInFile, pulses, cenPts, pulsesBlockSizeX, pulsesBlockSizeY, processingResolution);
                         this->clearPulses(pulses, pulsesBlockSizeX, pulsesBlockSizeY);
                     }
                     else
                     {
                         this->populateCentrePoints(cenPts, pulsesScaledBlockSizeX, pulsesScaledBlockSizeY, blockXOrigin, blockYOrigin, processingResolution);
                         gridData.reGridData(spdInFile->getIndexType(), pulses, pulsesBlockSizeX, pulsesBlockSizeY, pulseScaled, pulsesScaledBlockSizeX, pulsesScaledBlockSizeY, blockXOrigin, blockYOrigin, processingResolution);
-                        dataBlockProcessor->processDataBlock(spdInFile, pulseScaled, cenPts, pulsesScaledBlockSizeX, pulsesScaledBlockSizeY);
+                        dataBlockProcessor->processDataBlock(spdInFile, pulseScaled, cenPts, pulsesScaledBlockSizeX, pulsesScaledBlockSizeY, processingResolution);
                         this->clearPulses(pulses, pulsesBlockSizeX, pulsesBlockSizeY);
                         this->clearPulsesNoDelete(pulseScaled, pulsesScaledBlockSizeX, pulsesScaledBlockSizeY);
                     }
@@ -2719,14 +2719,14 @@ namespace spdlib
                     if(binScaling == 0)
                     {
                         this->populateCentrePoints(cenPts, pulsesBlockSizeX, pulsesBlockSizeY, blockXOrigin, blockYOrigin, processingResolution);
-                        dataBlockProcessor->processDataBlock(spdInFile, pulses, cenPts, pulsesBlockSizeX, pulsesBlockSizeY);
+                        dataBlockProcessor->processDataBlock(spdInFile, pulses, cenPts, pulsesBlockSizeX, pulsesBlockSizeY, processingResolution);
                         this->clearPulses(pulses, pulsesBlockSizeX, pulsesBlockSizeY);
                     }
                     else
                     {
                         this->populateCentrePoints(cenPts, pulsesScaledBlockSizeX, pulsesScaledBlockSizeY, blockXOrigin, blockYOrigin, processingResolution);
                         gridData.reGridData(spdInFile->getIndexType(), pulses, pulsesBlockSizeX, pulsesBlockSizeY, pulseScaled, pulsesScaledBlockSizeX, pulsesScaledBlockSizeY, blockXOrigin, blockYOrigin, processingResolution);
-                        dataBlockProcessor->processDataBlock(spdInFile, pulseScaled, cenPts, pulsesScaledBlockSizeX, pulsesScaledBlockSizeY);
+                        dataBlockProcessor->processDataBlock(spdInFile, pulseScaled, cenPts, pulsesScaledBlockSizeX, pulsesScaledBlockSizeY, processingResolution);
                         this->clearPulses(pulses, pulsesBlockSizeX, pulsesBlockSizeY);
                         this->clearPulsesNoDelete(pulseScaled, pulsesScaledBlockSizeX, pulsesScaledBlockSizeY);
                     }
@@ -2820,14 +2820,14 @@ namespace spdlib
                     if(binScaling == 0)
                     {
                         this->populateCentrePoints(cenPts, pulsesBlockSizeX, pulsesBlockSizeY, blockXOrigin, blockYOrigin, processingResolution);
-                        dataBlockProcessor->processDataBlock(spdInFile, pulses, cenPts, pulsesBlockSizeX, pulsesBlockSizeY);
+                        dataBlockProcessor->processDataBlock(spdInFile, pulses, cenPts, pulsesBlockSizeX, pulsesBlockSizeY, processingResolution);
                         this->clearPulses(pulses, pulsesBlockSizeX, pulsesBlockSizeY);
                     }
                     else
                     {
                         this->populateCentrePoints(cenPts, pulsesScaledBlockSizeX, pulsesScaledBlockSizeY, blockXOrigin, blockYOrigin, processingResolution);
                         gridData.reGridData(spdInFile->getIndexType(), pulses, pulsesBlockSizeX, pulsesBlockSizeY, pulseScaled, pulsesScaledBlockSizeX, pulsesScaledBlockSizeY, blockXOrigin, blockYOrigin, processingResolution);
-                        dataBlockProcessor->processDataBlock(spdInFile, pulseScaled, cenPts, pulsesScaledBlockSizeX, pulsesScaledBlockSizeY);
+                        dataBlockProcessor->processDataBlock(spdInFile, pulseScaled, cenPts, pulsesScaledBlockSizeX, pulsesScaledBlockSizeY, processingResolution);
                         this->clearPulses(pulses, pulsesBlockSizeX, pulsesBlockSizeY);
                         this->clearPulsesNoDelete(pulseScaled, pulsesScaledBlockSizeX, pulsesScaledBlockSizeY);
                     }
@@ -2896,14 +2896,14 @@ namespace spdlib
                     if(binScaling == 0)
                     {
                         this->populateCentrePoints(cenPts, pulsesBlockSizeX, pulsesBlockSizeY, blockXOrigin, blockYOrigin, processingResolution);
-                        dataBlockProcessor->processDataBlock(spdInFile, pulses, cenPts, pulsesBlockSizeX, pulsesBlockSizeY);
+                        dataBlockProcessor->processDataBlock(spdInFile, pulses, cenPts, pulsesBlockSizeX, pulsesBlockSizeY, processingResolution);
                         this->clearPulses(pulses, pulsesBlockSizeX, pulsesBlockSizeY);
                     }
                     else
                     {
                         this->populateCentrePoints(cenPts, pulsesScaledBlockSizeX, pulsesScaledBlockSizeY, blockXOrigin, blockYOrigin, processingResolution);
                         gridData.reGridData(spdInFile->getIndexType(), pulses, pulsesBlockSizeX, pulsesBlockSizeY, pulseScaled, pulsesScaledBlockSizeX, pulsesScaledBlockSizeY, blockXOrigin, blockYOrigin, processingResolution);
-                        dataBlockProcessor->processDataBlock(spdInFile, pulseScaled, cenPts, pulsesScaledBlockSizeX, pulsesScaledBlockSizeY);
+                        dataBlockProcessor->processDataBlock(spdInFile, pulseScaled, cenPts, pulsesScaledBlockSizeX, pulsesScaledBlockSizeY, processingResolution);
                         this->clearPulses(pulses, pulsesBlockSizeX, pulsesBlockSizeY);
                         this->clearPulsesNoDelete(pulseScaled, pulsesScaledBlockSizeX, pulsesScaledBlockSizeY);
                     }

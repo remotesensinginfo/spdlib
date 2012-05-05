@@ -122,7 +122,7 @@ namespace spdlib
 				}
 			}
 			
-			elevDiffThreshold = (terrainSlope * filterHSize * inSPDFile->getBinSize()) + initElevDiff;
+			elevDiffThreshold = (terrainSlope * filterHSize * binSize) + initElevDiff;
 			if(elevDiffThreshold > maxElevDiff)
 			{
 				elevDiffThreshold = maxElevDiff;
@@ -180,7 +180,7 @@ namespace spdlib
 		delete[] changeFlag;
     }
     
-    void SPDProgressiveMophologicalGrdFilter::processDataBlock(SPDFile *inSPDFile, vector<SPDPulse*> ***pulses, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize) throw(SPDProcessingException)
+    void SPDProgressiveMophologicalGrdFilter::processDataBlock(SPDFile *inSPDFile, vector<SPDPulse*> ***pulses, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, float binSize) throw(SPDProcessingException)
     {
 		float **elev = new float*[ySize];
 		float **elevFinal = new float*[ySize];
@@ -260,7 +260,7 @@ namespace spdlib
 				}
 			}
 			
-			elevDiffThreshold = (terrainSlope * filterHSize * inSPDFile->getBinSize()) + initElevDiff;
+			elevDiffThreshold = (terrainSlope * filterHSize * binSize) + initElevDiff;
 			if(elevDiffThreshold > maxElevDiff)
 			{
 				elevDiffThreshold = maxElevDiff;
