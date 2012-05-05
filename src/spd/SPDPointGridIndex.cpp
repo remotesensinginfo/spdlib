@@ -28,7 +28,7 @@ namespace spdlib
 
 	SPDPointGridIndex::SPDPointGridIndex():ptGrid(NULL), tlX(0), tlY(0), brX(0), brY(0), binSize(0), xBins(0), yBins(0), deletePtsInBins(false)
 	{
-		
+		deletePtsInBins = false;
 	}
 	
     void SPDPointGridIndex::buildIndex(vector<SPDPoint*> *pts, double resolution, OGREnvelope *env) throw(SPDProcessingException)
@@ -798,6 +798,7 @@ namespace spdlib
         }
     }
     
+    /*
     void SPDPointGridIndex::thinPtsInBinsWithDelete(boost::uint_fast16_t elevVal, boost::uint_fast16_t selectHighOrLow, boost::uint_fast16_t maxNumPtsPerBin) throw(SPDProcessingException)
     {
         boost::uint_fast32_t numPtsToRemove = 0;
@@ -852,6 +853,7 @@ namespace spdlib
             }
         }
     }
+    */
     
     void SPDPointGridIndex::thinPtsWithAvZ(boost::uint_fast16_t elevVal) throw(SPDProcessingException)
     {
@@ -930,22 +932,24 @@ namespace spdlib
     
 	SPDPointGridIndex::~SPDPointGridIndex()
 	{
-		for(boost::uint_fast32_t i = 0; i < this->yBins; ++i)
-		{
-			for(boost::uint_fast32_t j = 0; j < this->xBins; ++j)
-			{
-                if(deletePtsInBins)
+		if(this->ptGrid != NULL)
+        {
+            for(boost::uint_fast32_t i = 0; i < this->yBins; ++i)
+            {
+                for(boost::uint_fast32_t j = 0; j < this->xBins; ++j)
                 {
-                    for(vector<SPDPoint*>::iterator iterPts = this->ptGrid[i][j]->begin(); iterPts != this->ptGrid[i][j]->end(); )
+                    if(deletePtsInBins)
                     {
-                        delete *iterPts;
-                        iterPts = this->ptGrid[i][j]->erase(iterPts);
+                        for(vector<SPDPoint*>::iterator iterPts = this->ptGrid[i][j]->begin(); iterPts != this->ptGrid[i][j]->end(); ++iterPts)
+                        {
+                            delete *iterPts;
+                        }
                     }
+                    delete this->ptGrid[i][j];
                 }
-				delete this->ptGrid[i][j];
-			}
-			delete[] this->ptGrid[i];
-		}
-		delete[] this->ptGrid;
+                delete[] this->ptGrid[i];
+            }
+            delete[] this->ptGrid;
+        }
 	}
 }
