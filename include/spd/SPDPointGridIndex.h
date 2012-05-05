@@ -41,14 +41,14 @@
 #include "spd/SPDPoint.h"
 #include "spd/SPDProcessingException.h"
 
-using namespace std;
-using boost::numeric_cast;
-using boost::numeric::bad_numeric_cast;
-using boost::numeric::positive_overflow;
-using boost::numeric::negative_overflow;
-
 namespace spdlib
 {  
+    using namespace std;
+    using boost::numeric_cast;
+    using boost::numeric::bad_numeric_cast;
+    using boost::numeric::positive_overflow;
+    using boost::numeric::negative_overflow;
+    
     static double currentCmpEastings = 0;
     static double currentCmpNorthings = 0;
     
@@ -90,7 +90,7 @@ namespace spdlib
 		bool getPointsInRadius(vector<SPDPoint*> *pts, double eastings, double northings, double radius) throw(SPDProcessingException);
         bool getSetNumOfPoints(vector<SPDPoint*> *pts, double eastings, double northings,boost::uint_fast16_t numPts, double maxRadius) throw(SPDProcessingException);
         void thinPtsInBins(uint_fast16_t elevVal,boost::uint_fast16_t selectHighOrLow,boost::uint_fast16_t maxNumPtsPerBin) throw(SPDProcessingException);
-        void thinPtsInBinsWithDelete(uint_fast16_t elevVal,boost::uint_fast16_t selectHighOrLow,boost::uint_fast16_t maxNumPtsPerBin) throw(SPDProcessingException);
+        //void thinPtsInBinsWithDelete(uint_fast16_t elevVal,boost::uint_fast16_t selectHighOrLow,boost::uint_fast16_t maxNumPtsPerBin) throw(SPDProcessingException);
         void thinPtsWithAvZ(uint_fast16_t elevVal) throw(SPDProcessingException);
         void getAllPointsInGrid(vector<SPDPoint*> *pts) throw(SPDProcessingException);
        boost::uint_fast32_t getXBins(){return xBins;};
@@ -103,8 +103,8 @@ namespace spdlib
 		double brX;
 		double brY;
 		double binSize;
-	boost::uint_fast32_t xBins;
-	boost::uint_fast32_t yBins;
+        boost::uint_fast32_t xBins;
+        boost::uint_fast32_t yBins;
         bool deletePtsInBins;
 	};
 }

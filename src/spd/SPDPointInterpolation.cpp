@@ -579,6 +579,7 @@ namespace spdlib
 		{
 			delete idx;
             totalNumPoints = 0;
+            initialised = false;
 		}
 	}
 	
@@ -587,6 +588,8 @@ namespace spdlib
 		if(initialised)
 		{
 			delete idx;
+            totalNumPoints = 0;
+            initialised = false;
 		}
 	}
 	
@@ -1384,7 +1387,7 @@ namespace spdlib
             {
                 SPDPointGridIndex ptIdx;
                 ptIdx.buildIndex(points, thinGridRes);
-                ptIdx.thinPtsInBinsWithDelete(elevVal, selectHighOrLow, maxNumPtsPerBin);
+                ptIdx.thinPtsInBins(elevVal, selectHighOrLow, maxNumPtsPerBin);
                 points->clear();
                 ptIdx.getAllPointsInGrid(points);
                 totalNumPoints = points->size();
