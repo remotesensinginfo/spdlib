@@ -48,7 +48,7 @@ namespace spdlib
 	public:
         SPDProgressiveMophologicalGrdFilter(uint_fast16_t initFilterHSize, boost::uint_fast16_t maxFilterHSize, float terrainSlope, float initElevDiff, float maxElevDiff, float grdPtDev, bool medianFilter,boost::uint_fast16_t medianFilterHSize,boost::uint_fast16_t classParameters);
         void processDataBlockImage(SPDFile *inSPDFile, vector<SPDPulse*> ***pulses, float ***imageDataBlock, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast32_t numImgBands, float binSize) throw(SPDProcessingException);
-		void processDataBlock(SPDFile *inSPDFile, vector<SPDPulse*> ***pulses, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize) throw(SPDProcessingException);
+		void processDataBlock(SPDFile *inSPDFile, vector<SPDPulse*> ***pulses, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, float binSize) throw(SPDProcessingException);
         
         void processDataBlockImage(SPDFile *inSPDFile, vector<SPDPulse*> *pulses, float ***imageDataBlock, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast32_t numImgBands) throw(SPDProcessingException)
 		{throw SPDProcessingException("SPDProgressiveMophologicalGrdFilter requires processing with a grid.");};

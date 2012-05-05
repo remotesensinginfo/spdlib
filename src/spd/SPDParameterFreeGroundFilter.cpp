@@ -116,7 +116,7 @@ namespace spdlib
         // Generate resolution hierarchy...
         vector<SPDPFFProcessLevel*> *elevLevels = this->generateHierarchy(elev, xSize, ySize, binSize);
         
-        /*
+ 
         for(boost::int_fast16_t i = elevLevels->size()-1; i >= 0; --i)
         {
             SPDPFFProcessLevel *level = elevLevels->at(i);
@@ -137,7 +137,6 @@ namespace spdlib
                 cout << endl;
             }
         }
-        */
         
         
         // Prepare first level
@@ -369,7 +368,7 @@ namespace spdlib
 		delete[] elev;
     }
 		
-    void SPDParameterFreeGroundFilter::processDataBlock(SPDFile *inSPDFile, vector<SPDPulse*> ***pulses, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize) throw(SPDProcessingException)
+    void SPDParameterFreeGroundFilter::processDataBlock(SPDFile *inSPDFile, vector<SPDPulse*> ***pulses, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, float binSize) throw(SPDProcessingException)
     {
         
     }
