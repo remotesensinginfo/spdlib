@@ -309,7 +309,7 @@ namespace spdlib
                 {
                     for(boost::uint_fast32_t j = 0; j < cLevel->xSize; ++j)
                     {
-                        threshold = this->getThreshold(j, i, elevTH, cLevel->xSize, cLevel->ySize, 1, wTHElem);
+                        threshold = this->getThreshold(j, i, elevTH, cLevel->xSize, cLevel->ySize, 3, wTHElem);
                         if((boost::math::isnan(cLevel->data[i][j]) | boost::math::isnan(threshold)) | (elevTH[i][j] < threshold))
                         {
                             interpdLevel->data[i][j] = cLevel->data[i][j];
