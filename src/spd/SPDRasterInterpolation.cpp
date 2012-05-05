@@ -62,6 +62,16 @@ namespace spdlib
                     }
                 }
             }
+            else
+            {
+                for(boost::uint_fast32_t i = 0; i < ySize; ++i)
+                {
+                    for(boost::uint_fast32_t j = 0; j < xSize; ++j)
+                    {
+                        imageDataBlock[i][j][0] = numeric_limits<float>::signaling_NaN();
+                    }
+                }
+            }
 			
 			interpolator->resetInterpolator();
             
@@ -112,6 +122,16 @@ namespace spdlib
                     for(boost::uint_fast32_t j = 0; j < xSize; ++j)
                     {
                         imageDataBlock[i][j][0] = interpolator->getValue(cenPts[i][j]->x, cenPts[i][j]->y);
+                    }
+                }
+            }
+            else
+            {
+                for(boost::uint_fast32_t i = 0; i < ySize; ++i)
+                {
+                    for(boost::uint_fast32_t j = 0; j < xSize; ++j)
+                    {
+                        imageDataBlock[i][j][0] = numeric_limits<float>::signaling_NaN();
                     }
                 }
             }
@@ -167,6 +187,16 @@ namespace spdlib
                     }
                 }
             }
+            else
+            {
+                for(boost::uint_fast32_t i = 0; i < ySize; ++i)
+                {
+                    for(boost::uint_fast32_t j = 0; j < xSize; ++j)
+                    {
+                        imageDataBlock[i][j][0] = numeric_limits<float>::signaling_NaN();
+                    }
+                }
+            }
 			
 			interpolator->resetInterpolator();
 		}
@@ -213,6 +243,16 @@ namespace spdlib
                     for(boost::uint_fast32_t j = 0; j < xSize; ++j)
                     {
                         imageDataBlock[i][j][0] = interpolator->getValue(cenPts[i][j]->x, cenPts[i][j]->y);
+                    }
+                }
+            }
+            else
+            {
+                for(boost::uint_fast32_t i = 0; i < ySize; ++i)
+                {
+                    for(boost::uint_fast32_t j = 0; j < xSize; ++j)
+                    {
+                        imageDataBlock[i][j][0] = numeric_limits<float>::signaling_NaN();
                     }
                 }
             }
