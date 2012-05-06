@@ -127,73 +127,79 @@ namespace spdlib
 			
 			vector<SPDPoint*>::iterator iterPts;
 			list<SPDPulse*>::iterator iterInPls;
-			for(iterInPls = plsIn->begin(); iterInPls != plsIn->end(); )
-			{
-				for(iterPts = (*iterInPls)->pts->begin(); iterPts != (*iterInPls)->pts->end(); ++iterPts)
-				{
-					liblas::Point point;
-                    //cout << "PT (list): [" << (*iterPts)->x << ", " << (*iterPts)->y << ", " << (*iterPts)->z << "]\n";
-					point.SetCoordinates((*iterPts)->x, (*iterPts)->y, (*iterPts)->z);
-					point.SetIntensity((*iterPts)->amplitudeReturn);
-					point.SetReturnNumber((*iterPts)->returnID);
-					point.SetNumberOfReturns((*iterInPls)->numberOfReturns);
-					point.SetPointSourceID((*iterInPls)->sourceID);
-					point.SetTime((*iterPts)->gpsTime);
-					point.SetColor(liblas::Color ((*iterPts)->red, (*iterPts)->blue, (*iterPts)->green));
-					
-					
-					liblas::Classification lasClass;
-					if((*iterPts)->classification == SPD_CREATED)
-					{
-						lasClass.SetClass(point.eCreated);
-					}
-					else if((*iterPts)->classification == SPD_UNCLASSIFIED)
-					{
-						lasClass.SetClass(point.eUnclassified);
-					}
-					else if((*iterPts)->classification == SPD_GROUND)
-					{
-						lasClass.SetClass(point.eGround);
-					}
-					else if((*iterPts)->classification == SPD_LOW_VEGETATION)
-					{
-						lasClass.SetClass(point.eLowVegetation);
-					}
-					else if((*iterPts)->classification == SPD_MEDIUM_VEGETATION)
-					{
-						lasClass.SetClass(point.eMediumVegetation);
-					}
-					else if((*iterPts)->classification == SPD_HIGH_VEGETATION)
-					{
-						lasClass.SetClass(point.eHighVegetation);
-					}
-					else if((*iterPts)->classification == SPD_BUILDING)
-					{
-						lasClass.SetClass(point.eBuilding);
-					}
-					else if((*iterPts)->classification == SPD_WATER)
-					{
-						lasClass.SetClass(point.eWater);
-					}
-					else if((*iterPts)->lowPoint == SPD_TRUE)
-					{
-						lasClass.SetClass(point.eLowPoint);
-					}
-					else if((*iterPts)->modelKeyPoint == SPD_CREATED)
-					{
-						lasClass.SetClass(point.eModelKeyPoint);
-					}
-					else if((*iterPts)->overlap == SPD_CREATED)
-					{
-						lasClass.SetClass(point.eOverlapPoints);
-					}
-					point.SetClassification(lasClass);
-					
-					lasWriter->WritePoint(point);
-				}
-				SPDPulseUtils::deleteSPDPulse(*iterInPls);
-				iterInPls = plsIn->erase(iterInPls);
-			}
+            if(plsIn->size() > 0)
+            {
+                for(iterInPls = plsIn->begin(); iterInPls != plsIn->end(); ++iterInPls)
+                {
+                    if((*iterInPls)->numberOfReturns)
+                    {
+                        for(iterPts = (*iterInPls)->pts->begin(); iterPts != (*iterInPls)->pts->end(); ++iterPts)
+                        {
+                            liblas::Point point;
+                            //cout << "PT (list): [" << (*iterPts)->x << ", " << (*iterPts)->y << ", " << (*iterPts)->z << "]\n";
+                            point.SetCoordinates((*iterPts)->x, (*iterPts)->y, (*iterPts)->z);
+                            point.SetIntensity((*iterPts)->amplitudeReturn);
+                            point.SetReturnNumber((*iterPts)->returnID);
+                            point.SetNumberOfReturns((*iterInPls)->numberOfReturns);
+                            point.SetPointSourceID((*iterInPls)->sourceID);
+                            point.SetTime((*iterPts)->gpsTime);
+                            point.SetColor(liblas::Color ((*iterPts)->red, (*iterPts)->blue, (*iterPts)->green));
+                            
+                            
+                            liblas::Classification lasClass;
+                            if((*iterPts)->classification == SPD_CREATED)
+                            {
+                                lasClass.SetClass(point.eCreated);
+                            }
+                            else if((*iterPts)->classification == SPD_UNCLASSIFIED)
+                            {
+                                lasClass.SetClass(point.eUnclassified);
+                            }
+                            else if((*iterPts)->classification == SPD_GROUND)
+                            {
+                                lasClass.SetClass(point.eGround);
+                            }
+                            else if((*iterPts)->classification == SPD_LOW_VEGETATION)
+                            {
+                                lasClass.SetClass(point.eLowVegetation);
+                            }
+                            else if((*iterPts)->classification == SPD_MEDIUM_VEGETATION)
+                            {
+                                lasClass.SetClass(point.eMediumVegetation);
+                            }
+                            else if((*iterPts)->classification == SPD_HIGH_VEGETATION)
+                            {
+                                lasClass.SetClass(point.eHighVegetation);
+                            }
+                            else if((*iterPts)->classification == SPD_BUILDING)
+                            {
+                                lasClass.SetClass(point.eBuilding);
+                            }
+                            else if((*iterPts)->classification == SPD_WATER)
+                            {
+                                lasClass.SetClass(point.eWater);
+                            }
+                            else if((*iterPts)->lowPoint == SPD_TRUE)
+                            {
+                                lasClass.SetClass(point.eLowPoint);
+                            }
+                            else if((*iterPts)->modelKeyPoint == SPD_CREATED)
+                            {
+                                lasClass.SetClass(point.eModelKeyPoint);
+                            }
+                            else if((*iterPts)->overlap == SPD_CREATED)
+                            {
+                                lasClass.SetClass(point.eOverlapPoints);
+                            }
+                            point.SetClassification(lasClass);
+                            
+                            lasWriter->WritePoint(point);
+                        }
+                    }
+                    SPDPulseUtils::deleteSPDPulse(*iterInPls);
+                }
+                plsIn->clear();
+            }
 			
 		}
 		catch(SPDIOException &e)
@@ -226,73 +232,79 @@ namespace spdlib
 			
 			vector<SPDPoint*>::iterator iterPts;
 			vector<SPDPulse*>::iterator iterInPls;
-			for(iterInPls = plsIn->begin(); iterInPls != plsIn->end(); )
-			{
-				for(iterPts = (*iterInPls)->pts->begin(); iterPts != (*iterInPls)->pts->end(); ++iterPts)
-				{
-					liblas::Point point;
-                    //cout << "PT (vector): [" << (*iterPts)->x << ", " << (*iterPts)->y << ", " << (*iterPts)->z << "]\n";
-					point.SetCoordinates((*iterPts)->x, (*iterPts)->y, (*iterPts)->z);
-					point.SetIntensity((*iterPts)->amplitudeReturn);
-					point.SetReturnNumber((*iterPts)->returnID);
-					point.SetNumberOfReturns((*iterInPls)->numberOfReturns);
-					point.SetPointSourceID((*iterInPls)->sourceID);
-					point.SetTime((*iterPts)->gpsTime);
-					point.SetColor(liblas::Color ((*iterPts)->red, (*iterPts)->blue, (*iterPts)->green));
-					
-					
-					liblas::Classification lasClass;
-					if((*iterPts)->classification == SPD_CREATED)
-					{
-						lasClass.SetClass(point.eCreated);
-					}
-					else if((*iterPts)->classification == SPD_UNCLASSIFIED)
-					{
-						lasClass.SetClass(point.eUnclassified);
-					}
-					else if((*iterPts)->classification == SPD_GROUND)
-					{
-						lasClass.SetClass(point.eGround);
-					}
-					else if((*iterPts)->classification == SPD_LOW_VEGETATION)
-					{
-						lasClass.SetClass(point.eLowVegetation);
-					}
-					else if((*iterPts)->classification == SPD_MEDIUM_VEGETATION)
-					{
-						lasClass.SetClass(point.eMediumVegetation);
-					}
-					else if((*iterPts)->classification == SPD_HIGH_VEGETATION)
-					{
-						lasClass.SetClass(point.eHighVegetation);
-					}
-					else if((*iterPts)->classification == SPD_BUILDING)
-					{
-						lasClass.SetClass(point.eBuilding);
-					}
-					else if((*iterPts)->classification == SPD_WATER)
-					{
-						lasClass.SetClass(point.eWater);
-					}
-					else if((*iterPts)->lowPoint == SPD_TRUE)
-					{
-						lasClass.SetClass(point.eLowPoint);
-					}
-					else if((*iterPts)->modelKeyPoint == SPD_CREATED)
-					{
-						lasClass.SetClass(point.eModelKeyPoint);
-					}
-					else if((*iterPts)->overlap == SPD_CREATED)
-					{
-						lasClass.SetClass(point.eOverlapPoints);
-					}
-					point.SetClassification(lasClass);
-					
-					lasWriter->WritePoint(point);
-				}
-				SPDPulseUtils::deleteSPDPulse(*iterInPls);
-				iterInPls = plsIn->erase(iterInPls);
-			}
+			if(plsIn->size() > 0)
+            {
+                for(iterInPls = plsIn->begin(); iterInPls != plsIn->end(); ++iterInPls)
+                {
+                    if((*iterInPls)->numberOfReturns)
+                    {
+                        for(iterPts = (*iterInPls)->pts->begin(); iterPts != (*iterInPls)->pts->end(); ++iterPts)
+                        {
+                            liblas::Point point;
+                            //cout << "PT (list): [" << (*iterPts)->x << ", " << (*iterPts)->y << ", " << (*iterPts)->z << "]\n";
+                            point.SetCoordinates((*iterPts)->x, (*iterPts)->y, (*iterPts)->z);
+                            point.SetIntensity((*iterPts)->amplitudeReturn);
+                            point.SetReturnNumber((*iterPts)->returnID);
+                            point.SetNumberOfReturns((*iterInPls)->numberOfReturns);
+                            point.SetPointSourceID((*iterInPls)->sourceID);
+                            point.SetTime((*iterPts)->gpsTime);
+                            point.SetColor(liblas::Color ((*iterPts)->red, (*iterPts)->blue, (*iterPts)->green));
+                            
+                            
+                            liblas::Classification lasClass;
+                            if((*iterPts)->classification == SPD_CREATED)
+                            {
+                                lasClass.SetClass(point.eCreated);
+                            }
+                            else if((*iterPts)->classification == SPD_UNCLASSIFIED)
+                            {
+                                lasClass.SetClass(point.eUnclassified);
+                            }
+                            else if((*iterPts)->classification == SPD_GROUND)
+                            {
+                                lasClass.SetClass(point.eGround);
+                            }
+                            else if((*iterPts)->classification == SPD_LOW_VEGETATION)
+                            {
+                                lasClass.SetClass(point.eLowVegetation);
+                            }
+                            else if((*iterPts)->classification == SPD_MEDIUM_VEGETATION)
+                            {
+                                lasClass.SetClass(point.eMediumVegetation);
+                            }
+                            else if((*iterPts)->classification == SPD_HIGH_VEGETATION)
+                            {
+                                lasClass.SetClass(point.eHighVegetation);
+                            }
+                            else if((*iterPts)->classification == SPD_BUILDING)
+                            {
+                                lasClass.SetClass(point.eBuilding);
+                            }
+                            else if((*iterPts)->classification == SPD_WATER)
+                            {
+                                lasClass.SetClass(point.eWater);
+                            }
+                            else if((*iterPts)->lowPoint == SPD_TRUE)
+                            {
+                                lasClass.SetClass(point.eLowPoint);
+                            }
+                            else if((*iterPts)->modelKeyPoint == SPD_CREATED)
+                            {
+                                lasClass.SetClass(point.eModelKeyPoint);
+                            }
+                            else if((*iterPts)->overlap == SPD_CREATED)
+                            {
+                                lasClass.SetClass(point.eOverlapPoints);
+                            }
+                            point.SetClassification(lasClass);
+                            
+                            lasWriter->WritePoint(point);
+                        }
+                    }
+                    SPDPulseUtils::deleteSPDPulse(*iterInPls);
+                }
+                plsIn->clear();
+            }
 			
 		}
 		catch(SPDIOException &e)
