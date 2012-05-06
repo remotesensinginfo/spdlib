@@ -152,7 +152,8 @@ namespace spdlib
             }
             else
             {
-                if(fmod(spdInFile->getBinSize(), processingResolution) != 0)
+                float tmpNumOutBins = spdInFile->getBinSize()/processingResolution;
+                if(fmod(tmpNumOutBins, ((float)1.0)) != 0)
                 {
                     cerr << "Native Res: " << spdInFile->getBinSize() << endl;
                     cerr << "Process Res: " << processingResolution << endl;
@@ -886,7 +887,8 @@ namespace spdlib
             }
             else
             {
-                if(fmod(spdInFile->getBinSize(), processingResolution) != 0)
+                float tmpNumOutBins = spdInFile->getBinSize()/processingResolution;
+                if(fmod(tmpNumOutBins, ((float)1.0)) != 0)
                 {
                     cerr << "Native Res: " << spdInFile->getBinSize() << endl;
                     cerr << "Process Res: " << processingResolution << endl;
@@ -1694,7 +1696,8 @@ namespace spdlib
             }
             else
             {
-                if(fmod(spdInFile->getBinSize(), processingResolution) != 0)
+                float tmpNumOutBins = spdInFile->getBinSize()/processingResolution;
+                if(fmod(tmpNumOutBins, ((float)1.0)) != 0)
                 {
                     cerr << "Native Res: " << spdInFile->getBinSize() << endl;
                     cerr << "Process Res: " << processingResolution << endl;
@@ -2405,7 +2408,8 @@ namespace spdlib
             }
             else
             {
-                if(fmod(spdInFile->getBinSize(), processingResolution) != 0)
+                float tmpNumOutBins = spdInFile->getBinSize()/processingResolution;
+                if(fmod(tmpNumOutBins, ((float)1.0)) != 0)
                 {
                     cerr << "Native Res: " << spdInFile->getBinSize() << endl;
                     cerr << "Process Res: " << processingResolution << endl;
