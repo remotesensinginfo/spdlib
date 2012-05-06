@@ -45,9 +45,12 @@ namespace spdlib
                 for(vector<SPDPulse*>::iterator iterPulses = pulses[i][j]->begin(); iterPulses != pulses[i][j]->end(); ++iterPulses)
                 {
                     (*iterPulses)->h0 = (*iterPulses)->z0 - imageDataBlock[i][j][0];
-                    for(vector<SPDPoint*>::iterator iterPts = (*iterPulses)->pts->begin(); iterPts != (*iterPulses)->pts->end(); ++iterPts)
+                    if((*iterPulses)->numberOfReturns > 0)
                     {
-                        (*iterPts)->height = (*iterPts)->z - imageDataBlock[i][j][0];
+                        for(vector<SPDPoint*>::iterator iterPts = (*iterPulses)->pts->begin(); iterPts != (*iterPulses)->pts->end(); ++iterPts)
+                        {
+                            (*iterPts)->height = (*iterPts)->z - imageDataBlock[i][j][0];
+                        }
                     }
                 }
             }
@@ -80,10 +83,13 @@ namespace spdlib
                         {
                             elevVal = interpolator->getValue((*iterPulses)->x0, (*iterPulses)->y0);
                             (*iterPulses)->h0 = (*iterPulses)->z0 - elevVal;
-                            for(vector<SPDPoint*>::iterator iterPts = (*iterPulses)->pts->begin(); iterPts != (*iterPulses)->pts->end(); ++iterPts)
+                            if((*iterPulses)->numberOfReturns > 0)
                             {
-                                elevVal = interpolator->getValue((*iterPts)->x, (*iterPts)->y);
-                                (*iterPts)->height = (*iterPts)->z - elevVal;
+                                for(vector<SPDPoint*>::iterator iterPts = (*iterPulses)->pts->begin(); iterPts != (*iterPulses)->pts->end(); ++iterPts)
+                                {
+                                    elevVal = interpolator->getValue((*iterPts)->x, (*iterPts)->y);
+                                    (*iterPts)->height = (*iterPts)->z - elevVal;
+                                }
                             }
                         }
                     }
