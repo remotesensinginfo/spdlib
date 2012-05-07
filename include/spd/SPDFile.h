@@ -434,7 +434,7 @@ namespace spdlib
         void setSensorApertureSize(float sensorApertureSize){this->sensorApertureSize = sensorApertureSize;};
 		float getSensorApertureSize(){return sensorApertureSize;};
         
-        void setPulseEnergy(float sensorApertureSize){this->pulseEnergy = pulseEnergy;};
+        void setPulseEnergy(float pulseEnergy){this->pulseEnergy = pulseEnergy;};
 		float getPulseEnergy(){return pulseEnergy;};
         
         void setFieldOfView(float fieldOfView){this->fieldOfView = fieldOfView;};

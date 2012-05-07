@@ -234,7 +234,7 @@ namespace spdlib
 			}
 			else 
 			{
-				roundingAddition = 1;
+				roundingAddition = 2;
 			}
 			
 			xSize = numeric_cast<boost::uint_fast32_t>(((spdFile->getXMax()-spdFile->getXMin())/spdFile->getBinSize())+roundingAddition);
@@ -651,7 +651,7 @@ namespace spdlib
 			}
 			else 
 			{
-				roundingAddition = 1;
+				roundingAddition = 2;
 			}
             
 			xSize = numeric_cast<boost::uint_fast32_t>(((spdFile->getXMax()-spdFile->getXMin())/spdFile->getBinSize())+roundingAddition);
