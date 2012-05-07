@@ -35,6 +35,8 @@ namespace spdlib
 	{        
 		try 
 		{
+            cout.precision(12);
+            
 			SPDIOFactory ioFactory;
 			
 			SPDDataImporter *importer = ioFactory.getImporter(inFormat, convertCoords, outputProjWKT, schema, indexCoords, defineOrigin, originX, originY, originZ, waveNoiseThreshold);
@@ -224,6 +226,7 @@ namespace spdlib
 	
 	void SPDConvertFormats::convertToSPDUsingRowTiles(string input, string output, string inFormat, string schema, float binsize, string inSpatialRef, bool convertCoords, string outputProjWKT, boost::uint_fast16_t indexCoords, string tempdir, boost::uint_fast16_t numRowsInTile, bool defineTL, double tlX, double tlY,  bool defineOrigin, double originX, double originY, float originZ, bool useSphericIdx, bool usePolarIdx, bool useScanIdx, float waveNoiseThreshold, boost::uint_fast16_t waveformBitRes, bool keepTmpFiles, boost::uint_fast16_t pointVersion, boost::uint_fast16_t pulseVersion) throw(SPDException)
 	{
+        cout.precision(12);
         if(usePolarIdx)
         {
             throw SPDException("Gridding data using a hemispherical coordinate index is not currently supported while generating SPD file using a temporary directory.");

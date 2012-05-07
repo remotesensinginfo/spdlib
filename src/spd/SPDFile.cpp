@@ -1080,21 +1080,120 @@ namespace spdlib
 	ostream& operator<<(ostream& stream, SPDFile &obj)
 	{
 		stream << "File Path: " << obj.getFilePath() << endl;
+        stream << "File Type: ";
+        if(obj.fileType == SPD_SEQ_TYPE)
+        {
+            cout << "Sequencial index\n";
+        }
+        else if(obj.fileType == SPD_SEQ_TYPE)
+        {
+            cout << "Non-Sequencial index\n";
+        }
+        else if(obj.fileType == SPD_SEQ_TYPE)
+        {
+            cout << "No index\n";
+        }
 		stream << "File Format Version: " <<  obj.majorSPDVersion << "." << obj.minorSPDVersion << endl;
         stream << "Point Version: " << obj.pointVersion << endl;
         stream << "Pulse Version: " << obj.pulseVersion << endl;
 		stream << "Generating Software: " <<  obj.generatingSoftware << endl;
 		stream << "File Signature: " << obj.fileSignature << endl;
+        stream << "Spatial Reference: " <<  obj.spatialreference << endl;
 		stream << "Creation Time (YYYY:MM:DD HH:MM:SS): " << obj.yearOfCreation << ":" << obj.monthOfCreation << ":" << obj.dayOfCreation << ":" << obj.hourOfCreation << ":"<< obj.minuteOfCreation << ":"<< obj.secondOfCreation << endl;
 		stream << "Capture Time (YYYY:MM:DD HH:MM:SS): " << obj.yearOfCapture << ":" << obj.monthOfCapture << ":" << obj.dayOfCapture << ":" << obj.hourOfCapture << ":" << obj.minuteOfCapture << ":" << obj.secondOfCapture << endl;
-		stream << "Number of Points = " << obj.numPts << endl;
+        stream << "Index Type: ";
+        if(obj.indexType == SPD_NO_IDX)
+        {
+            cout << "No Index\n";
+        }
+        else if(obj.indexType == SPD_CARTESIAN_IDX)
+        {
+            cout << "Cartesian\n";
+        }
+        else if(obj.indexType == SPD_SPHERICAL_IDX)
+        {
+            cout << "Spherical\n";
+        }
+        else if(obj.indexType == SPD_CYLINDRICAL_IDX)
+        {
+            cout << "Cylindrical\n";
+        }
+        else if(obj.indexType == SPD_POLAR_IDX)
+        {
+            cout << "Polar\n";
+        }
+        else if(obj.indexType == SPD_SCAN_IDX)
+        {
+            cout << "Scan\n";
+        }
+        stream << "The file contains: ";
+        if(obj.discretePtDefined == SPD_TRUE)
+        {
+            stream << "\t Contains discrete returns\n";
+        }
+        if(obj.decomposedPtDefined == SPD_TRUE)
+        {
+            stream << "\t Contains decomposed returns\n";
+        }
+        if(obj.transWaveformDefined == SPD_TRUE)
+        {
+            stream << "\t Contains transmitted waveforms\n";
+        }
+        if(obj.receiveWaveformDefined == SPD_TRUE)
+        {
+            stream << "\t Contains received waveforms\n";
+        }
+        stream << "Number of Points = " << obj.numPts << endl;
 		stream << "Number of Pulses = " << obj.numPulses << endl;
 		stream << "BBOX [xmin, ymin, xmax, ymax]: [" << obj.xMin << "," << obj.yMin << "," << obj.xMax << "," << obj.yMax << "]\n";
 		stream << "BBOX [Azimuth Min, Zenith Min, Azimuth Max, Zenith Max]: [" << obj.azimuthMin << "," << obj.zenithMin << "," << obj.azimuthMax << "," << obj.zenithMax << "]\n";
 		stream << "Z : [" << obj.zMin << "," << obj.zMax << "]\n";
         stream << "Range: [" << obj.rangeMin << "," << obj.rangeMax << "]\n";
+        stream << "Scanline: [" << obj.scanlineMin << "," << obj.scanlineMax << "]\n";
+        stream << "Scanline Idx: [" << obj.scanlineIdxMin << "," << obj.scanlineIdxMax << "]\n";
 		stream << "Gridding [xSize,ySize] Bin Size: [" << obj.numBinsX << "," << obj.numBinsY << "] " << obj.binSize << endl;
-		stream << "Spatial Reference: " <<  obj.spatialreference << endl;
+        if(obj.wavelengths.size() > 0)
+        {
+            stream << "Wavelengths:\n";
+            for(vector<float>::iterator iterWavel = obj.wavelengths.begin(); iterWavel != obj.wavelengths.end(); ++iterWavel)
+            {
+                stream << "\t" << *iterWavel << endl;
+            }
+        }
+        else
+        {
+            stream << "Wavelengths: \n\tUnknown\n";
+        }
+        if(obj.bandwidths.size() > 0)
+        {
+            stream << "Bandwidths:\n";
+            for(vector<float>::iterator iterBand = obj.bandwidths.begin(); iterBand != obj.bandwidths.end(); ++iterBand)
+            {
+                stream << "\t" << *iterBand << endl;
+            }
+        }
+        else
+        {
+            stream << "Bandwidths: \n\tUnknown\n";
+        }
+        stream << "Pulse Repetition Freq: " << obj.pulseRepetitionFreq << endl;
+        stream << "Beam Divergance: " << obj.beamDivergence << endl;
+        stream << "Sensor Height: " << obj.sensorHeight << endl;
+        stream << "Footprint: " << obj.footprint << endl;
+        stream << "Max. Scan Angle: " << obj.maxScanAngle << endl;
+        stream << "Waveform Bin Resolution: " << obj.waveformBitRes << endl;
+        stream << "Temporal Waveform Bin Spacing: " << obj.temporalBinSpacing << endl;
+        stream << "Sensor Speed: " << obj.sensorSpeed << endl;
+        stream << "Sensor Scanrate: " << obj.sensorScanRate << endl;
+        stream << "Pulse Density: " << obj.pulseDensity << endl;
+        stream << "Point Density: " << obj.pointDensity << endl;
+        stream << "Pulse cross track spacing: " << obj.pulseCrossTrackSpacing << endl;
+        stream << "Pulse along track spacing: " << obj.pulseAlongTrackSpacing << endl;
+        stream << "Pulse angular spacing azimuth: " << obj.pulseAngularSpacingAzimuth << endl;
+        stream << "Pulse angular spacing zenith: " << obj.pulseAngularSpacingZenith << endl;
+        stream << "Sensor Aperture Size: " << obj.sensorApertureSize << endl;
+        stream << "Pulse Energy: " << obj.pulseEnergy << endl;
+        stream << "Field of view: " << obj.fieldOfView << endl;
 		stream << "User Meta Data: " << obj.userMetaField << endl;
 		return stream;
 	}
@@ -1102,21 +1201,120 @@ namespace spdlib
 	ostream& operator<<(ostream& stream, SPDFile *obj)
 	{
 		stream << "File Path: " << obj->getFilePath() << endl;
+        stream << "File Type: ";
+        if(obj->fileType == SPD_SEQ_TYPE)
+        {
+            cout << "Sequencial index\n";
+        }
+        else if(obj->fileType == SPD_SEQ_TYPE)
+        {
+            cout << "Non-Sequencial index\n";
+        }
+        else if(obj->fileType == SPD_SEQ_TYPE)
+        {
+            cout << "No index\n";
+        }
 		stream << "File Format Version: " <<  obj->majorSPDVersion << "." << obj->minorSPDVersion << endl;
         stream << "Point Version: " << obj->pointVersion << endl;
         stream << "Pulse Version: " << obj->pulseVersion << endl;
 		stream << "Generating Software: " <<  obj->generatingSoftware << endl;
 		stream << "File Signature: " << obj->fileSignature << endl;
+        stream << "Spatial Reference: " <<  obj->spatialreference << endl;
 		stream << "Creation Time (YYYY:MM:DD HH:MM:SS): " << obj->yearOfCreation << ":" << obj->monthOfCreation << ":" << obj->dayOfCreation << ":" << obj->hourOfCreation << ":"<< obj->minuteOfCreation << ":"<< obj->secondOfCreation << endl;
 		stream << "Capture Time (YYYY:MM:DD HH:MM:SS): " << obj->yearOfCapture << ":" << obj->monthOfCapture << ":" << obj->dayOfCapture << ":" << obj->hourOfCapture << ":" << obj->minuteOfCapture << ":" << obj->secondOfCapture << endl;
-		stream << "Number of Points = " << obj->numPts << endl;
+        stream << "Index Type: ";
+        if(obj->indexType == SPD_NO_IDX)
+        {
+            cout << "No Index\n";
+        }
+        else if(obj->indexType == SPD_CARTESIAN_IDX)
+        {
+            cout << "Cartesian\n";
+        }
+        else if(obj->indexType == SPD_SPHERICAL_IDX)
+        {
+            cout << "Spherical\n";
+        }
+        else if(obj->indexType == SPD_CYLINDRICAL_IDX)
+        {
+            cout << "Cylindrical\n";
+        }
+        else if(obj->indexType == SPD_POLAR_IDX)
+        {
+            cout << "Polar\n";
+        }
+        else if(obj->indexType == SPD_SCAN_IDX)
+        {
+            cout << "Scan\n";
+        }
+        stream << "The file contains: ";
+        if(obj->discretePtDefined == SPD_TRUE)
+        {
+            stream << "\t Contains discrete returns\n";
+        }
+        if(obj->decomposedPtDefined == SPD_TRUE)
+        {
+            stream << "\t Contains decomposed returns\n";
+        }
+        if(obj->transWaveformDefined == SPD_TRUE)
+        {
+            stream << "\t Contains transmitted waveforms\n";
+        }
+        if(obj->receiveWaveformDefined == SPD_TRUE)
+        {
+            stream << "\t Contains received waveforms\n";
+        }
+        stream << "Number of Points = " << obj->numPts << endl;
 		stream << "Number of Pulses = " << obj->numPulses << endl;
 		stream << "BBOX [xmin, ymin, xmax, ymax]: [" << obj->xMin << "," << obj->yMin << "," << obj->xMax << "," << obj->yMax << "]\n";
 		stream << "BBOX [Azimuth Min, Zenith Min, Azimuth Max, Zenith Max]: [" << obj->azimuthMin << "," << obj->zenithMin << "," << obj->azimuthMax << "," << obj->zenithMax << "]\n";
 		stream << "Z : [" << obj->zMin << "," << obj->zMax << "]\n";
         stream << "Range: [" << obj->rangeMin << "," << obj->rangeMax << "]\n";
+        stream << "Scanline: [" << obj->scanlineMin << "," << obj->scanlineMax << "]\n";
+        stream << "Scanline Idx: [" << obj->scanlineIdxMin << "," << obj->scanlineIdxMax << "]\n";
 		stream << "Gridding [xSize,ySize] Bin Size: [" << obj->numBinsX << "," << obj->numBinsY << "] " << obj->binSize << endl;
-		stream << "Spatial Reference: " <<  obj->spatialreference << endl;
+        if(obj->wavelengths.size() > 0)
+        {
+            stream << "Wavelengths:\n";
+            for(vector<float>::iterator iterWavel = obj->wavelengths.begin(); iterWavel != obj->wavelengths.end(); ++iterWavel)
+            {
+                stream << "\t" << *iterWavel << endl;
+            }
+        }
+        else
+        {
+            stream << "Wavelengths: \n\tUnknown\n";
+        }
+        if(obj->bandwidths.size() > 0)
+        {
+            stream << "Bandwidths:\n";
+            for(vector<float>::iterator iterBand = obj->bandwidths.begin(); iterBand != obj->bandwidths.end(); ++iterBand)
+            {
+                stream << "\t" << *iterBand << endl;
+            }
+        }
+        else
+        {
+            stream << "Bandwidths: \n\tUnknown\n";
+        }
+        stream << "Pulse Repetition Freq: " << obj->pulseRepetitionFreq << endl;
+        stream << "Beam Divergance: " << obj->beamDivergence << endl;
+        stream << "Sensor Height: " << obj->sensorHeight << endl;
+        stream << "Footprint: " << obj->footprint << endl;
+        stream << "Max. Scan Angle: " << obj->maxScanAngle << endl;
+        stream << "Waveform Bin Resolution: " << obj->waveformBitRes << endl;
+        stream << "Temporal Waveform Bin Spacing: " << obj->temporalBinSpacing << endl;
+        stream << "Sensor Speed: " << obj->sensorSpeed << endl;
+        stream << "Sensor Scanrate: " << obj->sensorScanRate << endl;
+        stream << "Pulse Density: " << obj->pulseDensity << endl;
+        stream << "Point Density: " << obj->pointDensity << endl;
+        stream << "Pulse cross track spacing: " << obj->pulseCrossTrackSpacing << endl;
+        stream << "Pulse along track spacing: " << obj->pulseAlongTrackSpacing << endl;
+        stream << "Pulse angular spacing azimuth: " << obj->pulseAngularSpacingAzimuth << endl;
+        stream << "Pulse angular spacing zenith: " << obj->pulseAngularSpacingZenith << endl;
+        stream << "Sensor Aperture Size: " << obj->sensorApertureSize << endl;
+        stream << "Pulse Energy: " << obj->pulseEnergy << endl;
+        stream << "Field of view: " << obj->fieldOfView << endl;
 		stream << "User Meta Data: " << obj->userMetaField << endl;
 		
 		return stream;
