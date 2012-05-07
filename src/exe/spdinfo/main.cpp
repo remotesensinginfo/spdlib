@@ -58,6 +58,7 @@ int main (int argc, char * const argv[])
 		vector<string> fileNames = multiFileNames.getValue();		
 		if(fileNames.size() > 0)
 		{
+            cout.precision(15);
             SPDFileReader reader;
             SPDFile *spdInFile = NULL;
             for(unsigned int i = 0; i < fileNames.size(); ++i)
