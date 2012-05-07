@@ -262,102 +262,109 @@ namespace spdlib{
         if(ptVals->size() > 0)
 		{
             double max = gsl_stats_max (&(*ptVals)[0], 1, ptVals->size());
-            boost::uint_fast32_t nBins = ceil(max/vRes)+1;
-            
-            //cout << "\nNumber of bins = " << nBins << endl;
-            if(nBins > 0)
+            if(!boost::math::isnan(max))
             {
-                double *bins = new double[nBins];
-                bool *binsFirst = new bool[nBins];
-                for(boost::uint_fast32_t i = 0; i < nBins; ++i)
-                {
-                    bins[i] = 0;
-                    binsFirst[i] = true;
-                }
+                boost::uint_fast32_t nBins = ceil(max/vRes)+1;
                 
-                boost::uint_fast32_t idx = 0;
-                for(vector<double>::iterator iterVals = ptVals->begin(); iterVals != ptVals->end(); ++iterVals)
+                //cout << "\nNumber of bins = " << nBins << endl;
+                if((nBins > 0) & (nBins < 1000))
                 {
-                    try 
+                    double *bins = new double[nBins];
+                    bool *binsFirst = new bool[nBins];
+                    for(boost::uint_fast32_t i = 0; i < nBins; ++i)
                     {
-                        if((*iterVals) > 0)
+                        bins[i] = 0;
+                        binsFirst[i] = true;
+                    }
+                    
+                    boost::uint_fast32_t idx = 0;
+                    for(vector<double>::iterator iterVals = ptVals->begin(); iterVals != ptVals->end(); ++iterVals)
+                    {
+                        try 
                         {
-                            idx = numeric_cast<boost::uint_fast32_t>((*iterVals)/vRes);
+                            if((*iterVals) > 0)
+                            {
+                                idx = numeric_cast<boost::uint_fast32_t>((*iterVals)/vRes);
+                            }
+                        }
+                        catch(negative_overflow& e) 
+                        {
+                            cout << "(*iterVals) = " << (*iterVals) << endl;
+                            cout << "vRes = " << vRes << endl;
+                            throw SPDProcessingException(e.what());
+                        }
+                        catch(positive_overflow& e) 
+                        {
+                            cout << "(*iterVals) = " << (*iterVals) << endl;
+                            cout << "vRes = " << vRes << endl;
+                            throw SPDProcessingException(e.what());
+                        }
+                        catch(bad_numeric_cast& e) 
+                        {
+                            cout << "(*iterVals) = " << (*iterVals) << endl;
+                            cout << "vRes = " << vRes << endl;
+                            throw SPDProcessingException(e.what());
+                        }
+                        
+                        if(idx >= nBins)
+                        {
+                            cout << "Value = " << *iterVals << endl;
+                            cout << "Max Value = " << max << endl;
+                            cout << "idx = " << idx << endl;
+                            cout << "nBins = " << nBins << endl;
+                            cout << "vRes = " << vRes << endl;
+                            
+                            throw SPDProcessingException("Index is not within list.");
+                        }
+                        
+                        if(binsFirst[idx])
+                        {
+                            bins[idx] = *iterVals;
+                            binsFirst[idx] = false;
+                        }
+                        else if((*iterVals) > bins[idx])
+                        {
+                            bins[idx] = *iterVals;
+                        }                
+                    }
+                    
+                    openness = 0;
+                    boost::uint_fast32_t numVoxels = 0;
+                    for(boost::uint_fast32_t i = 0; i < nBins; ++i)
+                    {
+                        if(!binsFirst[i])
+                        {
+                            ++numVoxels;
                         }
                     }
-                    catch(negative_overflow& e) 
-                    {
-                        cout << "(*iterVals) = " << (*iterVals) << endl;
-                        cout << "vRes = " << vRes << endl;
-                        throw SPDProcessingException(e.what());
-                    }
-                    catch(positive_overflow& e) 
-                    {
-                        cout << "(*iterVals) = " << (*iterVals) << endl;
-                        cout << "vRes = " << vRes << endl;
-                        throw SPDProcessingException(e.what());
-                    }
-                    catch(bad_numeric_cast& e) 
-                    {
-                        cout << "(*iterVals) = " << (*iterVals) << endl;
-                        cout << "vRes = " << vRes << endl;
-                        throw SPDProcessingException(e.what());
-                    }
+                    //cout << "Number of voxels = " << numVoxels << endl;
                     
-                    if(idx >= nBins)
+                    for(boost::uint_fast32_t i = 0; i < nBins; ++i)
                     {
-                        cout << "Value = " << *iterVals << endl;
-                        cout << "Max Value = " << max << endl;
-                        cout << "idx = " << idx << endl;
-                        cout << "nBins = " << nBins << endl;
-                        cout << "vRes = " << vRes << endl;
-                        
-                        throw SPDProcessingException("Index is not within list.");
+                        if(!binsFirst[i])
+                        {
+                            //cout << bins[i] << ",";
+                            openness += (((max-bins[i])/max) / numVoxels);
+                        }
                     }
-                    
-                    if(binsFirst[idx])
-                    {
-                        bins[idx] = *iterVals;
-                        binsFirst[idx] = false;
-                    }
-                    else if((*iterVals) > bins[idx])
-                    {
-                        bins[idx] = *iterVals;
-                    }                
+                    //cout << endl;
+                    //cout << "openness = " << openness << endl;
+                    openness = openness * 100;
+                    //cout << "openness = " << openness << endl;
                 }
-                
-                openness = 0;
-                boost::uint_fast32_t numVoxels = 0;
-                for(boost::uint_fast32_t i = 0; i < nBins; ++i)
+                else
                 {
-                    if(!binsFirst[i])
-                    {
-                        ++numVoxels;
-                    }
+                    openness = numeric_limits<float>::signaling_NaN();
                 }
-                //cout << "Number of voxels = " << numVoxels << endl;
-                
-                for(boost::uint_fast32_t i = 0; i < nBins; ++i)
-                {
-                    if(!binsFirst[i])
-                    {
-                        //cout << bins[i] << ",";
-                        openness += (((max-bins[i])/max) / numVoxels);
-                    }
-                }
-                //cout << endl;
-                //cout << "openness = " << openness << endl;
-                openness = openness * 100;
-                //cout << "openness = " << openness << endl;
             }
-            else
+            else 
             {
-                openness = NAN;
+                openness = numeric_limits<float>::signaling_NaN();
             }
         }
         else
         {
-            openness = NAN;
+            openness = numeric_limits<float>::signaling_NaN();
         }
         delete ptVals;
         return openness;
@@ -393,7 +400,7 @@ namespace spdlib{
         }
         else
         {
-            mean = NAN;
+            mean = numeric_limits<float>::signaling_NaN();
         }
         delete ptVals;
         return mean;
@@ -422,7 +429,7 @@ namespace spdlib{
         }
         else
         {
-            median = NAN;
+            median = numeric_limits<float>::signaling_NaN();
         }
         delete ptVals;
         return median;
@@ -438,7 +445,7 @@ namespace spdlib{
         }
         else
         {
-            mode = NAN;
+            mode = numeric_limits<float>::signaling_NaN();
         }
         
         delete ptVals;
@@ -455,7 +462,7 @@ namespace spdlib{
         }
         else
         {
-            min = NAN;
+            min = numeric_limits<float>::signaling_NaN();
         }
         delete ptVals;
         return min;
@@ -471,7 +478,7 @@ namespace spdlib{
         }
         else
         {
-            max = NAN;
+            max = numeric_limits<float>::signaling_NaN();
         }
         delete ptVals;
         return max;
@@ -681,7 +688,7 @@ namespace spdlib{
                 
                 if(cellCount == 0)
                 {
-                    dominantHeight = NAN;
+                    dominantHeight = numeric_limits<float>::signaling_NaN();
                 }
                 else
                 {
@@ -690,7 +697,7 @@ namespace spdlib{
             }
             else
             {
-                dominantHeight = NAN;
+                dominantHeight = numeric_limits<float>::signaling_NaN();
             }
         }
         catch(SPDProcessingException &e)
@@ -710,7 +717,7 @@ namespace spdlib{
         }
         else
         {
-            stddev = NAN;
+            stddev = numeric_limits<float>::signaling_NaN();
         }
         delete ptVals;
         return stddev;
@@ -726,7 +733,7 @@ namespace spdlib{
         }
         else 
         {
-            variance = NAN;
+            variance = numeric_limits<float>::signaling_NaN();
         }
         delete ptVals;
         return variance;
@@ -742,7 +749,7 @@ namespace spdlib{
         }
         else
         {
-            absdev = NAN;
+            absdev = numeric_limits<float>::signaling_NaN();
         }
         delete ptVals;
         return absdev;
@@ -764,7 +771,7 @@ namespace spdlib{
         }
         else 
         {
-            cv = NAN;
+            cv = numeric_limits<float>::signaling_NaN();
         }
 
         delete ptVals;
@@ -812,7 +819,7 @@ namespace spdlib{
         }
         else 
         {
-            percentileVal = NAN;
+            percentileVal = numeric_limits<float>::signaling_NaN();
         }
         delete ptVals;
         return percentileVal;
@@ -828,7 +835,7 @@ namespace spdlib{
         }
         else 
         {
-            skew = NAN;
+            skew = numeric_limits<float>::signaling_NaN();
         }
         delete ptVals;
         return skew;
@@ -849,7 +856,7 @@ namespace spdlib{
         }
         else
         {
-            personModeSkew = NAN;
+            personModeSkew = numeric_limits<float>::signaling_NaN();
         }
         delete ptVals;
         return personModeSkew;
@@ -870,7 +877,7 @@ namespace spdlib{
         }
         else
         {
-            personMedianSkew = NAN;
+            personMedianSkew = numeric_limits<float>::signaling_NaN();
         }
         delete ptVals;
         return personMedianSkew;
@@ -886,7 +893,7 @@ namespace spdlib{
         }
         else
         {
-            kurtosis = NAN;
+            kurtosis = numeric_limits<float>::signaling_NaN();
         }
         delete ptVals;
         return kurtosis;
@@ -1127,13 +1134,13 @@ namespace spdlib{
                 }
                 else
                 {
-                    weibullAlpha = NAN;
+                    weibullAlpha = numeric_limits<float>::signaling_NaN();
                 }
                 
             }
             else
             {
-                weibullAlpha = NAN;
+                weibullAlpha = numeric_limits<float>::signaling_NaN();
             }
             
         } 
@@ -1302,13 +1309,13 @@ namespace spdlib{
                 }
                 else
                 {
-                    weibullBeta = NAN;
+                    weibullBeta = numeric_limits<float>::signaling_NaN();
                 }
                 
             }
             else
             {
-                weibullBeta = NAN;
+                weibullBeta = numeric_limits<float>::signaling_NaN();
             }
             
         } 
@@ -1477,13 +1484,13 @@ namespace spdlib{
                 }
                 else
                 {
-                    weibullQuantileRange = NAN;
+                    weibullQuantileRange = numeric_limits<float>::signaling_NaN();
                 }
                 
             }
             else
             {
-                weibullQuantileRange = NAN;
+                weibullQuantileRange = numeric_limits<float>::signaling_NaN();
             }
             
         } 
@@ -1531,7 +1538,7 @@ namespace spdlib{
         }
         else
         {
-            mean = NAN;
+            mean = numeric_limits<float>::signaling_NaN();
         }
         delete ptVals;
         return mean;
@@ -1560,7 +1567,7 @@ namespace spdlib{
         }
         else
         {
-            median = NAN;
+            median = numeric_limits<float>::signaling_NaN();
         }
         delete ptVals;
         return median;
@@ -1576,7 +1583,7 @@ namespace spdlib{
         }
         else
         {
-            mode = NAN;
+            mode = numeric_limits<float>::signaling_NaN();
         }
         
         delete ptVals;
@@ -1593,7 +1600,7 @@ namespace spdlib{
         }
         else
         {
-            min = NAN;
+            min = numeric_limits<float>::signaling_NaN();
         }
         delete ptVals;
         return min;
@@ -1609,7 +1616,7 @@ namespace spdlib{
         }
         else
         {
-            max = NAN;
+            max = numeric_limits<float>::signaling_NaN();
         }
         delete ptVals;
         return max;
@@ -1625,7 +1632,7 @@ namespace spdlib{
         }
         else
         {
-            stddev = NAN;
+            stddev = numeric_limits<float>::signaling_NaN();
         }
         delete ptVals;
         return stddev;
@@ -1641,7 +1648,7 @@ namespace spdlib{
         }
         else 
         {
-            variance = NAN;
+            variance = numeric_limits<float>::signaling_NaN();
         }
         delete ptVals;
         return variance;
@@ -1657,7 +1664,7 @@ namespace spdlib{
         }
         else
         {
-            absdev = NAN;
+            absdev = numeric_limits<float>::signaling_NaN();
         }
         delete ptVals;
         return absdev;
@@ -1679,7 +1686,7 @@ namespace spdlib{
         }
         else 
         {
-            cv = NAN;
+            cv = numeric_limits<float>::signaling_NaN();
         }
         
         delete ptVals;
@@ -1727,7 +1734,7 @@ namespace spdlib{
         }
         else 
         {
-            percentileVal = NAN;
+            percentileVal = numeric_limits<float>::signaling_NaN();
         }
         delete ptVals;
         return percentileVal;
@@ -1743,7 +1750,7 @@ namespace spdlib{
         }
         else 
         {
-            skew = NAN;
+            skew = numeric_limits<float>::signaling_NaN();
         }
         delete ptVals;
         return skew;
@@ -1764,7 +1771,7 @@ namespace spdlib{
         }
         else
         {
-            personModeSkew = NAN;
+            personModeSkew = numeric_limits<float>::signaling_NaN();
         }
         delete ptVals;
         return personModeSkew;
@@ -1785,7 +1792,7 @@ namespace spdlib{
         }
         else
         {
-            personMedianSkew = NAN;
+            personMedianSkew = numeric_limits<float>::signaling_NaN();
         }
         delete ptVals;
         return personMedianSkew;
@@ -1801,7 +1808,7 @@ namespace spdlib{
         }
         else
         {
-            kurtosis = NAN;
+            kurtosis = numeric_limits<float>::signaling_NaN();
         }
         delete ptVals;
         return kurtosis;
@@ -2002,13 +2009,13 @@ namespace spdlib{
                 }
                 else
                 {
-                    weibullAlpha = NAN;
+                    weibullAlpha = numeric_limits<float>::signaling_NaN();
                 }
                 
             }
             else
             {
-                weibullAlpha = NAN;
+                weibullAlpha = numeric_limits<float>::signaling_NaN();
             }
             
         } 
@@ -2177,13 +2184,13 @@ namespace spdlib{
                 }
                 else
                 {
-                    weibullBeta = NAN;
+                    weibullBeta = numeric_limits<float>::signaling_NaN();
                 }
                 
             }
             else
             {
-                weibullBeta = NAN;
+                weibullBeta = numeric_limits<float>::signaling_NaN();
             }
             
         } 
@@ -2352,13 +2359,13 @@ namespace spdlib{
                 }
                 else
                 {
-                    weibullQuantileRange = NAN;
+                    weibullQuantileRange = numeric_limits<float>::signaling_NaN();
                 }
                 
             }
             else
             {
-                weibullQuantileRange = NAN;
+                weibullQuantileRange = numeric_limits<float>::signaling_NaN();
             }
             
         } 
@@ -2407,7 +2414,7 @@ namespace spdlib{
         }
         else
         {
-            mean = NAN;
+            mean = numeric_limits<float>::signaling_NaN();
         }
         delete ptVals;
         return mean;
@@ -2424,7 +2431,7 @@ namespace spdlib{
         }
         else
         {
-            median = NAN;
+            median = numeric_limits<float>::signaling_NaN();
         }
         delete ptVals;
         return median;
@@ -2440,7 +2447,7 @@ namespace spdlib{
         }
         else
         {
-            mode = NAN;
+            mode = numeric_limits<float>::signaling_NaN();
         }
         
         delete ptVals;
@@ -2457,7 +2464,7 @@ namespace spdlib{
         }
         else
         {
-            min = NAN;
+            min = numeric_limits<float>::signaling_NaN();
         }
         delete ptVals;
         return min;
@@ -2473,7 +2480,7 @@ namespace spdlib{
         }
         else
         {
-            max = NAN;
+            max = numeric_limits<float>::signaling_NaN();
         }
         delete ptVals;
         return max;
@@ -2489,7 +2496,7 @@ namespace spdlib{
         }
         else
         {
-            stddev = NAN;
+            stddev = numeric_limits<float>::signaling_NaN();
         }
         delete ptVals;
         return stddev;
@@ -2505,7 +2512,7 @@ namespace spdlib{
         }
         else 
         {
-            variance = NAN;
+            variance = numeric_limits<float>::signaling_NaN();
         }
         delete ptVals;
         return variance;
@@ -2521,7 +2528,7 @@ namespace spdlib{
         }
         else
         {
-            absdev = NAN;
+            absdev = numeric_limits<float>::signaling_NaN();
         }
         delete ptVals;
         return absdev;
@@ -2543,7 +2550,7 @@ namespace spdlib{
         }
         else 
         {
-            cv = NAN;
+            cv = numeric_limits<float>::signaling_NaN();
         }
         
         delete ptVals;
@@ -2562,7 +2569,7 @@ namespace spdlib{
         }
         else 
         {
-            quantile = NAN;
+            quantile = numeric_limits<float>::signaling_NaN();
         }
         delete ptVals;
         return quantile;
@@ -2578,7 +2585,7 @@ namespace spdlib{
         }
         else 
         {
-            skew = NAN;
+            skew = numeric_limits<float>::signaling_NaN();
         }
         delete ptVals;
         return skew;
@@ -2599,7 +2606,7 @@ namespace spdlib{
         }
         else
         {
-            personModeSkew = NAN;
+            personModeSkew = numeric_limits<float>::signaling_NaN();
         }
         delete ptVals;
         return personModeSkew;
@@ -2620,7 +2627,7 @@ namespace spdlib{
         }
         else
         {
-            personMedianSkew = NAN;
+            personMedianSkew = numeric_limits<float>::signaling_NaN();
         }
         delete ptVals;
         return personMedianSkew;
@@ -2636,7 +2643,7 @@ namespace spdlib{
         }
         else
         {
-            kurtosis = NAN;
+            kurtosis = numeric_limits<float>::signaling_NaN();
         }
         delete ptVals;
         return kurtosis;
@@ -2717,7 +2724,7 @@ namespace spdlib{
         }
         else
         {
-            mean = NAN;
+            mean = numeric_limits<float>::signaling_NaN();
         }
         delete ptVals;
         return mean;
@@ -2734,7 +2741,7 @@ namespace spdlib{
         }
         else
         {
-            median = NAN;
+            median = numeric_limits<float>::signaling_NaN();
         }
         delete ptVals;
         return median;
@@ -2750,7 +2757,7 @@ namespace spdlib{
         }
         else
         {
-            mode = NAN;
+            mode = numeric_limits<float>::signaling_NaN();
         }
         
         delete ptVals;
@@ -2767,7 +2774,7 @@ namespace spdlib{
         }
         else
         {
-            min = NAN;
+            min = numeric_limits<float>::signaling_NaN();
         }
         delete ptVals;
         return min;
@@ -2783,7 +2790,7 @@ namespace spdlib{
         }
         else
         {
-            max = NAN;
+            max = numeric_limits<float>::signaling_NaN();
         }
         delete ptVals;
         return max;
@@ -2799,7 +2806,7 @@ namespace spdlib{
         }
         else
         {
-            stddev = NAN;
+            stddev = numeric_limits<float>::signaling_NaN();
         }
         delete ptVals;
         return stddev;
@@ -2815,7 +2822,7 @@ namespace spdlib{
         }
         else 
         {
-            variance = NAN;
+            variance = numeric_limits<float>::signaling_NaN();
         }
         delete ptVals;
         return variance;
@@ -2831,7 +2838,7 @@ namespace spdlib{
         }
         else
         {
-            absdev = NAN;
+            absdev = numeric_limits<float>::signaling_NaN();
         }
         delete ptVals;
         return absdev;
@@ -2853,7 +2860,7 @@ namespace spdlib{
         }
         else 
         {
-            cv = NAN;
+            cv = numeric_limits<float>::signaling_NaN();
         }
         
         delete ptVals;
@@ -2872,7 +2879,7 @@ namespace spdlib{
         }
         else 
         {
-            quantile = NAN;
+            quantile = numeric_limits<float>::signaling_NaN();
         }
         delete ptVals;
         return quantile;
@@ -2888,7 +2895,7 @@ namespace spdlib{
         }
         else 
         {
-            skew = NAN;
+            skew = numeric_limits<float>::signaling_NaN();
         }
         delete ptVals;
         return skew;
@@ -2909,7 +2916,7 @@ namespace spdlib{
         }
         else
         {
-            personModeSkew = NAN;
+            personModeSkew = numeric_limits<float>::signaling_NaN();
         }
         delete ptVals;
         return personModeSkew;
@@ -2930,7 +2937,7 @@ namespace spdlib{
         }
         else
         {
-            personMedianSkew = NAN;
+            personMedianSkew = numeric_limits<float>::signaling_NaN();
         }
         delete ptVals;
         return personMedianSkew;
@@ -2946,7 +2953,7 @@ namespace spdlib{
         }
         else
         {
-            kurtosis = NAN;
+            kurtosis = numeric_limits<float>::signaling_NaN();
         }
         delete ptVals;
         return kurtosis;
@@ -3147,13 +3154,13 @@ namespace spdlib{
                 }
                 else
                 {
-                    weibullAlpha = NAN;
+                    weibullAlpha = numeric_limits<float>::signaling_NaN();
                 }
                 
             }
             else
             {
-                weibullAlpha = NAN;
+                weibullAlpha = numeric_limits<float>::signaling_NaN();
             }
             
         } 
@@ -3322,13 +3329,13 @@ namespace spdlib{
                 }
                 else
                 {
-                    weibullBeta = NAN;
+                    weibullBeta = numeric_limits<float>::signaling_NaN();
                 }
                 
             }
             else
             {
-                weibullBeta = NAN;
+                weibullBeta = numeric_limits<float>::signaling_NaN();
             }
             
         } 
@@ -3497,13 +3504,13 @@ namespace spdlib{
                 }
                 else
                 {
-                    weibullQuantileRange = NAN;
+                    weibullQuantileRange = numeric_limits<float>::signaling_NaN();
                 }
                 
             }
             else
             {
-                weibullQuantileRange = NAN;
+                weibullQuantileRange = numeric_limits<float>::signaling_NaN();
             }
             
         } 
@@ -3551,7 +3558,7 @@ namespace spdlib{
         }
         else
         {
-            mean = NAN;
+            mean = numeric_limits<float>::signaling_NaN();
         }
         delete ptVals;
         return mean;
@@ -3568,7 +3575,7 @@ namespace spdlib{
         }
         else
         {
-            median = NAN;
+            median = numeric_limits<float>::signaling_NaN();
         }
         delete ptVals;
         return median;
@@ -3584,7 +3591,7 @@ namespace spdlib{
         }
         else
         {
-            mode = NAN;
+            mode = numeric_limits<float>::signaling_NaN();
         }
         
         delete ptVals;
@@ -3601,7 +3608,7 @@ namespace spdlib{
         }
         else
         {
-            min = NAN;
+            min = numeric_limits<float>::signaling_NaN();
         }
         delete ptVals;
         return min;
@@ -3617,7 +3624,7 @@ namespace spdlib{
         }
         else
         {
-            max = NAN;
+            max = numeric_limits<float>::signaling_NaN();
         }
         delete ptVals;
         return max;
@@ -3633,7 +3640,7 @@ namespace spdlib{
         }
         else
         {
-            stddev = NAN;
+            stddev = numeric_limits<float>::signaling_NaN();
         }
         delete ptVals;
         return stddev;
@@ -3649,7 +3656,7 @@ namespace spdlib{
         }
         else 
         {
-            variance = NAN;
+            variance = numeric_limits<float>::signaling_NaN();
         }
         delete ptVals;
         return variance;
@@ -3665,7 +3672,7 @@ namespace spdlib{
         }
         else
         {
-            absdev = NAN;
+            absdev = numeric_limits<float>::signaling_NaN();
         }
         delete ptVals;
         return absdev;
@@ -3687,7 +3694,7 @@ namespace spdlib{
         }
         else 
         {
-            cv = NAN;
+            cv = numeric_limits<float>::signaling_NaN();
         }
         
         delete ptVals;
@@ -3706,7 +3713,7 @@ namespace spdlib{
         }
         else 
         {
-            quantile = NAN;
+            quantile = numeric_limits<float>::signaling_NaN();
         }
         delete ptVals;
         return quantile;
@@ -3722,7 +3729,7 @@ namespace spdlib{
         }
         else 
         {
-            skew = NAN;
+            skew = numeric_limits<float>::signaling_NaN();
         }
         delete ptVals;
         return skew;
@@ -3743,7 +3750,7 @@ namespace spdlib{
         }
         else
         {
-            personModeSkew = NAN;
+            personModeSkew = numeric_limits<float>::signaling_NaN();
         }
         delete ptVals;
         return personModeSkew;
@@ -3764,7 +3771,7 @@ namespace spdlib{
         }
         else
         {
-            personMedianSkew = NAN;
+            personMedianSkew = numeric_limits<float>::signaling_NaN();
         }
         delete ptVals;
         return personMedianSkew;
@@ -3780,7 +3787,7 @@ namespace spdlib{
         }
         else
         {
-            kurtosis = NAN;
+            kurtosis = numeric_limits<float>::signaling_NaN();
         }
         delete ptVals;
         return kurtosis;
