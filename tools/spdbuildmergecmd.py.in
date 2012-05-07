@@ -1,0 +1,136 @@
+#! /usr/bin/env python
+
+############################################################################
+# Copyright (c) 2012 Dr. Peter Bunting
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+# The above copyright notice and this permission notice shall be included in
+# all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+# THE SOFTWARE.
+#
+#
+# Purpose:  A class to generate spdmerge commands from directory of files.
+
+# Author: Pete Bunting
+# Email: petebunting@mac.com
+# Date: 08/05/2012
+# Version: 1.0
+#
+# History:
+# Version 1.0 - Created.
+#
+#############################################################################
+
+import os.path
+import sys
+from time import strftime
+import optparse
+
+class BuildSPDMerge (object):
+
+    def checkFileExtension(self, filename, extension):
+        foundExtension = False;
+        filenamesplit = os.path.splitext(filename)
+        fileExtension = filenamesplit[1].strip()
+        if(fileExtension == extension):
+            foundExtension = True
+        return foundExtension
+
+    def findFilesIterative(self, filelist, directory, extension):
+        if os.path.exists(directory):
+            if os.path.isdir(directory):
+                dirFileList = os.listdir(directory)
+                for filename in dirFileList:
+                    if(os.path.isdir(os.path.join(directory,filename))):
+                        self.findFiles(filelist, os.path.join(directory,filename), extension)
+                    elif(os.path.isfile(os.path.join(directory,filename))):
+                        if(self.checkFileExtension(filename, extension)):
+                            filelist.append(os.path.join(directory,filename))
+                    else:
+                        print filename + ' is NOT a file or directory!'
+            else:
+                print directory + ' is not a directory!'
+        else:
+            print directory + ' does not exist!'
+
+
+    def findFiles(self, filelist, directory, extension):
+        if os.path.exists(directory):
+            if os.path.isdir(directory):
+                dirFileList = os.listdir(directory)
+                for filename in dirFileList:
+                    if(os.path.isdir(os.path.join(directory,filename))):
+                        print os.path.join(directory,filename) + ' is a directory and therefore ignored!'
+                    elif(os.path.isfile(os.path.join(directory,filename))):
+                        if(self.checkFileExtension(filename, extension)):
+                            filelist.append(os.path.join(directory,filename))
+                    else:
+                        print filename + ' is NOT a file or directory!'
+            else:
+                print directory + ' is not a directory!'
+        else:
+            print directory + ' does not exist!'
+
+    def buildCmd(self, fileList, outClass, classProvided, spdInput, outputSPD):
+        print "spdmerge -i ", spdInput,
+
+        if classProvided:
+            for file in fileList:
+                print " --classes ", outClass,
+
+        print " ", outputSPD,
+
+        for file in fileList:
+            print " ", file,
+
+
+    def run(self, cmdargs):
+        fileList = list()
+        self.findFiles(fileList, cmdargs.inputDir, cmdargs.extension)
+
+        outClassProvided = True
+        if cmdargs.outputclass is None:
+            outClassProvided = False
+
+        self.buildCmd(fileList, cmdargs.outputclass, outClassProvided, cmdargs.spdInput, cmdargs.outputSPD)
+
+
+# Command arguments
+class CmdArgs:
+  def __init__(self):
+    p = optparse.OptionParser()
+    p.add_option("-d","--dir", dest="inputDir", default=None, help="Input Directory")
+    p.add_option("-e","--ext", dest="extension", default=None, help="Input file extension")
+    p.add_option("-c","--class", dest="outputclass", default=None, help="Output class of points")
+    p.add_option("-o","--out", dest="outputSPD", default=None, help="Output SPD file from spdmerge")
+    p.add_option("","--spdin", dest="spdInput", default=None, help="SPD input file type")
+
+    (options, args) = p.parse_args()
+    self.__dict__.update(options.__dict__)
+
+    if self.inputDir is None:
+        p.print_help()
+        print "Input direction path must be set."
+        sys.exit()
+
+    if self.extension is None:
+        p.print_help()
+        print "Input file extension must be set."
+        sys.exit()
+
+if __name__ == '__main__':
+    cmdargs = CmdArgs()
+    obj = BuildSPDMerge()
+    obj.run(cmdargs)
