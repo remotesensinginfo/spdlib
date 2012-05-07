@@ -1083,15 +1083,19 @@ namespace spdlib
         stream << "File Type: ";
         if(obj.fileType == SPD_SEQ_TYPE)
         {
-            cout << "Sequencial index\n";
+            stream << "Sequencial index\n";
         }
         else if(obj.fileType == SPD_SEQ_TYPE)
         {
-            cout << "Non-Sequencial index\n";
+            stream << "Non-Sequencial index\n";
         }
         else if(obj.fileType == SPD_SEQ_TYPE)
         {
-            cout << "No index\n";
+            stream << "No index\n";
+        }
+        else
+        {
+            stream << endl;
         }
 		stream << "File Format Version: " <<  obj.majorSPDVersion << "." << obj.minorSPDVersion << endl;
         stream << "Point Version: " << obj.pointVersion << endl;
@@ -1104,29 +1108,33 @@ namespace spdlib
         stream << "Index Type: ";
         if(obj.indexType == SPD_NO_IDX)
         {
-            cout << "No Index\n";
+            stream << "No Index\n";
         }
         else if(obj.indexType == SPD_CARTESIAN_IDX)
         {
-            cout << "Cartesian\n";
+            stream << "Cartesian\n";
         }
         else if(obj.indexType == SPD_SPHERICAL_IDX)
         {
-            cout << "Spherical\n";
+            stream << "Spherical\n";
         }
         else if(obj.indexType == SPD_CYLINDRICAL_IDX)
         {
-            cout << "Cylindrical\n";
+            stream << "Cylindrical\n";
         }
         else if(obj.indexType == SPD_POLAR_IDX)
         {
-            cout << "Polar\n";
+            stream << "Polar\n";
         }
         else if(obj.indexType == SPD_SCAN_IDX)
         {
-            cout << "Scan\n";
+            stream << "Scan\n";
         }
-        stream << "The file contains: ";
+        else 
+        {
+            stream << endl;
+        }
+        stream << "The file contains: \n";
         if(obj.discretePtDefined == SPD_TRUE)
         {
             stream << "\t Contains discrete returns\n";
@@ -1204,15 +1212,19 @@ namespace spdlib
         stream << "File Type: ";
         if(obj->fileType == SPD_SEQ_TYPE)
         {
-            cout << "Sequencial index\n";
+            stream << "Sequencial index\n";
         }
         else if(obj->fileType == SPD_SEQ_TYPE)
         {
-            cout << "Non-Sequencial index\n";
+            stream << "Non-Sequencial index\n";
         }
         else if(obj->fileType == SPD_SEQ_TYPE)
         {
-            cout << "No index\n";
+            stream << "No index\n";
+        }
+        else
+        {
+            stream << endl;
         }
 		stream << "File Format Version: " <<  obj->majorSPDVersion << "." << obj->minorSPDVersion << endl;
         stream << "Point Version: " << obj->pointVersion << endl;
@@ -1225,29 +1237,33 @@ namespace spdlib
         stream << "Index Type: ";
         if(obj->indexType == SPD_NO_IDX)
         {
-            cout << "No Index\n";
+            stream << "No Index\n";
         }
         else if(obj->indexType == SPD_CARTESIAN_IDX)
         {
-            cout << "Cartesian\n";
+            stream << "Cartesian\n";
         }
         else if(obj->indexType == SPD_SPHERICAL_IDX)
         {
-            cout << "Spherical\n";
+            stream << "Spherical\n";
         }
         else if(obj->indexType == SPD_CYLINDRICAL_IDX)
         {
-            cout << "Cylindrical\n";
+            stream << "Cylindrical\n";
         }
         else if(obj->indexType == SPD_POLAR_IDX)
         {
-            cout << "Polar\n";
+            stream << "Polar\n";
         }
         else if(obj->indexType == SPD_SCAN_IDX)
         {
-            cout << "Scan\n";
+            stream << "Scan\n";
         }
-        stream << "The file contains: ";
+        else 
+        {
+            stream << endl;
+        }
+        stream << "The file contains: \n";
         if(obj->discretePtDefined == SPD_TRUE)
         {
             stream << "\t Contains discrete returns\n";

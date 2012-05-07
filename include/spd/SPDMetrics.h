@@ -40,6 +40,7 @@
 
 #include <boost/cstdint.hpp>
 #include <boost/numeric/conversion/cast.hpp>
+#include "boost/math/special_functions/fpclassify.hpp"
 
 #include "spd/SPDException.h"
 #include "spd/SPDFile.h"
@@ -48,14 +49,14 @@
 #include "spd/SPDProcessingException.h"
 #include "spd/SPDPointGridIndex.h"
 
-using namespace std;
-using boost::numeric_cast;
-using boost::numeric::bad_numeric_cast;
-using boost::numeric::positive_overflow;
-using boost::numeric::negative_overflow;
-
 namespace spdlib{
 	
+    using namespace std;
+    using boost::numeric_cast;
+    using boost::numeric::bad_numeric_cast;
+    using boost::numeric::positive_overflow;
+    using boost::numeric::negative_overflow;
+    
 	class SPDMetric
 	{
 	public: 
