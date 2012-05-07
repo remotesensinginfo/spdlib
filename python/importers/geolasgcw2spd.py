@@ -66,11 +66,14 @@ def main(cmdargs):
     """
     Convert the LGW and LGC files to SPD
     """
-    # Open SPD file
+    # Create SPD file
     spdFile = cmdargs.lwfFile.replace(".lwf",".spd")
     spdObj = spdpy.createSPDFile(spdFile)
     spdWriter = spdpy.SPDPyNoIdxWriter()
     spdWriter.open(spdObj,spdFile)
+    spdObj.setTransWaveformDefined(1)
+    spdObj.setReceiveWaveformDefined(1)
+    spdObj.setOriginDefined(1)
     
     # Read binary data
     pulseBlockSize = 1e4
@@ -116,9 +119,8 @@ def main(cmdargs):
             except:
                 
                 writeSPDPulses(spdObj, spdWriter, pulses)
-                if cmdargs.verbose:
-                    sys.stdout.write("%i pulses imported\r" % pulseID)
-                    sys.stdout.flush()
+                sys.stdout.write("%i pulses imported\n" % pulseID)
+                sys.stdout.flush()
                 break
     
     # Close files
