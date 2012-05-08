@@ -74,6 +74,7 @@ def main(cmdargs):
     spdObj.setTransWaveformDefined(1)
     spdObj.setReceiveWaveformDefined(1)
     spdObj.setOriginDefined(1)
+    spdObj.setTemporalBinSpacing(1.0)
     
     # Read binary data
     pulseBlockSize = 1e4
