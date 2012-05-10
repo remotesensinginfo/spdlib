@@ -29,20 +29,20 @@ def createSPDPulse(data, wfData, pulseID):
     if pulse.azimuth < 0:
         pulse.azimuth += 2 * np.pi
     pulse.zenith = np.arccos(data[7] / magnitude)
-
+    
     # Received waveform
-    rwfData = wfData[data[11]:]
+    rwfData = wfData[data[10]:]
     pulse.rangeToWaveformStart = ((constants.c / 1e9) * data[8]) / 2
     pulse.receiveWaveGain = 1.0
     pulse.receiveWaveOffset = 0.0
-    pulse.numOfReceivedBins = data[10]
+    pulse.numOfReceivedBins = data[9]
     pulse.received = [int(i) for i in rwfData]
     
     # Transmitted waveform
-    twfData = wfData[:data[11]]
+    twfData = wfData[:data[10]]
     pulse.transWaveGain = 1.0
     pulse.transWaveOffset = 0.0
-    pulse.numOfTransmittedBins = data[11]
+    pulse.numOfTransmittedBins = data[10]
     pulse.transmitted = [int(i) for i in twfData]
     
     # Return result
