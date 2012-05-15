@@ -418,13 +418,19 @@ class LASWave2UPD (object):
                 elif aPtY > maxY:
                     maxY = aPtY
 
-                tempX = aPtX - pulse.x0;
-                tempY = aPtY - pulse.y0;
-                tempZ = aPtZ - pulse.z0;
+                tempX = aPtX - pulse.x0
+                tempY = aPtY - pulse.y0
+                tempZ = aPtZ - pulse.z0
 
-                ptRange = math.sqrt((tempX * tempX) + (tempY * tempY) + (tempZ * tempZ));
-                zenith = math.acos(tempZ/(ptRange));
-                azimuth = math.atan2(tempY, tempX);
+                ptRange = math.sqrt((tempX * tempX) + (tempY * tempY) + (tempZ * tempZ))
+                zenith = math.acos(tempZ/(ptRange))
+                tempAzimuth = math.atan2(tempX, tempY)
+                azimuth = 0
+                if tempAzimuth < 0:
+                    azimuth = (2.0 * math.pi) + tempAzimuth
+                else:
+                    azimuth = tempAzimuth;
+
 
                 pulse.azimuth = azimuth
                 pulse.zenith = zenith
@@ -685,13 +691,18 @@ class LASWave2UPD (object):
                 aPtY = float(w_point[1]+ wavedata[0][16]*wavedata[0][14])-(wavedata[0][16]*1000*(wv_info[3]/1000.0)) * wave_size
                 aPtZ = float(w_point[2]+ wavedata[0][17]*wavedata[0][14])-(wavedata[0][17]*1000*(wv_info[3]/1000.0)) * wave_size
 
-                tempX = aPtX - float(w_point[0]+ wavedata[0][15]*wavedata[0][14]);
-                tempY = aPtY - float(w_point[1]+ wavedata[0][16]*wavedata[0][14]);
-                tempZ = aPtZ - float(w_point[2]+ wavedata[0][17]*wavedata[0][14]);
+                tempX = aPtX - pulse.x0
+                tempY = aPtY - pulse.y0
+                tempZ = aPtZ - pulse.z0
 
-                ptRange = math.sqrt((tempX * tempX) + (tempY * tempY) + (tempZ * tempZ));
-                zenith = math.acos(tempZ/(ptRange));
-                azimuth = math.atan2(tempY, tempX);
+                ptRange = math.sqrt((tempX * tempX) + (tempY * tempY) + (tempZ * tempZ))
+                zenith = math.acos(tempZ/(ptRange))
+                tempAzimuth = math.atan2(tempX, tempY)
+                azimuth = 0
+                if tempAzimuth < 0:
+                    azimuth = (2.0 * math.pi) + tempAzimuth
+                else:
+                    azimuth = tempAzimuth;
 
                 if printDBInfo:
                     print "Origin: [X,Y,Z]: [", float(w_point[0]+ wavedata[0][15]*wavedata[0][14]), ",", float(w_point[1]+ wavedata[0][16]*wavedata[0][14]), ",", float(w_point[2]+ wavedata[0][17]*wavedata[0][14]), "]"
