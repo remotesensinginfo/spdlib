@@ -489,7 +489,7 @@ class LASWave2UPD (object):
         #print "Extended Variable Length Record Header:", evlr_data
 
         lasfile.close()
-        spdOutFile.setReceiveWaveformDefined(0)
+        spdOutFile.setReceiveWaveformDefined(1)
         spdOutFile.setTransWaveformDefined(0)
         spdOutFile.setDecomposedPtDefined(0)
         spdOutFile.setDiscretePtDefined(1)
