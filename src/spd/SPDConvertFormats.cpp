@@ -364,15 +364,15 @@ namespace spdlib
             
             if(useSphericIdx)
             {
-                numOfTiles = numeric_cast<boost::uint_fast32_t>(((spdFileAllIn->getZenithMax() - spdFileAllIn->getZenithMin()) / tempFileYSize)+1);  
+                numOfTiles = numeric_cast<boost::uint_fast32_t>(((spdFileAllIn->getZenithMax() - spdFileAllIn->getZenithMin()) / tempFileYSize))+1;  
             }
             else if(useScanIdx)
             {
-                numOfTiles = numeric_cast<boost::uint_fast32_t>(((spdFileAllIn->getScanlineIdxMax() - spdFileAllIn->getScanlineIdxMin()) / tempFileYSize)+1);  
+                numOfTiles = numeric_cast<boost::uint_fast32_t>(((spdFileAllIn->getScanlineIdxMax() - spdFileAllIn->getScanlineIdxMin()) / tempFileYSize))+1;
             }
             else
             {
-                numOfTiles = numeric_cast<boost::uint_fast32_t>(((spdFileAllIn->getYMax() - spdFileAllIn->getYMin()) / tempFileYSize)+1);  
+                numOfTiles = numeric_cast<boost::uint_fast32_t>(((spdFileAllIn->getYMax() - spdFileAllIn->getYMin()) / tempFileYSize))+1;
             }
 			cout << "Number of Tiles = " << numOfTiles << endl;
 		}
@@ -929,18 +929,18 @@ namespace spdlib
 			//cout << "Y DIMS: [" << spdFileAllInUPD->getYMax() << ", " << spdFileAllInUPD->getYMin() << "]\n";
             if(useSphericIdx)
             {
-                numOfXTiles = numeric_cast<boost::uint_fast32_t>(((spdFileAllIn->getAzimuthMax() - spdFileAllIn->getAzimuthMin()) / tempFileXSize)+1);  
-                numOfYTiles = numeric_cast<boost::uint_fast32_t>(((spdFileAllIn->getZenithMax() - spdFileAllIn->getZenithMin()) / tempFileYSize)+1);  
+                numOfXTiles = numeric_cast<boost::uint_fast32_t>(((spdFileAllIn->getAzimuthMax() - spdFileAllIn->getAzimuthMin()) / tempFileXSize))+1;  
+                numOfYTiles = numeric_cast<boost::uint_fast32_t>(((spdFileAllIn->getZenithMax() - spdFileAllIn->getZenithMin()) / tempFileYSize))+1;  
             }
             else if(useScanIdx)
             {
-                numOfXTiles = numeric_cast<boost::uint_fast32_t>(((spdFileAllIn->getScanlineIdxMax() - spdFileAllIn->getScanlineIdxMin()) / tempFileXSize)+1);  
-                numOfYTiles = numeric_cast<boost::uint_fast32_t>(((spdFileAllIn->getScanlineMax() - spdFileAllIn->getScanlineMin()) / tempFileYSize)+1);  
+                numOfXTiles = numeric_cast<boost::uint_fast32_t>(((spdFileAllIn->getScanlineIdxMax() - spdFileAllIn->getScanlineIdxMin()) / tempFileXSize))+1;  
+                numOfYTiles = numeric_cast<boost::uint_fast32_t>(((spdFileAllIn->getScanlineMax() - spdFileAllIn->getScanlineMin()) / tempFileYSize))+1;  
             }
             else
             {
-                numOfXTiles = numeric_cast<boost::uint_fast32_t>(((spdFileAllIn->getXMax() - spdFileAllIn->getXMin()) / tempFileXSize)+1); 
-                numOfYTiles = numeric_cast<boost::uint_fast32_t>(((spdFileAllIn->getYMax() - spdFileAllIn->getYMin()) / tempFileYSize)+1);  
+                numOfXTiles = numeric_cast<boost::uint_fast32_t>(((spdFileAllIn->getXMax() - spdFileAllIn->getXMin()) / tempFileXSize))+1; 
+                numOfYTiles = numeric_cast<boost::uint_fast32_t>(((spdFileAllIn->getYMax() - spdFileAllIn->getYMin()) / tempFileYSize))+1;  
             }
             
             numOfTiles = numOfXTiles * numOfYTiles;
