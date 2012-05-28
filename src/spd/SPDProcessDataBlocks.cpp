@@ -3492,6 +3492,13 @@ namespace spdlib
 
     void SPDProcessDataBlocks::populateFromImage(float ***imageDataBlock, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast16_t numImgBands, GDALRasterBand **imgBands, double imgXOrigin, double imgYOrigin, float imgRes, double blockXOrigin, double blockYOrigin) throw(SPDProcessingException)
     {
+        cout.precision(12);
+        /*
+        cout << "xSize = " << xSize << endl;
+        cout << "ySize = " << ySize << endl;
+        cout << "Num Image Bands = " << numImgBands << endl;
+        cout << "Image Resolution = " << imgRes << endl;
+        */
         try
         {
             // Set image data block to zero.
@@ -3505,123 +3512,227 @@ namespace spdlib
                     }
                 }
             }
-
+            
+            
+            // Define the bounds of the block and image
             boost::uint_fast32_t imgXSize = imgBands[0]->GetXSize();
             boost::uint_fast32_t imgYSize = imgBands[0]->GetYSize();
 
             double blockBRX = blockXOrigin + (xSize * imgRes);
             double blockBRY = blockYOrigin - (ySize * imgRes);
-
+            /*
+            cout << "blockXOrigin = " << blockXOrigin << endl;
+            cout << "blockYOrigin = " << blockYOrigin << endl;
+            cout << "blockBRX = " << blockBRX << endl;
+            cout << "blockBRY = " << blockBRY << endl;
+            */
             double imgBRX = imgXOrigin + (imgXSize * imgRes);
             double imgBRY = imgYOrigin - (imgYSize * imgRes);
-
-            bool tlInside = false;
-            bool brInside = false;
-
-            if((blockXOrigin > imgXOrigin) & (blockYOrigin < imgYOrigin))
+            /*
+            cout << "imgXOrigin = " << imgXOrigin << endl;
+            cout << "imgYOrigin = " << imgYOrigin << endl;
+            cout << "imgBRX = " << imgBRX << endl;
+            cout << "imgBRY = " << imgBRY << endl;
+            */
+            // Block and Image offsets - initialised.
+            
+            boost::uint_fast32_t blockOffsetXTL = 0;
+            boost::uint_fast32_t blockOffsetYTL = 0;
+            boost::uint_fast32_t blockOffsetXBR = 0;
+            boost::uint_fast32_t blockOffsetYBR = 0;
+            
+            boost::uint_fast32_t imgOffsetXTL = 0;
+            boost::uint_fast32_t imgOffsetYTL = 0;
+            boost::uint_fast32_t imgOffsetXBR = 0;
+            boost::uint_fast32_t imgOffsetYBR = 0;
+                        
+            // Calc overlap between block and image.
+            double tlXDiff = 0;
+            double tlYDiff = 0;
+            double brXDiff = 0;
+            double brYDiff = 0;
+            
+            if(blockXOrigin > imgXOrigin)
             {
-                tlInside = true;
+                tlXDiff = blockXOrigin - imgXOrigin;
+                blockOffsetXTL = 0;
+                imgOffsetXTL = numeric_cast<boost::uint_fast32_t>(tlXDiff/imgRes);
             }
-
-            if((blockBRX < imgBRX) & (blockBRY > imgBRY))
+            else
             {
-                brInside = true;
+                tlXDiff = imgXOrigin - blockXOrigin;
+                blockOffsetXTL = numeric_cast<boost::uint_fast32_t>(tlXDiff/imgRes);
+                imgOffsetXTL = 0;
             }
-
-            if(tlInside | brInside)
+            
+            if(imgYOrigin > blockYOrigin)
             {
-                boost::uint_fast32_t imgOffX = 0;
-                boost::uint_fast32_t imgOffY = 0;
-                boost::uint_fast32_t dataOffX = 0;
-                boost::uint_fast32_t dataOffY = 0;
-
-                boost::uint_fast32_t sampleLenX = 0;
-                boost::uint_fast32_t sampleLenY = 0;
-
-                double diffX = blockXOrigin - imgXOrigin;
-                double diffY = imgYOrigin - blockYOrigin;
-
-                if(diffX == 0)
+                tlYDiff = imgYOrigin - blockYOrigin;
+                blockOffsetYTL = 0;
+                imgOffsetYTL = numeric_cast<boost::uint_fast32_t>(tlYDiff/imgRes);
+            }
+            else
+            {
+                tlYDiff = blockYOrigin - imgYOrigin;
+                blockOffsetYTL = numeric_cast<boost::uint_fast32_t>(tlYDiff/imgRes);
+                imgOffsetYTL = 0;
+            }
+            
+            /*
+            cout << "blockOffsetXTL = " << blockOffsetXTL << endl;
+            cout << "blockOffsetYTL = " << blockOffsetYTL << endl;
+            
+            cout << "imgOffsetXTL = " << imgOffsetXTL << endl;
+            cout << "imgOffsetYTL = " << imgOffsetYTL << endl;
+            */
+            
+            if(imgBRX > blockBRX)
+            {
+                brXDiff = imgBRX - blockBRX;
+                boost::uint_fast32_t diff = numeric_cast<boost::uint_fast32_t>(brXDiff/imgRes);
+                blockOffsetXBR = xSize;
+                if(diff > imgXSize)
                 {
-                    imgOffX = 0;
-                    dataOffX = 0;
+                    imgOffsetXBR = 0;
                 }
-                else if(diffX > 0)
+                else 
                 {
-                    dataOffX = 0;
-                    imgOffX = numeric_cast<boost::uint_fast32_t>(diffX/imgRes);
+                    imgOffsetXBR = imgXSize - diff;
                 }
-                else if(diffX < 0)
+            }
+            else
+            {
+                brXDiff = blockBRX - imgBRX;
+                boost::uint_fast32_t diff = numeric_cast<boost::uint_fast32_t>(brXDiff/imgRes);
+                if(diff > xSize)
                 {
-                    imgOffX = 0;
-                    diffX = diffX * (-1);
-                    dataOffX = numeric_cast<boost::uint_fast32_t>(diffX/imgRes);
+                    blockOffsetXBR = 0;
                 }
-
-                if(diffY == 0)
+                else 
                 {
-                    imgOffY = 0;
-                    dataOffY = 0;
+                    blockOffsetXBR = xSize - diff;
                 }
-                else if(diffY > 0)
+                imgOffsetXBR = imgXSize;
+            }
+            
+            if(blockBRY > imgBRY)
+            {
+                brYDiff = blockBRY - imgBRY;
+                boost::uint_fast32_t diff = numeric_cast<boost::uint_fast32_t>(brYDiff/imgRes);
+                blockOffsetYBR = ySize;
+                if(diff > imgYSize)
                 {
-                    dataOffY = 0;
-                    imgOffY = numeric_cast<boost::uint_fast32_t>(diffY/imgRes);
+                    imgOffsetYBR = 0;
                 }
-                else if(diffY < 0)
+                else 
                 {
-                    imgOffY = 0;
-                    diffY = diffY * (-1);
-                    dataOffY = numeric_cast<boost::uint_fast32_t>(diffY/imgRes);
+                    imgOffsetYBR = imgYSize - diff;
                 }
-
-                diffX = imgBRX - blockBRX;
-                diffY = blockBRY - imgBRY;
-
-                if(diffX == 0)
+            }
+            else
+            {
+                brYDiff = imgBRY - blockBRY;
+                boost::uint_fast32_t diff = numeric_cast<boost::uint_fast32_t>(brYDiff/imgRes);
+                if(diff > ySize)
                 {
-                    sampleLenX = xSize - dataOffX;
+                    blockOffsetYBR = 0;
                 }
-                else if(diffX > 0)
+                else 
                 {
-                    sampleLenX = (xSize - numeric_cast<boost::uint_fast32_t>(diffX/imgRes)) - dataOffX;
+                    blockOffsetYBR = ySize - diff;
                 }
-                else if(diffX < 0)
+                imgOffsetYBR = imgYSize;
+            }
+            
+            /*
+            cout << "blockOffsetXBR = " << blockOffsetXBR << endl;
+            cout << "blockOffsetYBR = " << blockOffsetYBR << endl;
+            
+            cout << "imgOffsetXBR = " << imgOffsetXBR << endl;
+            cout << "imgOffsetYBR = " << imgOffsetYBR << endl;
+            */
+            
+            if(blockOffsetXTL > blockOffsetXBR)
+            {
+                return;
+            }
+            
+            if(blockOffsetYTL > blockOffsetYBR)
+            {
+                return;
+            }
+            
+            if(imgOffsetXTL > imgOffsetXBR)
+            {
+                return;
+            }
+            
+            if(imgOffsetYTL > imgOffsetYBR)
+            {
+                return;
+            }
+            
+            boost::uint_fast32_t blockWidth = blockOffsetXBR - blockOffsetXTL;
+            boost::uint_fast32_t blockHeight = blockOffsetYBR - blockOffsetYTL;
+            
+            boost::uint_fast32_t imgWidth = imgOffsetXBR - imgOffsetXTL;
+            boost::uint_fast32_t imgHeight = imgOffsetYBR - imgOffsetYTL;
+            
+            /*
+            cout << "blockWidth = " << blockWidth << endl;
+            cout << "blockHeight = " << blockHeight << endl;
+            
+            cout << "imgWidth = " << imgWidth << endl;
+            cout << "imgHeight = " << imgHeight << endl;
+            */
+            
+            if(blockWidth > imgWidth)
+            {
+                blockWidth = imgWidth;
+            }
+            else if(imgWidth > blockWidth)
+            {
+                imgWidth = blockWidth;
+            }
+            
+            if(blockHeight > imgHeight)
+            {
+                blockHeight = imgHeight;
+            }
+            else if(imgHeight > blockHeight)
+            {
+                imgHeight = blockHeight;
+            }
+            
+            /*
+            cout << "blockWidth = " << blockWidth << endl;
+            cout << "blockHeight = " << blockHeight << endl;
+            
+            cout << "imgWidth = " << imgWidth << endl;
+            cout << "imgHeight = " << imgHeight << endl;
+            */
+            
+            float *data = new float[blockWidth];
+            
+            for(boost::uint_fast32_t i = 0, y = blockOffsetYTL; i < blockHeight; ++i, ++y)
+            {
+                for(boost::uint_fast16_t n = 0; n < numImgBands; ++n)
                 {
-                    sampleLenX = (imgXSize - numeric_cast<boost::uint_fast32_t>(diffX/imgRes)) - imgOffX;
-                }
-
-                if(diffY == 0)
-                {
-                    sampleLenY = ySize - dataOffY;
-                }
-                else if(diffY > 0)
-                {
-                    sampleLenY = (ySize - numeric_cast<boost::uint_fast32_t>(diffY/imgRes)) - dataOffY;
-                }
-                else if(diffY < 0)
-                {
-                    sampleLenY = (imgYSize - numeric_cast<boost::uint_fast32_t>(diffY/imgRes)) - imgOffY;
-                }
-
-                if((sampleLenX > 0) & (sampleLenY > 0))
-                {
-                    float *data = new float[sampleLenX];
-
-                    for(boost::uint_fast32_t i = 0, y = dataOffY; i < sampleLenY; ++i, ++y)
+                    imgBands[n]->RasterIO(GF_Read, imgOffsetXTL, (imgOffsetYTL+i), imgWidth, 1, data, imgWidth, 1, GDT_Float32, 0, 0);
+                    
+                    for(boost::uint_fast32_t j = 0, x = blockOffsetXTL; j < blockWidth; ++j, ++x)
                     {
-                        for(boost::uint_fast16_t n = 0; n < numImgBands; ++n)
-                        {
-                            imgBands[n]->RasterIO(GF_Read, imgOffX, (imgOffY+i), sampleLenX, 1, data, sampleLenX, 1, GDT_Float32, 0, 0);
-
-                            for(boost::uint_fast32_t j = 0, x = dataOffX; j < xSize; ++j, ++x)
-                            {
-                                imageDataBlock[y][x][n] = data[j];
-                            }
-                        }
+                        /*
+                        cout << "y = " << y << endl;
+                        cout << "x = " << x << endl;
+                        cout << "n = " << n << endl;
+                        cout << "j = " << j << endl << endl;
+                        */
+                        imageDataBlock[y][x][n] = data[j];
                     }
                 }
             }
+            delete[] data;
         }
         catch(SPDProcessingException &e)
         {
