@@ -25,11 +25,12 @@
 
 # Author: Pete Bunting
 # Email: petebunting@mac.com
-# Date: 08/05/2012
-# Version: 1.0
+# Date: 03/06/2012
+# Version: 1.01
 #
 # History:
 # Version 1.0 - Created.
+# Version 1.01 - Added option to ignore checks.
 #
 #############################################################################
 
@@ -83,17 +84,20 @@ class BuildSPDMerge (object):
         else:
             print directory + ' does not exist!'
 
-    def buildCmd(self, fileList, outClass, classProvided, spdInput, outputSPD):
+    def buildCmd(self, fileList, outClass, classProvided, spdInput, outputSPD, ignoreChecks):
         print "spdmerge -i ", spdInput,
-
+        
+        if ignoreChecks:
+            print "--ignorechecks ",
+        
         if classProvided:
             for file in fileList:
-                print " --classes ", outClass,
+                print "--classes ", outClass,
 
-        print " ", outputSPD,
+        print outputSPD, " ",
 
         for file in fileList:
-            print " ", file,
+            print file, " ",
 
 
     def run(self, cmdargs):
@@ -104,7 +108,7 @@ class BuildSPDMerge (object):
         if cmdargs.outputclass is None:
             outClassProvided = False
 
-        self.buildCmd(fileList, cmdargs.outputclass, outClassProvided, cmdargs.spdInput, cmdargs.outputSPD)
+        self.buildCmd(fileList, cmdargs.outputclass, outClassProvided, cmdargs.spdInput, cmdargs.outputSPD, cmdargs.ignoreChecks)
 
 
 # Command arguments
@@ -116,6 +120,7 @@ class CmdArgs:
     p.add_option("-c","--class", dest="outputclass", default=None, help="Output class of points")
     p.add_option("-o","--out", dest="outputSPD", default=None, help="Output SPD file from spdmerge")
     p.add_option("","--spdin", dest="spdInput", default=None, help="SPD input file type")
+    p.add_option("","--ignorechecks", action="store_true", dest="ignoreChecks", default=False, help="Turn on SPDMerge option to ignore input file checks.")
 
     (options, args) = p.parse_args()
     self.__dict__.update(options.__dict__)
