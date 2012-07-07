@@ -92,7 +92,7 @@ class SPDLibBatchGenerator (object):
         return outline
 
     def constructOutputFile(self, filelist, outline, outputfile, path):
-        outputXMLFile = open(outputfile, 'w')
+        outputSHFile = open(outputfile, 'w')
         for file in filelist:
             basefile = os.path.basename(file)
             basename = os.path.splitext(basefile)[0]
@@ -100,28 +100,31 @@ class SPDLibBatchGenerator (object):
             outlinereplacepath = outline.replace('$PATH', path, outline.count('$PATH'))
             outlinereplaceinput = outlinereplacepath.replace('$FILEPATH', file, outlinereplacepath.count('$FILEPATH'))
             outlinereplacename = outlinereplaceinput.replace('$FILENAME', basename, outlinereplaceinput.count('$FILENAME'))
-            outputXMLFile.write(comment)
-            outputXMLFile.write(outlinereplacename)
-            outputXMLFile.write('\n\n')
-        outputXMLFile.flush()
-        outputXMLFile.close()
+            outputSHFile.write(comment)
+            outputSHFile.write(outlinereplacename)
+            outputSHFile.write('\n\n')
+        outputSHFile.flush()
+        outputSHFile.close()
 
     def constructMultiOutputFile(self, filelist, outline, outputfile, path):
-        outputFileTmp = ""
+        outputFileTmp = outputfile + str("_runall.sh")
+        outputSHAllFile = open(outputFileTmp, 'w')
+        outShCmd = ""
         for file in filelist:
             basefile = os.path.basename(file)
             basename = os.path.splitext(basefile)[0]
-            comment = '\t# ' + basename + '\n'
             outlinereplacepath = outline.replace('$PATH', path, outline.count('$PATH'))
             outlinereplaceinput = outlinereplacepath.replace('$FILEPATH', file, outlinereplacepath.count('$FILEPATH'))
             outlinereplacename = outlinereplaceinput.replace('$FILENAME', basename, outlinereplaceinput.count('$FILENAME'))
             outputFileTmp = outputfile + basename + str(".sh")
-            outputXMLFile = open(outputFileTmp, 'w')
-            outputXMLFile.write(comment)
-            outputXMLFile.write(outlinereplacename)
-            outputXMLFile.write('\n\n')
-            outputXMLFile.flush()
-            outputXMLFile.close()
+            outputSHFile = open(outputFileTmp, 'w')
+            outputSHFile.write(outlinereplacename)
+            outputSHFile.flush()
+            outputSHFile.close()
+            outShCmd = str("sh ") + outputFileTmp + str("\n")
+            outputSHAllFile.write(outShCmd)
+        outputSHAllFile.flush()
+        outputSHAllFile.close()
 
     def run(self):
         numArgs = len(sys.argv)
