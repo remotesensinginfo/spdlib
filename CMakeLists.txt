@@ -72,6 +72,12 @@ set(CGAL_LIB_PATH /usr/local/lib CACHE PATH "Library PATH for CGAL")
 set(XERCESC_INCLUDE_DIR /usr/local/include CACHE PATH "Include PATH for Xerces-c")
 set(XERCESC_LIB_PATH /usr/local/lib CACHE PATH "Library PATH for Xerces-c")
 
+set(GMP_INCLUDE_DIR /usr/local/include CACHE PATH "Include PATH for GMP")
+set(GMP_LIB_PATH /usr/local/lib CACHE PATH "Library PATH for GMP")
+
+set(MPFR_INCLUDE_DIR /usr/local/include CACHE PATH "Include PATH for MPFR")
+set(MPFR_LIB_PATH /usr/local/lib CACHE PATH "Library PATH for MPFR")
+
 ###############################################################################
 
 ###############################################################################
@@ -199,6 +205,12 @@ set(CGAL_LIBRARY -L${CGAL_LIB_PATH} -lCGAL)
 
 include_directories(${XERCESC_INCLUDE_DIR})
 set(XERCESC_LIBRARIES -L${XERCESC_LIB_PATH} -lxerces-c)
+
+include_directories(${GMP_INCLUDE_DIR})
+set(GMP_LIBRARIES -L${GMP_LIB_PATH} -lgmp)
+
+include_directories(${MPFR_INCLUDE_DIR})
+set(MPFR_LIBRARIES -L${MPFR_LIB_PATH} -lmpfr)
 
 ###############################################################################
 

@@ -228,7 +228,7 @@ add_library( ${SPDLIB_MITLIB_NAME} ${SPDLIB_CPP_MIT_IO} ${SPDLIB_MIT_H} )
 target_link_libraries(${SPDLIB_MITLIB_NAME} ${GDAL_LIBRARY} ${HDF5_LIBRARIES} )
 
 add_library(${SPDLIB_LIB_NAME} ${SPDLIB_CPP_IO} ${SPDLIB_H_IO} ${SPDLIB_CPP_Processing_Interfaces} ${SPDLIB_H_Processing_Interfaces} ${SPDLIB_CPP_Processing_Algorithms} ${SPDLIB_H_Processing_Algorithms} ${SPDLIB_CPP_Utils} ${SPDLIB_H_Utils} ${SPDLIB_CPP_Frameworks} ${SPDLIB_H_Frameworks} ${CMPFIT_C} ${CMPFIT_H} ${TCLAP_H} ${TPS_CPP} ${TPS_H})
-target_link_libraries(${SPDLIB_LIB_NAME} ${SPDLIB_MITLIB_NAME} ${GDAL_LIBRARY} ${HDF5_LIBRARIES} ${LIBLAS_LIBRARY} ${GSL_LIBRARIES} ${CGAL_LIBRARY} ${XERCESC_LIBRARIES} )
+target_link_libraries(${SPDLIB_LIB_NAME} ${SPDLIB_MITLIB_NAME} ${GDAL_LIBRARY} ${HDF5_LIBRARIES} ${LIBLAS_LIBRARY} ${GSL_LIBRARIES} ${CGAL_LIBRARY} ${XERCESC_LIBRARIES} ${GMP_LIBRARIES} ${MPFR_LIBRARIES} )
 ###############################################################################
 
 ###############################################################################
