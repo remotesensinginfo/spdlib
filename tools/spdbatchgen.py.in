@@ -11,7 +11,7 @@
 # furnished to do so, subject to the following conditions:
 # The above copyright notice and this permission notice shall be included in
 # all copies or substantial portions of the Software.
-# 
+#
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 # IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 # FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -21,7 +21,7 @@
 # THE SOFTWARE.
 #
 #
-# Purpose:  A class to generate XML for the RSGISLib library based 
+# Purpose:  A class to generate XML for the RSGISLib library based
 #           on a supplied template.
 # Author: Pete Bunting
 # Email: pete.bunting@aber.ac.uk
@@ -48,7 +48,7 @@ class SPDLibBatchGenerator (object):
         if(fileExtension == extension):
             foundExtension = True
         return foundExtension
-    
+
     def findFilesIterative(self, filelist, directory, extension):
         if os.path.exists(directory):
             if os.path.isdir(directory):
@@ -65,8 +65,8 @@ class SPDLibBatchGenerator (object):
                 print directory + ' is not a directory!'
         else:
             print directory + ' does not exist!'
-            
-            
+
+
     def findFiles(self, filelist, directory, extension):
         if os.path.exists(directory):
             if os.path.isdir(directory):
@@ -83,14 +83,14 @@ class SPDLibBatchGenerator (object):
                 print directory + ' is not a directory!'
         else:
             print directory + ' does not exist!'
-            
+
     def readInputTemplate(self, inputFile):
         outline = str()
         inputXMLFile = open(inputFile, 'r')
         for eachLine in inputXMLFile:
             outline = outline + eachLine
-        return outline  
-    
+        return outline
+
     def constructOutputFile(self, filelist, outline, outputfile, path):
         outputXMLFile = open(outputfile, 'w')
         for file in filelist:
@@ -105,18 +105,36 @@ class SPDLibBatchGenerator (object):
             outputXMLFile.write('\n\n')
         outputXMLFile.flush()
         outputXMLFile.close()
-    
+
+    def constructMultiOutputFile(self, filelist, outline, outputfile, path):
+        outputFileTmp = ""
+        for file in filelist:
+            basefile = os.path.basename(file)
+            basename = os.path.splitext(basefile)[0]
+            comment = '\t# ' + basename + '\n'
+            outlinereplacepath = outline.replace('$PATH', path, outline.count('$PATH'))
+            outlinereplaceinput = outlinereplacepath.replace('$FILEPATH', file, outlinereplacepath.count('$FILEPATH'))
+            outlinereplacename = outlinereplaceinput.replace('$FILENAME', basename, outlinereplaceinput.count('$FILENAME'))
+            outputFileTmp = outputfile + basename + str(".sh")
+            outputXMLFile = open(outputFileTmp, 'w')
+            outputXMLFile.write(comment)
+            outputXMLFile.write(outlinereplacename)
+            outputXMLFile.write('\n\n')
+            outputXMLFile.flush()
+            outputXMLFile.close()
+
     def run(self):
         numArgs = len(sys.argv)
-        if numArgs == 7:
+        if numArgs == 8:
             dir = sys.argv[1].strip()
             extension = sys.argv[2].strip()
             path = sys.argv[3].strip()
             outfile = sys.argv[4].strip()
             outlineFile = sys.argv[5].strip()
             recurse = sys.argv[6].strip()
+            outputtype = sys.argv[7].strip()
             filelist = list()
-            
+
             if(str(recurse) == '--recurse=yes'):
                 self.findFilesIterative(filelist, dir, extension)
             elif(str(recurse) == '--recurse=no'):
@@ -124,22 +142,25 @@ class SPDLibBatchGenerator (object):
             else:
                 print 'Need to provide a recurse option (with no spaces).'
                 print '--recurse=yes or --recurse=no'
-            
+
             if os.path.exists(outlineFile):
                 outline = self.readInputTemplate(outlineFile)
-                self.constructOutputFile(filelist, outline, outfile, path)
+                if outputtype == '--output_type=single':
+                    self.constructOutputFile(filelist, outline, outfile, path)
+                elif outputtype == '--output_type=multiple':
+                        self.constructMultiOutputFile(filelist, outline, outfile, path)
             else:
                 print 'Input File does not exist'
-            
-            
-            
+
+
+
         else:
             self.help()
-    
+
     def help(self):
         print 'spdbatchgen.py script generates the XML commands for the '
         print 'SPD software library from a user defined template'
-        print 'Usage: python spdbatchgen.py <DIR> <EXT> <PATH> <OUTPUT> <TEMPLATE> --recurse=yes|no'
+        print 'Usage: python spdbatchgen.py <DIR> <EXT> <PATH> <OUTPUT> <TEMPLATE> --recurse=yes|no --output_type=single|multiple'
         print '\t<DIR> - input directory of the files to be processed.'
         print '\t<EXT> - file extension of the files of interest.'
         print '\t<PATH> - path used for subsitution'
@@ -149,10 +170,10 @@ class SPDLibBatchGenerator (object):
         print '\t\t $FILENAME - Replaced with file name'
         print '\t\t $PATH - Replaced with <PATH>'
         print '\t --recurse - whether the input <DIR> should be iteratively recused for files ending <EXT>.'
+        print '\t --output_type - whether a single or multiple xml file(s) will be creates. If multiple is selected a shell script to run all xml files will also be generated.'
         print '\nThis script was distributed with version @SPDLIB_PACKAGE_VERSION@ of the @SPDLIB_PACKAGE@ library.'
         print 'For maintenance email @SPDLIB_PACKAGE_BUGREPORT@'
 
 if __name__ == '__main__':
     obj = SPDLibBatchGenerator()
     obj.run()
-    
