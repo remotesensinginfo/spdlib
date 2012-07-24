@@ -95,7 +95,7 @@ int main (int argc, char * const argv[])
         
         SPDFile **spdFiles = new SPDFile*[numOfFiles];
         uint_fast16_t outIdx = 0;
-        for(uint_fast16_t i = startIdx; i < fileNames.size(); ++i)
+        for(boost::uint_fast16_t i = startIdx; i < fileNames.size(); ++i)
         {
             spdFiles[outIdx] = new SPDFile(fileNames.at(i));
             spdReader.readHeaderInfo(fileNames.at(i), spdFiles[outIdx]);
@@ -118,7 +118,7 @@ int main (int argc, char * const argv[])
             throw SPDProcessingException("Option was not recognised, need to seleted either spherical or cartesian.");
         }
         
-        for(uint_fast16_t i = 0; i < numOfFiles; ++i)
+        for(boost::uint_fast16_t i = 0; i < numOfFiles; ++i)
         {
             delete spdFiles[i];
         }

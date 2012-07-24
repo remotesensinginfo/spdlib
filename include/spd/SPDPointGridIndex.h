@@ -83,7 +83,7 @@ namespace spdlib
 		bool getPointsInRadius(std::vector<SPDPoint*> *pts, double eastings, double northings, double radius) throw(SPDProcessingException);
         bool getSetNumOfPoints(std::vector<SPDPoint*> *pts, double eastings, double northings, boost::uint_fast16_t numPts, double maxRadius) throw(SPDProcessingException);
         void thinPtsInBins(boost::uint_fast16_t elevVal, boost::uint_fast16_t selectHighOrLow, boost::uint_fast16_t maxNumPtsPerBin) throw(SPDProcessingException);
-        //void thinPtsInBinsWithDelete(uint_fast16_t elevVal,boost::uint_fast16_t selectHighOrLow,boost::uint_fast16_t maxNumPtsPerBin) throw(SPDProcessingException);
+        //void thinPtsInBinsWithDelete(boost::uint_fast16_t elevVal,boost::uint_fast16_t selectHighOrLow,boost::uint_fast16_t maxNumPtsPerBin) throw(SPDProcessingException);
         void thinPtsWithAvZ(boost::uint_fast16_t elevVal) throw(SPDProcessingException);
         void getAllPointsInGrid(std::vector<SPDPoint*> *pts) throw(SPDProcessingException);
         boost::uint_fast32_t getXBins(){return xBins;};

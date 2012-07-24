@@ -44,7 +44,7 @@ namespace spdlib
     class SPDProgressiveMophologicalGrdFilter : public SPDDataBlockProcessor
 	{
 	public:
-        SPDProgressiveMophologicalGrdFilter(uint_fast16_t initFilterHSize, boost::uint_fast16_t maxFilterHSize, float terrainSlope, float initElevDiff, float maxElevDiff, float grdPtDev, bool medianFilter,boost::uint_fast16_t medianFilterHSize,boost::uint_fast16_t classParameters);
+        SPDProgressiveMophologicalGrdFilter(boost::uint_fast16_t initFilterHSize, boost::uint_fast16_t maxFilterHSize, float terrainSlope, float initElevDiff, float maxElevDiff, float grdPtDev, bool medianFilter,boost::uint_fast16_t medianFilterHSize,boost::uint_fast16_t classParameters);
         void processDataBlockImage(SPDFile *inSPDFile, std::vector<SPDPulse*> ***pulses, float ***imageDataBlock, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast32_t numImgBands, float binSize) throw(SPDProcessingException);
 		void processDataBlock(SPDFile *inSPDFile, std::vector<SPDPulse*> ***pulses, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, float binSize) throw(SPDProcessingException);
         
@@ -72,7 +72,7 @@ namespace spdlib
 		void findMinSurface(std::vector<SPDPulse*> ***pulses, float **elev, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize);
 		void applyMedianFilter(float **elev, float **elevMedian, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast16_t filterHSize, boost::uint_fast16_t **element);
 		void fillHolesInMinSurface(float **elev, float **elevOut, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast16_t filterHSize);
-		void createStructuringElement(uint_fast16_t **element, boost::uint_fast16_t filterHSize);
+		void createStructuringElement(boost::uint_fast16_t **element, boost::uint_fast16_t filterHSize);
         boost::uint_fast16_t initFilterHSize;
         boost::uint_fast16_t maxFilterHSize;
         float terrainSlope;

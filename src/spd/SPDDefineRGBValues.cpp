@@ -29,7 +29,7 @@ namespace spdlib
 {
 
 
-    SPDDefineRGBValues::SPDDefineRGBValues(uint_fast16_t redBand, boost::uint_fast16_t greenBand, boost::uint_fast16_t blueBand)
+    SPDDefineRGBValues::SPDDefineRGBValues(boost::uint_fast16_t redBand, boost::uint_fast16_t greenBand, boost::uint_fast16_t blueBand)
     {
         this->redBand = redBand;
         this->greenBand = greenBand;

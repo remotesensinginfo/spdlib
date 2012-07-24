@@ -26,7 +26,7 @@
 namespace spdlib
 {
     
-    SPDProgressiveMophologicalGrdFilter::SPDProgressiveMophologicalGrdFilter(uint_fast16_t initFilterHSize, boost::uint_fast16_t maxFilterHSize, float terrainSlope, float initElevDiff, float maxElevDiff, float grdPtDev, bool medianFilter, boost::uint_fast16_t medianFilterHSize, boost::uint_fast16_t classParameters)
+    SPDProgressiveMophologicalGrdFilter::SPDProgressiveMophologicalGrdFilter(boost::uint_fast16_t initFilterHSize, boost::uint_fast16_t maxFilterHSize, float terrainSlope, float initElevDiff, float maxElevDiff, float grdPtDev, bool medianFilter, boost::uint_fast16_t medianFilterHSize, boost::uint_fast16_t classParameters)
     {
         this->initFilterHSize = initFilterHSize;
         this->maxFilterHSize = maxFilterHSize;
