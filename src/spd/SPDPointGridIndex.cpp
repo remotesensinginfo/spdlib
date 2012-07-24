@@ -590,7 +590,7 @@ namespace spdlib
             
             if(ptGrid[yIdx][xIdx]->size() >= numPts)
             {
-                sort(ptGrid[yIdx][xIdx]->begin(), ptGrid[yIdx][xIdx]->end(), compareFuncSortByDistanceTo);
+                std::sort(ptGrid[yIdx][xIdx]->begin(), ptGrid[yIdx][xIdx]->end(), compareFuncSortByDistanceTo);
                 
                 for(boost::uint_fast16_t i = 0; i < numPts; ++i)
                 {
@@ -717,7 +717,7 @@ namespace spdlib
                     }
                     //std::cout << "num poss points (1) = " << possPoints->size() << std::endl;
                     
-                    sort(possPoints->begin(), possPoints->end(), compareFuncSortByDistanceTo);
+                    std::sort(possPoints->begin(), possPoints->end(), compareFuncSortByDistanceTo);
                     
                     //std::cout << "num poss points (2) = " << possPoints->size() << std::endl;
                     
@@ -757,11 +757,11 @@ namespace spdlib
                     {
                         if(selectHighOrLow == SPD_SELECT_LOWEST)
                         {
-                            sort(ptGrid[i][j]->begin(), ptGrid[i][j]->end(), compareFuncSortByZSmallestFirst);
+                            std::sort(ptGrid[i][j]->begin(), ptGrid[i][j]->end(), compareFuncSortByZSmallestFirst);
                         }
                         else if(selectHighOrLow == SPD_SELECT_HIGHEST)
                         {
-                            sort(ptGrid[i][j]->begin(), ptGrid[i][j]->end(), compareFuncSortByZLargestFirst);
+                            std::sort(ptGrid[i][j]->begin(), ptGrid[i][j]->end(), compareFuncSortByZLargestFirst);
                         }
                         else
                         {
@@ -772,11 +772,11 @@ namespace spdlib
                     {
                         if(selectHighOrLow == SPD_SELECT_LOWEST)
                         {
-                            sort(ptGrid[i][j]->begin(), ptGrid[i][j]->end(), compareFuncSortByHeightSmallestFirst);
+                            std::sort(ptGrid[i][j]->begin(), ptGrid[i][j]->end(), compareFuncSortByHeightSmallestFirst);
                         }
                         else if(selectHighOrLow == SPD_SELECT_HIGHEST)
                         {
-                            sort(ptGrid[i][j]->begin(), ptGrid[i][j]->end(), compareFuncSortByHeightLargestFirst);
+                            std::sort(ptGrid[i][j]->begin(), ptGrid[i][j]->end(), compareFuncSortByHeightLargestFirst);
                         }
                         else
                         {
@@ -812,11 +812,11 @@ namespace spdlib
                     {
                         if(selectHighOrLow == SPD_SELECT_LOWEST)
                         {
-                            sort(ptGrid[i][j]->begin(), ptGrid[i][j]->end(), compareFuncSortByZSmallestFirst);
+                            std::sort(ptGrid[i][j]->begin(), ptGrid[i][j]->end(), compareFuncSortByZSmallestFirst);
                         }
                         else if(selectHighOrLow == SPD_SELECT_HIGHEST)
                         {
-                            sort(ptGrid[i][j]->begin(), ptGrid[i][j]->end(), compareFuncSortByZLargestFirst);
+                            std::sort(ptGrid[i][j]->begin(), ptGrid[i][j]->end(), compareFuncSortByZLargestFirst);
                         }
                         else
                         {
@@ -827,11 +827,11 @@ namespace spdlib
                     {
                         if(selectHighOrLow == SPD_SELECT_LOWEST)
                         {
-                            sort(ptGrid[i][j]->begin(), ptGrid[i][j]->end(), compareFuncSortByHeightSmallestFirst);
+                            std::sort(ptGrid[i][j]->begin(), ptGrid[i][j]->end(), compareFuncSortByHeightSmallestFirst);
                         }
                         else if(selectHighOrLow == SPD_SELECT_HIGHEST)
                         {
-                            sort(ptGrid[i][j]->begin(), ptGrid[i][j]->end(), compareFuncSortByHeightLargestFirst);
+                            std::sort(ptGrid[i][j]->begin(), ptGrid[i][j]->end(), compareFuncSortByHeightLargestFirst);
                         }
                         else
                         {

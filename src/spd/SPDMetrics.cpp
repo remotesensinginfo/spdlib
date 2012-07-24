@@ -412,7 +412,7 @@ namespace spdlib{
         double median = 0;
         if(ptVals->size() > 0)
 		{
-            sort(ptVals->begin(), ptVals->end());
+            std::sort(ptVals->begin(), ptVals->end());
             /*for(unsigned int i = 0; i < ptVals->size(); ++i)
             {
                 if( i == 0 )
@@ -800,7 +800,7 @@ namespace spdlib{
         if(ptVals->size() > 0)
 		{
             double quatFrac = ((double)percentile)/100;
-            sort(ptVals->begin(), ptVals->end());
+            std::sort(ptVals->begin(), ptVals->end());
             /*std::cout << "Calc Percentile " << quatFrac << std::endl;
             for(unsigned int i = 0; i < ptVals->size(); ++i)
             {
@@ -847,7 +847,7 @@ namespace spdlib{
         double personModeSkew = 0;
         if(ptVals->size() > 0)
 		{
-            sort(ptVals->begin(), ptVals->end());
+            std::sort(ptVals->begin(), ptVals->end());
             double mode = this->calcBinnedMode(ptVals, resolution);
             double mean = gsl_stats_mean (&(*ptVals)[0], 1, ptVals->size());
             double stddev = gsl_stats_sd (&(*ptVals)[0], 1, ptVals->size());
@@ -868,7 +868,7 @@ namespace spdlib{
         double personMedianSkew = 0;
         if(ptVals->size() > 0)
 		{
-            sort(ptVals->begin(), ptVals->end());
+            std::sort(ptVals->begin(), ptVals->end());
             double median = gsl_stats_median_from_sorted_data(&(*ptVals)[0], 1, ptVals->size());
             double mean = gsl_stats_mean (&(*ptVals)[0], 1, ptVals->size());
             double stddev = gsl_stats_sd (&(*ptVals)[0], 1, ptVals->size());
@@ -1550,7 +1550,7 @@ namespace spdlib{
         double median = 0;
         if(ptVals->size() > 0)
 		{
-            sort(ptVals->begin(), ptVals->end());
+            std::sort(ptVals->begin(), ptVals->end());
             /*for(unsigned int i = 0; i < ptVals->size(); ++i)
              {
              if( i == 0 )
@@ -1715,7 +1715,7 @@ namespace spdlib{
         if(ptVals->size() > 0)
 		{
             double quatFrac = ((double)percentile)/100;
-            sort(ptVals->begin(), ptVals->end());
+            std::sort(ptVals->begin(), ptVals->end());
             /*std::cout << "Calc Percentile " << quatFrac << std::endl;
              for(unsigned int i = 0; i < ptVals->size(); ++i)
              {
@@ -1762,7 +1762,7 @@ namespace spdlib{
         double personModeSkew = 0;
         if(ptVals->size() > 0)
 		{
-            sort(ptVals->begin(), ptVals->end());
+            std::sort(ptVals->begin(), ptVals->end());
             double mode = this->calcBinnedMode(ptVals, resolution);
             double mean = gsl_stats_mean (&(*ptVals)[0], 1, ptVals->size());
             double stddev = gsl_stats_sd (&(*ptVals)[0], 1, ptVals->size());
@@ -1783,7 +1783,7 @@ namespace spdlib{
         double personMedianSkew = 0;
         if(ptVals->size() > 0)
 		{
-            sort(ptVals->begin(), ptVals->end());
+            std::sort(ptVals->begin(), ptVals->end());
             double median = gsl_stats_median_from_sorted_data(&(*ptVals)[0], 1, ptVals->size());
             double mean = gsl_stats_mean (&(*ptVals)[0], 1, ptVals->size());
             double stddev = gsl_stats_sd (&(*ptVals)[0], 1, ptVals->size());
@@ -2426,7 +2426,7 @@ namespace spdlib{
         double median = 0;
         if(ptVals->size() > 0)
 		{
-            sort(ptVals->begin(), ptVals->end());
+            std::sort(ptVals->begin(), ptVals->end());
             median = gsl_stats_median_from_sorted_data(&(*ptVals)[0], 1, ptVals->size());
         }
         else
@@ -2564,7 +2564,7 @@ namespace spdlib{
         if(ptVals->size() > 0)
 		{
             double quatFrac = ((float)percentile)/100;
-            sort(ptVals->begin(), ptVals->end());
+            std::sort(ptVals->begin(), ptVals->end());
             quantile = gsl_stats_quantile_from_sorted_data(&(*ptVals)[0], 1, ptVals->size(), quatFrac);
         }
         else 
@@ -2597,7 +2597,7 @@ namespace spdlib{
         double personModeSkew = 0;
         if(ptVals->size() > 0)
 		{
-            sort(ptVals->begin(), ptVals->end());
+            std::sort(ptVals->begin(), ptVals->end());
             double mode = this->calcBinnedMode(ptVals, resolution);
             double mean = gsl_stats_mean (&(*ptVals)[0], 1, ptVals->size());
             double stddev = gsl_stats_sd (&(*ptVals)[0], 1, ptVals->size());
@@ -2618,7 +2618,7 @@ namespace spdlib{
         double personMedianSkew = 0;
         if(ptVals->size() > 0)
 		{
-            sort(ptVals->begin(), ptVals->end());
+            std::sort(ptVals->begin(), ptVals->end());
             double median = gsl_stats_median_from_sorted_data(&(*ptVals)[0], 1, ptVals->size());
             double mean = gsl_stats_mean (&(*ptVals)[0], 1, ptVals->size());
             double stddev = gsl_stats_sd (&(*ptVals)[0], 1, ptVals->size());
@@ -2736,7 +2736,7 @@ namespace spdlib{
         double median = 0;
         if(ptVals->size() > 0)
 		{
-            sort(ptVals->begin(), ptVals->end());
+            std::sort(ptVals->begin(), ptVals->end());
             median = gsl_stats_median_from_sorted_data(&(*ptVals)[0], 1, ptVals->size());
         }
         else
@@ -2874,7 +2874,7 @@ namespace spdlib{
         if(ptVals->size() > 0)
 		{
             double quatFrac = ((float)percentile)/100;
-            sort(ptVals->begin(), ptVals->end());
+            std::sort(ptVals->begin(), ptVals->end());
             quantile = gsl_stats_quantile_from_sorted_data(&(*ptVals)[0], 1, ptVals->size(), quatFrac);
         }
         else 
@@ -2907,7 +2907,7 @@ namespace spdlib{
         double personModeSkew = 0;
         if(ptVals->size() > 0)
 		{
-            sort(ptVals->begin(), ptVals->end());
+            std::sort(ptVals->begin(), ptVals->end());
             double mode = this->calcBinnedMode(ptVals, resolution);
             double mean = gsl_stats_mean (&(*ptVals)[0], 1, ptVals->size());
             double stddev = gsl_stats_sd (&(*ptVals)[0], 1, ptVals->size());
@@ -2928,7 +2928,7 @@ namespace spdlib{
         double personMedianSkew = 0;
         if(ptVals->size() > 0)
 		{
-            sort(ptVals->begin(), ptVals->end());
+            std::sort(ptVals->begin(), ptVals->end());
             double median = gsl_stats_median_from_sorted_data(&(*ptVals)[0], 1, ptVals->size());
             double mean = gsl_stats_mean (&(*ptVals)[0], 1, ptVals->size());
             double stddev = gsl_stats_sd (&(*ptVals)[0], 1, ptVals->size());
@@ -3570,7 +3570,7 @@ namespace spdlib{
         double median = 0;
         if(ptVals->size() > 0)
 		{
-            sort(ptVals->begin(), ptVals->end());
+            std::sort(ptVals->begin(), ptVals->end());
             median = gsl_stats_median_from_sorted_data(&(*ptVals)[0], 1, ptVals->size());
         }
         else
@@ -3708,7 +3708,7 @@ namespace spdlib{
         if(ptVals->size() > 0)
 		{
             double quatFrac = ((float)percentile)/100;
-            sort(ptVals->begin(), ptVals->end());
+            std::sort(ptVals->begin(), ptVals->end());
             quantile = gsl_stats_quantile_from_sorted_data(&(*ptVals)[0], 1, ptVals->size(), quatFrac);
         }
         else 
@@ -3741,7 +3741,7 @@ namespace spdlib{
         double personModeSkew = 0;
         if(ptVals->size() > 0)
 		{
-            sort(ptVals->begin(), ptVals->end());
+            std::sort(ptVals->begin(), ptVals->end());
             double mode = this->calcBinnedMode(ptVals, resolution);
             double mean = gsl_stats_mean (&(*ptVals)[0], 1, ptVals->size());
             double stddev = gsl_stats_sd (&(*ptVals)[0], 1, ptVals->size());
@@ -3762,7 +3762,7 @@ namespace spdlib{
         double personMedianSkew = 0;
         if(ptVals->size() > 0)
 		{
-            sort(ptVals->begin(), ptVals->end());
+            std::sort(ptVals->begin(), ptVals->end());
             double median = gsl_stats_median_from_sorted_data(&(*ptVals)[0], 1, ptVals->size());
             double mean = gsl_stats_mean (&(*ptVals)[0], 1, ptVals->size());
             double stddev = gsl_stats_sd (&(*ptVals)[0], 1, ptVals->size());

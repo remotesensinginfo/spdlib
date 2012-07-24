@@ -899,7 +899,7 @@ namespace spdlib
 				}
 				
 				// Add points to pulse
-				sort(outPoints->begin(), outPoints->end(), cmpSPDPointTime);
+                std::sort(outPoints->begin(), outPoints->end(), cmpSPDPointTime);
 				
 				pulse->pts = new std::vector<SPDPoint*>();
 				pulse->pts->reserve(outPoints->size());
