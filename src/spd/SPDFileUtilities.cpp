@@ -30,13 +30,13 @@ namespace spdlib
         
     }
     
-	void SPDFileUtilities::getDIRList(string dir, list<string> *files) throw(SPDException)
+	void SPDFileUtilities::getDIRList(std::string dir, std::list<std::string> *files) throw(SPDException)
 	{
 		DIR *dp;
 		struct dirent *dirp;
 		if((dp  = opendir(dir.c_str())) == NULL) 
 		{
-			string message = string("Could not open ") + dir;
+			std::string message = std::string("Could not open ") + dir;
 			throw SPDException(message);
 		}
 		
@@ -47,13 +47,13 @@ namespace spdlib
 		closedir(dp);
 	}
 	
-	void SPDFileUtilities::getDIRList(string dir, vector<string> *files) throw(SPDException)
+	void SPDFileUtilities::getDIRList(std::string dir, std::vector<std::string> *files) throw(SPDException)
 	{
 		DIR *dp;
 		struct dirent *dirp;
 		if((dp  = opendir(dir.c_str())) == NULL) 
 		{
-			string message = string("Could not open ") + dir;
+			std::string message = std::string("Could not open ") + dir;
 			throw SPDException(message);
 		}
 		
@@ -64,21 +64,21 @@ namespace spdlib
 		closedir(dp);
 	}
 	
-	void SPDFileUtilities::getDIRList(string dir, string ext, list<string> *files, bool withpath) throw(SPDException)
+	void SPDFileUtilities::getDIRList(std::string dir, std::string ext, std::list<std::string> *files, bool withpath) throw(SPDException)
 	{
 		DIR *dp;
 		struct dirent *dirp;
 		if((dp  = opendir(dir.c_str())) == NULL) 
 		{
-			string message = string("Could not open ") + dir;
+			std::string message = std::string("Could not open ") + dir;
 			throw SPDException(message);
 		}
 		
-		string filename = "";
+		std::string filename = "";
 		
 		while ((dirp = readdir(dp)) != NULL) 
 		{
-			filename = string(dirp->d_name);
+			filename = std::string(dirp->d_name);
 			if(SPDFileUtilities::getExtension(filename) == ext)
 			{
 				if(withpath)
@@ -91,21 +91,21 @@ namespace spdlib
 		closedir(dp);		
 	}
 	
-	void SPDFileUtilities::getDIRList(string dir, string ext, vector<string> *files, bool withpath) throw(SPDException)
+	void SPDFileUtilities::getDIRList(std::string dir, std::string ext, std::vector<std::string> *files, bool withpath) throw(SPDException)
 	{
 		DIR *dp;
 		struct dirent *dirp;
 		if((dp  = opendir(dir.c_str())) == NULL) 
 		{
-			string message = string("Could not open ") + dir;
+			std::string message = std::string("Could not open ") + dir;
 			throw SPDException(message);
 		}
 		
-		string filename = "";
+		std::string filename = "";
 		
 		while ((dirp = readdir(dp)) != NULL) 
 		{
-			filename = string(dirp->d_name);
+			filename = std::string(dirp->d_name);
 			if(SPDFileUtilities::getExtension(filename) == ext)
 			{
 				if(withpath)
@@ -118,22 +118,22 @@ namespace spdlib
 		closedir(dp);		
 	}
 	
-	string* SPDFileUtilities::getDIRList(string dir, string ext, boost::uint_fast32_t *numFiles, bool withpath) throw(SPDException)
+	std::string* SPDFileUtilities::getDIRList(std::string dir, std::string ext, boost::uint_fast32_t *numFiles, bool withpath) throw(SPDException)
 	{
-		vector<string> *files = new vector<string>();
+		std::vector<std::string> *files = new std::vector<std::string>();
 		DIR *dp;
 		struct dirent *dirp;
 		if((dp  = opendir(dir.c_str())) == NULL) 
 		{
-			string message = string("Could not open ") + dir;
+			std::string message = std::string("Could not open ") + dir;
 			throw SPDException(message);
 		}
 		
-		string filename = "";
+		std::string filename = "";
 		
 		while ((dirp = readdir(dp)) != NULL) 
 		{
-			filename = string(dirp->d_name);
+			filename = std::string(dirp->d_name);
 			if(SPDFileUtilities::getExtension(filename) == ext)
 			{
 				if(withpath)
@@ -146,7 +146,7 @@ namespace spdlib
 		closedir(dp);
 		
 		*numFiles = files->size();
-		string *outputFiles = new string[*numFiles];
+		std::string *outputFiles = new std::string[*numFiles];
 		for(boost::uint_fast32_t i = 0; i < *numFiles; i++)
 		{
 			outputFiles[i] = dir + files->at(i);
@@ -156,23 +156,23 @@ namespace spdlib
 		return outputFiles;
 	}
 	
-	string* SPDFileUtilities::getFilesInDIRWithName(string dir, string name, boost::uint_fast32_t *numFiles) throw(SPDException)
+	std::string* SPDFileUtilities::getFilesInDIRWithName(std::string dir, std::string name, boost::uint_fast32_t *numFiles) throw(SPDException)
 	{
-		vector<string> *files = new vector<string>();
+		std::vector<std::string> *files = new std::vector<std::string>();
 		DIR *dp;
 		struct dirent *dirp;
 		if((dp  = opendir(dir.c_str())) == NULL) 
 		{
-			string message = string("Could not open ") + dir;
+			std::string message = std::string("Could not open ") + dir;
 			throw SPDException(message);
 		}
 		
-		string filename = "";
+		std::string filename = "";
 		
 		while ((dirp = readdir(dp)) != NULL) 
 		{
-			filename = string(dirp->d_name);
-			//cout << "Filename (" << name << "): " << filename << " (" << SPDFileUtilities::getFileNameNoExtension(filename) << ")"<< endl;
+			filename = std::string(dirp->d_name);
+			//std::cout << "Filename (" << name << "): " << filename << " (" << SPDFileUtilities::getFileNameNoExtension(filename) << ")"<< std::endl;
 			if(SPDFileUtilities::getFileNameNoExtension(filename) == name)
 			{
 				files->push_back(filename);
@@ -181,7 +181,7 @@ namespace spdlib
 		closedir(dp);
 		
 		*numFiles = files->size();
-		string *outputFiles = new string[*numFiles];
+		std::string *outputFiles = new std::string[*numFiles];
 		for(boost::uint_fast32_t i = 0; i < *numFiles; i++)
 		{
 			outputFiles[i] = dir + files->at(i);
@@ -191,9 +191,9 @@ namespace spdlib
 		return outputFiles;
 	}
 	
-	string SPDFileUtilities::getFileName(string filepath)
+	std::string SPDFileUtilities::getFileName(std::string filepath)
 	{
-		//cout << filepath << endl;
+		//std::cout << filepath << std::endl;
 		boost::uint_fast32_t strSize = filepath.size();
 		boost::uint_fast32_t lastSlash = 0;
 		for(boost::uint_fast32_t i = 0; i < strSize; i++)
@@ -203,14 +203,14 @@ namespace spdlib
 				lastSlash = i + 1;
 			}
 		}
-		string filename = filepath.substr(lastSlash);
-		//cout << filename << endl;
+		std::string filename = filepath.substr(lastSlash);
+		//std::cout << filename << std::endl;
 		return filename;	
 	}
 	
-	string SPDFileUtilities::getFileNameNoExtension(string filepath)
+	std::string SPDFileUtilities::getFileNameNoExtension(std::string filepath)
 	{
-		//cout << filepath << endl;
+		//std::cout << filepath << std::endl;
 		boost::uint_fast32_t strSize = filepath.size();
 		boost::uint_fast32_t lastSlash = 0;
 		for(boost::uint_fast32_t i = 0; i < strSize; i++)
@@ -220,8 +220,8 @@ namespace spdlib
 				lastSlash = i + 1;
 			}
 		}
-		string filename = filepath.substr(lastSlash);
-		//cout << filename << endl;
+		std::string filename = filepath.substr(lastSlash);
+		//std::cout << filename << std::endl;
 		
 		strSize = filename.size();
 		boost::uint_fast32_t lastpt = 0;
@@ -233,12 +233,12 @@ namespace spdlib
 			}
 		}
 		
-		string layerName = filename.substr(0, lastpt);
-		//cout << layerName << endl;
+		std::string layerName = filename.substr(0, lastpt);
+		//std::cout << layerName << std::endl;
 		return layerName;	
 	}
 	
-	string SPDFileUtilities::removeExtension(string filepath)
+	std::string SPDFileUtilities::removeExtension(std::string filepath)
 	{
 		boost::uint_fast32_t strSize = filepath.size();
 		boost::uint_fast32_t lastpt = 0;
@@ -250,12 +250,12 @@ namespace spdlib
 			}
 		}
 		
-		string layerName = filepath.substr(0, lastpt);
-		//cout << layerName << endl;
+		std::string layerName = filepath.substr(0, lastpt);
+		//std::cout << layerName << std::endl;
 		return layerName;	
 	}
 	
-	string SPDFileUtilities::getExtension(string filepath)
+	std::string SPDFileUtilities::getExtension(std::string filepath)
 	{
 		boost::uint_fast32_t strSize = filepath.size();
 		boost::uint_fast32_t lastpt = 0;
@@ -267,12 +267,12 @@ namespace spdlib
 			}
 		}
 		
-		string extension = filepath.substr(lastpt);
-		//cout << layerName << endl;
+		std::string extension = filepath.substr(lastpt);
+		//std::cout << layerName << std::endl;
 		return extension;	
 	}
 	
-	string SPDFileUtilities::getFileDirectoryPath(string filepath)
+	std::string SPDFileUtilities::getFileDirectoryPath(std::string filepath)
 	{
 		boost::uint_fast32_t strSize = filepath.size();
 		boost::uint_fast32_t lastSlash = 0;
@@ -283,12 +283,12 @@ namespace spdlib
 				lastSlash = i + 1;
 			}
 		}
-		string path = filepath.substr(0, lastSlash);
-		//cout << path << endl;
+		std::string path = filepath.substr(0, lastSlash);
+		//std::cout << path << std::endl;
 		return path;	
 	}
 	
-	bool SPDFileUtilities::checkFilePresent(string file)
+	bool SPDFileUtilities::checkFilePresent(std::string file)
 	{
 		struct stat stFileInfo; 
 		bool blnReturn; 
@@ -307,9 +307,9 @@ namespace spdlib
 		return blnReturn; 
 	}
     
-    bool SPDFileUtilities::checkDIR4SHP(string dir, string shp) throw(SPDException)
+    bool SPDFileUtilities::checkDIR4SHP(std::string dir, std::string shp) throw(SPDException)
 	{
-		string *dirList = NULL;
+		std::string *dirList = NULL;
 		boost::uint_fast32_t numFiles = 0;
 		bool returnVal = false;
 		
@@ -336,9 +336,9 @@ namespace spdlib
 		return returnVal;
 	}
 	
-	void SPDFileUtilities::deleteSHP(string dir, string shp) throw(SPDException)
+	void SPDFileUtilities::deleteSHP(std::string dir, std::string shp) throw(SPDException)
 	{
-		string *dirList = NULL;
+		std::string *dirList = NULL;
 		boost::uint_fast32_t numFiles = 0;
 		
 		try
@@ -346,62 +346,62 @@ namespace spdlib
 			dirList = SPDFileUtilities::getFilesInDIRWithName(dir, shp, &numFiles);
 			if(numFiles > 0)
 			{
-				cout << "Deleting shapefile...\n";
+				std::cout << "Deleting shapefile...\n";
 				for(boost::uint_fast32_t i = 0; i < numFiles; ++i)
 				{
 					if(SPDFileUtilities::getExtension(dirList[i]) == ".shp")
 					{
-						cout << dirList[i];
+						std::cout << dirList[i];
 						if( remove( dirList[i].c_str() ) != 0 )
 						{
 							throw SPDException("Could not delete file.");
 						}
-						cout << " deleted\n";
+						std::cout << " deleted\n";
 					}
 					else if(SPDFileUtilities::getExtension(dirList[i]) == ".shx")
 					{
-						cout << dirList[i];
+						std::cout << dirList[i];
 						if( remove( dirList[i].c_str() ) != 0 )
 						{
 							throw SPDException("Could not delete file.");
 						}
-						cout << " deleted\n";
+						std::cout << " deleted\n";
 					}
 					else if(SPDFileUtilities::getExtension(dirList[i]) == ".sbx")
 					{
-						cout << dirList[i];
+						std::cout << dirList[i];
 						if( remove( dirList[i].c_str() ) != 0 )
 						{
 							throw SPDException("Could not delete file.");
 						}
-						cout << " deleted\n";
+						std::cout << " deleted\n";
 					}
 					else if(SPDFileUtilities::getExtension(dirList[i]) == ".sbn")
 					{
-						cout << dirList[i];
+						std::cout << dirList[i];
 						if( remove( dirList[i].c_str() ) != 0 )
 						{
 							throw SPDException("Could not delete file.");
 						}
-						cout << " deleted\n";
+						std::cout << " deleted\n";
 					}
 					else if(SPDFileUtilities::getExtension(dirList[i]) == ".dbf")
 					{
-						cout << dirList[i];
+						std::cout << dirList[i];
 						if( remove( dirList[i].c_str() ) != 0 )
 						{
 							throw SPDException("Could not delete file.");
 						}
-						cout << " deleted\n";
+						std::cout << " deleted\n";
 					}
 					else if(SPDFileUtilities::getExtension(dirList[i]) == ".prj")
 					{
-						cout << dirList[i];
+						std::cout << dirList[i];
 						if( remove( dirList[i].c_str() ) != 0 )
 						{
 							throw SPDException("Could not delete file.");
 						}
-						cout << " deleted\n";
+						std::cout << " deleted\n";
 					}
 					
 				}

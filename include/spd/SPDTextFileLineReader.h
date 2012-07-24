@@ -34,21 +34,19 @@
 
 #include "spd/SPDIOException.h"
 
-using namespace std;
-
 namespace spdlib
 {
 	class SPDTextFileLineReader
 	{
 	public:
 		SPDTextFileLineReader();
-		void openFile(string filepath)throw(SPDIOException);
+		void openFile(std::string filepath)throw(SPDIOException);
 		bool endOfFile();
-		string readLine()throw(SPDIOException);
+		std::string readLine()throw(SPDIOException);
 		void closeFile()throw(SPDIOException);
 		~SPDTextFileLineReader();	
 	private:
-		ifstream inputFileStream;
+		std::ifstream inputFileStream;
 		bool fileOpened;
 	};
 }

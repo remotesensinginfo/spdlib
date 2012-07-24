@@ -40,8 +40,6 @@
 #include "spd/SPDPolygonProcessor.h"
 #include "spd/SPDFileIncrementalReader.h"
 
-using namespace std;
-
 namespace spdlib
 {	
 	class SPDProcessPolygons
@@ -49,7 +47,7 @@ namespace spdlib
 	public:
 		SPDProcessPolygons(SPDPolygonProcessor *processor);
 		void processPolygons(SPDFile *spdFile, SPDFileIncrementalReader *spdReader, OGRLayer *inputLayer, OGRLayer *outputLayer, bool copyAttributes)throw(SPDProcessingException);
-        void processPolygons(SPDFile *spdFile, SPDFileIncrementalReader *spdReader, OGRLayer *inputLayer, ofstream *outASCIIFile)throw(SPDProcessingException);
+        void processPolygons(SPDFile *spdFile, SPDFileIncrementalReader *spdReader, OGRLayer *inputLayer, std::ofstream *outASCIIFile)throw(SPDProcessingException);
 		~SPDProcessPolygons();
 	private:
 		SPDPolygonProcessor *processor;

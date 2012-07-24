@@ -34,7 +34,7 @@ namespace spdlib
         
     }
     
-    void SPDPolyFitGroundFilter::applyPolyFitGroundFilter(string inputFile, string outputFile, float grdThres, boost::uint_fast16_t degree, boost::uint_fast16_t iters, boost::uint_fast32_t blockXSize, boost::uint_fast32_t blockYSize, float processingResolution)throw(SPDProcessingException)
+    void SPDPolyFitGroundFilter::applyPolyFitGroundFilter(std::string inputFile, std::string outputFile, float grdThres, boost::uint_fast16_t degree, boost::uint_fast16_t iters, boost::uint_fast32_t blockXSize, boost::uint_fast32_t blockYSize, float processingResolution)throw(SPDProcessingException)
     {
         try 
         {
@@ -44,7 +44,7 @@ namespace spdlib
             spdReader.readHeaderInfo(spdFile->getFilePath(), spdFile);
                         
             // Find the minimum returns.
-            vector<SPDPoint*> *minPts = new vector<SPDPoint*>();
+            std::vector<SPDPoint*> *minPts = new std::vector<SPDPoint*>();
             
             SPDPulseProcessor *processorMinPoints = new SPDFindMinReturnsProcessor(minPts);            
             SPDSetupProcessPulses processPulses = SPDSetupProcessPulses(blockXSize, blockYSize, true);
@@ -52,13 +52,13 @@ namespace spdlib
             delete processorMinPoints;
             
             // Create grid to store returns.
-            vector<SPDPoint*> ***minPtGrid = new vector<SPDPoint*>**[spdFile->getNumberBinsY()];
+            std::vector<SPDPoint*> ***minPtGrid = new std::vector<SPDPoint*>**[spdFile->getNumberBinsY()];
             for(boost::uint_fast32_t i = 0; i < spdFile->getNumberBinsY(); ++i)
             {
-                minPtGrid[i] = new vector<SPDPoint*>*[spdFile->getNumberBinsX()];
+                minPtGrid[i] = new std::vector<SPDPoint*>*[spdFile->getNumberBinsX()];
                 for(boost::uint_fast32_t j = 0; j < spdFile->getNumberBinsX(); ++j)
                 {
-                    minPtGrid[i][j] = new vector<SPDPoint*>();
+                    minPtGrid[i][j] = new std::vector<SPDPoint*>();
                 }
             }
             
@@ -108,8 +108,8 @@ namespace spdlib
             
 			bool keepProcessing = true;
 			
-			cout << "Number of Y bins: " << spdFile->getNumberBinsY() << '\n';
-			cout << "Number of X bins: " << spdFile->getNumberBinsX() << '\n';
+			std::cout << "Number of Y bins: " << spdFile->getNumberBinsY() << '\n';
+			std::cout << "Number of X bins: " << spdFile->getNumberBinsX() << '\n';
 			
 			while(keepProcessing)
 			{
@@ -118,14 +118,14 @@ namespace spdlib
 				{
 					for(boost::uint_fast32_t j = 0; j < spdFile->getNumberBinsX(); ++j)
 					{
-						//cout << "i,j : " << i << " " << j << '\n';
-						//cout << "Number of Y bins: " << spdFile->getNumberBinsY() << '\n';
-						//cout << "Number of X bins: " << spdFile->getNumberBinsX() << '\n';
+						//std::cout << "i,j : " << i << " " << j << '\n';
+						//std::cout << "Number of Y bins: " << spdFile->getNumberBinsY() << '\n';
+						//std::cout << "Number of X bins: " << spdFile->getNumberBinsX() << '\n';
                         
 						
 						if(minPtGrid[i][j]->size() > 0)
 						{
-							//cout << "Pt: " << minPtGrid[i][j]->front()->x << ", " << minPtGrid[i][j]->front()->y << ", " << minPtGrid[i][j]->front()->z << '\n';
+							//std::cout << "Pt: " << minPtGrid[i][j]->front()->x << ", " << minPtGrid[i][j]->front()->y << ", " << minPtGrid[i][j]->front()->z << '\n';
 							// generate arrays for x^ny^m and z
 							double xelement=minPtGrid[i][j]->front()->x;
 							double yelement=minPtGrid[i][j]->front()->y;
@@ -134,7 +134,7 @@ namespace spdlib
 							gsl_vector_set(depVar, p, zelement);
 							//++p;
 							
-							//cout << "NCoeffs: " << Ncoeffs << " Degree: " << degree << '\n';
+							//std::cout << "NCoeffs: " << Ncoeffs << " Degree: " << degree << '\n';
 							
 							for (boost::uint_fast32_t m = 0; m < Ncoeffs ; m++)
 							{
@@ -145,8 +145,8 @@ namespace spdlib
 										double xelementtPow = pow(xelement, ((int)(m)));
 										double yelementtPow = pow(yelement, ((int)(n)));
 										gsl_matrix_set(indVarPow,p,l, xelementtPow*yelementtPow); // was n,m instead of l
-                                                                                                  //cout << "indvarpow: " << indVarPow << " " << xelementtPow << " " << yelementtPow << " " << "n,m: " << n << " " << m << '\n';
-                                                                                                  //cout << "n,m: " << n << " " << m << " " << l << '\n';
+                                                                                                  //std::cout << "indvarpow: " << indVarPow << " " << xelementtPow << " " << yelementtPow << " " << "n,m: " << n << " " << m << '\n';
+                                                                                                  //std::cout << "n,m: " << n << " " << m << " " << l << '\n';
 										++l;
 									}
 								}
@@ -159,7 +159,7 @@ namespace spdlib
 				}
 				
 				
-				//cout << "Iters count" << ItersCount << " " << keepProcessing << '\n';
+				//std::cout << "Iters count" << ItersCount << " " << keepProcessing << '\n';
 				
 				
 				// Find surface
@@ -190,9 +190,9 @@ namespace spdlib
                 for(unsigned int j = 0; j < outCoefficients->size; j++)
                 {
                     double outm = gsl_vector_get(outCoefficients, j); 
-                    cout << outm << " , " ;
+                    std::cout << outm << " , " ;
                 }
-                cout << '\n';
+                std::cout << '\n';
 				
 				
 				
@@ -273,7 +273,7 @@ namespace spdlib
             }
             delete[] minPtGrid;
             
-            for(vector<SPDPoint*>::iterator iterPts = minPts->begin(); iterPts != minPts->end(); )
+            for(std::vector<SPDPoint*>::iterator iterPts = minPts->begin(); iterPts != minPts->end(); )
             {
                 delete *iterPts;
                 iterPts = minPts->erase(iterPts);
@@ -296,7 +296,7 @@ namespace spdlib
 
     }
     
-    void SPDPolyFitGroundFilter::buildMinGrid(SPDFile *spdFile, vector<SPDPoint*> *minPts, vector<SPDPoint*> ***minPtGrid)throw(SPDProcessingException)
+    void SPDPolyFitGroundFilter::buildMinGrid(SPDFile *spdFile, std::vector<SPDPoint*> *minPts, std::vector<SPDPoint*> ***minPtGrid)throw(SPDProcessingException)
     {
         if(minPts->size() > 0)
 		{
@@ -312,7 +312,7 @@ namespace spdlib
             double tlX = spdFile->getXMin();
             double tlY = spdFile->getYMax();
             
-			vector<SPDPoint*>::iterator iterPts;
+			std::vector<SPDPoint*>::iterator iterPts;
 			
 			try 
 			{	
@@ -322,7 +322,7 @@ namespace spdlib
 				boost::uint_fast32_t yIdx = 0;
 				
 				SPDPoint *pt = NULL;
-                vector<SPDPoint*>::iterator iterPts;
+                std::vector<SPDPoint*>::iterator iterPts;
 				for(iterPts = minPts->begin(); iterPts != minPts->end(); ++iterPts)
 				{
 					pt = *iterPts;
@@ -332,18 +332,18 @@ namespace spdlib
 					
 					try 
 					{
-						xIdx = numeric_cast<boost::uint_fast32_t>(xDiff);
-						yIdx = numeric_cast<boost::uint_fast32_t>(yDiff);
+						xIdx = boost::numeric_cast<boost::uint_fast32_t>(xDiff);
+						yIdx = boost::numeric_cast<boost::uint_fast32_t>(yDiff);
 					}
-					catch(negative_overflow& e) 
+					catch(boost::numeric::negative_overflow& e) 
 					{
 						throw SPDProcessingException(e.what());
 					}
-					catch(positive_overflow& e) 
+					catch(boost::numeric::positive_overflow& e) 
 					{
 						throw SPDProcessingException(e.what());
 					}
-					catch(bad_numeric_cast& e) 
+					catch(boost::numeric::bad_numeric_cast& e) 
 					{
 						throw SPDProcessingException(e.what());
 					}
@@ -353,10 +353,10 @@ namespace spdlib
                         --xIdx;
                         if(xIdx > (xBins-1))
                         {
-                            cout << "Point: [" << pt->x << "," << pt->y << "]\n";
-                            cout << "Diff [" << xDiff << "," << yDiff << "]\n";
-                            cout << "Index [" << xIdx << "," << yIdx << "]\n";
-                            cout << "Size [" << xBins << "," << yBins << "]\n";
+                            std::cout << "Point: [" << pt->x << "," << pt->y << "]\n";
+                            std::cout << "Diff [" << xDiff << "," << yDiff << "]\n";
+                            std::cout << "Index [" << xIdx << "," << yIdx << "]\n";
+                            std::cout << "Size [" << xBins << "," << yBins << "]\n";
                             throw SPDProcessingException("Did not find x index within range.");
                         }
 					}
@@ -366,10 +366,10 @@ namespace spdlib
                         --yIdx;
                         if(yIdx > (yBins-1))
                         {
-                            cout << "Point: [" << pt->x << "," << pt->y << "]\n";
-                            cout << "Diff [" << xDiff << "," << yDiff << "]\n";
-                            cout << "Index [" << xIdx << "," << yIdx << "]\n";
-                            cout << "Size [" << xBins << "," << yBins << "]\n";
+                            std::cout << "Point: [" << pt->x << "," << pt->y << "]\n";
+                            std::cout << "Diff [" << xDiff << "," << yDiff << "]\n";
+                            std::cout << "Index [" << xIdx << "," << yIdx << "]\n";
+                            std::cout << "Size [" << xBins << "," << yBins << "]\n";
                             throw SPDProcessingException("Did not find y index within range.");
                         }
 					}

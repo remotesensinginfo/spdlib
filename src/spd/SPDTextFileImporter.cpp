@@ -28,7 +28,7 @@
 namespace spdlib
 {
 
-	SPDTextFileImporter::SPDTextFileImporter(SPDTextLineProcessor *lineParser, bool convertCoords, string outputProj4, string schema, boost::uint_fast16_t indexCoords, bool defineOrigin, double originX, double originY, float originZ, float waveNoiseThreshold): SPDDataImporter(convertCoords, outputProj4, schema, indexCoords, defineOrigin, originX, originY, originZ, waveNoiseThreshold), lineParser(NULL)
+	SPDTextFileImporter::SPDTextFileImporter(SPDTextLineProcessor *lineParser, bool convertCoords, std::string outputProj4, std::string schema, boost::uint_fast16_t indexCoords, bool defineOrigin, double originX, double originY, float originZ, float waveNoiseThreshold): SPDDataImporter(convertCoords, outputProj4, schema, indexCoords, defineOrigin, originX, originY, originZ, waveNoiseThreshold), lineParser(NULL)
 	{
 		this->lineParser = lineParser;
 	}
@@ -38,12 +38,12 @@ namespace spdlib
 		this->lineParser = textFileImporter.lineParser;
 	}
     
-    SPDDataImporter* SPDTextFileImporter::getInstance(bool convertCoords, string outputProjWKT, string schema, boost::uint_fast16_t indexCoords, bool defineOrigin, double originX, double originY, float originZ, float waveNoiseThreshold)
+    SPDDataImporter* SPDTextFileImporter::getInstance(bool convertCoords, std::string outputProjWKT, std::string schema, boost::uint_fast16_t indexCoords, bool defineOrigin, double originX, double originY, float originZ, float waveNoiseThreshold)
     {
         return new SPDTextFileImporter(this->lineParser, convertCoords, outputProjWKT, schema, indexCoords, defineOrigin, originX, originY, originZ, waveNoiseThreshold);
     }
 		
-	list<SPDPulse*>* SPDTextFileImporter::readAllDataToList(string inputFile, SPDFile *spdFile)throw(SPDIOException)
+	std::list<SPDPulse*>* SPDTextFileImporter::readAllDataToList(std::string inputFile, SPDFile *spdFile)throw(SPDIOException)
 	{
 		if(convertCoords)
 		{
@@ -51,7 +51,7 @@ namespace spdlib
 		}
 		SPDTextFileUtilities textUtils;
 		SPDPulseUtils pulseUtils;
-		list<SPDPulse*> *allPulses = new list<SPDPulse*>();
+		std::list<SPDPulse*> *allPulses = new std::list<SPDPulse*>();
 		boost::uint_fast64_t numPulses = 0;
 		boost::uint_fast64_t numPoints = 0;
 		
@@ -65,7 +65,7 @@ namespace spdlib
 			throw e;
 		}
 		
-		cout << "Number of Lines = " << numOfLines << endl;
+		std::cout << "Number of Lines = " << numOfLines << std::endl;
 		boost::uint_fast64_t feedback = numOfLines/10;
 		int feedbackCount = 0;
 		
@@ -84,16 +84,16 @@ namespace spdlib
 		bool first = true;
         bool firstSph = true;
 		
-		cout << "Started (Read Data) ." << flush;
+		std::cout << "Started (Read Data) ." << std::flush;
 		
 		try 
 		{
-			ifstream inputFileStream;
-			inputFileStream.open(inputFile.c_str(), ios_base::in);
+			std::ifstream inputFileStream;
+			inputFileStream.open(inputFile.c_str(), std::ios_base::in);
 			if(inputFileStream.is_open())
 			{
 				lineParser->reset();
-				string strLine = "";
+				std::string strLine = "";
 				bool lineEnding = false;
 				char ch = ' ';
 				char lastch = ' ';
@@ -119,14 +119,14 @@ namespace spdlib
                         {
                             if((numOfLines > 10) & ((numPulses % feedback) == 0))
                             {
-                                cout << "." << feedbackCount << "." << flush;
+                                std::cout << "." << feedbackCount << "." << std::flush;
                                 feedbackCount += 10;
                             }
                         }
 						
 						try 
 						{
-							trim(strLine);
+                            boost::algorithm::trim(strLine);
 							if(!lineParser->haveReadheader())
 							{
 								lineParser->parseHeader(strLine);
@@ -150,7 +150,7 @@ namespace spdlib
                                         double azimuth = 0;
                                         double range = 0;
                                         
-                                        for(vector<SPDPoint*>::iterator iterPts = pl->pts->begin(); iterPts != pl->pts->end(); ++iterPts)
+                                        for(std::vector<SPDPoint*>::iterator iterPts = pl->pts->begin(); iterPts != pl->pts->end(); ++iterPts)
                                         {
                                             SPDConvertToSpherical(pl->x0, pl->y0, pl->z0, (*iterPts)->x, (*iterPts)->y, (*iterPts)->z, &zenith, &azimuth, &range);
                                             (*iterPts)->range = range;
@@ -275,7 +275,7 @@ namespace spdlib
 			}
 			else
 			{
-				string message = string("Text file ") + inputFile + string(" could not be openned.");
+				std::string message = std::string("Text file ") + inputFile + std::string(" could not be openned.");
 				throw SPDIOException(message.c_str());
 			}
 			
@@ -284,7 +284,7 @@ namespace spdlib
 		{
 			throw e;
 		}
-		cout << ".Complete\n";
+		std::cout << ".Complete\n";
 		
 		spdFile->setNumberOfPoints(numPoints);
 		spdFile->setNumberOfPulses(numPulses);
@@ -294,7 +294,7 @@ namespace spdlib
 		return allPulses;
 	}
 	
-	vector<SPDPulse*>* SPDTextFileImporter::readAllDataToVector(string inputFile, SPDFile *spdFile)throw(SPDIOException)
+	std::vector<SPDPulse*>* SPDTextFileImporter::readAllDataToVector(std::string inputFile, SPDFile *spdFile)throw(SPDIOException)
 	{
 		if(convertCoords)
 		{
@@ -302,7 +302,7 @@ namespace spdlib
 		}
 		SPDTextFileUtilities textUtils;
 		SPDPulseUtils pulseUtils;
-		vector<SPDPulse*> *allPulses = new vector<SPDPulse*>();
+		std::vector<SPDPulse*> *allPulses = new std::vector<SPDPulse*>();
 		boost::uint_fast64_t numPulses = 0;
 		boost::uint_fast64_t numPoints = 0;
 		
@@ -318,7 +318,7 @@ namespace spdlib
 		
 		allPulses->reserve(numOfLines);
 		
-		cout << "Number of Lines = " << numOfLines << endl;
+		std::cout << "Number of Lines = " << numOfLines << std::endl;
 		boost::uint_fast64_t feedback = numOfLines/10;
 		int feedbackCount = 0;
 		
@@ -337,16 +337,16 @@ namespace spdlib
 		bool first = true;
         bool firstSph = true;
 		
-		cout << "Started (Read Data) ." << flush;
+		std::cout << "Started (Read Data) ." << std::flush;
 		
 		try 
 		{
-			ifstream inputFileStream;
-			inputFileStream.open(inputFile.c_str(), ios_base::in);
+			std::ifstream inputFileStream;
+			inputFileStream.open(inputFile.c_str(), std::ios_base::in);
 			if(inputFileStream.is_open())
 			{
 				lineParser->reset();
-				string strLine = "";
+				std::string strLine = "";
 				bool lineEnding = false;
 				char ch = ' ';
 				char lastch = ' ';
@@ -372,14 +372,14 @@ namespace spdlib
                         {
                             if((numOfLines > 10) & ((numPulses % feedback) == 0))
                             {
-                                cout << "." << feedbackCount << "." << flush;
+                                std::cout << "." << feedbackCount << "." << std::flush;
                                 feedbackCount += 10;
                             }
                         }
 						
 						try 
 						{
-							trim(strLine);
+                            boost::algorithm::trim(strLine);
 							if(!lineParser->haveReadheader())
 							{
 								lineParser->parseHeader(strLine);
@@ -402,7 +402,7 @@ namespace spdlib
                                         double azimuth = 0;
                                         double range = 0;
                                         
-                                        for(vector<SPDPoint*>::iterator iterPts = pl->pts->begin(); iterPts != pl->pts->end(); ++iterPts)
+                                        for(std::vector<SPDPoint*>::iterator iterPts = pl->pts->begin(); iterPts != pl->pts->end(); ++iterPts)
                                         {
                                             SPDConvertToSpherical(pl->x0, pl->y0, pl->z0, (*iterPts)->x, (*iterPts)->y, (*iterPts)->z, &zenith, &azimuth, &range);
                                             (*iterPts)->range = range;
@@ -526,7 +526,7 @@ namespace spdlib
 			}
 			else
 			{
-				string message = string("Text file ") + inputFile + string(" could not be openned.");
+				std::string message = std::string("Text file ") + inputFile + std::string(" could not be openned.");
 				throw SPDIOException(message.c_str());
 			}
 			
@@ -535,7 +535,7 @@ namespace spdlib
 		{
 			throw e;
 		}
-		cout << ".Complete\n";
+		std::cout << ".Complete\n";
 		
 		spdFile->setNumberOfPoints(numPoints);
 		spdFile->setNumberOfPulses(numPulses);
@@ -545,7 +545,7 @@ namespace spdlib
 		return allPulses;
 	}
 	
-	void SPDTextFileImporter::readAndProcessAllData(string inputFile, SPDFile *spdFile, SPDImporterProcessor *processor)throw(SPDIOException)
+	void SPDTextFileImporter::readAndProcessAllData(std::string inputFile, SPDFile *spdFile, SPDImporterProcessor *processor)throw(SPDIOException)
 	{        
 		if(convertCoords)
 		{
@@ -566,7 +566,7 @@ namespace spdlib
 			throw e;
 		}
 		
-		cout << "Number of Lines = " << numOfLines << endl;
+		std::cout << "Number of Lines = " << numOfLines << std::endl;
 		boost::uint_fast64_t feedback = numOfLines/10;
 		int feedbackCount = 0;
 		
@@ -585,16 +585,16 @@ namespace spdlib
 		bool first = true;
         bool firstSph = true;
 		
-		cout << "Started (Read Data) ." << flush;
+		std::cout << "Started (Read Data) ." << std::flush;
 		
 		try 
 		{
-			ifstream inputFileStream;
-			inputFileStream.open(inputFile.c_str(), ios_base::in);
+			std::ifstream inputFileStream;
+			inputFileStream.open(inputFile.c_str(), std::ios_base::in);
 			if(inputFileStream.is_open())
 			{
 				lineParser->reset();
-				string strLine = "";
+				std::string strLine = "";
 				bool lineEnding = false;
 				char ch = ' ';
 				char lastch = ' ';
@@ -620,14 +620,14 @@ namespace spdlib
                         {
                             if((numOfLines > 10) & ((numPulses % feedback) == 0))
                             {
-                                cout << "." << feedbackCount << "." << flush;
+                                std::cout << "." << feedbackCount << "." << std::flush;
                                 feedbackCount += 10;
                             }
                         }
 						
 						try 
 						{
-							trim(strLine);
+							boost::algorithm::trim(strLine);
 							if(!lineParser->haveReadheader())
 							{
 								lineParser->parseHeader(strLine);
@@ -649,7 +649,7 @@ namespace spdlib
                                         double azimuth = 0;
                                         double range = 0;
                                         
-                                        for(vector<SPDPoint*>::iterator iterPts = pl->pts->begin(); iterPts != pl->pts->end(); ++iterPts)
+                                        for(std::vector<SPDPoint*>::iterator iterPts = pl->pts->begin(); iterPts != pl->pts->end(); ++iterPts)
                                         {
                                             SPDConvertToSpherical(pl->x0, pl->y0, pl->z0, (*iterPts)->x, (*iterPts)->y, (*iterPts)->z, &zenith, &azimuth, &range);
                                             (*iterPts)->range = range;
@@ -772,7 +772,7 @@ namespace spdlib
 			}
 			else
 			{
-				string message = string("Text file ") + inputFile + string(" could not be openned.");
+				std::string message = std::string("Text file ") + inputFile + std::string(" could not be openned.");
 				throw SPDIOException(message.c_str());
 			}
 			
@@ -781,7 +781,7 @@ namespace spdlib
 		{
 			throw e;
 		}
-		cout << ".Complete\n";
+		std::cout << ".Complete\n";
 		
 		spdFile->setNumberOfPoints(numPoints);
 		spdFile->setNumberOfPulses(numPulses);
@@ -789,12 +789,12 @@ namespace spdlib
         spdFile->setBoundingVolumeSpherical(minZenith, maxZenith, minAzimuth, maxAzimuth, minRange, maxRange);
 	}
 	
-	bool SPDTextFileImporter::isFileType(string fileType)
+	bool SPDTextFileImporter::isFileType(std::string fileType)
 	{
 		return lineParser->isFileType(fileType);
 	}
     
-    void SPDTextFileImporter::readHeaderInfo(string, SPDFile*) throw(SPDIOException)
+    void SPDTextFileImporter::readHeaderInfo(std::string, SPDFile*) throw(SPDIOException)
     {
         // No Header to Read..
     }

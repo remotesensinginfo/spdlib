@@ -34,6 +34,7 @@
 #include <iostream>
 #include <string>
 #include <time.h>
+#include <vector>
 
 #include <boost/cstdint.hpp>
 
@@ -42,115 +43,113 @@
 #include "spd/SPDCommon.h"
 #include "spd/SPDProcessingException.h"
 
-using namespace std;
-
 namespace spdlib
 {
 	
-	static const string GROUPNAME_HEADER( "/HEADER" );
-	static const string GROUPNAME_INDEX( "/INDEX" );
-	static const string GROUPNAME_QUICKLOOK( "/QUICKLOOK" );
-	static const string GROUPNAME_DATA( "/DATA" );
+	static const std::string GROUPNAME_HEADER( "/HEADER" );
+	static const std::string GROUPNAME_INDEX( "/INDEX" );
+	static const std::string GROUPNAME_QUICKLOOK( "/QUICKLOOK" );
+	static const std::string GROUPNAME_DATA( "/DATA" );
 	
-	static const string SPDFILE_DATASETNAME_SPATIAL_REFERENCE( "/HEADER/SPATIAL_REFERENCE" );
-	static const string SPDFILE_DATASETNAME_INDEX_TYPE( "/HEADER/INDEX_TYPE" );
-	static const string SPDFILE_DATASETNAME_DISCRETE_PT_DEFINED( "/HEADER/DEFINED_DISCRETE_PT" );
-	static const string SPDFILE_DATASETNAME_DECOMPOSED_PT_DEFINED( "/HEADER/DEFINED_DECOMPOSED_PT" );
-	static const string SPDFILE_DATASETNAME_TRANS_WAVEFORM_DEFINED( "/HEADER/DEFINED_TRANS_WAVEFORM" );
-    static const string SPDFILE_DATASETNAME_RECEIVE_WAVEFORM_DEFINED( "/HEADER/DEFINED_RECEIVE_WAVEFORM" );
-	static const string SPDFILE_DATASETNAME_MAJOR_VERSION( "/HEADER/VERSION_MAJOR_SPD" );
-	static const string SPDFILE_DATASETNAME_MINOR_VERSION( "/HEADER/VERSION_MINOR_SPD" );
-    static const string SPDFILE_DATASETNAME_POINT_VERSION( "/HEADER/VERSION_POINT" );
-    static const string SPDFILE_DATASETNAME_PULSE_VERSION( "/HEADER/VERSION_PULSE" );
-	static const string SPDFILE_DATASETNAME_GENERATING_SOFTWARE( "/HEADER/GENERATING_SOFTWARE" );
-	static const string SPDFILE_DATASETNAME_SYSTEM_IDENTIFIER( "/HEADER/SYSTEM_IDENTIFIER" );
-	static const string SPDFILE_DATASETNAME_FILE_SIGNATURE( "/HEADER/FILE_SIGNATURE" );
-	static const string SPDFILE_DATASETNAME_YEAR_OF_CREATION( "/HEADER/CREATION_YEAR_OF" );
-	static const string SPDFILE_DATASETNAME_MONTH_OF_CREATION( "/HEADER/CREATION_MONTH_OF" );
-	static const string SPDFILE_DATASETNAME_DAY_OF_CREATION( "/HEADER/CREATION_DAY_OF" );
-	static const string SPDFILE_DATASETNAME_HOUR_OF_CREATION( "/HEADER/CREATION_HOUR_OF" );
-	static const string SPDFILE_DATASETNAME_MINUTE_OF_CREATION( "/HEADER/CREATION_MINUTE_OF" );
-	static const string SPDFILE_DATASETNAME_SECOND_OF_CREATION( "/HEADER/CREATION_SECOND_OF" );
-    static const string SPDFILE_DATASETNAME_DATE_CREATION( "/HEADER/CREATION_DATE" );
-    static const string SPDFILE_DATASETNAME_TIME_CREATION( "/HEADER/CREATION_TIME" );
-	static const string SPDFILE_DATASETNAME_YEAR_OF_CAPTURE( "/HEADER/CAPTURE_YEAR_OF" );
-	static const string SPDFILE_DATASETNAME_MONTH_OF_CAPTURE( "/HEADER/CAPTURE_MONTH_OF" );
-	static const string SPDFILE_DATASETNAME_DAY_OF_CAPTURE( "/HEADER/CAPTURE_DAY_OF" );
-	static const string SPDFILE_DATASETNAME_HOUR_OF_CAPTURE( "/HEADER/CAPTURE_HOUR_OF" );
-	static const string SPDFILE_DATASETNAME_MINUTE_OF_CAPTURE( "/HEADER/CAPTURE_MINUTE_OF" );
-	static const string SPDFILE_DATASETNAME_SECOND_OF_CAPTURE( "/HEADER/CAPTURE_SECOND_OF" );
-	static const string SPDFILE_DATASETNAME_NUMBER_OF_POINTS( "/HEADER/NUMBER_OF_POINTS" );
-	static const string SPDFILE_DATASETNAME_NUMBER_OF_PULSES( "/HEADER/NUMBER_OF_PULSES" );
-	static const string SPDFILE_DATASETNAME_USER_META_DATA( "/HEADER/USER_META_DATA" );
-	static const string SPDFILE_DATASETNAME_X_MIN( "/HEADER/X_MIN" );
-	static const string SPDFILE_DATASETNAME_X_MAX( "/HEADER/X_MAX" );
-	static const string SPDFILE_DATASETNAME_Y_MIN( "/HEADER/Y_MIN" );
-	static const string SPDFILE_DATASETNAME_Y_MAX( "/HEADER/Y_MAX" );
-	static const string SPDFILE_DATASETNAME_Z_MIN( "/HEADER/Z_MIN" );
-	static const string SPDFILE_DATASETNAME_Z_MAX( "/HEADER/Z_MAX" );
-	static const string SPDFILE_DATASETNAME_ZENITH_MIN( "/HEADER/ZENITH_MIN" );
-	static const string SPDFILE_DATASETNAME_ZENITH_MAX( "/HEADER/ZENITH_MAX" );
-	static const string SPDFILE_DATASETNAME_AZIMUTH_MIN( "/HEADER/AZIMUTH_MIN" );
-	static const string SPDFILE_DATASETNAME_AZIMUTH_MAX( "/HEADER/AZIMUTH_MAX" );
-	static const string SPDFILE_DATASETNAME_RANGE_MIN( "/HEADER/RANGE_MIN" );
-	static const string SPDFILE_DATASETNAME_RANGE_MAX( "/HEADER/RANGE_MAX" );
-    static const string SPDFILE_DATASETNAME_SCANLINE_MIN( "/HEADER/SCANLINE_MIN" );
-	static const string SPDFILE_DATASETNAME_SCANLINE_MAX( "/HEADER/SCANLINE_MAX" );
-	static const string SPDFILE_DATASETNAME_SCANLINE_IDX_MIN( "/HEADER/SCANLINE_IDX_MIN" );
-	static const string SPDFILE_DATASETNAME_SCANLINE_IDX_MAX( "/HEADER/SCANLINE_IDX_MAX" );
-	static const string SPDFILE_DATASETNAME_BIN_SIZE( "/HEADER/BIN_SIZE" );
-	static const string SPDFILE_DATASETNAME_NUMBER_BINS_X( "/HEADER/NUMBER_BINS_X" );
-	static const string SPDFILE_DATASETNAME_NUMBER_BINS_Y( "/HEADER/NUMBER_BINS_Y" );
-	static const string SPDFILE_DATASETNAME_WAVELENGTH( "/HEADER/WAVELENGTH" );
-    static const string SPDFILE_DATASETNAME_WAVELENGTHS( "/HEADER/WAVELENGTHS" );
-    static const string SPDFILE_DATASETNAME_BANDWIDTHS( "/HEADER/BANDWIDTHS" );
-    static const string SPDFILE_DATASETNAME_NUM_OF_WAVELENGTHS( "/HEADER/NUM_OF_WAVELENGTHS" );
-	static const string SPDFILE_DATASETNAME_PULSE_REPETITION_FREQ( "/HEADER/SENSOR_PULSE_REPETITION_FREQ" );
-	static const string SPDFILE_DATASETNAME_BEAM_DIVERGENCE( "/HEADER/SENSOR_BEAM_DIVERGENCE" );
-	static const string SPDFILE_DATASETNAME_SENSOR_HEIGHT( "/HEADER/SENSOR_HEIGHT" );
-	static const string SPDFILE_DATASETNAME_FOOTPRINT( "/HEADER/PULSE_FOOTPRINT" );
-	static const string SPDFILE_DATASETNAME_MAX_SCAN_ANGLE( "/HEADER/SENSOR_MAX_SCAN_ANGLE" );
-	static const string SPDFILE_DATASETNAME_RGB_DEFINED( "/HEADER/DEFINED_RGB" );
-	static const string SPDFILE_DATASETNAME_PULSE_BLOCK_SIZE( "/HEADER/BLOCK_SIZE_PULSE" );
-	static const string SPDFILE_DATASETNAME_POINT_BLOCK_SIZE( "/HEADER/BLOCK_SIZE_POINT" );
-	static const string SPDFILE_DATASETNAME_RECEIVED_BLOCK_SIZE( "/HEADER/BLOCK_SIZE_RECEIVED" );
-	static const string SPDFILE_DATASETNAME_TRANSMITTED_BLOCK_SIZE( "/HEADER/BLOCK_SIZE_TRANSMITTED" );
-    static const string SPDFILE_DATASETNAME_WAVEFORM_BIT_RES( "/HEADER/WAVEFORM_BIT_RES" );
-	static const string SPDFILE_DATASETNAME_TEMPORAL_BIN_SPACING( "/HEADER/SENSOR_TEMPORAL_BIN_SPACING" );
-	static const string SPDFILE_DATASETNAME_RETURN_NUMBERS_SYN_GEN( "/HEADER/RETURN_NUMBERS_SYN_GEN" );
-	static const string SPDFILE_DATASETNAME_HEIGHT_DEFINED( "/HEADER/DEFINED_HEIGHT" );
-	static const string SPDFILE_DATASETNAME_SENSOR_SPEED( "/HEADER/SENSOR_SPEED" );
-	static const string SPDFILE_DATASETNAME_SENSOR_SCAN_RATE( "/HEADER/SENSOR_SCAN_RATE" );
-	static const string SPDFILE_DATASETNAME_POINT_DENSITY( "/HEADER/POINT_DENSITY" );
-	static const string SPDFILE_DATASETNAME_PULSE_DENSITY( "/HEADER/PULSE_DENSITY" );
-	static const string SPDFILE_DATASETNAME_PULSE_CROSS_TRACK_SPACING( "/HEADER/PULSE_CROSS_TRACK_SPACING" );
-	static const string SPDFILE_DATASETNAME_PULSE_ALONG_TRACK_SPACING( "/HEADER/PULSE_ALONG_TRACK_SPACING" );
-	static const string SPDFILE_DATASETNAME_ORIGIN_DEFINED( "/HEADER/DEFINED_ORIGIN" );
-	static const string SPDFILE_DATASETNAME_PULSE_ANGULAR_SPACING_AZIMUTH( "/HEADER/PULSE_ANGULAR_SPACING_AZIMUTH" );
-	static const string SPDFILE_DATASETNAME_PULSE_ANGULAR_SPACING_ZENITH( "/HEADER/PULSE_ANGULAR_SPACING_ZENITH" );
-	static const string SPDFILE_DATASETNAME_PULSE_INDEX_METHOD( "/HEADER/PULSE_INDEX_METHOD" );
-    static const string SPDFILE_DATASETNAME_FILE_TYPE( "/HEADER/FILE_TYPE" );
-    static const string SPDFILE_DATASETNAME_SENSOR_APERTURE_SIZE( "/HEADER/SENSOR_APERTURE_SIZE" );
-    static const string SPDFILE_DATASETNAME_PULSE_ENERGY( "/HEADER/PULSE_ENERGY" );
-    static const string SPDFILE_DATASETNAME_FIELD_OF_VIEW( "/HEADER/FIELD_OF_VIEW" );
+	static const std::string SPDFILE_DATASETNAME_SPATIAL_REFERENCE( "/HEADER/SPATIAL_REFERENCE" );
+	static const std::string SPDFILE_DATASETNAME_INDEX_TYPE( "/HEADER/INDEX_TYPE" );
+	static const std::string SPDFILE_DATASETNAME_DISCRETE_PT_DEFINED( "/HEADER/DEFINED_DISCRETE_PT" );
+	static const std::string SPDFILE_DATASETNAME_DECOMPOSED_PT_DEFINED( "/HEADER/DEFINED_DECOMPOSED_PT" );
+	static const std::string SPDFILE_DATASETNAME_TRANS_WAVEFORM_DEFINED( "/HEADER/DEFINED_TRANS_WAVEFORM" );
+    static const std::string SPDFILE_DATASETNAME_RECEIVE_WAVEFORM_DEFINED( "/HEADER/DEFINED_RECEIVE_WAVEFORM" );
+	static const std::string SPDFILE_DATASETNAME_MAJOR_VERSION( "/HEADER/VERSION_MAJOR_SPD" );
+	static const std::string SPDFILE_DATASETNAME_MINOR_VERSION( "/HEADER/VERSION_MINOR_SPD" );
+    static const std::string SPDFILE_DATASETNAME_POINT_VERSION( "/HEADER/VERSION_POINT" );
+    static const std::string SPDFILE_DATASETNAME_PULSE_VERSION( "/HEADER/VERSION_PULSE" );
+	static const std::string SPDFILE_DATASETNAME_GENERATING_SOFTWARE( "/HEADER/GENERATING_SOFTWARE" );
+	static const std::string SPDFILE_DATASETNAME_SYSTEM_IDENTIFIER( "/HEADER/SYSTEM_IDENTIFIER" );
+	static const std::string SPDFILE_DATASETNAME_FILE_SIGNATURE( "/HEADER/FILE_SIGNATURE" );
+	static const std::string SPDFILE_DATASETNAME_YEAR_OF_CREATION( "/HEADER/CREATION_YEAR_OF" );
+	static const std::string SPDFILE_DATASETNAME_MONTH_OF_CREATION( "/HEADER/CREATION_MONTH_OF" );
+	static const std::string SPDFILE_DATASETNAME_DAY_OF_CREATION( "/HEADER/CREATION_DAY_OF" );
+	static const std::string SPDFILE_DATASETNAME_HOUR_OF_CREATION( "/HEADER/CREATION_HOUR_OF" );
+	static const std::string SPDFILE_DATASETNAME_MINUTE_OF_CREATION( "/HEADER/CREATION_MINUTE_OF" );
+	static const std::string SPDFILE_DATASETNAME_SECOND_OF_CREATION( "/HEADER/CREATION_SECOND_OF" );
+    static const std::string SPDFILE_DATASETNAME_DATE_CREATION( "/HEADER/CREATION_DATE" );
+    static const std::string SPDFILE_DATASETNAME_TIME_CREATION( "/HEADER/CREATION_TIME" );
+	static const std::string SPDFILE_DATASETNAME_YEAR_OF_CAPTURE( "/HEADER/CAPTURE_YEAR_OF" );
+	static const std::string SPDFILE_DATASETNAME_MONTH_OF_CAPTURE( "/HEADER/CAPTURE_MONTH_OF" );
+	static const std::string SPDFILE_DATASETNAME_DAY_OF_CAPTURE( "/HEADER/CAPTURE_DAY_OF" );
+	static const std::string SPDFILE_DATASETNAME_HOUR_OF_CAPTURE( "/HEADER/CAPTURE_HOUR_OF" );
+	static const std::string SPDFILE_DATASETNAME_MINUTE_OF_CAPTURE( "/HEADER/CAPTURE_MINUTE_OF" );
+	static const std::string SPDFILE_DATASETNAME_SECOND_OF_CAPTURE( "/HEADER/CAPTURE_SECOND_OF" );
+	static const std::string SPDFILE_DATASETNAME_NUMBER_OF_POINTS( "/HEADER/NUMBER_OF_POINTS" );
+	static const std::string SPDFILE_DATASETNAME_NUMBER_OF_PULSES( "/HEADER/NUMBER_OF_PULSES" );
+	static const std::string SPDFILE_DATASETNAME_USER_META_DATA( "/HEADER/USER_META_DATA" );
+	static const std::string SPDFILE_DATASETNAME_X_MIN( "/HEADER/X_MIN" );
+	static const std::string SPDFILE_DATASETNAME_X_MAX( "/HEADER/X_MAX" );
+	static const std::string SPDFILE_DATASETNAME_Y_MIN( "/HEADER/Y_MIN" );
+	static const std::string SPDFILE_DATASETNAME_Y_MAX( "/HEADER/Y_MAX" );
+	static const std::string SPDFILE_DATASETNAME_Z_MIN( "/HEADER/Z_MIN" );
+	static const std::string SPDFILE_DATASETNAME_Z_MAX( "/HEADER/Z_MAX" );
+	static const std::string SPDFILE_DATASETNAME_ZENITH_MIN( "/HEADER/ZENITH_MIN" );
+	static const std::string SPDFILE_DATASETNAME_ZENITH_MAX( "/HEADER/ZENITH_MAX" );
+	static const std::string SPDFILE_DATASETNAME_AZIMUTH_MIN( "/HEADER/AZIMUTH_MIN" );
+	static const std::string SPDFILE_DATASETNAME_AZIMUTH_MAX( "/HEADER/AZIMUTH_MAX" );
+	static const std::string SPDFILE_DATASETNAME_RANGE_MIN( "/HEADER/RANGE_MIN" );
+	static const std::string SPDFILE_DATASETNAME_RANGE_MAX( "/HEADER/RANGE_MAX" );
+    static const std::string SPDFILE_DATASETNAME_SCANLINE_MIN( "/HEADER/SCANLINE_MIN" );
+	static const std::string SPDFILE_DATASETNAME_SCANLINE_MAX( "/HEADER/SCANLINE_MAX" );
+	static const std::string SPDFILE_DATASETNAME_SCANLINE_IDX_MIN( "/HEADER/SCANLINE_IDX_MIN" );
+	static const std::string SPDFILE_DATASETNAME_SCANLINE_IDX_MAX( "/HEADER/SCANLINE_IDX_MAX" );
+	static const std::string SPDFILE_DATASETNAME_BIN_SIZE( "/HEADER/BIN_SIZE" );
+	static const std::string SPDFILE_DATASETNAME_NUMBER_BINS_X( "/HEADER/NUMBER_BINS_X" );
+	static const std::string SPDFILE_DATASETNAME_NUMBER_BINS_Y( "/HEADER/NUMBER_BINS_Y" );
+	static const std::string SPDFILE_DATASETNAME_WAVELENGTH( "/HEADER/WAVELENGTH" );
+    static const std::string SPDFILE_DATASETNAME_WAVELENGTHS( "/HEADER/WAVELENGTHS" );
+    static const std::string SPDFILE_DATASETNAME_BANDWIDTHS( "/HEADER/BANDWIDTHS" );
+    static const std::string SPDFILE_DATASETNAME_NUM_OF_WAVELENGTHS( "/HEADER/NUM_OF_WAVELENGTHS" );
+	static const std::string SPDFILE_DATASETNAME_PULSE_REPETITION_FREQ( "/HEADER/SENSOR_PULSE_REPETITION_FREQ" );
+	static const std::string SPDFILE_DATASETNAME_BEAM_DIVERGENCE( "/HEADER/SENSOR_BEAM_DIVERGENCE" );
+	static const std::string SPDFILE_DATASETNAME_SENSOR_HEIGHT( "/HEADER/SENSOR_HEIGHT" );
+	static const std::string SPDFILE_DATASETNAME_FOOTPRINT( "/HEADER/PULSE_FOOTPRINT" );
+	static const std::string SPDFILE_DATASETNAME_MAX_SCAN_ANGLE( "/HEADER/SENSOR_MAX_SCAN_ANGLE" );
+	static const std::string SPDFILE_DATASETNAME_RGB_DEFINED( "/HEADER/DEFINED_RGB" );
+	static const std::string SPDFILE_DATASETNAME_PULSE_BLOCK_SIZE( "/HEADER/BLOCK_SIZE_PULSE" );
+	static const std::string SPDFILE_DATASETNAME_POINT_BLOCK_SIZE( "/HEADER/BLOCK_SIZE_POINT" );
+	static const std::string SPDFILE_DATASETNAME_RECEIVED_BLOCK_SIZE( "/HEADER/BLOCK_SIZE_RECEIVED" );
+	static const std::string SPDFILE_DATASETNAME_TRANSMITTED_BLOCK_SIZE( "/HEADER/BLOCK_SIZE_TRANSMITTED" );
+    static const std::string SPDFILE_DATASETNAME_WAVEFORM_BIT_RES( "/HEADER/WAVEFORM_BIT_RES" );
+	static const std::string SPDFILE_DATASETNAME_TEMPORAL_BIN_SPACING( "/HEADER/SENSOR_TEMPORAL_BIN_SPACING" );
+	static const std::string SPDFILE_DATASETNAME_RETURN_NUMBERS_SYN_GEN( "/HEADER/RETURN_NUMBERS_SYN_GEN" );
+	static const std::string SPDFILE_DATASETNAME_HEIGHT_DEFINED( "/HEADER/DEFINED_HEIGHT" );
+	static const std::string SPDFILE_DATASETNAME_SENSOR_SPEED( "/HEADER/SENSOR_SPEED" );
+	static const std::string SPDFILE_DATASETNAME_SENSOR_SCAN_RATE( "/HEADER/SENSOR_SCAN_RATE" );
+	static const std::string SPDFILE_DATASETNAME_POINT_DENSITY( "/HEADER/POINT_DENSITY" );
+	static const std::string SPDFILE_DATASETNAME_PULSE_DENSITY( "/HEADER/PULSE_DENSITY" );
+	static const std::string SPDFILE_DATASETNAME_PULSE_CROSS_TRACK_SPACING( "/HEADER/PULSE_CROSS_TRACK_SPACING" );
+	static const std::string SPDFILE_DATASETNAME_PULSE_ALONG_TRACK_SPACING( "/HEADER/PULSE_ALONG_TRACK_SPACING" );
+	static const std::string SPDFILE_DATASETNAME_ORIGIN_DEFINED( "/HEADER/DEFINED_ORIGIN" );
+	static const std::string SPDFILE_DATASETNAME_PULSE_ANGULAR_SPACING_AZIMUTH( "/HEADER/PULSE_ANGULAR_SPACING_AZIMUTH" );
+	static const std::string SPDFILE_DATASETNAME_PULSE_ANGULAR_SPACING_ZENITH( "/HEADER/PULSE_ANGULAR_SPACING_ZENITH" );
+	static const std::string SPDFILE_DATASETNAME_PULSE_INDEX_METHOD( "/HEADER/PULSE_INDEX_METHOD" );
+    static const std::string SPDFILE_DATASETNAME_FILE_TYPE( "/HEADER/FILE_TYPE" );
+    static const std::string SPDFILE_DATASETNAME_SENSOR_APERTURE_SIZE( "/HEADER/SENSOR_APERTURE_SIZE" );
+    static const std::string SPDFILE_DATASETNAME_PULSE_ENERGY( "/HEADER/PULSE_ENERGY" );
+    static const std::string SPDFILE_DATASETNAME_FIELD_OF_VIEW( "/HEADER/FIELD_OF_VIEW" );
     
-	static const string SPDFILE_DATASETNAME_PLS_PER_BIN( "/INDEX/PLS_PER_BIN" );
-	static const string SPDFILE_DATASETNAME_BIN_OFFSETS( "/INDEX/BIN_OFFSETS" );
+	static const std::string SPDFILE_DATASETNAME_PLS_PER_BIN( "/INDEX/PLS_PER_BIN" );
+	static const std::string SPDFILE_DATASETNAME_BIN_OFFSETS( "/INDEX/BIN_OFFSETS" );
 	
-	static const string SPDFILE_DATASETNAME_QKLIMAGE( "/QUICKLOOK/IMAGE" );
+	static const std::string SPDFILE_DATASETNAME_QKLIMAGE( "/QUICKLOOK/IMAGE" );
 	
-	static const string SPDFILE_DATASETNAME_PULSES( "/DATA/PULSES" );
-	static const string SPDFILE_DATASETNAME_POINTS( "/DATA/POINTS" );
-	static const string SPDFILE_DATASETNAME_RECEIVED( "/DATA/RECEIVED" );
-	static const string SPDFILE_DATASETNAME_TRANSMITTED( "/DATA/TRANSMITTED" );
+	static const std::string SPDFILE_DATASETNAME_PULSES( "/DATA/PULSES" );
+	static const std::string SPDFILE_DATASETNAME_POINTS( "/DATA/POINTS" );
+	static const std::string SPDFILE_DATASETNAME_RECEIVED( "/DATA/RECEIVED" );
+	static const std::string SPDFILE_DATASETNAME_TRANSMITTED( "/DATA/TRANSMITTED" );
 	
-	static const string ATTRIBUTENAME_CLASS( "CLASS" );
-	static const string ATTRIBUTENAME_IMAGE_VERSION( "IMAGE_VERSION" );
+	static const std::string ATTRIBUTENAME_CLASS( "CLASS" );
+	static const std::string ATTRIBUTENAME_IMAGE_VERSION( "IMAGE_VERSION" );
     
 	class SPDFile
 	{		
 	public:
-		SPDFile(string filepath);
+		SPDFile(std::string filepath);
 		
 		void copyAttributesTo(SPDFile *spdFile);
 		void copyAttributesFrom(SPDFile *spdFile);
@@ -159,11 +158,11 @@ namespace spdlib
         bool checkCompatibilityGeneralCheckExpandExtent(SPDFile *spdFile);
         void expandExtent(SPDFile *spdFile);
 		
-        void setFilePath(string filepath){this->filepath = filepath;};
-		string getFilePath(){return filepath;};
+        void setFilePath(std::string filepath){this->filepath = filepath;};
+		std::string getFilePath(){return filepath;};
 		
-		void setSpatialReference(string spatialReference){this->spatialreference = spatialReference;};
-		string getSpatialReference(){return spatialreference;};
+		void setSpatialReference(std::string spatialReference){this->spatialreference = spatialReference;};
+		std::string getSpatialReference(){return spatialreference;};
 		
 		void setIndexType(boost::uint_fast16_t indexType){this->indexType = indexType;};
         boost::uint_fast16_t getIndexType(){return indexType;};
@@ -195,14 +194,14 @@ namespace spdlib
         void setPulseVersion(boost::uint_fast16_t pulseVersion){this->pulseVersion = pulseVersion;};
         boost::uint_fast16_t getPulseVersion(){return pulseVersion;};
 		
-		void setGeneratingSoftware(string generatingSoftware){this->generatingSoftware = generatingSoftware;};
-		string getGeneratingSoftware(){return generatingSoftware;};
+		void setGeneratingSoftware(std::string generatingSoftware){this->generatingSoftware = generatingSoftware;};
+		std::string getGeneratingSoftware(){return generatingSoftware;};
 		
-		void setSystemIdentifier(string systemIdentifier){this->systemIdentifier = systemIdentifier;};
-		string getSystemIdentifier(){return systemIdentifier;};
+		void setSystemIdentifier(std::string systemIdentifier){this->systemIdentifier = systemIdentifier;};
+		std::string getSystemIdentifier(){return systemIdentifier;};
 		
-		void setFileSignature(string fileSignature){this->fileSignature = fileSignature;};
-		string getFileSignature(){return fileSignature;};
+		void setFileSignature(std::string fileSignature){this->fileSignature = fileSignature;};
+		std::string getFileSignature(){return fileSignature;};
 		
 		void setYearOfCreation(boost::uint_fast16_t year){this->yearOfCreation = year;};
         boost::uint_fast16_t getYearOfCreation(){return yearOfCreation;};
@@ -246,8 +245,8 @@ namespace spdlib
 		void setNumberOfPulses(boost::uint_fast64_t numPulses){this->numPulses = numPulses;};
         boost::uint_fast64_t getNumberOfPulses(){return numPulses;};
 		
-		void setUserMetaField(string userMetaField){this->userMetaField = userMetaField;};
-		string getUserMetaField(){return userMetaField;};
+		void setUserMetaField(std::string userMetaField){this->userMetaField = userMetaField;};
+		std::string getUserMetaField(){return userMetaField;};
 		
 		void setXMin(double xMin){this->xMin = xMin;};
 		double getXMin(){return xMin;};
@@ -350,11 +349,11 @@ namespace spdlib
 		void setNumberBinsY(boost::uint_fast32_t numBinsY){this->numBinsY = numBinsY;};
         boost::uint_fast32_t getNumberBinsY(){return numBinsY;};
 		
-		void setWavelengths(vector<float> wavelengths){this->wavelengths = wavelengths;};
-		vector<float>* getWavelengths(){return &wavelengths;};
+		void setWavelengths(std::vector<float> wavelengths){this->wavelengths = wavelengths;};
+		std::vector<float>* getWavelengths(){return &wavelengths;};
         
-        void setBandwidths(vector<float> bandwidths){this->bandwidths = bandwidths;};
-		vector<float>* getBandwidths(){return &bandwidths;};
+        void setBandwidths(std::vector<float> bandwidths){this->bandwidths = bandwidths;};
+		std::vector<float>* getBandwidths(){return &bandwidths;};
         
         void setNumOfWavelengths(boost::uint_fast16_t numOfWavelengths){this->numOfWavelengths = numOfWavelengths;};
 		boost::uint_fast16_t getNumOfWavelengths(){return numOfWavelengths;};
@@ -440,8 +439,8 @@ namespace spdlib
         void setFieldOfView(float fieldOfView){this->fieldOfView = fieldOfView;};
 		float getFieldOfView(){return fieldOfView;};
 		
-		friend ostream& operator<<(ostream& stream, SPDFile &obj);
-		friend ostream& operator<<(ostream& stream, SPDFile *obj);
+		friend std::ostream& operator<<(std::ostream& stream, SPDFile &obj);
+		friend std::ostream& operator<<(std::ostream& stream, SPDFile *obj);
 		
 		~SPDFile();
 		
@@ -449,11 +448,11 @@ namespace spdlib
 		/**
 		 * The file name and location of the system.
 		 */
-		string filepath;
+		std::string filepath;
 		/**
 		 * The spatial reference for the data as a proj4 string.
 		 */
-		string spatialreference;
+		std::string spatialreference;
 		/**
 		 * Define how the points are indexed.
 		 */ 
@@ -497,15 +496,15 @@ namespace spdlib
 		/**
 		 * The software from which this file was created.
 		 */
-		string generatingSoftware;
+		std::string generatingSoftware;
 		/**
 		 * The sensor which collected the data
 		 */
-		string systemIdentifier;
+		std::string systemIdentifier;
 		/**
 		 * The file signature of the file type ('SPDFile'). 
 		 */
-		string fileSignature;
+		std::string fileSignature;
 		/**
 		 * The year of creation
 		 */
@@ -566,7 +565,7 @@ namespace spdlib
 		 * A text attribute the user can use to store
 		 * further information (meta-data) as required.
 		 */
-		string userMetaField;
+		std::string userMetaField;
 		/**
 		 * The minimum X within the scenes bounding box (Cartesian)
 		 */
@@ -646,11 +645,11 @@ namespace spdlib
 		/**
 		 * The wavelengths (in nm) of the sensor used to capture the data
 		 */
-		vector<float> wavelengths;
+		std::vector<float> wavelengths;
         /**
 		 * The bandwidth used for each wavelength by the sensor used to capture the data
 		 */
-		vector<float> bandwidths;
+		std::vector<float> bandwidths;
         /**
 		 * The number of wavelengths stored within the file.
 		 */

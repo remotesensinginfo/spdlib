@@ -33,7 +33,7 @@
 namespace spdlib
 {
 	
-	SPDDataExporter::SPDDataExporter(string filetype) : spdFile(NULL), outputFile(""), fileOpened(false), filetype(""), numOutPts(0), numOutPtsDefined(false)
+	SPDDataExporter::SPDDataExporter(std::string filetype) : spdFile(NULL), outputFile(""), fileOpened(false), filetype(""), numOutPts(0), numOutPtsDefined(false)
 	{
 		this->filetype = filetype;
 	}
@@ -63,7 +63,7 @@ namespace spdlib
 		return *this;
 	}
 	
-	void SPDDataExporter::writeData(list<SPDPulse*> ***griddedPls, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize)throw(SPDIOException)
+	void SPDDataExporter::writeData(std::list<SPDPulse*> ***griddedPls, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize)throw(SPDIOException)
 	{
 		if(!fileOpened)
 		{
@@ -85,7 +85,7 @@ namespace spdlib
 		}
 	}
 	
-	void SPDDataExporter::writeData(vector<SPDPulse*> ***griddedPls, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize)throw(SPDIOException)
+	void SPDDataExporter::writeData(std::vector<SPDPulse*> ***griddedPls, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize)throw(SPDIOException)
 	{
 		if(!fileOpened)
 		{
@@ -107,7 +107,7 @@ namespace spdlib
 		}
 	}
     
-    void SPDDataExporter::writeData(list<SPDPulse*> ***griddedPls, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast32_t startBinX, boost::uint_fast32_t startBinY, boost::uint_fast32_t startIdxX, boost::uint_fast32_t startIdxY)throw(SPDIOException)
+    void SPDDataExporter::writeData(std::list<SPDPulse*> ***griddedPls, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast32_t startBinX, boost::uint_fast32_t startBinY, boost::uint_fast32_t startIdxX, boost::uint_fast32_t startIdxY)throw(SPDIOException)
     {
         if(!fileOpened)
 		{
@@ -138,7 +138,7 @@ namespace spdlib
 		}
     }
     
-    void SPDDataExporter::writeData(vector<SPDPulse*> ***griddedPls, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast32_t startBinX, boost::uint_fast32_t startBinY, boost::uint_fast32_t startIdxX, boost::uint_fast32_t startIdxY)throw(SPDIOException)
+    void SPDDataExporter::writeData(std::vector<SPDPulse*> ***griddedPls, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast32_t startBinX, boost::uint_fast32_t startBinY, boost::uint_fast32_t startIdxX, boost::uint_fast32_t startIdxY)throw(SPDIOException)
     {
         if(!fileOpened)
 		{
@@ -169,7 +169,7 @@ namespace spdlib
 		}
     }
 	
-	bool SPDDataExporter::isFileType(string filetype)
+	bool SPDDataExporter::isFileType(std::string filetype)
 	{
 		if(this->filetype == filetype)
 		{

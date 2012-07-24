@@ -52,7 +52,7 @@ namespace spdlib
 			{
 				for(boost::uint_fast32_t j = 0; j < winSize; ++j)
 				{
-					pxlVals[i][j] = numeric_limits<float>::signaling_NaN();
+					pxlVals[i][j] = std::numeric_limits<float>::signaling_NaN();
 				}
 			}
 			else 
@@ -62,7 +62,7 @@ namespace spdlib
 				{
 					if(col >= xSize)
 					{
-						pxlVals[i][j] = numeric_limits<float>::signaling_NaN();
+						pxlVals[i][j] = std::numeric_limits<float>::signaling_NaN();
 					}
 					else 
 					{
@@ -152,7 +152,7 @@ namespace spdlib
 		delete[] data;
 	}
 	
-	void SPDImageUtils::getPixelLocation(GDALDataset *dataset, double x, double y, string wktStrBBox, boost::uint_fast32_t *imgX, boost::uint_fast32_t *imgY, float *xOff, float *yOff) throw(SPDImageException)
+	void SPDImageUtils::getPixelLocation(GDALDataset *dataset, double x, double y, std::string wktStrBBox, boost::uint_fast32_t *imgX, boost::uint_fast32_t *imgY, float *xOff, float *yOff) throw(SPDImageException)
 	{
 		try 
 		{
@@ -176,8 +176,8 @@ namespace spdlib
 				OGRCoordinateTransformation *ogrTransform = OGRCreateCoordinateTransformation(dataSpatialRef, imgSpatialRef);
 				if(ogrTransform == NULL)
 				{
-					cout << "Image Projection: " << imgProjRef << endl;
-					cout << "Data Projection: " << dataProjRef << endl;
+					std::cout << "Image Projection: " << imgProjRef << std::endl;
+					std::cout << "Data Projection: " << dataProjRef << std::endl;
 					throw SPDImageException("A transformation between the projections could not be created.");
 				}
 				projX = x;
@@ -185,13 +185,13 @@ namespace spdlib
 				if(!ogrTransform->Transform(1, &projX, &projY))
 				{
 					SPDTextFileUtilities textUtils;
-					string message = string("The transformation failed from [") + textUtils.doubletostring(x) + string(", ") + textUtils.doubletostring(y) + "] to [" + textUtils.doubletostring(projX) + string(", ") + textUtils.doubletostring(projY) + string("]");
+					std::string message = std::string("The transformation failed from [") + textUtils.doubletostring(x) + std::string(", ") + textUtils.doubletostring(y) + "] to [" + textUtils.doubletostring(projX) + std::string(", ") + textUtils.doubletostring(projY) + std::string("]");
 					throw SPDImageException(message);
 				}
 				OGRCoordinateTransformation::DestroyCT(ogrTransform);
 			}
 			
-			//cout << "Pulse Transformed: [" << projX << "," << projY << "]\n";
+			//std::cout << "Pulse Transformed: [" << projX << "," << projY << "]\n";
 			
 			// Find point location
 			double *transformation = new double[6];
@@ -215,7 +215,7 @@ namespace spdlib
 		
 	}
 	
-	void SPDImageUtils::getPixelPointLocations(GDALDataset *dataset, double x, double y, string wktStrBBox,boost::int_fast32_t *imgX,boost::int_fast32_t *imgY, float *xOff, float *yOff) throw(SPDImageException)
+	void SPDImageUtils::getPixelPointLocations(GDALDataset *dataset, double x, double y, std::string wktStrBBox,boost::int_fast32_t *imgX,boost::int_fast32_t *imgY, float *xOff, float *yOff) throw(SPDImageException)
 	{
 		try 
 		{
@@ -239,8 +239,8 @@ namespace spdlib
 				OGRCoordinateTransformation *ogrTransform = OGRCreateCoordinateTransformation(dataSpatialRef, imgSpatialRef);
 				if(ogrTransform == NULL)
 				{
-					cout << "Image Projection: " << imgProjRef << endl;
-					cout << "Data Projection: " << dataProjRef << endl;
+					std::cout << "Image Projection: " << imgProjRef << std::endl;
+					std::cout << "Data Projection: " << dataProjRef << std::endl;
 					throw SPDImageException("A transformation between the projections could not be created.");
 				}
 				projX = x;
@@ -248,20 +248,20 @@ namespace spdlib
 				if(!ogrTransform->Transform(1, &projX, &projY))
 				{
 					SPDTextFileUtilities textUtils;
-					string message = string("The transformation failed from [") + textUtils.doubletostring(x) + string(", ") + textUtils.doubletostring(y) + "] to [" + textUtils.doubletostring(projX) + string(", ") + textUtils.doubletostring(projY) + string("]");
+					std::string message = std::string("The transformation failed from [") + textUtils.doubletostring(x) + std::string(", ") + textUtils.doubletostring(y) + "] to [" + textUtils.doubletostring(projX) + std::string(", ") + textUtils.doubletostring(projY) + std::string("]");
 					throw SPDImageException(message);
 				}
 				OGRCoordinateTransformation::DestroyCT(ogrTransform);
 			}
 			
-			//cout << "Pulse Transformed: [" << projX << "," << projY << "]\n";
+			//std::cout << "Pulse Transformed: [" << projX << "," << projY << "]\n";
 
 			// Find point location
 			double *transformation = new double[6];
 			dataset->GetGeoTransform(transformation);
 			
-			//cout << "Image Transformation (TL): [" << transformation[0] << "," << transformation[3] << "]\n";
-			//cout << "Image Resolution: " << transformation[1] << endl;
+			//std::cout << "Image Transformation (TL): [" << transformation[0] << "," << transformation[3] << "]\n";
+			//std::cout << "Image Resolution: " << transformation[1] << std::endl;
 			
 			imgX[0] = floor((projX - transformation[0]) / transformation[1]); // Left X
 			imgY[0] = ceil((transformation[3] - projY) / transformation[1]);  // Top Y
@@ -272,10 +272,10 @@ namespace spdlib
 			imgX[3] = ceil((projX - transformation[0]) / transformation[1]);  // Right X
 			imgY[3] = floor((transformation[3] - projY) / transformation[1]); // Bottom Y
 			
-			//cout << "Image Pxl [0]: " << imgX[0] << ", " << imgY[0] << endl;
-			//cout << "Image Pxl [1]: " << imgX[1] << ", " << imgY[1] << endl;
-			//cout << "Image Pxl [2]: " << imgX[2] << ", " << imgY[2] << endl;
-			//cout << "Image Pxl [3]: " << imgX[3] << ", " << imgY[3] << endl;
+			//std::cout << "Image Pxl [0]: " << imgX[0] << ", " << imgY[0] << std::endl;
+			//std::cout << "Image Pxl [1]: " << imgX[1] << ", " << imgY[1] << std::endl;
+			//std::cout << "Image Pxl [2]: " << imgX[2] << ", " << imgY[2] << std::endl;
+			//std::cout << "Image Pxl [3]: " << imgX[3] << ", " << imgY[3] << std::endl;
 			
 			double pxlCentreX = transformation[0] + (imgX[0] * transformation[1]);
 			double pxlCentreY = transformation[3] - (imgY[0] * transformation[1]);

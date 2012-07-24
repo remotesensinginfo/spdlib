@@ -37,12 +37,12 @@ namespace spdlib
 		return headerRead;
 	}
 	
-	void SPDLineParserASCIIPulsePerRow::parseHeader(string) throw(SPDIOException)
+	void SPDLineParserASCIIPulsePerRow::parseHeader(std::string) throw(SPDIOException)
 	{
 		
 	}
 	
-	bool SPDLineParserASCIIPulsePerRow::parseLine(string line, SPDPulse *pl, boost::uint_fast16_t indexCoords)throw(SPDIOException)
+	bool SPDLineParserASCIIPulsePerRow::parseLine(std::string line, SPDPulse *pl, boost::uint_fast16_t indexCoords)throw(SPDIOException)
 	{
 		SPDTextFileUtilities textUtils;
 		SPDPointUtils ptUtils;
@@ -50,7 +50,7 @@ namespace spdlib
 		
 		if((!textUtils.blankline(line)) & (!textUtils.lineStart(line, '#')))
 		{
-			vector<string> *tokens = new vector<string>();
+			std::vector<std::string> *tokens = new std::vector<std::string>();
 			textUtils.tokenizeString(line, ' ', tokens, true);
 			if(((tokens->size()-1) % 4) == 0)
 			{
@@ -65,13 +65,13 @@ namespace spdlib
 					ptUtils.initSPDPoint(pt);
 					
 					pt->x = textUtils.strtodouble(tokens->at((1 + (n * 4))));
-					//cout << "tokens->at(" << (1 + (n * 4)) << ") = " << tokens->at((1 + (n * 4))) << endl;
+					//std::cout << "tokens->at(" << (1 + (n * 4)) << ") = " << tokens->at((1 + (n * 4))) << std::endl;
 					pt->y = textUtils.strtodouble(tokens->at((1 + (n * 4)) + 1));
-					//cout << "tokens->at(" << (1 + (n * 4)) + 1 << ") = " << tokens->at((1 + (n * 4)) + 1) << endl;
+					//std::cout << "tokens->at(" << (1 + (n * 4)) + 1 << ") = " << tokens->at((1 + (n * 4)) + 1) << std::endl;
 					pt->z = textUtils.strtofloat(tokens->at((1 + (n * 4)) + 2));
-					//cout << "tokens->at(" << (1 + (n * 4)) + 2 << ") = " << tokens->at((1 + (n * 4)) + 2) << endl;
+					//std::cout << "tokens->at(" << (1 + (n * 4)) + 2 << ") = " << tokens->at((1 + (n * 4)) + 2) << std::endl;
 					pt->amplitudeReturn = textUtils.strtofloat(tokens->at((1 + (n * 4)) + 3));
-					//cout << "tokens->at(" << (1 + (n * 4)) + 3 << ") = " << tokens->at((1 + (n * 4)) + 3) << endl << endl;
+					//std::cout << "tokens->at(" << (1 + (n * 4)) + 3 << ") = " << tokens->at((1 + (n * 4)) + 3) << std::endl << std::endl;
 					pt->gpsTime = gpsTime;
 					pt->returnID = (n+1);
 					
@@ -123,7 +123,7 @@ namespace spdlib
 		return false;
 	}
 	
-	bool SPDLineParserASCIIPulsePerRow::isFileType(string fileType)
+	bool SPDLineParserASCIIPulsePerRow::isFileType(std::string fileType)
 	{
 		if(fileType == "ASCIIPULSEROW")
 		{

@@ -43,8 +43,6 @@
 #include "spd/SPDFileIncrementalReader.h"
 #include "spd/SPDFileUtilities.h"
 
-using namespace std;
-
 namespace spdlib
 {
 	
@@ -52,19 +50,19 @@ namespace spdlib
 	{
 	public:
 		SPDSetupProcessPolygonsAbstract(){};
-		virtual void processPolygons(string spdInputFile, string inputLayer, string outputLayer, bool deleteOutShpIfExists, bool copyAttributes, SPDPolygonProcessor *processor)throw(SPDProcessingException) = 0;
-		virtual void processPolygons(string spdInputFile, string inputLayer, string outputASCII, SPDPolygonProcessor *processor)throw(SPDProcessingException) = 0;
+		virtual void processPolygons(std::string spdInputFile, std::string inputLayer, std::string outputLayer, bool deleteOutShpIfExists, bool copyAttributes, SPDPolygonProcessor *processor)throw(SPDProcessingException) = 0;
+		virtual void processPolygons(std::string spdInputFile, std::string inputLayer, std::string outputASCII, SPDPolygonProcessor *processor)throw(SPDProcessingException) = 0;
 		virtual ~SPDSetupProcessPolygonsAbstract(){};
 	protected:
-		string getLayerName(string filepath);
+		std::string getLayerName(std::string filepath);
 	};
 	
 	class SPDSetupProcessShapefilePolygons : public SPDSetupProcessPolygonsAbstract
 	{
 	public:
 		SPDSetupProcessShapefilePolygons();
-		void processPolygons(string spdInputFile, string inputLayer, string outputLayer, bool deleteOutShpIfExists,  bool copyAttributes, SPDPolygonProcessor *processor)throw(SPDProcessingException);
-        void processPolygons(string spdInputFile, string inputLayer, string outputASCII, SPDPolygonProcessor *processor)throw(SPDProcessingException);
+		void processPolygons(std::string spdInputFile, std::string inputLayer, std::string outputLayer, bool deleteOutShpIfExists,  bool copyAttributes, SPDPolygonProcessor *processor)throw(SPDProcessingException);
+        void processPolygons(std::string spdInputFile, std::string inputLayer, std::string outputASCII, SPDPolygonProcessor *processor)throw(SPDProcessingException);
         ~SPDSetupProcessShapefilePolygons();
 	};
 }

@@ -31,12 +31,12 @@ namespace spdlib
             
     }
     
-	void SPDIOUtils::gridAndWriteData(SPDDataExporter *exporter, list<SPDPulse*> *pls, SPDFile *spdFile, string outputFile)throw(SPDIOException)
+	void SPDIOUtils::gridAndWriteData(SPDDataExporter *exporter, std::list<SPDPulse*> *pls, SPDFile *spdFile, std::string outputFile)throw(SPDIOException)
 	{
 		try 
 		{
 			SPDGridData gridData;
-			list<SPDPulse*> ***griddedPts = gridData.gridData(pls, spdFile);
+			std::list<SPDPulse*> ***griddedPts = gridData.gridData(pls, spdFile);
 			
 			exporter->open(spdFile, outputFile);
 			
@@ -46,12 +46,12 @@ namespace spdlib
 			boost::uint_fast32_t feedback = ySize/10;
 			int feedbackCounter = 0;
 			
-			cout << "Started (Write Data) ." << flush;
+			std::cout << "Started (Write Data) ." << std::flush;
 			for(boost::uint_fast32_t i = 0; i < ySize; ++i)
 			{
 				if((feedback > 10) && ((i % feedback) == 0))
 				{
-					cout << "." << feedbackCounter << "." << flush;
+					std::cout << "." << feedbackCounter << "." << std::flush;
 					feedbackCounter += 10;
 				}
 				
@@ -62,7 +62,7 @@ namespace spdlib
 				}
                 delete[] griddedPts[i];
 			}
-			cout << ".Complete\n";
+			std::cout << ".Complete\n";
             delete [] griddedPts;
 			
 			exporter->finaliseClose();
@@ -77,12 +77,12 @@ namespace spdlib
 		}
 	}
 	
-	void SPDIOUtils::gridAndWriteData(SPDDataExporter *exporter, vector<SPDPulse*> *pls, SPDFile *spdFile, string outputFile)throw(SPDIOException)
+	void SPDIOUtils::gridAndWriteData(SPDDataExporter *exporter, std::vector<SPDPulse*> *pls, SPDFile *spdFile, std::string outputFile)throw(SPDIOException)
 	{
 		try 
 		{
 			SPDGridData gridData;
-			list<SPDPulse*> ***griddedPts = gridData.gridData(pls, spdFile);
+			std::list<SPDPulse*> ***griddedPts = gridData.gridData(pls, spdFile);
 			
 			exporter->open(spdFile, outputFile);
 			
@@ -92,12 +92,12 @@ namespace spdlib
 			boost::uint_fast32_t feedback = ySize/10;
 			int feedbackCounter = 0;
 			
-			cout << "Started (Write Data) ." << flush;
+			std::cout << "Started (Write Data) ." << std::flush;
 			for(boost::uint_fast32_t i = 0; i < ySize; ++i)
 			{
 				if((feedback > 10) && ((i % feedback) == 0))
 				{
-					cout << "." << feedbackCounter << "." << flush;
+					std::cout << "." << feedbackCounter << "." << std::flush;
 					feedbackCounter += 10;
 				}
 				
@@ -108,7 +108,7 @@ namespace spdlib
 				}
                 delete[] griddedPts[i];
 			}
-			cout << ".Complete\n";
+			std::cout << ".Complete\n";
             delete [] griddedPts;
 			
 			exporter->finaliseClose();

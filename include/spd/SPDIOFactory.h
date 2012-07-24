@@ -47,8 +47,6 @@
 #include "spd/SPDGeneralASCIIFileWriter.h"
 #include "spd/SPDLASFileExporter.h"
 
-using namespace std;
-
 namespace spdlib
 {	
 	class SPDIOFactory
@@ -56,16 +54,16 @@ namespace spdlib
 	public:
 		SPDIOFactory();
 		SPDIOFactory(const SPDIOFactory &ioFactory);
-		SPDDataExporter* getExporter(string filetype) throw(SPDIOException);
-		SPDDataImporter* getImporter(string filetype, bool convertCoords=false, string outputProj4="", string schema="", boost::uint_fast16_t indexCoords=SPD_FIRST_RETURN, bool defineOrigin=false, double originX=0, double originY=0, float originZ=0, float waveNoiseThreshold=0) throw(SPDIOException);
+		SPDDataExporter* getExporter(std::string filetype) throw(SPDIOException);
+		SPDDataImporter* getImporter(std::string filetype, bool convertCoords=false, std::string outputProj4="", std::string schema="", boost::uint_fast16_t indexCoords=SPD_FIRST_RETURN, bool defineOrigin=false, double originX=0, double originY=0, float originZ=0, float waveNoiseThreshold=0) throw(SPDIOException);
 		void registerExporter(SPDDataExporter *exporter);
 		void registerImporter(SPDDataImporter *importer);
 		SPDIOFactory& operator=(const SPDIOFactory& ioFactory);
 		~SPDIOFactory();
 	private:
 		void registerAll();
-		list<SPDDataExporter*> *exporters;
-		list<SPDDataImporter*> *importers;
+		std::list<SPDDataExporter*> *exporters;
+		std::list<SPDDataImporter*> *importers;
 	};
 }
 

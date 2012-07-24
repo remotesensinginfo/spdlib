@@ -43,7 +43,7 @@ namespace spdlib
 		
 	}
 	
-	SPDIOException::SPDIOException(string message) : SPDException(message)
+	SPDIOException::SPDIOException(std::string message) : SPDException(message)
 	{
 		
 	}
