@@ -196,8 +196,8 @@ namespace spdlib
 			// Find point location
 			double *transformation = new double[6];
 			dataset->GetGeoTransform(transformation);
-			*imgX = floor((projX - transformation[0]) / transformation[1]);
-			*imgY = floor((transformation[3] - projY) / transformation[1]);
+			*imgX = floor(((double)(projX - transformation[0]) / transformation[1]));
+			*imgY = floor(((double)(transformation[3] - projY) / transformation[1]));
 			
 			double pxlCentreX = transformation[0] + (((*imgX) * transformation[1]) + transformation[1]/2);
 			double pxlCentreY = transformation[3] - (((*imgY) * transformation[1]) + transformation[1]/2);
@@ -263,14 +263,14 @@ namespace spdlib
 			//std::cout << "Image Transformation (TL): [" << transformation[0] << "," << transformation[3] << "]\n";
 			//std::cout << "Image Resolution: " << transformation[1] << std::endl;
 			
-			imgX[0] = floor((projX - transformation[0]) / transformation[1]); // Left X
-			imgY[0] = ceil((transformation[3] - projY) / transformation[1]);  // Top Y
-			imgX[1] = ceil((projX - transformation[0]) / transformation[1]);  // Right X
-			imgY[1] = ceil((transformation[3] - projY) / transformation[1]);  // Top Y
-			imgX[2] = floor((projX - transformation[0]) / transformation[1]); // Left X
-			imgY[2] = floor((transformation[3] - projY) / transformation[1]); // Bottom Y
-			imgX[3] = ceil((projX - transformation[0]) / transformation[1]);  // Right X
-			imgY[3] = floor((transformation[3] - projY) / transformation[1]); // Bottom Y
+			imgX[0] = floor(((double)(projX - transformation[0]) / transformation[1])); // Left X
+			imgY[0] = ceil(((double)(transformation[3] - projY) / transformation[1]));  // Top Y
+			imgX[1] = ceil(((double)(projX - transformation[0]) / transformation[1]));  // Right X
+			imgY[1] = ceil(((double)(transformation[3] - projY) / transformation[1]));  // Top Y
+			imgX[2] = floor(((double)(projX - transformation[0]) / transformation[1])); // Left X
+			imgY[2] = floor(((double)(transformation[3] - projY) / transformation[1])); // Bottom Y
+			imgX[3] = ceil(((double)(projX - transformation[0]) / transformation[1]));  // Right X
+			imgY[3] = floor(((double)(transformation[3] - projY) / transformation[1])); // Bottom Y
 			
 			//std::cout << "Image Pxl [0]: " << imgX[0] << ", " << imgY[0] << std::endl;
 			//std::cout << "Image Pxl [1]: " << imgX[1] << ", " << imgY[1] << std::endl;

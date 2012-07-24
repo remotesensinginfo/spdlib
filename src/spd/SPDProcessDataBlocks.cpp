@@ -879,8 +879,8 @@ namespace spdlib
                     throw SPDProcessingException("The processing resolution must be a multiple of the native resoltion.");
                 }
                 usingNativeRes = false;
-                procResXBins = ceil(geoWidth / processingResolution)+1;
-                procResYBins = ceil(geoHeight / processingResolution)+1;
+                procResXBins = ceil(((double)geoWidth / processingResolution))+1;
+                procResYBins = ceil(((double)geoHeight / processingResolution))+1;
                 
                 scaleDown = false;
                 binScaling = boost::numeric_cast<boost::uint_fast32_t>(processingResolution/spdInFile->getBinSize());
@@ -895,8 +895,8 @@ namespace spdlib
                     throw SPDProcessingException("The processing resolution must be a multiple of the native resoltion.");
                 }
                 usingNativeRes = false;
-                procResXBins = ceil(geoWidth / processingResolution)+1;
-                procResYBins = ceil(geoHeight / processingResolution)+1;
+                procResXBins = ceil(((double)geoWidth / processingResolution))+1;
+                procResYBins = ceil(((double)geoHeight / processingResolution))+1;
                 
                 scaleDown = true;
                 binScaling = boost::numeric_cast<boost::uint_fast32_t>(spdInFile->getBinSize()/processingResolution);
@@ -992,14 +992,14 @@ namespace spdlib
                 if(scaleDown)
                 {
                     scaledOverlap = this->overlap * binScaling;
-                    remainingColsScaled = ceil(remainingCols * binScaling);
-                    remainingRowsScaled = ceil(remainingRows * binScaling);
+                    remainingColsScaled = ceil(((double)remainingCols * binScaling));
+                    remainingRowsScaled = ceil(((double)remainingRows * binScaling));
                 }
                 else
                 {
                     scaledOverlap = this->overlap / binScaling;
-                    remainingColsScaled = ceil(remainingCols / binScaling);
-                    remainingRowsScaled = ceil(remainingRows / binScaling);
+                    remainingColsScaled = ceil(((double)remainingCols / binScaling));
+                    remainingRowsScaled = ceil(((double)remainingRows / binScaling));
                 }
             }
             

@@ -264,7 +264,7 @@ namespace spdlib{
             double max = gsl_stats_max (&(*ptVals)[0], 1, ptVals->size());
             if(!boost::math::isnan(max))
             {
-                boost::uint_fast32_t nBins = ceil(max/vRes)+1;
+                boost::uint_fast32_t nBins = ceil(((double)max/vRes))+1;
                 
                 //std::cout << "\nNumber of bins = " << nBins << std::endl;
                 if((nBins > 0) & (nBins < 1000))
