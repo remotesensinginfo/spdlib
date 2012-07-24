@@ -34,6 +34,9 @@
 #include "ogrsf_frmts.h"
 #include "ogr_api.h"
 
+#include <boost/cstdint.hpp>
+#include <boost/math/special_functions/fpclassify.hpp>
+
 #include "spd/SPDFile.h"
 #include "spd/SPDPoint.h"
 #include "spd/SPDPulse.h"

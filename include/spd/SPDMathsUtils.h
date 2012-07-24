@@ -35,6 +35,9 @@
 #include <gsl/gsl_multifit.h>
 #include <gsl/gsl_linalg.h>
 
+#include <boost/cstdint.hpp>
+#include <boost/math/special_functions/fpclassify.hpp>
+
 #include "spd/cmpfit/mpfit.h"
 
 #include "spd/SPDCommon.h"

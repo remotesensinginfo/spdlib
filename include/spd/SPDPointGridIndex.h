@@ -31,6 +31,7 @@
 
 #include <boost/cstdint.hpp>
 #include <boost/numeric/conversion/cast.hpp>
+#include <boost/math/special_functions/fpclassify.hpp>
 
 #include "gdal_priv.h"
 #include "ogrsf_frmts.h"

@@ -33,6 +33,7 @@
 #include <boost/numeric/conversion/cast.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/cstdint.hpp>
+#include <boost/math/special_functions/fpclassify.hpp>
 #include <boost/algorithm/string/trim.hpp>
 
 #include "spd/SPDTextFileException.h"

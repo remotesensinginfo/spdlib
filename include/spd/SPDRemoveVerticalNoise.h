@@ -32,6 +32,8 @@
 
 #include "gsl/gsl_statistics_double.h"
 
+#include <boost/math/special_functions/fpclassify.hpp>
+
 #include "spd/SPDFile.h"
 #include "spd/SPDPulse.h"
 #include "spd/SPDPoint.h"

@@ -30,6 +30,9 @@
 #include <fstream>
 #include <math.h>
 
+#include <boost/cstdint.hpp>
+#include <boost/math/special_functions/fpclassify.hpp>
+
 #include "spd/SPDException.h"
 #include "spd/SPDTextFileUtilities.h"
 

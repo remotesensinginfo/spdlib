@@ -32,6 +32,7 @@
 #include <list>
 
 #include <boost/cstdint.hpp>
+#include <boost/math/special_functions/fpclassify.hpp>
 
 #include "spd/SPDFile.h"
 #include "spd/SPDPoint.h"
