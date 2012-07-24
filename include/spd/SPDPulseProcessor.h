@@ -26,14 +26,12 @@
 
 #include <iostream>
 #include <string>
-#include <list>
+#include <vector>
 
 #include "spd/SPDFile.h"
 #include "spd/SPDPoint.h"
 #include "spd/SPDPulse.h"
 #include "spd/SPDProcessingException.h"
-
-using namespace std;
 
 namespace spdlib
 {
@@ -43,13 +41,13 @@ namespace spdlib
 	public:
         SPDPulseProcessor(){};
         
-        virtual void processDataColumnImage(SPDFile *inSPDFile, vector<SPDPulse*> *pulses, float *imageData, SPDXYPoint *cenPts, boost::uint_fast32_t numImgBands, float binSize) throw(SPDProcessingException)=0;
-		virtual void processDataColumn(SPDFile *inSPDFile, vector<SPDPulse*> *pulses, SPDXYPoint *cenPts) throw(SPDProcessingException)=0;
+        virtual void processDataColumnImage(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses, float *imageData, SPDXYPoint *cenPts, boost::uint_fast32_t numImgBands, float binSize) throw(SPDProcessingException)=0;
+		virtual void processDataColumn(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses, SPDXYPoint *cenPts) throw(SPDProcessingException)=0;
         
-        virtual void processDataWindowImage(SPDFile *inSPDFile, vector<SPDPulse*> ***pulses, float ***imageData, SPDXYPoint ***cenPts, boost::uint_fast32_t numImgBands, boost::uint_fast16_t winSize) throw(SPDProcessingException)=0;
-		virtual void processDataWindow(SPDFile *inSPDFile, vector<SPDPulse*> ***pulses, SPDXYPoint ***cenPts, boost::uint_fast16_t winSize) throw(SPDProcessingException)=0;
+        virtual void processDataWindowImage(SPDFile *inSPDFile, std::vector<SPDPulse*> ***pulses, float ***imageData, SPDXYPoint ***cenPts, boost::uint_fast32_t numImgBands, boost::uint_fast16_t winSize) throw(SPDProcessingException)=0;
+		virtual void processDataWindow(SPDFile *inSPDFile, std::vector<SPDPulse*> ***pulses, SPDXYPoint ***cenPts, boost::uint_fast16_t winSize) throw(SPDProcessingException)=0;
         
-        virtual vector<string> getImageBandDescriptions() throw(SPDProcessingException) = 0;
+        virtual std::vector<std::string> getImageBandDescriptions() throw(SPDProcessingException) = 0;
         virtual void setHeaderValues(SPDFile *spdFile) throw(SPDProcessingException) = 0;
                 
         virtual ~SPDPulseProcessor(){};

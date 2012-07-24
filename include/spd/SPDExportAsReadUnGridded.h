@@ -36,14 +36,12 @@
 #include "spd/SPDDataExporter.h"
 #include "spd/SPDDataImporter.h"
 
-using namespace std;
-
 namespace spdlib
 {
 	class SPDExportAsReadUnGridded : public SPDImporterProcessor
 	{
 	public:
-		SPDExportAsReadUnGridded(SPDDataExporter *exporter, SPDFile *spdFileOut, bool defineSource=false,boost::uint_fast16_t sourceID=0, bool defineReturnID=false,boost::uint_fast16_t returnID=0, bool defineClasses=false,boost::uint_fast16_t classValue=0) throw(SPDException);
+		SPDExportAsReadUnGridded(SPDDataExporter *exporter, SPDFile *spdFileOut, bool defineSource=false, boost::uint_fast16_t sourceID=0, bool defineReturnID=false, boost::uint_fast16_t returnID=0, bool defineClasses=false, boost::uint_fast16_t classValue=0) throw(SPDException);
 		void processImportedPulse(SPDFile *spdFile, SPDPulse *pulse) throw(SPDIOException);
 		void completeFileAndClose(SPDFile *spdFile)throw(SPDIOException);
         void setSourceID(boost::uint_fast16_t sourceID);
@@ -54,13 +52,13 @@ namespace spdlib
 		SPDDataExporter *exporter;
 		SPDFile *spdFileOut;
         bool defineSource;
-       boost::uint_fast16_t sourceID;
+        boost::uint_fast16_t sourceID;
         bool defineReturnID;
-       boost::uint_fast16_t returnID;
+        boost::uint_fast16_t returnID;
         bool defineClasses;
-       boost::uint_fast16_t classValue;
+        boost::uint_fast16_t classValue;
 		bool fileOpen;
-		list<SPDPulse*> *pulses;
+		std::list<SPDPulse*> *pulses;
 	};
 }
 

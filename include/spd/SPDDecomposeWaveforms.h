@@ -27,6 +27,7 @@
 #include <iostream>
 #include <string>
 #include <list>
+#include <vector>
 
 #include <boost/cstdint.hpp>
 #include <boost/numeric/conversion/cast.hpp>
@@ -50,12 +51,6 @@
 
 #include "spd/cmpfit/mpfit.h"
 
-using namespace std;
-using boost::numeric_cast;
-using boost::numeric::bad_numeric_cast;
-using boost::numeric::positive_overflow;
-using boost::numeric::negative_overflow;
-
 namespace spdlib
 {
     enum SPDDecompOption
@@ -68,7 +63,7 @@ namespace spdlib
     {
     public:
         SPDDecomposeWaveforms();
-        void decomposeWaveforms(string inFilePath, string outFilePath, boost::uint_fast32_t blockXSize, boost::uint_fast32_t blockYSize, SPDDecompOption decompOption, boost::uint_fast32_t intThreshold, bool thresholdSet, bool noiseSet, uint_fast32_t window, boost::uint_fast32_t decayThres, float decayVal) throw(SPDException);
+        void decomposeWaveforms(std::string inFilePath, std::string outFilePath, boost::uint_fast32_t blockXSize, boost::uint_fast32_t blockYSize, SPDDecompOption decompOption, boost::uint_fast32_t intThreshold, bool thresholdSet, bool noiseSet, uint_fast32_t window, boost::uint_fast32_t decayThres, float decayVal) throw(SPDException);
         ~SPDDecomposeWaveforms();
     };
     
@@ -131,7 +126,7 @@ namespace spdlib
             {
                 throw e;
             }
-            this->pulses = new list<SPDPulse*>();
+            this->pulses = new std::list<SPDPulse*>();
         }
 		void processImportedPulse(SPDFile *spdFile, SPDPulse *pulse) throw(SPDIOException)
         {
@@ -173,7 +168,7 @@ namespace spdlib
 		SPDDecomposePulse *decompose;
 		SPDDataExporter *exporter;
 		SPDFile *spdFileOut;
-        list<SPDPulse*> *pulses;
+        std::list<SPDPulse*> *pulses;
 	};
     
     
@@ -185,15 +180,15 @@ namespace spdlib
             this->decompose = decompose;
         }
         
-        void processDataColumnImage(SPDFile *inSPDFile, vector<SPDPulse*> *pulses, float *imageData, SPDXYPoint *cenPts, boost::uint_fast32_t numImgBands, float binSize) throw(SPDProcessingException)
+        void processDataColumnImage(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses, float *imageData, SPDXYPoint *cenPts, boost::uint_fast32_t numImgBands, float binSize) throw(SPDProcessingException)
         {throw SPDProcessingException("Processing is not implemented for processDataColumnImage().");};
-		void processDataColumn(SPDFile *inSPDFile, vector<SPDPulse*> *pulses, SPDXYPoint *cenPts) throw(SPDProcessingException)
+		void processDataColumn(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses, SPDXYPoint *cenPts) throw(SPDProcessingException)
         {
             try
             {
                 if(pulses->size() > 0)
                 {
-                    for(vector<SPDPulse*>::iterator iterPulses = pulses->begin(); iterPulses != pulses->end(); ++iterPulses)
+                    for(std::vector<SPDPulse*>::iterator iterPulses = pulses->begin(); iterPulses != pulses->end(); ++iterPulses)
                     {
                         decompose->decompose((*iterPulses), inSPDFile);
                     }
@@ -204,14 +199,14 @@ namespace spdlib
                 throw e;
             }
         };
-        void processDataWindowImage(SPDFile *inSPDFile, vector<SPDPulse*> ***pulses, float ***imageData, SPDXYPoint ***cenPts, boost::uint_fast32_t numImgBands, boost::uint_fast16_t winSize) throw(SPDProcessingException)
+        void processDataWindowImage(SPDFile *inSPDFile, std::vector<SPDPulse*> ***pulses, float ***imageData, SPDXYPoint ***cenPts, boost::uint_fast32_t numImgBands, boost::uint_fast16_t winSize) throw(SPDProcessingException)
         {throw SPDProcessingException("Processing using a window is not implemented.");};
-		void processDataWindow(SPDFile *inSPDFile, vector<SPDPulse*> ***pulses, SPDXYPoint ***cenPts, boost::uint_fast16_t winSize) throw(SPDProcessingException)
+		void processDataWindow(SPDFile *inSPDFile, std::vector<SPDPulse*> ***pulses, SPDXYPoint ***cenPts, boost::uint_fast16_t winSize) throw(SPDProcessingException)
         {throw SPDProcessingException("Processing using a window is not implemented.");};
         
-        vector<string> getImageBandDescriptions() throw(SPDProcessingException)
+        std::vector<std::string> getImageBandDescriptions() throw(SPDProcessingException)
         {
-            return vector<string>();
+            return std::vector<std::string>();
         };
         void setHeaderValues(SPDFile *spdFile) throw(SPDProcessingException)
         {

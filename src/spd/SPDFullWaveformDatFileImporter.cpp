@@ -28,22 +28,22 @@
 namespace spdlib
 {
 
-	SPDFullWaveformDatFileImporter::SPDFullWaveformDatFileImporter(bool convertCoords, string outputProjWKT, string schema, boost::uint_fast16_t indexCoords, bool defineOrigin, double originX, double originY, float originZ, float waveNoiseThreshold) : SPDDataImporter(convertCoords, outputProjWKT, schema, indexCoords, defineOrigin, originX, originY, originZ, waveNoiseThreshold)
+	SPDFullWaveformDatFileImporter::SPDFullWaveformDatFileImporter(bool convertCoords, std::string outputProjWKT, std::string schema, boost::uint_fast16_t indexCoords, bool defineOrigin, double originX, double originY, float originZ, float waveNoiseThreshold) : SPDDataImporter(convertCoords, outputProjWKT, schema, indexCoords, defineOrigin, originX, originY, originZ, waveNoiseThreshold)
 	{
         mathUtils = new SPDMathsUtils();
 	}
 	
-    SPDDataImporter* SPDFullWaveformDatFileImporter::getInstance(bool convertCoords, string outputProjWKT, string schema, boost::uint_fast16_t indexCoords, bool defineOrigin, double originX, double originY, float originZ, float waveNoiseThreshold)
+    SPDDataImporter* SPDFullWaveformDatFileImporter::getInstance(bool convertCoords, std::string outputProjWKT, std::string schema, boost::uint_fast16_t indexCoords, bool defineOrigin, double originX, double originY, float originZ, float waveNoiseThreshold)
     {
         return new SPDFullWaveformDatFileImporter(convertCoords, outputProjWKT, schema, indexCoords, defineOrigin, originX, originY, originZ, waveNoiseThreshold);
     }
     
-	list<SPDPulse*>* SPDFullWaveformDatFileImporter::readAllDataToList(string inputFile, SPDFile *spdFile)throw(SPDIOException)
+	std::list<SPDPulse*>* SPDFullWaveformDatFileImporter::readAllDataToList(std::string inputFile, SPDFile *spdFile)throw(SPDIOException)
 	{
 		SPDTextFileUtilities textFileUtils;
 		SPDTextFileLineReader lineReader;
 		
-        list<SPDPulse*> *pulses = new list<SPDPulse*>();
+        std::list<SPDPulse*> *pulses = new std::list<SPDPulse*>();
         
 		double xMin = 0;
 		double xMax = 0;
@@ -62,14 +62,14 @@ namespace spdlib
 		bool foundTransmittedLine = true;
 		bool foundReceivedLine = true;
 		bool onlyTransmitted = false;
-		string lineTrans = "";
-		string lineReceived = "";
-		string lineReceivedExtra = "";
-		vector<string> *extralinesRec = new vector<string>();
-		vector<string> *extralinesTrans = new vector<string>();
-		vector<string> *tokensTrans = new vector<string>();
-		vector<string> *tokensReceived = new vector<string>();
-		vector<string> *tokensReceivedExtra = new vector<string>();
+		std::string lineTrans = "";
+		std::string lineReceived = "";
+		std::string lineReceivedExtra = "";
+		std::vector<std::string> *extralinesRec = new std::vector<std::string>();
+		std::vector<std::string> *extralinesTrans = new std::vector<std::string>();
+		std::vector<std::string> *tokensTrans = new std::vector<std::string>();
+		std::vector<std::string> *tokensReceived = new std::vector<std::string>();
+		std::vector<std::string> *tokensReceivedExtra = new std::vector<std::string>();
 		
 		boost::uint_fast64_t numPulses = 0;
 		try 
@@ -80,13 +80,13 @@ namespace spdlib
 			}
 			
 			lineReader.openFile(inputFile);
-			cout << "Read ." << flush;
+			std::cout << "Read ." << std::flush;
 			while(!lineReader.endOfFile())
 			{
 				onlyTransmitted = false;
 				if((numPulses % 10000) == 0)
 				{
-					cout << "." << numPulses << "." << flush;
+					std::cout << "." << numPulses << "." << std::flush;
 				}
 				
 				if(firstLine)
@@ -133,8 +133,8 @@ namespace spdlib
 					}
 					else 
 					{
-						cout << "\nTransmitted Line: " << lineTrans << endl;
-						cout << "Received Line: " << lineReceived << endl;
+						std::cout << "\nTransmitted Line: " << lineTrans << std::endl;
+						std::cout << "Received Line: " << lineReceived << std::endl;
 						throw SPDIOException("Something has gone wrong reading the input file: the trasmitted and received origin and point are different.");
 					}					
 				}
@@ -333,43 +333,43 @@ namespace spdlib
             spdFile->setReceiveWaveformDefined(SPD_TRUE);
 			spdFile->setTemporalBinSpacing(1);
 			lineReader.closeFile();
-			cout << "." << numPulses << ".Pulses\n";
+			std::cout << "." << numPulses << ".Pulses\n";
 		}
 		catch (SPDIOException &e) 
 		{
-			cout << "Pulse = " << numPulses << endl;
+			std::cout << "Pulse = " << numPulses << std::endl;
 			if(onlyTransmitted)
 			{
-				cout << "Only Transmitted\n";
+				std::cout << "Only Transmitted\n";
 			}
 			else if(extralinesRec->size() == 0)
 			{
-				cout << "Transmitted and Single line of Recieved\n";
+				std::cout << "Transmitted and Single line of Recieved\n";
 			}
 			else
 			{
-				cout << "Extra recieved lines, an extra " <<  extralinesRec->size() << " lines\n";
+				std::cout << "Extra recieved lines, an extra " <<  extralinesRec->size() << " lines\n";
 			}
 			
-			cout << "Transmitted: " << lineTrans << endl;
-			cout << "Recieved: " << lineReceived << endl;
-			cout << "Extra Lines: " << endl;
-			vector<string>::iterator iterLines;
+			std::cout << "Transmitted: " << lineTrans << std::endl;
+			std::cout << "Recieved: " << lineReceived << std::endl;
+			std::cout << "Extra Lines: " << std::endl;
+			std::vector<std::string>::iterator iterLines;
 			for(iterLines = extralinesRec->begin(); iterLines != extralinesRec->end(); ++iterLines)
 			{
-				cout << *iterLines << endl;
+				std::cout << *iterLines << std::endl;
 			}
 			throw e;
 		}			
 		return pulses;
 	}
 	
-	vector<SPDPulse*>* SPDFullWaveformDatFileImporter::readAllDataToVector(string inputFile, SPDFile *spdFile)throw(SPDIOException)
+	std::vector<SPDPulse*>* SPDFullWaveformDatFileImporter::readAllDataToVector(std::string inputFile, SPDFile *spdFile)throw(SPDIOException)
 	{
 		SPDTextFileUtilities textFileUtils;
 		SPDTextFileLineReader lineReader;
 		
-        vector<SPDPulse*> *pulses = new vector<SPDPulse*>();
+        std::vector<SPDPulse*> *pulses = new std::vector<SPDPulse*>();
         
 		double xMin = 0;
 		double xMax = 0;
@@ -388,14 +388,14 @@ namespace spdlib
 		bool foundTransmittedLine = true;
 		bool foundReceivedLine = true;
 		bool onlyTransmitted = false;
-		string lineTrans = "";
-		string lineReceived = "";
-		string lineReceivedExtra = "";
-		vector<string> *extralinesRec = new vector<string>();
-		vector<string> *extralinesTrans = new vector<string>();
-		vector<string> *tokensTrans = new vector<string>();
-		vector<string> *tokensReceived = new vector<string>();
-		vector<string> *tokensReceivedExtra = new vector<string>();
+		std::string lineTrans = "";
+		std::string lineReceived = "";
+		std::string lineReceivedExtra = "";
+		std::vector<std::string> *extralinesRec = new std::vector<std::string>();
+		std::vector<std::string> *extralinesTrans = new std::vector<std::string>();
+		std::vector<std::string> *tokensTrans = new std::vector<std::string>();
+		std::vector<std::string> *tokensReceived = new std::vector<std::string>();
+		std::vector<std::string> *tokensReceivedExtra = new std::vector<std::string>();
 		
 		boost::uint_fast64_t numPulses = 0;
 		try 
@@ -406,13 +406,13 @@ namespace spdlib
 			}
 			
 			lineReader.openFile(inputFile);
-			cout << "Read ." << flush;
+			std::cout << "Read ." << std::flush;
 			while(!lineReader.endOfFile())
 			{
 				onlyTransmitted = false;
 				if((numPulses % 10000) == 0)
 				{
-					cout << "." << numPulses << "." << flush;
+					std::cout << "." << numPulses << "." << std::flush;
 				}
 				
 				if(firstLine)
@@ -459,8 +459,8 @@ namespace spdlib
 					}
 					else 
 					{
-						cout << "\nTransmitted Line: " << lineTrans << endl;
-						cout << "Received Line: " << lineReceived << endl;
+						std::cout << "\nTransmitted Line: " << lineTrans << std::endl;
+						std::cout << "Received Line: " << lineReceived << std::endl;
 						throw SPDIOException("Something has gone wrong reading the input file: the trasmitted and received origin and point are different.");
 					}					
 				}
@@ -659,38 +659,38 @@ namespace spdlib
             spdFile->setReceiveWaveformDefined(SPD_TRUE);
 			spdFile->setTemporalBinSpacing(1);
 			lineReader.closeFile();
-			cout << "." << numPulses << ".Pulses\n";
+			std::cout << "." << numPulses << ".Pulses\n";
 		}
 		catch (SPDIOException &e) 
 		{
-			cout << "Pulse = " << numPulses << endl;
+			std::cout << "Pulse = " << numPulses << std::endl;
 			if(onlyTransmitted)
 			{
-				cout << "Only Transmitted\n";
+				std::cout << "Only Transmitted\n";
 			}
 			else if(extralinesRec->size() == 0)
 			{
-				cout << "Transmitted and Single line of Recieved\n";
+				std::cout << "Transmitted and Single line of Recieved\n";
 			}
 			else
 			{
-				cout << "Extra recieved lines, an extra " <<  extralinesRec->size() << " lines\n";
+				std::cout << "Extra recieved lines, an extra " <<  extralinesRec->size() << " lines\n";
 			}
 			
-			cout << "Transmitted: " << lineTrans << endl;
-			cout << "Recieved: " << lineReceived << endl;
-			cout << "Extra Lines: " << endl;
-			vector<string>::iterator iterLines;
+			std::cout << "Transmitted: " << lineTrans << std::endl;
+			std::cout << "Recieved: " << lineReceived << std::endl;
+			std::cout << "Extra Lines: " << std::endl;
+			std::vector<std::string>::iterator iterLines;
 			for(iterLines = extralinesRec->begin(); iterLines != extralinesRec->end(); ++iterLines)
 			{
-				cout << *iterLines << endl;
+				std::cout << *iterLines << std::endl;
 			}
 			throw e;
 		}			
 		return pulses;
 	}
 	
-	void SPDFullWaveformDatFileImporter::readAndProcessAllData(string inputFile, SPDFile *spdFile, SPDImporterProcessor *processor)throw(SPDIOException)
+	void SPDFullWaveformDatFileImporter::readAndProcessAllData(std::string inputFile, SPDFile *spdFile, SPDImporterProcessor *processor)throw(SPDIOException)
 	{
 		SPDTextFileUtilities textFileUtils;
 		SPDTextFileLineReader lineReader;
@@ -712,14 +712,14 @@ namespace spdlib
 		bool foundTransmittedLine = true;
 		bool foundReceivedLine = true;
 		bool onlyTransmitted = false;
-		string lineTrans = "";
-		string lineReceived = "";
-		string lineReceivedExtra = "";
-		vector<string> *extralinesRec = new vector<string>();
-		vector<string> *extralinesTrans = new vector<string>();
-		vector<string> *tokensTrans = new vector<string>();
-		vector<string> *tokensReceived = new vector<string>();
-		vector<string> *tokensReceivedExtra = new vector<string>();
+		std::string lineTrans = "";
+		std::string lineReceived = "";
+		std::string lineReceivedExtra = "";
+		std::vector<std::string> *extralinesRec = new std::vector<std::string>();
+		std::vector<std::string> *extralinesTrans = new std::vector<std::string>();
+		std::vector<std::string> *tokensTrans = new std::vector<std::string>();
+		std::vector<std::string> *tokensReceived = new std::vector<std::string>();
+		std::vector<std::string> *tokensReceivedExtra = new std::vector<std::string>();
 		
 		boost::uint_fast64_t numPulses = 0;
 		try 
@@ -730,13 +730,13 @@ namespace spdlib
 			}
 			
 			lineReader.openFile(inputFile);
-			cout << "Read ." << flush;
+			std::cout << "Read ." << std::flush;
 			while(!lineReader.endOfFile())
 			{
 				onlyTransmitted = false;
 				if((numPulses % 10000) == 0)
 				{
-					cout << "." << numPulses << "." << flush;
+					std::cout << "." << numPulses << "." << std::flush;
 				}
 				
 				if(firstLine)
@@ -783,8 +783,8 @@ namespace spdlib
 					}
 					else 
 					{
-						cout << "\nTransmitted Line: " << lineTrans << endl;
-						cout << "Received Line: " << lineReceived << endl;
+						std::cout << "\nTransmitted Line: " << lineTrans << std::endl;
+						std::cout << "Received Line: " << lineReceived << std::endl;
 						throw SPDIOException("Something has gone wrong reading the input file: the trasmitted and received origin and point are different.");
 					}					
 				}
@@ -983,37 +983,37 @@ namespace spdlib
             spdFile->setReceiveWaveformDefined(SPD_TRUE);
 			spdFile->setTemporalBinSpacing(1);
 			lineReader.closeFile();
-			cout << "." << numPulses << ".Pulses\n";
+			std::cout << "." << numPulses << ".Pulses\n";
 		}
 		catch (SPDIOException &e) 
 		{
-			cout << "Pulse = " << numPulses << endl;
+			std::cout << "Pulse = " << numPulses << std::endl;
 			if(onlyTransmitted)
 			{
-				cout << "Only Transmitted\n";
+				std::cout << "Only Transmitted\n";
 			}
 			else if(extralinesRec->size() == 0)
 			{
-				cout << "Transmitted and Single line of Recieved\n";
+				std::cout << "Transmitted and Single line of Recieved\n";
 			}
 			else
 			{
-				cout << "Extra recieved lines, an extra " <<  extralinesRec->size() << " lines\n";
+				std::cout << "Extra recieved lines, an extra " <<  extralinesRec->size() << " lines\n";
 			}
 			
-			cout << "Transmitted: " << lineTrans << endl;
-			cout << "Recieved: " << lineReceived << endl;
-			cout << "Extra Lines: " << endl;
-			vector<string>::iterator iterLines;
+			std::cout << "Transmitted: " << lineTrans << std::endl;
+			std::cout << "Recieved: " << lineReceived << std::endl;
+			std::cout << "Extra Lines: " << std::endl;
+			std::vector<std::string>::iterator iterLines;
 			for(iterLines = extralinesRec->begin(); iterLines != extralinesRec->end(); ++iterLines)
 			{
-				cout << *iterLines << endl;
+				std::cout << *iterLines << std::endl;
 			}
 			throw e;
 		}		
 	}
 	
-	bool SPDFullWaveformDatFileImporter::isFileType(string fileType)
+	bool SPDFullWaveformDatFileImporter::isFileType(std::string fileType)
 	{
 		if(fileType == "FWF_DAT")
 		{
@@ -1022,12 +1022,12 @@ namespace spdlib
 		return false;
 	}
     
-    void SPDFullWaveformDatFileImporter::readHeaderInfo(string, SPDFile*) throw(SPDIOException)
+    void SPDFullWaveformDatFileImporter::readHeaderInfo(std::string, SPDFile*) throw(SPDIOException)
     {
         // No Header to Read..
     }
 	
-	SPDPulse* SPDFullWaveformDatFileImporter::createPulse(vector<string> *transTokens, vector<string> *extraTransLines) throw(SPDIOException)
+	SPDPulse* SPDFullWaveformDatFileImporter::createPulse(std::vector<std::string> *transTokens, std::vector<std::string> *extraTransLines) throw(SPDIOException)
 	{
 		SPDTextFileUtilities textFileUtils;
 		SPDPulseUtils pulseUtils;
@@ -1069,8 +1069,8 @@ namespace spdlib
 			
 			boost::uint_fast32_t nextSampleTime = textFileUtils.strto32bitUInt(transTokens->at(7)) + pulse->numOfTransmittedBins;
 			
-			vector<string>::iterator iterLines;
-			vector<string> *tokensTransExtra = new vector<string>();
+			std::vector<std::string>::iterator iterLines;
+			std::vector<std::string> *tokensTransExtra = new std::vector<std::string>();
 			bool pulseInvalid = false;
 			for(iterLines = extraTransLines->begin(); iterLines != extraTransLines->end(); ++iterLines)
 			{
@@ -1170,7 +1170,7 @@ namespace spdlib
 		return pulse;
 	}
 	
-	SPDPulse* SPDFullWaveformDatFileImporter::createPulse(vector<string> *transTokens, vector<string> *extraTransLines, vector<string> *receivedTokens, vector<string> *receivedExtraLines) throw(SPDIOException)
+	SPDPulse* SPDFullWaveformDatFileImporter::createPulse(std::vector<std::string> *transTokens, std::vector<std::string> *extraTransLines, std::vector<std::string> *receivedTokens, std::vector<std::string> *receivedExtraLines) throw(SPDIOException)
 	{
 		SPDTextFileUtilities textFileUtils;
 		SPDPulseUtils pulseUtils;
@@ -1211,8 +1211,8 @@ namespace spdlib
 			pulse->numOfTransmittedBins = transTokens->size() - 9;
 			boost::uint_fast32_t nextSampleTime = textFileUtils.strto32bitUInt(transTokens->at(7)) + pulse->numOfTransmittedBins;
 			
-			vector<string>::iterator iterLines;
-			vector<string> *tokensTransExtra = new vector<string>();
+			std::vector<std::string>::iterator iterLines;
+			std::vector<std::string> *tokensTransExtra = new std::vector<std::string>();
 			bool pulseInvalid = false;
 			for(iterLines = extraTransLines->begin(); iterLines != extraTransLines->end(); ++iterLines)
 			{
@@ -1263,7 +1263,7 @@ namespace spdlib
 			pulse->amplitudePulse = transAmp;
 			pulse->widthPulse = transWidth;
 			
-			vector<string> *tokensReceivedExtra = new vector<string>();
+			std::vector<std::string> *tokensReceivedExtra = new std::vector<std::string>();
 			for(iterLines = receivedExtraLines->begin(); iterLines != receivedExtraLines->end(); )
 			{
 				textFileUtils.tokenizeString(*iterLines, ',', tokensReceivedExtra);
@@ -1325,8 +1325,8 @@ namespace spdlib
 			
 			if(binIdx != pulse->numOfReceivedBins)
 			{
-				cout << "binIdx = " << binIdx << endl;
-				cout << "pulse->numOfReceivedBins = " << pulse->numOfReceivedBins << endl;
+				std::cout << "binIdx = " << binIdx << std::endl;
+				std::cout << "pulse->numOfReceivedBins = " << pulse->numOfReceivedBins << std::endl;
 				throw SPDIOException("The number of values read is not equal to the number expected.");
 			}
 			

@@ -33,8 +33,6 @@
 
 #include "SPDException.h"
 
-using namespace std;
-
 namespace spdlib
 {
 	class SPDProcessingException : public SPDException
@@ -42,7 +40,7 @@ namespace spdlib
 	public:
 		SPDProcessingException();
 		SPDProcessingException(const char *message);
-		SPDProcessingException(string message);
+		SPDProcessingException(std::string message);
 	};
 }
 

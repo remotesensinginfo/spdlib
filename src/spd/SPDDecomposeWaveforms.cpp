@@ -31,7 +31,7 @@ namespace spdlib
         
     }
         
-    void SPDDecomposeWaveforms::decomposeWaveforms(string inFilePath, string outFilePath, boost::uint_fast32_t blockXSize, boost::uint_fast32_t blockYSize, SPDDecompOption decompOption, boost::uint_fast32_t intThreshold, bool thresholdSet, bool noiseSet, uint_fast32_t window, boost::uint_fast32_t decayThres, float decayVal) throw(SPDException)
+    void SPDDecomposeWaveforms::decomposeWaveforms(std::string inFilePath, std::string outFilePath, boost::uint_fast32_t blockXSize, boost::uint_fast32_t blockYSize, SPDDecompOption decompOption, boost::uint_fast32_t intThreshold, bool thresholdSet, bool noiseSet, uint_fast32_t window, boost::uint_fast32_t decayThres, float decayVal) throw(SPDException)
     {
         try 
         {
@@ -128,11 +128,11 @@ namespace spdlib
             }
             
             // Find init peaks
-			vector<boost::uint_fast32_t> *peaks = findInitPts->findInitPoints(pulse->received, pulse->numOfReceivedBins, pulse->receiveWaveNoiseThreshold);
+			std::vector<boost::uint_fast32_t> *peaks = findInitPts->findInitPoints(pulse->received, pulse->numOfReceivedBins, pulse->receiveWaveNoiseThreshold);
 			if(debug_info)
 			{
-				cout << "Pulse " << pulse->pulseID << endl;
-				cout << "Peaks = " << peaks->size() << endl;
+				std::cout << "Pulse " << pulse->pulseID << std::endl;
+				std::cout << "Peaks = " << peaks->size() << std::endl;
 			}
 			
 			// Fit Gaussians
@@ -161,7 +161,7 @@ namespace spdlib
 				paramConstraints[0].limited[1] = true;
 				paramConstraints[0].limits[0] = 0.0;
 				paramConstraints[0].limits[1] = pulse->receiveWaveNoiseThreshold+0.01; // We can't detect peaks above the noise threshold
-				paramConstraints[0].parname = const_cast<char*>(string("Noise").c_str());;
+				paramConstraints[0].parname = const_cast<char*>(std::string("Noise").c_str());;
 				paramConstraints[0].step = 0.01;
 				paramConstraints[0].relstep = 0;
 				paramConstraints[0].side = 0;
@@ -186,7 +186,7 @@ namespace spdlib
 					paramConstraints[idx].limited[1] = true;
 					paramConstraints[idx].limits[0] = parameters[idx] - ampVar;
 					paramConstraints[idx].limits[1] = parameters[idx] + ampVar;
-					paramConstraints[idx].parname = const_cast<char*>(string("Amplitude").c_str());;
+					paramConstraints[idx].parname = const_cast<char*>(std::string("Amplitude").c_str());;
 					paramConstraints[idx].step = 0;
 					paramConstraints[idx].relstep = 0;
 					paramConstraints[idx].side = 0;
@@ -198,7 +198,7 @@ namespace spdlib
 					paramConstraints[idx+1].limited[1] = true;
 					paramConstraints[idx+1].limits[0] = parameters[idx+1] - 5;
 					paramConstraints[idx+1].limits[1] = parameters[idx+1] + 5;
-					paramConstraints[idx+1].parname = const_cast<char*>(string("Time").c_str());;
+					paramConstraints[idx+1].parname = const_cast<char*>(std::string("Time").c_str());;
 					paramConstraints[idx+1].step = 0;
 					paramConstraints[idx+1].relstep = 0;
 					paramConstraints[idx+1].side = 0;
@@ -210,7 +210,7 @@ namespace spdlib
 					paramConstraints[idx+2].limited[1] = true;
 					paramConstraints[idx+2].limits[0] = 0.01;
 					paramConstraints[idx+2].limits[1] = 10;
-					paramConstraints[idx+2].parname = const_cast<char*>(string("Width").c_str());;
+					paramConstraints[idx+2].parname = const_cast<char*>(std::string("Width").c_str());;
 					paramConstraints[idx+2].step = 0.01;
 					paramConstraints[idx+2].relstep = 0;
 					paramConstraints[idx+2].side = 0;
@@ -220,13 +220,13 @@ namespace spdlib
 				
 				if(debug_info)
 				{
-					cout << "Pulse noise = " << parameters[0] << endl << endl;
+					std::cout << "Pulse noise = " << parameters[0] << std::endl << std::endl;
                     for(unsigned int i = 0; i < peaks->size(); ++i)
 					{
 						idx = (i*3)+1;
-						cout << "Point " << i+1 << " amplitude = " << parameters[idx] << endl;
-						cout << "Point " << i+1 << " time = " << parameters[idx+1] << endl;
-						cout << "Point " << i+1 << " width = " << parameters[idx+2] << endl << endl;
+						std::cout << "Point " << i+1 << " amplitude = " << parameters[idx] << std::endl;
+						std::cout << "Point " << i+1 << " time = " << parameters[idx+1] << std::endl;
+						std::cout << "Point " << i+1 << " width = " << parameters[idx+2] << std::endl << std::endl;
 					}
 				}
 				
@@ -291,52 +291,52 @@ namespace spdlib
 				{
 					if(returnCode == MP_OK_CHI)
 					{
-						cout << "mpfit - Convergence in chi-square value.\n";
+						std::cout << "mpfit - Convergence in chi-square value.\n";
 					}
 					else if(returnCode == MP_OK_PAR)
 					{
-						cout << "mpfit - Convergence in parameter value.\n";
+						std::cout << "mpfit - Convergence in parameter value.\n";
 					}
 					else if(returnCode == MP_OK_BOTH)
 					{
-						cout << "mpfit - Convergence in chi-square and parameter value.\n";
+						std::cout << "mpfit - Convergence in chi-square and parameter value.\n";
 					}
 					else if(returnCode == MP_OK_DIR)
 					{
-						cout << "mpfit - Convergence in orthogonality.\n";
+						std::cout << "mpfit - Convergence in orthogonality.\n";
 					}
 					else if(returnCode == MP_MAXITER)
 					{
-						cout << "mpfit - Maximum number of iterations reached.\n";
+						std::cout << "mpfit - Maximum number of iterations reached.\n";
 					}
 					else if(returnCode == MP_FTOL)
 					{
-						cout << "mpfit - ftol is too small; cannot make further improvements.\n";
+						std::cout << "mpfit - ftol is too small; cannot make further improvements.\n";
 					}
 					else if(returnCode == MP_XTOL)
 					{
-						cout << "mpfit - xtol is too small; cannot make further improvements.\n";
+						std::cout << "mpfit - xtol is too small; cannot make further improvements.\n";
 					}
 					else if(returnCode == MP_XTOL)
 					{
-						cout << "mpfit - gtol is too small; cannot make further improvements.\n";
+						std::cout << "mpfit - gtol is too small; cannot make further improvements.\n";
 					}
 					else 
 					{
-						cout << "An error has probably occurred - wait for exception...\n";
+						std::cout << "An error has probably occurred - wait for exception...\n";
 					}
                     
 					
-					cout << "Run Results (MPFIT version: " << this->mpResultsValues->version << "):\n";
-					cout << "Final Chi-Squaured = " << this->mpResultsValues->bestnorm << endl;
-					cout << "Start Chi-Squaured = " << this->mpResultsValues->orignorm << endl;
-					cout << "Num Iterations = " << this->mpResultsValues->niter << endl;
-					cout << "Num Func Evals = " << this->mpResultsValues->nfev << endl;
-					cout << "Status Fit Code = " << this->mpResultsValues->status << endl;
-					cout << "Num Params = " << this->mpResultsValues->npar << endl;
-					cout << "Num Free Params = " << this->mpResultsValues->nfree << endl;
-					cout << "Num Pegged Params = " << this->mpResultsValues->npegged << endl;
-					cout << "Num Residuals Params = " << this->mpResultsValues->nfunc << endl << endl;
+					std::cout << "Run Results (MPFIT version: " << this->mpResultsValues->version << "):\n";
+					std::cout << "Final Chi-Squaured = " << this->mpResultsValues->bestnorm << std::endl;
+					std::cout << "Start Chi-Squaured = " << this->mpResultsValues->orignorm << std::endl;
+					std::cout << "Num Iterations = " << this->mpResultsValues->niter << std::endl;
+					std::cout << "Num Func Evals = " << this->mpResultsValues->nfev << std::endl;
+					std::cout << "Status Fit Code = " << this->mpResultsValues->status << std::endl;
+					std::cout << "Num Params = " << this->mpResultsValues->npar << std::endl;
+					std::cout << "Num Free Params = " << this->mpResultsValues->nfree << std::endl;
+					std::cout << "Num Pegged Params = " << this->mpResultsValues->npegged << std::endl;
+					std::cout << "Num Residuals Params = " << this->mpResultsValues->nfunc << std::endl << std::endl;
 				}
 				
 				if((returnCode == MP_OK_CHI) | (returnCode == MP_OK_PAR) |
@@ -384,18 +384,18 @@ namespace spdlib
 				}
 				else 
 				{
-					cout << "Return code is :" << returnCode << " - this can not been defined!\n";
+					std::cout << "Return code is :" << returnCode << " - this can not been defined!\n";
 				}
 				
 				if(debug_info)
 				{
-					cout << "Pulse noise = " << parameters[0] << endl << endl;
+					std::cout << "Pulse noise = " << parameters[0] << std::endl << std::endl;
                     for(unsigned int i = 0; i < peaks->size(); ++i)
 					{
 						idx = (i*3)+1;
-						cout << "Point " << i+1 << " amplitude = " << parameters[idx] << endl;
-						cout << "Point " << i+1 << " time = " << parameters[idx+1] << endl;
-						cout << "Point " << i+1 << " width = " << parameters[idx+2] << endl << endl;
+						std::cout << "Point " << i+1 << " amplitude = " << parameters[idx] << std::endl;
+						std::cout << "Point " << i+1 << " time = " << parameters[idx+1] << std::endl;
+						std::cout << "Point " << i+1 << " width = " << parameters[idx+2] << std::endl << std::endl;
 					}
 				}
 				
@@ -405,7 +405,7 @@ namespace spdlib
 				float peakTime = 0;
 				
 				SPDPointUtils ptUtils;
-				pulse->pts = new vector<SPDPoint*>();
+				pulse->pts = new std::vector<SPDPoint*>();
 				pulse->pts->reserve(peaks->size());
 				pulse->numberOfReturns = peaks->size();
                 pulse->receiveWaveNoiseThreshold = parameters[0];
@@ -435,17 +435,17 @@ namespace spdlib
                     {
                         try 
                         {
-                            pt->waveformOffset = numeric_cast<boost::uint_fast32_t>(peakTime * 1000.0);
+                            pt->waveformOffset = boost::numeric_cast<boost::uint_fast32_t>(peakTime * 1000.0);
                         }
-                        catch(negative_overflow& e) 
+                        catch(boost::numeric::negative_overflow& e) 
                         {
                             throw SPDIOException(e.what());
                         }
-                        catch(positive_overflow& e) 
+                        catch(boost::numeric::positive_overflow& e) 
                         {
                             throw SPDIOException(e.what());
                         }
-                        catch(bad_numeric_cast& e) 
+                        catch(boost::numeric::bad_numeric_cast& e) 
                         {
                             throw SPDIOException(e.what());
                         }
@@ -521,18 +521,18 @@ namespace spdlib
             }
             
             // Find init peaks
-			vector<boost::uint_fast32_t> *peaks = findInitPts->findInitPoints(pulse->received, pulse->numOfReceivedBins, pulse->receiveWaveNoiseThreshold);
+			std::vector<boost::uint_fast32_t> *peaks = findInitPts->findInitPoints(pulse->received, pulse->numOfReceivedBins, pulse->receiveWaveNoiseThreshold);
             if(debug_info)
 			{
-				cout << "Pulse " << pulse->pulseID << endl;
-				cout << "Peaks = " << peaks->size() << endl;
-                cout << "pulse->waveNoiseThreshold = " << pulse->receiveWaveNoiseThreshold << endl << endl;
+				std::cout << "Pulse " << pulse->pulseID << std::endl;
+				std::cout << "Peaks = " << peaks->size() << std::endl;
+                std::cout << "pulse->waveNoiseThreshold = " << pulse->receiveWaveNoiseThreshold << std::endl << std::endl;
 			}
 			
 			// Fit Gaussians
 			if(peaks->size() > 0)
 			{
-				vector<SPDPoint*> *outPoints = new vector<SPDPoint*>();
+				std::vector<SPDPoint*> *outPoints = new std::vector<SPDPoint*>();
 				double *waveform = new double[pulse->numOfReceivedBins];
 				
 				for(boost::uint_fast16_t i = 0; i < pulse->numOfReceivedBins; ++i)
@@ -566,7 +566,7 @@ namespace spdlib
 				
 				while(peaks->size() > 0)
 				{
-					//cout << "peaks->size() = " << peaks->size() << endl;
+					//std::cout << "peaks->size() = " << peaks->size() << std::endl;
 					
 					// Find the peak with the highest intensity
 					for(unsigned int i = 0; i < peaks->size(); ++i)
@@ -585,10 +585,10 @@ namespace spdlib
 						}
 					}
                     
-                    //cout << "maxPeakInt = " << maxPeakInt << endl;
+                    //std::cout << "maxPeakInt = " << maxPeakInt << std::endl;
 					
 					// Remove peak from list
-					vector<boost::uint_fast32_t>::iterator iterPeaks = peaks->begin();
+					std::vector<boost::uint_fast32_t>::iterator iterPeaks = peaks->begin();
 					iterPeaks += maxPeaksVectIdx;
 					peaks->erase(iterPeaks);
 					
@@ -633,7 +633,7 @@ namespace spdlib
 					paramConstraints[0].limited[1] = true;
 					paramConstraints[0].limits[0] = 0.0;
 					paramConstraints[0].limits[1] = pulse->receiveWaveNoiseThreshold+0.01; // Can't detect peaks below the noise threshold
-					paramConstraints[0].parname = const_cast<char*>(string("Noise").c_str());
+					paramConstraints[0].parname = const_cast<char*>(std::string("Noise").c_str());
 					paramConstraints[0].step = 0.01;
 					paramConstraints[0].relstep = 0;
 					paramConstraints[0].side = 0;
@@ -644,7 +644,7 @@ namespace spdlib
 					paramConstraints[1].limited[1] = true;
 					paramConstraints[1].limits[0] = parameters[1] - ampVar;
 					paramConstraints[1].limits[1] = parameters[1] + ampVar;
-					paramConstraints[1].parname = const_cast<char*>(string("Amplitude").c_str());;
+					paramConstraints[1].parname = const_cast<char*>(std::string("Amplitude").c_str());;
 					paramConstraints[1].step = 0;
 					paramConstraints[1].relstep = 0;
 					paramConstraints[1].side = 0;
@@ -656,7 +656,7 @@ namespace spdlib
 					paramConstraints[2].limited[1] = true;
 					paramConstraints[2].limits[0] = parameters[2] - 2;
 					paramConstraints[2].limits[1] = parameters[2] + 2;
-					paramConstraints[2].parname = const_cast<char*>(string("Time").c_str());;
+					paramConstraints[2].parname = const_cast<char*>(std::string("Time").c_str());;
 					paramConstraints[2].step = 0;
 					paramConstraints[2].relstep = 0;
 					paramConstraints[2].side = 0;
@@ -668,7 +668,7 @@ namespace spdlib
 					paramConstraints[3].limited[1] = true;
 					paramConstraints[3].limits[0] = 0.01;
 					paramConstraints[3].limits[1] = 10;
-					paramConstraints[3].parname = const_cast<char*>(string("Width").c_str());
+					paramConstraints[3].parname = const_cast<char*>(std::string("Width").c_str());
 					paramConstraints[3].step = 0.01;
 					paramConstraints[3].relstep = 0;
 					paramConstraints[3].side = 0;
@@ -719,52 +719,52 @@ namespace spdlib
                         {
                             if(returnCode == MP_OK_CHI)
                             {
-                                cout << "mpfit - Convergence in chi-square value.\n";
+                                std::cout << "mpfit - Convergence in chi-square value.\n";
                             }
                             else if(returnCode == MP_OK_PAR)
                             {
-                                cout << "mpfit - Convergence in parameter value.\n";
+                                std::cout << "mpfit - Convergence in parameter value.\n";
                             }
                             else if(returnCode == MP_OK_BOTH)
                             {
-                                cout << "mpfit - Convergence in chi-square and parameter value.\n";
+                                std::cout << "mpfit - Convergence in chi-square and parameter value.\n";
                             }
                             else if(returnCode == MP_OK_DIR)
                             {
-                                cout << "mpfit - Convergence in orthogonality.\n";
+                                std::cout << "mpfit - Convergence in orthogonality.\n";
                             }
                             else if(returnCode == MP_MAXITER)
                             {
-                                cout << "mpfit - Maximum number of iterations reached.\n";
+                                std::cout << "mpfit - Maximum number of iterations reached.\n";
                             }
                             else if(returnCode == MP_FTOL)
                             {
-                                cout << "mpfit - ftol is too small; cannot make further improvements.\n";
+                                std::cout << "mpfit - ftol is too small; cannot make further improvements.\n";
                             }
                             else if(returnCode == MP_XTOL)
                             {
-                                cout << "mpfit - xtol is too small; cannot make further improvements.\n";
+                                std::cout << "mpfit - xtol is too small; cannot make further improvements.\n";
                             }
                             else if(returnCode == MP_XTOL)
                             {
-                                cout << "mpfit - gtol is too small; cannot make further improvements.\n";
+                                std::cout << "mpfit - gtol is too small; cannot make further improvements.\n";
                             }
                             else 
                             {
-                                cout << "An error has probably occurred - wait for exception...\n";
+                                std::cout << "An error has probably occurred - wait for exception...\n";
                             }
                             
                             
-                            cout << "Run Results (MPFIT version: " << this->mpResultsValues->version << "):\n";
-                            cout << "Final Chi-Squaured = " << this->mpResultsValues->bestnorm << endl;
-                            cout << "Start Chi-Squaured = " << this->mpResultsValues->orignorm << endl;
-                            cout << "Num Iterations = " << this->mpResultsValues->niter << endl;
-                            cout << "Num Func Evals = " << this->mpResultsValues->nfev << endl;
-                            cout << "Status Fit Code = " << this->mpResultsValues->status << endl;
-                            cout << "Num Params = " << this->mpResultsValues->npar << endl;
-                            cout << "Num Free Params = " << this->mpResultsValues->nfree << endl;
-                            cout << "Num Pegged Params = " << this->mpResultsValues->npegged << endl;
-                            cout << "Num Residuals Params = " << this->mpResultsValues->nfunc << endl << endl;
+                            std::cout << "Run Results (MPFIT version: " << this->mpResultsValues->version << "):\n";
+                            std::cout << "Final Chi-Squaured = " << this->mpResultsValues->bestnorm << std::endl;
+                            std::cout << "Start Chi-Squaured = " << this->mpResultsValues->orignorm << std::endl;
+                            std::cout << "Num Iterations = " << this->mpResultsValues->niter << std::endl;
+                            std::cout << "Num Func Evals = " << this->mpResultsValues->nfev << std::endl;
+                            std::cout << "Status Fit Code = " << this->mpResultsValues->status << std::endl;
+                            std::cout << "Num Params = " << this->mpResultsValues->npar << std::endl;
+                            std::cout << "Num Free Params = " << this->mpResultsValues->nfree << std::endl;
+                            std::cout << "Num Pegged Params = " << this->mpResultsValues->npegged << std::endl;
+                            std::cout << "Num Residuals Params = " << this->mpResultsValues->nfunc << std::endl << std::endl;
                         }
 					}
 					else if(returnCode == MP_ERR_INPUT)
@@ -805,15 +805,15 @@ namespace spdlib
 					}
 					else 
 					{
-						cout << "Return code is :" << returnCode << " - this can not been defined!\n";
+						std::cout << "Return code is :" << returnCode << " - this can not been defined!\n";
 					}
 					
 					if(debug_info)
                     {
-                        cout << "Fitted Noise: " << parameters[0] << endl;
-                        cout << "Fitted Ampitude: " << parameters[1] << endl;
-                        cout << "Fitted Time: " << parameters[2] << endl;
-                        cout << "Fitted Width: " << parameters[3] << endl << endl;
+                        std::cout << "Fitted Noise: " << parameters[0] << std::endl;
+                        std::cout << "Fitted Ampitude: " << parameters[1] << std::endl;
+                        std::cout << "Fitted Time: " << parameters[2] << std::endl;
+                        std::cout << "Fitted Width: " << parameters[3] << std::endl << std::endl;
                     }
                     
 					// Create Point
@@ -822,8 +822,8 @@ namespace spdlib
                     
                     if(debug_info)
                     {
-                        cout << "Time Diff: " << timeDiff << endl;
-                        cout << "Peak Time: " << peakTime << endl;
+                        std::cout << "Time Diff: " << timeDiff << std::endl;
+                        std::cout << "Peak Time: " << peakTime << std::endl;
                     }
 					
 					SPDPoint *pt = new SPDPoint();
@@ -845,8 +845,8 @@ namespace spdlib
 					{
 						/*if(waveform[maxPeakIdx] < 0)
                          {
-                         cout << "Pulse " << pulse->pulseID << " has ampulitude = " << parameters[1] << " on return." << endl;
-                         cout << "Start index = " << maxPeakIdx << " has amp = " << waveform[maxPeakIdx] << endl;
+                         std::cout << "Pulse " << pulse->pulseID << " has ampulitude = " << parameters[1] << " on return." << std::endl;
+                         std::cout << "Start index = " << maxPeakIdx << " has amp = " << waveform[maxPeakIdx] << std::endl;
                          }*/
 						
 						pt->amplitudeReturn = parameters[1];
@@ -862,17 +862,17 @@ namespace spdlib
                     {
                         try 
                         {
-                            pt->waveformOffset = numeric_cast<boost::uint_fast32_t>(peakTime * 1000.0);
+                            pt->waveformOffset = boost::numeric_cast<boost::uint_fast32_t>(peakTime * 1000.0);
                         }
-                        catch(negative_overflow& e) 
+                        catch(boost::numeric::negative_overflow& e) 
                         {
                             throw SPDIOException(e.what());
                         }
-                        catch(positive_overflow& e) 
+                        catch(boost::numeric::positive_overflow& e) 
                         {
                             throw SPDIOException(e.what());
                         }
-                        catch(bad_numeric_cast& e) 
+                        catch(boost::numeric::bad_numeric_cast& e) 
                         {
                             throw SPDIOException(e.what());
                         }
@@ -901,12 +901,12 @@ namespace spdlib
 				// Add points to pulse
 				sort(outPoints->begin(), outPoints->end(), cmpSPDPointTime);
 				
-				pulse->pts = new vector<SPDPoint*>();
+				pulse->pts = new std::vector<SPDPoint*>();
 				pulse->pts->reserve(outPoints->size());
 				pulse->numberOfReturns = outPoints->size();
                 //pulse->waveNoiseThreshold = parameters[0]
 				boost::uint_fast16_t idCount = 0;
-				for(vector<SPDPoint*>::iterator iterPts = outPoints->begin(); iterPts != outPoints->end();)
+				for(std::vector<SPDPoint*>::iterator iterPts = outPoints->begin(); iterPts != outPoints->end();)
 				{
 					(*iterPts)->returnID = idCount++;
 					pulse->pts->push_back(*iterPts);

@@ -38,8 +38,6 @@
 #include "spd/SPDTextFileUtilities.h"
 #include "spd/SPDTextFileException.h"
 
-using namespace std;
-
 namespace spdlib
 {
 	class SPDLineParserASCIIPulsePerRow : public SPDTextLineProcessor
@@ -47,12 +45,12 @@ namespace spdlib
 	public:
 		SPDLineParserASCIIPulsePerRow();
 		bool haveReadheader();
-		void parseHeader(string) throw(SPDIOException);
-		bool parseLine(string line, SPDPulse *pl,boost::uint_fast16_t indexCoords) throw(SPDIOException);
-		bool isFileType(string fileType);
+		void parseHeader(std::string) throw(SPDIOException);
+		bool parseLine(std::string line, SPDPulse *pl,boost::uint_fast16_t indexCoords) throw(SPDIOException);
+		bool isFileType(std::string fileType);
 		void saveHeaderValues(SPDFile *spdFile);
 		void reset();
-        void parseSchema(string schema)throw(SPDIOException){};
+        void parseSchema(std::string schema)throw(SPDIOException){};
 		~SPDLineParserASCIIPulsePerRow();
 	};
 	

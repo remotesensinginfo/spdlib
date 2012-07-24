@@ -32,9 +32,9 @@ namespace spdlib
 		
 	}
 	
-	void SPDTextFileLineReader::openFile(string filepath)throw(SPDIOException)
+	void SPDTextFileLineReader::openFile(std::string filepath)throw(SPDIOException)
 	{
-		inputFileStream.open(filepath.c_str(), ios_base::in);
+		inputFileStream.open(filepath.c_str(), std::ios_base::in);
 		if(!inputFileStream.is_open())
 		{
 			throw SPDIOException("File could not be opened.");
@@ -51,9 +51,9 @@ namespace spdlib
 		return true;
 	}
 	
-	string SPDTextFileLineReader::readLine()throw(SPDIOException)
+	std::string SPDTextFileLineReader::readLine()throw(SPDIOException)
 	{
-		string strLine = "";
+		std::string strLine = "";
 		bool lineEnding = false;
 		char ch = ' ';
 		char lastch = ' ';

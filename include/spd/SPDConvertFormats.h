@@ -43,17 +43,15 @@
 #include "spd/SPDExportAsReadUnGridded.h"
 #include "spd/SPDExportAsTiles.h"
 
-using namespace std;
-
 namespace spdlib
 {	
 	class SPDConvertFormats
 	{
 	public:
 		SPDConvertFormats();
-		void convertInMemory(string input, string output, string inFormat, string schema, string outFormat, float binsize, string inSpatialRef, bool convertCoords, string outputProj4,boost::uint_fast16_t indexCoords, bool defineTL, double tlX, double tlY, bool defineOrigin, double originX, double originY, float originZ, bool useSphericIdx, bool usePolarIdx, bool useScanIdx, float waveNoiseThreshold,boost::uint_fast16_t waveformBitRes, boost::uint_fast16_t pointVersion, boost::uint_fast16_t pulseVersion) throw(SPDException);
-		void convertToSPDUsingRowTiles(string input, string output, string inFormat, string schema, float binsize, string inSpatialRef, bool convertCoords, string outputProjWKT,boost::uint_fast16_t indexCoords, string tempdir,boost::uint_fast16_t numRowsInTile, bool defineTL, double tlX, double tlY, bool defineOrigin, double originX, double originY, float originZ, bool useSphericIdx, bool usePolarIdx, bool useScanIdx, float waveNoiseThreshold,boost::uint_fast16_t waveformBitRes, bool keepTmpFiles, boost::uint_fast16_t pointVersion, boost::uint_fast16_t pulseVersion) throw(SPDException);
-		void convertToSPDUsingBlockTiles(string input, string output, string inFormat, string schema, float binsize, string inSpatialRef, bool convertCoords, string outputProjWKT,boost::uint_fast16_t indexCoords, string tempdir,boost::uint_fast16_t numRowsInTile, boost::uint_fast16_t numColsInTile, bool defineTL, double tlX, double tlY, bool defineOrigin, double originX, double originY, float originZ, bool useSphericIdx, bool usePolarIdx, bool useScanIdx, float waveNoiseThreshold,boost::uint_fast16_t waveformBitRes, bool keepTmpFiles, boost::uint_fast16_t pointVersion, boost::uint_fast16_t pulseVersion) throw(SPDException);
+		void convertInMemory(std::string input, std::string output, std::string inFormat, std::string schema, std::string outFormat, float binsize, std::string inSpatialRef, bool convertCoords, std::string outputProj4,boost::uint_fast16_t indexCoords, bool defineTL, double tlX, double tlY, bool defineOrigin, double originX, double originY, float originZ, bool useSphericIdx, bool usePolarIdx, bool useScanIdx, float waveNoiseThreshold,boost::uint_fast16_t waveformBitRes, boost::uint_fast16_t pointVersion, boost::uint_fast16_t pulseVersion) throw(SPDException);
+		void convertToSPDUsingRowTiles(std::string input, std::string output, std::string inFormat, std::string schema, float binsize, std::string inSpatialRef, bool convertCoords, std::string outputProjWKT,boost::uint_fast16_t indexCoords, std::string tempdir,boost::uint_fast16_t numRowsInTile, bool defineTL, double tlX, double tlY, bool defineOrigin, double originX, double originY, float originZ, bool useSphericIdx, bool usePolarIdx, bool useScanIdx, float waveNoiseThreshold,boost::uint_fast16_t waveformBitRes, bool keepTmpFiles, boost::uint_fast16_t pointVersion, boost::uint_fast16_t pulseVersion) throw(SPDException);
+		void convertToSPDUsingBlockTiles(std::string input, std::string output, std::string inFormat, std::string schema, float binsize, std::string inSpatialRef, bool convertCoords, std::string outputProjWKT,boost::uint_fast16_t indexCoords, std::string tempdir,boost::uint_fast16_t numRowsInTile, boost::uint_fast16_t numColsInTile, bool defineTL, double tlX, double tlY, bool defineOrigin, double originX, double originY, float originZ, bool useSphericIdx, bool usePolarIdx, bool useScanIdx, float waveNoiseThreshold,boost::uint_fast16_t waveformBitRes, bool keepTmpFiles, boost::uint_fast16_t pointVersion, boost::uint_fast16_t pulseVersion) throw(SPDException);
 		void copySPD2SPD(SPDFile *inSPDFile, SPDFile *outSPDFile) throw(SPDException);
         ~SPDConvertFormats();
 	};

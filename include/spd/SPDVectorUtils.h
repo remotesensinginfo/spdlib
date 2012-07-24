@@ -42,16 +42,14 @@
 #include "spd/SPDPulse.h"
 #include "spd/SPDIOException.h"
 
-using namespace std;
-
 namespace spdlib
 {	
 	class SPDVectorUtils
 	{
 	public:
 		SPDVectorUtils();
-		OGRGeometryCollection* getGeometryCollection(string inputVector) throw(SPDIOException);
-        string getLayerName(string filepath);
+		OGRGeometryCollection* getGeometryCollection(std::string inputVector) throw(SPDIOException);
+        std::string getLayerName(std::string filepath);
 		~SPDVectorUtils();
 	};
 }

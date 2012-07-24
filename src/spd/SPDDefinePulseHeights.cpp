@@ -31,7 +31,7 @@ namespace spdlib
         this->interpolator = interpolator;
     }
         
-    void SPDDefinePulseHeights::processDataBlockImage(SPDFile *inSPDFile, vector<SPDPulse*> ***pulses, float ***imageDataBlock, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast32_t numImgBands, float binSize) throw(SPDProcessingException)
+    void SPDDefinePulseHeights::processDataBlockImage(SPDFile *inSPDFile, std::vector<SPDPulse*> ***pulses, float ***imageDataBlock, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast32_t numImgBands, float binSize) throw(SPDProcessingException)
     {
         if(numImgBands > 0)
         {
@@ -42,12 +42,12 @@ namespace spdlib
         {
             for(boost::uint_fast32_t j = 0; j < xSize; ++j)
             {
-                for(vector<SPDPulse*>::iterator iterPulses = pulses[i][j]->begin(); iterPulses != pulses[i][j]->end(); ++iterPulses)
+                for(std::vector<SPDPulse*>::iterator iterPulses = pulses[i][j]->begin(); iterPulses != pulses[i][j]->end(); ++iterPulses)
                 {
                     (*iterPulses)->h0 = (*iterPulses)->z0 - imageDataBlock[i][j][0];
                     if((*iterPulses)->numberOfReturns > 0)
                     {
-                        for(vector<SPDPoint*>::iterator iterPts = (*iterPulses)->pts->begin(); iterPts != (*iterPulses)->pts->end(); ++iterPts)
+                        for(std::vector<SPDPoint*>::iterator iterPts = (*iterPulses)->pts->begin(); iterPts != (*iterPulses)->pts->end(); ++iterPts)
                         {
                             (*iterPts)->height = (*iterPts)->z - imageDataBlock[i][j][0];
                         }
@@ -57,7 +57,7 @@ namespace spdlib
         }
     }
 		
-    void SPDDefinePulseHeights::processDataBlock(SPDFile *inSPDFile, vector<SPDPulse*> ***pulses, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, float binSize) throw(SPDProcessingException)
+    void SPDDefinePulseHeights::processDataBlock(SPDFile *inSPDFile, std::vector<SPDPulse*> ***pulses, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, float binSize) throw(SPDProcessingException)
     {
         try 
 		{
@@ -79,13 +79,13 @@ namespace spdlib
                 {
                     for(boost::uint_fast32_t j = 0; j < xSize; ++j)
                     {
-                        for(vector<SPDPulse*>::iterator iterPulses = pulses[i][j]->begin(); iterPulses != pulses[i][j]->end(); ++iterPulses)
+                        for(std::vector<SPDPulse*>::iterator iterPulses = pulses[i][j]->begin(); iterPulses != pulses[i][j]->end(); ++iterPulses)
                         {
                             elevVal = interpolator->getValue((*iterPulses)->x0, (*iterPulses)->y0);
                             (*iterPulses)->h0 = (*iterPulses)->z0 - elevVal;
                             if((*iterPulses)->numberOfReturns > 0)
                             {
-                                for(vector<SPDPoint*>::iterator iterPts = (*iterPulses)->pts->begin(); iterPts != (*iterPulses)->pts->end(); ++iterPts)
+                                for(std::vector<SPDPoint*>::iterator iterPts = (*iterPulses)->pts->begin(); iterPts != (*iterPulses)->pts->end(); ++iterPts)
                                 {
                                     elevVal = interpolator->getValue((*iterPts)->x, (*iterPts)->y);
                                     (*iterPts)->height = (*iterPts)->z - elevVal;

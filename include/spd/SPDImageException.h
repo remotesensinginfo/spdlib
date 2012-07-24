@@ -29,8 +29,6 @@
 
 #include "spd/SPDException.h"
 
-using namespace std;
-
 namespace spdlib
 {
 	class SPDImageException : public SPDException
@@ -38,7 +36,7 @@ namespace spdlib
 	public:
 		SPDImageException();
 		SPDImageException(const char *message);
-		SPDImageException(string message);
+		SPDImageException(std::string message);
 	};
 }
 

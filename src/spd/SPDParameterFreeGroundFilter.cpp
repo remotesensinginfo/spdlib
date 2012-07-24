@@ -35,7 +35,7 @@ namespace spdlib
         this->k = 3;
     }
     
-    void SPDParameterFreeGroundFilter::processDataBlockImage(SPDFile *inSPDFile, vector<SPDPulse*> ***pulses, float ***imageDataBlock, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast32_t numImgBands, float binSize) throw(SPDProcessingException)
+    void SPDParameterFreeGroundFilter::processDataBlockImage(SPDFile *inSPDFile, std::vector<SPDPulse*> ***pulses, float ***imageDataBlock, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast32_t numImgBands, float binSize) throw(SPDProcessingException)
     {
         // Allocate Memory...
         float **elev = new float*[ySize];
@@ -44,7 +44,7 @@ namespace spdlib
 			elev[i] = new float[xSize];
 			for(boost::uint_fast32_t j = 0; j < xSize; ++j)
 			{
-				elev[i][j] = numeric_limits<float>::signaling_NaN();
+				elev[i][j] = std::numeric_limits<float>::signaling_NaN();
 			}
 		}		
 		
@@ -61,8 +61,8 @@ namespace spdlib
                 elevClose[i] = new float[xSize];
                 for(boost::uint_fast32_t j = 0; j < xSize; ++j)
                 {
-                    elevOpen[i][j] = numeric_limits<float>::signaling_NaN();
-                    elevClose[i][j] = numeric_limits<float>::signaling_NaN();
+                    elevOpen[i][j] = std::numeric_limits<float>::signaling_NaN();
+                    elevClose[i][j] = std::numeric_limits<float>::signaling_NaN();
                 }
             }
             
@@ -114,27 +114,27 @@ namespace spdlib
         }
         
         // Generate resolution hierarchy...
-        vector<SPDPFFProcessLevel*> *elevLevels = this->generateHierarchy(elev, xSize, ySize, binSize);
+        std::vector<SPDPFFProcessLevel*> *elevLevels = this->generateHierarchy(elev, xSize, ySize, binSize);
         
  
         for(boost::int_fast16_t i = elevLevels->size()-1; i >= 0; --i)
         {
             SPDPFFProcessLevel *level = elevLevels->at(i);
-            cout << "\n\nLevel  " << i << endl;
+            std::cout << "\n\nLevel  " << i << std::endl;
             for(boost::uint_fast32_t i = 0; i < level->ySize; ++i)
             {
                 for(boost::uint_fast32_t j = 0; j < level->xSize; ++j)
                 {
                     if(j == 0)
                     {
-                        cout << level->data[i][j];
+                        std::cout << level->data[i][j];
                     }
                     else 
                     {
-                        cout << "," << level->data[i][j];
+                        std::cout << "," << level->data[i][j];
                     }
                 }
-                cout << endl;
+                std::cout << std::endl;
             }
         }
         
@@ -144,7 +144,7 @@ namespace spdlib
         SPDPFFProcessLevel *prevLevel = NULL;
         SPDPFFProcessLevel *interpdLevel = NULL;
         
-        cout << "Filtering Level " << elevLevels->size()-2 << endl;
+        std::cout << "Filtering Level " << elevLevels->size()-2 << std::endl;
         prevLevel = elevLevels->at(elevLevels->size()-1);
         cLevel = elevLevels->at(elevLevels->size()-2);
         double tlX = cenPts[0][0]->x - (binSize/2);
@@ -162,7 +162,7 @@ namespace spdlib
             for(boost::uint_fast32_t j = 0; j < cLevel->xSize; ++j)
             {
                 elevRes[i][j] = cLevel->data[i][j] - interpdLevel->data[i][j];
-                elevTH[i][j] = numeric_limits<float>::signaling_NaN();
+                elevTH[i][j] = std::numeric_limits<float>::signaling_NaN();
             }
         }
         boost::uint_fast16_t **wTHElem = new boost::uint_fast16_t*[3];
@@ -180,14 +180,14 @@ namespace spdlib
             {
                 if(j == 0)
                 {
-                    cout << "[" << cLevel->data[i][j] << "," << interpdLevel->data[i][j] << "]";
+                    std::cout << "[" << cLevel->data[i][j] << "," << interpdLevel->data[i][j] << "]";
                 }
                 else 
                 {
-                    cout << "," << "[" << cLevel->data[i][j] << "," << interpdLevel->data[i][j] << "]";
+                    std::cout << "," << "[" << cLevel->data[i][j] << "," << interpdLevel->data[i][j] << "]";
                 }
             }
-            cout << endl;
+            std::cout << std::endl;
         }
         for(boost::uint_fast32_t i = 0; i < cLevel->ySize; ++i)
         {
@@ -195,14 +195,14 @@ namespace spdlib
             {
                 if(j == 0)
                 {
-                    cout << "[" << elevRes[i][j] << "," << elevTH[i][j] << "]";
+                    std::cout << "[" << elevRes[i][j] << "," << elevTH[i][j] << "]";
                 }
                 else 
                 {
-                    cout << "," << "[" << elevRes[i][j] << "," << elevTH[i][j] << "]";
+                    std::cout << "," << "[" << elevRes[i][j] << "," << elevTH[i][j] << "]";
                 }
             }
-            cout << endl;
+            std::cout << std::endl;
         }*/
         float threshold = 0;
         for(boost::uint_fast32_t i = 0; i < cLevel->ySize; ++i)
@@ -216,14 +216,14 @@ namespace spdlib
                 }
                 /*if(j == 0)
                 {
-                    cout << threshold;
+                    std::cout << threshold;
                 }
                 else 
                 {
-                    cout << "," << threshold;
+                    std::cout << "," << threshold;
                 }*/
             }
-            //cout << endl;
+            //std::cout << std::endl;
         }
         for(boost::uint_fast32_t i = 0; i < 3; ++i)
         {
@@ -247,7 +247,7 @@ namespace spdlib
             boost::int_fast16_t numLevels = elevLevels->size();
             for(boost::int_fast16_t i = numLevels-3; i >= 0; --i)
             {
-                cout << "Filtering Level " << i << endl;
+                std::cout << "Filtering Level " << i << std::endl;
                 // Interpolate level values
                 cLevel = elevLevels->at(i);
                 interpdLevel = this->interpLevel(prevLevel, cLevel, tlY, tlX);
@@ -262,7 +262,7 @@ namespace spdlib
                     for(boost::uint_fast32_t j = 0; j < cLevel->xSize; ++j)
                     {
                         elevRes[i][j] = cLevel->data[i][j] - interpdLevel->data[i][j];
-                        elevTH[i][j] = numeric_limits<float>::signaling_NaN();
+                        elevTH[i][j] = std::numeric_limits<float>::signaling_NaN();
                     }
                 }
                 boost::uint_fast16_t **wTHElem = new boost::uint_fast16_t*[7];
@@ -280,14 +280,14 @@ namespace spdlib
                     {
                         if(j == 0)
                         {
-                            cout << "[" << cLevel->data[i][j] << "," << interpdLevel->data[i][j] << "]";
+                            std::cout << "[" << cLevel->data[i][j] << "," << interpdLevel->data[i][j] << "]";
                         }
                         else 
                         {
-                            cout << "," << "[" << cLevel->data[i][j] << "," << interpdLevel->data[i][j] << "]";
+                            std::cout << "," << "[" << cLevel->data[i][j] << "," << interpdLevel->data[i][j] << "]";
                         }
                     }
-                    cout << endl;
+                    std::cout << std::endl;
                 }
                 for(boost::uint_fast32_t i = 0; i < cLevel->ySize; ++i)
                 {
@@ -295,14 +295,14 @@ namespace spdlib
                     {
                         if(j == 0)
                         {
-                            cout << "[" << elevRes[i][j] << "," << elevTH[i][j] << "]";
+                            std::cout << "[" << elevRes[i][j] << "," << elevTH[i][j] << "]";
                         }
                         else 
                         {
-                            cout << "," << "[" << elevRes[i][j] << "," << elevTH[i][j] << "]";
+                            std::cout << "," << "[" << elevRes[i][j] << "," << elevTH[i][j] << "]";
                         }
                     }
-                    cout << endl;
+                    std::cout << std::endl;
                 }*/
                 for(boost::uint_fast32_t i = 0; i < cLevel->ySize; ++i)
                 {
@@ -315,14 +315,14 @@ namespace spdlib
                         }
                         /*if(j == 0)
                         {
-                            cout << threshold;
+                            std::cout << threshold;
                         }
                         else 
                         {
-                            cout << "," << threshold;
+                            std::cout << "," << threshold;
                         }*/
                     }
-                    //cout << endl;
+                    //std::cout << std::endl;
                 }
                 for(boost::uint_fast32_t i = 0; i < 7; ++i)
                 {
@@ -353,7 +353,7 @@ namespace spdlib
                 }
                 else 
                 {
-                    imageDataBlock[i][j][0] = numeric_limits<float>::signaling_NaN();
+                    imageDataBlock[i][j][0] = std::numeric_limits<float>::signaling_NaN();
                 }
             }
         }
@@ -368,16 +368,16 @@ namespace spdlib
 		delete[] elev;
     }
 		
-    void SPDParameterFreeGroundFilter::processDataBlock(SPDFile *inSPDFile, vector<SPDPulse*> ***pulses, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, float binSize) throw(SPDProcessingException)
+    void SPDParameterFreeGroundFilter::processDataBlock(SPDFile *inSPDFile, std::vector<SPDPulse*> ***pulses, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, float binSize) throw(SPDProcessingException)
     {
         
     }
     
     
-    void SPDParameterFreeGroundFilter::findMinSurface(vector<SPDPulse*> ***pulses, float **elev, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize)
+    void SPDParameterFreeGroundFilter::findMinSurface(std::vector<SPDPulse*> ***pulses, float **elev, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize)
 	{
-		vector<SPDPulse*>::iterator iterPulses;
-		vector<SPDPoint*>::iterator iterPoints;
+		std::vector<SPDPulse*>::iterator iterPulses;
+		std::vector<SPDPoint*>::iterator iterPoints;
 		SPDPoint *pt = NULL;
 		bool firstPls = true;
 		bool firstPts = true;
@@ -389,7 +389,7 @@ namespace spdlib
 				firstPls = true;
 				if(pulses[i][j]->size() > 0)
 				{
-					//cout << "\nBlock [" << i << "," << j << "] has " << pulses[i][j]->size() << " pulses\n";
+					//std::cout << "\nBlock [" << i << "," << j << "] has " << pulses[i][j]->size() << " pulses\n";
 					for(iterPulses = pulses[i][j]->begin(); iterPulses != pulses[i][j]->end(); ++iterPulses)
 					{
 						if((*iterPulses)->numberOfReturns > 0)
@@ -398,7 +398,7 @@ namespace spdlib
 							pt = NULL;
 							for(iterPoints = (*iterPulses)->pts->begin(); iterPoints != (*iterPulses)->pts->end(); ++iterPoints)
 							{
-								//cout << (*iterPoints)->z << endl;
+								//std::cout << (*iterPoints)->z << std::endl;
                                 if(classParameters == SPD_ALL_CLASSES)
                                 {
                                     if(firstPts)
@@ -441,11 +441,11 @@ namespace spdlib
                             }
 						}
 					}
-					//cout << "Min = " << elev[i][j] << endl;
+					//std::cout << "Min = " << elev[i][j] << std::endl;
 				}
 				else
 				{
-					elev[i][j] = numeric_limits<float>::signaling_NaN();
+					elev[i][j] = std::numeric_limits<float>::signaling_NaN();
 				}
 			}
 		}
@@ -468,8 +468,8 @@ namespace spdlib
 		bool first = true;
 		float minVal = 0;
 		
-		vector<float> *elevValues = new vector<float>();
-		vector<float>::iterator iterVals;
+		std::vector<float> *elevValues = new std::vector<float>();
+		std::vector<float>::iterator iterVals;
 		elevValues->reserve(maxNumFilterValues);
 		
 		for(boost::uint_fast32_t i = 0; i < ySize; ++i)
@@ -523,7 +523,7 @@ namespace spdlib
 						elementEndX = filterSize;
 					}
 					
-					//cout << "Filter [" << j << "," << i << "] [" << filterPxlStartX << "," << filterPxlEndX << "][" << filterPxlStartY << "," << filterPxlEndY << "]\n\n";
+					//std::cout << "Filter [" << j << "," << i << "] [" << filterPxlStartX << "," << filterPxlEndX << "][" << filterPxlStartY << "," << filterPxlEndY << "]\n\n";
 					
 					elevValues->clear();
 					
@@ -561,12 +561,12 @@ namespace spdlib
 					}
 					else 
 					{
-						elevErode[i][j] = numeric_limits<float>::signaling_NaN();
+						elevErode[i][j] = std::numeric_limits<float>::signaling_NaN();
 					}
 				}
 				else 
 				{
-					elevErode[i][j] = numeric_limits<float>::signaling_NaN();
+					elevErode[i][j] = std::numeric_limits<float>::signaling_NaN();
 				}
                 
 				
@@ -592,8 +592,8 @@ namespace spdlib
 		bool first = true;
 		float maxVal = 0;
 		
-		vector<float> *elevValues = new vector<float>();
-		vector<float>::iterator iterVals;
+		std::vector<float> *elevValues = new std::vector<float>();
+		std::vector<float>::iterator iterVals;
 		elevValues->reserve(maxNumFilterValues);
 		
 		for(boost::uint_fast32_t i = 0; i < ySize; ++i)
@@ -647,7 +647,7 @@ namespace spdlib
 						elementEndX = filterSize;
 					}
 					
-					//cout << "Filter [" << j << "," << i << "] [" << filterPxlStartX << "," << filterPxlEndX << "][" << filterPxlStartY << "," << filterPxlEndY << "]\n\n";
+					//std::cout << "Filter [" << j << "," << i << "] [" << filterPxlStartX << "," << filterPxlEndX << "][" << filterPxlStartY << "," << filterPxlEndY << "]\n\n";
 					
 					elevValues->clear();
 					
@@ -685,12 +685,12 @@ namespace spdlib
 					}
 					else 
 					{
-						elevDialate[i][j] = numeric_limits<float>::signaling_NaN();
+						elevDialate[i][j] = std::numeric_limits<float>::signaling_NaN();
 					}
 				}
 				else 
 				{
-					elevDialate[i][j] = numeric_limits<float>::signaling_NaN();
+					elevDialate[i][j] = std::numeric_limits<float>::signaling_NaN();
 				}
 			}
 		}
@@ -706,7 +706,7 @@ namespace spdlib
 			tmpElev[i] = new float[xSize];
 			for(boost::uint_fast32_t j = 0; j < xSize; ++j)
 			{
-				tmpElev[i][j] = numeric_limits<float>::signaling_NaN();
+				tmpElev[i][j] = std::numeric_limits<float>::signaling_NaN();
 			}
 		}
         
@@ -730,7 +730,7 @@ namespace spdlib
 			tmpElev[i] = new float[xSize];
 			for(boost::uint_fast32_t j = 0; j < xSize; ++j)
 			{
-				tmpElev[i][j] = numeric_limits<float>::signaling_NaN();
+				tmpElev[i][j] = std::numeric_limits<float>::signaling_NaN();
 			}
 		}
         
@@ -755,8 +755,8 @@ namespace spdlib
             tmpOpenElev[i] = new float[xSize];
 			for(boost::uint_fast32_t j = 0; j < xSize; ++j)
 			{
-				tmpElev[i][j] = numeric_limits<float>::signaling_NaN();
-                tmpOpenElev[i][j] = numeric_limits<float>::signaling_NaN();
+				tmpElev[i][j] = std::numeric_limits<float>::signaling_NaN();
+                tmpOpenElev[i][j] = std::numeric_limits<float>::signaling_NaN();
 			}
 		}
         
@@ -793,7 +793,7 @@ namespace spdlib
 			{
 				xdiff = pow(((double)j-filterHSize), 2);
 				ydiff = pow(((double)i-filterHSize), 2);
-				//cout << "radius [" << i << "," << j << "] = " << pow((xdiff + ydiff),2) << "\n";
+				//std::cout << "radius [" << i << "," << j << "] = " << pow((xdiff + ydiff),2) << "\n";
 				if(sqrt(xdiff + ydiff) <= filterHSize)
 				{
 					element[i][j] = 1;
@@ -905,7 +905,7 @@ namespace spdlib
         }
         else
         {
-            threVal = numeric_limits<float>::signaling_NaN();
+            threVal = std::numeric_limits<float>::signaling_NaN();
         }
         
 
@@ -913,9 +913,9 @@ namespace spdlib
         return threVal;
     }
 
-    vector<SPDPFFProcessLevel*>* SPDParameterFreeGroundFilter::generateHierarchy(float **initElev, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, float pxlRes)
+    std::vector<SPDPFFProcessLevel*>* SPDParameterFreeGroundFilter::generateHierarchy(float **initElev, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, float pxlRes)
     {
-        vector<SPDPFFProcessLevel*> *processingLevels = new vector<SPDPFFProcessLevel*>();
+        std::vector<SPDPFFProcessLevel*> *processingLevels = new std::vector<SPDPFFProcessLevel*>();
         
         boost::uint_fast32_t numXPxls = xSize;
         boost::uint_fast32_t numYPxls = ySize;
@@ -947,7 +947,7 @@ namespace spdlib
         
         while((numXPxls > 1) & (numYPxls > 1))
         {
-            cout << "Generating level : " << processingLevels->size() << " with [" << numXPxls << "," << numYPxls << "] pixels\n";
+            std::cout << "Generating level : " << processingLevels->size() << " with [" << numXPxls << "," << numYPxls << "] pixels\n";
             level = new SPDPFFProcessLevel();
             level->xSize = numXPxls;
             level->ySize = numYPxls;
@@ -961,7 +961,7 @@ namespace spdlib
                 {
                     bY = tY;
                 }
-                //cout << y << ": tY = " << tY <<  " bY = " << bY << endl;
+                //std::cout << y << ": tY = " << tY <<  " bY = " << bY << std::endl;
                 
                 level->data[y] = new float[numXPxls];
                 for(boost::uint_fast32_t x = 0; x < numXPxls; ++x)
@@ -974,7 +974,7 @@ namespace spdlib
                         rX = lX;
                     }
                     
-                    //cout << "\t" << x << ": lX = " << lX << " rX = " << rX << endl;
+                    //std::cout << "\t" << x << ": lX = " << lX << " rX = " << rX << std::endl;
                     
                     
                     if(!boost::math::isnan(prevLevel->data[tY][lX]))
@@ -1021,14 +1021,14 @@ namespace spdlib
                     
                     if(firstMin)
                     {
-                        level->data[y][x] = numeric_limits<float>::signaling_NaN();
+                        level->data[y][x] = std::numeric_limits<float>::signaling_NaN();
                     }
                     else
                     {
                         level->data[y][x] = minVal;
                     }
                 }
-                //cout << endl;
+                //std::cout << std::endl;
             }
             processingLevels->push_back(level);
             prevLevel = level;
@@ -1039,9 +1039,9 @@ namespace spdlib
         return processingLevels;
     }
     
-    void SPDParameterFreeGroundFilter::freeHierarchy(vector<SPDPFFProcessLevel*> *levels)
+    void SPDParameterFreeGroundFilter::freeHierarchy(std::vector<SPDPFFProcessLevel*> *levels)
     {
-        for(vector<SPDPFFProcessLevel*>::iterator iterLevels = levels->begin(); iterLevels != levels->end(); ++iterLevels)
+        for(std::vector<SPDPFFProcessLevel*>::iterator iterLevels = levels->begin(); iterLevels != levels->end(); ++iterLevels)
         {
             for(boost::uint_fast32_t i = 0; i < (*iterLevels)->ySize; ++i)
             {
@@ -1091,7 +1091,7 @@ namespace spdlib
                 }
                 catch(SPDException &e)
                 {
-                    interpdLevel->data[i][j] = numeric_limits<float>::signaling_NaN();
+                    interpdLevel->data[i][j] = std::numeric_limits<float>::signaling_NaN();
                 }
                 eastings += (processLevel->pxlRes/2);
             }
@@ -1145,19 +1145,19 @@ namespace spdlib
 		{
             try 
             {
-                //cout.precision(12);
-                //cout << "\nPos: [" << eastings << "," << northings << "]\n";
-                //cout << "Size: [" << xSize << "," << ySize << "]\n";
-                //cout << "Radius: " << radius << endl;
-                //cout << "Bin Size: " << binSize << endl;
+                //std::cout.precision(12);
+                //std::cout << "\nPos: [" << eastings << "," << northings << "]\n";
+                //std::cout << "Size: [" << xSize << "," << ySize << "]\n";
+                //std::cout << "Radius: " << radius << std::endl;
+                //std::cout << "Bin Size: " << binSize << std::endl;
                 
                 
-                vector<Vec> cntrlPts = vector<Vec>();
-                boost::int_fast32_t radiusInPxl = numeric_cast<boost::uint_fast32_t>(radius/binSize)+1;
+                std::vector<spdlib::tps::Vec> cntrlPts = std::vector<spdlib::tps::Vec>();
+                boost::int_fast32_t radiusInPxl = boost::numeric_cast<boost::uint_fast32_t>(radius/binSize)+1;
                 boost::uint_fast16_t elemSize = (radiusInPxl*2)+1;
                 
-                //cout << "Pixels in Radius: " << radiusInPxl << endl;
-                //cout << "Element Size: " << elemSize << endl;
+                //std::cout << "Pixels in Radius: " << radiusInPxl << std::endl;
+                //std::cout << "Element Size: " << elemSize << std::endl;
                 
                 if((xSize < elemSize) & (ySize < elemSize))
                 {
@@ -1168,10 +1168,10 @@ namespace spdlib
                         cEast = eastings;
                         for(boost::uint_fast32_t j = 0; j < xSize; ++j)
                         {
-                            //cout << "Data [" << i << "][" << j << "] = " << data[i][j] << endl;
+                            //std::cout << "Data [" << i << "][" << j << "] = " << data[i][j] << std::endl;
                             if(!boost::math::isnan(data[i][j]))
                             {
-                                cntrlPts.push_back(Vec(cEast, data[i][j], cNorth));
+                                cntrlPts.push_back(spdlib::tps::Vec(cEast, data[i][j], cNorth));
                             }
                             cEast += this->binSize;
                         }
@@ -1183,7 +1183,7 @@ namespace spdlib
                     double diffEast = eastings - tlEastings;
                     double diffNorth = tlNorthings - northings;
                     
-                    //cout << "Spatial Diff: [" << diffEast << "," << diffNorth << "]\n";
+                    //std::cout << "Spatial Diff: [" << diffEast << "," << diffNorth << "]\n";
                     
                     boost::int_fast32_t xPxl = 0;
                     boost::int_fast32_t yPxl = 0;
@@ -1201,8 +1201,8 @@ namespace spdlib
                     }
                     else
                     {
-                        xPxl = numeric_cast<boost::uint_fast32_t>(diffEast/binSize);
-                        //cout << "xPxl: " << xPxl << endl;
+                        xPxl = boost::numeric_cast<boost::uint_fast32_t>(diffEast/binSize);
+                        //std::cout << "xPxl: " << xPxl << std::endl;
                         if((xPxl - radiusInPxl) < 0)
                         {
                             tlXPxl = 0;
@@ -1221,8 +1221,8 @@ namespace spdlib
                     }
                     else
                     {
-                        yPxl = numeric_cast<boost::uint_fast32_t>(diffNorth/binSize);
-                        //cout << "yPxl: " << yPxl << endl;
+                        yPxl = boost::numeric_cast<boost::uint_fast32_t>(diffNorth/binSize);
+                        //std::cout << "yPxl: " << yPxl << std::endl;
                         if((yPxl - radiusInPxl) < 0)
                         {
                             tlYPxl = 0;
@@ -1249,15 +1249,15 @@ namespace spdlib
                     heightPxls = brYPxl - tlYPxl;
 
                     
-                    //cout << "TL Spatial: [" << tlEastings << "," << tlNorthings << "]\n";
-                    //cout << "TL Pxl: [" << tlXPxl << "," << tlYPxl << "]\n";
-                    //cout << "BR Pxl: [" << brXPxl << "," << brYPxl << "]\n";
-                    //cout << "Size Pxl: [" << widthPxls << "," << heightPxls << "]\n";
+                    //std::cout << "TL Spatial: [" << tlEastings << "," << tlNorthings << "]\n";
+                    //std::cout << "TL Pxl: [" << tlXPxl << "," << tlYPxl << "]\n";
+                    //std::cout << "BR Pxl: [" << brXPxl << "," << brYPxl << "]\n";
+                    //std::cout << "Size Pxl: [" << widthPxls << "," << heightPxls << "]\n";
                     
                     double pxlTLEast = tlEastings + ((tlXPxl * this->binSize) + this->binSize/2);
                     double pxlTLNorth = tlNorthings - ((tlYPxl * this->binSize) - this->binSize/2);
                     
-                    //cout << "Pxl TL Spatial: [" << pxlTLEast << "," << pxlTLNorth << "]\n";
+                    //std::cout << "Pxl TL Spatial: [" << pxlTLEast << "," << pxlTLNorth << "]\n";
                     
                     double cEast = pxlTLEast;
                     double cNorth = pxlTLNorth;
@@ -1267,12 +1267,12 @@ namespace spdlib
                         cEast = pxlTLEast;
                         for(boost::uint_fast32_t j = tlXPxl; j < brXPxl; ++j)
                         {
-                            //cout << "Data [" << i << "][" << j << "] = " << data[i][j] << endl;
+                            //std::cout << "Data [" << i << "][" << j << "] = " << data[i][j] << std::endl;
                             if(!boost::math::isnan(data[i][j]))
                             {
                                 if(this->distance(eastings, northings, cEast, cNorth) < radius)
                                 {
-                                    cntrlPts.push_back(Vec(cEast, data[i][j], cNorth));
+                                    cntrlPts.push_back(spdlib::tps::Vec(cEast, data[i][j], cNorth));
                                 }
                             }
                             cEast += this->binSize;
@@ -1282,11 +1282,11 @@ namespace spdlib
                     }
                 }
                 
-                //cout << "Num cntrlPts = " << cntrlPts.size() << endl;
+                //std::cout << "Num cntrlPts = " << cntrlPts.size() << std::endl;
                 
                 if(cntrlPts.size() == 0)
                 {
-                    newZValue = numeric_limits<float>::signaling_NaN();
+                    newZValue = std::numeric_limits<float>::signaling_NaN();
                 }
                 else if(cntrlPts.size() == 1)
                 {
@@ -1298,33 +1298,33 @@ namespace spdlib
                 }
                 else
                 {
-                    Spline splineFunc = Spline(cntrlPts, 0.0);
+                    spdlib::tps::Spline splineFunc = spdlib::tps::Spline(cntrlPts, 0.0);
                     newZValue = splineFunc.interpolate_height(eastings, northings);
                 }
             }
-            catch(negative_overflow& e) 
+            catch(boost::numeric::negative_overflow& e) 
             {
-                newZValue = numeric_limits<float>::signaling_NaN();
+                newZValue = std::numeric_limits<float>::signaling_NaN();
             }
-            catch(positive_overflow& e) 
+            catch(boost::numeric::positive_overflow& e) 
             {
-                newZValue = numeric_limits<float>::signaling_NaN();
+                newZValue = std::numeric_limits<float>::signaling_NaN();
             }
-            catch(bad_numeric_cast& e) 
+            catch(boost::numeric::bad_numeric_cast& e) 
             {
-                newZValue = numeric_limits<float>::signaling_NaN();
+                newZValue = std::numeric_limits<float>::signaling_NaN();
             }
-            catch(SingularMatrixError &e)
+            catch(spdlib::tps::SingularMatrixError &e)
             {
-                newZValue = numeric_limits<float>::signaling_NaN();
+                newZValue = std::numeric_limits<float>::signaling_NaN();
             }
             catch (SPDProcessingException &e) 
             {
-                newZValue = numeric_limits<float>::signaling_NaN();
+                newZValue = std::numeric_limits<float>::signaling_NaN();
             }
-            catch(exception &e)
+            catch(std::exception &e)
             {
-                newZValue = numeric_limits<float>::signaling_NaN();
+                newZValue = std::numeric_limits<float>::signaling_NaN();
             }
         }
         else

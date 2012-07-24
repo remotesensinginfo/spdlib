@@ -39,8 +39,6 @@
 #include "spd/SPDDataExporter.h"
 #include "spd/SPDCommon.h"
 
-using namespace std;
-
 namespace spdlib
 {
 	class SPDGeneralASCIIFileWriter : public SPDDataExporter
@@ -50,16 +48,16 @@ namespace spdlib
 		SPDGeneralASCIIFileWriter(const SPDDataExporter &dataExporter) throw(SPDException);
 		SPDGeneralASCIIFileWriter(const SPDGeneralASCIIFileWriter &dataExporter) throw(SPDException);
         SPDDataExporter* getInstance();
-		bool open(SPDFile *spdFile, string outputFile) throw(SPDIOException);
-		void writeDataColumn(list<SPDPulse*> *pls,boost::uint_fast32_t col,boost::uint_fast32_t row)throw(SPDIOException);
-		void writeDataColumn(vector<SPDPulse*> *pls,boost::uint_fast32_t col,boost::uint_fast32_t row)throw(SPDIOException);
+		bool open(SPDFile *spdFile, std::string outputFile) throw(SPDIOException);
+		void writeDataColumn(std::list<SPDPulse*> *pls,boost::uint_fast32_t col,boost::uint_fast32_t row)throw(SPDIOException);
+		void writeDataColumn(std::vector<SPDPulse*> *pls,boost::uint_fast32_t col,boost::uint_fast32_t row)throw(SPDIOException);
 		void finaliseClose() throw(SPDIOException);
 		bool requireGrid();
 		bool needNumOutPts();
 		SPDGeneralASCIIFileWriter& operator=(const SPDGeneralASCIIFileWriter& dataExporter) throw(SPDException);
 		~SPDGeneralASCIIFileWriter();
 	private:
-		ofstream *outASCIIFile;
+        std::ofstream *outASCIIFile;
         boost::uint_fast16_t fileType;
 	};
 }

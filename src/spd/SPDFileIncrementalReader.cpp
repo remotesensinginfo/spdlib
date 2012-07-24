@@ -67,14 +67,14 @@ namespace spdlib
 	{
 		try
 		{
-			Exception::dontPrint();
+            H5::Exception::dontPrint();
 			SPDFileReader spdFileReader;
 			SPDPointUtils ptsUtils;
 			SPDPulseUtils pulseUtils;
 			
 			this->spdFile = spdFile;
 			spdFileReader.readHeaderInfo(spdFile->getFilePath(), spdFile);
-			spdInFile = new H5File( spdFile->getFilePath(), H5F_ACC_RDONLY );
+			spdInFile = new H5::H5File( spdFile->getFilePath(), H5F_ACC_RDONLY );
 			fileOpened = true;
 			if(spdFile->getPulseVersion() == 1)
             {
@@ -102,19 +102,19 @@ namespace spdlib
                 throw SPDIOException("SPD Point version was not recognised.");
             }
 		}
-		catch( FileIException &e )
+		catch( H5::FileIException &e )
 		{
 			throw SPDIOException(e.getCDetailMsg());
 		}
-		catch( DataSetIException &e )
+		catch( H5::DataSetIException &e )
 		{
 			throw SPDIOException(e.getCDetailMsg());
 		}
-		catch( DataSpaceIException &e )
+		catch( H5::DataSpaceIException &e )
 		{
 			throw SPDIOException(e.getCDetailMsg());
 		}
-		catch( DataTypeIException &e )
+		catch( H5::DataTypeIException &e )
 		{
 			throw SPDIOException(e.getCDetailMsg());
 		}
@@ -127,7 +127,7 @@ namespace spdlib
 	}
     
     /*UPDATED*/
-    void SPDFileIncrementalReader::readPulseData(list<SPDPulse*> *pulses, boost::uint_fast64_t offset, boost::uint_fast64_t numPulses) throw(SPDIOException)
+    void SPDFileIncrementalReader::readPulseData(std::list<SPDPulse*> *pulses, boost::uint_fast64_t offset, boost::uint_fast64_t numPulses) throw(SPDIOException)
 	{
         if(!fileOpened)
 		{
@@ -136,23 +136,23 @@ namespace spdlib
 		
         try
         {
-            Exception::dontPrint();
+            H5::Exception::dontPrint();
             SPDPointUtils ptsUtils;
             SPDPulseUtils pulseUtils;
             
             if(numPulses > 0)
             {
-                DataSet pulsesDataset = spdInFile->openDataSet( SPDFILE_DATASETNAME_PULSES );
-                DataSpace pulsesDataspace = pulsesDataset.getSpace();
+                H5::DataSet pulsesDataset = spdInFile->openDataSet( SPDFILE_DATASETNAME_PULSES );
+                H5::DataSpace pulsesDataspace = pulsesDataset.getSpace();
                 
-                DataSet pointsDataset = spdInFile->openDataSet( SPDFILE_DATASETNAME_POINTS );
-                DataSpace pointsDataspace = pointsDataset.getSpace();
+                H5::DataSet pointsDataset = spdInFile->openDataSet( SPDFILE_DATASETNAME_POINTS );
+                H5::DataSpace pointsDataspace = pointsDataset.getSpace();
                 
-                DataSet transmittedDataset = spdInFile->openDataSet( SPDFILE_DATASETNAME_TRANSMITTED );
-                DataSpace transmittedDataspace = transmittedDataset.getSpace();
+                H5::DataSet transmittedDataset = spdInFile->openDataSet( SPDFILE_DATASETNAME_TRANSMITTED );
+                H5::DataSpace transmittedDataspace = transmittedDataset.getSpace();
                 
-                DataSet receivedDataset = spdInFile->openDataSet( SPDFILE_DATASETNAME_RECEIVED );
-                DataSpace receivedDataspace = receivedDataset.getSpace();
+                H5::DataSet receivedDataset = spdInFile->openDataSet( SPDFILE_DATASETNAME_RECEIVED );
+                H5::DataSpace receivedDataspace = receivedDataset.getSpace();
                 
                 int rank = 1;
                 // START: Variables for Pulse //
@@ -164,7 +164,7 @@ namespace spdlib
                 
                 hsize_t pulseDims[1]; 
                 pulseDims[0] = numPulses;
-                DataSpace pulseMemspace( rank, pulseDims );
+                H5::DataSpace pulseMemspace( rank, pulseDims );
                 
                 hsize_t pulseOffset_out[1];
                 hsize_t pulseCount_out[1];
@@ -178,7 +178,7 @@ namespace spdlib
                 hsize_t pointCount[1];
                 
                 hsize_t pointDims[1]; 
-                DataSpace pointMemspace;
+                H5::DataSpace pointMemspace;
                 
                 hsize_t pointOffset_out[1];
                 hsize_t pointCount_out[1];
@@ -189,7 +189,7 @@ namespace spdlib
                 hsize_t transCount[1];
                 
                 hsize_t transDims[1]; 
-                DataSpace transMemspace;
+                H5::DataSpace transMemspace;
                 
                 hsize_t transOffset_out[1];
                 hsize_t transCount_out[1];
@@ -200,7 +200,7 @@ namespace spdlib
                 hsize_t receivedCount[1];
                 
                 hsize_t receivedDims[1]; 
-                DataSpace receivedMemspace;
+                H5::DataSpace receivedMemspace;
                 
                 hsize_t receivedOffset_out[1];
                 hsize_t receivedCount_out[1];
@@ -231,7 +231,7 @@ namespace spdlib
                 pulsesDataspace.selectHyperslab( H5S_SELECT_SET, pulseCount, pulseOffset );
                 
                 pulseDims[0] = numPulses;
-                pulseMemspace = DataSpace( rank, pulseDims );
+                pulseMemspace = H5::DataSpace( rank, pulseDims );
                 
                 pulseOffset_out[0] = 0;
                 pulseCount_out[0]  = numPulses;
@@ -305,7 +305,7 @@ namespace spdlib
                     pointCount[0] = numOfPoints;
                     pointsDataspace.selectHyperslab(H5S_SELECT_SET, pointCount, pointOffset);
                     pointDims[0] = numOfPoints;
-                    pointMemspace = DataSpace(rank, pointDims);
+                    pointMemspace = H5::DataSpace(rank, pointDims);
                     pointOffset_out[0] = 0;
                     pointCount_out[0] = numOfPoints;
                     pointMemspace.selectHyperslab( H5S_SELECT_SET, pointCount_out, pointOffset_out );
@@ -320,11 +320,11 @@ namespace spdlib
                     transCount[0] = numOfTransVals;
                     transmittedDataspace.selectHyperslab(H5S_SELECT_SET, transCount, transOffset);
                     transDims[0] = numOfTransVals;
-                    transMemspace = DataSpace(rank, transDims);
+                    transMemspace = H5::DataSpace(rank, transDims);
                     transOffset_out[0] = 0;
                     transCount_out[0] = numOfTransVals;
                     transMemspace.selectHyperslab( H5S_SELECT_SET, transCount_out, transOffset_out );
-                    transmittedDataset.read(transmittedArray, PredType::NATIVE_ULONG, transMemspace, transmittedDataspace);
+                    transmittedDataset.read(transmittedArray, H5::PredType::NATIVE_ULONG, transMemspace, transmittedDataspace);
                 }
                 
                 if(numOfReceivedVals > 0)
@@ -335,11 +335,11 @@ namespace spdlib
                     receivedCount[0] = numOfReceivedVals;
                     receivedDataspace.selectHyperslab(H5S_SELECT_SET, receivedCount, receivedOffset);
                     receivedDims[0] = numOfReceivedVals;
-                    receivedMemspace = DataSpace(rank, receivedDims);
+                    receivedMemspace = H5::DataSpace(rank, receivedDims);
                     receivedOffset_out[0] = 0;
                     receivedCount_out[0] = numOfReceivedVals;
                     receivedMemspace.selectHyperslab( H5S_SELECT_SET, receivedCount_out, receivedOffset_out );
-                    receivedDataset.read(receivedArray, PredType::NATIVE_ULONG, receivedMemspace, receivedDataspace);
+                    receivedDataset.read(receivedArray, H5::PredType::NATIVE_ULONG, receivedMemspace, receivedDataspace);
                 }
                 
                 ptIdx = 0;
@@ -359,7 +359,7 @@ namespace spdlib
                     
                     if(pulse->numberOfReturns > 0)
                     {
-                        pulse->pts = new vector<SPDPoint*>();
+                        pulse->pts = new std::vector<SPDPoint*>();
                         pulse->pts->reserve(pulse->numberOfReturns);
                         for(boost::uint_fast16_t n = 0; n < pulse->numberOfReturns; ++n)
                         {
@@ -394,7 +394,6 @@ namespace spdlib
                     }
                     
                     pulses->push_back(pulse);
-                    
                 }
                 
                 if(numOfPoints > 0)
@@ -429,19 +428,19 @@ namespace spdlib
                 }
             }
         }
-        catch( FileIException &e )
+        catch( H5::FileIException &e )
         {
             throw SPDIOException(e.getCDetailMsg());
         }
-        catch( DataSetIException &e )
+        catch( H5::DataSetIException &e )
         {
             throw SPDIOException(e.getCDetailMsg());
         }
-        catch( DataSpaceIException &e )
+        catch( H5::DataSpaceIException &e )
         {
             throw SPDIOException(e.getCDetailMsg());
         }
-        catch( DataTypeIException &e )
+        catch( H5::DataTypeIException &e )
         {
             throw SPDIOException(e.getCDetailMsg());
         }
@@ -452,7 +451,7 @@ namespace spdlib
 	}
     
 	/*UPDATED*/
-	void SPDFileIncrementalReader::readPulseData(vector<SPDPulse*> *pulses, boost::uint_fast64_t offset, boost::uint_fast64_t numPulses) throw(SPDIOException)
+	void SPDFileIncrementalReader::readPulseData(std::vector<SPDPulse*> *pulses, boost::uint_fast64_t offset, boost::uint_fast64_t numPulses) throw(SPDIOException)
 	{
 		if(!fileOpened)
 		{
@@ -461,23 +460,23 @@ namespace spdlib
 		
         try
         {
-            Exception::dontPrint();
+            H5::Exception::dontPrint();
             SPDPointUtils ptsUtils;
             SPDPulseUtils pulseUtils;
             
             if(numPulses > 0)
             {
-                DataSet pulsesDataset = spdInFile->openDataSet( SPDFILE_DATASETNAME_PULSES );
-                DataSpace pulsesDataspace = pulsesDataset.getSpace();
+                H5::DataSet pulsesDataset = spdInFile->openDataSet( SPDFILE_DATASETNAME_PULSES );
+                H5::DataSpace pulsesDataspace = pulsesDataset.getSpace();
                 
-                DataSet pointsDataset = spdInFile->openDataSet( SPDFILE_DATASETNAME_POINTS );
-                DataSpace pointsDataspace = pointsDataset.getSpace();
+                H5::DataSet pointsDataset = spdInFile->openDataSet( SPDFILE_DATASETNAME_POINTS );
+                H5::DataSpace pointsDataspace = pointsDataset.getSpace();
                 
-                DataSet transmittedDataset = spdInFile->openDataSet( SPDFILE_DATASETNAME_TRANSMITTED );
-                DataSpace transmittedDataspace = transmittedDataset.getSpace();
+                H5::DataSet transmittedDataset = spdInFile->openDataSet( SPDFILE_DATASETNAME_TRANSMITTED );
+                H5::DataSpace transmittedDataspace = transmittedDataset.getSpace();
                 
-                DataSet receivedDataset = spdInFile->openDataSet( SPDFILE_DATASETNAME_RECEIVED );
-                DataSpace receivedDataspace = receivedDataset.getSpace();
+                H5::DataSet receivedDataset = spdInFile->openDataSet( SPDFILE_DATASETNAME_RECEIVED );
+                H5::DataSpace receivedDataspace = receivedDataset.getSpace();
                 
                 int rank = 1;
                 // START: Variables for Pulse //
@@ -489,7 +488,7 @@ namespace spdlib
                 
                 hsize_t pulseDims[1]; 
                 pulseDims[0] = numPulses;
-                DataSpace pulseMemspace( rank, pulseDims );
+                H5::DataSpace pulseMemspace( rank, pulseDims );
                 
                 hsize_t pulseOffset_out[1];
                 hsize_t pulseCount_out[1];
@@ -503,7 +502,7 @@ namespace spdlib
                 hsize_t pointCount[1];
                 
                 hsize_t pointDims[1]; 
-                DataSpace pointMemspace;
+                H5::DataSpace pointMemspace;
                 
                 hsize_t pointOffset_out[1];
                 hsize_t pointCount_out[1];
@@ -514,7 +513,7 @@ namespace spdlib
                 hsize_t transCount[1];
                 
                 hsize_t transDims[1]; 
-                DataSpace transMemspace;
+                H5::DataSpace transMemspace;
                 
                 hsize_t transOffset_out[1];
                 hsize_t transCount_out[1];
@@ -525,7 +524,7 @@ namespace spdlib
                 hsize_t receivedCount[1];
                 
                 hsize_t receivedDims[1]; 
-                DataSpace receivedMemspace;
+                H5::DataSpace receivedMemspace;
                 
                 hsize_t receivedOffset_out[1];
                 hsize_t receivedCount_out[1];
@@ -556,7 +555,7 @@ namespace spdlib
                 pulsesDataspace.selectHyperslab( H5S_SELECT_SET, pulseCount, pulseOffset );
                 
                 pulseDims[0] = numPulses;
-                pulseMemspace = DataSpace( rank, pulseDims );
+                pulseMemspace = H5::DataSpace( rank, pulseDims );
                 
                 pulseOffset_out[0] = 0;
                 pulseCount_out[0]  = numPulses;
@@ -630,7 +629,7 @@ namespace spdlib
                     pointCount[0] = numOfPoints;
                     pointsDataspace.selectHyperslab(H5S_SELECT_SET, pointCount, pointOffset);
                     pointDims[0] = numOfPoints;
-                    pointMemspace = DataSpace(rank, pointDims);
+                    pointMemspace = H5::DataSpace(rank, pointDims);
                     pointOffset_out[0] = 0;
                     pointCount_out[0] = numOfPoints;
                     pointMemspace.selectHyperslab( H5S_SELECT_SET, pointCount_out, pointOffset_out );
@@ -645,11 +644,11 @@ namespace spdlib
                     transCount[0] = numOfTransVals;
                     transmittedDataspace.selectHyperslab(H5S_SELECT_SET, transCount, transOffset);
                     transDims[0] = numOfTransVals;
-                    transMemspace = DataSpace(rank, transDims);
+                    transMemspace = H5::DataSpace(rank, transDims);
                     transOffset_out[0] = 0;
                     transCount_out[0] = numOfTransVals;
                     transMemspace.selectHyperslab( H5S_SELECT_SET, transCount_out, transOffset_out );
-                    transmittedDataset.read(transmittedArray, PredType::NATIVE_ULONG, transMemspace, transmittedDataspace);
+                    transmittedDataset.read(transmittedArray, H5::PredType::NATIVE_ULONG, transMemspace, transmittedDataspace);
                 }
                 
                 if(numOfReceivedVals > 0)
@@ -660,11 +659,11 @@ namespace spdlib
                     receivedCount[0] = numOfReceivedVals;
                     receivedDataspace.selectHyperslab(H5S_SELECT_SET, receivedCount, receivedOffset);
                     receivedDims[0] = numOfReceivedVals;
-                    receivedMemspace = DataSpace(rank, receivedDims);
+                    receivedMemspace = H5::DataSpace(rank, receivedDims);
                     receivedOffset_out[0] = 0;
                     receivedCount_out[0] = numOfReceivedVals;
                     receivedMemspace.selectHyperslab( H5S_SELECT_SET, receivedCount_out, receivedOffset_out );
-                    receivedDataset.read(receivedArray, PredType::NATIVE_ULONG, receivedMemspace, receivedDataspace);
+                    receivedDataset.read(receivedArray, H5::PredType::NATIVE_ULONG, receivedMemspace, receivedDataspace);
                 }
                 
                 ptIdx = 0;
@@ -684,7 +683,7 @@ namespace spdlib
                     
                     if(pulse->numberOfReturns > 0)
                     {
-                        pulse->pts = new vector<SPDPoint*>();
+                        pulse->pts = new std::vector<SPDPoint*>();
                         pulse->pts->reserve(pulse->numberOfReturns);
                         for(boost::uint_fast16_t n = 0; n < pulse->numberOfReturns; ++n)
                         {
@@ -754,19 +753,19 @@ namespace spdlib
                 }
             }
         }
-        catch( FileIException &e )
+        catch( H5::FileIException &e )
         {
             throw SPDIOException(e.getCDetailMsg());
         }
-        catch( DataSetIException &e )
+        catch( H5::DataSetIException &e )
         {
             throw SPDIOException(e.getCDetailMsg());
         }
-        catch( DataSpaceIException &e )
+        catch( H5::DataSpaceIException &e )
         {
             throw SPDIOException(e.getCDetailMsg());
         }
-        catch( DataTypeIException &e )
+        catch( H5::DataTypeIException &e )
         {
             throw SPDIOException(e.getCDetailMsg());
         }
@@ -790,14 +789,14 @@ namespace spdlib
 		
 		try
 		{
-			Exception::dontPrint();
+			H5::Exception::dontPrint();
 			
 			/* Read data */
-			DataSet plsPerBinDSet = spdInFile->openDataSet( SPDFILE_DATASETNAME_PLS_PER_BIN );
-			DataSpace plsPerBinDSpace = plsPerBinDSet.getSpace();
+			H5::DataSet plsPerBinDSet = spdInFile->openDataSet( SPDFILE_DATASETNAME_PLS_PER_BIN );
+			H5::DataSpace plsPerBinDSpace = plsPerBinDSet.getSpace();
 			
-			DataSet binOffsetsDset = spdInFile->openDataSet( SPDFILE_DATASETNAME_BIN_OFFSETS );
-			DataSpace binOffsetsDSpace = binOffsetsDset.getSpace();
+			H5::DataSet binOffsetsDset = spdInFile->openDataSet( SPDFILE_DATASETNAME_BIN_OFFSETS );
+			H5::DataSpace binOffsetsDSpace = binOffsetsDset.getSpace();
 			
 			hsize_t offsetDims[2];
 			offsetDims[0] = row;
@@ -810,7 +809,7 @@ namespace spdlib
 			
 			hsize_t memSpaceDims[1]; 
 			memSpaceDims[0] = spdFile->getNumberBinsX();
-			DataSpace memSpace( 1, memSpaceDims ); // has rank == 1
+			H5::DataSpace memSpace( 1, memSpaceDims ); // has rank == 1
 			
 			hsize_t offsetMemSpace[1];
 			hsize_t selectionMemSpace[1];
@@ -818,22 +817,22 @@ namespace spdlib
 			selectionMemSpace[0]  = spdFile->getNumberBinsX();
 			memSpace.selectHyperslab( H5S_SELECT_SET, selectionMemSpace, offsetMemSpace );
 			
-			binOffsetsDset.read( binOffsets, PredType::NATIVE_ULLONG, memSpace, binOffsetsDSpace );
-			plsPerBinDSet.read( numPtsInBin, PredType::NATIVE_ULONG, memSpace, plsPerBinDSpace );
+			binOffsetsDset.read( binOffsets, H5::PredType::NATIVE_ULLONG, memSpace, binOffsetsDSpace );
+			plsPerBinDSet.read( numPtsInBin, H5::PredType::NATIVE_ULONG, memSpace, plsPerBinDSpace );
 		}
-		catch( FileIException &e )
+		catch( H5::FileIException &e )
 		{
 			throw SPDIOException(e.getCDetailMsg());
 		}
-		catch( DataSetIException &e )
+		catch( H5::DataSetIException &e )
 		{
 			throw SPDIOException(e.getCDetailMsg());
 		}
-		catch( DataSpaceIException &e )
+		catch( H5::DataSpaceIException &e )
 		{
 			throw SPDIOException(e.getCDetailMsg());
 		}
-		catch( DataTypeIException &e )
+		catch( H5::DataTypeIException &e )
 		{
 			throw SPDIOException(e.getCDetailMsg());
 		}
@@ -844,7 +843,7 @@ namespace spdlib
 	}
     
 	/*UPDATED*/
-	void SPDFileIncrementalReader::readPulseDataRow(boost::uint_fast32_t row, list<SPDPulse*> **pulses) throw(SPDIOException)
+	void SPDFileIncrementalReader::readPulseDataRow(boost::uint_fast32_t row, std::list<SPDPulse*> **pulses) throw(SPDIOException)
 	{
 		if(!fileOpened)
 		{
@@ -859,7 +858,7 @@ namespace spdlib
         {
             try
             {
-                Exception::dontPrint();
+                H5::Exception::dontPrint();
                 SPDPointUtils ptsUtils;
                 SPDPulseUtils pulseUtils;
                 
@@ -876,17 +875,17 @@ namespace spdlib
                             
                 if(totalNumPulses > 0)
                 {
-                    DataSet pulsesDataset = spdInFile->openDataSet( SPDFILE_DATASETNAME_PULSES );
-                    DataSpace pulsesDataspace = pulsesDataset.getSpace();
+                    H5::DataSet pulsesDataset = spdInFile->openDataSet( SPDFILE_DATASETNAME_PULSES );
+                    H5::DataSpace pulsesDataspace = pulsesDataset.getSpace();
                     
-                    DataSet pointsDataset = spdInFile->openDataSet( SPDFILE_DATASETNAME_POINTS );
-                    DataSpace pointsDataspace = pointsDataset.getSpace();
+                    H5::DataSet pointsDataset = spdInFile->openDataSet( SPDFILE_DATASETNAME_POINTS );
+                    H5::DataSpace pointsDataspace = pointsDataset.getSpace();
                     
-                    DataSet transmittedDataset = spdInFile->openDataSet( SPDFILE_DATASETNAME_TRANSMITTED );
-                    DataSpace transmittedDataspace = transmittedDataset.getSpace();
+                    H5::DataSet transmittedDataset = spdInFile->openDataSet( SPDFILE_DATASETNAME_TRANSMITTED );
+                    H5::DataSpace transmittedDataspace = transmittedDataset.getSpace();
                     
-                    DataSet receivedDataset = spdInFile->openDataSet( SPDFILE_DATASETNAME_RECEIVED );
-                    DataSpace receivedDataspace = receivedDataset.getSpace();
+                    H5::DataSet receivedDataset = spdInFile->openDataSet( SPDFILE_DATASETNAME_RECEIVED );
+                    H5::DataSpace receivedDataspace = receivedDataset.getSpace();
                     
                     int rank = 1;
                     // START: Variables for Pulse //
@@ -898,7 +897,7 @@ namespace spdlib
                     
                     hsize_t pulseDims[1]; 
                     pulseDims[0] = totalNumPulses;
-                    DataSpace pulseMemspace( rank, pulseDims );
+                    H5::DataSpace pulseMemspace( rank, pulseDims );
                     
                     hsize_t pulseOffset_out[1];
                     hsize_t pulseCount_out[1];
@@ -912,7 +911,7 @@ namespace spdlib
                     hsize_t pointCount[1];
                     
                     hsize_t pointDims[1]; 
-                    DataSpace pointMemspace;
+                    H5::DataSpace pointMemspace;
                     
                     hsize_t pointOffset_out[1];
                     hsize_t pointCount_out[1];
@@ -923,7 +922,7 @@ namespace spdlib
                     hsize_t transCount[1];
                     
                     hsize_t transDims[1]; 
-                    DataSpace transMemspace;
+                    H5::DataSpace transMemspace;
                     
                     hsize_t transOffset_out[1];
                     hsize_t transCount_out[1];
@@ -934,7 +933,7 @@ namespace spdlib
                     hsize_t receivedCount[1];
                     
                     hsize_t receivedDims[1]; 
-                    DataSpace receivedMemspace;
+                    H5::DataSpace receivedMemspace;
                     
                     hsize_t receivedOffset_out[1];
                     hsize_t receivedCount_out[1];
@@ -965,7 +964,7 @@ namespace spdlib
                     pulsesDataspace.selectHyperslab( H5S_SELECT_SET, pulseCount, pulseOffset );
                     
                     pulseDims[0] = totalNumPulses;
-                    pulseMemspace = DataSpace( rank, pulseDims );
+                    pulseMemspace = H5::DataSpace( rank, pulseDims );
                     
                     pulseOffset_out[0] = 0;
                     pulseCount_out[0]  = totalNumPulses;
@@ -1040,7 +1039,7 @@ namespace spdlib
                         pointCount[0] = numOfPoints;
                         pointsDataspace.selectHyperslab(H5S_SELECT_SET, pointCount, pointOffset);
                         pointDims[0] = numOfPoints;
-                        pointMemspace = DataSpace(rank, pointDims);
+                        pointMemspace = H5::DataSpace(rank, pointDims);
                         pointOffset_out[0] = 0;
                         pointCount_out[0] = numOfPoints;
                         pointMemspace.selectHyperslab( H5S_SELECT_SET, pointCount_out, pointOffset_out );
@@ -1055,11 +1054,11 @@ namespace spdlib
                         transCount[0] = numOfTransVals;
                         transmittedDataspace.selectHyperslab(H5S_SELECT_SET, transCount, transOffset);
                         transDims[0] = numOfTransVals;
-                        transMemspace = DataSpace(rank, transDims);
+                        transMemspace = H5::DataSpace(rank, transDims);
                         transOffset_out[0] = 0;
                         transCount_out[0] = numOfTransVals;
                         transMemspace.selectHyperslab( H5S_SELECT_SET, transCount_out, transOffset_out );
-                        transmittedDataset.read(transmittedArray, PredType::NATIVE_ULONG, transMemspace, transmittedDataspace);
+                        transmittedDataset.read(transmittedArray, H5::PredType::NATIVE_ULONG, transMemspace, transmittedDataspace);
                     }
                     
                     if(numOfReceivedVals > 0)
@@ -1070,11 +1069,11 @@ namespace spdlib
                         receivedCount[0] = numOfReceivedVals;
                         receivedDataspace.selectHyperslab(H5S_SELECT_SET, receivedCount, receivedOffset);
                         receivedDims[0] = numOfReceivedVals;
-                        receivedMemspace = DataSpace(rank, receivedDims);
+                        receivedMemspace = H5::DataSpace(rank, receivedDims);
                         receivedOffset_out[0] = 0;
                         receivedCount_out[0] = numOfReceivedVals;
                         receivedMemspace.selectHyperslab( H5S_SELECT_SET, receivedCount_out, receivedOffset_out );
-                        receivedDataset.read(receivedArray, PredType::NATIVE_ULONG, receivedMemspace, receivedDataspace);
+                        receivedDataset.read(receivedArray, H5::PredType::NATIVE_ULONG, receivedMemspace, receivedDataspace);
                     }
                     
                     ptIdx = 0;
@@ -1102,7 +1101,7 @@ namespace spdlib
                             
                             if(pulse->numberOfReturns > 0)
                             {
-                                pulse->pts = new vector<SPDPoint*>();
+                                pulse->pts = new std::vector<SPDPoint*>();
                                 pulse->pts->reserve(pulse->numberOfReturns);
                                 for(boost::uint_fast16_t n = 0; n < pulse->numberOfReturns; ++n)
                                 {
@@ -1177,19 +1176,19 @@ namespace spdlib
                 delete[] offsets;
                 
             }
-            catch( FileIException &e )
+            catch( H5::FileIException &e )
             {
                 throw SPDIOException(e.getCDetailMsg());
             }
-            catch( DataSetIException &e )
+            catch( H5::DataSetIException &e )
             {
                 throw SPDIOException(e.getCDetailMsg());
             }
-            catch( DataSpaceIException &e )
+            catch( H5::DataSpaceIException &e )
             {
                 throw SPDIOException(e.getCDetailMsg());
             }
-            catch( DataTypeIException &e )
+            catch( H5::DataTypeIException &e )
             {
                 throw SPDIOException(e.getCDetailMsg());
             }
@@ -1231,7 +1230,7 @@ namespace spdlib
 	}
 	
     /*UPDATED*/
-	void SPDFileIncrementalReader::readPulseDataRow(boost::uint_fast32_t row, vector<SPDPulse*> **pulses) throw(SPDIOException)
+	void SPDFileIncrementalReader::readPulseDataRow(boost::uint_fast32_t row, std::vector<SPDPulse*> **pulses) throw(SPDIOException)
 	{
 		if(!fileOpened)
 		{
@@ -1246,7 +1245,7 @@ namespace spdlib
         {
             try
             {
-                Exception::dontPrint();
+                H5::Exception::dontPrint();
                 SPDPointUtils ptsUtils;
                 SPDPulseUtils pulseUtils;
                 
@@ -1263,17 +1262,17 @@ namespace spdlib
                 
                 if(totalNumPulses > 0)
                 {
-                    DataSet pulsesDataset = spdInFile->openDataSet( SPDFILE_DATASETNAME_PULSES );
-                    DataSpace pulsesDataspace = pulsesDataset.getSpace();
+                    H5::DataSet pulsesDataset = spdInFile->openDataSet( SPDFILE_DATASETNAME_PULSES );
+                    H5::DataSpace pulsesDataspace = pulsesDataset.getSpace();
                     
-                    DataSet pointsDataset = spdInFile->openDataSet( SPDFILE_DATASETNAME_POINTS );
-                    DataSpace pointsDataspace = pointsDataset.getSpace();
+                    H5::DataSet pointsDataset = spdInFile->openDataSet( SPDFILE_DATASETNAME_POINTS );
+                    H5::DataSpace pointsDataspace = pointsDataset.getSpace();
                     
-                    DataSet transmittedDataset = spdInFile->openDataSet( SPDFILE_DATASETNAME_TRANSMITTED );
-                    DataSpace transmittedDataspace = transmittedDataset.getSpace();
+                    H5::DataSet transmittedDataset = spdInFile->openDataSet( SPDFILE_DATASETNAME_TRANSMITTED );
+                    H5::DataSpace transmittedDataspace = transmittedDataset.getSpace();
                     
-                    DataSet receivedDataset = spdInFile->openDataSet( SPDFILE_DATASETNAME_RECEIVED );
-                    DataSpace receivedDataspace = receivedDataset.getSpace();
+                    H5::DataSet receivedDataset = spdInFile->openDataSet( SPDFILE_DATASETNAME_RECEIVED );
+                    H5::DataSpace receivedDataspace = receivedDataset.getSpace();
                     
                     int rank = 1;
                     // START: Variables for Pulse //
@@ -1285,7 +1284,7 @@ namespace spdlib
                     
                     hsize_t pulseDims[1]; 
                     pulseDims[0] = totalNumPulses;
-                    DataSpace pulseMemspace( rank, pulseDims );
+                    H5::DataSpace pulseMemspace( rank, pulseDims );
                     
                     hsize_t pulseOffset_out[1];
                     hsize_t pulseCount_out[1];
@@ -1299,7 +1298,7 @@ namespace spdlib
                     hsize_t pointCount[1];
                     
                     hsize_t pointDims[1]; 
-                    DataSpace pointMemspace;
+                    H5::DataSpace pointMemspace;
                     
                     hsize_t pointOffset_out[1];
                     hsize_t pointCount_out[1];
@@ -1310,7 +1309,7 @@ namespace spdlib
                     hsize_t transCount[1];
                     
                     hsize_t transDims[1]; 
-                    DataSpace transMemspace;
+                    H5::DataSpace transMemspace;
                     
                     hsize_t transOffset_out[1];
                     hsize_t transCount_out[1];
@@ -1321,7 +1320,7 @@ namespace spdlib
                     hsize_t receivedCount[1];
                     
                     hsize_t receivedDims[1]; 
-                    DataSpace receivedMemspace;
+                    H5::DataSpace receivedMemspace;
                     
                     hsize_t receivedOffset_out[1];
                     hsize_t receivedCount_out[1];
@@ -1352,7 +1351,7 @@ namespace spdlib
                     pulsesDataspace.selectHyperslab( H5S_SELECT_SET, pulseCount, pulseOffset );
                     
                     pulseDims[0] = totalNumPulses;
-                    pulseMemspace = DataSpace( rank, pulseDims );
+                    pulseMemspace = H5::DataSpace( rank, pulseDims );
                     
                     pulseOffset_out[0] = 0;
                     pulseCount_out[0]  = totalNumPulses;
@@ -1427,7 +1426,7 @@ namespace spdlib
                         pointCount[0] = numOfPoints;
                         pointsDataspace.selectHyperslab(H5S_SELECT_SET, pointCount, pointOffset);
                         pointDims[0] = numOfPoints;
-                        pointMemspace = DataSpace(rank, pointDims);
+                        pointMemspace = H5::DataSpace(rank, pointDims);
                         pointOffset_out[0] = 0;
                         pointCount_out[0] = numOfPoints;
                         pointMemspace.selectHyperslab( H5S_SELECT_SET, pointCount_out, pointOffset_out );
@@ -1442,11 +1441,11 @@ namespace spdlib
                         transCount[0] = numOfTransVals;
                         transmittedDataspace.selectHyperslab(H5S_SELECT_SET, transCount, transOffset);
                         transDims[0] = numOfTransVals;
-                        transMemspace = DataSpace(rank, transDims);
+                        transMemspace = H5::DataSpace(rank, transDims);
                         transOffset_out[0] = 0;
                         transCount_out[0] = numOfTransVals;
                         transMemspace.selectHyperslab( H5S_SELECT_SET, transCount_out, transOffset_out );
-                        transmittedDataset.read(transmittedArray, PredType::NATIVE_ULONG, transMemspace, transmittedDataspace);
+                        transmittedDataset.read(transmittedArray, H5::PredType::NATIVE_ULONG, transMemspace, transmittedDataspace);
                     }
                     
                     if(numOfReceivedVals > 0)
@@ -1457,11 +1456,11 @@ namespace spdlib
                         receivedCount[0] = numOfReceivedVals;
                         receivedDataspace.selectHyperslab(H5S_SELECT_SET, receivedCount, receivedOffset);
                         receivedDims[0] = numOfReceivedVals;
-                        receivedMemspace = DataSpace(rank, receivedDims);
+                        receivedMemspace = H5::DataSpace(rank, receivedDims);
                         receivedOffset_out[0] = 0;
                         receivedCount_out[0] = numOfReceivedVals;
                         receivedMemspace.selectHyperslab( H5S_SELECT_SET, receivedCount_out, receivedOffset_out );
-                        receivedDataset.read(receivedArray, PredType::NATIVE_ULONG, receivedMemspace, receivedDataspace);
+                        receivedDataset.read(receivedArray, H5::PredType::NATIVE_ULONG, receivedMemspace, receivedDataspace);
                     }
                     
                     ptIdx = 0;
@@ -1489,7 +1488,7 @@ namespace spdlib
                             
                             if(pulse->numberOfReturns > 0)
                             {
-                                pulse->pts = new vector<SPDPoint*>();
+                                pulse->pts = new std::vector<SPDPoint*>();
                                 pulse->pts->reserve(pulse->numberOfReturns);
                                 for(boost::uint_fast16_t n = 0; n < pulse->numberOfReturns; ++n)
                                 {
@@ -1564,19 +1563,19 @@ namespace spdlib
                 delete[] offsets;
                 
             }
-            catch( FileIException &e )
+            catch( H5::FileIException &e )
             {
                 throw SPDIOException(e.getCDetailMsg());
             }
-            catch( DataSetIException &e )
+            catch( H5::DataSetIException &e )
             {
                 throw SPDIOException(e.getCDetailMsg());
             }
-            catch( DataSpaceIException &e )
+            catch( H5::DataSpaceIException &e )
             {
                 throw SPDIOException(e.getCDetailMsg());
             }
-            catch( DataTypeIException &e )
+            catch( H5::DataTypeIException &e )
             {
                 throw SPDIOException(e.getCDetailMsg());
             }
@@ -1618,7 +1617,7 @@ namespace spdlib
 	}
 	
     /*UPDATED*/
-	void SPDFileIncrementalReader::readPulseData(list<SPDPulse*> *pulses, boost::uint_fast32_t row, boost::uint_fast32_t startCol, boost::uint_fast32_t endCol) throw(SPDIOException)
+	void SPDFileIncrementalReader::readPulseData(std::list<SPDPulse*> *pulses, boost::uint_fast32_t row, boost::uint_fast32_t startCol, boost::uint_fast32_t endCol) throw(SPDIOException)
 	{
 		if(!fileOpened)
 		{
@@ -1704,7 +1703,7 @@ namespace spdlib
 	}
 	
     /*UPDATED*/
-	void SPDFileIncrementalReader::readPulseData(vector<SPDPulse*> *pulses, boost::uint_fast32_t row, boost::uint_fast32_t startCol, boost::uint_fast32_t endCol) throw(SPDIOException)
+	void SPDFileIncrementalReader::readPulseData(std::vector<SPDPulse*> *pulses, boost::uint_fast32_t row, boost::uint_fast32_t startCol, boost::uint_fast32_t endCol) throw(SPDIOException)
 	{
 		if(!fileOpened)
 		{
@@ -1790,7 +1789,7 @@ namespace spdlib
 	}
 	
     /*UPDATED*/
-	void SPDFileIncrementalReader::readPulseDataBlock(list<SPDPulse*> ***pulses, boost::uint_fast32_t *bbox) throw(SPDIOException)
+	void SPDFileIncrementalReader::readPulseDataBlock(std::list<SPDPulse*> ***pulses, boost::uint_fast32_t *bbox) throw(SPDIOException)
 	{
 		if(!fileOpened)
 		{
@@ -1813,7 +1812,7 @@ namespace spdlib
             try
             {
                 // Read PTS..
-                Exception::dontPrint();
+                H5::Exception::dontPrint();
                 
                 SPDPointUtils ptsUtils;
                 SPDPulseUtils pulseUtils;
@@ -1823,17 +1822,17 @@ namespace spdlib
                 
                 boost::uint_fast64_t totalNumPulses = 0;
                 
-                DataSet pulsesDataset = spdInFile->openDataSet( SPDFILE_DATASETNAME_PULSES );
-                DataSpace pulsesDataspace = pulsesDataset.getSpace();
+                H5::DataSet pulsesDataset = spdInFile->openDataSet( SPDFILE_DATASETNAME_PULSES );
+                H5::DataSpace pulsesDataspace = pulsesDataset.getSpace();
                 
-                DataSet pointsDataset = spdInFile->openDataSet( SPDFILE_DATASETNAME_POINTS );
-                DataSpace pointsDataspace = pointsDataset.getSpace();
+                H5::DataSet pointsDataset = spdInFile->openDataSet( SPDFILE_DATASETNAME_POINTS );
+                H5::DataSpace pointsDataspace = pointsDataset.getSpace();
                 
-                DataSet transmittedDataset = spdInFile->openDataSet( SPDFILE_DATASETNAME_TRANSMITTED );
-                DataSpace transmittedDataspace = transmittedDataset.getSpace();
+                H5::DataSet transmittedDataset = spdInFile->openDataSet( SPDFILE_DATASETNAME_TRANSMITTED );
+                H5::DataSpace transmittedDataspace = transmittedDataset.getSpace();
                 
-                DataSet receivedDataset = spdInFile->openDataSet( SPDFILE_DATASETNAME_RECEIVED );
-                DataSpace receivedDataspace = receivedDataset.getSpace();
+                H5::DataSet receivedDataset = spdInFile->openDataSet( SPDFILE_DATASETNAME_RECEIVED );
+                H5::DataSpace receivedDataspace = receivedDataset.getSpace();
                 
                 int rank = 1;
                 // START: Variables for Pulse //
@@ -1841,7 +1840,7 @@ namespace spdlib
                 hsize_t pulseCount[1];
                 
                 hsize_t pulseDims[1]; 
-                DataSpace pulseMemspace;
+                H5::DataSpace pulseMemspace;
                 
                 hsize_t pulseOffset_out[1];
                 hsize_t pulseCount_out[1];
@@ -1852,7 +1851,7 @@ namespace spdlib
                 hsize_t pointCount[1];
                 
                 hsize_t pointDims[1]; 
-                DataSpace pointMemspace;
+                H5::DataSpace pointMemspace;
                 
                 hsize_t pointOffset_out[1];
                 hsize_t pointCount_out[1];
@@ -1863,7 +1862,7 @@ namespace spdlib
                 hsize_t transCount[1];
                 
                 hsize_t transDims[1]; 
-                DataSpace transMemspace;
+                H5::DataSpace transMemspace;
                 
                 hsize_t transOffset_out[1];
                 hsize_t transCount_out[1];
@@ -1874,7 +1873,7 @@ namespace spdlib
                 hsize_t receivedCount[1];
                 
                 hsize_t receivedDims[1]; 
-                DataSpace receivedMemspace;
+                H5::DataSpace receivedMemspace;
                 
                 hsize_t receivedOffset_out[1];
                 hsize_t receivedCount_out[1];
@@ -1918,7 +1917,7 @@ namespace spdlib
                         pulsesDataspace.selectHyperslab( H5S_SELECT_SET, pulseCount, pulseOffset );
                         
                         pulseDims[0] = totalNumPulses;
-                        pulseMemspace = DataSpace( rank, pulseDims );
+                        pulseMemspace = H5::DataSpace( rank, pulseDims );
                         
                         pulseOffset_out[0] = 0;
                         pulseCount_out[0]  = totalNumPulses;
@@ -1993,7 +1992,7 @@ namespace spdlib
                             pointCount[0] = numOfPoints;
                             pointsDataspace.selectHyperslab(H5S_SELECT_SET, pointCount, pointOffset);
                             pointDims[0] = numOfPoints;
-                            pointMemspace = DataSpace(rank, pointDims);
+                            pointMemspace = H5::DataSpace(rank, pointDims);
                             pointOffset_out[0] = 0;
                             pointCount_out[0] = numOfPoints;
                             pointMemspace.selectHyperslab( H5S_SELECT_SET, pointCount_out, pointOffset_out );
@@ -2008,11 +2007,11 @@ namespace spdlib
                             transCount[0] = numOfTransVals;
                             transmittedDataspace.selectHyperslab(H5S_SELECT_SET, transCount, transOffset);
                             transDims[0] = numOfTransVals;
-                            transMemspace = DataSpace(rank, transDims);
+                            transMemspace = H5::DataSpace(rank, transDims);
                             transOffset_out[0] = 0;
                             transCount_out[0] = numOfTransVals;
                             transMemspace.selectHyperslab( H5S_SELECT_SET, transCount_out, transOffset_out );
-                            transmittedDataset.read(transmittedArray, PredType::NATIVE_ULONG, transMemspace, transmittedDataspace);
+                            transmittedDataset.read(transmittedArray, H5::PredType::NATIVE_ULONG, transMemspace, transmittedDataspace);
                         }
                         
                         if(numOfReceivedVals > 0)
@@ -2023,11 +2022,11 @@ namespace spdlib
                             receivedCount[0] = numOfReceivedVals;
                             receivedDataspace.selectHyperslab(H5S_SELECT_SET, receivedCount, receivedOffset);
                             receivedDims[0] = numOfReceivedVals;
-                            receivedMemspace = DataSpace(rank, receivedDims);
+                            receivedMemspace = H5::DataSpace(rank, receivedDims);
                             receivedOffset_out[0] = 0;
                             receivedCount_out[0] = numOfReceivedVals;
                             receivedMemspace.selectHyperslab( H5S_SELECT_SET, receivedCount_out, receivedOffset_out );
-                            receivedDataset.read(receivedArray, PredType::NATIVE_ULONG, receivedMemspace, receivedDataspace);
+                            receivedDataset.read(receivedArray, H5::PredType::NATIVE_ULONG, receivedMemspace, receivedDataspace);
                         }
                         
                         ptIdx = 0;
@@ -2055,7 +2054,7 @@ namespace spdlib
                                 
                                 if(pulse->numberOfReturns > 0)
                                 {
-                                    pulse->pts = new vector<SPDPoint*>();
+                                    pulse->pts = new std::vector<SPDPoint*>();
                                     pulse->pts->reserve(pulse->numberOfReturns);
                                     for(boost::uint_fast16_t n = 0; n < pulse->numberOfReturns; ++n)
                                     {
@@ -2130,19 +2129,19 @@ namespace spdlib
                 delete[] plsInBins;
                 delete[] offsets;
             }
-            catch( FileIException &e )
+            catch( H5::FileIException &e )
             {
                 throw SPDIOException(e.getCDetailMsg());
             }
-            catch( DataSetIException &e )
+            catch( H5::DataSetIException &e )
             {
                 throw SPDIOException(e.getCDetailMsg());
             }
-            catch( DataSpaceIException &e )
+            catch( H5::DataSpaceIException &e )
             {
                 throw SPDIOException(e.getCDetailMsg());
             }
-            catch( DataTypeIException &e )
+            catch( H5::DataTypeIException &e )
             {
                 throw SPDIOException(e.getCDetailMsg());
             }
@@ -2192,7 +2191,7 @@ namespace spdlib
 	}
 	
     /*UPDATED*/
-	void SPDFileIncrementalReader::readPulseDataBlock(vector<SPDPulse*> ***pulses, boost::uint_fast32_t *bbox) throw(SPDIOException)
+	void SPDFileIncrementalReader::readPulseDataBlock(std::vector<SPDPulse*> ***pulses, boost::uint_fast32_t *bbox) throw(SPDIOException)
 	{
 		if(!fileOpened)
 		{
@@ -2215,7 +2214,7 @@ namespace spdlib
             try
             {
                 // Read PTS..
-                Exception::dontPrint();
+                H5::Exception::dontPrint();
                 
                 SPDPointUtils ptsUtils;
                 SPDPulseUtils pulseUtils;
@@ -2225,17 +2224,17 @@ namespace spdlib
                 
                 boost::uint_fast64_t totalNumPulses = 0;
                 
-                DataSet pulsesDataset = spdInFile->openDataSet( SPDFILE_DATASETNAME_PULSES );
-                DataSpace pulsesDataspace = pulsesDataset.getSpace();
+                H5::DataSet pulsesDataset = spdInFile->openDataSet( SPDFILE_DATASETNAME_PULSES );
+                H5::DataSpace pulsesDataspace = pulsesDataset.getSpace();
                 
-                DataSet pointsDataset = spdInFile->openDataSet( SPDFILE_DATASETNAME_POINTS );
-                DataSpace pointsDataspace = pointsDataset.getSpace();
+                H5::DataSet pointsDataset = spdInFile->openDataSet( SPDFILE_DATASETNAME_POINTS );
+                H5::DataSpace pointsDataspace = pointsDataset.getSpace();
                 
-                DataSet transmittedDataset = spdInFile->openDataSet( SPDFILE_DATASETNAME_TRANSMITTED );
-                DataSpace transmittedDataspace = transmittedDataset.getSpace();
+                H5::DataSet transmittedDataset = spdInFile->openDataSet( SPDFILE_DATASETNAME_TRANSMITTED );
+                H5::DataSpace transmittedDataspace = transmittedDataset.getSpace();
                 
-                DataSet receivedDataset = spdInFile->openDataSet( SPDFILE_DATASETNAME_RECEIVED );
-                DataSpace receivedDataspace = receivedDataset.getSpace();
+                H5::DataSet receivedDataset = spdInFile->openDataSet( SPDFILE_DATASETNAME_RECEIVED );
+                H5::DataSpace receivedDataspace = receivedDataset.getSpace();
                 
                 int rank = 1;
                 // START: Variables for Pulse //
@@ -2243,7 +2242,7 @@ namespace spdlib
                 hsize_t pulseCount[1];
                 
                 hsize_t pulseDims[1]; 
-                DataSpace pulseMemspace;
+                H5::DataSpace pulseMemspace;
                 
                 hsize_t pulseOffset_out[1];
                 hsize_t pulseCount_out[1];
@@ -2254,7 +2253,7 @@ namespace spdlib
                 hsize_t pointCount[1];
                 
                 hsize_t pointDims[1]; 
-                DataSpace pointMemspace;
+                H5::DataSpace pointMemspace;
                 
                 hsize_t pointOffset_out[1];
                 hsize_t pointCount_out[1];
@@ -2265,7 +2264,7 @@ namespace spdlib
                 hsize_t transCount[1];
                 
                 hsize_t transDims[1]; 
-                DataSpace transMemspace;
+                H5::DataSpace transMemspace;
                 
                 hsize_t transOffset_out[1];
                 hsize_t transCount_out[1];
@@ -2276,7 +2275,7 @@ namespace spdlib
                 hsize_t receivedCount[1];
                 
                 hsize_t receivedDims[1]; 
-                DataSpace receivedMemspace;
+                H5::DataSpace receivedMemspace;
                 
                 hsize_t receivedOffset_out[1];
                 hsize_t receivedCount_out[1];
@@ -2320,7 +2319,7 @@ namespace spdlib
                         pulsesDataspace.selectHyperslab( H5S_SELECT_SET, pulseCount, pulseOffset );
                         
                         pulseDims[0] = totalNumPulses;
-                        pulseMemspace = DataSpace( rank, pulseDims );
+                        pulseMemspace = H5::DataSpace( rank, pulseDims );
                         
                         pulseOffset_out[0] = 0;
                         pulseCount_out[0]  = totalNumPulses;
@@ -2395,7 +2394,7 @@ namespace spdlib
                             pointCount[0] = numOfPoints;
                             pointsDataspace.selectHyperslab(H5S_SELECT_SET, pointCount, pointOffset);
                             pointDims[0] = numOfPoints;
-                            pointMemspace = DataSpace(rank, pointDims);
+                            pointMemspace = H5::DataSpace(rank, pointDims);
                             pointOffset_out[0] = 0;
                             pointCount_out[0] = numOfPoints;
                             pointMemspace.selectHyperslab( H5S_SELECT_SET, pointCount_out, pointOffset_out );
@@ -2410,11 +2409,11 @@ namespace spdlib
                             transCount[0] = numOfTransVals;
                             transmittedDataspace.selectHyperslab(H5S_SELECT_SET, transCount, transOffset);
                             transDims[0] = numOfTransVals;
-                            transMemspace = DataSpace(rank, transDims);
+                            transMemspace = H5::DataSpace(rank, transDims);
                             transOffset_out[0] = 0;
                             transCount_out[0] = numOfTransVals;
                             transMemspace.selectHyperslab( H5S_SELECT_SET, transCount_out, transOffset_out );
-                            transmittedDataset.read(transmittedArray, PredType::NATIVE_ULONG, transMemspace, transmittedDataspace);
+                            transmittedDataset.read(transmittedArray, H5::PredType::NATIVE_ULONG, transMemspace, transmittedDataspace);
                         }
                         
                         if(numOfReceivedVals > 0)
@@ -2425,11 +2424,11 @@ namespace spdlib
                             receivedCount[0] = numOfReceivedVals;
                             receivedDataspace.selectHyperslab(H5S_SELECT_SET, receivedCount, receivedOffset);
                             receivedDims[0] = numOfReceivedVals;
-                            receivedMemspace = DataSpace(rank, receivedDims);
+                            receivedMemspace = H5::DataSpace(rank, receivedDims);
                             receivedOffset_out[0] = 0;
                             receivedCount_out[0] = numOfReceivedVals;
                             receivedMemspace.selectHyperslab( H5S_SELECT_SET, receivedCount_out, receivedOffset_out );
-                            receivedDataset.read(receivedArray, PredType::NATIVE_ULONG, receivedMemspace, receivedDataspace);
+                            receivedDataset.read(receivedArray, H5::PredType::NATIVE_ULONG, receivedMemspace, receivedDataspace);
                         }
                         
                         ptIdx = 0;
@@ -2457,7 +2456,7 @@ namespace spdlib
                                 
                                 if(pulse->numberOfReturns > 0)
                                 {
-                                    pulse->pts = new vector<SPDPoint*>();
+                                    pulse->pts = new std::vector<SPDPoint*>();
                                     pulse->pts->reserve(pulse->numberOfReturns);
                                     for(boost::uint_fast16_t n = 0; n < pulse->numberOfReturns; ++n)
                                     {
@@ -2532,19 +2531,19 @@ namespace spdlib
                 delete[] plsInBins;
                 delete[] offsets;
             }
-            catch( FileIException &e )
+            catch( H5::FileIException &e )
             {
                 throw SPDIOException(e.getCDetailMsg());
             }
-            catch( DataSetIException &e )
+            catch( H5::DataSetIException &e )
             {
                 throw SPDIOException(e.getCDetailMsg());
             }
-            catch( DataSpaceIException &e )
+            catch( H5::DataSpaceIException &e )
             {
                 throw SPDIOException(e.getCDetailMsg());
             }
-            catch( DataTypeIException &e )
+            catch( H5::DataTypeIException &e )
             {
                 throw SPDIOException(e.getCDetailMsg());
             }
@@ -2594,7 +2593,7 @@ namespace spdlib
 	}
     
     /*UPDATED*/
-	void SPDFileIncrementalReader::readPulseDataBlock(list<SPDPulse*> ***pulses, boost::uint_fast32_t *bbox, boost::uint_fast32_t xOff, boost::uint_fast32_t yOff) throw(SPDIOException)
+	void SPDFileIncrementalReader::readPulseDataBlock(std::list<SPDPulse*> ***pulses, boost::uint_fast32_t *bbox, boost::uint_fast32_t xOff, boost::uint_fast32_t yOff) throw(SPDIOException)
 	{
 		if(!fileOpened)
 		{
@@ -2617,7 +2616,7 @@ namespace spdlib
             try
             {
                 // Read PTS..
-                Exception::dontPrint();
+                H5::Exception::dontPrint();
                 
                 SPDPointUtils ptsUtils;
                 SPDPulseUtils pulseUtils;
@@ -2627,17 +2626,17 @@ namespace spdlib
                 
                 boost::uint_fast64_t totalNumPulses = 0;
                 
-                DataSet pulsesDataset = spdInFile->openDataSet( SPDFILE_DATASETNAME_PULSES );
-                DataSpace pulsesDataspace = pulsesDataset.getSpace();
+                H5::DataSet pulsesDataset = spdInFile->openDataSet( SPDFILE_DATASETNAME_PULSES );
+                H5::DataSpace pulsesDataspace = pulsesDataset.getSpace();
                 
-                DataSet pointsDataset = spdInFile->openDataSet( SPDFILE_DATASETNAME_POINTS );
-                DataSpace pointsDataspace = pointsDataset.getSpace();
+                H5::DataSet pointsDataset = spdInFile->openDataSet( SPDFILE_DATASETNAME_POINTS );
+                H5::DataSpace pointsDataspace = pointsDataset.getSpace();
                 
-                DataSet transmittedDataset = spdInFile->openDataSet( SPDFILE_DATASETNAME_TRANSMITTED );
-                DataSpace transmittedDataspace = transmittedDataset.getSpace();
+                H5::DataSet transmittedDataset = spdInFile->openDataSet( SPDFILE_DATASETNAME_TRANSMITTED );
+                H5::DataSpace transmittedDataspace = transmittedDataset.getSpace();
                 
-                DataSet receivedDataset = spdInFile->openDataSet( SPDFILE_DATASETNAME_RECEIVED );
-                DataSpace receivedDataspace = receivedDataset.getSpace();
+                H5::DataSet receivedDataset = spdInFile->openDataSet( SPDFILE_DATASETNAME_RECEIVED );
+                H5::DataSpace receivedDataspace = receivedDataset.getSpace();
                 
                 int rank = 1;
                 // START: Variables for Pulse //
@@ -2645,7 +2644,7 @@ namespace spdlib
                 hsize_t pulseCount[1];
                 
                 hsize_t pulseDims[1]; 
-                DataSpace pulseMemspace;
+                H5::DataSpace pulseMemspace;
                 
                 hsize_t pulseOffset_out[1];
                 hsize_t pulseCount_out[1];
@@ -2656,7 +2655,7 @@ namespace spdlib
                 hsize_t pointCount[1];
                 
                 hsize_t pointDims[1]; 
-                DataSpace pointMemspace;
+                H5::DataSpace pointMemspace;
                 
                 hsize_t pointOffset_out[1];
                 hsize_t pointCount_out[1];
@@ -2667,7 +2666,7 @@ namespace spdlib
                 hsize_t transCount[1];
                 
                 hsize_t transDims[1]; 
-                DataSpace transMemspace;
+                H5::DataSpace transMemspace;
                 
                 hsize_t transOffset_out[1];
                 hsize_t transCount_out[1];
@@ -2678,7 +2677,7 @@ namespace spdlib
                 hsize_t receivedCount[1];
                 
                 hsize_t receivedDims[1]; 
-                DataSpace receivedMemspace;
+                H5::DataSpace receivedMemspace;
                 
                 hsize_t receivedOffset_out[1];
                 hsize_t receivedCount_out[1];
@@ -2722,7 +2721,7 @@ namespace spdlib
                         pulsesDataspace.selectHyperslab( H5S_SELECT_SET, pulseCount, pulseOffset );
                         
                         pulseDims[0] = totalNumPulses;
-                        pulseMemspace = DataSpace( rank, pulseDims );
+                        pulseMemspace = H5::DataSpace( rank, pulseDims );
                         
                         pulseOffset_out[0] = 0;
                         pulseCount_out[0]  = totalNumPulses;
@@ -2797,7 +2796,7 @@ namespace spdlib
                             pointCount[0] = numOfPoints;
                             pointsDataspace.selectHyperslab(H5S_SELECT_SET, pointCount, pointOffset);
                             pointDims[0] = numOfPoints;
-                            pointMemspace = DataSpace(rank, pointDims);
+                            pointMemspace = H5::DataSpace(rank, pointDims);
                             pointOffset_out[0] = 0;
                             pointCount_out[0] = numOfPoints;
                             pointMemspace.selectHyperslab( H5S_SELECT_SET, pointCount_out, pointOffset_out );
@@ -2812,11 +2811,11 @@ namespace spdlib
                             transCount[0] = numOfTransVals;
                             transmittedDataspace.selectHyperslab(H5S_SELECT_SET, transCount, transOffset);
                             transDims[0] = numOfTransVals;
-                            transMemspace = DataSpace(rank, transDims);
+                            transMemspace = H5::DataSpace(rank, transDims);
                             transOffset_out[0] = 0;
                             transCount_out[0] = numOfTransVals;
                             transMemspace.selectHyperslab( H5S_SELECT_SET, transCount_out, transOffset_out );
-                            transmittedDataset.read(transmittedArray, PredType::NATIVE_ULONG, transMemspace, transmittedDataspace);
+                            transmittedDataset.read(transmittedArray, H5::PredType::NATIVE_ULONG, transMemspace, transmittedDataspace);
                         }
                         
                         if(numOfReceivedVals > 0)
@@ -2827,11 +2826,11 @@ namespace spdlib
                             receivedCount[0] = numOfReceivedVals;
                             receivedDataspace.selectHyperslab(H5S_SELECT_SET, receivedCount, receivedOffset);
                             receivedDims[0] = numOfReceivedVals;
-                            receivedMemspace = DataSpace(rank, receivedDims);
+                            receivedMemspace = H5::DataSpace(rank, receivedDims);
                             receivedOffset_out[0] = 0;
                             receivedCount_out[0] = numOfReceivedVals;
                             receivedMemspace.selectHyperslab( H5S_SELECT_SET, receivedCount_out, receivedOffset_out );
-                            receivedDataset.read(receivedArray, PredType::NATIVE_ULONG, receivedMemspace, receivedDataspace);
+                            receivedDataset.read(receivedArray, H5::PredType::NATIVE_ULONG, receivedMemspace, receivedDataspace);
                         }
                         
                         ptIdx = 0;
@@ -2859,7 +2858,7 @@ namespace spdlib
                                 
                                 if(pulse->numberOfReturns > 0)
                                 {
-                                    pulse->pts = new vector<SPDPoint*>();
+                                    pulse->pts = new std::vector<SPDPoint*>();
                                     pulse->pts->reserve(pulse->numberOfReturns);
                                     for(boost::uint_fast16_t n = 0; n < pulse->numberOfReturns; ++n)
                                     {
@@ -2934,19 +2933,19 @@ namespace spdlib
                 delete[] plsInBins;
                 delete[] offsets;
             }
-            catch( FileIException &e )
+            catch( H5::FileIException &e )
             {
                 throw SPDIOException(e.getCDetailMsg());
             }
-            catch( DataSetIException &e )
+            catch( H5::DataSetIException &e )
             {
                 throw SPDIOException(e.getCDetailMsg());
             }
-            catch( DataSpaceIException &e )
+            catch( H5::DataSpaceIException &e )
             {
                 throw SPDIOException(e.getCDetailMsg());
             }
-            catch( DataTypeIException &e )
+            catch( H5::DataTypeIException &e )
             {
                 throw SPDIOException(e.getCDetailMsg());
             }
@@ -2996,7 +2995,7 @@ namespace spdlib
 	}
 	
     /*UPDATED*/
-	void SPDFileIncrementalReader::readPulseDataBlock(vector<SPDPulse*> ***pulses, boost::uint_fast32_t *bbox, boost::uint_fast32_t xOff, boost::uint_fast32_t yOff) throw(SPDIOException)
+	void SPDFileIncrementalReader::readPulseDataBlock(std::vector<SPDPulse*> ***pulses, boost::uint_fast32_t *bbox, boost::uint_fast32_t xOff, boost::uint_fast32_t yOff) throw(SPDIOException)
 	{
 		if(!fileOpened)
 		{
@@ -3022,7 +3021,7 @@ namespace spdlib
             try
             {
                 // Read PTS..
-                Exception::dontPrint();
+                H5::Exception::dontPrint();
                 
                 SPDPointUtils ptsUtils;
                 SPDPulseUtils pulseUtils;
@@ -3032,17 +3031,17 @@ namespace spdlib
                 
                 boost::uint_fast64_t totalNumPulses = 0;
                 
-                DataSet pulsesDataset = spdInFile->openDataSet( SPDFILE_DATASETNAME_PULSES );
-                DataSpace pulsesDataspace = pulsesDataset.getSpace();
+                H5::DataSet pulsesDataset = spdInFile->openDataSet( SPDFILE_DATASETNAME_PULSES );
+                H5::DataSpace pulsesDataspace = pulsesDataset.getSpace();
                 
-                DataSet pointsDataset = spdInFile->openDataSet( SPDFILE_DATASETNAME_POINTS );
-                DataSpace pointsDataspace = pointsDataset.getSpace();
+                H5::DataSet pointsDataset = spdInFile->openDataSet( SPDFILE_DATASETNAME_POINTS );
+                H5::DataSpace pointsDataspace = pointsDataset.getSpace();
                 
-                DataSet transmittedDataset = spdInFile->openDataSet( SPDFILE_DATASETNAME_TRANSMITTED );
-                DataSpace transmittedDataspace = transmittedDataset.getSpace();
+                H5::DataSet transmittedDataset = spdInFile->openDataSet( SPDFILE_DATASETNAME_TRANSMITTED );
+                H5::DataSpace transmittedDataspace = transmittedDataset.getSpace();
                 
-                DataSet receivedDataset = spdInFile->openDataSet( SPDFILE_DATASETNAME_RECEIVED );
-                DataSpace receivedDataspace = receivedDataset.getSpace();
+                H5::DataSet receivedDataset = spdInFile->openDataSet( SPDFILE_DATASETNAME_RECEIVED );
+                H5::DataSpace receivedDataspace = receivedDataset.getSpace();
                 
                 int rank = 1;
                 // START: Variables for Pulse //
@@ -3050,7 +3049,7 @@ namespace spdlib
                 hsize_t pulseCount[1];
                 
                 hsize_t pulseDims[1]; 
-                DataSpace pulseMemspace;
+                H5::DataSpace pulseMemspace;
                 
                 hsize_t pulseOffset_out[1];
                 hsize_t pulseCount_out[1];
@@ -3061,7 +3060,7 @@ namespace spdlib
                 hsize_t pointCount[1];
                 
                 hsize_t pointDims[1]; 
-                DataSpace pointMemspace;
+                H5::DataSpace pointMemspace;
                 
                 hsize_t pointOffset_out[1];
                 hsize_t pointCount_out[1];
@@ -3072,7 +3071,7 @@ namespace spdlib
                 hsize_t transCount[1];
                 
                 hsize_t transDims[1]; 
-                DataSpace transMemspace;
+                H5::DataSpace transMemspace;
                 
                 hsize_t transOffset_out[1];
                 hsize_t transCount_out[1];
@@ -3083,7 +3082,7 @@ namespace spdlib
                 hsize_t receivedCount[1];
                 
                 hsize_t receivedDims[1]; 
-                DataSpace receivedMemspace;
+                H5::DataSpace receivedMemspace;
                 
                 hsize_t receivedOffset_out[1];
                 hsize_t receivedCount_out[1];
@@ -3127,7 +3126,7 @@ namespace spdlib
                         pulsesDataspace.selectHyperslab( H5S_SELECT_SET, pulseCount, pulseOffset );
                         
                         pulseDims[0] = totalNumPulses;
-                        pulseMemspace = DataSpace( rank, pulseDims );
+                        pulseMemspace = H5::DataSpace( rank, pulseDims );
                         
                         pulseOffset_out[0] = 0;
                         pulseCount_out[0]  = totalNumPulses;
@@ -3202,7 +3201,7 @@ namespace spdlib
                             pointCount[0] = numOfPoints;
                             pointsDataspace.selectHyperslab(H5S_SELECT_SET, pointCount, pointOffset);
                             pointDims[0] = numOfPoints;
-                            pointMemspace = DataSpace(rank, pointDims);
+                            pointMemspace = H5::DataSpace(rank, pointDims);
                             pointOffset_out[0] = 0;
                             pointCount_out[0] = numOfPoints;
                             pointMemspace.selectHyperslab( H5S_SELECT_SET, pointCount_out, pointOffset_out );
@@ -3217,11 +3216,11 @@ namespace spdlib
                             transCount[0] = numOfTransVals;
                             transmittedDataspace.selectHyperslab(H5S_SELECT_SET, transCount, transOffset);
                             transDims[0] = numOfTransVals;
-                            transMemspace = DataSpace(rank, transDims);
+                            transMemspace = H5::DataSpace(rank, transDims);
                             transOffset_out[0] = 0;
                             transCount_out[0] = numOfTransVals;
                             transMemspace.selectHyperslab( H5S_SELECT_SET, transCount_out, transOffset_out );
-                            transmittedDataset.read(transmittedArray, PredType::NATIVE_ULONG, transMemspace, transmittedDataspace);
+                            transmittedDataset.read(transmittedArray, H5::PredType::NATIVE_ULONG, transMemspace, transmittedDataspace);
                         }
                         
                         if(numOfReceivedVals > 0)
@@ -3232,11 +3231,11 @@ namespace spdlib
                             receivedCount[0] = numOfReceivedVals;
                             receivedDataspace.selectHyperslab(H5S_SELECT_SET, receivedCount, receivedOffset);
                             receivedDims[0] = numOfReceivedVals;
-                            receivedMemspace = DataSpace(rank, receivedDims);
+                            receivedMemspace = H5::DataSpace(rank, receivedDims);
                             receivedOffset_out[0] = 0;
                             receivedCount_out[0] = numOfReceivedVals;
                             receivedMemspace.selectHyperslab( H5S_SELECT_SET, receivedCount_out, receivedOffset_out );
-                            receivedDataset.read(receivedArray, PredType::NATIVE_ULONG, receivedMemspace, receivedDataspace);
+                            receivedDataset.read(receivedArray, H5::PredType::NATIVE_ULONG, receivedMemspace, receivedDataspace);
                         }
                         
                         ptIdx = 0;
@@ -3264,7 +3263,7 @@ namespace spdlib
                                 
                                 if(pulse->numberOfReturns > 0)
                                 {
-                                    pulse->pts = new vector<SPDPoint*>();
+                                    pulse->pts = new std::vector<SPDPoint*>();
                                     pulse->pts->reserve(pulse->numberOfReturns);
                                     for(boost::uint_fast16_t n = 0; n < pulse->numberOfReturns; ++n)
                                     {
@@ -3339,19 +3338,19 @@ namespace spdlib
                 delete[] plsInBins;
                 delete[] offsets;
             }
-            catch( FileIException &e )
+            catch( H5::FileIException &e )
             {
                 throw SPDIOException(e.getCDetailMsg());
             }
-            catch( DataSetIException &e )
+            catch( H5::DataSetIException &e )
             {
                 throw SPDIOException(e.getCDetailMsg());
             }
-            catch( DataSpaceIException &e )
+            catch( H5::DataSpaceIException &e )
             {
                 throw SPDIOException(e.getCDetailMsg());
             }
-            catch( DataTypeIException &e )
+            catch( H5::DataTypeIException &e )
             {
                 throw SPDIOException(e.getCDetailMsg());
             }
@@ -3400,7 +3399,7 @@ namespace spdlib
         }
 	}
 	
-	void SPDFileIncrementalReader::readPulseDataBlock(list<SPDPulse*> *pulses, boost::uint_fast32_t *bbox) throw(SPDIOException)
+	void SPDFileIncrementalReader::readPulseDataBlock(std::list<SPDPulse*> *pulses, boost::uint_fast32_t *bbox) throw(SPDIOException)
 	{
 		if(!fileOpened)
 		{
@@ -3421,10 +3420,10 @@ namespace spdlib
             try
             {
                 // Read PTS..
-                Exception::dontPrint();
+                H5::Exception::dontPrint();
                 
-                H5File *spdInFile = NULL;
-                spdInFile = new H5File( spdFile->getFilePath(), H5F_ACC_RDONLY );
+                H5::H5File *spdInFile = NULL;
+                spdInFile = new H5::H5File( spdFile->getFilePath(), H5F_ACC_RDONLY );
                 
                 SPDPointUtils ptsUtils;
                 SPDPulseUtils pulseUtils;
@@ -3434,17 +3433,17 @@ namespace spdlib
                 
                 boost::uint_fast64_t totalNumPulses = 0;
                 
-                DataSet pulsesDataset = spdInFile->openDataSet( SPDFILE_DATASETNAME_PULSES );
-                DataSpace pulsesDataspace = pulsesDataset.getSpace();
+                H5::DataSet pulsesDataset = spdInFile->openDataSet( SPDFILE_DATASETNAME_PULSES );
+                H5::DataSpace pulsesDataspace = pulsesDataset.getSpace();
                 
-                DataSet pointsDataset = spdInFile->openDataSet( SPDFILE_DATASETNAME_POINTS );
-                DataSpace pointsDataspace = pointsDataset.getSpace();
+                H5::DataSet pointsDataset = spdInFile->openDataSet( SPDFILE_DATASETNAME_POINTS );
+                H5::DataSpace pointsDataspace = pointsDataset.getSpace();
                 
-                DataSet transmittedDataset = spdInFile->openDataSet( SPDFILE_DATASETNAME_TRANSMITTED );
-                DataSpace transmittedDataspace = transmittedDataset.getSpace();
+                H5::DataSet transmittedDataset = spdInFile->openDataSet( SPDFILE_DATASETNAME_TRANSMITTED );
+                H5::DataSpace transmittedDataspace = transmittedDataset.getSpace();
                 
-                DataSet receivedDataset = spdInFile->openDataSet( SPDFILE_DATASETNAME_RECEIVED );
-                DataSpace receivedDataspace = receivedDataset.getSpace();
+                H5::DataSet receivedDataset = spdInFile->openDataSet( SPDFILE_DATASETNAME_RECEIVED );
+                H5::DataSpace receivedDataspace = receivedDataset.getSpace();
                 
                 int rank = 1;
                 // START: Variables for Pulse //
@@ -3452,7 +3451,7 @@ namespace spdlib
                 hsize_t pulseCount[1];
                 
                 hsize_t pulseDims[1]; 
-                DataSpace pulseMemspace;
+                H5::DataSpace pulseMemspace;
                 
                 hsize_t pulseOffset_out[1];
                 hsize_t pulseCount_out[1];
@@ -3463,7 +3462,7 @@ namespace spdlib
                 hsize_t pointCount[1];
                 
                 hsize_t pointDims[1]; 
-                DataSpace pointMemspace;
+                H5::DataSpace pointMemspace;
                 
                 hsize_t pointOffset_out[1];
                 hsize_t pointCount_out[1];
@@ -3474,7 +3473,7 @@ namespace spdlib
                 hsize_t transCount[1];
                 
                 hsize_t transDims[1]; 
-                DataSpace transMemspace;
+                H5::DataSpace transMemspace;
                 
                 hsize_t transOffset_out[1];
                 hsize_t transCount_out[1];
@@ -3485,7 +3484,7 @@ namespace spdlib
                 hsize_t receivedCount[1];
                 
                 hsize_t receivedDims[1]; 
-                DataSpace receivedMemspace;
+                H5::DataSpace receivedMemspace;
                 
                 hsize_t receivedOffset_out[1];
                 hsize_t receivedCount_out[1];
@@ -3527,7 +3526,7 @@ namespace spdlib
                         pulseCount[0]  = totalNumPulses;
                         pulsesDataspace.selectHyperslab( H5S_SELECT_SET, pulseCount, pulseOffset );
                         pulseDims[0] = totalNumPulses;
-                        pulseMemspace = DataSpace( rank, pulseDims );
+                        pulseMemspace = H5::DataSpace( rank, pulseDims );
                         pulseOffset_out[0] = 0;
                         pulseCount_out[0]  = totalNumPulses;
                         pulseMemspace.selectHyperslab( H5S_SELECT_SET, pulseCount_out, pulseOffset_out );
@@ -3545,7 +3544,7 @@ namespace spdlib
                         pulsesDataspace.selectHyperslab( H5S_SELECT_SET, pulseCount, pulseOffset );
                         
                         pulseDims[0] = totalNumPulses;
-                        pulseMemspace = DataSpace( rank, pulseDims );
+                        pulseMemspace = H5::DataSpace( rank, pulseDims );
                         
                         pulseOffset_out[0] = 0;
                         pulseCount_out[0]  = totalNumPulses;
@@ -3611,7 +3610,7 @@ namespace spdlib
                             pointCount[0] = numOfPoints;
                             pointsDataspace.selectHyperslab(H5S_SELECT_SET, pointCount, pointOffset);
                             pointDims[0] = numOfPoints;
-                            pointMemspace = DataSpace(rank, pointDims);
+                            pointMemspace = H5::DataSpace(rank, pointDims);
                             pointOffset_out[0] = 0;
                             pointCount_out[0] = numOfPoints;
                             pointMemspace.selectHyperslab( H5S_SELECT_SET, pointCount_out, pointOffset_out );
@@ -3626,11 +3625,11 @@ namespace spdlib
                             transCount[0] = numOfTransVals;
                             transmittedDataspace.selectHyperslab(H5S_SELECT_SET, transCount, transOffset);
                             transDims[0] = numOfTransVals;
-                            transMemspace = DataSpace(rank, transDims);
+                            transMemspace = H5::DataSpace(rank, transDims);
                             transOffset_out[0] = 0;
                             transCount_out[0] = numOfTransVals;
                             transMemspace.selectHyperslab( H5S_SELECT_SET, transCount_out, transOffset_out );
-                            transmittedDataset.read(transmittedArray, PredType::NATIVE_ULONG, transMemspace, transmittedDataspace);
+                            transmittedDataset.read(transmittedArray, H5::PredType::NATIVE_ULONG, transMemspace, transmittedDataspace);
                         }
                         
                         if(numOfReceivedVals > 0)
@@ -3641,11 +3640,11 @@ namespace spdlib
                             receivedCount[0] = numOfReceivedVals;
                             receivedDataspace.selectHyperslab(H5S_SELECT_SET, receivedCount, receivedOffset);
                             receivedDims[0] = numOfReceivedVals;
-                            receivedMemspace = DataSpace(rank, receivedDims);
+                            receivedMemspace = H5::DataSpace(rank, receivedDims);
                             receivedOffset_out[0] = 0;
                             receivedCount_out[0] = numOfReceivedVals;
                             receivedMemspace.selectHyperslab( H5S_SELECT_SET, receivedCount_out, receivedOffset_out );
-                            receivedDataset.read(receivedArray, PredType::NATIVE_ULONG, receivedMemspace, receivedDataspace);
+                            receivedDataset.read(receivedArray, H5::PredType::NATIVE_ULONG, receivedMemspace, receivedDataspace);
                         }
                         
                         ptIdx = 0;
@@ -3665,7 +3664,7 @@ namespace spdlib
                             
                             if(pulse->numberOfReturns > 0)
                             {
-                                pulse->pts = new vector<SPDPoint*>();
+                                pulse->pts = new std::vector<SPDPoint*>();
                                 pulse->pts->reserve(pulse->numberOfReturns);
                                 for(boost::uint_fast16_t n = 0; n < pulse->numberOfReturns; ++n)
                                 {
@@ -3738,19 +3737,19 @@ namespace spdlib
                 delete[] plsInBins;
                 delete[] offsets;
             }
-            catch( FileIException &e )
+            catch( H5::FileIException &e )
             {
                 throw SPDIOException(e.getCDetailMsg());
             }
-            catch( DataSetIException &e )
+            catch( H5::DataSetIException &e )
             {
                 throw SPDIOException(e.getCDetailMsg());
             }
-            catch( DataSpaceIException &e )
+            catch( H5::DataSpaceIException &e )
             {
                 throw SPDIOException(e.getCDetailMsg());
             }
-            catch( DataTypeIException &e )
+            catch( H5::DataTypeIException &e )
             {
                 throw SPDIOException(e.getCDetailMsg());
             }
@@ -3794,7 +3793,7 @@ namespace spdlib
         }
 	}
 	
-	void SPDFileIncrementalReader::readPulseDataBlock(vector<SPDPulse*> *pulses, boost::uint_fast32_t *bbox) throw(SPDIOException)
+	void SPDFileIncrementalReader::readPulseDataBlock(std::vector<SPDPulse*> *pulses, boost::uint_fast32_t *bbox) throw(SPDIOException)
 	{
 		if(!fileOpened)
 		{
@@ -3815,10 +3814,10 @@ namespace spdlib
             try
             {
                 // Read PTS..
-                Exception::dontPrint();
+                H5::Exception::dontPrint();
                 
-                H5File *spdInFile = NULL;
-                spdInFile = new H5File( spdFile->getFilePath(), H5F_ACC_RDONLY );
+                H5::H5File *spdInFile = NULL;
+                spdInFile = new H5::H5File( spdFile->getFilePath(), H5F_ACC_RDONLY );
                 
                 SPDPointUtils ptsUtils;
                 SPDPulseUtils pulseUtils;
@@ -3828,17 +3827,17 @@ namespace spdlib
                 
                 boost::uint_fast64_t totalNumPulses = 0;
                 
-                DataSet pulsesDataset = spdInFile->openDataSet( SPDFILE_DATASETNAME_PULSES );
-                DataSpace pulsesDataspace = pulsesDataset.getSpace();
+                H5::DataSet pulsesDataset = spdInFile->openDataSet( SPDFILE_DATASETNAME_PULSES );
+                H5::DataSpace pulsesDataspace = pulsesDataset.getSpace();
                 
-                DataSet pointsDataset = spdInFile->openDataSet( SPDFILE_DATASETNAME_POINTS );
-                DataSpace pointsDataspace = pointsDataset.getSpace();
+                H5::DataSet pointsDataset = spdInFile->openDataSet( SPDFILE_DATASETNAME_POINTS );
+                H5::DataSpace pointsDataspace = pointsDataset.getSpace();
                 
-                DataSet transmittedDataset = spdInFile->openDataSet( SPDFILE_DATASETNAME_TRANSMITTED );
-                DataSpace transmittedDataspace = transmittedDataset.getSpace();
+                H5::DataSet transmittedDataset = spdInFile->openDataSet( SPDFILE_DATASETNAME_TRANSMITTED );
+                H5::DataSpace transmittedDataspace = transmittedDataset.getSpace();
                 
-                DataSet receivedDataset = spdInFile->openDataSet( SPDFILE_DATASETNAME_RECEIVED );
-                DataSpace receivedDataspace = receivedDataset.getSpace();
+                H5::DataSet receivedDataset = spdInFile->openDataSet( SPDFILE_DATASETNAME_RECEIVED );
+                H5::DataSpace receivedDataspace = receivedDataset.getSpace();
                 
                 int rank = 1;
                 // START: Variables for Pulse //
@@ -3846,7 +3845,7 @@ namespace spdlib
                 hsize_t pulseCount[1];
                 
                 hsize_t pulseDims[1]; 
-                DataSpace pulseMemspace;
+                H5::DataSpace pulseMemspace;
                 
                 hsize_t pulseOffset_out[1];
                 hsize_t pulseCount_out[1];
@@ -3857,7 +3856,7 @@ namespace spdlib
                 hsize_t pointCount[1];
                 
                 hsize_t pointDims[1]; 
-                DataSpace pointMemspace;
+                H5::DataSpace pointMemspace;
                 
                 hsize_t pointOffset_out[1];
                 hsize_t pointCount_out[1];
@@ -3868,7 +3867,7 @@ namespace spdlib
                 hsize_t transCount[1];
                 
                 hsize_t transDims[1]; 
-                DataSpace transMemspace;
+                H5::DataSpace transMemspace;
                 
                 hsize_t transOffset_out[1];
                 hsize_t transCount_out[1];
@@ -3879,7 +3878,7 @@ namespace spdlib
                 hsize_t receivedCount[1];
                 
                 hsize_t receivedDims[1]; 
-                DataSpace receivedMemspace;
+                H5::DataSpace receivedMemspace;
                 
                 hsize_t receivedOffset_out[1];
                 hsize_t receivedCount_out[1];
@@ -3921,7 +3920,7 @@ namespace spdlib
                         pulseCount[0]  = totalNumPulses;
                         pulsesDataspace.selectHyperslab( H5S_SELECT_SET, pulseCount, pulseOffset );
                         pulseDims[0] = totalNumPulses;
-                        pulseMemspace = DataSpace( rank, pulseDims );
+                        pulseMemspace = H5::DataSpace( rank, pulseDims );
                         pulseOffset_out[0] = 0;
                         pulseCount_out[0]  = totalNumPulses;
                         pulseMemspace.selectHyperslab( H5S_SELECT_SET, pulseCount_out, pulseOffset_out );
@@ -3939,7 +3938,7 @@ namespace spdlib
                         pulsesDataspace.selectHyperslab( H5S_SELECT_SET, pulseCount, pulseOffset );
                         
                         pulseDims[0] = totalNumPulses;
-                        pulseMemspace = DataSpace( rank, pulseDims );
+                        pulseMemspace = H5::DataSpace( rank, pulseDims );
                         
                         pulseOffset_out[0] = 0;
                         pulseCount_out[0]  = totalNumPulses;
@@ -4005,7 +4004,7 @@ namespace spdlib
                             pointCount[0] = numOfPoints;
                             pointsDataspace.selectHyperslab(H5S_SELECT_SET, pointCount, pointOffset);
                             pointDims[0] = numOfPoints;
-                            pointMemspace = DataSpace(rank, pointDims);
+                            pointMemspace = H5::DataSpace(rank, pointDims);
                             pointOffset_out[0] = 0;
                             pointCount_out[0] = numOfPoints;
                             pointMemspace.selectHyperslab( H5S_SELECT_SET, pointCount_out, pointOffset_out );
@@ -4020,11 +4019,11 @@ namespace spdlib
                             transCount[0] = numOfTransVals;
                             transmittedDataspace.selectHyperslab(H5S_SELECT_SET, transCount, transOffset);
                             transDims[0] = numOfTransVals;
-                            transMemspace = DataSpace(rank, transDims);
+                            transMemspace = H5::DataSpace(rank, transDims);
                             transOffset_out[0] = 0;
                             transCount_out[0] = numOfTransVals;
                             transMemspace.selectHyperslab( H5S_SELECT_SET, transCount_out, transOffset_out );
-                            transmittedDataset.read(transmittedArray, PredType::NATIVE_ULONG, transMemspace, transmittedDataspace);
+                            transmittedDataset.read(transmittedArray, H5::PredType::NATIVE_ULONG, transMemspace, transmittedDataspace);
                         }
                         
                         if(numOfReceivedVals > 0)
@@ -4035,11 +4034,11 @@ namespace spdlib
                             receivedCount[0] = numOfReceivedVals;
                             receivedDataspace.selectHyperslab(H5S_SELECT_SET, receivedCount, receivedOffset);
                             receivedDims[0] = numOfReceivedVals;
-                            receivedMemspace = DataSpace(rank, receivedDims);
+                            receivedMemspace = H5::DataSpace(rank, receivedDims);
                             receivedOffset_out[0] = 0;
                             receivedCount_out[0] = numOfReceivedVals;
                             receivedMemspace.selectHyperslab( H5S_SELECT_SET, receivedCount_out, receivedOffset_out );
-                            receivedDataset.read(receivedArray, PredType::NATIVE_ULONG, receivedMemspace, receivedDataspace);
+                            receivedDataset.read(receivedArray, H5::PredType::NATIVE_ULONG, receivedMemspace, receivedDataspace);
                         }
                         
                         ptIdx = 0;
@@ -4059,7 +4058,7 @@ namespace spdlib
                             
                             if(pulse->numberOfReturns > 0)
                             {
-                                pulse->pts = new vector<SPDPoint*>();
+                                pulse->pts = new std::vector<SPDPoint*>();
                                 pulse->pts->reserve(pulse->numberOfReturns);
                                 for(boost::uint_fast16_t n = 0; n < pulse->numberOfReturns; ++n)
                                 {
@@ -4132,19 +4131,19 @@ namespace spdlib
                 delete[] plsInBins;
                 delete[] offsets;
             }
-            catch( FileIException &e )
+            catch( H5::FileIException &e )
             {
                 throw SPDIOException(e.getCDetailMsg());
             }
-            catch( DataSetIException &e )
+            catch( H5::DataSetIException &e )
             {
                 throw SPDIOException(e.getCDetailMsg());
             }
-            catch( DataSpaceIException &e )
+            catch( H5::DataSpaceIException &e )
             {
                 throw SPDIOException(e.getCDetailMsg());
             }
-            catch( DataTypeIException &e )
+            catch( H5::DataTypeIException &e )
             {
                 throw SPDIOException(e.getCDetailMsg());
             }
@@ -4189,7 +4188,7 @@ namespace spdlib
 	}
 	
     /*UPDATED*/
-	void SPDFileIncrementalReader::readPulseDataInGeoEnv(list<SPDPulse*> *pulses, OGREnvelope *env) throw(SPDIOException)
+	void SPDFileIncrementalReader::readPulseDataInGeoEnv(std::list<SPDPulse*> *pulses, OGREnvelope *env) throw(SPDIOException)
 	{
 		if(!fileOpened)
 		{
@@ -4219,7 +4218,7 @@ namespace spdlib
             }
             else
             {
-                numCols = numeric_cast<boost::uint_fast32_t>(tmpDist/spdFile->getBinSize());
+                numCols = boost::numeric_cast<boost::uint_fast32_t>(tmpDist/spdFile->getBinSize());
                 startCol = numCols;
             }
             
@@ -4231,7 +4230,7 @@ namespace spdlib
             }
             else
             {
-                numCols = numeric_cast<boost::uint_fast32_t>(tmpDist/spdFile->getBinSize());
+                numCols = boost::numeric_cast<boost::uint_fast32_t>(tmpDist/spdFile->getBinSize());
                 endCol = spdFile->getNumberBinsX() - numCols;
             }
             
@@ -4243,7 +4242,7 @@ namespace spdlib
             }
             else
             {
-                numRows = numeric_cast<boost::uint_fast32_t>(tmpDist/spdFile->getBinSize());
+                numRows = boost::numeric_cast<boost::uint_fast32_t>(tmpDist/spdFile->getBinSize());
                 startRow = numRows;
             }
             
@@ -4255,19 +4254,19 @@ namespace spdlib
             }
             else
             {
-                numRows = numeric_cast<boost::uint_fast32_t>(tmpDist/spdFile->getBinSize());
+                numRows = boost::numeric_cast<boost::uint_fast32_t>(tmpDist/spdFile->getBinSize());
                 endRow = spdFile->getNumberBinsY() - numRows;
             }
         }
-        catch(negative_overflow& e) 
+        catch(boost::numeric::negative_overflow& e) 
         {
             throw SPDIOException(e.what());
         }
-        catch(positive_overflow& e) 
+        catch(boost::numeric::positive_overflow& e) 
         {
             throw SPDIOException(e.what());
         }
-        catch(bad_numeric_cast& e) 
+        catch(boost::numeric::bad_numeric_cast& e) 
         {
             throw SPDIOException(e.what());
         }
@@ -4296,7 +4295,7 @@ namespace spdlib
 	}
 	
     /*UPDATED*/
-	void SPDFileIncrementalReader::readPulseDataInGeoEnv(vector<SPDPulse*> *pulses, OGREnvelope *env) throw(SPDIOException)
+	void SPDFileIncrementalReader::readPulseDataInGeoEnv(std::vector<SPDPulse*> *pulses, OGREnvelope *env) throw(SPDIOException)
 	{
 		if(!fileOpened)
 		{
@@ -4326,7 +4325,7 @@ namespace spdlib
             }
             else
             {
-                numCols = numeric_cast<boost::uint_fast32_t>(tmpDist/spdFile->getBinSize());
+                numCols = boost::numeric_cast<boost::uint_fast32_t>(tmpDist/spdFile->getBinSize());
                 startCol = numCols;
             }
             
@@ -4338,7 +4337,7 @@ namespace spdlib
             }
             else
             {
-                numCols = numeric_cast<boost::uint_fast32_t>(tmpDist/spdFile->getBinSize());
+                numCols = boost::numeric_cast<boost::uint_fast32_t>(tmpDist/spdFile->getBinSize());
                 endCol = spdFile->getNumberBinsX() - numCols;
             }
             
@@ -4350,7 +4349,7 @@ namespace spdlib
             }
             else
             {
-                numRows = numeric_cast<boost::uint_fast32_t>(tmpDist/spdFile->getBinSize());
+                numRows = boost::numeric_cast<boost::uint_fast32_t>(tmpDist/spdFile->getBinSize());
                 startRow = numRows;
             }
             
@@ -4362,19 +4361,19 @@ namespace spdlib
             }
             else
             {
-                numRows = numeric_cast<boost::uint_fast32_t>(tmpDist/spdFile->getBinSize());
+                numRows = boost::numeric_cast<boost::uint_fast32_t>(tmpDist/spdFile->getBinSize());
                 endRow = spdFile->getNumberBinsY() - numRows;
             }
         }
-        catch(negative_overflow& e) 
+        catch(boost::numeric::negative_overflow& e) 
         {
             throw SPDIOException(e.what());
         }
-        catch(positive_overflow& e) 
+        catch(boost::numeric::positive_overflow& e) 
         {
             throw SPDIOException(e.what());
         }
-        catch(bad_numeric_cast& e) 
+        catch(boost::numeric::bad_numeric_cast& e) 
         {
             throw SPDIOException(e.what());
         }
@@ -4403,7 +4402,7 @@ namespace spdlib
 	}
     
     /*UPDATED*/
-    void SPDFileIncrementalReader::readPulseDataInGeom(list<SPDPulse*> *pulses, OGRGeometry *geom) throw(SPDIOException)
+    void SPDFileIncrementalReader::readPulseDataInGeom(std::list<SPDPulse*> *pulses, OGRGeometry *geom) throw(SPDIOException)
 	{
 		if(!fileOpened)
 		{
@@ -4436,7 +4435,7 @@ namespace spdlib
             }
             else
             {
-                numCols = numeric_cast<boost::uint_fast32_t>(tmpDist/spdFile->getBinSize());
+                numCols = boost::numeric_cast<boost::uint_fast32_t>(tmpDist/spdFile->getBinSize());
                 startCol = numCols;
             }
             
@@ -4448,7 +4447,7 @@ namespace spdlib
             }
             else
             {
-                numCols = numeric_cast<boost::uint_fast32_t>(tmpDist/spdFile->getBinSize());
+                numCols = boost::numeric_cast<boost::uint_fast32_t>(tmpDist/spdFile->getBinSize());
                 endCol = spdFile->getNumberBinsX() - numCols;
             }
             
@@ -4460,7 +4459,7 @@ namespace spdlib
             }
             else
             {
-                numRows = numeric_cast<boost::uint_fast32_t>(tmpDist/spdFile->getBinSize());
+                numRows = boost::numeric_cast<boost::uint_fast32_t>(tmpDist/spdFile->getBinSize());
                 startRow = numRows;
             }
             
@@ -4472,19 +4471,19 @@ namespace spdlib
             }
             else
             {
-                numRows = numeric_cast<boost::uint_fast32_t>(tmpDist/spdFile->getBinSize());
+                numRows = boost::numeric_cast<boost::uint_fast32_t>(tmpDist/spdFile->getBinSize());
                 endRow = spdFile->getNumberBinsY() - numRows;
             }
         }
-        catch(negative_overflow& e) 
+        catch(boost::numeric::negative_overflow& e) 
         {
             throw SPDIOException(e.what());
         }
-        catch(positive_overflow& e) 
+        catch(boost::numeric::positive_overflow& e) 
         {
             throw SPDIOException(e.what());
         }
-        catch(bad_numeric_cast& e) 
+        catch(boost::numeric::bad_numeric_cast& e) 
         {
             throw SPDIOException(e.what());
         }
@@ -4505,7 +4504,7 @@ namespace spdlib
             for(boost::uint_fast32_t rows = startRow; rows < endRow; ++rows)
             {
                 this->readPulseData(pulses, rows, startCol, endCol);
-                for(list<SPDPulse*>::iterator iterPulses = pulses->begin(); iterPulses != pulses->end(); )
+                for(std::list<SPDPulse*>::iterator iterPulses = pulses->begin(); iterPulses != pulses->end(); )
                 {
                     pt->setX((*iterPulses)->xIdx);
                     pt->setY((*iterPulses)->yIdx);
@@ -4530,7 +4529,7 @@ namespace spdlib
 	}
 	
     /*UPDATED*/
-	void SPDFileIncrementalReader::readPulseDataInGeom(vector<SPDPulse*> *pulses, OGRGeometry *geom) throw(SPDIOException)
+	void SPDFileIncrementalReader::readPulseDataInGeom(std::vector<SPDPulse*> *pulses, OGRGeometry *geom) throw(SPDIOException)
 	{
 		if(!fileOpened)
 		{
@@ -4563,7 +4562,7 @@ namespace spdlib
             }
             else
             {
-                numCols = numeric_cast<boost::uint_fast32_t>(tmpDist/spdFile->getBinSize());
+                numCols = boost::numeric_cast<boost::uint_fast32_t>(tmpDist/spdFile->getBinSize());
                 startCol = numCols;
             }
             
@@ -4575,7 +4574,7 @@ namespace spdlib
             }
             else
             {
-                numCols = numeric_cast<boost::uint_fast32_t>(tmpDist/spdFile->getBinSize());
+                numCols = boost::numeric_cast<boost::uint_fast32_t>(tmpDist/spdFile->getBinSize());
                 endCol = spdFile->getNumberBinsX() - numCols;
             }
             
@@ -4587,7 +4586,7 @@ namespace spdlib
             }
             else
             {
-                numRows = numeric_cast<boost::uint_fast32_t>(tmpDist/spdFile->getBinSize());
+                numRows = boost::numeric_cast<boost::uint_fast32_t>(tmpDist/spdFile->getBinSize());
                 startRow = numRows;
             }
             
@@ -4599,19 +4598,19 @@ namespace spdlib
             }
             else
             {
-                numRows = numeric_cast<boost::uint_fast32_t>(tmpDist/spdFile->getBinSize());
+                numRows = boost::numeric_cast<boost::uint_fast32_t>(tmpDist/spdFile->getBinSize());
                 endRow = spdFile->getNumberBinsY() - numRows;
             }
         }
-        catch(negative_overflow& e) 
+        catch(boost::numeric::negative_overflow& e) 
         {
             throw SPDIOException(e.what());
         }
-        catch(positive_overflow& e) 
+        catch(boost::numeric::positive_overflow& e) 
         {
             throw SPDIOException(e.what());
         }
-        catch(bad_numeric_cast& e) 
+        catch(boost::numeric::bad_numeric_cast& e) 
         {
             throw SPDIOException(e.what());
         }
@@ -4632,7 +4631,7 @@ namespace spdlib
             for(boost::uint_fast32_t rows = startRow; rows < endRow; ++rows)
             {
                 this->readPulseData(pulses, rows, startCol, endCol);
-                for(vector<SPDPulse*>::iterator iterPulses = pulses->begin(); iterPulses != pulses->end(); )
+                for(std::vector<SPDPulse*>::iterator iterPulses = pulses->begin(); iterPulses != pulses->end(); )
                 {
                     pt->setX((*iterPulses)->xIdx);
                     pt->setY((*iterPulses)->yIdx);
@@ -4670,23 +4669,23 @@ namespace spdlib
 		
 		try 
 		{
-			Exception::dontPrint();
+            H5::Exception::dontPrint();
 			
 			boost::uint_fast64_t multipleOfBlocks = spdFile->getNumberOfPulses()/spdFile->getPulseBlockSize();
 			boost::uint_fast64_t numOfPulsesInBlocks = spdFile->getPulseBlockSize() * multipleOfBlocks;
 			boost::uint_fast64_t remainingPulses = spdFile->getNumberOfPulses() - numOfPulsesInBlocks;
 			
-			DataSet pulsesDataset = spdInFile->openDataSet( SPDFILE_DATASETNAME_PULSES );
-			DataSpace pulsesDataspace = pulsesDataset.getSpace();
+			H5::DataSet pulsesDataset = spdInFile->openDataSet( SPDFILE_DATASETNAME_PULSES );
+			H5::DataSpace pulsesDataspace = pulsesDataset.getSpace();
 			
-			DataSet pointsDataset = spdInFile->openDataSet( SPDFILE_DATASETNAME_POINTS );
-			DataSpace pointsDataspace = pointsDataset.getSpace();
+			H5::DataSet pointsDataset = spdInFile->openDataSet( SPDFILE_DATASETNAME_POINTS );
+			H5::DataSpace pointsDataspace = pointsDataset.getSpace();
 			
-			DataSet transmittedDataset = spdInFile->openDataSet( SPDFILE_DATASETNAME_TRANSMITTED );
-			DataSpace transmittedDataspace = transmittedDataset.getSpace();
+			H5::DataSet transmittedDataset = spdInFile->openDataSet( SPDFILE_DATASETNAME_TRANSMITTED );
+			H5::DataSpace transmittedDataspace = transmittedDataset.getSpace();
 			
-			DataSet receivedDataset = spdInFile->openDataSet( SPDFILE_DATASETNAME_RECEIVED );
-			DataSpace receivedDataspace = receivedDataset.getSpace();
+			H5::DataSet receivedDataset = spdInFile->openDataSet( SPDFILE_DATASETNAME_RECEIVED );
+			H5::DataSpace receivedDataspace = receivedDataset.getSpace();
 			
 			int rank = 1;
 			// START: Variables for Pulse //
@@ -4698,7 +4697,7 @@ namespace spdlib
 			
 			hsize_t pulseDims[1]; 
 			pulseDims[0] = spdFile->getPulseBlockSize();
-			DataSpace pulseMemspace( rank, pulseDims );
+			H5::DataSpace pulseMemspace( rank, pulseDims );
 			
 			hsize_t pulseOffset_out[1];
 			hsize_t pulseCount_out[1];
@@ -4810,7 +4809,7 @@ namespace spdlib
 			pulsesDataspace.selectHyperslab( H5S_SELECT_SET, pulseCount, pulseOffset );
 			
 			pulseDims[0] = remainingPulses;
-			pulseMemspace = DataSpace( rank, pulseDims );
+			pulseMemspace = H5::DataSpace( rank, pulseDims );
 			
 			pulseOffset_out[0] = 0;
 			pulseCount_out[0]  = remainingPulses;
@@ -4907,19 +4906,19 @@ namespace spdlib
                 delete[] reinterpret_cast<SPDPulseH5V2*>(pulseArray);
             }
 		}
-		catch( FileIException &e )
+		catch( H5::FileIException &e )
 		{
 			throw SPDIOException(e.getCDetailMsg());
 		}
-		catch( DataSetIException &e )
+		catch( H5::DataSetIException &e )
 		{
 			throw SPDIOException(e.getCDetailMsg());
 		}
-		catch( DataSpaceIException &e )
+		catch( H5::DataSpaceIException &e )
 		{
 			throw SPDIOException(e.getCDetailMsg());
 		}
-		catch( DataTypeIException &e )
+		catch( H5::DataTypeIException &e )
 		{
 			throw SPDIOException(e.getCDetailMsg());
 		}
@@ -4948,11 +4947,11 @@ namespace spdlib
 		
 		try
 		{
-			Exception::dontPrint();
+			H5::Exception::dontPrint();
 			
 			/* Read data */
-			DataSet plsQKImgDSet = spdInFile->openDataSet( SPDFILE_DATASETNAME_QKLIMAGE );
-			DataSpace plsQKImgDSpace = plsQKImgDSet.getSpace();
+			H5::DataSet plsQKImgDSet = spdInFile->openDataSet( SPDFILE_DATASETNAME_QKLIMAGE );
+			H5::DataSpace plsQKImgDSpace = plsQKImgDSet.getSpace();
 			
 			hsize_t offsetDims[2];
 			offsetDims[0] = row;
@@ -4964,7 +4963,7 @@ namespace spdlib
 			
 			hsize_t memSpaceDims[1]; 
 			memSpaceDims[0] = spdFile->getNumberBinsX();
-			DataSpace memSpace( 1, memSpaceDims ); // has rank == 1
+			H5::DataSpace memSpace( 1, memSpaceDims ); // has rank == 1
 			
 			hsize_t offsetMemSpace[1];
 			hsize_t selectionMemSpace[1];
@@ -4972,21 +4971,21 @@ namespace spdlib
 			selectionMemSpace[0]  = spdFile->getNumberBinsX();
 			memSpace.selectHyperslab( H5S_SELECT_SET, selectionMemSpace, offsetMemSpace );
 			
-			plsQKImgDSet.read( data, PredType::NATIVE_FLOAT, memSpace, plsQKImgDSpace );
+			plsQKImgDSet.read( data, H5::PredType::NATIVE_FLOAT, memSpace, plsQKImgDSpace );
 		}
-		catch( FileIException &e )
+		catch( H5::FileIException &e )
 		{
 			throw SPDIOException(e.getCDetailMsg());
 		}
-		catch( DataSetIException &e )
+		catch( H5::DataSetIException &e )
 		{
 			throw SPDIOException(e.getCDetailMsg());
 		}
-		catch( DataSpaceIException &e )
+		catch( H5::DataSpaceIException &e )
 		{
 			throw SPDIOException(e.getCDetailMsg());
 		}
-		catch( DataTypeIException &e )
+		catch( H5::DataTypeIException &e )
 		{
 			throw SPDIOException(e.getCDetailMsg());
 		}
@@ -5000,7 +4999,7 @@ namespace spdlib
 	{
 		try
 		{
-			Exception::dontPrint();
+			H5::Exception::dontPrint();
 			
 			if(fileOpened)
 			{
@@ -5011,19 +5010,19 @@ namespace spdlib
 				delete pulseType;
 			}
 		}
-		catch( FileIException &e )
+		catch( H5::FileIException &e )
 		{
 			throw SPDIOException(e.getCDetailMsg());
 		}
-		catch( DataSetIException &e )
+		catch( H5::DataSetIException &e )
 		{
 			throw SPDIOException(e.getCDetailMsg());
 		}
-		catch( DataSpaceIException &e )
+		catch( H5::DataSpaceIException &e )
 		{
 			throw SPDIOException(e.getCDetailMsg());
 		}
-		catch( DataTypeIException &e )
+		catch( H5::DataTypeIException &e )
 		{
 			throw SPDIOException(e.getCDetailMsg());
 		}
@@ -5044,7 +5043,7 @@ namespace spdlib
 			}
 			catch (SPDIOException &e) 
 			{
-				cout << "WARNING: " << e.what() << endl;
+                std::cout << "WARNING: " << e.what() << std::endl;
 			}
 		}
 	}

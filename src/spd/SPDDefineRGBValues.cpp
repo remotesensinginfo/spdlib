@@ -36,7 +36,7 @@ namespace spdlib
         this->blueBand = blueBand;
     }
         
-    void SPDDefineRGBValues::processDataColumnImage(SPDFile *inSPDFile, vector<SPDPulse*> *pulses, float *imageData, SPDXYPoint *cenPts, boost::uint_fast32_t numImgBands, float binSize) throw(SPDProcessingException)
+    void SPDDefineRGBValues::processDataColumnImage(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses, float *imageData, SPDXYPoint *cenPts, boost::uint_fast32_t numImgBands, float binSize) throw(SPDProcessingException)
     {
         if((inSPDFile->getDecomposedPtDefined() == SPD_TRUE) | (inSPDFile->getDiscretePtDefined() == SPD_TRUE))
         {
@@ -53,8 +53,8 @@ namespace spdlib
                 throw SPDProcessingException("Defined Blue band is not in the dataset");
             }
             
-            vector<SPDPulse*>::iterator iterPulses;
-            vector<SPDPoint*>::iterator iterPoints;
+            std::vector<SPDPulse*>::iterator iterPulses;
+            std::vector<SPDPoint*>::iterator iterPoints;
             for(iterPulses = pulses->begin(); iterPulses != pulses->end(); ++iterPulses)
             {
                 if((*iterPulses)->numberOfReturns > 0)

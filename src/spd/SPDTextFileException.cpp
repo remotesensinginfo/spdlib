@@ -36,7 +36,7 @@ namespace spdlib
 		
 	}
 	
-	SPDTextFileException::SPDTextFileException(string message) : SPDException(message)
+	SPDTextFileException::SPDTextFileException(std::string message) : SPDException(message)
 	{
 		
 	}
