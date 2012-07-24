@@ -42,7 +42,7 @@ namespace spdlib
     class SPDDefineRGBValues : public SPDPulseProcessor
 	{
 	public:
-        SPDDefineRGBValues(uint_fast16_t redBand, boost::uint_fast16_t greenBand, boost::uint_fast16_t blueBand);
+        SPDDefineRGBValues(boost::uint_fast16_t redBand, boost::uint_fast16_t greenBand, boost::uint_fast16_t blueBand);
         
         void processDataColumnImage(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses, float *imageData, SPDXYPoint *cenPts, boost::uint_fast32_t numImgBands, float binSize) throw(SPDProcessingException);
 		void processDataColumn(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses, SPDXYPoint *cenPts) throw(SPDProcessingException)

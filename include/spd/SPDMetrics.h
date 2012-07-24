@@ -16179,7 +16179,7 @@ namespace spdlib{
                         
                        boost::uint_fast32_t maxIdx = 0;
                        boost::uint_fast32_t maxVal = 0;
-                        for(uint_fast32_t i = 0; i < numBins; ++i)
+                        for(boost::uint_fast32_t i = 0; i < numBins; ++i)
                         {
                             if(i == 0)
                             {
@@ -16262,7 +16262,7 @@ namespace spdlib{
                     if(*numBins > 0)
                     {
                         bins = new double[*numBins];
-                        for(uint_fast32_t i = 0; i < *numBins; ++i)
+                        for(boost::uint_fast32_t i = 0; i < *numBins; ++i)
                         {
                             bins[i] = 0;
                         }
@@ -16321,7 +16321,7 @@ namespace spdlib{
     class SPDMetricCalcNumPulses : public SPDMetricCalc
 	{
 	public: 
-		SPDMetricCalcNumPulses(uint_fast16_t minNumReturns=0):SPDMetricCalc(SPD_ALL_RETURNS, SPD_ALL_CLASSES, minNumReturns, 0, 0, 0, 0){};
+		SPDMetricCalcNumPulses(boost::uint_fast16_t minNumReturns=0):SPDMetricCalc(SPD_ALL_RETURNS, SPD_ALL_CLASSES, minNumReturns, 0, 0, 0, 0){};
 		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcNumPulses(){};
 	};
@@ -16485,7 +16485,7 @@ namespace spdlib{
     class SPDMetricCalcPercentileHeight : public SPDMetricCalc
 	{
 	public: 
-		SPDMetricCalcPercentileHeight(uint_fast16_t percentile,boost::int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0)
+		SPDMetricCalcPercentileHeight(boost::uint_fast16_t percentile,boost::int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0)
         {
             this->percentile = percentile;
         };
@@ -16760,7 +16760,7 @@ namespace spdlib{
     class SPDMetricCalcPercentileZ : public SPDMetricCalc
 	{
 	public: 
-		SPDMetricCalcPercentileZ(uint_fast16_t percentile,boost::int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0)
+		SPDMetricCalcPercentileZ(boost::uint_fast16_t percentile,boost::int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0)
         {
             this->percentile = percentile;
         };
@@ -17037,7 +17037,7 @@ namespace spdlib{
     class SPDMetricCalcPercentileAmplitude : public SPDMetricCalc
 	{
 	public: 
-		SPDMetricCalcPercentileAmplitude(uint_fast16_t percentile,boost::int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold)
+		SPDMetricCalcPercentileAmplitude(boost::uint_fast16_t percentile,boost::int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold)
         {
             this->percentile = percentile;
         };
@@ -17210,7 +17210,7 @@ namespace spdlib{
     class SPDMetricCalcPercentileRange : public SPDMetricCalc
 	{
 	public: 
-		SPDMetricCalcPercentileRange(uint_fast16_t percentile,boost::int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0)
+		SPDMetricCalcPercentileRange(boost::uint_fast16_t percentile,boost::int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0)
         {
             this->percentile = percentile;
         };
@@ -17486,7 +17486,7 @@ namespace spdlib{
     class SPDMetricCalcPercentileWidth : public SPDMetricCalc
 	{
 	public: 
-		SPDMetricCalcPercentileWidth(uint_fast16_t percentile,boost::int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold)
+		SPDMetricCalcPercentileWidth(boost::uint_fast16_t percentile,boost::int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold)
         {
             this->percentile = percentile;
         };

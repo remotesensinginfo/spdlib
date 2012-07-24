@@ -67,19 +67,19 @@ namespace spdlib
 		 * binOffsets - the offsets for each bin
 		 * numPtsInBin - the number of points in each bin.
 		 */
-		void readRefHeaderRow(uint_fast32_t row, unsigned long long *binOffsets, unsigned long *numPtsInBin) throw(SPDIOException);
+		void readRefHeaderRow(boost::uint_fast32_t row, unsigned long long *binOffsets, unsigned long *numPtsInBin) throw(SPDIOException);
 		/**
 		 * Read a row of data
 		 * row - the row of the file to be read in
 		 * pulses - pulses to std::list<SPDPulse*>[cols]
 		 */
-		void readPulseDataRow(uint_fast32_t row, std::list<SPDPulse*> **pulses) throw(SPDIOException);
+		void readPulseDataRow(boost::uint_fast32_t row, std::list<SPDPulse*> **pulses) throw(SPDIOException);
 		/**
 		 * Read a row of data
 		 * row - the row of the file to be read in
 		 * pulses - pulses to std::vector<SPDPulse*>[cols]
 		 */
-		void readPulseDataRow(uint_fast32_t row, std::vector<SPDPulse*> **pulses) throw(SPDIOException);		
+		void readPulseDataRow(boost::uint_fast32_t row, std::vector<SPDPulse*> **pulses) throw(SPDIOException);		
 		/**
 		 * Read a given number of pulses starting from the offset
 		 * pulses - pulses to std::list<SPDPulse*>*

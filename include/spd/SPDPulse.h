@@ -253,12 +253,12 @@ namespace spdlib
             stream << "Received Waveform Offset: " << obj.receiveWaveOffset << std::endl;
             stream << "Transmitted Waveform Gain: " << obj.transWaveGain << std::endl;
             stream << "Transmitted Waveform Offset: " << obj.transWaveOffset << std::endl;
-			for(uint_fast16_t i = 0; i < obj.numberOfReturns; ++i)
+			for(boost::uint_fast16_t i = 0; i < obj.numberOfReturns; ++i)
 			{
 				std::cout << obj.pts->at(i);
 			}
 			std::cout << "Transmitted: ";
-			for(uint_fast16_t i = 0; i < obj.numOfTransmittedBins; ++i)
+			for(boost::uint_fast16_t i = 0; i < obj.numOfTransmittedBins; ++i)
 			{
 				if(i == 0)
 				{
@@ -271,7 +271,7 @@ namespace spdlib
 			}
 			std::cout << std::endl;
 			std::cout << "Received: ";
-			for(uint_fast16_t i = 0; i < obj.numOfReceivedBins; ++i)
+			for(boost::uint_fast16_t i = 0; i < obj.numOfReceivedBins; ++i)
 			{
 				if(i == 0)
 				{
