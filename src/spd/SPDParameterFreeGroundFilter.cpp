@@ -72,8 +72,9 @@ namespace spdlib
             {
                 openElement9[i] = new boost::uint_fast16_t[9];
             }
-            this->createStructuringElement(openElement9, 4);
-            this->performOpenning(elev, elevOpen, xSize, ySize, 4, openElement9);
+            boost::uint_fast16_t structElemSize = 4;
+            this->createStructuringElement(openElement9, structElemSize);
+            this->performOpenning(elev, elevOpen, xSize, ySize, structElemSize, openElement9);
             for(boost::uint_fast32_t i = 0; i < 9; ++i)
             {
                 delete[] openElement9[i];
@@ -85,8 +86,9 @@ namespace spdlib
             {
                 closeElement11[i] = new boost::uint_fast16_t[11];
             }
-            this->createStructuringElement(closeElement11, 5);
-            this->performClosing(elevOpen, elevClose, xSize, ySize, 5, closeElement11);
+            structElemSize = 5;
+            this->createStructuringElement(closeElement11, structElemSize);
+            this->performClosing(elevOpen, elevClose, xSize, ySize, structElemSize, closeElement11);
             for(boost::uint_fast32_t i = 0; i < 11; ++i)
             {
                 delete[] closeElement11[i];
@@ -170,9 +172,10 @@ namespace spdlib
         {
             wTHElem[i] = new boost::uint_fast16_t[3];
         }
-        this->createStructuringElement(wTHElem, 1);
+        boost::uint_fast16_t structElemSize = 1;
+        this->createStructuringElement(wTHElem, structElemSize);
         
-        this->performWhiteTopHat(elevRes, elevTH, cLevel->xSize, cLevel->ySize, 1, wTHElem);
+        this->performWhiteTopHat(elevRes, elevTH, cLevel->xSize, cLevel->ySize, structElemSize, wTHElem);
                 
         /*for(boost::uint_fast32_t i = 0; i < cLevel->ySize; ++i)
         {
@@ -270,9 +273,10 @@ namespace spdlib
                 {
                     wTHElem[i] = new boost::uint_fast16_t[7];
                 }
-                this->createStructuringElement(wTHElem, 3);
+                boost::uint_fast16_t structElemSize = 3;
+                this->createStructuringElement(wTHElem, structElemSize);
                 
-                this->performWhiteTopHat(elevRes, elevTH, cLevel->xSize, cLevel->ySize, 3, wTHElem);
+                this->performWhiteTopHat(elevRes, elevTH, cLevel->xSize, cLevel->ySize, structElemSize, wTHElem);
                 /*
                 for(boost::uint_fast32_t i = 0; i < cLevel->ySize; ++i)
                 {
