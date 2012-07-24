@@ -50,32 +50,26 @@
 #include "spd/SPDPointGridIndex.h"
 
 namespace spdlib{
-	
-    using namespace std;
-    using boost::numeric_cast;
-    using boost::numeric::bad_numeric_cast;
-    using boost::numeric::positive_overflow;
-    using boost::numeric::negative_overflow;
     
 	class SPDMetric
 	{
 	public: 
 		SPDMetric(){};
-		virtual double calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException) = 0;
+		virtual double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException) = 0;
 		virtual ~SPDMetric(){};
 	};
     
     class SPDMetricAdd : public SPDMetric
 	{
 	public: 
-		SPDMetricAdd(vector<SPDMetric*> *metrics)
+		SPDMetricAdd(std::vector<SPDMetric*> *metrics)
         {
             this->metrics = metrics;
         };
-		double calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
         {
             double value = 0;
-            for(vector<SPDMetric*>::iterator iterMetrics = metrics->begin(); iterMetrics != metrics->end(); ++iterMetrics)
+            for(std::vector<SPDMetric*>::iterator iterMetrics = metrics->begin(); iterMetrics != metrics->end(); ++iterMetrics)
             {
                 value += (*iterMetrics)->calcValue(pulses, spdFile, geom);
             }
@@ -83,7 +77,7 @@ namespace spdlib{
         };
 		~SPDMetricAdd(){};
     private:
-        vector<SPDMetric*> *metrics;
+        std::vector<SPDMetric*> *metrics;
 	};
     
     class SPDMetricMinus : public SPDMetric
@@ -94,7 +88,7 @@ namespace spdlib{
             this->metric1 = metric1;
             this->metric2 = metric2;
         };
-		double calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
         {
             return metric1->calcValue(pulses, spdFile, geom) - metric2->calcValue(pulses, spdFile, geom);
         };
@@ -107,14 +101,14 @@ namespace spdlib{
     class SPDMetricMultiply : public SPDMetric
 	{
 	public: 
-		SPDMetricMultiply(vector<SPDMetric*> *metrics)
+		SPDMetricMultiply(std::vector<SPDMetric*> *metrics)
         {
             this->metrics = metrics;
         };
-		double calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
         {
             double value = 0;
-            for(vector<SPDMetric*>::iterator iterMetrics = metrics->begin(); iterMetrics != metrics->end(); ++iterMetrics)
+            for(std::vector<SPDMetric*>::iterator iterMetrics = metrics->begin(); iterMetrics != metrics->end(); ++iterMetrics)
             {
                 value *= (*iterMetrics)->calcValue(pulses, spdFile, geom);
             }
@@ -122,7 +116,7 @@ namespace spdlib{
         };
 		~SPDMetricMultiply(){};
     private:
-        vector<SPDMetric*> *metrics;
+        std::vector<SPDMetric*> *metrics;
 	};
     
     class SPDMetricDivide : public SPDMetric
@@ -133,7 +127,7 @@ namespace spdlib{
             this->metric1 = metric1;
             this->metric2 = metric2;
         };
-		double calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
         {
             return metric1->calcValue(pulses, spdFile, geom) / metric2->calcValue(pulses, spdFile, geom);
         };
@@ -151,7 +145,7 @@ namespace spdlib{
             this->metric1 = metric1;
             this->metric2 = metric2;
         };
-		double calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
         {
             return pow(metric1->calcValue(pulses, spdFile, geom), metric2->calcValue(pulses, spdFile, geom));
         };
@@ -168,7 +162,7 @@ namespace spdlib{
         {
             this->metric = metric;
         };
-		double calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
         {
             return fabs(metric->calcValue(pulses, spdFile, geom));
         };
@@ -184,7 +178,7 @@ namespace spdlib{
         {
             this->metric = metric;
         };
-		double calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
         {
             return sqrt(metric->calcValue(pulses, spdFile, geom));
         };
@@ -200,7 +194,7 @@ namespace spdlib{
         {
             this->metric = metric;
         };
-		double calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
         {
             return sin(metric->calcValue(pulses, spdFile, geom));
         };
@@ -216,7 +210,7 @@ namespace spdlib{
         {
             this->metric = metric;
         };
-		double calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
         {
             return cos(metric->calcValue(pulses, spdFile, geom));
         };
@@ -232,7 +226,7 @@ namespace spdlib{
         {
             this->metric = metric;
         };
-		double calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
         {
             return tan(metric->calcValue(pulses, spdFile, geom));
         };
@@ -248,7 +242,7 @@ namespace spdlib{
         {
             this->metric = metric;
         };
-		double calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
         {
             return asin(metric->calcValue(pulses, spdFile, geom));
         };
@@ -264,7 +258,7 @@ namespace spdlib{
         {
             this->metric = metric;
         };
-		double calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
         {
             return acos(metric->calcValue(pulses, spdFile, geom));
         };
@@ -280,7 +274,7 @@ namespace spdlib{
         {
             this->metric = metric;
         };
-		double calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
         {
             return atan(metric->calcValue(pulses, spdFile, geom));
         };
@@ -296,7 +290,7 @@ namespace spdlib{
         {
             this->metric = metric;
         };
-		double calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
         {
             return log10(metric->calcValue(pulses, spdFile, geom));
         };
@@ -312,7 +306,7 @@ namespace spdlib{
         {
             this->metric = metric;
         };
-		double calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
         {
             return log(metric->calcValue(pulses, spdFile, geom));
         };
@@ -328,7 +322,7 @@ namespace spdlib{
         {
             this->metric = metric;
         };
-		double calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
         {
             return exp(metric->calcValue(pulses, spdFile, geom));
         };
@@ -345,7 +339,7 @@ namespace spdlib{
             this->metric1 = metric1;
             this->metric2 = metric2;
         };
-		double calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
         {
             return (metric1->calcValue(pulses, spdFile, geom) / metric2->calcValue(pulses, spdFile, geom)) * 100;
         };
@@ -363,7 +357,7 @@ namespace spdlib{
             this->metric = metric;
             this->constVal = constVal;
         };
-		double calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
         {
             return metric->calcValue(pulses, spdFile, geom) + constVal;
         };
@@ -381,7 +375,7 @@ namespace spdlib{
             this->metric = metric;
             this->constVal = constVal;
         };
-		double calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
         {
             return metric->calcValue(pulses, spdFile, geom) - constVal;
         };
@@ -399,7 +393,7 @@ namespace spdlib{
             this->metric = metric;
             this->constVal = constVal;
         };
-		double calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
         {
             return constVal - metric->calcValue(pulses, spdFile, geom);
         };
@@ -417,7 +411,7 @@ namespace spdlib{
             this->metric = metric;
             this->constVal = constVal;
         };
-		double calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
         {
             return constVal * metric->calcValue(pulses, spdFile, geom);
         };
@@ -435,7 +429,7 @@ namespace spdlib{
             this->metric = metric;
             this->constVal = constVal;
         };
-		double calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
         {
             return metric->calcValue(pulses, spdFile, geom) / constVal;
         };
@@ -453,7 +447,7 @@ namespace spdlib{
             this->metric = metric;
             this->constVal = constVal;
         };
-		double calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
         {
             return constVal / metric->calcValue(pulses, spdFile, geom);
         };
@@ -471,7 +465,7 @@ namespace spdlib{
             this->metric = metric;
             this->constVal = constVal;
         };
-		double calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
         {
             return pow(metric->calcValue(pulses, spdFile, geom), constVal);
         };
@@ -489,7 +483,7 @@ namespace spdlib{
             this->metric = metric;
             this->constVal = constVal;
         };
-		double calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
         {
             return pow(constVal, metric->calcValue(pulses, spdFile, geom));
         };
@@ -512,23 +506,23 @@ namespace spdlib{
             this->heightUpThreshold = heightUpThreshold;
             this->heightLowThreshold = heightLowThreshold;
         }
-		virtual double calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException) = 0;
+		virtual double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException) = 0;
 		virtual ~SPDMetricCalc(){};
     protected:
-        virtual vector<double>* getPointsValuesWithinHeightParameters(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+        virtual std::vector<double>* getPointsValuesWithinHeightParameters(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
         {
-            vector<double> *points = new vector<double>();
+            std::vector<double> *points = new std::vector<double>();
             if((spdFile->getDecomposedPtDefined() == SPD_TRUE) | (spdFile->getDiscretePtDefined() == SPD_TRUE))
             {
-                for(vector<SPDPulse*>::iterator iterPulses = pulses->begin(); iterPulses != pulses->end(); ++iterPulses)
+                for(std::vector<SPDPulse*>::iterator iterPulses = pulses->begin(); iterPulses != pulses->end(); ++iterPulses)
                 {
                     if(((*iterPulses)->numberOfReturns >= minNumReturns) & ((*iterPulses)->numberOfReturns > 0))
                     {
                         if(returnID == SPD_ALL_RETURNS)
                         {
-                            for(vector<SPDPoint*>::iterator iterPts = (*iterPulses)->pts->begin(); iterPts != (*iterPulses)->pts->end(); ++iterPts)
+                            for(std::vector<SPDPoint*>::iterator iterPts = (*iterPulses)->pts->begin(); iterPts != (*iterPulses)->pts->end(); ++iterPts)
                             {
-                                if(isnan(upThreshold) & isnan(lowThreshold))
+                                if(boost::math::isnan(upThreshold) & boost::math::isnan(lowThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -551,7 +545,7 @@ namespace spdlib{
                                         points->push_back((*iterPts)->height);
                                     }
                                 }
-                                else if(isnan(lowThreshold) & ((*iterPts)->height <= upThreshold))
+                                else if(boost::math::isnan(lowThreshold) & ((*iterPts)->height <= upThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -574,7 +568,7 @@ namespace spdlib{
                                         points->push_back((*iterPts)->height);
                                     }
                                 }
-                                else if(((*iterPts)->height >= lowThreshold) & isnan(upThreshold))
+                                else if(((*iterPts)->height >= lowThreshold) & boost::math::isnan(upThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -625,7 +619,7 @@ namespace spdlib{
                         else if(returnID == SPD_LAST_RETURNS)
                         {
                             SPDPoint *pt = (*iterPulses)->pts->back();
-                            if(isnan(upThreshold) & isnan(lowThreshold))
+                            if(boost::math::isnan(upThreshold) & boost::math::isnan(lowThreshold))
                             {
                                 if(classification == SPD_ALL_CLASSES)
                                 {
@@ -648,7 +642,7 @@ namespace spdlib{
                                     points->push_back(pt->height);
                                 }
                             }
-                            else if(isnan(lowThreshold) & (pt->height <= upThreshold))
+                            else if(boost::math::isnan(lowThreshold) & (pt->height <= upThreshold))
                             {
                                 if(classification == SPD_ALL_CLASSES)
                                 {
@@ -671,7 +665,7 @@ namespace spdlib{
                                     points->push_back(pt->height);
                                 }
                             }
-                            else if((pt->height >= lowThreshold) & isnan(upThreshold))
+                            else if((pt->height >= lowThreshold) & boost::math::isnan(upThreshold))
                             {
                                 if(classification == SPD_ALL_CLASSES)
                                 {
@@ -721,7 +715,7 @@ namespace spdlib{
                         else if(returnID == SPD_FIRST_RETURNS)
                         {
                             SPDPoint *pt = (*iterPulses)->pts->front();
-                            if(isnan(upThreshold) & isnan(lowThreshold))
+                            if(boost::math::isnan(upThreshold) & boost::math::isnan(lowThreshold))
                             {
                                 if(classification == SPD_ALL_CLASSES)
                                 {
@@ -744,7 +738,7 @@ namespace spdlib{
                                     points->push_back(pt->height);
                                 }
                             }
-                            else if(isnan(lowThreshold) & (pt->height <= upThreshold))
+                            else if(boost::math::isnan(lowThreshold) & (pt->height <= upThreshold))
                             {
                                 if(classification == SPD_ALL_CLASSES)
                                 {
@@ -767,7 +761,7 @@ namespace spdlib{
                                     points->push_back(pt->height);
                                 }
                             }
-                            else if((pt->height >= lowThreshold) & isnan(upThreshold))
+                            else if((pt->height >= lowThreshold) & boost::math::isnan(upThreshold))
                             {
                                 if(classification == SPD_ALL_CLASSES)
                                 {
@@ -822,7 +816,7 @@ namespace spdlib{
                             {
                                 ptLast = (*iterPulses)->pts->back();
                             }
-                            if(isnan(upThreshold) & isnan(lowThreshold))
+                            if(boost::math::isnan(upThreshold) & boost::math::isnan(lowThreshold))
                             {
                                 // First
                                 if(classification == SPD_ALL_CLASSES)
@@ -871,7 +865,7 @@ namespace spdlib{
                                     }
                                 }
                             }
-                            else if(isnan(lowThreshold))
+                            else if(boost::math::isnan(lowThreshold))
                             {
                                 if(ptFirst->height <= upThreshold)
                                 {
@@ -924,7 +918,7 @@ namespace spdlib{
                                     }
                                 }
                             }
-                            else if(isnan(upThreshold))
+                            else if(boost::math::isnan(upThreshold))
                             {
                                 if(ptFirst->height >= lowThreshold)
                                 {
@@ -1033,11 +1027,11 @@ namespace spdlib{
                         }
                         else if(returnID == SPD_NOTFIRST_RETURNS)
                         {
-                            vector<SPDPoint*>::iterator iterPts = (*iterPulses)->pts->begin();
+                            std::vector<SPDPoint*>::iterator iterPts = (*iterPulses)->pts->begin();
                             ++iterPts;
                             for(; iterPts != (*iterPulses)->pts->end(); ++iterPts)
                             {
-                                if(isnan(upThreshold) & isnan(lowThreshold))
+                                if(boost::math::isnan(upThreshold) & boost::math::isnan(lowThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -1060,7 +1054,7 @@ namespace spdlib{
                                         points->push_back((*iterPts)->height);
                                     }
                                 }
-                                else if(isnan(lowThreshold) & ((*iterPts)->height <= upThreshold))
+                                else if(boost::math::isnan(lowThreshold) & ((*iterPts)->height <= upThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -1083,7 +1077,7 @@ namespace spdlib{
                                         points->push_back((*iterPts)->height);
                                     }
                                 }
-                                else if(((*iterPts)->height >= lowThreshold) & isnan(upThreshold))
+                                else if(((*iterPts)->height >= lowThreshold) & boost::math::isnan(upThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -1133,9 +1127,9 @@ namespace spdlib{
                         }
                         else
                         {
-                            for(vector<SPDPoint*>::iterator iterPts = (*iterPulses)->pts->begin(); iterPts != (*iterPulses)->pts->end(); ++iterPts)
+                            for(std::vector<SPDPoint*>::iterator iterPts = (*iterPulses)->pts->begin(); iterPts != (*iterPulses)->pts->end(); ++iterPts)
                             {
-                                if(isnan(upThreshold) & isnan(lowThreshold))
+                                if(boost::math::isnan(upThreshold) & boost::math::isnan(lowThreshold))
                                 {
                                     if(returnID == (*iterPts)->returnID)
                                     {
@@ -1161,7 +1155,7 @@ namespace spdlib{
                                         }
                                     }
                                 }
-                                else if(isnan(lowThreshold) & ((*iterPts)->height <= upThreshold))
+                                else if(boost::math::isnan(lowThreshold) & ((*iterPts)->height <= upThreshold))
                                 {
                                     if(returnID == (*iterPts)->returnID)
                                     {
@@ -1187,7 +1181,7 @@ namespace spdlib{
                                         }
                                     }
                                 }
-                                else if(((*iterPts)->height >= lowThreshold) & isnan(upThreshold))
+                                else if(((*iterPts)->height >= lowThreshold) & boost::math::isnan(upThreshold))
                                 {
                                     if(returnID == (*iterPts)->returnID)
                                     {
@@ -1255,20 +1249,20 @@ namespace spdlib{
 
             return points;
         };
-        virtual vector<double>* getPointsValuesWithinZParameters(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+        virtual std::vector<double>* getPointsValuesWithinZParameters(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
         {
-            vector<double> *points = new vector<double>();
+            std::vector<double> *points = new std::vector<double>();
             if((spdFile->getDecomposedPtDefined() == SPD_TRUE) | (spdFile->getDiscretePtDefined() == SPD_TRUE))
             {
-                for(vector<SPDPulse*>::iterator iterPulses = pulses->begin(); iterPulses != pulses->end(); ++iterPulses)
+                for(std::vector<SPDPulse*>::iterator iterPulses = pulses->begin(); iterPulses != pulses->end(); ++iterPulses)
                 {
                     if(((*iterPulses)->numberOfReturns >= minNumReturns) & ((*iterPulses)->numberOfReturns > 0))
                     {
                         if(returnID == SPD_ALL_RETURNS)
                         {
-                            for(vector<SPDPoint*>::iterator iterPts = (*iterPulses)->pts->begin(); iterPts != (*iterPulses)->pts->end(); ++iterPts)
+                            for(std::vector<SPDPoint*>::iterator iterPts = (*iterPulses)->pts->begin(); iterPts != (*iterPulses)->pts->end(); ++iterPts)
                             {
-                                if(isnan(upThreshold) & isnan(lowThreshold))
+                                if(boost::math::isnan(upThreshold) & boost::math::isnan(lowThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -1291,7 +1285,7 @@ namespace spdlib{
                                         points->push_back((*iterPts)->z);
                                     }
                                 }
-                                else if(isnan(lowThreshold) & ((*iterPts)->z <= upThreshold))
+                                else if(boost::math::isnan(lowThreshold) & ((*iterPts)->z <= upThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -1314,7 +1308,7 @@ namespace spdlib{
                                         points->push_back((*iterPts)->z);
                                     }
                                 }
-                                else if(((*iterPts)->z >= lowThreshold) & isnan(upThreshold))
+                                else if(((*iterPts)->z >= lowThreshold) & boost::math::isnan(upThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -1365,7 +1359,7 @@ namespace spdlib{
                         else if(returnID == SPD_LAST_RETURNS)
                         {
                             SPDPoint *pt = (*iterPulses)->pts->back();
-                            if(isnan(upThreshold) & isnan(lowThreshold))
+                            if(boost::math::isnan(upThreshold) & boost::math::isnan(lowThreshold))
                             {
                                 if(classification == SPD_ALL_CLASSES)
                                 {
@@ -1388,7 +1382,7 @@ namespace spdlib{
                                     points->push_back(pt->z);
                                 }
                             }
-                            else if(isnan(lowThreshold) & (pt->z <= upThreshold))
+                            else if(boost::math::isnan(lowThreshold) & (pt->z <= upThreshold))
                             {
                                 if(classification == SPD_ALL_CLASSES)
                                 {
@@ -1411,7 +1405,7 @@ namespace spdlib{
                                     points->push_back(pt->z);
                                 }
                             }
-                            else if((pt->z >= lowThreshold) & isnan(upThreshold))
+                            else if((pt->z >= lowThreshold) & boost::math::isnan(upThreshold))
                             {
                                 if(classification == SPD_ALL_CLASSES)
                                 {
@@ -1461,7 +1455,7 @@ namespace spdlib{
                         else if(returnID == SPD_FIRST_RETURNS)
                         {
                             SPDPoint *pt = (*iterPulses)->pts->front();
-                            if(isnan(upThreshold) & isnan(lowThreshold))
+                            if(boost::math::isnan(upThreshold) & boost::math::isnan(lowThreshold))
                             {
                                 if(classification == SPD_ALL_CLASSES)
                                 {
@@ -1484,7 +1478,7 @@ namespace spdlib{
                                     points->push_back(pt->z);
                                 }
                             }
-                            else if(isnan(lowThreshold) & (pt->z <= upThreshold))
+                            else if(boost::math::isnan(lowThreshold) & (pt->z <= upThreshold))
                             {
                                 if(classification == SPD_ALL_CLASSES)
                                 {
@@ -1507,7 +1501,7 @@ namespace spdlib{
                                     points->push_back(pt->z);
                                 }
                             }
-                            else if((pt->z >= lowThreshold) & isnan(upThreshold))
+                            else if((pt->z >= lowThreshold) & boost::math::isnan(upThreshold))
                             {
                                 if(classification == SPD_ALL_CLASSES)
                                 {
@@ -1562,7 +1556,7 @@ namespace spdlib{
                             {
                                 ptLast = (*iterPulses)->pts->back();
                             }
-                            if(isnan(upThreshold) & isnan(lowThreshold))
+                            if(boost::math::isnan(upThreshold) & boost::math::isnan(lowThreshold))
                             {
                                 // First
                                 if(classification == SPD_ALL_CLASSES)
@@ -1611,7 +1605,7 @@ namespace spdlib{
                                     }
                                 }
                             }
-                            else if(isnan(lowThreshold))
+                            else if(boost::math::isnan(lowThreshold))
                             {
                                 if(ptFirst->z <= upThreshold)
                                 {
@@ -1664,7 +1658,7 @@ namespace spdlib{
                                     }
                                 }
                             }
-                            else if(isnan(upThreshold))
+                            else if(boost::math::isnan(upThreshold))
                             {
                                 if(ptFirst->z >= lowThreshold)
                                 {
@@ -1773,11 +1767,11 @@ namespace spdlib{
                         }
                         else if(returnID == SPD_NOTFIRST_RETURNS)
                         {
-                            vector<SPDPoint*>::iterator iterPts = (*iterPulses)->pts->begin();
+                            std::vector<SPDPoint*>::iterator iterPts = (*iterPulses)->pts->begin();
                             ++iterPts;
                             for(; iterPts != (*iterPulses)->pts->end(); ++iterPts)
                             {
-                                if(isnan(upThreshold) & isnan(lowThreshold))
+                                if(boost::math::isnan(upThreshold) & boost::math::isnan(lowThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -1800,7 +1794,7 @@ namespace spdlib{
                                         points->push_back((*iterPts)->z);
                                     }
                                 }
-                                else if(isnan(lowThreshold) & ((*iterPts)->z <= upThreshold))
+                                else if(boost::math::isnan(lowThreshold) & ((*iterPts)->z <= upThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -1823,7 +1817,7 @@ namespace spdlib{
                                         points->push_back((*iterPts)->z);
                                     }
                                 }
-                                else if(((*iterPts)->z >= lowThreshold) & isnan(upThreshold))
+                                else if(((*iterPts)->z >= lowThreshold) & boost::math::isnan(upThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -1873,9 +1867,9 @@ namespace spdlib{
                         }
                         else
                         {
-                            for(vector<SPDPoint*>::iterator iterPts = (*iterPulses)->pts->begin(); iterPts != (*iterPulses)->pts->end(); ++iterPts)
+                            for(std::vector<SPDPoint*>::iterator iterPts = (*iterPulses)->pts->begin(); iterPts != (*iterPulses)->pts->end(); ++iterPts)
                             {
-                                if(isnan(upThreshold) & isnan(lowThreshold))
+                                if(boost::math::isnan(upThreshold) & boost::math::isnan(lowThreshold))
                                 {
                                     if(returnID == (*iterPts)->returnID)
                                     {
@@ -1901,7 +1895,7 @@ namespace spdlib{
                                         }
                                     }
                                 }
-                                else if(isnan(lowThreshold) & ((*iterPts)->z <= upThreshold))
+                                else if(boost::math::isnan(lowThreshold) & ((*iterPts)->z <= upThreshold))
                                 {
                                     if(returnID == (*iterPts)->returnID)
                                     {
@@ -1927,7 +1921,7 @@ namespace spdlib{
                                         }
                                     }
                                 }
-                                else if(((*iterPts)->z >= lowThreshold) & isnan(upThreshold))
+                                else if(((*iterPts)->z >= lowThreshold) & boost::math::isnan(upThreshold))
                                 {
                                     if(returnID == (*iterPts)->returnID)
                                     {
@@ -1995,22 +1989,22 @@ namespace spdlib{
             
             return points;
         };
-        virtual vector<double>* getPointsValuesWithinAmplitudeParameters(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+        virtual std::vector<double>* getPointsValuesWithinAmplitudeParameters(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
         {
-            vector<double> *points = new vector<double>();
+            std::vector<double> *points = new std::vector<double>();
             if((spdFile->getDecomposedPtDefined() == SPD_TRUE) | (spdFile->getDiscretePtDefined() == SPD_TRUE))
             {
-                for(vector<SPDPulse*>::iterator iterPulses = pulses->begin(); iterPulses != pulses->end(); ++iterPulses)
+                for(std::vector<SPDPulse*>::iterator iterPulses = pulses->begin(); iterPulses != pulses->end(); ++iterPulses)
                 {
                     if(((*iterPulses)->numberOfReturns >= minNumReturns) & ((*iterPulses)->numberOfReturns > 0))
                     {
                         if(returnID == SPD_ALL_RETURNS)
                         {
-                            for(vector<SPDPoint*>::iterator iterPts = (*iterPulses)->pts->begin(); iterPts != (*iterPulses)->pts->end(); ++iterPts)
+                            for(std::vector<SPDPoint*>::iterator iterPts = (*iterPulses)->pts->begin(); iterPts != (*iterPulses)->pts->end(); ++iterPts)
                             {
-                                if(isnan(heightUpThreshold) & isnan(heightLowThreshold))
+                                if(boost::math::isnan(heightUpThreshold) & boost::math::isnan(heightLowThreshold))
                                 {
-                                    if(isnan(upThreshold) & isnan(lowThreshold))
+                                    if(boost::math::isnan(upThreshold) & boost::math::isnan(lowThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -2033,7 +2027,7 @@ namespace spdlib{
                                             points->push_back((*iterPts)->amplitudeReturn);
                                         }
                                     }
-                                    else if(isnan(lowThreshold) & ((*iterPts)->amplitudeReturn <= upThreshold))
+                                    else if(boost::math::isnan(lowThreshold) & ((*iterPts)->amplitudeReturn <= upThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -2056,7 +2050,7 @@ namespace spdlib{
                                             points->push_back((*iterPts)->amplitudeReturn);
                                         }
                                     }
-                                    else if(((*iterPts)->amplitudeReturn >= lowThreshold) & isnan(upThreshold))
+                                    else if(((*iterPts)->amplitudeReturn >= lowThreshold) & boost::math::isnan(upThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -2103,9 +2097,9 @@ namespace spdlib{
                                         }
                                     }
                                 }
-                                else if(isnan(heightLowThreshold) & ((*iterPts)->height <= heightUpThreshold))
+                                else if(boost::math::isnan(heightLowThreshold) & ((*iterPts)->height <= heightUpThreshold))
                                 {
-                                    if(isnan(upThreshold) & isnan(lowThreshold))
+                                    if(boost::math::isnan(upThreshold) & boost::math::isnan(lowThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -2128,7 +2122,7 @@ namespace spdlib{
                                             points->push_back((*iterPts)->amplitudeReturn);
                                         }
                                     }
-                                    else if(isnan(lowThreshold) & ((*iterPts)->amplitudeReturn <= upThreshold))
+                                    else if(boost::math::isnan(lowThreshold) & ((*iterPts)->amplitudeReturn <= upThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -2151,7 +2145,7 @@ namespace spdlib{
                                             points->push_back((*iterPts)->amplitudeReturn);
                                         }
                                     }
-                                    else if(((*iterPts)->amplitudeReturn >= lowThreshold) & isnan(upThreshold))
+                                    else if(((*iterPts)->amplitudeReturn >= lowThreshold) & boost::math::isnan(upThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -2198,9 +2192,9 @@ namespace spdlib{
                                         }
                                     }
                                 }
-                                else if(((*iterPts)->height >= heightLowThreshold) & isnan(heightUpThreshold))
+                                else if(((*iterPts)->height >= heightLowThreshold) & boost::math::isnan(heightUpThreshold))
                                 {
-                                    if(isnan(upThreshold) & isnan(lowThreshold))
+                                    if(boost::math::isnan(upThreshold) & boost::math::isnan(lowThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -2223,7 +2217,7 @@ namespace spdlib{
                                             points->push_back((*iterPts)->amplitudeReturn);
                                         }
                                     }
-                                    else if(isnan(lowThreshold) & ((*iterPts)->amplitudeReturn <= upThreshold))
+                                    else if(boost::math::isnan(lowThreshold) & ((*iterPts)->amplitudeReturn <= upThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -2246,7 +2240,7 @@ namespace spdlib{
                                             points->push_back((*iterPts)->amplitudeReturn);
                                         }
                                     }
-                                    else if(((*iterPts)->amplitudeReturn >= lowThreshold) & isnan(upThreshold))
+                                    else if(((*iterPts)->amplitudeReturn >= lowThreshold) & boost::math::isnan(upThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -2295,7 +2289,7 @@ namespace spdlib{
                                 }
                                 else if(((*iterPts)->height >= heightLowThreshold) & ((*iterPts)->height <= heightUpThreshold))
                                 {
-                                    if(isnan(upThreshold) & isnan(lowThreshold))
+                                    if(boost::math::isnan(upThreshold) & boost::math::isnan(lowThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -2318,7 +2312,7 @@ namespace spdlib{
                                             points->push_back((*iterPts)->amplitudeReturn);
                                         }
                                     }
-                                    else if(isnan(lowThreshold) & ((*iterPts)->amplitudeReturn <= upThreshold))
+                                    else if(boost::math::isnan(lowThreshold) & ((*iterPts)->amplitudeReturn <= upThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -2341,7 +2335,7 @@ namespace spdlib{
                                             points->push_back((*iterPts)->amplitudeReturn);
                                         }
                                     }
-                                    else if(((*iterPts)->amplitudeReturn >= lowThreshold) & isnan(upThreshold))
+                                    else if(((*iterPts)->amplitudeReturn >= lowThreshold) & boost::math::isnan(upThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -2393,9 +2387,9 @@ namespace spdlib{
                         else if(returnID == SPD_LAST_RETURNS)
                         {
                             SPDPoint *pt = (*iterPulses)->pts->back();
-                            if(isnan(heightUpThreshold) & isnan(heightLowThreshold))
+                            if(boost::math::isnan(heightUpThreshold) & boost::math::isnan(heightLowThreshold))
                             {
-                                if(isnan(upThreshold) & isnan(lowThreshold))
+                                if(boost::math::isnan(upThreshold) & boost::math::isnan(lowThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -2418,7 +2412,7 @@ namespace spdlib{
                                         points->push_back(pt->amplitudeReturn);
                                     }
                                 }
-                                else if(isnan(lowThreshold) & (pt->amplitudeReturn <= upThreshold))
+                                else if(boost::math::isnan(lowThreshold) & (pt->amplitudeReturn <= upThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -2441,7 +2435,7 @@ namespace spdlib{
                                         points->push_back(pt->amplitudeReturn);
                                     }
                                 }
-                                else if((pt->amplitudeReturn >= lowThreshold) & isnan(upThreshold))
+                                else if((pt->amplitudeReturn >= lowThreshold) & boost::math::isnan(upThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -2488,9 +2482,9 @@ namespace spdlib{
                                     }
                                 }
                             }
-                            else if(isnan(heightLowThreshold) & (pt->height <= heightUpThreshold))
+                            else if(boost::math::isnan(heightLowThreshold) & (pt->height <= heightUpThreshold))
                             {
-                                if(isnan(upThreshold) & isnan(lowThreshold))
+                                if(boost::math::isnan(upThreshold) & boost::math::isnan(lowThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -2513,7 +2507,7 @@ namespace spdlib{
                                         points->push_back(pt->amplitudeReturn);
                                     }
                                 }
-                                else if(isnan(lowThreshold) & (pt->amplitudeReturn <= upThreshold))
+                                else if(boost::math::isnan(lowThreshold) & (pt->amplitudeReturn <= upThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -2536,7 +2530,7 @@ namespace spdlib{
                                         points->push_back(pt->amplitudeReturn);
                                     }
                                 }
-                                else if((pt->amplitudeReturn >= lowThreshold) & isnan(upThreshold))
+                                else if((pt->amplitudeReturn >= lowThreshold) & boost::math::isnan(upThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -2583,9 +2577,9 @@ namespace spdlib{
                                     }
                                 }
                             }
-                            else if((pt->height >= heightLowThreshold) & isnan(heightUpThreshold))
+                            else if((pt->height >= heightLowThreshold) & boost::math::isnan(heightUpThreshold))
                             {
-                                if(isnan(upThreshold) & isnan(lowThreshold))
+                                if(boost::math::isnan(upThreshold) & boost::math::isnan(lowThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -2608,7 +2602,7 @@ namespace spdlib{
                                         points->push_back(pt->amplitudeReturn);
                                     }
                                 }
-                                else if(isnan(lowThreshold) & (pt->amplitudeReturn <= upThreshold))
+                                else if(boost::math::isnan(lowThreshold) & (pt->amplitudeReturn <= upThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -2631,7 +2625,7 @@ namespace spdlib{
                                         points->push_back(pt->amplitudeReturn);
                                     }
                                 }
-                                else if((pt->amplitudeReturn >= lowThreshold) & isnan(upThreshold))
+                                else if((pt->amplitudeReturn >= lowThreshold) & boost::math::isnan(upThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -2680,7 +2674,7 @@ namespace spdlib{
                             }
                             else if((pt->height >= heightLowThreshold) & (pt->height <= heightUpThreshold))
                             {
-                                if(isnan(upThreshold) & isnan(lowThreshold))
+                                if(boost::math::isnan(upThreshold) & boost::math::isnan(lowThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -2703,7 +2697,7 @@ namespace spdlib{
                                         points->push_back(pt->amplitudeReturn);
                                     }
                                 }
-                                else if(isnan(lowThreshold) & (pt->amplitudeReturn <= upThreshold))
+                                else if(boost::math::isnan(lowThreshold) & (pt->amplitudeReturn <= upThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -2726,7 +2720,7 @@ namespace spdlib{
                                         points->push_back(pt->amplitudeReturn);
                                     }
                                 }
-                                else if((pt->amplitudeReturn >= lowThreshold) & isnan(upThreshold))
+                                else if((pt->amplitudeReturn >= lowThreshold) & boost::math::isnan(upThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -2777,9 +2771,9 @@ namespace spdlib{
                         else if(returnID == SPD_FIRST_RETURNS)
                         {
                             SPDPoint *pt = (*iterPulses)->pts->front();
-                            if(isnan(heightUpThreshold) & isnan(heightLowThreshold))
+                            if(boost::math::isnan(heightUpThreshold) & boost::math::isnan(heightLowThreshold))
                             {
-                                if(isnan(upThreshold) & isnan(lowThreshold))
+                                if(boost::math::isnan(upThreshold) & boost::math::isnan(lowThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -2802,7 +2796,7 @@ namespace spdlib{
                                         points->push_back(pt->amplitudeReturn);
                                     }
                                 }
-                                else if(isnan(lowThreshold) & (pt->amplitudeReturn <= upThreshold))
+                                else if(boost::math::isnan(lowThreshold) & (pt->amplitudeReturn <= upThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -2825,7 +2819,7 @@ namespace spdlib{
                                         points->push_back(pt->amplitudeReturn);
                                     }
                                 }
-                                else if((pt->amplitudeReturn >= lowThreshold) & isnan(upThreshold))
+                                else if((pt->amplitudeReturn >= lowThreshold) & boost::math::isnan(upThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -2872,9 +2866,9 @@ namespace spdlib{
                                     }
                                 }
                             }
-                            else if(isnan(heightLowThreshold) & (pt->height <= heightUpThreshold))
+                            else if(boost::math::isnan(heightLowThreshold) & (pt->height <= heightUpThreshold))
                             {
-                                if(isnan(upThreshold) & isnan(lowThreshold))
+                                if(boost::math::isnan(upThreshold) & boost::math::isnan(lowThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -2897,7 +2891,7 @@ namespace spdlib{
                                         points->push_back(pt->amplitudeReturn);
                                     }
                                 }
-                                else if(isnan(lowThreshold) & (pt->amplitudeReturn <= upThreshold))
+                                else if(boost::math::isnan(lowThreshold) & (pt->amplitudeReturn <= upThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -2920,7 +2914,7 @@ namespace spdlib{
                                         points->push_back(pt->amplitudeReturn);
                                     }
                                 }
-                                else if((pt->amplitudeReturn >= lowThreshold) & isnan(upThreshold))
+                                else if((pt->amplitudeReturn >= lowThreshold) & boost::math::isnan(upThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -2967,9 +2961,9 @@ namespace spdlib{
                                     }
                                 }
                             }
-                            else if((pt->height >= heightLowThreshold) & isnan(heightUpThreshold))
+                            else if((pt->height >= heightLowThreshold) & boost::math::isnan(heightUpThreshold))
                             {
-                                if(isnan(upThreshold) & isnan(lowThreshold))
+                                if(boost::math::isnan(upThreshold) & boost::math::isnan(lowThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -2992,7 +2986,7 @@ namespace spdlib{
                                         points->push_back(pt->amplitudeReturn);
                                     }
                                 }
-                                else if(isnan(lowThreshold) & (pt->amplitudeReturn <= upThreshold))
+                                else if(boost::math::isnan(lowThreshold) & (pt->amplitudeReturn <= upThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -3015,7 +3009,7 @@ namespace spdlib{
                                         points->push_back(pt->amplitudeReturn);
                                     }
                                 }
-                                else if((pt->amplitudeReturn >= lowThreshold) & isnan(upThreshold))
+                                else if((pt->amplitudeReturn >= lowThreshold) & boost::math::isnan(upThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -3064,7 +3058,7 @@ namespace spdlib{
                             }
                             else if((pt->height >= heightLowThreshold) & (pt->height <= heightUpThreshold))
                             {
-                                if(isnan(upThreshold) & isnan(lowThreshold))
+                                if(boost::math::isnan(upThreshold) & boost::math::isnan(lowThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -3087,7 +3081,7 @@ namespace spdlib{
                                         points->push_back(pt->amplitudeReturn);
                                     }
                                 }
-                                else if(isnan(lowThreshold) & (pt->amplitudeReturn <= upThreshold))
+                                else if(boost::math::isnan(lowThreshold) & (pt->amplitudeReturn <= upThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -3110,7 +3104,7 @@ namespace spdlib{
                                         points->push_back(pt->amplitudeReturn);
                                     }
                                 }
-                                else if((pt->amplitudeReturn >= lowThreshold) & isnan(upThreshold))
+                                else if((pt->amplitudeReturn >= lowThreshold) & boost::math::isnan(upThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -3166,10 +3160,10 @@ namespace spdlib{
                             {
                                 ptLast = (*iterPulses)->pts->back();
                             }
-                            if(isnan(upThreshold) & isnan(lowThreshold))
+                            if(boost::math::isnan(upThreshold) & boost::math::isnan(lowThreshold))
                             {
                                 // First
-                                if(isnan(heightUpThreshold) & isnan(heightLowThreshold))
+                                if(boost::math::isnan(heightUpThreshold) & boost::math::isnan(heightLowThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -3192,7 +3186,7 @@ namespace spdlib{
                                         points->push_back(ptFirst->amplitudeReturn);
                                     }
                                 }
-                                else if(isnan(heightLowThreshold) & (ptFirst->height <= heightUpThreshold))
+                                else if(boost::math::isnan(heightLowThreshold) & (ptFirst->height <= heightUpThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -3215,7 +3209,7 @@ namespace spdlib{
                                         points->push_back(ptFirst->amplitudeReturn);
                                     }
                                 }
-                                else if((ptFirst->height >= heightLowThreshold) & isnan(heightUpThreshold))
+                                else if((ptFirst->height >= heightLowThreshold) & boost::math::isnan(heightUpThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -3265,7 +3259,7 @@ namespace spdlib{
                                 // Last
                                 if(ptLast != NULL)
                                 {
-                                    if(isnan(heightUpThreshold) & isnan(heightLowThreshold))
+                                    if(boost::math::isnan(heightUpThreshold) & boost::math::isnan(heightLowThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -3288,7 +3282,7 @@ namespace spdlib{
                                             points->push_back(ptLast->amplitudeReturn);
                                         } 
                                     }
-                                    else if(isnan(heightLowThreshold) & (ptLast->height <= heightUpThreshold))
+                                    else if(boost::math::isnan(heightLowThreshold) & (ptLast->height <= heightUpThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -3311,7 +3305,7 @@ namespace spdlib{
                                             points->push_back(ptLast->amplitudeReturn);
                                         }
                                     }
-                                    else if((ptLast->height >= heightLowThreshold) & isnan(heightUpThreshold))
+                                    else if((ptLast->height >= heightLowThreshold) & boost::math::isnan(heightUpThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -3359,11 +3353,11 @@ namespace spdlib{
                                     }
                                 }
                             }
-                            else if(isnan(lowThreshold))
+                            else if(boost::math::isnan(lowThreshold))
                             {
                                 if(ptFirst->amplitudeReturn <= upThreshold)
                                 {
-                                    if(isnan(heightUpThreshold) & isnan(heightLowThreshold))
+                                    if(boost::math::isnan(heightUpThreshold) & boost::math::isnan(heightLowThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -3386,7 +3380,7 @@ namespace spdlib{
                                             points->push_back(ptFirst->amplitudeReturn);
                                         }
                                     }
-                                    else if(isnan(heightLowThreshold) & (ptFirst->height <= heightUpThreshold))
+                                    else if(boost::math::isnan(heightLowThreshold) & (ptFirst->height <= heightUpThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -3409,7 +3403,7 @@ namespace spdlib{
                                             points->push_back(ptFirst->amplitudeReturn);
                                         }
                                     }
-                                    else if((ptFirst->height >= heightLowThreshold) & isnan(heightUpThreshold))
+                                    else if((ptFirst->height >= heightLowThreshold) & boost::math::isnan(heightUpThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -3461,7 +3455,7 @@ namespace spdlib{
                                 {
                                     if(ptLast->amplitudeReturn <= upThreshold)
                                     {
-                                        if(isnan(heightUpThreshold) & isnan(heightLowThreshold))
+                                        if(boost::math::isnan(heightUpThreshold) & boost::math::isnan(heightLowThreshold))
                                         {
                                             if(classification == SPD_ALL_CLASSES)
                                             {
@@ -3484,7 +3478,7 @@ namespace spdlib{
                                                 points->push_back(ptLast->amplitudeReturn);
                                             }
                                         }
-                                        else if(isnan(heightLowThreshold) & (ptLast->height <= heightUpThreshold))
+                                        else if(boost::math::isnan(heightLowThreshold) & (ptLast->height <= heightUpThreshold))
                                         {
                                             if(classification == SPD_ALL_CLASSES)
                                             {
@@ -3507,7 +3501,7 @@ namespace spdlib{
                                                 points->push_back(ptLast->amplitudeReturn);
                                             }
                                         }
-                                        else if((ptLast->height >= heightLowThreshold) & isnan(heightUpThreshold))
+                                        else if((ptLast->height >= heightLowThreshold) & boost::math::isnan(heightUpThreshold))
                                         {
                                             if(classification == SPD_ALL_CLASSES)
                                             {
@@ -3556,11 +3550,11 @@ namespace spdlib{
                                     }
                                 }
                             }
-                            else if(isnan(upThreshold))
+                            else if(boost::math::isnan(upThreshold))
                             {
                                 if(ptFirst->amplitudeReturn >= lowThreshold)
                                 {
-                                    if(isnan(heightUpThreshold) & isnan(heightLowThreshold))
+                                    if(boost::math::isnan(heightUpThreshold) & boost::math::isnan(heightLowThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -3583,7 +3577,7 @@ namespace spdlib{
                                             points->push_back(ptFirst->amplitudeReturn);
                                         }
                                     }
-                                    else if(isnan(heightLowThreshold) & (ptFirst->height <= heightUpThreshold))
+                                    else if(boost::math::isnan(heightLowThreshold) & (ptFirst->height <= heightUpThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -3606,7 +3600,7 @@ namespace spdlib{
                                             points->push_back(ptFirst->amplitudeReturn);
                                         }
                                     }
-                                    else if((ptFirst->height >= heightLowThreshold) & isnan(heightUpThreshold))
+                                    else if((ptFirst->height >= heightLowThreshold) & boost::math::isnan(heightUpThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -3658,7 +3652,7 @@ namespace spdlib{
                                 {
                                     if(ptLast->amplitudeReturn >= lowThreshold)
                                     {
-                                        if(isnan(heightUpThreshold) & isnan(heightLowThreshold))
+                                        if(boost::math::isnan(heightUpThreshold) & boost::math::isnan(heightLowThreshold))
                                         {
                                             if(classification == SPD_ALL_CLASSES)
                                             {
@@ -3681,7 +3675,7 @@ namespace spdlib{
                                                 points->push_back(ptLast->amplitudeReturn);
                                             }
                                         }
-                                        else if(isnan(heightLowThreshold) & (ptLast->height <= heightUpThreshold))
+                                        else if(boost::math::isnan(heightLowThreshold) & (ptLast->height <= heightUpThreshold))
                                         {
                                             if(classification == SPD_ALL_CLASSES)
                                             {
@@ -3704,7 +3698,7 @@ namespace spdlib{
                                                 points->push_back(ptLast->amplitudeReturn);
                                             }
                                         }
-                                        else if((ptLast->height >= heightLowThreshold) & isnan(heightUpThreshold))
+                                        else if((ptLast->height >= heightLowThreshold) & boost::math::isnan(heightUpThreshold))
                                         {
                                             if(classification == SPD_ALL_CLASSES)
                                             {
@@ -3757,7 +3751,7 @@ namespace spdlib{
                             {
                                 if((ptFirst->amplitudeReturn >= lowThreshold) & (ptFirst->amplitudeReturn <= upThreshold))
                                 {
-                                    if(isnan(heightUpThreshold) & isnan(heightLowThreshold))
+                                    if(boost::math::isnan(heightUpThreshold) & boost::math::isnan(heightLowThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -3780,7 +3774,7 @@ namespace spdlib{
                                             points->push_back(ptFirst->amplitudeReturn);
                                         }
                                     }
-                                    else if(isnan(heightLowThreshold) & (ptFirst->height <= heightUpThreshold))
+                                    else if(boost::math::isnan(heightLowThreshold) & (ptFirst->height <= heightUpThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -3803,7 +3797,7 @@ namespace spdlib{
                                             points->push_back(ptFirst->amplitudeReturn);
                                         }
                                     }
-                                    else if((ptFirst->height >= heightLowThreshold) & isnan(heightUpThreshold))
+                                    else if((ptFirst->height >= heightLowThreshold) & boost::math::isnan(heightUpThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -3855,7 +3849,7 @@ namespace spdlib{
                                 {
                                     if((ptLast->amplitudeReturn >= lowThreshold) & (ptLast->amplitudeReturn <= upThreshold))
                                     {
-                                        if(isnan(heightUpThreshold) & isnan(heightLowThreshold))
+                                        if(boost::math::isnan(heightUpThreshold) & boost::math::isnan(heightLowThreshold))
                                         {
                                             if(classification == SPD_ALL_CLASSES)
                                             {
@@ -3878,7 +3872,7 @@ namespace spdlib{
                                                 points->push_back(ptLast->amplitudeReturn);
                                             }
                                         }
-                                        else if(isnan(heightLowThreshold) & (ptLast->height <= heightUpThreshold))
+                                        else if(boost::math::isnan(heightLowThreshold) & (ptLast->height <= heightUpThreshold))
                                         {
                                             if(classification == SPD_ALL_CLASSES)
                                             {
@@ -3901,7 +3895,7 @@ namespace spdlib{
                                                 points->push_back(ptLast->amplitudeReturn);
                                             }
                                         }
-                                        else if((ptLast->height >= heightLowThreshold) & isnan(heightUpThreshold))
+                                        else if((ptLast->height >= heightLowThreshold) & boost::math::isnan(heightUpThreshold))
                                         {
                                             if(classification == SPD_ALL_CLASSES)
                                             {
@@ -3953,13 +3947,13 @@ namespace spdlib{
                         }
                         else if(returnID == SPD_NOTFIRST_RETURNS)
                         {
-                            vector<SPDPoint*>::iterator iterPts = (*iterPulses)->pts->begin();
+                            std::vector<SPDPoint*>::iterator iterPts = (*iterPulses)->pts->begin();
                             ++iterPts;
                             for(; iterPts != (*iterPulses)->pts->end(); ++iterPts)
                             {
-                                if(isnan(heightUpThreshold) & isnan(heightLowThreshold))
+                                if(boost::math::isnan(heightUpThreshold) & boost::math::isnan(heightLowThreshold))
                                 {
-                                    if(isnan(upThreshold) & isnan(lowThreshold))
+                                    if(boost::math::isnan(upThreshold) & boost::math::isnan(lowThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -3982,7 +3976,7 @@ namespace spdlib{
                                             points->push_back((*iterPts)->amplitudeReturn);
                                         }
                                     }
-                                    else if(isnan(lowThreshold) & ((*iterPts)->amplitudeReturn <= upThreshold))
+                                    else if(boost::math::isnan(lowThreshold) & ((*iterPts)->amplitudeReturn <= upThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -4005,7 +3999,7 @@ namespace spdlib{
                                             points->push_back((*iterPts)->amplitudeReturn);
                                         }
                                     }
-                                    else if(((*iterPts)->amplitudeReturn >= lowThreshold) & isnan(upThreshold))
+                                    else if(((*iterPts)->amplitudeReturn >= lowThreshold) & boost::math::isnan(upThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -4052,9 +4046,9 @@ namespace spdlib{
                                         }
                                     }
                                 }
-                                else if(isnan(heightLowThreshold) & ((*iterPts)->height <= heightUpThreshold))
+                                else if(boost::math::isnan(heightLowThreshold) & ((*iterPts)->height <= heightUpThreshold))
                                 {
-                                    if(isnan(upThreshold) & isnan(lowThreshold))
+                                    if(boost::math::isnan(upThreshold) & boost::math::isnan(lowThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -4077,7 +4071,7 @@ namespace spdlib{
                                             points->push_back((*iterPts)->amplitudeReturn);
                                         }
                                     }
-                                    else if(isnan(lowThreshold) & ((*iterPts)->amplitudeReturn <= upThreshold))
+                                    else if(boost::math::isnan(lowThreshold) & ((*iterPts)->amplitudeReturn <= upThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -4100,7 +4094,7 @@ namespace spdlib{
                                             points->push_back((*iterPts)->amplitudeReturn);
                                         }
                                     }
-                                    else if(((*iterPts)->amplitudeReturn >= lowThreshold) & isnan(upThreshold))
+                                    else if(((*iterPts)->amplitudeReturn >= lowThreshold) & boost::math::isnan(upThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -4147,9 +4141,9 @@ namespace spdlib{
                                         }
                                     }
                                 }
-                                else if(((*iterPts)->height >= heightLowThreshold) & isnan(heightUpThreshold))
+                                else if(((*iterPts)->height >= heightLowThreshold) & boost::math::isnan(heightUpThreshold))
                                 {
-                                    if(isnan(upThreshold) & isnan(lowThreshold))
+                                    if(boost::math::isnan(upThreshold) & boost::math::isnan(lowThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -4172,7 +4166,7 @@ namespace spdlib{
                                             points->push_back((*iterPts)->amplitudeReturn);
                                         }
                                     }
-                                    else if(isnan(lowThreshold) & ((*iterPts)->amplitudeReturn <= upThreshold))
+                                    else if(boost::math::isnan(lowThreshold) & ((*iterPts)->amplitudeReturn <= upThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -4195,7 +4189,7 @@ namespace spdlib{
                                             points->push_back((*iterPts)->amplitudeReturn);
                                         }
                                     }
-                                    else if(((*iterPts)->amplitudeReturn >= lowThreshold) & isnan(upThreshold))
+                                    else if(((*iterPts)->amplitudeReturn >= lowThreshold) & boost::math::isnan(upThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -4244,7 +4238,7 @@ namespace spdlib{
                                 }
                                 else if(((*iterPts)->height >= heightLowThreshold) & ((*iterPts)->height <= heightUpThreshold))
                                 {
-                                    if(isnan(upThreshold) & isnan(lowThreshold))
+                                    if(boost::math::isnan(upThreshold) & boost::math::isnan(lowThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -4267,7 +4261,7 @@ namespace spdlib{
                                             points->push_back((*iterPts)->amplitudeReturn);
                                         }
                                     }
-                                    else if(isnan(lowThreshold) & ((*iterPts)->amplitudeReturn <= upThreshold))
+                                    else if(boost::math::isnan(lowThreshold) & ((*iterPts)->amplitudeReturn <= upThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -4290,7 +4284,7 @@ namespace spdlib{
                                             points->push_back((*iterPts)->amplitudeReturn);
                                         }
                                     }
-                                    else if(((*iterPts)->amplitudeReturn >= lowThreshold) & isnan(upThreshold))
+                                    else if(((*iterPts)->amplitudeReturn >= lowThreshold) & boost::math::isnan(upThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -4341,11 +4335,11 @@ namespace spdlib{
                         }
                         else
                         {
-                            for(vector<SPDPoint*>::iterator iterPts = (*iterPulses)->pts->begin(); iterPts != (*iterPulses)->pts->end(); ++iterPts)
+                            for(std::vector<SPDPoint*>::iterator iterPts = (*iterPulses)->pts->begin(); iterPts != (*iterPulses)->pts->end(); ++iterPts)
                             {
-                                if(isnan(heightUpThreshold) & isnan(heightLowThreshold))
+                                if(boost::math::isnan(heightUpThreshold) & boost::math::isnan(heightLowThreshold))
                                 {
-                                    if(isnan(upThreshold) & isnan(lowThreshold))
+                                    if(boost::math::isnan(upThreshold) & boost::math::isnan(lowThreshold))
                                     {
                                         if(returnID == (*iterPts)->returnID)
                                         {
@@ -4371,7 +4365,7 @@ namespace spdlib{
                                             }
                                         }
                                     }
-                                    else if(isnan(lowThreshold) & ((*iterPts)->amplitudeReturn <= upThreshold))
+                                    else if(boost::math::isnan(lowThreshold) & ((*iterPts)->amplitudeReturn <= upThreshold))
                                     {
                                         if(returnID == (*iterPts)->returnID)
                                         {
@@ -4397,7 +4391,7 @@ namespace spdlib{
                                             }
                                         }
                                     }
-                                    else if(((*iterPts)->amplitudeReturn >= lowThreshold) & isnan(upThreshold))
+                                    else if(((*iterPts)->amplitudeReturn >= lowThreshold) & boost::math::isnan(upThreshold))
                                     {
                                         if(returnID == (*iterPts)->returnID)
                                         {
@@ -4450,9 +4444,9 @@ namespace spdlib{
                                         }
                                     }
                                 }
-                                else if(isnan(heightLowThreshold) & ((*iterPts)->height <= heightUpThreshold))
+                                else if(boost::math::isnan(heightLowThreshold) & ((*iterPts)->height <= heightUpThreshold))
                                 {
-                                    if(isnan(upThreshold) & isnan(lowThreshold))
+                                    if(boost::math::isnan(upThreshold) & boost::math::isnan(lowThreshold))
                                     {
                                         if(returnID == (*iterPts)->returnID)
                                         {
@@ -4478,7 +4472,7 @@ namespace spdlib{
                                             }
                                         }
                                     }
-                                    else if(isnan(lowThreshold) & ((*iterPts)->amplitudeReturn <= upThreshold))
+                                    else if(boost::math::isnan(lowThreshold) & ((*iterPts)->amplitudeReturn <= upThreshold))
                                     {
                                         if(returnID == (*iterPts)->returnID)
                                         {
@@ -4504,7 +4498,7 @@ namespace spdlib{
                                             }
                                         }
                                     }
-                                    else if(((*iterPts)->amplitudeReturn >= lowThreshold) & isnan(upThreshold))
+                                    else if(((*iterPts)->amplitudeReturn >= lowThreshold) & boost::math::isnan(upThreshold))
                                     {
                                         if(returnID == (*iterPts)->returnID)
                                         {
@@ -4557,9 +4551,9 @@ namespace spdlib{
                                         }
                                     }
                                 }
-                                else if(((*iterPts)->height >= heightLowThreshold) & isnan(heightUpThreshold))
+                                else if(((*iterPts)->height >= heightLowThreshold) & boost::math::isnan(heightUpThreshold))
                                 {
-                                    if(isnan(upThreshold) & isnan(lowThreshold))
+                                    if(boost::math::isnan(upThreshold) & boost::math::isnan(lowThreshold))
                                     {
                                         if(returnID == (*iterPts)->returnID)
                                         {
@@ -4585,7 +4579,7 @@ namespace spdlib{
                                             }
                                         }
                                     }
-                                    else if(isnan(lowThreshold) & ((*iterPts)->amplitudeReturn <= upThreshold))
+                                    else if(boost::math::isnan(lowThreshold) & ((*iterPts)->amplitudeReturn <= upThreshold))
                                     {
                                         if(returnID == (*iterPts)->returnID)
                                         {
@@ -4611,7 +4605,7 @@ namespace spdlib{
                                             }
                                         }
                                     }
-                                    else if(((*iterPts)->amplitudeReturn >= lowThreshold) & isnan(upThreshold))
+                                    else if(((*iterPts)->amplitudeReturn >= lowThreshold) & boost::math::isnan(upThreshold))
                                     {
                                         if(returnID == (*iterPts)->returnID)
                                         {
@@ -4666,7 +4660,7 @@ namespace spdlib{
                                 }
                                 else if(((*iterPts)->height >= heightLowThreshold) & ((*iterPts)->height <= heightUpThreshold))
                                 {
-                                    if(isnan(upThreshold) & isnan(lowThreshold))
+                                    if(boost::math::isnan(upThreshold) & boost::math::isnan(lowThreshold))
                                     {
                                         if(returnID == (*iterPts)->returnID)
                                         {
@@ -4692,7 +4686,7 @@ namespace spdlib{
                                             }
                                         }
                                     }
-                                    else if(isnan(lowThreshold) & ((*iterPts)->amplitudeReturn <= upThreshold))
+                                    else if(boost::math::isnan(lowThreshold) & ((*iterPts)->amplitudeReturn <= upThreshold))
                                     {
                                         if(returnID == (*iterPts)->returnID)
                                         {
@@ -4718,7 +4712,7 @@ namespace spdlib{
                                             }
                                         }
                                     }
-                                    else if(((*iterPts)->amplitudeReturn >= lowThreshold) & isnan(upThreshold))
+                                    else if(((*iterPts)->amplitudeReturn >= lowThreshold) & boost::math::isnan(upThreshold))
                                     {
                                         if(returnID == (*iterPts)->returnID)
                                         {
@@ -4786,20 +4780,20 @@ namespace spdlib{
             }
             return points;
         };
-        virtual vector<double>* getPointsValuesWithinRangeParameters(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+        virtual std::vector<double>* getPointsValuesWithinRangeParameters(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
         {
-            vector<double> *points = new vector<double>();
+            std::vector<double> *points = new std::vector<double>();
             if((spdFile->getDecomposedPtDefined() == SPD_TRUE) | (spdFile->getDiscretePtDefined() == SPD_TRUE))
             {
-                for(vector<SPDPulse*>::iterator iterPulses = pulses->begin(); iterPulses != pulses->end(); ++iterPulses)
+                for(std::vector<SPDPulse*>::iterator iterPulses = pulses->begin(); iterPulses != pulses->end(); ++iterPulses)
                 {
                     if(((*iterPulses)->numberOfReturns >= minNumReturns) & ((*iterPulses)->numberOfReturns > 0))
                     {
                         if(returnID == SPD_ALL_RETURNS)
                         {
-                            for(vector<SPDPoint*>::iterator iterPts = (*iterPulses)->pts->begin(); iterPts != (*iterPulses)->pts->end(); ++iterPts)
+                            for(std::vector<SPDPoint*>::iterator iterPts = (*iterPulses)->pts->begin(); iterPts != (*iterPulses)->pts->end(); ++iterPts)
                             {
-                                if(isnan(upThreshold) & isnan(lowThreshold))
+                                if(boost::math::isnan(upThreshold) & boost::math::isnan(lowThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -4822,7 +4816,7 @@ namespace spdlib{
                                         points->push_back((*iterPts)->range);
                                     }
                                 }
-                                else if(isnan(lowThreshold) & ((*iterPts)->range <= upThreshold))
+                                else if(boost::math::isnan(lowThreshold) & ((*iterPts)->range <= upThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -4845,7 +4839,7 @@ namespace spdlib{
                                         points->push_back((*iterPts)->range);
                                     }
                                 }
-                                else if(((*iterPts)->range >= lowThreshold) & isnan(upThreshold))
+                                else if(((*iterPts)->range >= lowThreshold) & boost::math::isnan(upThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -4896,7 +4890,7 @@ namespace spdlib{
                         else if(returnID == SPD_LAST_RETURNS)
                         {
                             SPDPoint *pt = (*iterPulses)->pts->back();
-                            if(isnan(upThreshold) & isnan(lowThreshold))
+                            if(boost::math::isnan(upThreshold) & boost::math::isnan(lowThreshold))
                             {
                                 if(classification == SPD_ALL_CLASSES)
                                 {
@@ -4919,7 +4913,7 @@ namespace spdlib{
                                     points->push_back(pt->range);
                                 }
                             }
-                            else if(isnan(lowThreshold) & (pt->range <= upThreshold))
+                            else if(boost::math::isnan(lowThreshold) & (pt->range <= upThreshold))
                             {
                                 if(classification == SPD_ALL_CLASSES)
                                 {
@@ -4942,7 +4936,7 @@ namespace spdlib{
                                     points->push_back(pt->range);
                                 }
                             }
-                            else if((pt->range >= lowThreshold) & isnan(upThreshold))
+                            else if((pt->range >= lowThreshold) & boost::math::isnan(upThreshold))
                             {
                                 if(classification == SPD_ALL_CLASSES)
                                 {
@@ -4992,7 +4986,7 @@ namespace spdlib{
                         else if(returnID == SPD_FIRST_RETURNS)
                         {
                             SPDPoint *pt = (*iterPulses)->pts->front();
-                            if(isnan(upThreshold) & isnan(lowThreshold))
+                            if(boost::math::isnan(upThreshold) & boost::math::isnan(lowThreshold))
                             {
                                 if(classification == SPD_ALL_CLASSES)
                                 {
@@ -5015,7 +5009,7 @@ namespace spdlib{
                                     points->push_back(pt->range);
                                 }
                             }
-                            else if(isnan(lowThreshold) & (pt->range <= upThreshold))
+                            else if(boost::math::isnan(lowThreshold) & (pt->range <= upThreshold))
                             {
                                 if(classification == SPD_ALL_CLASSES)
                                 {
@@ -5038,7 +5032,7 @@ namespace spdlib{
                                     points->push_back(pt->range);
                                 }
                             }
-                            else if((pt->range >= lowThreshold) & isnan(upThreshold))
+                            else if((pt->range >= lowThreshold) & boost::math::isnan(upThreshold))
                             {
                                 if(classification == SPD_ALL_CLASSES)
                                 {
@@ -5093,7 +5087,7 @@ namespace spdlib{
                             {
                                 ptLast = (*iterPulses)->pts->back();
                             }
-                            if(isnan(upThreshold) & isnan(lowThreshold))
+                            if(boost::math::isnan(upThreshold) & boost::math::isnan(lowThreshold))
                             {
                                 // First
                                 if(classification == SPD_ALL_CLASSES)
@@ -5142,7 +5136,7 @@ namespace spdlib{
                                     }
                                 }
                             }
-                            else if(isnan(lowThreshold))
+                            else if(boost::math::isnan(lowThreshold))
                             {
                                 if(ptFirst->range <= upThreshold)
                                 {
@@ -5195,7 +5189,7 @@ namespace spdlib{
                                     }
                                 }
                             }
-                            else if(isnan(upThreshold))
+                            else if(boost::math::isnan(upThreshold))
                             {
                                 if(ptFirst->range >= lowThreshold)
                                 {
@@ -5304,11 +5298,11 @@ namespace spdlib{
                         }
                         else if(returnID == SPD_NOTFIRST_RETURNS)
                         {
-                            vector<SPDPoint*>::iterator iterPts = (*iterPulses)->pts->begin();
+                            std::vector<SPDPoint*>::iterator iterPts = (*iterPulses)->pts->begin();
                             ++iterPts;
                             for(; iterPts != (*iterPulses)->pts->end(); ++iterPts)
                             {
-                                if(isnan(upThreshold) & isnan(lowThreshold))
+                                if(boost::math::isnan(upThreshold) & boost::math::isnan(lowThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -5331,7 +5325,7 @@ namespace spdlib{
                                         points->push_back((*iterPts)->range);
                                     }
                                 }
-                                else if(isnan(lowThreshold) & ((*iterPts)->range <= upThreshold))
+                                else if(boost::math::isnan(lowThreshold) & ((*iterPts)->range <= upThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -5354,7 +5348,7 @@ namespace spdlib{
                                         points->push_back((*iterPts)->range);
                                     }
                                 }
-                                else if(((*iterPts)->range >= lowThreshold) & isnan(upThreshold))
+                                else if(((*iterPts)->range >= lowThreshold) & boost::math::isnan(upThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -5404,9 +5398,9 @@ namespace spdlib{
                         }
                         else
                         {
-                            for(vector<SPDPoint*>::iterator iterPts = (*iterPulses)->pts->begin(); iterPts != (*iterPulses)->pts->end(); ++iterPts)
+                            for(std::vector<SPDPoint*>::iterator iterPts = (*iterPulses)->pts->begin(); iterPts != (*iterPulses)->pts->end(); ++iterPts)
                             {
-                                if(isnan(upThreshold) & isnan(lowThreshold))
+                                if(boost::math::isnan(upThreshold) & boost::math::isnan(lowThreshold))
                                 {
                                     if(returnID == (*iterPts)->returnID)
                                     {
@@ -5432,7 +5426,7 @@ namespace spdlib{
                                         }
                                     }
                                 }
-                                else if(isnan(lowThreshold) & ((*iterPts)->range <= upThreshold))
+                                else if(boost::math::isnan(lowThreshold) & ((*iterPts)->range <= upThreshold))
                                 {
                                     if(returnID == (*iterPts)->returnID)
                                     {
@@ -5458,7 +5452,7 @@ namespace spdlib{
                                         }
                                     }
                                 }
-                                else if(((*iterPts)->range >= lowThreshold) & isnan(upThreshold))
+                                else if(((*iterPts)->range >= lowThreshold) & boost::math::isnan(upThreshold))
                                 {
                                     if(returnID == (*iterPts)->returnID)
                                     {
@@ -5525,22 +5519,22 @@ namespace spdlib{
             }
             return points;
         };
-        virtual vector<double>* getPointsValuesWithinWidthParameters(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+        virtual std::vector<double>* getPointsValuesWithinWidthParameters(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
         {
-            vector<double> *points = new vector<double>();
+            std::vector<double> *points = new std::vector<double>();
             if((spdFile->getDecomposedPtDefined() == SPD_TRUE) | (spdFile->getDiscretePtDefined() == SPD_TRUE))
             {
-                for(vector<SPDPulse*>::iterator iterPulses = pulses->begin(); iterPulses != pulses->end(); ++iterPulses)
+                for(std::vector<SPDPulse*>::iterator iterPulses = pulses->begin(); iterPulses != pulses->end(); ++iterPulses)
                 {
                     if(((*iterPulses)->numberOfReturns >= minNumReturns) & ((*iterPulses)->numberOfReturns > 0))
                     {
                         if(returnID == SPD_ALL_RETURNS)
                         {
-                            for(vector<SPDPoint*>::iterator iterPts = (*iterPulses)->pts->begin(); iterPts != (*iterPulses)->pts->end(); ++iterPts)
+                            for(std::vector<SPDPoint*>::iterator iterPts = (*iterPulses)->pts->begin(); iterPts != (*iterPulses)->pts->end(); ++iterPts)
                             {
-                                if(isnan(heightUpThreshold) & isnan(heightLowThreshold))
+                                if(boost::math::isnan(heightUpThreshold) & boost::math::isnan(heightLowThreshold))
                                 {
-                                    if(isnan(upThreshold) & isnan(lowThreshold))
+                                    if(boost::math::isnan(upThreshold) & boost::math::isnan(lowThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -5563,7 +5557,7 @@ namespace spdlib{
                                             points->push_back((*iterPts)->widthReturn);
                                         }
                                     }
-                                    else if(isnan(lowThreshold) & ((*iterPts)->widthReturn <= upThreshold))
+                                    else if(boost::math::isnan(lowThreshold) & ((*iterPts)->widthReturn <= upThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -5586,7 +5580,7 @@ namespace spdlib{
                                             points->push_back((*iterPts)->widthReturn);
                                         }
                                     }
-                                    else if(((*iterPts)->widthReturn >= lowThreshold) & isnan(upThreshold))
+                                    else if(((*iterPts)->widthReturn >= lowThreshold) & boost::math::isnan(upThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -5633,9 +5627,9 @@ namespace spdlib{
                                         }
                                     }
                                 }
-                                else if(isnan(heightLowThreshold) & ((*iterPts)->height <= heightUpThreshold))
+                                else if(boost::math::isnan(heightLowThreshold) & ((*iterPts)->height <= heightUpThreshold))
                                 {
-                                    if(isnan(upThreshold) & isnan(lowThreshold))
+                                    if(boost::math::isnan(upThreshold) & boost::math::isnan(lowThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -5658,7 +5652,7 @@ namespace spdlib{
                                             points->push_back((*iterPts)->widthReturn);
                                         }
                                     }
-                                    else if(isnan(lowThreshold) & ((*iterPts)->widthReturn <= upThreshold))
+                                    else if(boost::math::isnan(lowThreshold) & ((*iterPts)->widthReturn <= upThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -5681,7 +5675,7 @@ namespace spdlib{
                                             points->push_back((*iterPts)->widthReturn);
                                         }
                                     }
-                                    else if(((*iterPts)->widthReturn >= lowThreshold) & isnan(upThreshold))
+                                    else if(((*iterPts)->widthReturn >= lowThreshold) & boost::math::isnan(upThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -5728,9 +5722,9 @@ namespace spdlib{
                                         }
                                     }
                                 }
-                                else if(((*iterPts)->height >= heightLowThreshold) & isnan(heightUpThreshold))
+                                else if(((*iterPts)->height >= heightLowThreshold) & boost::math::isnan(heightUpThreshold))
                                 {
-                                    if(isnan(upThreshold) & isnan(lowThreshold))
+                                    if(boost::math::isnan(upThreshold) & boost::math::isnan(lowThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -5753,7 +5747,7 @@ namespace spdlib{
                                             points->push_back((*iterPts)->widthReturn);
                                         }
                                     }
-                                    else if(isnan(lowThreshold) & ((*iterPts)->widthReturn <= upThreshold))
+                                    else if(boost::math::isnan(lowThreshold) & ((*iterPts)->widthReturn <= upThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -5776,7 +5770,7 @@ namespace spdlib{
                                             points->push_back((*iterPts)->widthReturn);
                                         }
                                     }
-                                    else if(((*iterPts)->widthReturn >= lowThreshold) & isnan(upThreshold))
+                                    else if(((*iterPts)->widthReturn >= lowThreshold) & boost::math::isnan(upThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -5825,7 +5819,7 @@ namespace spdlib{
                                 }
                                 else if(((*iterPts)->height >= heightLowThreshold) & ((*iterPts)->height <= heightUpThreshold))
                                 {
-                                    if(isnan(upThreshold) & isnan(lowThreshold))
+                                    if(boost::math::isnan(upThreshold) & boost::math::isnan(lowThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -5848,7 +5842,7 @@ namespace spdlib{
                                             points->push_back((*iterPts)->widthReturn);
                                         }
                                     }
-                                    else if(isnan(lowThreshold) & ((*iterPts)->widthReturn <= upThreshold))
+                                    else if(boost::math::isnan(lowThreshold) & ((*iterPts)->widthReturn <= upThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -5871,7 +5865,7 @@ namespace spdlib{
                                             points->push_back((*iterPts)->widthReturn);
                                         }
                                     }
-                                    else if(((*iterPts)->widthReturn >= lowThreshold) & isnan(upThreshold))
+                                    else if(((*iterPts)->widthReturn >= lowThreshold) & boost::math::isnan(upThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -5923,9 +5917,9 @@ namespace spdlib{
                         else if(returnID == SPD_LAST_RETURNS)
                         {
                             SPDPoint *pt = (*iterPulses)->pts->back();
-                            if(isnan(heightUpThreshold) & isnan(heightLowThreshold))
+                            if(boost::math::isnan(heightUpThreshold) & boost::math::isnan(heightLowThreshold))
                             {
-                                if(isnan(upThreshold) & isnan(lowThreshold))
+                                if(boost::math::isnan(upThreshold) & boost::math::isnan(lowThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -5948,7 +5942,7 @@ namespace spdlib{
                                         points->push_back(pt->widthReturn);
                                     }
                                 }
-                                else if(isnan(lowThreshold) & (pt->widthReturn <= upThreshold))
+                                else if(boost::math::isnan(lowThreshold) & (pt->widthReturn <= upThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -5971,7 +5965,7 @@ namespace spdlib{
                                         points->push_back(pt->widthReturn);
                                     }
                                 }
-                                else if((pt->widthReturn >= lowThreshold) & isnan(upThreshold))
+                                else if((pt->widthReturn >= lowThreshold) & boost::math::isnan(upThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -6018,9 +6012,9 @@ namespace spdlib{
                                     }
                                 }
                             }
-                            else if(isnan(heightLowThreshold) & (pt->height <= heightUpThreshold))
+                            else if(boost::math::isnan(heightLowThreshold) & (pt->height <= heightUpThreshold))
                             {
-                                if(isnan(upThreshold) & isnan(lowThreshold))
+                                if(boost::math::isnan(upThreshold) & boost::math::isnan(lowThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -6043,7 +6037,7 @@ namespace spdlib{
                                         points->push_back(pt->widthReturn);
                                     }
                                 }
-                                else if(isnan(lowThreshold) & (pt->widthReturn <= upThreshold))
+                                else if(boost::math::isnan(lowThreshold) & (pt->widthReturn <= upThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -6066,7 +6060,7 @@ namespace spdlib{
                                         points->push_back(pt->widthReturn);
                                     }
                                 }
-                                else if((pt->widthReturn >= lowThreshold) & isnan(upThreshold))
+                                else if((pt->widthReturn >= lowThreshold) & boost::math::isnan(upThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -6113,9 +6107,9 @@ namespace spdlib{
                                     }
                                 }
                             }
-                            else if((pt->height >= heightLowThreshold) & isnan(heightUpThreshold))
+                            else if((pt->height >= heightLowThreshold) & boost::math::isnan(heightUpThreshold))
                             {
-                                if(isnan(upThreshold) & isnan(lowThreshold))
+                                if(boost::math::isnan(upThreshold) & boost::math::isnan(lowThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -6138,7 +6132,7 @@ namespace spdlib{
                                         points->push_back(pt->widthReturn);
                                     }
                                 }
-                                else if(isnan(lowThreshold) & (pt->widthReturn <= upThreshold))
+                                else if(boost::math::isnan(lowThreshold) & (pt->widthReturn <= upThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -6161,7 +6155,7 @@ namespace spdlib{
                                         points->push_back(pt->widthReturn);
                                     }
                                 }
-                                else if((pt->widthReturn >= lowThreshold) & isnan(upThreshold))
+                                else if((pt->widthReturn >= lowThreshold) & boost::math::isnan(upThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -6210,7 +6204,7 @@ namespace spdlib{
                             }
                             else if((pt->height >= heightLowThreshold) & (pt->height <= heightUpThreshold))
                             {
-                                if(isnan(upThreshold) & isnan(lowThreshold))
+                                if(boost::math::isnan(upThreshold) & boost::math::isnan(lowThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -6233,7 +6227,7 @@ namespace spdlib{
                                         points->push_back(pt->widthReturn);
                                     }
                                 }
-                                else if(isnan(lowThreshold) & (pt->widthReturn <= upThreshold))
+                                else if(boost::math::isnan(lowThreshold) & (pt->widthReturn <= upThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -6256,7 +6250,7 @@ namespace spdlib{
                                         points->push_back(pt->widthReturn);
                                     }
                                 }
-                                else if((pt->widthReturn >= lowThreshold) & isnan(upThreshold))
+                                else if((pt->widthReturn >= lowThreshold) & boost::math::isnan(upThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -6307,9 +6301,9 @@ namespace spdlib{
                         else if(returnID == SPD_FIRST_RETURNS)
                         {
                             SPDPoint *pt = (*iterPulses)->pts->front();
-                            if(isnan(heightUpThreshold) & isnan(heightLowThreshold))
+                            if(boost::math::isnan(heightUpThreshold) & boost::math::isnan(heightLowThreshold))
                             {
-                                if(isnan(upThreshold) & isnan(lowThreshold))
+                                if(boost::math::isnan(upThreshold) & boost::math::isnan(lowThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -6332,7 +6326,7 @@ namespace spdlib{
                                         points->push_back(pt->widthReturn);
                                     }
                                 }
-                                else if(isnan(lowThreshold) & (pt->widthReturn <= upThreshold))
+                                else if(boost::math::isnan(lowThreshold) & (pt->widthReturn <= upThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -6355,7 +6349,7 @@ namespace spdlib{
                                         points->push_back(pt->widthReturn);
                                     }
                                 }
-                                else if((pt->widthReturn >= lowThreshold) & isnan(upThreshold))
+                                else if((pt->widthReturn >= lowThreshold) & boost::math::isnan(upThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -6402,9 +6396,9 @@ namespace spdlib{
                                     }
                                 }
                             }
-                            else if(isnan(heightLowThreshold) & (pt->height <= heightUpThreshold))
+                            else if(boost::math::isnan(heightLowThreshold) & (pt->height <= heightUpThreshold))
                             {
-                                if(isnan(upThreshold) & isnan(lowThreshold))
+                                if(boost::math::isnan(upThreshold) & boost::math::isnan(lowThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -6427,7 +6421,7 @@ namespace spdlib{
                                         points->push_back(pt->widthReturn);
                                     }
                                 }
-                                else if(isnan(lowThreshold) & (pt->widthReturn <= upThreshold))
+                                else if(boost::math::isnan(lowThreshold) & (pt->widthReturn <= upThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -6450,7 +6444,7 @@ namespace spdlib{
                                         points->push_back(pt->widthReturn);
                                     }
                                 }
-                                else if((pt->widthReturn >= lowThreshold) & isnan(upThreshold))
+                                else if((pt->widthReturn >= lowThreshold) & boost::math::isnan(upThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -6497,9 +6491,9 @@ namespace spdlib{
                                     }
                                 }
                             }
-                            else if((pt->height >= heightLowThreshold) & isnan(heightUpThreshold))
+                            else if((pt->height >= heightLowThreshold) & boost::math::isnan(heightUpThreshold))
                             {
-                                if(isnan(upThreshold) & isnan(lowThreshold))
+                                if(boost::math::isnan(upThreshold) & boost::math::isnan(lowThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -6522,7 +6516,7 @@ namespace spdlib{
                                         points->push_back(pt->widthReturn);
                                     }
                                 }
-                                else if(isnan(lowThreshold) & (pt->widthReturn <= upThreshold))
+                                else if(boost::math::isnan(lowThreshold) & (pt->widthReturn <= upThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -6545,7 +6539,7 @@ namespace spdlib{
                                         points->push_back(pt->widthReturn);
                                     }
                                 }
-                                else if((pt->widthReturn >= lowThreshold) & isnan(upThreshold))
+                                else if((pt->widthReturn >= lowThreshold) & boost::math::isnan(upThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -6594,7 +6588,7 @@ namespace spdlib{
                             }
                             else if((pt->height >= heightLowThreshold) & (pt->height <= heightUpThreshold))
                             {
-                                if(isnan(upThreshold) & isnan(lowThreshold))
+                                if(boost::math::isnan(upThreshold) & boost::math::isnan(lowThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -6617,7 +6611,7 @@ namespace spdlib{
                                         points->push_back(pt->widthReturn);
                                     }
                                 }
-                                else if(isnan(lowThreshold) & (pt->widthReturn <= upThreshold))
+                                else if(boost::math::isnan(lowThreshold) & (pt->widthReturn <= upThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -6640,7 +6634,7 @@ namespace spdlib{
                                         points->push_back(pt->widthReturn);
                                     }
                                 }
-                                else if((pt->widthReturn >= lowThreshold) & isnan(upThreshold))
+                                else if((pt->widthReturn >= lowThreshold) & boost::math::isnan(upThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -6697,10 +6691,10 @@ namespace spdlib{
                             {
                                 ptLast = (*iterPulses)->pts->back();
                             }
-                            if(isnan(upThreshold) & isnan(lowThreshold))
+                            if(boost::math::isnan(upThreshold) & boost::math::isnan(lowThreshold))
                             {
                                 // First
-                                if(isnan(heightUpThreshold) & isnan(heightLowThreshold))
+                                if(boost::math::isnan(heightUpThreshold) & boost::math::isnan(heightLowThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -6723,7 +6717,7 @@ namespace spdlib{
                                         points->push_back(ptFirst->widthReturn);
                                     }
                                 }
-                                else if(isnan(heightLowThreshold) & (ptFirst->height <= heightUpThreshold))
+                                else if(boost::math::isnan(heightLowThreshold) & (ptFirst->height <= heightUpThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -6746,7 +6740,7 @@ namespace spdlib{
                                         points->push_back(ptFirst->widthReturn);
                                     }
                                 }
-                                else if((ptFirst->height >= heightLowThreshold) & isnan(heightUpThreshold))
+                                else if((ptFirst->height >= heightLowThreshold) & boost::math::isnan(heightUpThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -6796,7 +6790,7 @@ namespace spdlib{
                                 // Last
                                 if(ptLast != NULL)
                                 {
-                                    if(isnan(heightUpThreshold) & isnan(heightLowThreshold))
+                                    if(boost::math::isnan(heightUpThreshold) & boost::math::isnan(heightLowThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -6819,7 +6813,7 @@ namespace spdlib{
                                             points->push_back(ptLast->widthReturn);
                                         }
                                     }
-                                    else if(isnan(heightLowThreshold) & (ptLast->height <= heightUpThreshold))
+                                    else if(boost::math::isnan(heightLowThreshold) & (ptLast->height <= heightUpThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -6842,7 +6836,7 @@ namespace spdlib{
                                             points->push_back(ptLast->widthReturn);
                                         }
                                     }
-                                    else if((ptLast->height >= heightLowThreshold) & isnan(heightUpThreshold))
+                                    else if((ptLast->height >= heightLowThreshold) & boost::math::isnan(heightUpThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -6890,11 +6884,11 @@ namespace spdlib{
                                     }
                                 }
                             }
-                            else if(isnan(lowThreshold))
+                            else if(boost::math::isnan(lowThreshold))
                             {
                                 if(ptFirst->widthReturn <= upThreshold)
                                 {
-                                    if(isnan(heightUpThreshold) & isnan(heightLowThreshold))
+                                    if(boost::math::isnan(heightUpThreshold) & boost::math::isnan(heightLowThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -6917,7 +6911,7 @@ namespace spdlib{
                                             points->push_back(ptFirst->widthReturn);
                                         }
                                     }
-                                    else if(isnan(heightLowThreshold) & (ptFirst->height <= heightUpThreshold))
+                                    else if(boost::math::isnan(heightLowThreshold) & (ptFirst->height <= heightUpThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -6940,7 +6934,7 @@ namespace spdlib{
                                             points->push_back(ptFirst->widthReturn);
                                         }
                                     }
-                                    else if((ptFirst->height >= heightLowThreshold) & isnan(heightUpThreshold))
+                                    else if((ptFirst->height >= heightLowThreshold) & boost::math::isnan(heightUpThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -6992,7 +6986,7 @@ namespace spdlib{
                                 {
                                     if(ptLast->widthReturn <= upThreshold)
                                     {
-                                        if(isnan(heightUpThreshold) & isnan(heightLowThreshold))
+                                        if(boost::math::isnan(heightUpThreshold) & boost::math::isnan(heightLowThreshold))
                                         {
                                             if(classification == SPD_ALL_CLASSES)
                                             {
@@ -7015,7 +7009,7 @@ namespace spdlib{
                                                 points->push_back(ptLast->widthReturn);
                                             }
                                         }
-                                        else if(isnan(heightLowThreshold) & (ptLast->height <= heightUpThreshold))
+                                        else if(boost::math::isnan(heightLowThreshold) & (ptLast->height <= heightUpThreshold))
                                         {
                                             if(classification == SPD_ALL_CLASSES)
                                             {
@@ -7038,7 +7032,7 @@ namespace spdlib{
                                                 points->push_back(ptLast->widthReturn);
                                             }
                                         }
-                                        else if((ptLast->height >= heightLowThreshold) & isnan(heightUpThreshold))
+                                        else if((ptLast->height >= heightLowThreshold) & boost::math::isnan(heightUpThreshold))
                                         {
                                             if(classification == SPD_ALL_CLASSES)
                                             {
@@ -7087,11 +7081,11 @@ namespace spdlib{
                                     }
                                 }
                             }
-                            else if(isnan(upThreshold))
+                            else if(boost::math::isnan(upThreshold))
                             {
                                 if(ptFirst->widthReturn >= lowThreshold)
                                 {
-                                    if(isnan(heightUpThreshold) & isnan(heightLowThreshold))
+                                    if(boost::math::isnan(heightUpThreshold) & boost::math::isnan(heightLowThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -7114,7 +7108,7 @@ namespace spdlib{
                                             points->push_back(ptFirst->widthReturn);
                                         }
                                     }
-                                    else if(isnan(heightLowThreshold) & (ptFirst->height <= heightUpThreshold))
+                                    else if(boost::math::isnan(heightLowThreshold) & (ptFirst->height <= heightUpThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -7137,7 +7131,7 @@ namespace spdlib{
                                             points->push_back(ptFirst->widthReturn);
                                         }
                                     }
-                                    else if((ptFirst->height >= heightLowThreshold) & isnan(heightUpThreshold))
+                                    else if((ptFirst->height >= heightLowThreshold) & boost::math::isnan(heightUpThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -7189,7 +7183,7 @@ namespace spdlib{
                                 {
                                     if(ptLast->widthReturn >= lowThreshold)
                                     {
-                                        if(isnan(heightUpThreshold) & isnan(heightLowThreshold))
+                                        if(boost::math::isnan(heightUpThreshold) & boost::math::isnan(heightLowThreshold))
                                         {
                                             if(classification == SPD_ALL_CLASSES)
                                             {
@@ -7212,7 +7206,7 @@ namespace spdlib{
                                                 points->push_back(ptLast->widthReturn);
                                             }
                                         }
-                                        else if(isnan(heightLowThreshold) & (ptLast->height <= heightUpThreshold))
+                                        else if(boost::math::isnan(heightLowThreshold) & (ptLast->height <= heightUpThreshold))
                                         {
                                             if(classification == SPD_ALL_CLASSES)
                                             {
@@ -7235,7 +7229,7 @@ namespace spdlib{
                                                 points->push_back(ptLast->widthReturn);
                                             }
                                         }
-                                        else if((ptLast->height >= heightLowThreshold) & isnan(heightUpThreshold))
+                                        else if((ptLast->height >= heightLowThreshold) & boost::math::isnan(heightUpThreshold))
                                         {
                                             if(classification == SPD_ALL_CLASSES)
                                             {
@@ -7289,7 +7283,7 @@ namespace spdlib{
                                 //First
                                 if((ptFirst->widthReturn >= lowThreshold) & (ptFirst->widthReturn <= upThreshold))
                                 {
-                                    if(isnan(heightUpThreshold) & isnan(heightLowThreshold))
+                                    if(boost::math::isnan(heightUpThreshold) & boost::math::isnan(heightLowThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -7312,7 +7306,7 @@ namespace spdlib{
                                             points->push_back(ptFirst->widthReturn);
                                         }
                                     }
-                                    else if(isnan(heightLowThreshold) & (ptFirst->height <= heightUpThreshold))
+                                    else if(boost::math::isnan(heightLowThreshold) & (ptFirst->height <= heightUpThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -7335,7 +7329,7 @@ namespace spdlib{
                                             points->push_back(ptFirst->widthReturn);
                                         }
                                     }
-                                    else if((ptFirst->height >= heightLowThreshold) & isnan(heightUpThreshold))
+                                    else if((ptFirst->height >= heightLowThreshold) & boost::math::isnan(heightUpThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -7387,7 +7381,7 @@ namespace spdlib{
                                 {
                                     if((ptLast->widthReturn >= lowThreshold) & (ptLast->widthReturn <= upThreshold))
                                     {
-                                        if(isnan(heightUpThreshold) & isnan(heightLowThreshold))
+                                        if(boost::math::isnan(heightUpThreshold) & boost::math::isnan(heightLowThreshold))
                                         {
                                             if(classification == SPD_ALL_CLASSES)
                                             {
@@ -7410,7 +7404,7 @@ namespace spdlib{
                                                 points->push_back(ptLast->widthReturn);
                                             }
                                         }
-                                        else if(isnan(heightLowThreshold) & (ptLast->height <= heightUpThreshold))
+                                        else if(boost::math::isnan(heightLowThreshold) & (ptLast->height <= heightUpThreshold))
                                         {
                                             if(classification == SPD_ALL_CLASSES)
                                             {
@@ -7433,7 +7427,7 @@ namespace spdlib{
                                                 points->push_back(ptLast->widthReturn);
                                             }
                                         }
-                                        else if((ptLast->height >= heightLowThreshold) & isnan(heightUpThreshold))
+                                        else if((ptLast->height >= heightLowThreshold) & boost::math::isnan(heightUpThreshold))
                                         {
                                             if(classification == SPD_ALL_CLASSES)
                                             {
@@ -7485,13 +7479,13 @@ namespace spdlib{
                         }
                         else if(returnID == SPD_NOTFIRST_RETURNS)
                         {
-                            vector<SPDPoint*>::iterator iterPts = (*iterPulses)->pts->begin();
+                            std::vector<SPDPoint*>::iterator iterPts = (*iterPulses)->pts->begin();
                             ++iterPts;
                             for(; iterPts != (*iterPulses)->pts->end(); ++iterPts)
                             {
-                                if(isnan(heightUpThreshold) & isnan(heightLowThreshold))
+                                if(boost::math::isnan(heightUpThreshold) & boost::math::isnan(heightLowThreshold))
                                 {
-                                    if(isnan(upThreshold) & isnan(lowThreshold))
+                                    if(boost::math::isnan(upThreshold) & boost::math::isnan(lowThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -7514,7 +7508,7 @@ namespace spdlib{
                                             points->push_back((*iterPts)->widthReturn);
                                         }
                                     }
-                                    else if(isnan(lowThreshold) & ((*iterPts)->widthReturn <= upThreshold))
+                                    else if(boost::math::isnan(lowThreshold) & ((*iterPts)->widthReturn <= upThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -7537,7 +7531,7 @@ namespace spdlib{
                                             points->push_back((*iterPts)->widthReturn);
                                         }
                                     }
-                                    else if(((*iterPts)->widthReturn >= lowThreshold) & isnan(upThreshold))
+                                    else if(((*iterPts)->widthReturn >= lowThreshold) & boost::math::isnan(upThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -7584,9 +7578,9 @@ namespace spdlib{
                                         }
                                     }
                                 }
-                                else if(isnan(heightLowThreshold) & ((*iterPts)->height <= heightUpThreshold))
+                                else if(boost::math::isnan(heightLowThreshold) & ((*iterPts)->height <= heightUpThreshold))
                                 {
-                                    if(isnan(upThreshold) & isnan(lowThreshold))
+                                    if(boost::math::isnan(upThreshold) & boost::math::isnan(lowThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -7609,7 +7603,7 @@ namespace spdlib{
                                             points->push_back((*iterPts)->widthReturn);
                                         }
                                     }
-                                    else if(isnan(lowThreshold) & ((*iterPts)->widthReturn <= upThreshold))
+                                    else if(boost::math::isnan(lowThreshold) & ((*iterPts)->widthReturn <= upThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -7632,7 +7626,7 @@ namespace spdlib{
                                             points->push_back((*iterPts)->widthReturn);
                                         }
                                     }
-                                    else if(((*iterPts)->widthReturn >= lowThreshold) & isnan(upThreshold))
+                                    else if(((*iterPts)->widthReturn >= lowThreshold) & boost::math::isnan(upThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -7679,9 +7673,9 @@ namespace spdlib{
                                         }
                                     }
                                 }
-                                else if(((*iterPts)->height >= heightLowThreshold) & isnan(heightUpThreshold))
+                                else if(((*iterPts)->height >= heightLowThreshold) & boost::math::isnan(heightUpThreshold))
                                 {
-                                    if(isnan(upThreshold) & isnan(lowThreshold))
+                                    if(boost::math::isnan(upThreshold) & boost::math::isnan(lowThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -7704,7 +7698,7 @@ namespace spdlib{
                                             points->push_back((*iterPts)->widthReturn);
                                         }
                                     }
-                                    else if(isnan(lowThreshold) & ((*iterPts)->widthReturn <= upThreshold))
+                                    else if(boost::math::isnan(lowThreshold) & ((*iterPts)->widthReturn <= upThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -7727,7 +7721,7 @@ namespace spdlib{
                                             points->push_back((*iterPts)->widthReturn);
                                         }
                                     }
-                                    else if(((*iterPts)->widthReturn >= lowThreshold) & isnan(upThreshold))
+                                    else if(((*iterPts)->widthReturn >= lowThreshold) & boost::math::isnan(upThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -7776,7 +7770,7 @@ namespace spdlib{
                                 }
                                 else if(((*iterPts)->height >= heightLowThreshold) & ((*iterPts)->height <= heightUpThreshold))
                                 {
-                                    if(isnan(upThreshold) & isnan(lowThreshold))
+                                    if(boost::math::isnan(upThreshold) & boost::math::isnan(lowThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -7799,7 +7793,7 @@ namespace spdlib{
                                             points->push_back((*iterPts)->widthReturn);
                                         }
                                     }
-                                    else if(isnan(lowThreshold) & ((*iterPts)->widthReturn <= upThreshold))
+                                    else if(boost::math::isnan(lowThreshold) & ((*iterPts)->widthReturn <= upThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -7822,7 +7816,7 @@ namespace spdlib{
                                             points->push_back((*iterPts)->widthReturn);
                                         }
                                     }
-                                    else if(((*iterPts)->widthReturn >= lowThreshold) & isnan(upThreshold))
+                                    else if(((*iterPts)->widthReturn >= lowThreshold) & boost::math::isnan(upThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -7873,11 +7867,11 @@ namespace spdlib{
                         }
                         else
                         {
-                            for(vector<SPDPoint*>::iterator iterPts = (*iterPulses)->pts->begin(); iterPts != (*iterPulses)->pts->end(); ++iterPts)
+                            for(std::vector<SPDPoint*>::iterator iterPts = (*iterPulses)->pts->begin(); iterPts != (*iterPulses)->pts->end(); ++iterPts)
                             {
-                                if(isnan(heightUpThreshold) & isnan(heightLowThreshold))
+                                if(boost::math::isnan(heightUpThreshold) & boost::math::isnan(heightLowThreshold))
                                 {
-                                    if(isnan(upThreshold) & isnan(lowThreshold))
+                                    if(boost::math::isnan(upThreshold) & boost::math::isnan(lowThreshold))
                                     {
                                         if(returnID == (*iterPts)->returnID)
                                         {
@@ -7903,7 +7897,7 @@ namespace spdlib{
                                             }
                                         }
                                     }
-                                    else if(isnan(lowThreshold) & ((*iterPts)->widthReturn <= upThreshold))
+                                    else if(boost::math::isnan(lowThreshold) & ((*iterPts)->widthReturn <= upThreshold))
                                     {
                                         if(returnID == (*iterPts)->returnID)
                                         {
@@ -7929,7 +7923,7 @@ namespace spdlib{
                                             }
                                         }
                                     }
-                                    else if(((*iterPts)->widthReturn >= lowThreshold) & isnan(upThreshold))
+                                    else if(((*iterPts)->widthReturn >= lowThreshold) & boost::math::isnan(upThreshold))
                                     {
                                         if(returnID == (*iterPts)->returnID)
                                         {
@@ -7982,9 +7976,9 @@ namespace spdlib{
                                         }
                                     }
                                 }
-                                else if(isnan(heightLowThreshold) & ((*iterPts)->height <= heightUpThreshold))
+                                else if(boost::math::isnan(heightLowThreshold) & ((*iterPts)->height <= heightUpThreshold))
                                 {
-                                    if(isnan(upThreshold) & isnan(lowThreshold))
+                                    if(boost::math::isnan(upThreshold) & boost::math::isnan(lowThreshold))
                                     {
                                         if(returnID == (*iterPts)->returnID)
                                         {
@@ -8010,7 +8004,7 @@ namespace spdlib{
                                             }
                                         }
                                     }
-                                    else if(isnan(lowThreshold) & ((*iterPts)->widthReturn <= upThreshold))
+                                    else if(boost::math::isnan(lowThreshold) & ((*iterPts)->widthReturn <= upThreshold))
                                     {
                                         if(returnID == (*iterPts)->returnID)
                                         {
@@ -8036,7 +8030,7 @@ namespace spdlib{
                                             }
                                         }
                                     }
-                                    else if(((*iterPts)->widthReturn >= lowThreshold) & isnan(upThreshold))
+                                    else if(((*iterPts)->widthReturn >= lowThreshold) & boost::math::isnan(upThreshold))
                                     {
                                         if(returnID == (*iterPts)->returnID)
                                         {
@@ -8089,9 +8083,9 @@ namespace spdlib{
                                         }
                                     }
                                 }
-                                else if(((*iterPts)->height >= heightLowThreshold) & isnan(heightUpThreshold))
+                                else if(((*iterPts)->height >= heightLowThreshold) & boost::math::isnan(heightUpThreshold))
                                 {
-                                    if(isnan(upThreshold) & isnan(lowThreshold))
+                                    if(boost::math::isnan(upThreshold) & boost::math::isnan(lowThreshold))
                                     {
                                         if(returnID == (*iterPts)->returnID)
                                         {
@@ -8117,7 +8111,7 @@ namespace spdlib{
                                             }
                                         }
                                     }
-                                    else if(isnan(lowThreshold) & ((*iterPts)->widthReturn <= upThreshold))
+                                    else if(boost::math::isnan(lowThreshold) & ((*iterPts)->widthReturn <= upThreshold))
                                     {
                                         if(returnID == (*iterPts)->returnID)
                                         {
@@ -8143,7 +8137,7 @@ namespace spdlib{
                                             }
                                         }
                                     }
-                                    else if(((*iterPts)->widthReturn >= lowThreshold) & isnan(upThreshold))
+                                    else if(((*iterPts)->widthReturn >= lowThreshold) & boost::math::isnan(upThreshold))
                                     {
                                         if(returnID == (*iterPts)->returnID)
                                         {
@@ -8198,7 +8192,7 @@ namespace spdlib{
                                 }
                                 else if(((*iterPts)->height >= heightLowThreshold) & ((*iterPts)->height <= heightUpThreshold))
                                 {
-                                    if(isnan(upThreshold) & isnan(lowThreshold))
+                                    if(boost::math::isnan(upThreshold) & boost::math::isnan(lowThreshold))
                                     {
                                         if(returnID == (*iterPts)->returnID)
                                         {
@@ -8224,7 +8218,7 @@ namespace spdlib{
                                             }
                                         }
                                     }
-                                    else if(isnan(lowThreshold) & ((*iterPts)->widthReturn <= upThreshold))
+                                    else if(boost::math::isnan(lowThreshold) & ((*iterPts)->widthReturn <= upThreshold))
                                     {
                                         if(returnID == (*iterPts)->returnID)
                                         {
@@ -8250,7 +8244,7 @@ namespace spdlib{
                                             }
                                         }
                                     }
-                                    else if(((*iterPts)->widthReturn >= lowThreshold) & isnan(upThreshold))
+                                    else if(((*iterPts)->widthReturn >= lowThreshold) & boost::math::isnan(upThreshold))
                                     {
                                         if(returnID == (*iterPts)->returnID)
                                         {
@@ -8318,20 +8312,20 @@ namespace spdlib{
             }
             return points;
         };
-        virtual vector<SPDPoint*>* getPointsWithinHeightParameters(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+        virtual std::vector<SPDPoint*>* getPointsWithinHeightParameters(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
         {
-            vector<SPDPoint*> *points = new vector<SPDPoint*>();
+            std::vector<SPDPoint*> *points = new std::vector<SPDPoint*>();
             if((spdFile->getDecomposedPtDefined() == SPD_TRUE) | (spdFile->getDiscretePtDefined() == SPD_TRUE))
             {
-                for(vector<SPDPulse*>::iterator iterPulses = pulses->begin(); iterPulses != pulses->end(); ++iterPulses)
+                for(std::vector<SPDPulse*>::iterator iterPulses = pulses->begin(); iterPulses != pulses->end(); ++iterPulses)
                 {
                     if(((*iterPulses)->numberOfReturns >= minNumReturns) & ((*iterPulses)->numberOfReturns > 0))
                     {
                         if(returnID == SPD_ALL_RETURNS)
                         {
-                            for(vector<SPDPoint*>::iterator iterPts = (*iterPulses)->pts->begin(); iterPts != (*iterPulses)->pts->end(); ++iterPts)
+                            for(std::vector<SPDPoint*>::iterator iterPts = (*iterPulses)->pts->begin(); iterPts != (*iterPulses)->pts->end(); ++iterPts)
                             {
-                                if(isnan(upThreshold) & isnan(lowThreshold))
+                                if(boost::math::isnan(upThreshold) & boost::math::isnan(lowThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -8354,7 +8348,7 @@ namespace spdlib{
                                         points->push_back(*iterPts);
                                     }
                                 }
-                                else if(isnan(lowThreshold) & ((*iterPts)->height <= upThreshold))
+                                else if(boost::math::isnan(lowThreshold) & ((*iterPts)->height <= upThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -8377,7 +8371,7 @@ namespace spdlib{
                                         points->push_back(*iterPts);
                                     }
                                 }
-                                else if(((*iterPts)->height >= lowThreshold) & isnan(upThreshold))
+                                else if(((*iterPts)->height >= lowThreshold) & boost::math::isnan(upThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -8428,7 +8422,7 @@ namespace spdlib{
                         else if(returnID == SPD_LAST_RETURNS)
                         {
                             SPDPoint *pt = (*iterPulses)->pts->back();
-                            if(isnan(upThreshold) & isnan(lowThreshold))
+                            if(boost::math::isnan(upThreshold) & boost::math::isnan(lowThreshold))
                             {
                                 if(classification == SPD_ALL_CLASSES)
                                 {
@@ -8451,7 +8445,7 @@ namespace spdlib{
                                     points->push_back(pt);
                                 }
                             }
-                            else if(isnan(lowThreshold) & (pt->height <= upThreshold))
+                            else if(boost::math::isnan(lowThreshold) & (pt->height <= upThreshold))
                             {
                                 if(classification == SPD_ALL_CLASSES)
                                 {
@@ -8474,7 +8468,7 @@ namespace spdlib{
                                     points->push_back(pt);
                                 }
                             }
-                            else if((pt->height >= lowThreshold) & isnan(upThreshold))
+                            else if((pt->height >= lowThreshold) & boost::math::isnan(upThreshold))
                             {
                                 if(classification == SPD_ALL_CLASSES)
                                 {
@@ -8524,7 +8518,7 @@ namespace spdlib{
                         else if(returnID == SPD_FIRST_RETURNS)
                         {
                             SPDPoint *pt = (*iterPulses)->pts->front();
-                            if(isnan(upThreshold) & isnan(lowThreshold))
+                            if(boost::math::isnan(upThreshold) & boost::math::isnan(lowThreshold))
                             {
                                 if(classification == SPD_ALL_CLASSES)
                                 {
@@ -8547,7 +8541,7 @@ namespace spdlib{
                                     points->push_back(pt);
                                 }
                             }
-                            else if(isnan(lowThreshold) & (pt->height <= upThreshold))
+                            else if(boost::math::isnan(lowThreshold) & (pt->height <= upThreshold))
                             {
                                 if(classification == SPD_ALL_CLASSES)
                                 {
@@ -8570,7 +8564,7 @@ namespace spdlib{
                                     points->push_back(pt);
                                 }
                             }
-                            else if((pt->height >= lowThreshold) & isnan(upThreshold))
+                            else if((pt->height >= lowThreshold) & boost::math::isnan(upThreshold))
                             {
                                 if(classification == SPD_ALL_CLASSES)
                                 {
@@ -8625,7 +8619,7 @@ namespace spdlib{
                             {
                                 ptLast = (*iterPulses)->pts->back();
                             }
-                            if(isnan(upThreshold) & isnan(lowThreshold))
+                            if(boost::math::isnan(upThreshold) & boost::math::isnan(lowThreshold))
                             {
                                 // First
                                 if(classification == SPD_ALL_CLASSES)
@@ -8674,7 +8668,7 @@ namespace spdlib{
                                     }
                                 }
                             }
-                            else if(isnan(lowThreshold))
+                            else if(boost::math::isnan(lowThreshold))
                             {
                                 if(ptFirst->height <= upThreshold)
                                 {
@@ -8727,7 +8721,7 @@ namespace spdlib{
                                     }
                                 }
                             }
-                            else if(isnan(upThreshold))
+                            else if(boost::math::isnan(upThreshold))
                             {
                                 if(ptFirst->height >= lowThreshold)
                                 {
@@ -8836,11 +8830,11 @@ namespace spdlib{
                         }
                         else if(returnID == SPD_NOTFIRST_RETURNS)
                         {
-                            vector<SPDPoint*>::iterator iterPts = (*iterPulses)->pts->begin();
+                            std::vector<SPDPoint*>::iterator iterPts = (*iterPulses)->pts->begin();
                             ++iterPts;
                             for(; iterPts != (*iterPulses)->pts->end(); ++iterPts)
                             {
-                                if(isnan(upThreshold) & isnan(lowThreshold))
+                                if(boost::math::isnan(upThreshold) & boost::math::isnan(lowThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -8863,7 +8857,7 @@ namespace spdlib{
                                         points->push_back(*iterPts);
                                     }
                                 }
-                                else if(isnan(lowThreshold) & ((*iterPts)->height <= upThreshold))
+                                else if(boost::math::isnan(lowThreshold) & ((*iterPts)->height <= upThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -8886,7 +8880,7 @@ namespace spdlib{
                                         points->push_back(*iterPts);
                                     }
                                 }
-                                else if(((*iterPts)->height >= lowThreshold) & isnan(upThreshold))
+                                else if(((*iterPts)->height >= lowThreshold) & boost::math::isnan(upThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -8936,9 +8930,9 @@ namespace spdlib{
                         }
                         else
                         {
-                            for(vector<SPDPoint*>::iterator iterPts = (*iterPulses)->pts->begin(); iterPts != (*iterPulses)->pts->end(); ++iterPts)
+                            for(std::vector<SPDPoint*>::iterator iterPts = (*iterPulses)->pts->begin(); iterPts != (*iterPulses)->pts->end(); ++iterPts)
                             {
-                                if(isnan(upThreshold) & isnan(lowThreshold))
+                                if(boost::math::isnan(upThreshold) & boost::math::isnan(lowThreshold))
                                 {
                                     if(returnID == (*iterPts)->returnID)
                                     {
@@ -8964,7 +8958,7 @@ namespace spdlib{
                                         }
                                     }
                                 }
-                                else if(isnan(lowThreshold) & ((*iterPts)->height <= upThreshold))
+                                else if(boost::math::isnan(lowThreshold) & ((*iterPts)->height <= upThreshold))
                                 {
                                     if(returnID == (*iterPts)->returnID)
                                     {
@@ -8990,7 +8984,7 @@ namespace spdlib{
                                         }
                                     }
                                 }
-                                else if(((*iterPts)->height >= lowThreshold) & isnan(upThreshold))
+                                else if(((*iterPts)->height >= lowThreshold) & boost::math::isnan(upThreshold))
                                 {
                                     if(returnID == (*iterPts)->returnID)
                                     {
@@ -9058,20 +9052,20 @@ namespace spdlib{
             
             return points;
         };
-        virtual vector<SPDPoint*>* getPointsWithinZParameters(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+        virtual std::vector<SPDPoint*>* getPointsWithinZParameters(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
         {
-            vector<SPDPoint*> *points = new vector<SPDPoint*>();
+            std::vector<SPDPoint*> *points = new std::vector<SPDPoint*>();
             if((spdFile->getDecomposedPtDefined() == SPD_TRUE) | (spdFile->getDiscretePtDefined() == SPD_TRUE))
             {
-                for(vector<SPDPulse*>::iterator iterPulses = pulses->begin(); iterPulses != pulses->end(); ++iterPulses)
+                for(std::vector<SPDPulse*>::iterator iterPulses = pulses->begin(); iterPulses != pulses->end(); ++iterPulses)
                 {
                     if(((*iterPulses)->numberOfReturns >= minNumReturns) & ((*iterPulses)->numberOfReturns > 0))
                     {
                         if(returnID == SPD_ALL_RETURNS)
                         {
-                            for(vector<SPDPoint*>::iterator iterPts = (*iterPulses)->pts->begin(); iterPts != (*iterPulses)->pts->end(); ++iterPts)
+                            for(std::vector<SPDPoint*>::iterator iterPts = (*iterPulses)->pts->begin(); iterPts != (*iterPulses)->pts->end(); ++iterPts)
                             {
-                                if(isnan(upThreshold) & isnan(lowThreshold))
+                                if(boost::math::isnan(upThreshold) & boost::math::isnan(lowThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -9094,7 +9088,7 @@ namespace spdlib{
                                         points->push_back(*iterPts);
                                     }
                                 }
-                                else if(isnan(lowThreshold) & ((*iterPts)->z <= upThreshold))
+                                else if(boost::math::isnan(lowThreshold) & ((*iterPts)->z <= upThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -9117,7 +9111,7 @@ namespace spdlib{
                                         points->push_back(*iterPts);
                                     }
                                 }
-                                else if(((*iterPts)->z >= lowThreshold) & isnan(upThreshold))
+                                else if(((*iterPts)->z >= lowThreshold) & boost::math::isnan(upThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -9168,7 +9162,7 @@ namespace spdlib{
                         else if(returnID == SPD_LAST_RETURNS)
                         {
                             SPDPoint *pt = (*iterPulses)->pts->back();
-                            if(isnan(upThreshold) & isnan(lowThreshold))
+                            if(boost::math::isnan(upThreshold) & boost::math::isnan(lowThreshold))
                             {
                                 if(classification == SPD_ALL_CLASSES)
                                 {
@@ -9191,7 +9185,7 @@ namespace spdlib{
                                     points->push_back(pt);
                                 }
                             }
-                            else if(isnan(lowThreshold) & (pt->z <= upThreshold))
+                            else if(boost::math::isnan(lowThreshold) & (pt->z <= upThreshold))
                             {
                                 if(classification == SPD_ALL_CLASSES)
                                 {
@@ -9214,7 +9208,7 @@ namespace spdlib{
                                     points->push_back(pt);
                                 }
                             }
-                            else if((pt->z >= lowThreshold) & isnan(upThreshold))
+                            else if((pt->z >= lowThreshold) & boost::math::isnan(upThreshold))
                             {
                                 if(classification == SPD_ALL_CLASSES)
                                 {
@@ -9264,7 +9258,7 @@ namespace spdlib{
                         else if(returnID == SPD_FIRST_RETURNS)
                         {
                             SPDPoint *pt = (*iterPulses)->pts->front();
-                            if(isnan(upThreshold) & isnan(lowThreshold))
+                            if(boost::math::isnan(upThreshold) & boost::math::isnan(lowThreshold))
                             {
                                 if(classification == SPD_ALL_CLASSES)
                                 {
@@ -9287,7 +9281,7 @@ namespace spdlib{
                                     points->push_back(pt);
                                 }
                             }
-                            else if(isnan(lowThreshold) & (pt->z <= upThreshold))
+                            else if(boost::math::isnan(lowThreshold) & (pt->z <= upThreshold))
                             {
                                 if(classification == SPD_ALL_CLASSES)
                                 {
@@ -9310,7 +9304,7 @@ namespace spdlib{
                                     points->push_back(pt);
                                 }
                             }
-                            else if((pt->z >= lowThreshold) & isnan(upThreshold))
+                            else if((pt->z >= lowThreshold) & boost::math::isnan(upThreshold))
                             {
                                 if(classification == SPD_ALL_CLASSES)
                                 {
@@ -9365,7 +9359,7 @@ namespace spdlib{
                             {
                                 ptLast = (*iterPulses)->pts->back();
                             }
-                            if(isnan(upThreshold) & isnan(lowThreshold))
+                            if(boost::math::isnan(upThreshold) & boost::math::isnan(lowThreshold))
                             {
                                 // First
                                 if(classification == SPD_ALL_CLASSES)
@@ -9414,7 +9408,7 @@ namespace spdlib{
                                     }
                                 }
                             }
-                            else if(isnan(lowThreshold))
+                            else if(boost::math::isnan(lowThreshold))
                             {
                                 if(ptFirst->z <= upThreshold)
                                 {
@@ -9467,7 +9461,7 @@ namespace spdlib{
                                     }
                                 }
                             }
-                            else if(isnan(upThreshold))
+                            else if(boost::math::isnan(upThreshold))
                             {
                                 if(ptFirst->z >= lowThreshold)
                                 {
@@ -9576,11 +9570,11 @@ namespace spdlib{
                         }
                         else if(returnID == SPD_NOTFIRST_RETURNS)
                         {
-                            vector<SPDPoint*>::iterator iterPts = (*iterPulses)->pts->begin();
+                            std::vector<SPDPoint*>::iterator iterPts = (*iterPulses)->pts->begin();
                             ++iterPts;
                             for(; iterPts != (*iterPulses)->pts->end(); ++iterPts)
                             {
-                                if(isnan(upThreshold) & isnan(lowThreshold))
+                                if(boost::math::isnan(upThreshold) & boost::math::isnan(lowThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -9603,7 +9597,7 @@ namespace spdlib{
                                         points->push_back(*iterPts);
                                     }
                                 }
-                                else if(isnan(lowThreshold) & ((*iterPts)->z <= upThreshold))
+                                else if(boost::math::isnan(lowThreshold) & ((*iterPts)->z <= upThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -9626,7 +9620,7 @@ namespace spdlib{
                                         points->push_back(*iterPts);
                                     }
                                 }
-                                else if(((*iterPts)->z >= lowThreshold) & isnan(upThreshold))
+                                else if(((*iterPts)->z >= lowThreshold) & boost::math::isnan(upThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -9676,9 +9670,9 @@ namespace spdlib{
                         }
                         else
                         {
-                            for(vector<SPDPoint*>::iterator iterPts = (*iterPulses)->pts->begin(); iterPts != (*iterPulses)->pts->end(); ++iterPts)
+                            for(std::vector<SPDPoint*>::iterator iterPts = (*iterPulses)->pts->begin(); iterPts != (*iterPulses)->pts->end(); ++iterPts)
                             {
-                                if(isnan(upThreshold) & isnan(lowThreshold))
+                                if(boost::math::isnan(upThreshold) & boost::math::isnan(lowThreshold))
                                 {
                                     if(returnID == (*iterPts)->returnID)
                                     {
@@ -9704,7 +9698,7 @@ namespace spdlib{
                                         }
                                     }
                                 }
-                                else if(isnan(lowThreshold) & ((*iterPts)->z <= upThreshold))
+                                else if(boost::math::isnan(lowThreshold) & ((*iterPts)->z <= upThreshold))
                                 {
                                     if(returnID == (*iterPts)->returnID)
                                     {
@@ -9730,7 +9724,7 @@ namespace spdlib{
                                         }
                                     }
                                 }
-                                else if(((*iterPts)->z >= lowThreshold) & isnan(upThreshold))
+                                else if(((*iterPts)->z >= lowThreshold) & boost::math::isnan(upThreshold))
                                 {
                                     if(returnID == (*iterPts)->returnID)
                                     {
@@ -9798,22 +9792,22 @@ namespace spdlib{
             
             return points;
         };
-        virtual vector<SPDPoint*>* getPointsWithinAmplitudeParameters(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+        virtual std::vector<SPDPoint*>* getPointsWithinAmplitudeParameters(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
         {
-            vector<SPDPoint*> *points = new vector<SPDPoint*>();
+            std::vector<SPDPoint*> *points = new std::vector<SPDPoint*>();
             if((spdFile->getDecomposedPtDefined() == SPD_TRUE) | (spdFile->getDiscretePtDefined() == SPD_TRUE))
             {
-                for(vector<SPDPulse*>::iterator iterPulses = pulses->begin(); iterPulses != pulses->end(); ++iterPulses)
+                for(std::vector<SPDPulse*>::iterator iterPulses = pulses->begin(); iterPulses != pulses->end(); ++iterPulses)
                 {
                     if(((*iterPulses)->numberOfReturns >= minNumReturns) & ((*iterPulses)->numberOfReturns > 0))
                     {
                         if(returnID == SPD_ALL_RETURNS)
                         {
-                            for(vector<SPDPoint*>::iterator iterPts = (*iterPulses)->pts->begin(); iterPts != (*iterPulses)->pts->end(); ++iterPts)
+                            for(std::vector<SPDPoint*>::iterator iterPts = (*iterPulses)->pts->begin(); iterPts != (*iterPulses)->pts->end(); ++iterPts)
                             {
-                                if(isnan(heightUpThreshold) & isnan(heightLowThreshold))
+                                if(boost::math::isnan(heightUpThreshold) & boost::math::isnan(heightLowThreshold))
                                 {
-                                    if(isnan(upThreshold) & isnan(lowThreshold))
+                                    if(boost::math::isnan(upThreshold) & boost::math::isnan(lowThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -9836,7 +9830,7 @@ namespace spdlib{
                                             points->push_back((*iterPts));
                                         }
                                     }
-                                    else if(isnan(lowThreshold) & ((*iterPts)->amplitudeReturn <= upThreshold))
+                                    else if(boost::math::isnan(lowThreshold) & ((*iterPts)->amplitudeReturn <= upThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -9859,7 +9853,7 @@ namespace spdlib{
                                             points->push_back((*iterPts));
                                         }
                                     }
-                                    else if(((*iterPts)->amplitudeReturn >= lowThreshold) & isnan(upThreshold))
+                                    else if(((*iterPts)->amplitudeReturn >= lowThreshold) & boost::math::isnan(upThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -9906,9 +9900,9 @@ namespace spdlib{
                                         }
                                     }
                                 }
-                                else if(isnan(heightLowThreshold) & ((*iterPts)->height <= heightUpThreshold))
+                                else if(boost::math::isnan(heightLowThreshold) & ((*iterPts)->height <= heightUpThreshold))
                                 {
-                                    if(isnan(upThreshold) & isnan(lowThreshold))
+                                    if(boost::math::isnan(upThreshold) & boost::math::isnan(lowThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -9931,7 +9925,7 @@ namespace spdlib{
                                             points->push_back((*iterPts));
                                         }
                                     }
-                                    else if(isnan(lowThreshold) & ((*iterPts)->amplitudeReturn <= upThreshold))
+                                    else if(boost::math::isnan(lowThreshold) & ((*iterPts)->amplitudeReturn <= upThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -9954,7 +9948,7 @@ namespace spdlib{
                                             points->push_back((*iterPts));
                                         }
                                     }
-                                    else if(((*iterPts)->amplitudeReturn >= lowThreshold) & isnan(upThreshold))
+                                    else if(((*iterPts)->amplitudeReturn >= lowThreshold) & boost::math::isnan(upThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -10001,9 +9995,9 @@ namespace spdlib{
                                         }
                                     }
                                 }
-                                else if(((*iterPts)->height >= heightLowThreshold) & isnan(heightUpThreshold))
+                                else if(((*iterPts)->height >= heightLowThreshold) & boost::math::isnan(heightUpThreshold))
                                 {
-                                    if(isnan(upThreshold) & isnan(lowThreshold))
+                                    if(boost::math::isnan(upThreshold) & boost::math::isnan(lowThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -10026,7 +10020,7 @@ namespace spdlib{
                                             points->push_back((*iterPts));
                                         }
                                     }
-                                    else if(isnan(lowThreshold) & ((*iterPts)->amplitudeReturn <= upThreshold))
+                                    else if(boost::math::isnan(lowThreshold) & ((*iterPts)->amplitudeReturn <= upThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -10049,7 +10043,7 @@ namespace spdlib{
                                             points->push_back((*iterPts));
                                         }
                                     }
-                                    else if(((*iterPts)->amplitudeReturn >= lowThreshold) & isnan(upThreshold))
+                                    else if(((*iterPts)->amplitudeReturn >= lowThreshold) & boost::math::isnan(upThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -10098,7 +10092,7 @@ namespace spdlib{
                                 }
                                 else if(((*iterPts)->height >= heightLowThreshold) & ((*iterPts)->height <= heightUpThreshold))
                                 {
-                                    if(isnan(upThreshold) & isnan(lowThreshold))
+                                    if(boost::math::isnan(upThreshold) & boost::math::isnan(lowThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -10121,7 +10115,7 @@ namespace spdlib{
                                             points->push_back((*iterPts));
                                         }
                                     }
-                                    else if(isnan(lowThreshold) & ((*iterPts)->amplitudeReturn <= upThreshold))
+                                    else if(boost::math::isnan(lowThreshold) & ((*iterPts)->amplitudeReturn <= upThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -10144,7 +10138,7 @@ namespace spdlib{
                                             points->push_back((*iterPts));
                                         }
                                     }
-                                    else if(((*iterPts)->amplitudeReturn >= lowThreshold) & isnan(upThreshold))
+                                    else if(((*iterPts)->amplitudeReturn >= lowThreshold) & boost::math::isnan(upThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -10196,9 +10190,9 @@ namespace spdlib{
                         else if(returnID == SPD_LAST_RETURNS)
                         {
                             SPDPoint *pt = (*iterPulses)->pts->back();
-                            if(isnan(heightUpThreshold) & isnan(heightLowThreshold))
+                            if(boost::math::isnan(heightUpThreshold) & boost::math::isnan(heightLowThreshold))
                             {
-                                if(isnan(upThreshold) & isnan(lowThreshold))
+                                if(boost::math::isnan(upThreshold) & boost::math::isnan(lowThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -10221,7 +10215,7 @@ namespace spdlib{
                                         points->push_back(pt);
                                     }
                                 }
-                                else if(isnan(lowThreshold) & (pt->amplitudeReturn <= upThreshold))
+                                else if(boost::math::isnan(lowThreshold) & (pt->amplitudeReturn <= upThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -10244,7 +10238,7 @@ namespace spdlib{
                                         points->push_back(pt);
                                     }
                                 }
-                                else if((pt->amplitudeReturn >= lowThreshold) & isnan(upThreshold))
+                                else if((pt->amplitudeReturn >= lowThreshold) & boost::math::isnan(upThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -10291,9 +10285,9 @@ namespace spdlib{
                                     }
                                 }
                             }
-                            else if(isnan(heightLowThreshold) & (pt->height <= heightUpThreshold))
+                            else if(boost::math::isnan(heightLowThreshold) & (pt->height <= heightUpThreshold))
                             {
-                                if(isnan(upThreshold) & isnan(lowThreshold))
+                                if(boost::math::isnan(upThreshold) & boost::math::isnan(lowThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -10316,7 +10310,7 @@ namespace spdlib{
                                         points->push_back(pt);
                                     }
                                 }
-                                else if(isnan(lowThreshold) & (pt->amplitudeReturn <= upThreshold))
+                                else if(boost::math::isnan(lowThreshold) & (pt->amplitudeReturn <= upThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -10339,7 +10333,7 @@ namespace spdlib{
                                         points->push_back(pt);
                                     }
                                 }
-                                else if((pt->amplitudeReturn >= lowThreshold) & isnan(upThreshold))
+                                else if((pt->amplitudeReturn >= lowThreshold) & boost::math::isnan(upThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -10386,9 +10380,9 @@ namespace spdlib{
                                     }
                                 }
                             }
-                            else if((pt->height >= heightLowThreshold) & isnan(heightUpThreshold))
+                            else if((pt->height >= heightLowThreshold) & boost::math::isnan(heightUpThreshold))
                             {
-                                if(isnan(upThreshold) & isnan(lowThreshold))
+                                if(boost::math::isnan(upThreshold) & boost::math::isnan(lowThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -10411,7 +10405,7 @@ namespace spdlib{
                                         points->push_back(pt);
                                     }
                                 }
-                                else if(isnan(lowThreshold) & (pt->amplitudeReturn <= upThreshold))
+                                else if(boost::math::isnan(lowThreshold) & (pt->amplitudeReturn <= upThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -10434,7 +10428,7 @@ namespace spdlib{
                                         points->push_back(pt);
                                     }
                                 }
-                                else if((pt->amplitudeReturn >= lowThreshold) & isnan(upThreshold))
+                                else if((pt->amplitudeReturn >= lowThreshold) & boost::math::isnan(upThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -10483,7 +10477,7 @@ namespace spdlib{
                             }
                             else if((pt->height >= heightLowThreshold) & (pt->height <= heightUpThreshold))
                             {
-                                if(isnan(upThreshold) & isnan(lowThreshold))
+                                if(boost::math::isnan(upThreshold) & boost::math::isnan(lowThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -10506,7 +10500,7 @@ namespace spdlib{
                                         points->push_back(pt);
                                     }
                                 }
-                                else if(isnan(lowThreshold) & (pt->amplitudeReturn <= upThreshold))
+                                else if(boost::math::isnan(lowThreshold) & (pt->amplitudeReturn <= upThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -10529,7 +10523,7 @@ namespace spdlib{
                                         points->push_back(pt);
                                     }
                                 }
-                                else if((pt->amplitudeReturn >= lowThreshold) & isnan(upThreshold))
+                                else if((pt->amplitudeReturn >= lowThreshold) & boost::math::isnan(upThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -10580,9 +10574,9 @@ namespace spdlib{
                         else if(returnID == SPD_FIRST_RETURNS)
                         {
                             SPDPoint *pt = (*iterPulses)->pts->front();
-                            if(isnan(heightUpThreshold) & isnan(heightLowThreshold))
+                            if(boost::math::isnan(heightUpThreshold) & boost::math::isnan(heightLowThreshold))
                             {
-                                if(isnan(upThreshold) & isnan(lowThreshold))
+                                if(boost::math::isnan(upThreshold) & boost::math::isnan(lowThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -10605,7 +10599,7 @@ namespace spdlib{
                                         points->push_back(pt);
                                     }
                                 }
-                                else if(isnan(lowThreshold) & (pt->amplitudeReturn <= upThreshold))
+                                else if(boost::math::isnan(lowThreshold) & (pt->amplitudeReturn <= upThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -10628,7 +10622,7 @@ namespace spdlib{
                                         points->push_back(pt);
                                     }
                                 }
-                                else if((pt->amplitudeReturn >= lowThreshold) & isnan(upThreshold))
+                                else if((pt->amplitudeReturn >= lowThreshold) & boost::math::isnan(upThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -10675,9 +10669,9 @@ namespace spdlib{
                                     }
                                 }
                             }
-                            else if(isnan(heightLowThreshold) & (pt->height <= heightUpThreshold))
+                            else if(boost::math::isnan(heightLowThreshold) & (pt->height <= heightUpThreshold))
                             {
-                                if(isnan(upThreshold) & isnan(lowThreshold))
+                                if(boost::math::isnan(upThreshold) & boost::math::isnan(lowThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -10700,7 +10694,7 @@ namespace spdlib{
                                         points->push_back(pt);
                                     }
                                 }
-                                else if(isnan(lowThreshold) & (pt->amplitudeReturn <= upThreshold))
+                                else if(boost::math::isnan(lowThreshold) & (pt->amplitudeReturn <= upThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -10723,7 +10717,7 @@ namespace spdlib{
                                         points->push_back(pt);
                                     }
                                 }
-                                else if((pt->amplitudeReturn >= lowThreshold) & isnan(upThreshold))
+                                else if((pt->amplitudeReturn >= lowThreshold) & boost::math::isnan(upThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -10770,9 +10764,9 @@ namespace spdlib{
                                     }
                                 }
                             }
-                            else if((pt->height >= heightLowThreshold) & isnan(heightUpThreshold))
+                            else if((pt->height >= heightLowThreshold) & boost::math::isnan(heightUpThreshold))
                             {
-                                if(isnan(upThreshold) & isnan(lowThreshold))
+                                if(boost::math::isnan(upThreshold) & boost::math::isnan(lowThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -10795,7 +10789,7 @@ namespace spdlib{
                                         points->push_back(pt);
                                     }
                                 }
-                                else if(isnan(lowThreshold) & (pt->amplitudeReturn <= upThreshold))
+                                else if(boost::math::isnan(lowThreshold) & (pt->amplitudeReturn <= upThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -10818,7 +10812,7 @@ namespace spdlib{
                                         points->push_back(pt);
                                     }
                                 }
-                                else if((pt->amplitudeReturn >= lowThreshold) & isnan(upThreshold))
+                                else if((pt->amplitudeReturn >= lowThreshold) & boost::math::isnan(upThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -10867,7 +10861,7 @@ namespace spdlib{
                             }
                             else if((pt->height >= heightLowThreshold) & (pt->height <= heightUpThreshold))
                             {
-                                if(isnan(upThreshold) & isnan(lowThreshold))
+                                if(boost::math::isnan(upThreshold) & boost::math::isnan(lowThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -10890,7 +10884,7 @@ namespace spdlib{
                                         points->push_back(pt);
                                     }
                                 }
-                                else if(isnan(lowThreshold) & (pt->amplitudeReturn <= upThreshold))
+                                else if(boost::math::isnan(lowThreshold) & (pt->amplitudeReturn <= upThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -10913,7 +10907,7 @@ namespace spdlib{
                                         points->push_back(pt);
                                     }
                                 }
-                                else if((pt->amplitudeReturn >= lowThreshold) & isnan(upThreshold))
+                                else if((pt->amplitudeReturn >= lowThreshold) & boost::math::isnan(upThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -10969,10 +10963,10 @@ namespace spdlib{
                             {
                                 ptLast = (*iterPulses)->pts->back();
                             }
-                            if(isnan(upThreshold) & isnan(lowThreshold))
+                            if(boost::math::isnan(upThreshold) & boost::math::isnan(lowThreshold))
                             {
                                 // First
-                                if(isnan(heightUpThreshold) & isnan(heightLowThreshold))
+                                if(boost::math::isnan(heightUpThreshold) & boost::math::isnan(heightLowThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -10995,7 +10989,7 @@ namespace spdlib{
                                         points->push_back(ptFirst);
                                     }
                                 }
-                                else if(isnan(heightLowThreshold) & (ptFirst->height <= heightUpThreshold))
+                                else if(boost::math::isnan(heightLowThreshold) & (ptFirst->height <= heightUpThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -11018,7 +11012,7 @@ namespace spdlib{
                                         points->push_back(ptFirst);
                                     }
                                 }
-                                else if((ptFirst->height >= heightLowThreshold) & isnan(heightUpThreshold))
+                                else if((ptFirst->height >= heightLowThreshold) & boost::math::isnan(heightUpThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -11068,7 +11062,7 @@ namespace spdlib{
                                 // Last
                                 if(ptLast != NULL)
                                 {
-                                    if(isnan(heightUpThreshold) & isnan(heightLowThreshold))
+                                    if(boost::math::isnan(heightUpThreshold) & boost::math::isnan(heightLowThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -11091,7 +11085,7 @@ namespace spdlib{
                                             points->push_back(ptLast);
                                         } 
                                     }
-                                    else if(isnan(heightLowThreshold) & (ptLast->height <= heightUpThreshold))
+                                    else if(boost::math::isnan(heightLowThreshold) & (ptLast->height <= heightUpThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -11114,7 +11108,7 @@ namespace spdlib{
                                             points->push_back(ptLast);
                                         }
                                     }
-                                    else if((ptLast->height >= heightLowThreshold) & isnan(heightUpThreshold))
+                                    else if((ptLast->height >= heightLowThreshold) & boost::math::isnan(heightUpThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -11162,11 +11156,11 @@ namespace spdlib{
                                     }
                                 }
                             }
-                            else if(isnan(lowThreshold))
+                            else if(boost::math::isnan(lowThreshold))
                             {
                                 if(ptFirst->amplitudeReturn <= upThreshold)
                                 {
-                                    if(isnan(heightUpThreshold) & isnan(heightLowThreshold))
+                                    if(boost::math::isnan(heightUpThreshold) & boost::math::isnan(heightLowThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -11189,7 +11183,7 @@ namespace spdlib{
                                             points->push_back(ptFirst);
                                         }
                                     }
-                                    else if(isnan(heightLowThreshold) & (ptFirst->height <= heightUpThreshold))
+                                    else if(boost::math::isnan(heightLowThreshold) & (ptFirst->height <= heightUpThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -11212,7 +11206,7 @@ namespace spdlib{
                                             points->push_back(ptFirst);
                                         }
                                     }
-                                    else if((ptFirst->height >= heightLowThreshold) & isnan(heightUpThreshold))
+                                    else if((ptFirst->height >= heightLowThreshold) & boost::math::isnan(heightUpThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -11264,7 +11258,7 @@ namespace spdlib{
                                 {
                                     if(ptLast->amplitudeReturn <= upThreshold)
                                     {
-                                        if(isnan(heightUpThreshold) & isnan(heightLowThreshold))
+                                        if(boost::math::isnan(heightUpThreshold) & boost::math::isnan(heightLowThreshold))
                                         {
                                             if(classification == SPD_ALL_CLASSES)
                                             {
@@ -11287,7 +11281,7 @@ namespace spdlib{
                                                 points->push_back(ptLast);
                                             }
                                         }
-                                        else if(isnan(heightLowThreshold) & (ptLast->height <= heightUpThreshold))
+                                        else if(boost::math::isnan(heightLowThreshold) & (ptLast->height <= heightUpThreshold))
                                         {
                                             if(classification == SPD_ALL_CLASSES)
                                             {
@@ -11310,7 +11304,7 @@ namespace spdlib{
                                                 points->push_back(ptLast);
                                             }
                                         }
-                                        else if((ptLast->height >= heightLowThreshold) & isnan(heightUpThreshold))
+                                        else if((ptLast->height >= heightLowThreshold) & boost::math::isnan(heightUpThreshold))
                                         {
                                             if(classification == SPD_ALL_CLASSES)
                                             {
@@ -11359,11 +11353,11 @@ namespace spdlib{
                                     }
                                 }
                             }
-                            else if(isnan(upThreshold))
+                            else if(boost::math::isnan(upThreshold))
                             {
                                 if(ptFirst->amplitudeReturn >= lowThreshold)
                                 {
-                                    if(isnan(heightUpThreshold) & isnan(heightLowThreshold))
+                                    if(boost::math::isnan(heightUpThreshold) & boost::math::isnan(heightLowThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -11386,7 +11380,7 @@ namespace spdlib{
                                             points->push_back(ptFirst);
                                         }
                                     }
-                                    else if(isnan(heightLowThreshold) & (ptFirst->height <= heightUpThreshold))
+                                    else if(boost::math::isnan(heightLowThreshold) & (ptFirst->height <= heightUpThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -11409,7 +11403,7 @@ namespace spdlib{
                                             points->push_back(ptFirst);
                                         }
                                     }
-                                    else if((ptFirst->height >= heightLowThreshold) & isnan(heightUpThreshold))
+                                    else if((ptFirst->height >= heightLowThreshold) & boost::math::isnan(heightUpThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -11461,7 +11455,7 @@ namespace spdlib{
                                 {
                                     if(ptLast->amplitudeReturn >= lowThreshold)
                                     {
-                                        if(isnan(heightUpThreshold) & isnan(heightLowThreshold))
+                                        if(boost::math::isnan(heightUpThreshold) & boost::math::isnan(heightLowThreshold))
                                         {
                                             if(classification == SPD_ALL_CLASSES)
                                             {
@@ -11484,7 +11478,7 @@ namespace spdlib{
                                                 points->push_back(ptLast);
                                             }
                                         }
-                                        else if(isnan(heightLowThreshold) & (ptLast->height <= heightUpThreshold))
+                                        else if(boost::math::isnan(heightLowThreshold) & (ptLast->height <= heightUpThreshold))
                                         {
                                             if(classification == SPD_ALL_CLASSES)
                                             {
@@ -11507,7 +11501,7 @@ namespace spdlib{
                                                 points->push_back(ptLast);
                                             }
                                         }
-                                        else if((ptLast->height >= heightLowThreshold) & isnan(heightUpThreshold))
+                                        else if((ptLast->height >= heightLowThreshold) & boost::math::isnan(heightUpThreshold))
                                         {
                                             if(classification == SPD_ALL_CLASSES)
                                             {
@@ -11560,7 +11554,7 @@ namespace spdlib{
                             {
                                 if((ptFirst->amplitudeReturn >= lowThreshold) & (ptFirst->amplitudeReturn <= upThreshold))
                                 {
-                                    if(isnan(heightUpThreshold) & isnan(heightLowThreshold))
+                                    if(boost::math::isnan(heightUpThreshold) & boost::math::isnan(heightLowThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -11583,7 +11577,7 @@ namespace spdlib{
                                             points->push_back(ptFirst);
                                         }
                                     }
-                                    else if(isnan(heightLowThreshold) & (ptFirst->height <= heightUpThreshold))
+                                    else if(boost::math::isnan(heightLowThreshold) & (ptFirst->height <= heightUpThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -11606,7 +11600,7 @@ namespace spdlib{
                                             points->push_back(ptFirst);
                                         }
                                     }
-                                    else if((ptFirst->height >= heightLowThreshold) & isnan(heightUpThreshold))
+                                    else if((ptFirst->height >= heightLowThreshold) & boost::math::isnan(heightUpThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -11658,7 +11652,7 @@ namespace spdlib{
                                 {
                                     if((ptLast->amplitudeReturn >= lowThreshold) & (ptLast->amplitudeReturn <= upThreshold))
                                     {
-                                        if(isnan(heightUpThreshold) & isnan(heightLowThreshold))
+                                        if(boost::math::isnan(heightUpThreshold) & boost::math::isnan(heightLowThreshold))
                                         {
                                             if(classification == SPD_ALL_CLASSES)
                                             {
@@ -11681,7 +11675,7 @@ namespace spdlib{
                                                 points->push_back(ptLast);
                                             }
                                         }
-                                        else if(isnan(heightLowThreshold) & (ptLast->height <= heightUpThreshold))
+                                        else if(boost::math::isnan(heightLowThreshold) & (ptLast->height <= heightUpThreshold))
                                         {
                                             if(classification == SPD_ALL_CLASSES)
                                             {
@@ -11704,7 +11698,7 @@ namespace spdlib{
                                                 points->push_back(ptLast);
                                             }
                                         }
-                                        else if((ptLast->height >= heightLowThreshold) & isnan(heightUpThreshold))
+                                        else if((ptLast->height >= heightLowThreshold) & boost::math::isnan(heightUpThreshold))
                                         {
                                             if(classification == SPD_ALL_CLASSES)
                                             {
@@ -11756,13 +11750,13 @@ namespace spdlib{
                         }
                         else if(returnID == SPD_NOTFIRST_RETURNS)
                         {
-                            vector<SPDPoint*>::iterator iterPts = (*iterPulses)->pts->begin();
+                            std::vector<SPDPoint*>::iterator iterPts = (*iterPulses)->pts->begin();
                             ++iterPts;
                             for(; iterPts != (*iterPulses)->pts->end(); ++iterPts)
                             {
-                                if(isnan(heightUpThreshold) & isnan(heightLowThreshold))
+                                if(boost::math::isnan(heightUpThreshold) & boost::math::isnan(heightLowThreshold))
                                 {
-                                    if(isnan(upThreshold) & isnan(lowThreshold))
+                                    if(boost::math::isnan(upThreshold) & boost::math::isnan(lowThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -11785,7 +11779,7 @@ namespace spdlib{
                                             points->push_back((*iterPts));
                                         }
                                     }
-                                    else if(isnan(lowThreshold) & ((*iterPts)->amplitudeReturn <= upThreshold))
+                                    else if(boost::math::isnan(lowThreshold) & ((*iterPts)->amplitudeReturn <= upThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -11808,7 +11802,7 @@ namespace spdlib{
                                             points->push_back((*iterPts));
                                         }
                                     }
-                                    else if(((*iterPts)->amplitudeReturn >= lowThreshold) & isnan(upThreshold))
+                                    else if(((*iterPts)->amplitudeReturn >= lowThreshold) & boost::math::isnan(upThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -11855,9 +11849,9 @@ namespace spdlib{
                                         }
                                     }
                                 }
-                                else if(isnan(heightLowThreshold) & ((*iterPts)->height <= heightUpThreshold))
+                                else if(boost::math::isnan(heightLowThreshold) & ((*iterPts)->height <= heightUpThreshold))
                                 {
-                                    if(isnan(upThreshold) & isnan(lowThreshold))
+                                    if(boost::math::isnan(upThreshold) & boost::math::isnan(lowThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -11880,7 +11874,7 @@ namespace spdlib{
                                             points->push_back((*iterPts));
                                         }
                                     }
-                                    else if(isnan(lowThreshold) & ((*iterPts)->amplitudeReturn <= upThreshold))
+                                    else if(boost::math::isnan(lowThreshold) & ((*iterPts)->amplitudeReturn <= upThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -11903,7 +11897,7 @@ namespace spdlib{
                                             points->push_back((*iterPts));
                                         }
                                     }
-                                    else if(((*iterPts)->amplitudeReturn >= lowThreshold) & isnan(upThreshold))
+                                    else if(((*iterPts)->amplitudeReturn >= lowThreshold) & boost::math::isnan(upThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -11950,9 +11944,9 @@ namespace spdlib{
                                         }
                                     }
                                 }
-                                else if(((*iterPts)->height >= heightLowThreshold) & isnan(heightUpThreshold))
+                                else if(((*iterPts)->height >= heightLowThreshold) & boost::math::isnan(heightUpThreshold))
                                 {
-                                    if(isnan(upThreshold) & isnan(lowThreshold))
+                                    if(boost::math::isnan(upThreshold) & boost::math::isnan(lowThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -11975,7 +11969,7 @@ namespace spdlib{
                                             points->push_back((*iterPts));
                                         }
                                     }
-                                    else if(isnan(lowThreshold) & ((*iterPts)->amplitudeReturn <= upThreshold))
+                                    else if(boost::math::isnan(lowThreshold) & ((*iterPts)->amplitudeReturn <= upThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -11998,7 +11992,7 @@ namespace spdlib{
                                             points->push_back((*iterPts));
                                         }
                                     }
-                                    else if(((*iterPts)->amplitudeReturn >= lowThreshold) & isnan(upThreshold))
+                                    else if(((*iterPts)->amplitudeReturn >= lowThreshold) & boost::math::isnan(upThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -12047,7 +12041,7 @@ namespace spdlib{
                                 }
                                 else if(((*iterPts)->height >= heightLowThreshold) & ((*iterPts)->height <= heightUpThreshold))
                                 {
-                                    if(isnan(upThreshold) & isnan(lowThreshold))
+                                    if(boost::math::isnan(upThreshold) & boost::math::isnan(lowThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -12070,7 +12064,7 @@ namespace spdlib{
                                             points->push_back((*iterPts));
                                         }
                                     }
-                                    else if(isnan(lowThreshold) & ((*iterPts)->amplitudeReturn <= upThreshold))
+                                    else if(boost::math::isnan(lowThreshold) & ((*iterPts)->amplitudeReturn <= upThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -12093,7 +12087,7 @@ namespace spdlib{
                                             points->push_back((*iterPts));
                                         }
                                     }
-                                    else if(((*iterPts)->amplitudeReturn >= lowThreshold) & isnan(upThreshold))
+                                    else if(((*iterPts)->amplitudeReturn >= lowThreshold) & boost::math::isnan(upThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -12144,11 +12138,11 @@ namespace spdlib{
                         }
                         else
                         {
-                            for(vector<SPDPoint*>::iterator iterPts = (*iterPulses)->pts->begin(); iterPts != (*iterPulses)->pts->end(); ++iterPts)
+                            for(std::vector<SPDPoint*>::iterator iterPts = (*iterPulses)->pts->begin(); iterPts != (*iterPulses)->pts->end(); ++iterPts)
                             {
-                                if(isnan(heightUpThreshold) & isnan(heightLowThreshold))
+                                if(boost::math::isnan(heightUpThreshold) & boost::math::isnan(heightLowThreshold))
                                 {
-                                    if(isnan(upThreshold) & isnan(lowThreshold))
+                                    if(boost::math::isnan(upThreshold) & boost::math::isnan(lowThreshold))
                                     {
                                         if(returnID == (*iterPts)->returnID)
                                         {
@@ -12174,7 +12168,7 @@ namespace spdlib{
                                             }
                                         }
                                     }
-                                    else if(isnan(lowThreshold) & ((*iterPts)->amplitudeReturn <= upThreshold))
+                                    else if(boost::math::isnan(lowThreshold) & ((*iterPts)->amplitudeReturn <= upThreshold))
                                     {
                                         if(returnID == (*iterPts)->returnID)
                                         {
@@ -12200,7 +12194,7 @@ namespace spdlib{
                                             }
                                         }
                                     }
-                                    else if(((*iterPts)->amplitudeReturn >= lowThreshold) & isnan(upThreshold))
+                                    else if(((*iterPts)->amplitudeReturn >= lowThreshold) & boost::math::isnan(upThreshold))
                                     {
                                         if(returnID == (*iterPts)->returnID)
                                         {
@@ -12253,9 +12247,9 @@ namespace spdlib{
                                         }
                                     }
                                 }
-                                else if(isnan(heightLowThreshold) & ((*iterPts)->height <= heightUpThreshold))
+                                else if(boost::math::isnan(heightLowThreshold) & ((*iterPts)->height <= heightUpThreshold))
                                 {
-                                    if(isnan(upThreshold) & isnan(lowThreshold))
+                                    if(boost::math::isnan(upThreshold) & boost::math::isnan(lowThreshold))
                                     {
                                         if(returnID == (*iterPts)->returnID)
                                         {
@@ -12281,7 +12275,7 @@ namespace spdlib{
                                             }
                                         }
                                     }
-                                    else if(isnan(lowThreshold) & ((*iterPts)->amplitudeReturn <= upThreshold))
+                                    else if(boost::math::isnan(lowThreshold) & ((*iterPts)->amplitudeReturn <= upThreshold))
                                     {
                                         if(returnID == (*iterPts)->returnID)
                                         {
@@ -12307,7 +12301,7 @@ namespace spdlib{
                                             }
                                         }
                                     }
-                                    else if(((*iterPts)->amplitudeReturn >= lowThreshold) & isnan(upThreshold))
+                                    else if(((*iterPts)->amplitudeReturn >= lowThreshold) & boost::math::isnan(upThreshold))
                                     {
                                         if(returnID == (*iterPts)->returnID)
                                         {
@@ -12360,9 +12354,9 @@ namespace spdlib{
                                         }
                                     }
                                 }
-                                else if(((*iterPts)->height >= heightLowThreshold) & isnan(heightUpThreshold))
+                                else if(((*iterPts)->height >= heightLowThreshold) & boost::math::isnan(heightUpThreshold))
                                 {
-                                    if(isnan(upThreshold) & isnan(lowThreshold))
+                                    if(boost::math::isnan(upThreshold) & boost::math::isnan(lowThreshold))
                                     {
                                         if(returnID == (*iterPts)->returnID)
                                         {
@@ -12388,7 +12382,7 @@ namespace spdlib{
                                             }
                                         }
                                     }
-                                    else if(isnan(lowThreshold) & ((*iterPts)->amplitudeReturn <= upThreshold))
+                                    else if(boost::math::isnan(lowThreshold) & ((*iterPts)->amplitudeReturn <= upThreshold))
                                     {
                                         if(returnID == (*iterPts)->returnID)
                                         {
@@ -12414,7 +12408,7 @@ namespace spdlib{
                                             }
                                         }
                                     }
-                                    else if(((*iterPts)->amplitudeReturn >= lowThreshold) & isnan(upThreshold))
+                                    else if(((*iterPts)->amplitudeReturn >= lowThreshold) & boost::math::isnan(upThreshold))
                                     {
                                         if(returnID == (*iterPts)->returnID)
                                         {
@@ -12469,7 +12463,7 @@ namespace spdlib{
                                 }
                                 else if(((*iterPts)->height >= heightLowThreshold) & ((*iterPts)->height <= heightUpThreshold))
                                 {
-                                    if(isnan(upThreshold) & isnan(lowThreshold))
+                                    if(boost::math::isnan(upThreshold) & boost::math::isnan(lowThreshold))
                                     {
                                         if(returnID == (*iterPts)->returnID)
                                         {
@@ -12495,7 +12489,7 @@ namespace spdlib{
                                             }
                                         }
                                     }
-                                    else if(isnan(lowThreshold) & ((*iterPts)->amplitudeReturn <= upThreshold))
+                                    else if(boost::math::isnan(lowThreshold) & ((*iterPts)->amplitudeReturn <= upThreshold))
                                     {
                                         if(returnID == (*iterPts)->returnID)
                                         {
@@ -12521,7 +12515,7 @@ namespace spdlib{
                                             }
                                         }
                                     }
-                                    else if(((*iterPts)->amplitudeReturn >= lowThreshold) & isnan(upThreshold))
+                                    else if(((*iterPts)->amplitudeReturn >= lowThreshold) & boost::math::isnan(upThreshold))
                                     {
                                         if(returnID == (*iterPts)->returnID)
                                         {
@@ -12590,20 +12584,20 @@ namespace spdlib{
 
             return points;
         };
-        virtual vector<SPDPoint*>* getPointsWithinRangeParameters(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+        virtual std::vector<SPDPoint*>* getPointsWithinRangeParameters(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
         {
-            vector<SPDPoint*> *points = new vector<SPDPoint*>();
+            std::vector<SPDPoint*> *points = new std::vector<SPDPoint*>();
             if((spdFile->getDecomposedPtDefined() == SPD_TRUE) | (spdFile->getDiscretePtDefined() == SPD_TRUE))
             {
-                for(vector<SPDPulse*>::iterator iterPulses = pulses->begin(); iterPulses != pulses->end(); ++iterPulses)
+                for(std::vector<SPDPulse*>::iterator iterPulses = pulses->begin(); iterPulses != pulses->end(); ++iterPulses)
                 {
                     if(((*iterPulses)->numberOfReturns >= minNumReturns) & ((*iterPulses)->numberOfReturns > 0))
                     {
                         if(returnID == SPD_ALL_RETURNS)
                         {
-                            for(vector<SPDPoint*>::iterator iterPts = (*iterPulses)->pts->begin(); iterPts != (*iterPulses)->pts->end(); ++iterPts)
+                            for(std::vector<SPDPoint*>::iterator iterPts = (*iterPulses)->pts->begin(); iterPts != (*iterPulses)->pts->end(); ++iterPts)
                             {
-                                if(isnan(upThreshold) & isnan(lowThreshold))
+                                if(boost::math::isnan(upThreshold) & boost::math::isnan(lowThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -12626,7 +12620,7 @@ namespace spdlib{
                                         points->push_back(*iterPts);
                                     }
                                 }
-                                else if(isnan(lowThreshold) & ((*iterPts)->range <= upThreshold))
+                                else if(boost::math::isnan(lowThreshold) & ((*iterPts)->range <= upThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -12649,7 +12643,7 @@ namespace spdlib{
                                         points->push_back(*iterPts);
                                     }
                                 }
-                                else if(((*iterPts)->range >= lowThreshold) & isnan(upThreshold))
+                                else if(((*iterPts)->range >= lowThreshold) & boost::math::isnan(upThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -12700,7 +12694,7 @@ namespace spdlib{
                         else if(returnID == SPD_LAST_RETURNS)
                         {
                             SPDPoint *pt = (*iterPulses)->pts->back();
-                            if(isnan(upThreshold) & isnan(lowThreshold))
+                            if(boost::math::isnan(upThreshold) & boost::math::isnan(lowThreshold))
                             {
                                 if(classification == SPD_ALL_CLASSES)
                                 {
@@ -12723,7 +12717,7 @@ namespace spdlib{
                                     points->push_back(pt);
                                 }
                             }
-                            else if(isnan(lowThreshold) & (pt->range <= upThreshold))
+                            else if(boost::math::isnan(lowThreshold) & (pt->range <= upThreshold))
                             {
                                 if(classification == SPD_ALL_CLASSES)
                                 {
@@ -12746,7 +12740,7 @@ namespace spdlib{
                                     points->push_back(pt);
                                 }
                             }
-                            else if((pt->range >= lowThreshold) & isnan(upThreshold))
+                            else if((pt->range >= lowThreshold) & boost::math::isnan(upThreshold))
                             {
                                 if(classification == SPD_ALL_CLASSES)
                                 {
@@ -12796,7 +12790,7 @@ namespace spdlib{
                         else if(returnID == SPD_FIRST_RETURNS)
                         {
                             SPDPoint *pt = (*iterPulses)->pts->front();
-                            if(isnan(upThreshold) & isnan(lowThreshold))
+                            if(boost::math::isnan(upThreshold) & boost::math::isnan(lowThreshold))
                             {
                                 if(classification == SPD_ALL_CLASSES)
                                 {
@@ -12819,7 +12813,7 @@ namespace spdlib{
                                     points->push_back(pt);
                                 }
                             }
-                            else if(isnan(lowThreshold) & (pt->range <= upThreshold))
+                            else if(boost::math::isnan(lowThreshold) & (pt->range <= upThreshold))
                             {
                                 if(classification == SPD_ALL_CLASSES)
                                 {
@@ -12842,7 +12836,7 @@ namespace spdlib{
                                     points->push_back(pt);
                                 }
                             }
-                            else if((pt->range >= lowThreshold) & isnan(upThreshold))
+                            else if((pt->range >= lowThreshold) & boost::math::isnan(upThreshold))
                             {
                                 if(classification == SPD_ALL_CLASSES)
                                 {
@@ -12897,7 +12891,7 @@ namespace spdlib{
                             {
                                 ptLast = (*iterPulses)->pts->back();
                             }
-                            if(isnan(upThreshold) & isnan(lowThreshold))
+                            if(boost::math::isnan(upThreshold) & boost::math::isnan(lowThreshold))
                             {
                                 // First
                                 if(classification == SPD_ALL_CLASSES)
@@ -12946,7 +12940,7 @@ namespace spdlib{
                                     }
                                 }
                             }
-                            else if(isnan(lowThreshold))
+                            else if(boost::math::isnan(lowThreshold))
                             {
                                 if(ptFirst->range <= upThreshold)
                                 {
@@ -12999,7 +12993,7 @@ namespace spdlib{
                                     }
                                 }
                             }
-                            else if(isnan(upThreshold))
+                            else if(boost::math::isnan(upThreshold))
                             {
                                 if(ptFirst->range >= lowThreshold)
                                 {
@@ -13108,11 +13102,11 @@ namespace spdlib{
                         }
                         else if(returnID == SPD_NOTFIRST_RETURNS)
                         {
-                            vector<SPDPoint*>::iterator iterPts = (*iterPulses)->pts->begin();
+                            std::vector<SPDPoint*>::iterator iterPts = (*iterPulses)->pts->begin();
                             ++iterPts;
                             for(; iterPts != (*iterPulses)->pts->end(); ++iterPts)
                             {
-                                if(isnan(upThreshold) & isnan(lowThreshold))
+                                if(boost::math::isnan(upThreshold) & boost::math::isnan(lowThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -13135,7 +13129,7 @@ namespace spdlib{
                                         points->push_back(*iterPts);
                                     }
                                 }
-                                else if(isnan(lowThreshold) & ((*iterPts)->range <= upThreshold))
+                                else if(boost::math::isnan(lowThreshold) & ((*iterPts)->range <= upThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -13158,7 +13152,7 @@ namespace spdlib{
                                         points->push_back(*iterPts);
                                     }
                                 }
-                                else if(((*iterPts)->range >= lowThreshold) & isnan(upThreshold))
+                                else if(((*iterPts)->range >= lowThreshold) & boost::math::isnan(upThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -13208,9 +13202,9 @@ namespace spdlib{
                         }
                         else
                         {
-                            for(vector<SPDPoint*>::iterator iterPts = (*iterPulses)->pts->begin(); iterPts != (*iterPulses)->pts->end(); ++iterPts)
+                            for(std::vector<SPDPoint*>::iterator iterPts = (*iterPulses)->pts->begin(); iterPts != (*iterPulses)->pts->end(); ++iterPts)
                             {
-                                if(isnan(upThreshold) & isnan(lowThreshold))
+                                if(boost::math::isnan(upThreshold) & boost::math::isnan(lowThreshold))
                                 {
                                     if(returnID == (*iterPts)->returnID)
                                     {
@@ -13236,7 +13230,7 @@ namespace spdlib{
                                         }
                                     }
                                 }
-                                else if(isnan(lowThreshold) & ((*iterPts)->range <= upThreshold))
+                                else if(boost::math::isnan(lowThreshold) & ((*iterPts)->range <= upThreshold))
                                 {
                                     if(returnID == (*iterPts)->returnID)
                                     {
@@ -13262,7 +13256,7 @@ namespace spdlib{
                                         }
                                     }
                                 }
-                                else if(((*iterPts)->range >= lowThreshold) & isnan(upThreshold))
+                                else if(((*iterPts)->range >= lowThreshold) & boost::math::isnan(upThreshold))
                                 {
                                     if(returnID == (*iterPts)->returnID)
                                     {
@@ -13329,22 +13323,22 @@ namespace spdlib{
             }
             return points;
         };
-        virtual vector<SPDPoint*>* getPointsWithinWidthParameters(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+        virtual std::vector<SPDPoint*>* getPointsWithinWidthParameters(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
         {
-            vector<SPDPoint*> *points = new vector<SPDPoint*>();
+            std::vector<SPDPoint*> *points = new std::vector<SPDPoint*>();
             if((spdFile->getDecomposedPtDefined() == SPD_TRUE) | (spdFile->getDiscretePtDefined() == SPD_TRUE))
             {
-                for(vector<SPDPulse*>::iterator iterPulses = pulses->begin(); iterPulses != pulses->end(); ++iterPulses)
+                for(std::vector<SPDPulse*>::iterator iterPulses = pulses->begin(); iterPulses != pulses->end(); ++iterPulses)
                 {
                     if(((*iterPulses)->numberOfReturns >= minNumReturns) & ((*iterPulses)->numberOfReturns > 0))
                     {
                         if(returnID == SPD_ALL_RETURNS)
                         {
-                            for(vector<SPDPoint*>::iterator iterPts = (*iterPulses)->pts->begin(); iterPts != (*iterPulses)->pts->end(); ++iterPts)
+                            for(std::vector<SPDPoint*>::iterator iterPts = (*iterPulses)->pts->begin(); iterPts != (*iterPulses)->pts->end(); ++iterPts)
                             {
-                                if(isnan(heightUpThreshold) & isnan(heightLowThreshold))
+                                if(boost::math::isnan(heightUpThreshold) & boost::math::isnan(heightLowThreshold))
                                 {
-                                    if(isnan(upThreshold) & isnan(lowThreshold))
+                                    if(boost::math::isnan(upThreshold) & boost::math::isnan(lowThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -13367,7 +13361,7 @@ namespace spdlib{
                                             points->push_back((*iterPts));
                                         }
                                     }
-                                    else if(isnan(lowThreshold) & ((*iterPts)->widthReturn <= upThreshold))
+                                    else if(boost::math::isnan(lowThreshold) & ((*iterPts)->widthReturn <= upThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -13390,7 +13384,7 @@ namespace spdlib{
                                             points->push_back((*iterPts));
                                         }
                                     }
-                                    else if(((*iterPts)->widthReturn >= lowThreshold) & isnan(upThreshold))
+                                    else if(((*iterPts)->widthReturn >= lowThreshold) & boost::math::isnan(upThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -13437,9 +13431,9 @@ namespace spdlib{
                                         }
                                     }
                                 }
-                                else if(isnan(heightLowThreshold) & ((*iterPts)->height <= heightUpThreshold))
+                                else if(boost::math::isnan(heightLowThreshold) & ((*iterPts)->height <= heightUpThreshold))
                                 {
-                                    if(isnan(upThreshold) & isnan(lowThreshold))
+                                    if(boost::math::isnan(upThreshold) & boost::math::isnan(lowThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -13462,7 +13456,7 @@ namespace spdlib{
                                             points->push_back((*iterPts));
                                         }
                                     }
-                                    else if(isnan(lowThreshold) & ((*iterPts)->widthReturn <= upThreshold))
+                                    else if(boost::math::isnan(lowThreshold) & ((*iterPts)->widthReturn <= upThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -13485,7 +13479,7 @@ namespace spdlib{
                                             points->push_back((*iterPts));
                                         }
                                     }
-                                    else if(((*iterPts)->widthReturn >= lowThreshold) & isnan(upThreshold))
+                                    else if(((*iterPts)->widthReturn >= lowThreshold) & boost::math::isnan(upThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -13532,9 +13526,9 @@ namespace spdlib{
                                         }
                                     }
                                 }
-                                else if(((*iterPts)->height >= heightLowThreshold) & isnan(heightUpThreshold))
+                                else if(((*iterPts)->height >= heightLowThreshold) & boost::math::isnan(heightUpThreshold))
                                 {
-                                    if(isnan(upThreshold) & isnan(lowThreshold))
+                                    if(boost::math::isnan(upThreshold) & boost::math::isnan(lowThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -13557,7 +13551,7 @@ namespace spdlib{
                                             points->push_back((*iterPts));
                                         }
                                     }
-                                    else if(isnan(lowThreshold) & ((*iterPts)->widthReturn <= upThreshold))
+                                    else if(boost::math::isnan(lowThreshold) & ((*iterPts)->widthReturn <= upThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -13580,7 +13574,7 @@ namespace spdlib{
                                             points->push_back((*iterPts));
                                         }
                                     }
-                                    else if(((*iterPts)->widthReturn >= lowThreshold) & isnan(upThreshold))
+                                    else if(((*iterPts)->widthReturn >= lowThreshold) & boost::math::isnan(upThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -13629,7 +13623,7 @@ namespace spdlib{
                                 }
                                 else if(((*iterPts)->height >= heightLowThreshold) & ((*iterPts)->height <= heightUpThreshold))
                                 {
-                                    if(isnan(upThreshold) & isnan(lowThreshold))
+                                    if(boost::math::isnan(upThreshold) & boost::math::isnan(lowThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -13652,7 +13646,7 @@ namespace spdlib{
                                             points->push_back((*iterPts));
                                         }
                                     }
-                                    else if(isnan(lowThreshold) & ((*iterPts)->widthReturn <= upThreshold))
+                                    else if(boost::math::isnan(lowThreshold) & ((*iterPts)->widthReturn <= upThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -13675,7 +13669,7 @@ namespace spdlib{
                                             points->push_back((*iterPts));
                                         }
                                     }
-                                    else if(((*iterPts)->widthReturn >= lowThreshold) & isnan(upThreshold))
+                                    else if(((*iterPts)->widthReturn >= lowThreshold) & boost::math::isnan(upThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -13727,9 +13721,9 @@ namespace spdlib{
                         else if(returnID == SPD_LAST_RETURNS)
                         {
                             SPDPoint *pt = (*iterPulses)->pts->back();
-                            if(isnan(heightUpThreshold) & isnan(heightLowThreshold))
+                            if(boost::math::isnan(heightUpThreshold) & boost::math::isnan(heightLowThreshold))
                             {
-                                if(isnan(upThreshold) & isnan(lowThreshold))
+                                if(boost::math::isnan(upThreshold) & boost::math::isnan(lowThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -13752,7 +13746,7 @@ namespace spdlib{
                                         points->push_back(pt);
                                     }
                                 }
-                                else if(isnan(lowThreshold) & (pt->widthReturn <= upThreshold))
+                                else if(boost::math::isnan(lowThreshold) & (pt->widthReturn <= upThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -13775,7 +13769,7 @@ namespace spdlib{
                                         points->push_back(pt);
                                     }
                                 }
-                                else if((pt->widthReturn >= lowThreshold) & isnan(upThreshold))
+                                else if((pt->widthReturn >= lowThreshold) & boost::math::isnan(upThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -13822,9 +13816,9 @@ namespace spdlib{
                                     }
                                 }
                             }
-                            else if(isnan(heightLowThreshold) & (pt->height <= heightUpThreshold))
+                            else if(boost::math::isnan(heightLowThreshold) & (pt->height <= heightUpThreshold))
                             {
-                                if(isnan(upThreshold) & isnan(lowThreshold))
+                                if(boost::math::isnan(upThreshold) & boost::math::isnan(lowThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -13847,7 +13841,7 @@ namespace spdlib{
                                         points->push_back(pt);
                                     }
                                 }
-                                else if(isnan(lowThreshold) & (pt->widthReturn <= upThreshold))
+                                else if(boost::math::isnan(lowThreshold) & (pt->widthReturn <= upThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -13870,7 +13864,7 @@ namespace spdlib{
                                         points->push_back(pt);
                                     }
                                 }
-                                else if((pt->widthReturn >= lowThreshold) & isnan(upThreshold))
+                                else if((pt->widthReturn >= lowThreshold) & boost::math::isnan(upThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -13917,9 +13911,9 @@ namespace spdlib{
                                     }
                                 }
                             }
-                            else if((pt->height >= heightLowThreshold) & isnan(heightUpThreshold))
+                            else if((pt->height >= heightLowThreshold) & boost::math::isnan(heightUpThreshold))
                             {
-                                if(isnan(upThreshold) & isnan(lowThreshold))
+                                if(boost::math::isnan(upThreshold) & boost::math::isnan(lowThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -13942,7 +13936,7 @@ namespace spdlib{
                                         points->push_back(pt);
                                     }
                                 }
-                                else if(isnan(lowThreshold) & (pt->widthReturn <= upThreshold))
+                                else if(boost::math::isnan(lowThreshold) & (pt->widthReturn <= upThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -13965,7 +13959,7 @@ namespace spdlib{
                                         points->push_back(pt);
                                     }
                                 }
-                                else if((pt->widthReturn >= lowThreshold) & isnan(upThreshold))
+                                else if((pt->widthReturn >= lowThreshold) & boost::math::isnan(upThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -14014,7 +14008,7 @@ namespace spdlib{
                             }
                             else if((pt->height >= heightLowThreshold) & (pt->height <= heightUpThreshold))
                             {
-                                if(isnan(upThreshold) & isnan(lowThreshold))
+                                if(boost::math::isnan(upThreshold) & boost::math::isnan(lowThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -14037,7 +14031,7 @@ namespace spdlib{
                                         points->push_back(pt);
                                     }
                                 }
-                                else if(isnan(lowThreshold) & (pt->widthReturn <= upThreshold))
+                                else if(boost::math::isnan(lowThreshold) & (pt->widthReturn <= upThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -14060,7 +14054,7 @@ namespace spdlib{
                                         points->push_back(pt);
                                     }
                                 }
-                                else if((pt->widthReturn >= lowThreshold) & isnan(upThreshold))
+                                else if((pt->widthReturn >= lowThreshold) & boost::math::isnan(upThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -14111,9 +14105,9 @@ namespace spdlib{
                         else if(returnID == SPD_FIRST_RETURNS)
                         {
                             SPDPoint *pt = (*iterPulses)->pts->front();
-                            if(isnan(heightUpThreshold) & isnan(heightLowThreshold))
+                            if(boost::math::isnan(heightUpThreshold) & boost::math::isnan(heightLowThreshold))
                             {
-                                if(isnan(upThreshold) & isnan(lowThreshold))
+                                if(boost::math::isnan(upThreshold) & boost::math::isnan(lowThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -14136,7 +14130,7 @@ namespace spdlib{
                                         points->push_back(pt);
                                     }
                                 }
-                                else if(isnan(lowThreshold) & (pt->widthReturn <= upThreshold))
+                                else if(boost::math::isnan(lowThreshold) & (pt->widthReturn <= upThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -14159,7 +14153,7 @@ namespace spdlib{
                                         points->push_back(pt);
                                     }
                                 }
-                                else if((pt->widthReturn >= lowThreshold) & isnan(upThreshold))
+                                else if((pt->widthReturn >= lowThreshold) & boost::math::isnan(upThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -14206,9 +14200,9 @@ namespace spdlib{
                                     }
                                 }
                             }
-                            else if(isnan(heightLowThreshold) & (pt->height <= heightUpThreshold))
+                            else if(boost::math::isnan(heightLowThreshold) & (pt->height <= heightUpThreshold))
                             {
-                                if(isnan(upThreshold) & isnan(lowThreshold))
+                                if(boost::math::isnan(upThreshold) & boost::math::isnan(lowThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -14231,7 +14225,7 @@ namespace spdlib{
                                         points->push_back(pt);
                                     }
                                 }
-                                else if(isnan(lowThreshold) & (pt->widthReturn <= upThreshold))
+                                else if(boost::math::isnan(lowThreshold) & (pt->widthReturn <= upThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -14254,7 +14248,7 @@ namespace spdlib{
                                         points->push_back(pt);
                                     }
                                 }
-                                else if((pt->widthReturn >= lowThreshold) & isnan(upThreshold))
+                                else if((pt->widthReturn >= lowThreshold) & boost::math::isnan(upThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -14301,9 +14295,9 @@ namespace spdlib{
                                     }
                                 }
                             }
-                            else if((pt->height >= heightLowThreshold) & isnan(heightUpThreshold))
+                            else if((pt->height >= heightLowThreshold) & boost::math::isnan(heightUpThreshold))
                             {
-                                if(isnan(upThreshold) & isnan(lowThreshold))
+                                if(boost::math::isnan(upThreshold) & boost::math::isnan(lowThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -14326,7 +14320,7 @@ namespace spdlib{
                                         points->push_back(pt);
                                     }
                                 }
-                                else if(isnan(lowThreshold) & (pt->widthReturn <= upThreshold))
+                                else if(boost::math::isnan(lowThreshold) & (pt->widthReturn <= upThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -14349,7 +14343,7 @@ namespace spdlib{
                                         points->push_back(pt);
                                     }
                                 }
-                                else if((pt->widthReturn >= lowThreshold) & isnan(upThreshold))
+                                else if((pt->widthReturn >= lowThreshold) & boost::math::isnan(upThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -14398,7 +14392,7 @@ namespace spdlib{
                             }
                             else if((pt->height >= heightLowThreshold) & (pt->height <= heightUpThreshold))
                             {
-                                if(isnan(upThreshold) & isnan(lowThreshold))
+                                if(boost::math::isnan(upThreshold) & boost::math::isnan(lowThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -14421,7 +14415,7 @@ namespace spdlib{
                                         points->push_back(pt);
                                     }
                                 }
-                                else if(isnan(lowThreshold) & (pt->widthReturn <= upThreshold))
+                                else if(boost::math::isnan(lowThreshold) & (pt->widthReturn <= upThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -14444,7 +14438,7 @@ namespace spdlib{
                                         points->push_back(pt);
                                     }
                                 }
-                                else if((pt->widthReturn >= lowThreshold) & isnan(upThreshold))
+                                else if((pt->widthReturn >= lowThreshold) & boost::math::isnan(upThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -14501,10 +14495,10 @@ namespace spdlib{
                             {
                                 ptLast = (*iterPulses)->pts->back();
                             }
-                            if(isnan(upThreshold) & isnan(lowThreshold))
+                            if(boost::math::isnan(upThreshold) & boost::math::isnan(lowThreshold))
                             {
                                 // First
-                                if(isnan(heightUpThreshold) & isnan(heightLowThreshold))
+                                if(boost::math::isnan(heightUpThreshold) & boost::math::isnan(heightLowThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -14527,7 +14521,7 @@ namespace spdlib{
                                         points->push_back(ptFirst);
                                     }
                                 }
-                                else if(isnan(heightLowThreshold) & (ptFirst->height <= heightUpThreshold))
+                                else if(boost::math::isnan(heightLowThreshold) & (ptFirst->height <= heightUpThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -14550,7 +14544,7 @@ namespace spdlib{
                                         points->push_back(ptFirst);
                                     }
                                 }
-                                else if((ptFirst->height >= heightLowThreshold) & isnan(heightUpThreshold))
+                                else if((ptFirst->height >= heightLowThreshold) & boost::math::isnan(heightUpThreshold))
                                 {
                                     if(classification == SPD_ALL_CLASSES)
                                     {
@@ -14600,7 +14594,7 @@ namespace spdlib{
                                 // Last
                                 if(ptLast != NULL)
                                 {
-                                    if(isnan(heightUpThreshold) & isnan(heightLowThreshold))
+                                    if(boost::math::isnan(heightUpThreshold) & boost::math::isnan(heightLowThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -14623,7 +14617,7 @@ namespace spdlib{
                                             points->push_back(ptLast);
                                         }
                                     }
-                                    else if(isnan(heightLowThreshold) & (ptLast->height <= heightUpThreshold))
+                                    else if(boost::math::isnan(heightLowThreshold) & (ptLast->height <= heightUpThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -14646,7 +14640,7 @@ namespace spdlib{
                                             points->push_back(ptLast);
                                         }
                                     }
-                                    else if((ptLast->height >= heightLowThreshold) & isnan(heightUpThreshold))
+                                    else if((ptLast->height >= heightLowThreshold) & boost::math::isnan(heightUpThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -14694,11 +14688,11 @@ namespace spdlib{
                                     }
                                 }
                             }
-                            else if(isnan(lowThreshold))
+                            else if(boost::math::isnan(lowThreshold))
                             {
                                 if(ptFirst->widthReturn <= upThreshold)
                                 {
-                                    if(isnan(heightUpThreshold) & isnan(heightLowThreshold))
+                                    if(boost::math::isnan(heightUpThreshold) & boost::math::isnan(heightLowThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -14721,7 +14715,7 @@ namespace spdlib{
                                             points->push_back(ptFirst);
                                         }
                                     }
-                                    else if(isnan(heightLowThreshold) & (ptFirst->height <= heightUpThreshold))
+                                    else if(boost::math::isnan(heightLowThreshold) & (ptFirst->height <= heightUpThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -14744,7 +14738,7 @@ namespace spdlib{
                                             points->push_back(ptFirst);
                                         }
                                     }
-                                    else if((ptFirst->height >= heightLowThreshold) & isnan(heightUpThreshold))
+                                    else if((ptFirst->height >= heightLowThreshold) & boost::math::isnan(heightUpThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -14796,7 +14790,7 @@ namespace spdlib{
                                 {
                                     if(ptLast->widthReturn <= upThreshold)
                                     {
-                                        if(isnan(heightUpThreshold) & isnan(heightLowThreshold))
+                                        if(boost::math::isnan(heightUpThreshold) & boost::math::isnan(heightLowThreshold))
                                         {
                                             if(classification == SPD_ALL_CLASSES)
                                             {
@@ -14819,7 +14813,7 @@ namespace spdlib{
                                                 points->push_back(ptLast);
                                             }
                                         }
-                                        else if(isnan(heightLowThreshold) & (ptLast->height <= heightUpThreshold))
+                                        else if(boost::math::isnan(heightLowThreshold) & (ptLast->height <= heightUpThreshold))
                                         {
                                             if(classification == SPD_ALL_CLASSES)
                                             {
@@ -14842,7 +14836,7 @@ namespace spdlib{
                                                 points->push_back(ptLast);
                                             }
                                         }
-                                        else if((ptLast->height >= heightLowThreshold) & isnan(heightUpThreshold))
+                                        else if((ptLast->height >= heightLowThreshold) & boost::math::isnan(heightUpThreshold))
                                         {
                                             if(classification == SPD_ALL_CLASSES)
                                             {
@@ -14891,11 +14885,11 @@ namespace spdlib{
                                     }
                                 }
                             }
-                            else if(isnan(upThreshold))
+                            else if(boost::math::isnan(upThreshold))
                             {
                                 if(ptFirst->widthReturn >= lowThreshold)
                                 {
-                                    if(isnan(heightUpThreshold) & isnan(heightLowThreshold))
+                                    if(boost::math::isnan(heightUpThreshold) & boost::math::isnan(heightLowThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -14918,7 +14912,7 @@ namespace spdlib{
                                             points->push_back(ptFirst);
                                         }
                                     }
-                                    else if(isnan(heightLowThreshold) & (ptFirst->height <= heightUpThreshold))
+                                    else if(boost::math::isnan(heightLowThreshold) & (ptFirst->height <= heightUpThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -14941,7 +14935,7 @@ namespace spdlib{
                                             points->push_back(ptFirst);
                                         }
                                     }
-                                    else if((ptFirst->height >= heightLowThreshold) & isnan(heightUpThreshold))
+                                    else if((ptFirst->height >= heightLowThreshold) & boost::math::isnan(heightUpThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -14993,7 +14987,7 @@ namespace spdlib{
                                 {
                                     if(ptLast->widthReturn >= lowThreshold)
                                     {
-                                        if(isnan(heightUpThreshold) & isnan(heightLowThreshold))
+                                        if(boost::math::isnan(heightUpThreshold) & boost::math::isnan(heightLowThreshold))
                                         {
                                             if(classification == SPD_ALL_CLASSES)
                                             {
@@ -15016,7 +15010,7 @@ namespace spdlib{
                                                 points->push_back(ptLast);
                                             }
                                         }
-                                        else if(isnan(heightLowThreshold) & (ptLast->height <= heightUpThreshold))
+                                        else if(boost::math::isnan(heightLowThreshold) & (ptLast->height <= heightUpThreshold))
                                         {
                                             if(classification == SPD_ALL_CLASSES)
                                             {
@@ -15039,7 +15033,7 @@ namespace spdlib{
                                                 points->push_back(ptLast);
                                             }
                                         }
-                                        else if((ptLast->height >= heightLowThreshold) & isnan(heightUpThreshold))
+                                        else if((ptLast->height >= heightLowThreshold) & boost::math::isnan(heightUpThreshold))
                                         {
                                             if(classification == SPD_ALL_CLASSES)
                                             {
@@ -15093,7 +15087,7 @@ namespace spdlib{
                                 //First
                                 if((ptFirst->widthReturn >= lowThreshold) & (ptFirst->widthReturn <= upThreshold))
                                 {
-                                    if(isnan(heightUpThreshold) & isnan(heightLowThreshold))
+                                    if(boost::math::isnan(heightUpThreshold) & boost::math::isnan(heightLowThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -15116,7 +15110,7 @@ namespace spdlib{
                                             points->push_back(ptFirst);
                                         }
                                     }
-                                    else if(isnan(heightLowThreshold) & (ptFirst->height <= heightUpThreshold))
+                                    else if(boost::math::isnan(heightLowThreshold) & (ptFirst->height <= heightUpThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -15139,7 +15133,7 @@ namespace spdlib{
                                             points->push_back(ptFirst);
                                         }
                                     }
-                                    else if((ptFirst->height >= heightLowThreshold) & isnan(heightUpThreshold))
+                                    else if((ptFirst->height >= heightLowThreshold) & boost::math::isnan(heightUpThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -15191,7 +15185,7 @@ namespace spdlib{
                                 {
                                     if((ptLast->widthReturn >= lowThreshold) & (ptLast->widthReturn <= upThreshold))
                                     {
-                                        if(isnan(heightUpThreshold) & isnan(heightLowThreshold))
+                                        if(boost::math::isnan(heightUpThreshold) & boost::math::isnan(heightLowThreshold))
                                         {
                                             if(classification == SPD_ALL_CLASSES)
                                             {
@@ -15214,7 +15208,7 @@ namespace spdlib{
                                                 points->push_back(ptLast);
                                             }
                                         }
-                                        else if(isnan(heightLowThreshold) & (ptLast->height <= heightUpThreshold))
+                                        else if(boost::math::isnan(heightLowThreshold) & (ptLast->height <= heightUpThreshold))
                                         {
                                             if(classification == SPD_ALL_CLASSES)
                                             {
@@ -15237,7 +15231,7 @@ namespace spdlib{
                                                 points->push_back(ptLast);
                                             }
                                         }
-                                        else if((ptLast->height >= heightLowThreshold) & isnan(heightUpThreshold))
+                                        else if((ptLast->height >= heightLowThreshold) & boost::math::isnan(heightUpThreshold))
                                         {
                                             if(classification == SPD_ALL_CLASSES)
                                             {
@@ -15289,13 +15283,13 @@ namespace spdlib{
                         }
                         else if(returnID == SPD_NOTFIRST_RETURNS)
                         {
-                            vector<SPDPoint*>::iterator iterPts = (*iterPulses)->pts->begin();
+                            std::vector<SPDPoint*>::iterator iterPts = (*iterPulses)->pts->begin();
                             ++iterPts;
                             for(; iterPts != (*iterPulses)->pts->end(); ++iterPts)
                             {
-                                if(isnan(heightUpThreshold) & isnan(heightLowThreshold))
+                                if(boost::math::isnan(heightUpThreshold) & boost::math::isnan(heightLowThreshold))
                                 {
-                                    if(isnan(upThreshold) & isnan(lowThreshold))
+                                    if(boost::math::isnan(upThreshold) & boost::math::isnan(lowThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -15318,7 +15312,7 @@ namespace spdlib{
                                             points->push_back((*iterPts));
                                         }
                                     }
-                                    else if(isnan(lowThreshold) & ((*iterPts)->widthReturn <= upThreshold))
+                                    else if(boost::math::isnan(lowThreshold) & ((*iterPts)->widthReturn <= upThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -15341,7 +15335,7 @@ namespace spdlib{
                                             points->push_back((*iterPts));
                                         }
                                     }
-                                    else if(((*iterPts)->widthReturn >= lowThreshold) & isnan(upThreshold))
+                                    else if(((*iterPts)->widthReturn >= lowThreshold) & boost::math::isnan(upThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -15388,9 +15382,9 @@ namespace spdlib{
                                         }
                                     }
                                 }
-                                else if(isnan(heightLowThreshold) & ((*iterPts)->height <= heightUpThreshold))
+                                else if(boost::math::isnan(heightLowThreshold) & ((*iterPts)->height <= heightUpThreshold))
                                 {
-                                    if(isnan(upThreshold) & isnan(lowThreshold))
+                                    if(boost::math::isnan(upThreshold) & boost::math::isnan(lowThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -15413,7 +15407,7 @@ namespace spdlib{
                                             points->push_back((*iterPts));
                                         }
                                     }
-                                    else if(isnan(lowThreshold) & ((*iterPts)->widthReturn <= upThreshold))
+                                    else if(boost::math::isnan(lowThreshold) & ((*iterPts)->widthReturn <= upThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -15436,7 +15430,7 @@ namespace spdlib{
                                             points->push_back((*iterPts));
                                         }
                                     }
-                                    else if(((*iterPts)->widthReturn >= lowThreshold) & isnan(upThreshold))
+                                    else if(((*iterPts)->widthReturn >= lowThreshold) & boost::math::isnan(upThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -15483,9 +15477,9 @@ namespace spdlib{
                                         }
                                     }
                                 }
-                                else if(((*iterPts)->height >= heightLowThreshold) & isnan(heightUpThreshold))
+                                else if(((*iterPts)->height >= heightLowThreshold) & boost::math::isnan(heightUpThreshold))
                                 {
-                                    if(isnan(upThreshold) & isnan(lowThreshold))
+                                    if(boost::math::isnan(upThreshold) & boost::math::isnan(lowThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -15508,7 +15502,7 @@ namespace spdlib{
                                             points->push_back((*iterPts));
                                         }
                                     }
-                                    else if(isnan(lowThreshold) & ((*iterPts)->widthReturn <= upThreshold))
+                                    else if(boost::math::isnan(lowThreshold) & ((*iterPts)->widthReturn <= upThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -15531,7 +15525,7 @@ namespace spdlib{
                                             points->push_back((*iterPts));
                                         }
                                     }
-                                    else if(((*iterPts)->widthReturn >= lowThreshold) & isnan(upThreshold))
+                                    else if(((*iterPts)->widthReturn >= lowThreshold) & boost::math::isnan(upThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -15580,7 +15574,7 @@ namespace spdlib{
                                 }
                                 else if(((*iterPts)->height >= heightLowThreshold) & ((*iterPts)->height <= heightUpThreshold))
                                 {
-                                    if(isnan(upThreshold) & isnan(lowThreshold))
+                                    if(boost::math::isnan(upThreshold) & boost::math::isnan(lowThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -15603,7 +15597,7 @@ namespace spdlib{
                                             points->push_back((*iterPts));
                                         }
                                     }
-                                    else if(isnan(lowThreshold) & ((*iterPts)->widthReturn <= upThreshold))
+                                    else if(boost::math::isnan(lowThreshold) & ((*iterPts)->widthReturn <= upThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -15626,7 +15620,7 @@ namespace spdlib{
                                             points->push_back((*iterPts));
                                         }
                                     }
-                                    else if(((*iterPts)->widthReturn >= lowThreshold) & isnan(upThreshold))
+                                    else if(((*iterPts)->widthReturn >= lowThreshold) & boost::math::isnan(upThreshold))
                                     {
                                         if(classification == SPD_ALL_CLASSES)
                                         {
@@ -15677,11 +15671,11 @@ namespace spdlib{
                         }
                         else
                         {
-                            for(vector<SPDPoint*>::iterator iterPts = (*iterPulses)->pts->begin(); iterPts != (*iterPulses)->pts->end(); ++iterPts)
+                            for(std::vector<SPDPoint*>::iterator iterPts = (*iterPulses)->pts->begin(); iterPts != (*iterPulses)->pts->end(); ++iterPts)
                             {
-                                if(isnan(heightUpThreshold) & isnan(heightLowThreshold))
+                                if(boost::math::isnan(heightUpThreshold) & boost::math::isnan(heightLowThreshold))
                                 {
-                                    if(isnan(upThreshold) & isnan(lowThreshold))
+                                    if(boost::math::isnan(upThreshold) & boost::math::isnan(lowThreshold))
                                     {
                                         if(returnID == (*iterPts)->returnID)
                                         {
@@ -15707,7 +15701,7 @@ namespace spdlib{
                                             }
                                         }
                                     }
-                                    else if(isnan(lowThreshold) & ((*iterPts)->widthReturn <= upThreshold))
+                                    else if(boost::math::isnan(lowThreshold) & ((*iterPts)->widthReturn <= upThreshold))
                                     {
                                         if(returnID == (*iterPts)->returnID)
                                         {
@@ -15733,7 +15727,7 @@ namespace spdlib{
                                             }
                                         }
                                     }
-                                    else if(((*iterPts)->widthReturn >= lowThreshold) & isnan(upThreshold))
+                                    else if(((*iterPts)->widthReturn >= lowThreshold) & boost::math::isnan(upThreshold))
                                     {
                                         if(returnID == (*iterPts)->returnID)
                                         {
@@ -15786,9 +15780,9 @@ namespace spdlib{
                                         }
                                     }
                                 }
-                                else if(isnan(heightLowThreshold) & ((*iterPts)->height <= heightUpThreshold))
+                                else if(boost::math::isnan(heightLowThreshold) & ((*iterPts)->height <= heightUpThreshold))
                                 {
-                                    if(isnan(upThreshold) & isnan(lowThreshold))
+                                    if(boost::math::isnan(upThreshold) & boost::math::isnan(lowThreshold))
                                     {
                                         if(returnID == (*iterPts)->returnID)
                                         {
@@ -15814,7 +15808,7 @@ namespace spdlib{
                                             }
                                         }
                                     }
-                                    else if(isnan(lowThreshold) & ((*iterPts)->widthReturn <= upThreshold))
+                                    else if(boost::math::isnan(lowThreshold) & ((*iterPts)->widthReturn <= upThreshold))
                                     {
                                         if(returnID == (*iterPts)->returnID)
                                         {
@@ -15840,7 +15834,7 @@ namespace spdlib{
                                             }
                                         }
                                     }
-                                    else if(((*iterPts)->widthReturn >= lowThreshold) & isnan(upThreshold))
+                                    else if(((*iterPts)->widthReturn >= lowThreshold) & boost::math::isnan(upThreshold))
                                     {
                                         if(returnID == (*iterPts)->returnID)
                                         {
@@ -15893,9 +15887,9 @@ namespace spdlib{
                                         }
                                     }
                                 }
-                                else if(((*iterPts)->height >= heightLowThreshold) & isnan(heightUpThreshold))
+                                else if(((*iterPts)->height >= heightLowThreshold) & boost::math::isnan(heightUpThreshold))
                                 {
-                                    if(isnan(upThreshold) & isnan(lowThreshold))
+                                    if(boost::math::isnan(upThreshold) & boost::math::isnan(lowThreshold))
                                     {
                                         if(returnID == (*iterPts)->returnID)
                                         {
@@ -15921,7 +15915,7 @@ namespace spdlib{
                                             }
                                         }
                                     }
-                                    else if(isnan(lowThreshold) & ((*iterPts)->widthReturn <= upThreshold))
+                                    else if(boost::math::isnan(lowThreshold) & ((*iterPts)->widthReturn <= upThreshold))
                                     {
                                         if(returnID == (*iterPts)->returnID)
                                         {
@@ -15947,7 +15941,7 @@ namespace spdlib{
                                             }
                                         }
                                     }
-                                    else if(((*iterPts)->widthReturn >= lowThreshold) & isnan(upThreshold))
+                                    else if(((*iterPts)->widthReturn >= lowThreshold) & boost::math::isnan(upThreshold))
                                     {
                                         if(returnID == (*iterPts)->returnID)
                                         {
@@ -16002,7 +15996,7 @@ namespace spdlib{
                                 }
                                 else if(((*iterPts)->height >= heightLowThreshold) & ((*iterPts)->height <= heightUpThreshold))
                                 {
-                                    if(isnan(upThreshold) & isnan(lowThreshold))
+                                    if(boost::math::isnan(upThreshold) & boost::math::isnan(lowThreshold))
                                     {
                                         if(returnID == (*iterPts)->returnID)
                                         {
@@ -16028,7 +16022,7 @@ namespace spdlib{
                                             }
                                         }
                                     }
-                                    else if(isnan(lowThreshold) & ((*iterPts)->widthReturn <= upThreshold))
+                                    else if(boost::math::isnan(lowThreshold) & ((*iterPts)->widthReturn <= upThreshold))
                                     {
                                         if(returnID == (*iterPts)->returnID)
                                         {
@@ -16054,7 +16048,7 @@ namespace spdlib{
                                             }
                                         }
                                     }
-                                    else if(((*iterPts)->widthReturn >= lowThreshold) & isnan(upThreshold))
+                                    else if(((*iterPts)->widthReturn >= lowThreshold) & boost::math::isnan(upThreshold))
                                     {
                                         if(returnID == (*iterPts)->returnID)
                                         {
@@ -16114,7 +16108,7 @@ namespace spdlib{
             }
             return points;
         };
-        virtual double calcBinnedMode(vector<double> *values, float resolution) throw(SPDProcessingException)
+        virtual double calcBinnedMode(std::vector<double> *values, float resolution) throw(SPDProcessingException)
         {
             double mode = 0;
             try
@@ -16134,24 +16128,24 @@ namespace spdlib{
                     {
                         if(resolution < 1)
                         {
-                            roundingAddition = numeric_cast<uint_fast32_t>(1/resolution);
+                            roundingAddition = boost::numeric_cast<uint_fast32_t>(1/resolution);
                         }
                         else 
                         {
                             roundingAddition = 1;
                         }
                         
-                        numBins = numeric_cast<uint_fast32_t>(((max - min)/resolution)+roundingAddition);
+                        numBins = boost::numeric_cast<uint_fast32_t>(((max - min)/resolution)+roundingAddition);
                     }
-                    catch(negative_overflow& e) 
+                    catch(boost::numeric::negative_overflow& e) 
                     {
                         throw SPDProcessingException(e.what());
                     }
-                    catch(positive_overflow& e) 
+                    catch(boost::numeric::positive_overflow& e) 
                     {
                         throw SPDProcessingException(e.what());
                     }
-                    catch(bad_numeric_cast& e) 
+                    catch(boost::numeric::bad_numeric_cast& e) 
                     {
                         throw SPDProcessingException(e.what());
                     }
@@ -16161,22 +16155,22 @@ namespace spdlib{
                        boost::uint_fast32_t *bins = new boost::uint_fast32_t[numBins];
                         double diff = 0;
                        boost::uint_fast32_t idx = 0;
-                        for(vector<double>::iterator iterVals = values->begin(); iterVals != values->end(); ++iterVals)
+                        for(std::vector<double>::iterator iterVals = values->begin(); iterVals != values->end(); ++iterVals)
                         {
                             diff = ((*iterVals) - min) / resolution;
                             try
                             {
-                                idx = numeric_cast<uint_fast32_t>(diff);
+                                idx = boost::numeric_cast<uint_fast32_t>(diff);
                             }
-                            catch(negative_overflow& e) 
+                            catch(boost::numeric::negative_overflow& e) 
                             {
                                 throw SPDProcessingException(e.what());
                             }
-                            catch(positive_overflow& e) 
+                            catch(boost::numeric::positive_overflow& e) 
                             {
                                 throw SPDProcessingException(e.what());
                             }
-                            catch(bad_numeric_cast& e) 
+                            catch(boost::numeric::bad_numeric_cast& e) 
                             {
                                 throw SPDProcessingException(e.what());
                             }
@@ -16226,7 +16220,7 @@ namespace spdlib{
             }
             return mode;
         };
-        virtual double* binData(vector<double> *values, float resolution,boost::uint_fast32_t *numBins, double min, double max) throw(SPDProcessingException)
+        virtual double* binData(std::vector<double> *values, float resolution,boost::uint_fast32_t *numBins, double min, double max) throw(SPDProcessingException)
         {
             double *bins = NULL;
             try
@@ -16243,24 +16237,24 @@ namespace spdlib{
                     {
                         if(resolution < 1)
                         {
-                            roundingAddition = numeric_cast<uint_fast32_t>(1/resolution);
+                            roundingAddition = boost::numeric_cast<uint_fast32_t>(1/resolution);
                         }
                         else 
                         {
                             roundingAddition = 1;
                         }
                         
-                        *numBins = numeric_cast<uint_fast32_t>(((max - min)/resolution)+roundingAddition);
+                        *numBins = boost::numeric_cast<uint_fast32_t>(((max - min)/resolution)+roundingAddition);
                     }
-                    catch(negative_overflow& e) 
+                    catch(boost::numeric::negative_overflow& e) 
                     {
                         throw SPDProcessingException(e.what());
                     }
-                    catch(positive_overflow& e) 
+                    catch(boost::numeric::positive_overflow& e) 
                     {
                         throw SPDProcessingException(e.what());
                     }
-                    catch(bad_numeric_cast& e) 
+                    catch(boost::numeric::bad_numeric_cast& e) 
                     {
                         throw SPDProcessingException(e.what());
                     }
@@ -16275,22 +16269,22 @@ namespace spdlib{
                         
                         double diff = 0;
                        boost::uint_fast32_t idx = 0;
-                        for(vector<double>::iterator iterVals = values->begin(); iterVals != values->end(); ++iterVals)
+                        for(std::vector<double>::iterator iterVals = values->begin(); iterVals != values->end(); ++iterVals)
                         {
                             diff = ((*iterVals) - min) / resolution;
                             try
                             {
-                                idx = numeric_cast<uint_fast32_t>(diff);
+                                idx = boost::numeric_cast<uint_fast32_t>(diff);
                             }
-                            catch(negative_overflow& e) 
+                            catch(boost::numeric::negative_overflow& e) 
                             {
                                 throw SPDProcessingException(e.what());
                             }
-                            catch(positive_overflow& e) 
+                            catch(boost::numeric::positive_overflow& e) 
                             {
                                 throw SPDProcessingException(e.what());
                             }
-                            catch(bad_numeric_cast& e) 
+                            catch(boost::numeric::bad_numeric_cast& e) 
                             {
                                 throw SPDProcessingException(e.what());
                             }
@@ -16328,7 +16322,7 @@ namespace spdlib{
 	{
 	public: 
 		SPDMetricCalcNumPulses(uint_fast16_t minNumReturns=0):SPDMetricCalc(SPD_ALL_RETURNS, SPD_ALL_CLASSES, minNumReturns, 0, 0, 0, 0){};
-		double calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
+		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcNumPulses(){};
 	};
     
@@ -16340,7 +16334,7 @@ namespace spdlib{
             this->resolution = resolution;
             this->radius = radius;
         };
-		double calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
+		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcCanopyCover(){};
     protected:
         float resolution;
@@ -16355,7 +16349,7 @@ namespace spdlib{
             this->resolution = resolution;
             this->radius = radius;
         };
-		double calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
+		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcCanopyCoverPercent(){};
     protected:
         float resolution;
@@ -16374,7 +16368,7 @@ namespace spdlib{
         {
             this->vRes = vRes;
         };
-		double calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
+		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcLeeOpennessHeight(){};
     protected:
         float vRes;
@@ -16384,7 +16378,7 @@ namespace spdlib{
 	{
 	public: 
 		SPDMetricCalcNumReturnsHeight(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
-		double calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
+		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcNumReturnsHeight(){};
 	};
     
@@ -16392,7 +16386,7 @@ namespace spdlib{
 	{
 	public: 
 		SPDMetricCalcSumHeight(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
-		double calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
+		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcSumHeight(){};
 	};
     
@@ -16400,7 +16394,7 @@ namespace spdlib{
 	{
 	public: 
 		SPDMetricCalcMeanHeight(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
-		double calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
+		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcMeanHeight(){};
 	};
     
@@ -16408,7 +16402,7 @@ namespace spdlib{
 	{
 	public: 
 		SPDMetricCalcMedianHeight(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
-		double calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
+		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcMedianHeight(){};
 	};
     
@@ -16419,7 +16413,7 @@ namespace spdlib{
         {
             this->resolution = resolution;  
         };
-		double calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
+		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcModeHeight(){};
     protected:
         float resolution;
@@ -16429,7 +16423,7 @@ namespace spdlib{
 	{
 	public: 
 		SPDMetricCalcMinHeight(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
-		double calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
+		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcMinHeight(){};
 	};
     
@@ -16437,7 +16431,7 @@ namespace spdlib{
 	{
 	public: 
 		SPDMetricCalcMaxHeight(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
-		double calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
+		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcMaxHeight(){};
 	};
     
@@ -16448,7 +16442,7 @@ namespace spdlib{
         {
             this->resolution = resolution;
         };
-		double calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
+		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcDominantHeight(){};
     protected:
         float resolution;
@@ -16458,7 +16452,7 @@ namespace spdlib{
 	{
 	public: 
 		SPDMetricCalcStdDevHeight(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
-		double calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
+		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcStdDevHeight(){};
 	};
     
@@ -16466,7 +16460,7 @@ namespace spdlib{
 	{
 	public: 
 		SPDMetricCalcVarianceHeight(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
-		double calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
+		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcVarianceHeight(){};
     private:
         float threshold;
@@ -16476,7 +16470,7 @@ namespace spdlib{
 	{
 	public: 
 		SPDMetricCalcAbsDeviationHeight(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
-		double calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
+		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcAbsDeviationHeight(){};
 	};
     
@@ -16484,7 +16478,7 @@ namespace spdlib{
 	{
 	public: 
 		SPDMetricCalcCoefficientOfVariationHeight(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
-		double calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
+		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcCoefficientOfVariationHeight(){};
 	};
     
@@ -16495,7 +16489,7 @@ namespace spdlib{
         {
             this->percentile = percentile;
         };
-		double calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
+		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcPercentileHeight(){};
     private:
        boost::uint_fast16_t percentile;
@@ -16505,7 +16499,7 @@ namespace spdlib{
 	{
 	public: 
 		SPDMetricCalcSkewnessHeight(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
-		double calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
+		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcSkewnessHeight(){};
 	};
     
@@ -16516,7 +16510,7 @@ namespace spdlib{
         {
             this->resolution = resolution;  
         };
-		double calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
+		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcPersonModeSkewnessHeight(){};
     protected:
         float resolution;
@@ -16526,7 +16520,7 @@ namespace spdlib{
 	{
 	public: 
 		SPDMetricCalcPersonMedianSkewnessHeight(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
-		double calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
+		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcPersonMedianSkewnessHeight(){};
 	};
     
@@ -16534,7 +16528,7 @@ namespace spdlib{
 	{
 	public: 
 		SPDMetricCalcKurtosisHeight(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
-		double calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
+		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcKurtosisHeight(){};
 	};
     
@@ -16542,7 +16536,7 @@ namespace spdlib{
 	{
 	public: 
 		SPDMetricCalcNumReturnsAboveMetricHeight(SPDMetric *metric,boost::int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
-		double calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
+		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcNumReturnsAboveMetricHeight(){};
     private:
         SPDMetric *metric;
@@ -16552,7 +16546,7 @@ namespace spdlib{
 	{
 	public: 
 		SPDMetricCalcNumReturnsBelowMetricHeight(SPDMetric *metric,boost::int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
-		double calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
+		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcNumReturnsBelowMetricHeight(){};
     private:
         SPDMetric *metric;
@@ -16580,7 +16574,7 @@ namespace spdlib{
             
             this->mpResultsValues = new mp_result();
         };
-		double calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
+		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcWeibullAlphaHeight()
         {
             delete mpConfigValues;
@@ -16614,7 +16608,7 @@ namespace spdlib{
             
             this->mpResultsValues = new mp_result();
         };
-		double calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
+		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcWeibullBetaHeight()
         {
             delete mpConfigValues;
@@ -16650,7 +16644,7 @@ namespace spdlib{
             
             this->mpResultsValues = new mp_result();
         };
-		double calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
+		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcWeibullQuantileRangeHeight()
         {
             delete mpConfigValues;
@@ -16672,7 +16666,7 @@ namespace spdlib{
 	{
 	public: 
 		SPDMetricCalcNumReturnsZ(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
-		double calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
+		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcNumReturnsZ(){};
 	};
     
@@ -16680,7 +16674,7 @@ namespace spdlib{
 	{
 	public: 
 		SPDMetricCalcSumZ(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
-		double calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
+		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcSumZ(){};
 	};
     
@@ -16688,7 +16682,7 @@ namespace spdlib{
 	{
 	public: 
 		SPDMetricCalcMeanZ(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
-		double calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
+		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcMeanZ(){};
 	};
     
@@ -16696,7 +16690,7 @@ namespace spdlib{
 	{
 	public: 
 		SPDMetricCalcMedianZ(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
-		double calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
+		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcMedianZ(){};
 	};
     
@@ -16707,7 +16701,7 @@ namespace spdlib{
         {
             this->resolution = resolution;  
         };
-		double calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
+		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcModeZ(){};
     protected:
         float resolution;
@@ -16717,7 +16711,7 @@ namespace spdlib{
 	{
 	public: 
 		SPDMetricCalcMinZ(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
-		double calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
+		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcMinZ(){};
 	};
     
@@ -16725,7 +16719,7 @@ namespace spdlib{
 	{
 	public: 
 		SPDMetricCalcMaxZ(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
-		double calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
+		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcMaxZ(){};
 	};
     
@@ -16733,7 +16727,7 @@ namespace spdlib{
 	{
 	public: 
 		SPDMetricCalcStdDevZ(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
-		double calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
+		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcStdDevZ(){};
 	};
     
@@ -16741,7 +16735,7 @@ namespace spdlib{
 	{
 	public: 
 		SPDMetricCalcVarianceZ(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
-		double calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
+		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcVarianceZ(){};
     private:
         float threshold;
@@ -16751,7 +16745,7 @@ namespace spdlib{
 	{
 	public: 
 		SPDMetricCalcAbsDeviationZ(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
-		double calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
+		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcAbsDeviationZ(){};
 	};
     
@@ -16759,7 +16753,7 @@ namespace spdlib{
 	{
 	public: 
 		SPDMetricCalcCoefficientOfVariationZ(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
-		double calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
+		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcCoefficientOfVariationZ(){};
 	};
     
@@ -16770,7 +16764,7 @@ namespace spdlib{
         {
             this->percentile = percentile;
         };
-		double calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
+		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcPercentileZ(){};
     private:
        boost::uint_fast16_t percentile;
@@ -16780,7 +16774,7 @@ namespace spdlib{
 	{
 	public: 
 		SPDMetricCalcSkewnessZ(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
-		double calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
+		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcSkewnessZ(){};
 	};
     
@@ -16791,7 +16785,7 @@ namespace spdlib{
         {
             this->resolution = resolution;  
         };
-		double calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
+		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcPersonModeSkewnessZ(){};
     protected:
         float resolution;
@@ -16801,7 +16795,7 @@ namespace spdlib{
 	{
 	public: 
 		SPDMetricCalcPersonMedianSkewnessZ(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
-		double calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
+		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcPersonMedianSkewnessZ(){};
 	};
     
@@ -16809,7 +16803,7 @@ namespace spdlib{
 	{
 	public: 
 		SPDMetricCalcKurtosisZ(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
-		double calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
+		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcKurtosisZ(){};
 	};
     
@@ -16817,7 +16811,7 @@ namespace spdlib{
 	{
 	public: 
 		SPDMetricCalcNumReturnsAboveMetricZ(SPDMetric *metric,boost::int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
-		double calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
+		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcNumReturnsAboveMetricZ(){};
     private:
         SPDMetric *metric;
@@ -16827,7 +16821,7 @@ namespace spdlib{
 	{
 	public: 
 		SPDMetricCalcNumReturnsBelowMetricZ(SPDMetric *metric,boost::int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
-		double calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
+		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcNumReturnsBelowMetricZ(){};
     private:
         SPDMetric *metric;
@@ -16855,7 +16849,7 @@ namespace spdlib{
             
             this->mpResultsValues = new mp_result();
         };
-		double calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
+		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcWeibullAlphaZ()
         {
             delete mpConfigValues;
@@ -16889,7 +16883,7 @@ namespace spdlib{
             
             this->mpResultsValues = new mp_result();
         };
-		double calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
+		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcWeibullBetaZ()
         {
             delete mpConfigValues;
@@ -16925,7 +16919,7 @@ namespace spdlib{
             
             this->mpResultsValues = new mp_result();
         };
-		double calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
+		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcWeibullQuantileRangeZ()
         {
             delete mpConfigValues;
@@ -16949,7 +16943,7 @@ namespace spdlib{
 	{
 	public: 
 		SPDMetricCalcNumReturnsAmplitude(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold){};
-		double calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
+		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcNumReturnsAmplitude(){};
 	};
     
@@ -16957,7 +16951,7 @@ namespace spdlib{
 	{
 	public: 
 		SPDMetricCalcSumAmplitude(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold){};
-		double calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
+		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcSumAmplitude(){};
 	};
     
@@ -16965,7 +16959,7 @@ namespace spdlib{
 	{
 	public: 
 		SPDMetricCalcMeanAmplitude(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold){};
-		double calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
+		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcMeanAmplitude(){};
 	};
     
@@ -16973,7 +16967,7 @@ namespace spdlib{
 	{
 	public: 
 		SPDMetricCalcMedianAmplitude(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold){};
-		double calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
+		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcMedianAmplitude(){};
 	};
 
@@ -16984,7 +16978,7 @@ namespace spdlib{
         {
             this->resolution = resolution;  
         };
-		double calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
+		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcModeAmplitude(){};
     protected:
         float resolution;
@@ -16994,7 +16988,7 @@ namespace spdlib{
 	{
 	public: 
 		SPDMetricCalcMinAmplitude(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold){};
-		double calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
+		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcMinAmplitude(){};
 	};
     
@@ -17002,7 +16996,7 @@ namespace spdlib{
 	{
 	public: 
 		SPDMetricCalcMaxAmplitude(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold){};
-		double calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
+		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcMaxAmplitude(){};
 	};
     
@@ -17010,7 +17004,7 @@ namespace spdlib{
 	{
 	public: 
 		SPDMetricCalcStdDevAmplitude(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold){};
-		double calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
+		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcStdDevAmplitude(){};
 	};
     
@@ -17018,7 +17012,7 @@ namespace spdlib{
 	{
 	public: 
 		SPDMetricCalcVarianceAmplitude(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold){};
-		double calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
+		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcVarianceAmplitude(){};
     private:
         float threshold;
@@ -17028,7 +17022,7 @@ namespace spdlib{
 	{
 	public: 
 		SPDMetricCalcAbsDeviationAmplitude(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold){};
-		double calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
+		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcAbsDeviationAmplitude(){};
 	};
     
@@ -17036,7 +17030,7 @@ namespace spdlib{
 	{
 	public: 
 		SPDMetricCalcCoefficientOfVariationAmplitude(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold){};
-		double calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
+		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcCoefficientOfVariationAmplitude(){};
 	};
     
@@ -17047,7 +17041,7 @@ namespace spdlib{
         {
             this->percentile = percentile;
         };
-		double calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
+		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcPercentileAmplitude(){};
     private:
        boost::uint_fast16_t percentile;
@@ -17057,7 +17051,7 @@ namespace spdlib{
 	{
 	public: 
 		SPDMetricCalcSkewnessAmplitude(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold){};
-		double calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
+		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcSkewnessAmplitude(){};
 	};
     
@@ -17068,7 +17062,7 @@ namespace spdlib{
         {
             this->resolution = resolution;  
         };
-		double calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
+		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcPersonModeSkewnessAmplitude(){};
     protected:
         float resolution;
@@ -17078,7 +17072,7 @@ namespace spdlib{
 	{
 	public: 
 		SPDMetricCalcPersonMedianSkewnessAmplitude(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold){};
-		double calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
+		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcPersonMedianSkewnessAmplitude(){};
 	};
     
@@ -17086,7 +17080,7 @@ namespace spdlib{
 	{
 	public: 
 		SPDMetricCalcKurtosisAmplitude(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold){};
-		double calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
+		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcKurtosisAmplitude(){};
 	};
     
@@ -17094,7 +17088,7 @@ namespace spdlib{
 	{
 	public: 
 		SPDMetricCalcNumReturnsAboveMetricAmplitude(SPDMetric *metric,boost::int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold){};
-		double calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
+		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcNumReturnsAboveMetricAmplitude(){};
     private:
         SPDMetric *metric;
@@ -17104,7 +17098,7 @@ namespace spdlib{
 	{
 	public: 
 		SPDMetricCalcNumReturnsBelowMetricAmplitude(SPDMetric *metric,boost::int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold){};
-		double calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
+		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcNumReturnsBelowMetricAmplitude(){};
     private:
         SPDMetric *metric;
@@ -17122,7 +17116,7 @@ namespace spdlib{
 	{
 	public: 
 		SPDMetricCalcNumReturnsRange(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
-		double calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
+		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcNumReturnsRange(){};
 	};
     
@@ -17130,7 +17124,7 @@ namespace spdlib{
 	{
 	public: 
 		SPDMetricCalcSumRange(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
-		double calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
+		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcSumRange(){};
 	};
     
@@ -17138,7 +17132,7 @@ namespace spdlib{
 	{
 	public: 
 		SPDMetricCalcMeanRange(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
-		double calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
+		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcMeanRange(){};
 	};
     
@@ -17146,7 +17140,7 @@ namespace spdlib{
 	{
 	public: 
 		SPDMetricCalcMedianRange(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
-		double calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
+		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcMedianRange(){};
 	};
     
@@ -17157,7 +17151,7 @@ namespace spdlib{
         {
             this->resolution = resolution;  
         };
-		double calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
+		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcModeRange(){};
     protected:
         float resolution;
@@ -17167,7 +17161,7 @@ namespace spdlib{
 	{
 	public: 
 		SPDMetricCalcMinRange(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
-		double calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
+		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcMinRange(){};
 	};
     
@@ -17175,7 +17169,7 @@ namespace spdlib{
 	{
 	public: 
 		SPDMetricCalcMaxRange(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
-		double calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
+		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcMaxRange(){};
 	};
     
@@ -17183,7 +17177,7 @@ namespace spdlib{
 	{
 	public: 
 		SPDMetricCalcStdDevRange(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
-		double calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
+		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcStdDevRange(){};
 	};
     
@@ -17191,7 +17185,7 @@ namespace spdlib{
 	{
 	public: 
 		SPDMetricCalcVarianceRange(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
-		double calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
+		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcVarianceRange(){};
     private:
         float threshold;
@@ -17201,7 +17195,7 @@ namespace spdlib{
 	{
 	public: 
 		SPDMetricCalcAbsDeviationRange(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
-		double calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
+		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcAbsDeviationRange(){};
 	};
     
@@ -17209,7 +17203,7 @@ namespace spdlib{
 	{
 	public: 
 		SPDMetricCalcCoefficientOfVariationRange(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
-		double calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
+		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcCoefficientOfVariationRange(){};
 	};
     
@@ -17220,7 +17214,7 @@ namespace spdlib{
         {
             this->percentile = percentile;
         };
-		double calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
+		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcPercentileRange(){};
     private:
        boost::uint_fast16_t percentile;
@@ -17230,7 +17224,7 @@ namespace spdlib{
 	{
 	public: 
 		SPDMetricCalcSkewnessRange(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
-		double calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
+		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcSkewnessRange(){};
 	};
     
@@ -17241,7 +17235,7 @@ namespace spdlib{
         {
             this->resolution = resolution;  
         };
-		double calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
+		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcPersonModeSkewnessRange(){};
     protected:
         float resolution;
@@ -17251,7 +17245,7 @@ namespace spdlib{
 	{
 	public: 
 		SPDMetricCalcPersonMedianSkewnessRange(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
-		double calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
+		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcPersonMedianSkewnessRange(){};
 	};
     
@@ -17259,7 +17253,7 @@ namespace spdlib{
 	{
 	public: 
 		SPDMetricCalcKurtosisRange(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
-		double calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
+		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcKurtosisRange(){};
 	};
     
@@ -17267,7 +17261,7 @@ namespace spdlib{
 	{
 	public: 
 		SPDMetricCalcNumReturnsAboveMetricRange(SPDMetric *metric,boost::int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
-		double calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
+		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcNumReturnsAboveMetricRange(){};
     private:
         SPDMetric *metric;
@@ -17277,7 +17271,7 @@ namespace spdlib{
 	{
 	public: 
 		SPDMetricCalcNumReturnsBelowMetricRange(SPDMetric *metric,boost::int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
-		double calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
+		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcNumReturnsBelowMetricRange(){};
     private:
         SPDMetric *metric;
@@ -17305,7 +17299,7 @@ namespace spdlib{
             
             this->mpResultsValues = new mp_result();
         };
-		double calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
+		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcWeibullAlphaRange()
         {
             delete mpConfigValues;
@@ -17339,7 +17333,7 @@ namespace spdlib{
             
             this->mpResultsValues = new mp_result();
         };
-		double calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
+		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcWeibullBetaRange()
         {
             delete mpConfigValues;
@@ -17375,7 +17369,7 @@ namespace spdlib{
             
             this->mpResultsValues = new mp_result();
         };
-		double calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
+		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcWeibullQuantileRangeRange()
         {
             delete mpConfigValues;
@@ -17398,7 +17392,7 @@ namespace spdlib{
 	{
 	public: 
 		SPDMetricCalcNumReturnsWidth(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold){};
-		double calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
+		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcNumReturnsWidth(){};
 	};
     
@@ -17406,7 +17400,7 @@ namespace spdlib{
 	{
 	public: 
 		SPDMetricCalcSumWidth(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold){};
-		double calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
+		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcSumWidth(){};
 	};
     
@@ -17414,7 +17408,7 @@ namespace spdlib{
 	{
 	public: 
 		SPDMetricCalcMeanWidth(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold){};
-		double calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
+		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcMeanWidth(){};
 	};
     
@@ -17422,7 +17416,7 @@ namespace spdlib{
 	{
 	public: 
 		SPDMetricCalcMedianWidth(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold){};
-		double calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
+		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcMedianWidth(){};
 	};
     
@@ -17433,7 +17427,7 @@ namespace spdlib{
         {
             this->resolution = resolution;  
         };
-		double calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
+		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcModeWidth(){};
     protected:
         float resolution;
@@ -17443,7 +17437,7 @@ namespace spdlib{
 	{
 	public: 
 		SPDMetricCalcMinWidth(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold){};
-		double calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
+		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcMinWidth(){};
 	};
     
@@ -17451,7 +17445,7 @@ namespace spdlib{
 	{
 	public: 
 		SPDMetricCalcMaxWidth(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold){};
-		double calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
+		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcMaxWidth(){};
 	};
     
@@ -17459,7 +17453,7 @@ namespace spdlib{
 	{
 	public: 
 		SPDMetricCalcStdDevWidth(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold){};
-		double calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
+		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcStdDevWidth(){};
 	};
     
@@ -17467,7 +17461,7 @@ namespace spdlib{
 	{
 	public: 
 		SPDMetricCalcVarianceWidth(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold){};
-		double calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
+		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcVarianceWidth(){};
     private:
         float threshold;
@@ -17477,7 +17471,7 @@ namespace spdlib{
 	{
 	public: 
 		SPDMetricCalcAbsDeviationWidth(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold){};
-		double calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
+		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcAbsDeviationWidth(){};
 	};
     
@@ -17485,7 +17479,7 @@ namespace spdlib{
 	{
 	public: 
 		SPDMetricCalcCoefficientOfVariationWidth(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold){};
-		double calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
+		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcCoefficientOfVariationWidth(){};
 	};
     
@@ -17496,7 +17490,7 @@ namespace spdlib{
         {
             this->percentile = percentile;
         };
-		double calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
+		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcPercentileWidth(){};
     private:
        boost::uint_fast16_t percentile;
@@ -17506,7 +17500,7 @@ namespace spdlib{
 	{
 	public: 
 		SPDMetricCalcSkewnessWidth(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold){};
-		double calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
+		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcSkewnessWidth(){};
 	};
     
@@ -17517,7 +17511,7 @@ namespace spdlib{
         {
             this->resolution = resolution;  
         };
-		double calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
+		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcPersonModeSkewnessWidth(){};
     protected:
         float resolution;
@@ -17527,7 +17521,7 @@ namespace spdlib{
 	{
 	public: 
 		SPDMetricCalcPersonMedianSkewnessWidth(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold){};
-		double calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
+		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcPersonMedianSkewnessWidth(){};
 	};
     
@@ -17535,7 +17529,7 @@ namespace spdlib{
 	{
 	public: 
 		SPDMetricCalcKurtosisWidth(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold){};
-		double calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
+		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcKurtosisWidth(){};
 	};
     
@@ -17543,7 +17537,7 @@ namespace spdlib{
 	{
 	public: 
 		SPDMetricCalcNumReturnsAboveMetricWidth(SPDMetric *metric,boost::int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold){};
-		double calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
+		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcNumReturnsAboveMetricWidth(){};
     private:
         SPDMetric *metric;
@@ -17553,7 +17547,7 @@ namespace spdlib{
 	{
 	public: 
 		SPDMetricCalcNumReturnsBelowMetricWidth(SPDMetric *metric,boost::int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold){};
-		double calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
+		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcNumReturnsBelowMetricWidth(){};
     private:
         SPDMetric *metric;

@@ -41,9 +41,6 @@
 #include "spd/SPDDataImporter.h"
 #include "spd/SPDTextFileUtilities.h"
 
-using namespace std;
-using namespace boost::algorithm;
-
 namespace spdlib
 {
 	class SPDTextLineProcessor
@@ -51,12 +48,12 @@ namespace spdlib
 	public:
 		SPDTextLineProcessor():headerRead(false){};
 		virtual bool haveReadheader()=0;
-		virtual void parseHeader(string strLine) throw(SPDIOException)=0;
-		virtual bool parseLine(string line, SPDPulse *pl,boost::uint_fast16_t indexCoords) throw(SPDIOException)=0;
-		virtual bool isFileType(string fileType)=0;
+		virtual void parseHeader(std::string strLine) throw(SPDIOException)=0;
+		virtual bool parseLine(std::string line, SPDPulse *pl,boost::uint_fast16_t indexCoords) throw(SPDIOException)=0;
+		virtual bool isFileType(std::string fileType)=0;
 		virtual void saveHeaderValues(SPDFile *spdFile)=0;
 		virtual void reset()=0;
-        virtual void parseSchema(string schema)throw(SPDIOException)=0;
+        virtual void parseSchema(std::string schema)throw(SPDIOException)=0;
 		virtual ~SPDTextLineProcessor(){};
 	protected:
 		bool headerRead;
@@ -66,15 +63,15 @@ namespace spdlib
 	class SPDTextFileImporter : public SPDDataImporter
 	{
 	public:
-		SPDTextFileImporter(SPDTextLineProcessor *lineParser, bool convertCoords=false, string outputProjWKT="", string schema="", boost::uint_fast16_t indexCoords=SPD_FIRST_RETURN, bool defineOrigin=false, double originX=0, double originY=0, float originZ=0, float waveNoiseThreshold=0);
+		SPDTextFileImporter(SPDTextLineProcessor *lineParser, bool convertCoords=false, std::string outputProjWKT="", std::string schema="", boost::uint_fast16_t indexCoords=SPD_FIRST_RETURN, bool defineOrigin=false, double originX=0, double originY=0, float originZ=0, float waveNoiseThreshold=0);
 		SPDTextFileImporter(const SPDTextFileImporter &textFileImporter);
-		SPDDataImporter* getInstance(bool convertCoords, string outputProjWKT, string schema, boost::uint_fast16_t indexCoords, bool defineOrigin, double originX, double originY, float originZ, float waveNoiseThreshold);
-        list<SPDPulse*>* readAllDataToList(string, SPDFile *spdFile)throw(SPDIOException);
-		vector<SPDPulse*>* readAllDataToVector(string inputFile, SPDFile *spdFile)throw(SPDIOException);
-		void readAndProcessAllData(string inputFile, SPDFile *spdFile, SPDImporterProcessor *processor) throw(SPDIOException);
-        void readHeaderInfo(string inputFile, SPDFile *spdFile) throw(SPDIOException);
+		SPDDataImporter* getInstance(bool convertCoords, std::string outputProjWKT, std::string schema, boost::uint_fast16_t indexCoords, bool defineOrigin, double originX, double originY, float originZ, float waveNoiseThreshold);
+        std::list<SPDPulse*>* readAllDataToList(std::string, SPDFile *spdFile)throw(SPDIOException);
+		std::vector<SPDPulse*>* readAllDataToVector(std::string inputFile, SPDFile *spdFile)throw(SPDIOException);
+		void readAndProcessAllData(std::string inputFile, SPDFile *spdFile, SPDImporterProcessor *processor) throw(SPDIOException);
+        void readHeaderInfo(std::string inputFile, SPDFile *spdFile) throw(SPDIOException);
         void readSchema()throw(SPDIOException);
-		bool isFileType(string fileType);
+		bool isFileType(std::string fileType);
 		SPDTextFileImporter& operator=(const SPDTextFileImporter& textFileImporter);
 		~SPDTextFileImporter();
 	private:

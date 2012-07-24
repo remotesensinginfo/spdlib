@@ -29,8 +29,6 @@
 
 #include "spd/SPDException.h"
 
-using namespace std;
-
 namespace spdlib
 {
 	class SPDTextFileException : public SPDException
@@ -38,7 +36,7 @@ namespace spdlib
 	public:
 		SPDTextFileException();
 		SPDTextFileException(const char *message);
-		SPDTextFileException(string message);
+		SPDTextFileException(std::string message);
 	};
 }
 
