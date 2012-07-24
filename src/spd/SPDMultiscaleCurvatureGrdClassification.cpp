@@ -462,7 +462,7 @@ namespace spdlib
                     }
                     else if(elevValues->size() > 1)
                     {
-                        sort(elevValues->begin(), elevValues->end());
+                        std::sort(elevValues->begin(), elevValues->end());
                         rasterMedian[i][j] = elevValues->at(elevValues->size()/2);
                     }
                     else
