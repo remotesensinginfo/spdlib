@@ -44,7 +44,7 @@
 #include "spd/tps/linalg3d.h"
 #include "spd/tps/ludecomposition.h"
 
-#include "boost/math/special_functions/fpclassify.hpp"
+#include <boost/math/special_functions/fpclassify.hpp>
 
 
 namespace spdlib

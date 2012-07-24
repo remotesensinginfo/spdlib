@@ -36,6 +36,8 @@
 #include "spd/SPDPulseProcessor.h"
 #include "spd/SPDProcessingException.h"
 
+#include <boost/math/special_functions/fpclassify.hpp>
+
 #include <gsl/gsl_vector.h>
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_multifit.h>

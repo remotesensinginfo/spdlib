@@ -36,6 +36,8 @@
 #include <xercesc/util/PlatformUtils.hpp>
 #include <xercesc/framework/LocalFileFormatTarget.hpp>
 
+#include <boost/math/special_functions/fpclassify.hpp>
+
 #include "spd/SPDFile.h"
 #include "spd/SPDPoint.h"
 #include "spd/SPDPulse.h"

@@ -34,6 +34,7 @@
 #include "ogr_api.h"
 
 #include <boost/cstdint.hpp>
+#include <boost/math/special_functions/fpclassify.hpp>
 #include <boost/numeric/conversion/cast.hpp>
 
 #include "spd/SPDFile.h"

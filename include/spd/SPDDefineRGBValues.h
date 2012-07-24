@@ -30,6 +30,8 @@
 #include <string>
 #include <vector>
 
+#include <boost/math/special_functions/fpclassify.hpp>
+
 #include "spd/SPDFile.h"
 #include "spd/SPDPulse.h"
 #include "spd/SPDProcessPulses.h"
