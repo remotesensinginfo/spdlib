@@ -68,101 +68,101 @@ namespace spdlib
 		return sqrt((diffX*diffX)+(diffY*diffY)+(diffZ*diffZ));
 	}
 	
-	CompType* SPDPointUtils::createSPDPointV1DataTypeDisk()
+	H5::CompType* SPDPointUtils::createSPDPointV1DataTypeDisk()
 	{
-		CompType *spdPointDataType = new CompType( sizeof(SPDPointH5V1) );
-		spdPointDataType->insertMember(POINTMEMBERNAME_RETURN_ID, HOFFSET(SPDPointH5V1, returnID), PredType::STD_U8LE);
-		spdPointDataType->insertMember(POINTMEMBERNAME_GPS_TIME, HOFFSET(SPDPointH5V1, gpsTime), PredType::IEEE_F64LE);
-		spdPointDataType->insertMember(POINTMEMBERNAME_X, HOFFSET(SPDPointH5V1, x), PredType::IEEE_F64LE);
-		spdPointDataType->insertMember(POINTMEMBERNAME_Y, HOFFSET(SPDPointH5V1, y), PredType::IEEE_F64LE);
-		spdPointDataType->insertMember(POINTMEMBERNAME_Z, HOFFSET(SPDPointH5V1, z), PredType::IEEE_F32LE);
-		spdPointDataType->insertMember(POINTMEMBERNAME_HEIGHT, HOFFSET(SPDPointH5V1, height), PredType::IEEE_F32LE);
-		spdPointDataType->insertMember(POINTMEMBERNAME_RANGE, HOFFSET(SPDPointH5V1, range), PredType::IEEE_F32LE);
-		spdPointDataType->insertMember(POINTMEMBERNAME_AMPLITUDE_RETURN, HOFFSET(SPDPointH5V1, amplitudeReturn), PredType::IEEE_F32LE);
-		spdPointDataType->insertMember(POINTMEMBERNAME_WIDTH_RETURN, HOFFSET(SPDPointH5V1, widthReturn), PredType::IEEE_F32LE);		
-		spdPointDataType->insertMember(POINTMEMBERNAME_RED, HOFFSET(SPDPointH5V1, red), PredType::STD_U16LE);
-		spdPointDataType->insertMember(POINTMEMBERNAME_GREEN, HOFFSET(SPDPointH5V1, green), PredType::STD_U16LE);
-		spdPointDataType->insertMember(POINTMEMBERNAME_BLUE, HOFFSET(SPDPointH5V1, blue), PredType::STD_U16LE);
-		spdPointDataType->insertMember(POINTMEMBERNAME_CLASSIFICATION, HOFFSET(SPDPointH5V1, classification), PredType::STD_U8LE);
-		spdPointDataType->insertMember(POINTMEMBERNAME_USER, HOFFSET(SPDPointH5V1, user), PredType::STD_U32LE);
-		spdPointDataType->insertMember(POINTMEMBERNAME_MODEL_KEY_POINT, HOFFSET(SPDPointH5V1, modelKeyPoint), PredType::STD_U8LE);
-		spdPointDataType->insertMember(POINTMEMBERNAME_LOW_POINT, HOFFSET(SPDPointH5V1, lowPoint), PredType::STD_U8LE);
-		spdPointDataType->insertMember(POINTMEMBERNAME_OVERLAP, HOFFSET(SPDPointH5V1, overlap), PredType::STD_U8LE);
-		spdPointDataType->insertMember(POINTMEMBERNAME_IGNORE, HOFFSET(SPDPointH5V1, ignore), PredType::STD_U8LE);
-		spdPointDataType->insertMember(POINTMEMBERNAME_WAVE_PACKET_DESC_IDX, HOFFSET(SPDPointH5V1, wavePacketDescIdx), PredType::STD_I16LE);
-		spdPointDataType->insertMember(POINTMEMBERNAME_WAVEFORM_OFFSET, HOFFSET(SPDPointH5V1, waveformOffset), PredType::STD_U32LE);
+		H5::CompType *spdPointDataType = new H5::CompType( sizeof(SPDPointH5V1) );
+		spdPointDataType->insertMember(POINTMEMBERNAME_RETURN_ID, HOFFSET(SPDPointH5V1, returnID), H5::PredType::STD_U8LE);
+		spdPointDataType->insertMember(POINTMEMBERNAME_GPS_TIME, HOFFSET(SPDPointH5V1, gpsTime), H5::PredType::IEEE_F64LE);
+		spdPointDataType->insertMember(POINTMEMBERNAME_X, HOFFSET(SPDPointH5V1, x), H5::PredType::IEEE_F64LE);
+		spdPointDataType->insertMember(POINTMEMBERNAME_Y, HOFFSET(SPDPointH5V1, y), H5::PredType::IEEE_F64LE);
+		spdPointDataType->insertMember(POINTMEMBERNAME_Z, HOFFSET(SPDPointH5V1, z), H5::PredType::IEEE_F32LE);
+		spdPointDataType->insertMember(POINTMEMBERNAME_HEIGHT, HOFFSET(SPDPointH5V1, height), H5::PredType::IEEE_F32LE);
+		spdPointDataType->insertMember(POINTMEMBERNAME_RANGE, HOFFSET(SPDPointH5V1, range), H5::PredType::IEEE_F32LE);
+		spdPointDataType->insertMember(POINTMEMBERNAME_AMPLITUDE_RETURN, HOFFSET(SPDPointH5V1, amplitudeReturn), H5::PredType::IEEE_F32LE);
+		spdPointDataType->insertMember(POINTMEMBERNAME_WIDTH_RETURN, HOFFSET(SPDPointH5V1, widthReturn), H5::PredType::IEEE_F32LE);		
+		spdPointDataType->insertMember(POINTMEMBERNAME_RED, HOFFSET(SPDPointH5V1, red), H5::PredType::STD_U16LE);
+		spdPointDataType->insertMember(POINTMEMBERNAME_GREEN, HOFFSET(SPDPointH5V1, green), H5::PredType::STD_U16LE);
+		spdPointDataType->insertMember(POINTMEMBERNAME_BLUE, HOFFSET(SPDPointH5V1, blue), H5::PredType::STD_U16LE);
+		spdPointDataType->insertMember(POINTMEMBERNAME_CLASSIFICATION, HOFFSET(SPDPointH5V1, classification), H5::PredType::STD_U8LE);
+		spdPointDataType->insertMember(POINTMEMBERNAME_USER, HOFFSET(SPDPointH5V1, user), H5::PredType::STD_U32LE);
+		spdPointDataType->insertMember(POINTMEMBERNAME_MODEL_KEY_POINT, HOFFSET(SPDPointH5V1, modelKeyPoint), H5::PredType::STD_U8LE);
+		spdPointDataType->insertMember(POINTMEMBERNAME_LOW_POINT, HOFFSET(SPDPointH5V1, lowPoint), H5::PredType::STD_U8LE);
+		spdPointDataType->insertMember(POINTMEMBERNAME_OVERLAP, HOFFSET(SPDPointH5V1, overlap), H5::PredType::STD_U8LE);
+		spdPointDataType->insertMember(POINTMEMBERNAME_IGNORE, HOFFSET(SPDPointH5V1, ignore), H5::PredType::STD_U8LE);
+		spdPointDataType->insertMember(POINTMEMBERNAME_WAVE_PACKET_DESC_IDX, HOFFSET(SPDPointH5V1, wavePacketDescIdx), H5::PredType::STD_I16LE);
+		spdPointDataType->insertMember(POINTMEMBERNAME_WAVEFORM_OFFSET, HOFFSET(SPDPointH5V1, waveformOffset), H5::PredType::STD_U32LE);
 		return spdPointDataType;
 	}
 	
-	CompType* SPDPointUtils::createSPDPointV1DataTypeMemory()
+	H5::CompType* SPDPointUtils::createSPDPointV1DataTypeMemory()
 	{
-		CompType *spdPointDataType = new CompType( sizeof(SPDPointH5V1) );
-		spdPointDataType->insertMember(POINTMEMBERNAME_RETURN_ID, HOFFSET(SPDPointH5V1, returnID), PredType::NATIVE_UINT);
-		spdPointDataType->insertMember(POINTMEMBERNAME_GPS_TIME, HOFFSET(SPDPointH5V1, gpsTime), PredType::NATIVE_DOUBLE);
-		spdPointDataType->insertMember(POINTMEMBERNAME_X, HOFFSET(SPDPointH5V1, x), PredType::NATIVE_DOUBLE);
-		spdPointDataType->insertMember(POINTMEMBERNAME_Y, HOFFSET(SPDPointH5V1, y), PredType::NATIVE_DOUBLE);
-		spdPointDataType->insertMember(POINTMEMBERNAME_Z, HOFFSET(SPDPointH5V1, z), PredType::NATIVE_FLOAT);
-		spdPointDataType->insertMember(POINTMEMBERNAME_HEIGHT, HOFFSET(SPDPointH5V1, height), PredType::NATIVE_FLOAT);
-		spdPointDataType->insertMember(POINTMEMBERNAME_RANGE, HOFFSET(SPDPointH5V1, range), PredType::NATIVE_FLOAT);
-		spdPointDataType->insertMember(POINTMEMBERNAME_AMPLITUDE_RETURN, HOFFSET(SPDPointH5V1, amplitudeReturn), PredType::NATIVE_FLOAT);
-		spdPointDataType->insertMember(POINTMEMBERNAME_WIDTH_RETURN, HOFFSET(SPDPointH5V1, widthReturn), PredType::NATIVE_FLOAT);		
-		spdPointDataType->insertMember(POINTMEMBERNAME_RED, HOFFSET(SPDPointH5V1, red), PredType::NATIVE_UINT);
-		spdPointDataType->insertMember(POINTMEMBERNAME_GREEN, HOFFSET(SPDPointH5V1, green), PredType::NATIVE_UINT);
-		spdPointDataType->insertMember(POINTMEMBERNAME_BLUE, HOFFSET(SPDPointH5V1, blue), PredType::NATIVE_UINT);
-		spdPointDataType->insertMember(POINTMEMBERNAME_CLASSIFICATION, HOFFSET(SPDPointH5V1, classification), PredType::NATIVE_UINT);
-		spdPointDataType->insertMember(POINTMEMBERNAME_USER, HOFFSET(SPDPointH5V1, user), PredType::NATIVE_ULONG);
-		spdPointDataType->insertMember(POINTMEMBERNAME_MODEL_KEY_POINT, HOFFSET(SPDPointH5V1, modelKeyPoint), PredType::NATIVE_UINT);
-		spdPointDataType->insertMember(POINTMEMBERNAME_LOW_POINT, HOFFSET(SPDPointH5V1, lowPoint), PredType::NATIVE_UINT);
-		spdPointDataType->insertMember(POINTMEMBERNAME_OVERLAP, HOFFSET(SPDPointH5V1, overlap), PredType::NATIVE_UINT);
-		spdPointDataType->insertMember(POINTMEMBERNAME_IGNORE, HOFFSET(SPDPointH5V1, ignore), PredType::NATIVE_UINT);
-		spdPointDataType->insertMember(POINTMEMBERNAME_WAVE_PACKET_DESC_IDX, HOFFSET(SPDPointH5V1, wavePacketDescIdx), PredType::NATIVE_UINT);
-		spdPointDataType->insertMember(POINTMEMBERNAME_WAVEFORM_OFFSET, HOFFSET(SPDPointH5V1, waveformOffset), PredType::NATIVE_ULONG);
+		H5::CompType *spdPointDataType = new H5::CompType( sizeof(SPDPointH5V1) );
+		spdPointDataType->insertMember(POINTMEMBERNAME_RETURN_ID, HOFFSET(SPDPointH5V1, returnID), H5::PredType::NATIVE_UINT);
+		spdPointDataType->insertMember(POINTMEMBERNAME_GPS_TIME, HOFFSET(SPDPointH5V1, gpsTime), H5::PredType::NATIVE_DOUBLE);
+		spdPointDataType->insertMember(POINTMEMBERNAME_X, HOFFSET(SPDPointH5V1, x), H5::PredType::NATIVE_DOUBLE);
+		spdPointDataType->insertMember(POINTMEMBERNAME_Y, HOFFSET(SPDPointH5V1, y), H5::PredType::NATIVE_DOUBLE);
+		spdPointDataType->insertMember(POINTMEMBERNAME_Z, HOFFSET(SPDPointH5V1, z), H5::PredType::NATIVE_FLOAT);
+		spdPointDataType->insertMember(POINTMEMBERNAME_HEIGHT, HOFFSET(SPDPointH5V1, height), H5::PredType::NATIVE_FLOAT);
+		spdPointDataType->insertMember(POINTMEMBERNAME_RANGE, HOFFSET(SPDPointH5V1, range), H5::PredType::NATIVE_FLOAT);
+		spdPointDataType->insertMember(POINTMEMBERNAME_AMPLITUDE_RETURN, HOFFSET(SPDPointH5V1, amplitudeReturn), H5::PredType::NATIVE_FLOAT);
+		spdPointDataType->insertMember(POINTMEMBERNAME_WIDTH_RETURN, HOFFSET(SPDPointH5V1, widthReturn), H5::PredType::NATIVE_FLOAT);		
+		spdPointDataType->insertMember(POINTMEMBERNAME_RED, HOFFSET(SPDPointH5V1, red), H5::PredType::NATIVE_UINT);
+		spdPointDataType->insertMember(POINTMEMBERNAME_GREEN, HOFFSET(SPDPointH5V1, green), H5::PredType::NATIVE_UINT);
+		spdPointDataType->insertMember(POINTMEMBERNAME_BLUE, HOFFSET(SPDPointH5V1, blue), H5::PredType::NATIVE_UINT);
+		spdPointDataType->insertMember(POINTMEMBERNAME_CLASSIFICATION, HOFFSET(SPDPointH5V1, classification), H5::PredType::NATIVE_UINT);
+		spdPointDataType->insertMember(POINTMEMBERNAME_USER, HOFFSET(SPDPointH5V1, user), H5::PredType::NATIVE_ULONG);
+		spdPointDataType->insertMember(POINTMEMBERNAME_MODEL_KEY_POINT, HOFFSET(SPDPointH5V1, modelKeyPoint), H5::PredType::NATIVE_UINT);
+		spdPointDataType->insertMember(POINTMEMBERNAME_LOW_POINT, HOFFSET(SPDPointH5V1, lowPoint), H5::PredType::NATIVE_UINT);
+		spdPointDataType->insertMember(POINTMEMBERNAME_OVERLAP, HOFFSET(SPDPointH5V1, overlap), H5::PredType::NATIVE_UINT);
+		spdPointDataType->insertMember(POINTMEMBERNAME_IGNORE, HOFFSET(SPDPointH5V1, ignore), H5::PredType::NATIVE_UINT);
+		spdPointDataType->insertMember(POINTMEMBERNAME_WAVE_PACKET_DESC_IDX, HOFFSET(SPDPointH5V1, wavePacketDescIdx), H5::PredType::NATIVE_UINT);
+		spdPointDataType->insertMember(POINTMEMBERNAME_WAVEFORM_OFFSET, HOFFSET(SPDPointH5V1, waveformOffset), H5::PredType::NATIVE_ULONG);
 		return spdPointDataType;
 	}
     
-    CompType* SPDPointUtils::createSPDPointV2DataTypeDisk()
+    H5::CompType* SPDPointUtils::createSPDPointV2DataTypeDisk()
 	{
-		CompType *spdPointDataType = new CompType( sizeof(SPDPointH5V2) );
-		spdPointDataType->insertMember(POINTMEMBERNAME_RETURN_ID, HOFFSET(SPDPointH5V2, returnID), PredType::STD_U8LE);
-		spdPointDataType->insertMember(POINTMEMBERNAME_GPS_TIME, HOFFSET(SPDPointH5V2, gpsTime), PredType::IEEE_F64LE);
-		spdPointDataType->insertMember(POINTMEMBERNAME_X, HOFFSET(SPDPointH5V2, x), PredType::IEEE_F64LE);
-		spdPointDataType->insertMember(POINTMEMBERNAME_Y, HOFFSET(SPDPointH5V2, y), PredType::IEEE_F64LE);
-		spdPointDataType->insertMember(POINTMEMBERNAME_Z, HOFFSET(SPDPointH5V2, z), PredType::IEEE_F32LE);
-		spdPointDataType->insertMember(POINTMEMBERNAME_HEIGHT, HOFFSET(SPDPointH5V2, height), PredType::IEEE_F32LE);
-		spdPointDataType->insertMember(POINTMEMBERNAME_RANGE, HOFFSET(SPDPointH5V2, range), PredType::IEEE_F32LE);
-		spdPointDataType->insertMember(POINTMEMBERNAME_AMPLITUDE_RETURN, HOFFSET(SPDPointH5V2, amplitudeReturn), PredType::IEEE_F32LE);
-		spdPointDataType->insertMember(POINTMEMBERNAME_WIDTH_RETURN, HOFFSET(SPDPointH5V2, widthReturn), PredType::IEEE_F32LE);		
-		spdPointDataType->insertMember(POINTMEMBERNAME_RED, HOFFSET(SPDPointH5V2, red), PredType::STD_U16LE);
-		spdPointDataType->insertMember(POINTMEMBERNAME_GREEN, HOFFSET(SPDPointH5V2, green), PredType::STD_U16LE);
-		spdPointDataType->insertMember(POINTMEMBERNAME_BLUE, HOFFSET(SPDPointH5V2, blue), PredType::STD_U16LE);
-		spdPointDataType->insertMember(POINTMEMBERNAME_CLASSIFICATION, HOFFSET(SPDPointH5V2, classification), PredType::STD_U8LE);
-		spdPointDataType->insertMember(POINTMEMBERNAME_USER, HOFFSET(SPDPointH5V2, user), PredType::STD_U32LE);
-		spdPointDataType->insertMember(POINTMEMBERNAME_IGNORE, HOFFSET(SPDPointH5V2, ignore), PredType::STD_U8LE);
-		spdPointDataType->insertMember(POINTMEMBERNAME_WAVE_PACKET_DESC_IDX, HOFFSET(SPDPointH5V2, wavePacketDescIdx), PredType::STD_I16LE);
-		spdPointDataType->insertMember(POINTMEMBERNAME_WAVEFORM_OFFSET, HOFFSET(SPDPointH5V2, waveformOffset), PredType::STD_U32LE);
+		H5::CompType *spdPointDataType = new H5::CompType( sizeof(SPDPointH5V2) );
+		spdPointDataType->insertMember(POINTMEMBERNAME_RETURN_ID, HOFFSET(SPDPointH5V2, returnID), H5::PredType::STD_U8LE);
+		spdPointDataType->insertMember(POINTMEMBERNAME_GPS_TIME, HOFFSET(SPDPointH5V2, gpsTime), H5::PredType::IEEE_F64LE);
+		spdPointDataType->insertMember(POINTMEMBERNAME_X, HOFFSET(SPDPointH5V2, x), H5::PredType::IEEE_F64LE);
+		spdPointDataType->insertMember(POINTMEMBERNAME_Y, HOFFSET(SPDPointH5V2, y), H5::PredType::IEEE_F64LE);
+		spdPointDataType->insertMember(POINTMEMBERNAME_Z, HOFFSET(SPDPointH5V2, z), H5::PredType::IEEE_F32LE);
+		spdPointDataType->insertMember(POINTMEMBERNAME_HEIGHT, HOFFSET(SPDPointH5V2, height), H5::PredType::IEEE_F32LE);
+		spdPointDataType->insertMember(POINTMEMBERNAME_RANGE, HOFFSET(SPDPointH5V2, range), H5::PredType::IEEE_F32LE);
+		spdPointDataType->insertMember(POINTMEMBERNAME_AMPLITUDE_RETURN, HOFFSET(SPDPointH5V2, amplitudeReturn), H5::PredType::IEEE_F32LE);
+		spdPointDataType->insertMember(POINTMEMBERNAME_WIDTH_RETURN, HOFFSET(SPDPointH5V2, widthReturn), H5::PredType::IEEE_F32LE);		
+		spdPointDataType->insertMember(POINTMEMBERNAME_RED, HOFFSET(SPDPointH5V2, red), H5::PredType::STD_U16LE);
+		spdPointDataType->insertMember(POINTMEMBERNAME_GREEN, HOFFSET(SPDPointH5V2, green), H5::PredType::STD_U16LE);
+		spdPointDataType->insertMember(POINTMEMBERNAME_BLUE, HOFFSET(SPDPointH5V2, blue), H5::PredType::STD_U16LE);
+		spdPointDataType->insertMember(POINTMEMBERNAME_CLASSIFICATION, HOFFSET(SPDPointH5V2, classification), H5::PredType::STD_U8LE);
+		spdPointDataType->insertMember(POINTMEMBERNAME_USER, HOFFSET(SPDPointH5V2, user), H5::PredType::STD_U32LE);
+		spdPointDataType->insertMember(POINTMEMBERNAME_IGNORE, HOFFSET(SPDPointH5V2, ignore), H5::PredType::STD_U8LE);
+		spdPointDataType->insertMember(POINTMEMBERNAME_WAVE_PACKET_DESC_IDX, HOFFSET(SPDPointH5V2, wavePacketDescIdx), H5::PredType::STD_I16LE);
+		spdPointDataType->insertMember(POINTMEMBERNAME_WAVEFORM_OFFSET, HOFFSET(SPDPointH5V2, waveformOffset), H5::PredType::STD_U32LE);
 		return spdPointDataType;
 	}
 	
-	CompType* SPDPointUtils::createSPDPointV2DataTypeMemory()
+	H5::CompType* SPDPointUtils::createSPDPointV2DataTypeMemory()
 	{
-		CompType *spdPointDataType = new CompType( sizeof(SPDPointH5V2) );
-		spdPointDataType->insertMember(POINTMEMBERNAME_RETURN_ID, HOFFSET(SPDPointH5V2, returnID), PredType::NATIVE_UINT);
-		spdPointDataType->insertMember(POINTMEMBERNAME_GPS_TIME, HOFFSET(SPDPointH5V2, gpsTime), PredType::NATIVE_DOUBLE);
-		spdPointDataType->insertMember(POINTMEMBERNAME_X, HOFFSET(SPDPointH5V2, x), PredType::NATIVE_DOUBLE);
-		spdPointDataType->insertMember(POINTMEMBERNAME_Y, HOFFSET(SPDPointH5V2, y), PredType::NATIVE_DOUBLE);
-		spdPointDataType->insertMember(POINTMEMBERNAME_Z, HOFFSET(SPDPointH5V2, z), PredType::NATIVE_FLOAT);
-		spdPointDataType->insertMember(POINTMEMBERNAME_HEIGHT, HOFFSET(SPDPointH5V2, height), PredType::NATIVE_FLOAT);
-		spdPointDataType->insertMember(POINTMEMBERNAME_RANGE, HOFFSET(SPDPointH5V2, range), PredType::NATIVE_FLOAT);
-		spdPointDataType->insertMember(POINTMEMBERNAME_AMPLITUDE_RETURN, HOFFSET(SPDPointH5V2, amplitudeReturn), PredType::NATIVE_FLOAT);
-		spdPointDataType->insertMember(POINTMEMBERNAME_WIDTH_RETURN, HOFFSET(SPDPointH5V2, widthReturn), PredType::NATIVE_FLOAT);		
-		spdPointDataType->insertMember(POINTMEMBERNAME_RED, HOFFSET(SPDPointH5V2, red), PredType::NATIVE_UINT);
-		spdPointDataType->insertMember(POINTMEMBERNAME_GREEN, HOFFSET(SPDPointH5V2, green), PredType::NATIVE_UINT);
-		spdPointDataType->insertMember(POINTMEMBERNAME_BLUE, HOFFSET(SPDPointH5V2, blue), PredType::NATIVE_UINT);
-		spdPointDataType->insertMember(POINTMEMBERNAME_CLASSIFICATION, HOFFSET(SPDPointH5V2, classification), PredType::NATIVE_UINT);
-		spdPointDataType->insertMember(POINTMEMBERNAME_USER, HOFFSET(SPDPointH5V2, user), PredType::NATIVE_ULONG);
-		spdPointDataType->insertMember(POINTMEMBERNAME_IGNORE, HOFFSET(SPDPointH5V2, ignore), PredType::NATIVE_UINT);
-		spdPointDataType->insertMember(POINTMEMBERNAME_WAVE_PACKET_DESC_IDX, HOFFSET(SPDPointH5V2, wavePacketDescIdx), PredType::NATIVE_UINT);
-		spdPointDataType->insertMember(POINTMEMBERNAME_WAVEFORM_OFFSET, HOFFSET(SPDPointH5V2, waveformOffset), PredType::NATIVE_ULONG);
+		H5::CompType *spdPointDataType = new H5::CompType( sizeof(SPDPointH5V2) );
+		spdPointDataType->insertMember(POINTMEMBERNAME_RETURN_ID, HOFFSET(SPDPointH5V2, returnID), H5::PredType::NATIVE_UINT);
+		spdPointDataType->insertMember(POINTMEMBERNAME_GPS_TIME, HOFFSET(SPDPointH5V2, gpsTime), H5::PredType::NATIVE_DOUBLE);
+		spdPointDataType->insertMember(POINTMEMBERNAME_X, HOFFSET(SPDPointH5V2, x), H5::PredType::NATIVE_DOUBLE);
+		spdPointDataType->insertMember(POINTMEMBERNAME_Y, HOFFSET(SPDPointH5V2, y), H5::PredType::NATIVE_DOUBLE);
+		spdPointDataType->insertMember(POINTMEMBERNAME_Z, HOFFSET(SPDPointH5V2, z), H5::PredType::NATIVE_FLOAT);
+		spdPointDataType->insertMember(POINTMEMBERNAME_HEIGHT, HOFFSET(SPDPointH5V2, height), H5::PredType::NATIVE_FLOAT);
+		spdPointDataType->insertMember(POINTMEMBERNAME_RANGE, HOFFSET(SPDPointH5V2, range), H5::PredType::NATIVE_FLOAT);
+		spdPointDataType->insertMember(POINTMEMBERNAME_AMPLITUDE_RETURN, HOFFSET(SPDPointH5V2, amplitudeReturn), H5::PredType::NATIVE_FLOAT);
+		spdPointDataType->insertMember(POINTMEMBERNAME_WIDTH_RETURN, HOFFSET(SPDPointH5V2, widthReturn), H5::PredType::NATIVE_FLOAT);		
+		spdPointDataType->insertMember(POINTMEMBERNAME_RED, HOFFSET(SPDPointH5V2, red), H5::PredType::NATIVE_UINT);
+		spdPointDataType->insertMember(POINTMEMBERNAME_GREEN, HOFFSET(SPDPointH5V2, green), H5::PredType::NATIVE_UINT);
+		spdPointDataType->insertMember(POINTMEMBERNAME_BLUE, HOFFSET(SPDPointH5V2, blue), H5::PredType::NATIVE_UINT);
+		spdPointDataType->insertMember(POINTMEMBERNAME_CLASSIFICATION, HOFFSET(SPDPointH5V2, classification), H5::PredType::NATIVE_UINT);
+		spdPointDataType->insertMember(POINTMEMBERNAME_USER, HOFFSET(SPDPointH5V2, user), H5::PredType::NATIVE_ULONG);
+		spdPointDataType->insertMember(POINTMEMBERNAME_IGNORE, HOFFSET(SPDPointH5V2, ignore), H5::PredType::NATIVE_UINT);
+		spdPointDataType->insertMember(POINTMEMBERNAME_WAVE_PACKET_DESC_IDX, HOFFSET(SPDPointH5V2, wavePacketDescIdx), H5::PredType::NATIVE_UINT);
+		spdPointDataType->insertMember(POINTMEMBERNAME_WAVEFORM_OFFSET, HOFFSET(SPDPointH5V2, waveformOffset), H5::PredType::NATIVE_ULONG);
 		return spdPointDataType;
 	}
 	
@@ -574,7 +574,7 @@ namespace spdlib
 		pt_out->waveformOffset = pt->waveformOffset;
 	}
     
-    void SPDPointUtils::verticalHeightBinPoints(vector<SPDPoint*> *pts, vector<SPDPoint*> **bins, boost::uint_fast32_t numBins, float min, float max, bool ignorePtsOverMax, bool ignoreGrd, float minHeightThres)throw(SPDProcessingException)
+    void SPDPointUtils::verticalHeightBinPoints(std::vector<SPDPoint*> *pts, std::vector<SPDPoint*> **bins, boost::uint_fast32_t numBins, float min, float max, bool ignorePtsOverMax, bool ignoreGrd, float minHeightThres)throw(SPDProcessingException)
     {
         try 
         {
@@ -582,7 +582,7 @@ namespace spdlib
             float diff = 0;
             boost::uint_fast32_t idx = 0;
             
-            for(vector<SPDPoint*>::iterator iterPts = pts->begin(); iterPts != pts->end(); ++iterPts)
+            for(std::vector<SPDPoint*>::iterator iterPts = pts->begin(); iterPts != pts->end(); ++iterPts)
             {
                 if(ignoreGrd & ((*iterPts)->classification != SPD_GROUND))
                 {
@@ -592,33 +592,33 @@ namespace spdlib
                                                 
                         try 
                         {
-                            idx = numeric_cast<boost::uint_fast32_t>(diff);
+                            idx = boost::numeric_cast<boost::uint_fast32_t>(diff);
                         }
-                        catch(negative_overflow& e) 
+                        catch(boost::numeric::negative_overflow& e) 
                         {
                             throw SPDProcessingException(e.what());
                         }
-                        catch(positive_overflow& e) 
+                        catch(boost::numeric::positive_overflow& e) 
                         {
                             throw SPDProcessingException(e.what());
                         }
-                        catch(bad_numeric_cast& e) 
+                        catch(boost::numeric::bad_numeric_cast& e) 
                         {
                             throw SPDProcessingException(e.what());
                         }
                         
                         if((idx > ((numBins)-1)) & !ignorePtsOverMax)
                         {
-                            cout << "Height: = " << (*iterPts)->height << endl;
-                            cout << "Diff = " << diff << endl;
-                            cout << "Index = " << idx << endl;
-                            cout << "Num Bins = " << numBins << endl;
+                            std::cout << "Height: = " << (*iterPts)->height << std::endl;
+                            std::cout << "Diff = " << diff << std::endl;
+                            std::cout << "Index = " << idx << std::endl;
+                            std::cout << "Num Bins = " << numBins << std::endl;
                             throw SPDProcessingException("Did not find index within range.");
                         }
                         else if(idx < numBins)
                         {
                             bins[idx]->push_back(*iterPts);
-                            //cout << "bins[idx]->size() = " << bins[idx]->size() << endl;
+                            //std::cout << "bins[idx]->size() = " << bins[idx]->size() << std::endl;
                         }
                     }
                 }
@@ -630,27 +630,27 @@ namespace spdlib
                                                 
                         try 
                         {
-                            idx = numeric_cast<boost::uint_fast32_t>(diff);
+                            idx = boost::numeric_cast<boost::uint_fast32_t>(diff);
                         }
-                        catch(negative_overflow& e) 
+                        catch(boost::numeric::negative_overflow& e) 
                         {
                             throw SPDProcessingException(e.what());
                         }
-                        catch(positive_overflow& e) 
+                        catch(boost::numeric::positive_overflow& e) 
                         {
                             throw SPDProcessingException(e.what());
                         }
-                        catch(bad_numeric_cast& e) 
+                        catch(boost::numeric::bad_numeric_cast& e) 
                         {
                             throw SPDProcessingException(e.what());
                         }
                                                 
                         if((idx > ((numBins)-1)) & !ignorePtsOverMax)
                         {
-                            cout << "Height: = " << (*iterPts)->height << endl;
-                            cout << "Diff = " << diff << endl;
-                            cout << "Index = " << idx << endl;
-                            cout << "Num Bins = " << numBins << endl;
+                            std::cout << "Height: = " << (*iterPts)->height << std::endl;
+                            std::cout << "Diff = " << diff << std::endl;
+                            std::cout << "Index = " << idx << std::endl;
+                            std::cout << "Num Bins = " << numBins << std::endl;
                             throw SPDProcessingException("Did not find index within range.");
                         }
                         else if(idx < numBins)
@@ -667,7 +667,7 @@ namespace spdlib
         }
     }
 	
-    void SPDPointUtils::verticalElevationBinPoints(vector<SPDPoint*> *pts, vector<SPDPoint*> **bins, boost::uint_fast32_t numBins, float min, float max)throw(SPDProcessingException)
+    void SPDPointUtils::verticalElevationBinPoints(std::vector<SPDPoint*> *pts, std::vector<SPDPoint*> **bins, boost::uint_fast32_t numBins, float min, float max)throw(SPDProcessingException)
     {
         try 
         {
@@ -675,33 +675,33 @@ namespace spdlib
             float diff = 0;
             boost::uint_fast32_t idx = 0;
             
-            for(vector<SPDPoint*>::iterator iterPts = pts->begin(); iterPts != pts->end(); ++iterPts)
+            for(std::vector<SPDPoint*>::iterator iterPts = pts->begin(); iterPts != pts->end(); ++iterPts)
             {
                 diff = ((*iterPts)->z - min)/interval;
                 
                 try 
 				{
-					idx = numeric_cast<boost::uint_fast32_t>(diff);
+					idx = boost::numeric_cast<boost::uint_fast32_t>(diff);
 				}
-				catch(negative_overflow& e) 
+				catch(boost::numeric::negative_overflow& e) 
 				{
 					throw SPDProcessingException(e.what());
 				}
-				catch(positive_overflow& e) 
+				catch(boost::numeric::positive_overflow& e) 
 				{
 					throw SPDProcessingException(e.what());
 				}
-				catch(bad_numeric_cast& e) 
+				catch(boost::numeric::bad_numeric_cast& e) 
 				{
 					throw SPDProcessingException(e.what());
 				}
 				
 				if(idx > ((numBins)-1))
 				{
-					cout << "Z: = " << (*iterPts)->z << endl;
-					cout << "Diff = " << diff << endl;
-					cout << "Index = " << idx << endl;
-					cout << "Num Bins = " << numBins << endl;
+					std::cout << "Z: = " << (*iterPts)->z << std::endl;
+					std::cout << "Diff = " << diff << std::endl;
+					std::cout << "Index = " << idx << std::endl;
+					std::cout << "Num Bins = " << numBins << std::endl;
 					throw SPDProcessingException("Did not find index within range.");
 				}
                 

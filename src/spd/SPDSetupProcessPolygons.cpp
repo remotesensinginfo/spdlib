@@ -26,7 +26,7 @@
 namespace spdlib
 {
 
-	string SPDSetupProcessPolygonsAbstract::getLayerName(string filepath)
+	std::string SPDSetupProcessPolygonsAbstract::getLayerName(std::string filepath)
 	{
 		int strSize = filepath.size();
 		int lastSlash = 0;
@@ -37,7 +37,7 @@ namespace spdlib
 				lastSlash = i;
 			}
 		}
-		string filename = filepath.substr(lastSlash+1);
+		std::string filename = filepath.substr(lastSlash+1);
 		
 		strSize = filename.size();
 		int lastpt = 0;
@@ -49,7 +49,7 @@ namespace spdlib
 			}
 		}
 		
-		string layerName = filename.substr(0, lastpt);
+		std::string layerName = filename.substr(0, lastpt);
 		return layerName;		
 	}
 	
@@ -60,12 +60,12 @@ namespace spdlib
 		
 	}
 		
-	void SPDSetupProcessShapefilePolygons::processPolygons(string spdInputFile, string inputLayer, string outputLayer, bool deleteOutShpIfExists, bool copyAttributes, SPDPolygonProcessor *processor) throw(SPDProcessingException)
+	void SPDSetupProcessShapefilePolygons::processPolygons(std::string spdInputFile, std::string inputLayer, std::string outputLayer, bool deleteOutShpIfExists, bool copyAttributes, SPDPolygonProcessor *processor) throw(SPDProcessingException)
 	{
 		OGRRegisterAll();
 		
-		string SHPFileInLayer = this->getLayerName(inputLayer);
-		string SHPFileOutLayer = this->getLayerName(outputLayer);
+		std::string SHPFileInLayer = this->getLayerName(inputLayer);
+		std::string SHPFileOutLayer = this->getLayerName(outputLayer);
 		
 		OGRDataSource *inputSHPDS = NULL;
 		OGRLayer *inputSHPLayer = NULL;
@@ -76,7 +76,7 @@ namespace spdlib
 		try
 		{
             
-            string outputDIR = SPDFileUtilities::getFileDirectoryPath(outputLayer);
+            std::string outputDIR = SPDFileUtilities::getFileDirectoryPath(outputLayer);
             
             if(SPDFileUtilities::checkDIR4SHP(outputDIR, SHPFileOutLayer))
             {
@@ -98,13 +98,13 @@ namespace spdlib
 			inputSHPDS = OGRSFDriverRegistrar::Open(inputLayer.c_str(), FALSE);
 			if(inputSHPDS == NULL)
 			{
-				string message = string("Could not open vector file ") + inputLayer;
+				std::string message = std::string("Could not open vector file ") + inputLayer;
 				throw SPDProcessingException(message.c_str());
 			}
 			inputSHPLayer = inputSHPDS->GetLayerByName(SHPFileInLayer.c_str());
 			if(inputSHPLayer == NULL)
 			{
-				string message = string("Could not open vector layer ") + SHPFileInLayer;
+				std::string message = std::string("Could not open vector layer ") + SHPFileInLayer;
 				throw SPDProcessingException(message.c_str());
 			}
 			
@@ -122,13 +122,13 @@ namespace spdlib
 			outputSHPDS = shpFiledriver->CreateDataSource(outputLayer.c_str(), NULL);
 			if( outputSHPDS == NULL )
 			{
-				string message = string("Could not create vector file ") + outputLayer;
+				std::string message = std::string("Could not create vector file ") + outputLayer;
 				throw SPDProcessingException(message.c_str());
 			}
 			outputSHPLayer = outputSHPDS->CreateLayer(SHPFileOutLayer.c_str(), NULL, wkbPolygon, NULL );
 			if( outputSHPLayer == NULL )
 			{
-				string message = string("Could not create vector layer ") + SHPFileOutLayer;
+				std::string message = std::string("Could not create vector layer ") + SHPFileOutLayer;
 				throw SPDProcessingException(message.c_str());
 			}
 			
@@ -154,11 +154,11 @@ namespace spdlib
 		OGRCleanupAll();
 	}
 	
-	void SPDSetupProcessShapefilePolygons::processPolygons(string spdInputFile, string inputLayer, string outputASCII, SPDPolygonProcessor *processor) throw(SPDProcessingException)
+	void SPDSetupProcessShapefilePolygons::processPolygons(std::string spdInputFile, std::string inputLayer, std::string outputASCII, SPDPolygonProcessor *processor) throw(SPDProcessingException)
 	{
 		OGRRegisterAll();
 		
-		string SHPFileInLayer = this->getLayerName(inputLayer);
+		std::string SHPFileInLayer = this->getLayerName(inputLayer);
 		
 		OGRDataSource *inputSHPDS = NULL;
 		OGRLayer *inputSHPLayer = NULL;
@@ -173,22 +173,22 @@ namespace spdlib
 			inputSHPDS = OGRSFDriverRegistrar::Open(inputLayer.c_str(), FALSE);
 			if(inputSHPDS == NULL)
 			{
-				string message = string("Could not open vector file ") + inputLayer;
+				std::string message = std::string("Could not open vector file ") + inputLayer;
 				throw SPDProcessingException(message.c_str());
 			}
 			inputSHPLayer = inputSHPDS->GetLayerByName(SHPFileInLayer.c_str());
 			if(inputSHPLayer == NULL)
 			{
-				string message = string("Could not open vector layer ") + SHPFileInLayer;
+				std::string message = std::string("Could not open vector layer ") + SHPFileInLayer;
 				throw SPDProcessingException(message.c_str());
 			}
 			
-            ofstream *outASCIIFile = new ofstream();
-            outASCIIFile->open(outputASCII.c_str(), ios::out | ios::trunc);
+            std::ofstream *outASCIIFile = new std::ofstream();
+            outASCIIFile->open(outputASCII.c_str(), std::ios::out | std::ios::trunc);
             
             if(!outASCIIFile->is_open())
             {                
-                string message = string("Could not open file ") + outputASCII;
+                std::string message = std::string("Could not open file ") + outputASCII;
                 throw SPDProcessingException(message);
             }
 

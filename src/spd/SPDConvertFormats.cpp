@@ -31,11 +31,11 @@ namespace spdlib
 		
 	}
 	
-	void SPDConvertFormats::convertInMemory(string input, string output, string inFormat, string schema, string outFormat, float binsize, string inSpatialRef, bool convertCoords, string outputProjWKT, boost::uint_fast16_t indexCoords, bool defineTL, double tlX, double tlY, bool defineOrigin, double originX, double originY, float originZ, bool useSphericIdx, bool usePolarIdx, bool useScanIdx, float waveNoiseThreshold, boost::uint_fast16_t waveformBitRes, boost::uint_fast16_t pointVersion, boost::uint_fast16_t pulseVersion) throw(SPDException)
+	void SPDConvertFormats::convertInMemory(std::string input, std::string output, std::string inFormat, std::string schema, std::string outFormat, float binsize, std::string inSpatialRef, bool convertCoords, std::string outputProjWKT, boost::uint_fast16_t indexCoords, bool defineTL, double tlX, double tlY, bool defineOrigin, double originX, double originY, float originZ, bool useSphericIdx, bool usePolarIdx, bool useScanIdx, float waveNoiseThreshold, boost::uint_fast16_t waveformBitRes, boost::uint_fast16_t pointVersion, boost::uint_fast16_t pulseVersion) throw(SPDException)
 	{        
 		try 
 		{
-            cout.precision(12);
+            std::cout.precision(12);
             
 			SPDIOFactory ioFactory;
 			
@@ -93,7 +93,7 @@ namespace spdlib
                 }
                 else
                 {
-                    vector<SPDPulse*> *pulses = importer->readAllDataToVector(input, spdFile);
+                    std::vector<SPDPulse*> *pulses = importer->readAllDataToVector(input, spdFile);
                     if(useSphericIdx)
                     {
                         spdFile->setIndexType(spdlib::SPD_SPHERICAL_IDX);
@@ -142,16 +142,16 @@ namespace spdlib
                     {
                         if(tlX > spdFile->getAzimuthMin())
                         {
-                            cout << "spdFile->getAzimuthMin() = " << spdFile->getAzimuthMin() << endl;
-                            cout << "tlX = " << tlX << endl;
+                            std::cout << "spdFile->getAzimuthMin() = " << spdFile->getAzimuthMin() << std::endl;
+                            std::cout << "tlX = " << tlX << std::endl;
                             throw SPDException("Defined TL corner (Azimuth) needs to be outside the range of the LiDAR data.");
                         }
                         spdFile->setAzimuthMin(tlX);
                         
                         if(tlY > spdFile->getZenithMin())
                         {
-                            cout << "spdFile->getZenithMin() = " << spdFile->getZenithMin() << endl;
-                            cout << "tlY = " << tlY << endl;
+                            std::cout << "spdFile->getZenithMin() = " << spdFile->getZenithMin() << std::endl;
+                            std::cout << "tlY = " << tlY << std::endl;
                             throw SPDException("Defined TL corner (Zenith) needs to be outside the range of the LiDAR data."); 
                         }
                         spdFile->setZenithMin(tlY);
@@ -161,16 +161,16 @@ namespace spdlib
                     {
                         if(tlX > spdFile->getScanlineIdxMin())
                         {
-                            cout << "spdFile->getScanlineIdxMin() = " << spdFile->getScanlineIdxMin() << endl;
-                            cout << "tlX = " << tlX << endl;
+                            std::cout << "spdFile->getScanlineIdxMin() = " << spdFile->getScanlineIdxMin() << std::endl;
+                            std::cout << "tlX = " << tlX << std::endl;
                             throw SPDException("Defined TL corner (scanlineIdx) needs to be outside the range of the LiDAR data.");
                         }
                         spdFile->setScanlineIdxMin(tlX);
                         
                         if(tlY > spdFile->getScanlineMin())
                         {
-                            cout << "spdFile->getScanlineMin() = " << spdFile->getScanlineMin() << endl;
-                            cout << "tlY = " << tlY << endl;
+                            std::cout << "spdFile->getScanlineMin() = " << spdFile->getScanlineMin() << std::endl;
+                            std::cout << "tlY = " << tlY << std::endl;
                             throw SPDException("Defined TL corner (Scanline) needs to be outside the range of the LiDAR data."); 
                         }
                         spdFile->setScanlineMin(tlY);
@@ -184,13 +184,13 @@ namespace spdlib
 			}
 			else if(exporter->needNumOutPts())
 			{
-				list<SPDPulse*> *pulses = importer->readAllDataToList(input, spdFile);
+				std::list<SPDPulse*> *pulses = importer->readAllDataToList(input, spdFile);
 				exporter->setNumOutPts(spdFile->getNumberOfPoints());
 				exporter->open(spdFile, output);
 				exporter->writeDataColumn(pulses, 0, 0);
 				exporter->finaliseClose();
 				
-				list<SPDPulse*>::iterator iterPulses;
+				std::list<SPDPulse*>::iterator iterPulses;
 				for(iterPulses = pulses->begin(); iterPulses != pulses->end(); )
 				{
 					SPDPulseUtils::deleteSPDPulse(*iterPulses);
@@ -224,9 +224,9 @@ namespace spdlib
 		}
 	}
 	
-	void SPDConvertFormats::convertToSPDUsingRowTiles(string input, string output, string inFormat, string schema, float binsize, string inSpatialRef, bool convertCoords, string outputProjWKT, boost::uint_fast16_t indexCoords, string tempdir, boost::uint_fast16_t numRowsInTile, bool defineTL, double tlX, double tlY,  bool defineOrigin, double originX, double originY, float originZ, bool useSphericIdx, bool usePolarIdx, bool useScanIdx, float waveNoiseThreshold, boost::uint_fast16_t waveformBitRes, bool keepTmpFiles, boost::uint_fast16_t pointVersion, boost::uint_fast16_t pulseVersion) throw(SPDException)
+	void SPDConvertFormats::convertToSPDUsingRowTiles(std::string input, std::string output, std::string inFormat, std::string schema, float binsize, std::string inSpatialRef, bool convertCoords, std::string outputProjWKT, boost::uint_fast16_t indexCoords, std::string tempdir, boost::uint_fast16_t numRowsInTile, bool defineTL, double tlX, double tlY,  bool defineOrigin, double originX, double originY, float originZ, bool useSphericIdx, bool usePolarIdx, bool useScanIdx, float waveNoiseThreshold, boost::uint_fast16_t waveformBitRes, bool keepTmpFiles, boost::uint_fast16_t pointVersion, boost::uint_fast16_t pulseVersion) throw(SPDException)
 	{
-        cout.precision(12);
+        std::cout.precision(12);
         if(usePolarIdx)
         {
             throw SPDException("Gridding data using a hemispherical coordinate index is not currently supported while generating SPD file using a temporary directory.");
@@ -247,8 +247,8 @@ namespace spdlib
 		boost::uint_fast32_t numOfTiles = 0;
 		
 		// Convert input file to temp UPD file and calc dimensions
-		cout << "Calculate Data dimensions and convert to SPD File\n";
-		string filePathAllData = "";
+		std::cout << "Calculate Data dimensions and convert to SPD File\n";
+		std::string filePathAllData = "";
 		try 
 		{
 			if(inFormat == "SPD")
@@ -281,22 +281,22 @@ namespace spdlib
             
             if(useSphericIdx)
             {
-                cout << "Converting into spherical coordinate system index\n";
+                std::cout << "Converting into spherical coordinate system index\n";
                 spdFileAllIn->setIndexType(spdlib::SPD_SPHERICAL_IDX);
             }
             else if(useScanIdx)
             {
-                cout << "Converting into scanner coordinate system index\n";
+                std::cout << "Converting into scanner coordinate system index\n";
                 spdFileAllIn->setIndexType(spdlib::SPD_SCAN_IDX);
             }
             else if(usePolarIdx)
             {
-                cout << "Converting into polar coordinate system index\n";
+                std::cout << "Converting into polar coordinate system index\n";
                 spdFileAllIn->setIndexType(spdlib::SPD_POLAR_IDX);
             }
             else
             {
-                cout << "Converting into cartisian coordinate system index\n";
+                std::cout << "Converting into cartisian coordinate system index\n";
                 spdFileAllIn->setIndexType(spdlib::SPD_CARTESIAN_IDX);
             }
             
@@ -327,16 +327,16 @@ namespace spdlib
             {
                 if(tlX > spdFileAllIn->getAzimuthMin())
                 {
-                    cout << "spdFileAllIn->getAzimuthMin() = " << spdFileAllIn->getAzimuthMin() << endl;
-                    cout << "tlX = " << tlX << endl;
+                    std::cout << "spdFileAllIn->getAzimuthMin() = " << spdFileAllIn->getAzimuthMin() << std::endl;
+                    std::cout << "tlX = " << tlX << std::endl;
                     throw SPDException("Defined TL corner (Azimuth) needs to be outside the range of the LiDAR data.");
                 }
                 spdFileAllIn->setAzimuthMin(tlX);
                 
                 if(tlY > spdFileAllIn->getZenithMin())
                 {
-                    cout << "spdFileAllIn->getZenithMin() = " << spdFileAllIn->getZenithMin() << endl;
-                    cout << "tlY = " << tlY << endl;
+                    std::cout << "spdFileAllIn->getZenithMin() = " << spdFileAllIn->getZenithMin() << std::endl;
+                    std::cout << "tlY = " << tlY << std::endl;
                     throw SPDException("Defined TL corner (Zenith) needs to be outside the range of the LiDAR data."); 
                 }
                 spdFileAllIn->setZenithMin(tlY);
@@ -346,16 +346,16 @@ namespace spdlib
             {
                 if(tlX > spdFileAllIn->getScanlineIdxMin())
                 {
-                    cout << "spdFileAllIn->getScanlineIdxMin() = " << spdFileAllIn->getScanlineIdxMin() << endl;
-                    cout << "tlX = " << tlX << endl;
+                    std::cout << "spdFileAllIn->getScanlineIdxMin() = " << spdFileAllIn->getScanlineIdxMin() << std::endl;
+                    std::cout << "tlX = " << tlX << std::endl;
                     throw SPDException("Defined TL corner (scanlineIdx) needs to be outside the range of the LiDAR data.");
                 }
                 spdFileAllIn->setScanlineIdxMin(tlX);
                 
                 if(tlY > spdFileAllIn->getScanlineMin())
                 {
-                    cout << "spdFileAllIn->getScanlineMin() = " << spdFileAllIn->getScanlineMin() << endl;
-                    cout << "tlY = " << tlY << endl;
+                    std::cout << "spdFileAllIn->getScanlineMin() = " << spdFileAllIn->getScanlineMin() << std::endl;
+                    std::cout << "tlY = " << tlY << std::endl;
                     throw SPDException("Defined TL corner (Scanline) needs to be outside the range of the LiDAR data."); 
                 }
                 spdFileAllIn->setScanlineMin(tlY);
@@ -364,27 +364,27 @@ namespace spdlib
             
             if(useSphericIdx)
             {
-                numOfTiles = numeric_cast<boost::uint_fast32_t>(((spdFileAllIn->getZenithMax() - spdFileAllIn->getZenithMin()) / tempFileYSize))+1;  
+                numOfTiles = boost::numeric_cast<boost::uint_fast32_t>(((spdFileAllIn->getZenithMax() - spdFileAllIn->getZenithMin()) / tempFileYSize))+1;  
             }
             else if(useScanIdx)
             {
-                numOfTiles = numeric_cast<boost::uint_fast32_t>(((spdFileAllIn->getScanlineIdxMax() - spdFileAllIn->getScanlineIdxMin()) / tempFileYSize))+1;
+                numOfTiles = boost::numeric_cast<boost::uint_fast32_t>(((spdFileAllIn->getScanlineIdxMax() - spdFileAllIn->getScanlineIdxMin()) / tempFileYSize))+1;
             }
             else
             {
-                numOfTiles = numeric_cast<boost::uint_fast32_t>(((spdFileAllIn->getYMax() - spdFileAllIn->getYMin()) / tempFileYSize))+1;
+                numOfTiles = boost::numeric_cast<boost::uint_fast32_t>(((spdFileAllIn->getYMax() - spdFileAllIn->getYMin()) / tempFileYSize))+1;
             }
-			cout << "Number of Tiles = " << numOfTiles << endl;
+			std::cout << "Number of Tiles = " << numOfTiles << std::endl;
 		}
-		catch(negative_overflow& e) 
+		catch(boost::numeric::negative_overflow& e) 
 		{
 			throw SPDException(e.what());
 		}
-		catch(positive_overflow& e) 
+		catch(boost::numeric::positive_overflow& e) 
 		{
 			throw SPDException(e.what());
 		}
-		catch(bad_numeric_cast& e) 
+		catch(boost::numeric::bad_numeric_cast& e) 
 		{
 			throw SPDException(e.what());
 		}
@@ -394,7 +394,7 @@ namespace spdlib
 		}
 		
 		PointDataTileFile *tiles = new PointDataTileFile[numOfTiles];
-		string filePath = "";
+		std::string filePath = "";
         
         double yMax = 0.0;
         double yMin = 0.0;
@@ -407,12 +407,12 @@ namespace spdlib
 		    // Create list of tiles.
 		    for(boost::uint_fast32_t i = 0; i < numOfTiles; ++i)
 		    {
-                filePath = tempdir + txtUtils.uInt32bittostring(i) + string(".spd");
-			    //cout << "File: " << filePath << endl;
-			    //cout << "File: " << yMax << endl;
-                //cout << "File: " <<  yMin << endl;		
+                filePath = tempdir + txtUtils.uInt32bittostring(i) + std::string(".spd");
+			    //std::cout << "File: " << filePath << std::endl;
+			    //std::cout << "File: " << yMax << std::endl;
+                //std::cout << "File: " <<  yMin << std::endl;		
                 tiles[i].exporter = new SPDNoIdxFileWriter();
-			    tiles[i].pulses = new list<SPDPulse*>();
+			    tiles[i].pulses = new std::list<SPDPulse*>();
 			    tiles[i].env = new OGREnvelope();
 			    tiles[i].spdFile = new SPDFile(filePath);
 			    tiles[i].spdFile->copyAttributesFrom(spdFileAllIn);
@@ -445,12 +445,12 @@ namespace spdlib
 		    // Create list of tiles.
 		    for(boost::uint_fast32_t i = 0; i < numOfTiles; ++i)
 		    {
-                filePath = tempdir + txtUtils.uInt32bittostring(i) + string(".spd");
-			    //cout << "File: " << filePath << endl;
-			    //cout << "File: " << yMax << endl;
-                //cout << "File: " <<  yMin << endl;		
+                filePath = tempdir + txtUtils.uInt32bittostring(i) + std::string(".spd");
+			    //std::cout << "File: " << filePath << std::endl;
+			    //std::cout << "File: " << yMax << std::endl;
+                //std::cout << "File: " <<  yMin << std::endl;		
                 tiles[i].exporter = new SPDNoIdxFileWriter();
-			    tiles[i].pulses = new list<SPDPulse*>();
+			    tiles[i].pulses = new std::list<SPDPulse*>();
 			    tiles[i].env = new OGREnvelope();
 			    tiles[i].spdFile = new SPDFile(filePath);
 			    tiles[i].spdFile->copyAttributesFrom(spdFileAllIn);
@@ -482,12 +482,12 @@ namespace spdlib
 		    // Create list of tiles.
 		    for(boost::uint_fast32_t i = 0; i < numOfTiles; ++i)
 		    {
-                filePath = tempdir + txtUtils.uInt32bittostring(i) + string(".spd");
-			    //cout << "File: " << filePath << endl;
-			    //cout << "File: " << yMax << endl;
-                //cout << "File: " <<  yMin << endl;		
+                filePath = tempdir + txtUtils.uInt32bittostring(i) + std::string(".spd");
+			    //std::cout << "File: " << filePath << std::endl;
+			    //std::cout << "File: " << yMax << std::endl;
+                //std::cout << "File: " <<  yMin << std::endl;		
                 tiles[i].exporter = new SPDNoIdxFileWriter();
-			    tiles[i].pulses = new list<SPDPulse*>();
+			    tiles[i].pulses = new std::list<SPDPulse*>();
 			    tiles[i].env = new OGREnvelope();
 			    tiles[i].spdFile = new SPDFile(filePath);
 			    tiles[i].spdFile->copyAttributesFrom(spdFileAllIn);
@@ -513,7 +513,7 @@ namespace spdlib
         }
         
 		
-		cout << "Create Individual tiles\n";
+		std::cout << "Create Individual tiles\n";
 		SPDDataImporter *dataImporter = NULL;
 		try 
 		{
@@ -562,16 +562,16 @@ namespace spdlib
         {
             if(tlX > spdFileAllIn->getAzimuthMin())
             {
-                cout << "spdFileAllIn->getAzimuthMin() = " << spdFileAllIn->getAzimuthMin() << endl;
-                cout << "tlX = " << tlX << endl;
+                std::cout << "spdFileAllIn->getAzimuthMin() = " << spdFileAllIn->getAzimuthMin() << std::endl;
+                std::cout << "tlX = " << tlX << std::endl;
                 throw SPDException("Defined TL corner (Azimuth) needs to be outside the range of the LiDAR data.");
             }
             spdFileAllIn->setAzimuthMin(tlX);
             
             if(tlY > spdFileAllIn->getZenithMin())
             {
-                cout << "spdFileAllIn->getZenithMin() = " << spdFileAllIn->getZenithMin() << endl;
-                cout << "tlY = " << tlY << endl;
+                std::cout << "spdFileAllIn->getZenithMin() = " << spdFileAllIn->getZenithMin() << std::endl;
+                std::cout << "tlY = " << tlY << std::endl;
                 throw SPDException("Defined TL corner (Zenith) needs to be outside the range of the LiDAR data."); 
             }
             spdFileAllIn->setZenithMin(tlY);
@@ -581,16 +581,16 @@ namespace spdlib
         {
             if(tlX > spdFileAllIn->getScanlineIdxMin())
             {
-                cout << "spdFileAllIn->getScanlineIdxMin() = " << spdFileAllIn->getScanlineIdxMin() << endl;
-                cout << "tlX = " << tlX << endl;
+                std::cout << "spdFileAllIn->getScanlineIdxMin() = " << spdFileAllIn->getScanlineIdxMin() << std::endl;
+                std::cout << "tlX = " << tlX << std::endl;
                 throw SPDException("Defined TL corner (ScanlineIdx) needs to be outside the range of the LiDAR data.");
             }
             spdFileAllIn->setScanlineIdxMin(tlX);
             
             if(tlY > spdFileAllIn->getScanlineMin())
             {
-                cout << "spdFileAllIn->getScanlineMin() = " << spdFileAllIn->getScanlineMin() << endl;
-                cout << "tlY = " << tlY << endl;
+                std::cout << "spdFileAllIn->getScanlineMin() = " << spdFileAllIn->getScanlineMin() << std::endl;
+                std::cout << "tlY = " << tlY << std::endl;
                 throw SPDException("Defined TL corner (Scanline) needs to be outside the range of the LiDAR data."); 
             }
             spdFileAllIn->setScanlineMin(tlY);
@@ -598,7 +598,7 @@ namespace spdlib
         }
         
       
-		cout << "Create Final SPD file\n";
+		std::cout << "Create Final SPD file\n";
 		spdFileFinalOut = new SPDFile(output);
 		spdFileFinalOut->copyAttributesFrom(spdFileAllOutVals);
 		spdFileFinalOut->setBinSize(binsize);
@@ -625,57 +625,57 @@ namespace spdlib
             {
 				if(spdFileFinalOut->getBinSize() < 1)
 			    {
-				    roundingAddition = 2;//numeric_cast<boost::uint_fast32_t>(1/spdFile->getBinSize());
+				    roundingAddition = 2;//boost::numeric_cast<boost::uint_fast32_t>(1/spdFile->getBinSize());
 			    }
 			    else 
 			    {
 				    roundingAddition = 1;
 			    }
                                 
-                xSize = numeric_cast<boost::uint_fast32_t>((((spdFileFinalOut->getAzimuthMax()-spdFileFinalOut->getAzimuthMin())/spdFileFinalOut->getBinSize())+roundingAddition)+0.5);
-			    ySize = numeric_cast<boost::uint_fast32_t>((((spdFileFinalOut->getZenithMax()-spdFileFinalOut->getZenithMin())/spdFileFinalOut->getBinSize())+roundingAddition)+0.5);                
+                xSize = boost::numeric_cast<boost::uint_fast32_t>((((spdFileFinalOut->getAzimuthMax()-spdFileFinalOut->getAzimuthMin())/spdFileFinalOut->getBinSize())+roundingAddition)+0.5);
+			    ySize = boost::numeric_cast<boost::uint_fast32_t>((((spdFileFinalOut->getZenithMax()-spdFileFinalOut->getZenithMin())/spdFileFinalOut->getBinSize())+roundingAddition)+0.5);                
 			}
  			else if(spdFileFinalOut->getIndexType() == spdlib::SPD_SCAN_IDX)
             {
 				if(spdFileFinalOut->getBinSize() < 1)
 			    {
-				    roundingAddition = 2;//numeric_cast<boost::uint_fast32_t>(1/spdFile->getBinSize());
+				    roundingAddition = 2;//boost::numeric_cast<boost::uint_fast32_t>(1/spdFile->getBinSize());
 			    }
 			    else 
 			    {
 				    roundingAddition = 1;
 			    }
-                xSize = numeric_cast<boost::uint_fast32_t>((((spdFileFinalOut->getScanlineIdxMax()-spdFileFinalOut->getScanlineIdxMin())/spdFileFinalOut->getBinSize())+roundingAddition)+0.5);
-			    ySize = numeric_cast<boost::uint_fast32_t>((((spdFileFinalOut->getScanlineMax()-spdFileFinalOut->getScanlineMin())/spdFileFinalOut->getBinSize())+roundingAddition)+0.5);                
+                xSize = boost::numeric_cast<boost::uint_fast32_t>((((spdFileFinalOut->getScanlineIdxMax()-spdFileFinalOut->getScanlineIdxMin())/spdFileFinalOut->getBinSize())+roundingAddition)+0.5);
+			    ySize = boost::numeric_cast<boost::uint_fast32_t>((((spdFileFinalOut->getScanlineMax()-spdFileFinalOut->getScanlineMin())/spdFileFinalOut->getBinSize())+roundingAddition)+0.5);                
             }
             else
             {
                 if(spdFileFinalOut->getBinSize() < 1)
                 {
-                    roundingAddition = numeric_cast<boost::uint_fast32_t>(1/spdFileFinalOut->getBinSize());
+                    roundingAddition = boost::numeric_cast<boost::uint_fast32_t>(1/spdFileFinalOut->getBinSize());
                 }
                 else 
                 {
                     roundingAddition = 1;
                 }
-                xSize = numeric_cast<boost::uint_fast32_t>((((spdFileFinalOut->getXMax()-spdFileFinalOut->getXMin())/spdFileFinalOut->getBinSize())+roundingAddition)+0.5);
-                ySize = numeric_cast<boost::uint_fast32_t>((((spdFileFinalOut->getYMax()-spdFileFinalOut->getYMin())/spdFileFinalOut->getBinSize())+roundingAddition)+0.5);			
+                xSize = boost::numeric_cast<boost::uint_fast32_t>((((spdFileFinalOut->getXMax()-spdFileFinalOut->getXMin())/spdFileFinalOut->getBinSize())+roundingAddition)+0.5);
+                ySize = boost::numeric_cast<boost::uint_fast32_t>((((spdFileFinalOut->getYMax()-spdFileFinalOut->getYMin())/spdFileFinalOut->getBinSize())+roundingAddition)+0.5);			
             }
             
 			spdFileFinalOut->setNumberBinsX(xSize);
 			spdFileFinalOut->setNumberBinsY(ySize);
-            cout << "Number of Bins in final output SPD file: [" << xSize << "," << ySize << "]" << endl;
+            std::cout << "Number of Bins in final output SPD file: [" << xSize << "," << ySize << "]" << std::endl;
             
 		}
-		catch(negative_overflow& e) 
+		catch(boost::numeric::negative_overflow& e) 
 		{
 			throw SPDProcessingException(e.what());
 		}
-		catch(positive_overflow& e) 
+		catch(boost::numeric::positive_overflow& e) 
 		{
 			throw SPDProcessingException(e.what());
 		}
-		catch(bad_numeric_cast& e) 
+		catch(boost::numeric::bad_numeric_cast& e) 
 		{
 			throw SPDProcessingException(e.what());
 		}
@@ -685,30 +685,30 @@ namespace spdlib
 			exporterSPD = new SPDSeqFileWriter();
 			exporterSPD->open(spdFileFinalOut, spdFileFinalOut->getFilePath());
 			dataImporter = new SPDFileReader(false, "", "", indexCoords);
-			vector<SPDPulse*> *tilePulses = NULL;
+			std::vector<SPDPulse*> *tilePulses = NULL;
 			boost::uint_fast32_t totalNumRows = 0;
 			boost::uint_fast32_t numRows = 0;
-			list<SPDPulse*> ***griddedPls = NULL;
-			list<SPDPulse*>::iterator iterPulses;
+			std::list<SPDPulse*> ***griddedPls = NULL;
+			std::list<SPDPulse*>::iterator iterPulses;
 			for(boost::uint_fast32_t i = 0; i < numOfTiles; ++i)
 			{
 				if(i == (numOfTiles-1))
 				{
-					numRows = ySize - totalNumRows;//numeric_cast<boost::uint_fast32_t>(((tiles[i].env->MaxY-tiles[i].env->MinY)/spdFileFinalOut->getBinSize())+1);
+					numRows = ySize - totalNumRows;//boost::numeric_cast<boost::uint_fast32_t>(((tiles[i].env->MaxY-tiles[i].env->MinY)/spdFileFinalOut->getBinSize())+1);
 				}
 				else 
 				{
-					numRows = numeric_cast<boost::uint_fast32_t>(((tiles[i].env->MaxY-tiles[i].env->MinY)/spdFileFinalOut->getBinSize())+0.5);
+					numRows = boost::numeric_cast<boost::uint_fast32_t>(((tiles[i].env->MaxY-tiles[i].env->MinY)/spdFileFinalOut->getBinSize())+0.5);
 				}
-				cout << "Tile " << i+1 << " of " << numOfTiles << " covers " << numRows << " rows\n";
+				std::cout << "Tile " << i+1 << " of " << numOfTiles << " covers " << numRows << " rows\n";
 				
-                griddedPls = new list<SPDPulse*>**[numRows];
+                griddedPls = new std::list<SPDPulse*>**[numRows];
                 for(boost::uint_fast32_t n = 0; n < numRows; ++n)
 				{
-                    griddedPls[n] = new list<SPDPulse*>*[xSize];
+                    griddedPls[n] = new std::list<SPDPulse*>*[xSize];
 					for(boost::uint_fast32_t m = 0; m < xSize; ++m)
 					{
-						griddedPls[n][m] =  new list<SPDPulse*>();
+						griddedPls[n][m] =  new std::list<SPDPulse*>();
 					}
 				}
                 
@@ -755,15 +755,15 @@ namespace spdlib
 				throw SPDException("The number of used row and the number of rows in the file is different.");
 			}
 		}
-		catch(negative_overflow& e) 
+		catch(boost::numeric::negative_overflow& e) 
 		{
 			throw SPDProcessingException(e.what());
 		}
-		catch(positive_overflow& e) 
+		catch(boost::numeric::positive_overflow& e) 
 		{
 			throw SPDProcessingException(e.what());
 		}
-		catch(bad_numeric_cast& e) 
+		catch(boost::numeric::bad_numeric_cast& e) 
 		{
 			throw SPDProcessingException(e.what());
 		}		
@@ -781,24 +781,24 @@ namespace spdlib
 		delete spdFileAllIn;
         delete spdFileAllOutVals;
         
-        cout << "Complete - Sequencial indexed SPD file created\n";
+        std::cout << "Complete - Sequencial indexed SPD file created\n";
 
 	}
 	
-    void SPDConvertFormats::convertToSPDUsingBlockTiles(string input, string output, string inFormat, string schema, float binsize, string inSpatialRef, bool convertCoords, string outputProjWKT, boost::uint_fast16_t indexCoords, string tempdir,boost::uint_fast16_t numRowsInTile, boost::uint_fast16_t numColsInTile, bool defineTL, double tlX, double tlY, bool defineOrigin, double originX, double originY, float originZ, bool useSphericIdx, bool usePolarIdx, bool useScanIdx, float waveNoiseThreshold,boost::uint_fast16_t waveformBitRes, bool keepTmpFiles, boost::uint_fast16_t pointVersion, boost::uint_fast16_t pulseVersion) throw(SPDException)
+    void SPDConvertFormats::convertToSPDUsingBlockTiles(std::string input, std::string output, std::string inFormat, std::string schema, float binsize, std::string inSpatialRef, bool convertCoords, std::string outputProjWKT, boost::uint_fast16_t indexCoords, std::string tempdir,boost::uint_fast16_t numRowsInTile, boost::uint_fast16_t numColsInTile, bool defineTL, double tlX, double tlY, bool defineOrigin, double originX, double originY, float originZ, bool useSphericIdx, bool usePolarIdx, bool useScanIdx, float waveNoiseThreshold,boost::uint_fast16_t waveformBitRes, bool keepTmpFiles, boost::uint_fast16_t pointVersion, boost::uint_fast16_t pulseVersion) throw(SPDException)
     {
-        //cout.precision(10);
+        //std::cout.precision(10);
         if(usePolarIdx)
         {
             throw SPDException("Gridding data using a polar coordinate index is not currently supported while generating SPD file using a temporary directory.");
         }
         if(useSphericIdx)
         {
-            cout << "Gridding data using a spherical coordinate index is not currently tested while generating SPD file using a temporary directory.\n";
+            std::cout << "Gridding data using a spherical coordinate index is not currently tested while generating SPD file using a temporary directory.\n";
         }
         if(useScanIdx)
         {
-            cout << "Gridding data using a scan coordinate index is not currently tested while generating SPD file using a temporary directory.\n";
+            std::cout << "Gridding data using a scan coordinate index is not currently tested while generating SPD file using a temporary directory.\n";
         }
         
 		SPDTextFileUtilities txtUtils;
@@ -819,8 +819,8 @@ namespace spdlib
         boost::uint_fast32_t numOfTiles = 0;
 		
 		// Convert input file to temp UPD file and calc dimensions
-		cout << "Calculate Data dimensions and convert to UPD File\n";
-		string filePathAllData = "";
+		std::cout << "Calculate Data dimensions and convert to UPD File\n";
+		std::string filePathAllData = "";
 		try 
 		{
 			if(inFormat == "SPD")
@@ -891,16 +891,16 @@ namespace spdlib
             {
                 if(tlX > spdFileAllIn->getAzimuthMin())
                 {
-                    cout << "spdFileAllIn->getAzimuthMin() = " << spdFileAllIn->getAzimuthMin() << endl;
-                    cout << "tlX = " << tlX << endl;
+                    std::cout << "spdFileAllIn->getAzimuthMin() = " << spdFileAllIn->getAzimuthMin() << std::endl;
+                    std::cout << "tlX = " << tlX << std::endl;
                     throw SPDException("Defined TL corner (Azimuth) needs to be outside the range of the LiDAR data.");
                 }
                 spdFileAllIn->setAzimuthMin(tlX);
                 
                 if(tlY > spdFileAllIn->getZenithMin())
                 {
-                    cout << "spdFileAllIn->getZenithMin() = " << spdFileAllIn->getZenithMin() << endl;
-                    cout << "tlY = " << tlY << endl;
+                    std::cout << "spdFileAllIn->getZenithMin() = " << spdFileAllIn->getZenithMin() << std::endl;
+                    std::cout << "tlY = " << tlY << std::endl;
                     throw SPDException("Defined TL corner (Zenith) needs to be outside the range of the LiDAR data."); 
                 }
                 spdFileAllIn->setZenithMin(tlY);
@@ -910,54 +910,54 @@ namespace spdlib
             {
                 if(tlX > spdFileAllIn->getScanlineIdxMin())
                 {
-                    cout << "spdFileAllIn->getScanlineIdxMin() = " << spdFileAllIn->getScanlineIdxMin() << endl;
-                    cout << "tlX = " << tlX << endl;
+                    std::cout << "spdFileAllIn->getScanlineIdxMin() = " << spdFileAllIn->getScanlineIdxMin() << std::endl;
+                    std::cout << "tlX = " << tlX << std::endl;
                     throw SPDException("Defined TL corner (ScanlineIdx) needs to be outside the range of the LiDAR data.");
                 }
                 spdFileAllIn->setScanlineIdxMin(tlX);
                 
                 if(tlY > spdFileAllIn->getScanlineMin())
                 {
-                    cout << "spdFileAllIn->getScanlineMin() = " << spdFileAllIn->getScanlineMin() << endl;
-                    cout << "tlY = " << tlY << endl;
+                    std::cout << "spdFileAllIn->getScanlineMin() = " << spdFileAllIn->getScanlineMin() << std::endl;
+                    std::cout << "tlY = " << tlY << std::endl;
                     throw SPDException("Defined TL corner (Scanline) needs to be outside the range of the LiDAR data."); 
                 }
                 spdFileAllIn->setScanlineMin(tlY);
                 
             }
             
-			//cout << "Y DIMS: [" << spdFileAllInUPD->getYMax() << ", " << spdFileAllInUPD->getYMin() << "]\n";
+			//std::cout << "Y DIMS: [" << spdFileAllInUPD->getYMax() << ", " << spdFileAllInUPD->getYMin() << "]\n";
             if(useSphericIdx)
             {
-                numOfXTiles = numeric_cast<boost::uint_fast32_t>(((spdFileAllIn->getAzimuthMax() - spdFileAllIn->getAzimuthMin()) / tempFileXSize))+1;  
-                numOfYTiles = numeric_cast<boost::uint_fast32_t>(((spdFileAllIn->getZenithMax() - spdFileAllIn->getZenithMin()) / tempFileYSize))+1;  
+                numOfXTiles = boost::numeric_cast<boost::uint_fast32_t>(((spdFileAllIn->getAzimuthMax() - spdFileAllIn->getAzimuthMin()) / tempFileXSize))+1;  
+                numOfYTiles = boost::numeric_cast<boost::uint_fast32_t>(((spdFileAllIn->getZenithMax() - spdFileAllIn->getZenithMin()) / tempFileYSize))+1;  
             }
             else if(useScanIdx)
             {
-                numOfXTiles = numeric_cast<boost::uint_fast32_t>(((spdFileAllIn->getScanlineIdxMax() - spdFileAllIn->getScanlineIdxMin()) / tempFileXSize))+1;  
-                numOfYTiles = numeric_cast<boost::uint_fast32_t>(((spdFileAllIn->getScanlineMax() - spdFileAllIn->getScanlineMin()) / tempFileYSize))+1;  
+                numOfXTiles = boost::numeric_cast<boost::uint_fast32_t>(((spdFileAllIn->getScanlineIdxMax() - spdFileAllIn->getScanlineIdxMin()) / tempFileXSize))+1;  
+                numOfYTiles = boost::numeric_cast<boost::uint_fast32_t>(((spdFileAllIn->getScanlineMax() - spdFileAllIn->getScanlineMin()) / tempFileYSize))+1;  
             }
             else
             {
-                numOfXTiles = numeric_cast<boost::uint_fast32_t>(((spdFileAllIn->getXMax() - spdFileAllIn->getXMin()) / tempFileXSize))+1; 
-                numOfYTiles = numeric_cast<boost::uint_fast32_t>(((spdFileAllIn->getYMax() - spdFileAllIn->getYMin()) / tempFileYSize))+1;  
+                numOfXTiles = boost::numeric_cast<boost::uint_fast32_t>(((spdFileAllIn->getXMax() - spdFileAllIn->getXMin()) / tempFileXSize))+1; 
+                numOfYTiles = boost::numeric_cast<boost::uint_fast32_t>(((spdFileAllIn->getYMax() - spdFileAllIn->getYMin()) / tempFileYSize))+1;  
             }
             
             numOfTiles = numOfXTiles * numOfYTiles;
             
-            cout << "Number of X Blocks = " << numOfXTiles << endl;
-			cout << "Number of Y Blocks = " << numOfYTiles << endl;
-            cout << "Total of Tiles = " << numOfTiles << endl;
+            std::cout << "Number of X Blocks = " << numOfXTiles << std::endl;
+			std::cout << "Number of Y Blocks = " << numOfYTiles << std::endl;
+            std::cout << "Total of Tiles = " << numOfTiles << std::endl;
 		}
-		catch(negative_overflow& e) 
+		catch(boost::numeric::negative_overflow& e) 
 		{
 			throw SPDException(e.what());
 		}
-		catch(positive_overflow& e) 
+		catch(boost::numeric::positive_overflow& e) 
 		{
 			throw SPDException(e.what());
 		}
-		catch(bad_numeric_cast& e) 
+		catch(boost::numeric::bad_numeric_cast& e) 
 		{
 			throw SPDException(e.what());
 		}
@@ -969,7 +969,7 @@ namespace spdlib
         numOfTiles = numOfXTiles * numOfYTiles;
         
         PointDataTileFile *tiles = new PointDataTileFile[numOfTiles];
-		string filePath = "";
+		std::string filePath = "";
         
         double yMax = 0.0;
         double yMin = 0.0;
@@ -990,14 +990,14 @@ namespace spdlib
                 xMax = xMin + tempFileXSize; 
                 for(boost::uint_fast32_t j = 0; j < numOfXTiles; ++j)
                 {
-                    filePath = tempdir + txtUtils.uInt32bittostring(i) + string("_") + txtUtils.uInt32bittostring(j) + string(".spd");
-                    //cout << "File: " << filePath << endl;
-                    //cout << "xMax: " << xMax << endl;
-                    //cout << "xMin: " << xMin << endl;
-                    //cout << "yMax: " << yMax << endl;
-                    //cout << "yMin: " << yMin << endl;
+                    filePath = tempdir + txtUtils.uInt32bittostring(i) + std::string("_") + txtUtils.uInt32bittostring(j) + std::string(".spd");
+                    //std::cout << "File: " << filePath << std::endl;
+                    //std::cout << "xMax: " << xMax << std::endl;
+                    //std::cout << "xMin: " << xMin << std::endl;
+                    //std::cout << "yMax: " << yMax << std::endl;
+                    //std::cout << "yMin: " << yMin << std::endl;
                     tiles[tileCounter].exporter = new SPDNoIdxFileWriter();
-                    tiles[tileCounter].pulses = new list<SPDPulse*>();
+                    tiles[tileCounter].pulses = new std::list<SPDPulse*>();
                     tiles[tileCounter].env = new OGREnvelope();
                     tiles[tileCounter].spdFile = new SPDFile(filePath);
                     tiles[tileCounter].spdFile->copyAttributesFrom(spdFileAllIn);
@@ -1044,14 +1044,14 @@ namespace spdlib
                 xMax = xMin + tempFileXSize; 
                 for(boost::uint_fast32_t j = 0; j < numOfXTiles; ++j)
                 {
-                    filePath = tempdir + txtUtils.uInt32bittostring(i) + string("_") + txtUtils.uInt32bittostring(j) + string(".spd");
-                    //cout << "File: " << filePath << endl;
-                    //cout << "xMax: " << xMax << endl;
-                    //cout << "xMin: " << xMin << endl;
-                    //cout << "yMax: " << yMax << endl;
-                    //cout << "yMin: " << yMin << endl;		
+                    filePath = tempdir + txtUtils.uInt32bittostring(i) + std::string("_") + txtUtils.uInt32bittostring(j) + std::string(".spd");
+                    //std::cout << "File: " << filePath << std::endl;
+                    //std::cout << "xMax: " << xMax << std::endl;
+                    //std::cout << "xMin: " << xMin << std::endl;
+                    //std::cout << "yMax: " << yMax << std::endl;
+                    //std::cout << "yMin: " << yMin << std::endl;		
                     tiles[tileCounter].exporter = new SPDNoIdxFileWriter();
-                    tiles[tileCounter].pulses = new list<SPDPulse*>();
+                    tiles[tileCounter].pulses = new std::list<SPDPulse*>();
                     tiles[tileCounter].env = new OGREnvelope();
                     tiles[tileCounter].spdFile = new SPDFile(filePath);
                     tiles[tileCounter].spdFile->copyAttributesFrom(spdFileAllIn);
@@ -1099,14 +1099,14 @@ namespace spdlib
                 
                 for(boost::uint_fast32_t j = 0; j < numOfXTiles; ++j)
                 {
-                    filePath = tempdir + txtUtils.uInt32bittostring(i) + string("_") + txtUtils.uInt32bittostring(j) + string(".spd");
-                    //cout << "File: " << filePath << endl;
-                    //cout << "xMax: " << xMax << endl;
-                    //cout << "xMin: " << xMin << endl;
-                    //cout << "yMax: " << yMax << endl;
-                    //cout << "yMin: " << yMin << endl;		
+                    filePath = tempdir + txtUtils.uInt32bittostring(i) + std::string("_") + txtUtils.uInt32bittostring(j) + std::string(".spd");
+                    //std::cout << "File: " << filePath << std::endl;
+                    //std::cout << "xMax: " << xMax << std::endl;
+                    //std::cout << "xMin: " << xMin << std::endl;
+                    //std::cout << "yMax: " << yMax << std::endl;
+                    //std::cout << "yMin: " << yMin << std::endl;		
                     tiles[tileCounter].exporter = new SPDNoIdxFileWriter();
-                    tiles[tileCounter].pulses = new list<SPDPulse*>();
+                    tiles[tileCounter].pulses = new std::list<SPDPulse*>();
                     tiles[tileCounter].env = new OGREnvelope();
                     tiles[tileCounter].spdFile = new SPDFile(filePath);
                     tiles[tileCounter].spdFile->copyAttributesFrom(spdFileAllIn);
@@ -1143,7 +1143,7 @@ namespace spdlib
 		    }
         }
         
-        cout << "Create Individual tile\n";
+        std::cout << "Create Individual tile\n";
 		SPDDataImporter *dataImporter = NULL;
 		try 
 		{
@@ -1174,7 +1174,7 @@ namespace spdlib
 		}
         
         
-        cout << "Create Final SPD file\n";
+        std::cout << "Create Final SPD file\n";
 		spdFileFinalOut = new SPDFile(output);
 		spdFileFinalOut->copyAttributesFrom(spdFileAllOutVals);
 		spdFileFinalOut->setBinSize(binsize);
@@ -1193,56 +1193,56 @@ namespace spdlib
             {
 				if(spdFileFinalOut->getBinSize() < 1)
 			    {
-				    roundingAddition = 2;//numeric_cast<boost::uint_fast32_t>(1/spdFile->getBinSize());
+				    roundingAddition = 2;//boost::numeric_cast<boost::uint_fast32_t>(1/spdFile->getBinSize());
 			    }
 			    else 
 			    {
 				    roundingAddition = 1;
 			    }
-                xSize = numeric_cast<boost::uint_fast32_t>((((spdFileFinalOut->getAzimuthMax()-spdFileFinalOut->getAzimuthMin())/spdFileFinalOut->getBinSize())+roundingAddition)+0.5)+1;
-			    ySize = numeric_cast<boost::uint_fast32_t>((((spdFileFinalOut->getZenithMax()-spdFileFinalOut->getZenithMin())/spdFileFinalOut->getBinSize())+roundingAddition)+0.5)+1;                
+                xSize = boost::numeric_cast<boost::uint_fast32_t>((((spdFileFinalOut->getAzimuthMax()-spdFileFinalOut->getAzimuthMin())/spdFileFinalOut->getBinSize())+roundingAddition)+0.5)+1;
+			    ySize = boost::numeric_cast<boost::uint_fast32_t>((((spdFileFinalOut->getZenithMax()-spdFileFinalOut->getZenithMin())/spdFileFinalOut->getBinSize())+roundingAddition)+0.5)+1;                
 			}
 			else if(spdFileFinalOut->getIndexType() == spdlib::SPD_SCAN_IDX)
             {
 				if(spdFileFinalOut->getBinSize() < 1)
 			    {
-				    roundingAddition = 2;//numeric_cast<boost::uint_fast32_t>(1/spdFile->getBinSize());
+				    roundingAddition = 2;//boost::numeric_cast<boost::uint_fast32_t>(1/spdFile->getBinSize());
 			    }
 			    else 
 			    {
 				    roundingAddition = 1;
 			    }
-                xSize = numeric_cast<boost::uint_fast32_t>((((spdFileFinalOut->getScanlineIdxMax()-spdFileFinalOut->getScanlineIdxMin())/spdFileFinalOut->getBinSize())+roundingAddition)+0.5)+1;
-			    ySize = numeric_cast<boost::uint_fast32_t>((((spdFileFinalOut->getScanlineMax()-spdFileFinalOut->getScanlineMin())/spdFileFinalOut->getBinSize())+roundingAddition)+0.5)+1;                
+                xSize = boost::numeric_cast<boost::uint_fast32_t>((((spdFileFinalOut->getScanlineIdxMax()-spdFileFinalOut->getScanlineIdxMin())/spdFileFinalOut->getBinSize())+roundingAddition)+0.5)+1;
+			    ySize = boost::numeric_cast<boost::uint_fast32_t>((((spdFileFinalOut->getScanlineMax()-spdFileFinalOut->getScanlineMin())/spdFileFinalOut->getBinSize())+roundingAddition)+0.5)+1;                
 			}
             else
             {
                 if(spdFileFinalOut->getBinSize() < 1)
 			    {
-				    roundingAddition = numeric_cast<boost::uint_fast32_t>(1/spdFileFinalOut->getBinSize());
+				    roundingAddition = boost::numeric_cast<boost::uint_fast32_t>(1/spdFileFinalOut->getBinSize());
 			    }
 			    else 
 			    {
 				    roundingAddition = 1;
 			    }
-			    xSize = numeric_cast<boost::uint_fast32_t>((((spdFileFinalOut->getXMax()-spdFileFinalOut->getXMin())/spdFileFinalOut->getBinSize())+roundingAddition)+0.5)+1;
-			    ySize = numeric_cast<boost::uint_fast32_t>((((spdFileFinalOut->getYMax()-spdFileFinalOut->getYMin())/spdFileFinalOut->getBinSize())+roundingAddition)+0.5)+1;			
+			    xSize = boost::numeric_cast<boost::uint_fast32_t>((((spdFileFinalOut->getXMax()-spdFileFinalOut->getXMin())/spdFileFinalOut->getBinSize())+roundingAddition)+0.5)+1;
+			    ySize = boost::numeric_cast<boost::uint_fast32_t>((((spdFileFinalOut->getYMax()-spdFileFinalOut->getYMin())/spdFileFinalOut->getBinSize())+roundingAddition)+0.5)+1;			
             }
             
 			spdFileFinalOut->setNumberBinsX(xSize);
 			spdFileFinalOut->setNumberBinsY(ySize);            
-            cout << "Number of Bins in final output SPD file: [" << xSize << "," << ySize << "]" << endl;
+            std::cout << "Number of Bins in final output SPD file: [" << xSize << "," << ySize << "]" << std::endl;
             
 		}
-		catch(negative_overflow& e) 
+		catch(boost::numeric::negative_overflow& e) 
 		{
 			throw SPDProcessingException(e.what());
 		}
-		catch(positive_overflow& e) 
+		catch(boost::numeric::positive_overflow& e) 
 		{
 			throw SPDProcessingException(e.what());
 		}
-		catch(bad_numeric_cast& e) 
+		catch(boost::numeric::bad_numeric_cast& e) 
 		{
 			throw SPDProcessingException(e.what());
 		}
@@ -1254,15 +1254,15 @@ namespace spdlib
 			exporterSPD = new SPDNonSeqFileWriter();
 			exporterSPD->open(spdFileFinalOut, spdFileFinalOut->getFilePath());
 			dataImporter = new SPDFileReader(false, "", "", indexCoords);
-			vector<SPDPulse*> *tilePulses = NULL;
+			std::vector<SPDPulse*> *tilePulses = NULL;
 			boost::uint_fast32_t totalNumRows = 0;
             boost::uint_fast32_t totalNumCols = 0;
 			boost::uint_fast32_t numRows = 0;
             boost::uint_fast32_t numCols = 0;
             boost::uint_fast32_t cRow = 0;
             boost::uint_fast32_t cCol = 0;
-			list<SPDPulse*> ***griddedPls = NULL;
-			list<SPDPulse*>::iterator iterPulses;
+			std::list<SPDPulse*> ***griddedPls = NULL;
+			std::list<SPDPulse*>::iterator iterPulses;
             tileCounter = 0;
 			for(boost::uint_fast32_t i = 0; i < numOfYTiles; ++i)
 			{
@@ -1272,7 +1272,7 @@ namespace spdlib
 				}
 				else 
 				{
-					numRows = numeric_cast<boost::uint_fast32_t>(((tiles[tileCounter].env->MaxY-tiles[tileCounter].env->MinY)/spdFileFinalOut->getBinSize())+0.5);
+					numRows = boost::numeric_cast<boost::uint_fast32_t>(((tiles[tileCounter].env->MaxY-tiles[tileCounter].env->MinY)/spdFileFinalOut->getBinSize())+0.5);
                 }
                 totalNumCols = 0;
                 
@@ -1284,20 +1284,20 @@ namespace spdlib
                     }
                     else 
                     {
-                        numCols = numeric_cast<boost::uint_fast32_t>(((tiles[tileCounter].env->MaxX-tiles[tileCounter].env->MinX)/spdFileFinalOut->getBinSize())+0.5);
+                        numCols = boost::numeric_cast<boost::uint_fast32_t>(((tiles[tileCounter].env->MaxX-tiles[tileCounter].env->MinX)/spdFileFinalOut->getBinSize())+0.5);
                     }
                     
                     
-                    cout << "Tile [" << i+1 << "," << j+1 << "] of [" << numOfYTiles << "," << numOfXTiles << "] covers " << numRows << " rows and " << numCols << " columns.\n";
+                    std::cout << "Tile [" << i+1 << "," << j+1 << "] of [" << numOfYTiles << "," << numOfXTiles << "] covers " << numRows << " rows and " << numCols << " columns.\n";
 				
                     // Create Grid Data Structure
-                    griddedPls = new list<SPDPulse*>**[numRows];
+                    griddedPls = new std::list<SPDPulse*>**[numRows];
                     for(boost::uint_fast32_t n = 0; n < numRows; ++n)
                     {
-                        griddedPls[n] = new list<SPDPulse*>*[numCols];
+                        griddedPls[n] = new std::list<SPDPulse*>*[numCols];
                         for(boost::uint_fast32_t m = 0; m < numCols; ++m)
                         {
-                            griddedPls[n][m] = new list<SPDPulse*>();
+                            griddedPls[n][m] = new std::list<SPDPulse*>();
                         }
                     }
                     
@@ -1345,8 +1345,8 @@ namespace spdlib
                 
                 if(totalNumCols != xSize)
                 {
-                    cout << "Total Num Cols = " << totalNumCols << endl;
-                    cout << "Actual Num Cols = " << xSize << endl;
+                    std::cout << "Total Num Cols = " << totalNumCols << std::endl;
+                    std::cout << "Actual Num Cols = " << xSize << std::endl;
                     throw SPDException("The number of used cols and the number of cols in the file is different.");
                 }
 			}
@@ -1357,20 +1357,20 @@ namespace spdlib
 			
 			if(totalNumRows != (ySize-1))
 			{
-                cout << "Total Num Rows = " << totalNumRows << endl;
-                cout << "Actual Num Rows = " << ySize << endl;
+                std::cout << "Total Num Rows = " << totalNumRows << std::endl;
+                std::cout << "Actual Num Rows = " << ySize << std::endl;
 				throw SPDException("The number of used row and the number of rows in the file is different.");
 			}
 		}
-		catch(negative_overflow& e) 
+		catch(boost::numeric::negative_overflow& e) 
 		{
 			throw SPDProcessingException(e.what());
 		}
-		catch(positive_overflow& e) 
+		catch(boost::numeric::positive_overflow& e) 
 		{
 			throw SPDProcessingException(e.what());
 		}
-		catch(bad_numeric_cast& e) 
+		catch(boost::numeric::bad_numeric_cast& e) 
 		{
 			throw SPDProcessingException(e.what());
 		}		
@@ -1388,7 +1388,7 @@ namespace spdlib
 		delete spdFileAllIn;
         delete spdFileAllOutVals;
         
-        cout << "Complete - Non-Sequencial indexed SPD file created\n";
+        std::cout << "Complete - Non-Sequencial indexed SPD file created\n";
     }
 
     
@@ -1401,20 +1401,20 @@ namespace spdlib
             SPDFileIncrementalReader incReader;
             incReader.open(inSPDFile);
             
-            list<SPDPulse*> **pulses = new list<SPDPulse*>*[inSPDFile->getNumberBinsX()];
+            std::list<SPDPulse*> **pulses = new std::list<SPDPulse*>*[inSPDFile->getNumberBinsX()];
             for(unsigned int j = 0; j < inSPDFile->getNumberBinsX(); ++j)
             {
-                pulses[j] = new list<SPDPulse*>();
+                pulses[j] = new std::list<SPDPulse*>();
             }
             
             boost::uint_fast32_t feedback = inSPDFile->getNumberBinsY()/10;
 			boost::uint_fast32_t feedbackCounter = 0;
-            cout << "Started ." << flush;
+            std::cout << "Started ." << std::flush;
             for(unsigned int i = 0; i < inSPDFile->getNumberBinsY(); ++i)
             {
                 if((inSPDFile->getNumberBinsY() > 10) && (i % feedback == 0))
 				{
-					cout << "." << feedbackCounter << "." << flush;
+					std::cout << "." << feedbackCounter << "." << std::flush;
 					feedbackCounter += 10;
 				}
                 
@@ -1425,7 +1425,7 @@ namespace spdlib
                 }
             }
             spdWriter.finaliseClose();
-            cout << " Complete.\n";
+            std::cout << " Complete.\n";
             
             incReader.close();
             

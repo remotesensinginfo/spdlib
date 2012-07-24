@@ -33,7 +33,7 @@ namespace spdlib
 		
 	}
 	
-	void SPDApplyElevationChange::applyConstantElevationChangeUnsorted(string inputFile, string outputFile, double elevConstant, bool addOffset) throw(SPDException)
+	void SPDApplyElevationChange::applyConstantElevationChangeUnsorted(std::string inputFile, std::string outputFile, double elevConstant, bool addOffset) throw(SPDException)
 	{
 		try 
 		{
@@ -58,7 +58,7 @@ namespace spdlib
 		}
 	}
 	
-	void SPDApplyElevationChange::applyConstantElevationChangeSPD(string inputSPDFile, string outputSPDFile, double elevConstant, bool addOffset, boost::uint_fast32_t blockXSize, boost::uint_fast32_t blockYSize) throw(SPDException)
+	void SPDApplyElevationChange::applyConstantElevationChangeSPD(std::string inputSPDFile, std::string outputSPDFile, double elevConstant, bool addOffset, boost::uint_fast32_t blockXSize, boost::uint_fast32_t blockYSize) throw(SPDException)
 	{
 		try 
 		{
@@ -77,7 +77,7 @@ namespace spdlib
 		}
 	}
 	
-	void SPDApplyElevationChange::applyVariableElevationChangeUnsorted(string inputFile, string outputFile, string elevImage, bool addOffset) throw(SPDException)
+	void SPDApplyElevationChange::applyVariableElevationChangeUnsorted(std::string inputFile, std::string outputFile, std::string elevImage, bool addOffset) throw(SPDException)
 	{
 		try 
 		{
@@ -114,7 +114,7 @@ namespace spdlib
 		}
 	}
 	
-	void SPDApplyElevationChange::applyVariableElevationChangeSPD(string inputSPDFile, string outputSPDFile, string elevImage, bool addOffset, boost::uint_fast32_t blockXSize, boost::uint_fast32_t blockYSize) throw(SPDException)
+	void SPDApplyElevationChange::applyVariableElevationChangeSPD(std::string inputSPDFile, std::string outputSPDFile, std::string elevImage, bool addOffset, boost::uint_fast32_t blockXSize, boost::uint_fast32_t blockYSize) throw(SPDException)
 	{
 		try 
 		{
@@ -163,7 +163,7 @@ namespace spdlib
 		this->exporter = exporter;
 		this->spdFileOut = spdFileOut;
 		
-		this->pulses = new list<SPDPulse*>();
+		this->pulses = new std::list<SPDPulse*>();
 	}
 	
 	void SPDApplyUnsortedElevChangeConstant::processImportedPulse(SPDFile *spdFile, SPDPulse *pulse) throw(SPDIOException)
@@ -185,7 +185,7 @@ namespace spdlib
 			
 			if(pulse->numberOfReturns > 0)
 			{
-				for(vector<SPDPoint*>::iterator iterPts = pulse->pts->begin(); iterPts != pulse->pts->end(); ++iterPts)
+				for(std::vector<SPDPoint*>::iterator iterPts = pulse->pts->begin(); iterPts != pulse->pts->end(); ++iterPts)
 				{
 					if(addOffset)
 					{
@@ -235,7 +235,7 @@ namespace spdlib
 		this->exporter = exporter;
 		this->spdFileOut = spdFileOut;
 		
-		this->pulses = new list<SPDPulse*>();
+		this->pulses = new std::list<SPDPulse*>();
 		
 		this->pxlVals = new float*[4];
 		for(unsigned int i = 0; i < 4; ++i)
@@ -294,7 +294,7 @@ namespace spdlib
 			
 			if(pulse->numberOfReturns > 0)
 			{
-				for(vector<SPDPoint*>::iterator iterPts = pulse->pts->begin(); iterPts != pulse->pts->end(); ++iterPts)
+				for(std::vector<SPDPoint*>::iterator iterPts = pulse->pts->begin(); iterPts != pulse->pts->end(); ++iterPts)
 				{
 					if(addOffset)
 					{
@@ -348,11 +348,11 @@ namespace spdlib
         this->addOffset = addOffset;
     }
         
-    void SPDApplySPDElevChangeConstant::processDataColumn(SPDFile *inSPDFile, vector<SPDPulse*> *pulses, SPDXYPoint *cenPts) throw(SPDProcessingException)
+    void SPDApplySPDElevChangeConstant::processDataColumn(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses, SPDXYPoint *cenPts) throw(SPDProcessingException)
     {
         try 
 		{
-			for(vector<SPDPulse*>::iterator iterPulses = pulses->begin(); iterPulses != pulses->end(); ++iterPulses)
+			for(std::vector<SPDPulse*>::iterator iterPulses = pulses->begin(); iterPulses != pulses->end(); ++iterPulses)
 			{
 				// Edit pulse - Using constant elevation value
 				if(inSPDFile->getOriginDefined() == SPD_TRUE)
@@ -369,7 +369,7 @@ namespace spdlib
 				
 				if((*iterPulses)->numberOfReturns > 0)
 				{
-					for(vector<SPDPoint*>::iterator iterPts = (*iterPulses)->pts->begin(); iterPts != (*iterPulses)->pts->end(); ++iterPts)
+					for(std::vector<SPDPoint*>::iterator iterPts = (*iterPulses)->pts->begin(); iterPts != (*iterPulses)->pts->end(); ++iterPts)
 					{
 						if(addOffset)
 						{
@@ -412,13 +412,13 @@ namespace spdlib
 		first = true;
     }
   
-    void SPDApplySPDElevChangeVariable::processDataColumn(SPDFile *inSPDFile, vector<SPDPulse*> *pulses, SPDXYPoint *cenPts) throw(SPDProcessingException)
+    void SPDApplySPDElevChangeVariable::processDataColumn(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses, SPDXYPoint *cenPts) throw(SPDProcessingException)
     {
         SPDImageUtils imgUtils;
 		try 
 		{
 			double elevationVal = 0;
-			for(vector<SPDPulse*>::iterator iterPulses = pulses->begin(); iterPulses != pulses->end(); ++iterPulses)
+			for(std::vector<SPDPulse*>::iterator iterPulses = pulses->begin(); iterPulses != pulses->end(); ++iterPulses)
 			{
 				// Get elevation Value			
 				elevationVal = 0;
@@ -463,7 +463,7 @@ namespace spdlib
 				
 				if((*iterPulses)->numberOfReturns > 0)
 				{
-					for(vector<SPDPoint*>::iterator iterPts = (*iterPulses)->pts->begin(); iterPts != (*iterPulses)->pts->end(); ++iterPts)
+					for(std::vector<SPDPoint*>::iterator iterPts = (*iterPulses)->pts->begin(); iterPts != (*iterPulses)->pts->end(); ++iterPts)
 					{
 						if(addOffset)
 						{

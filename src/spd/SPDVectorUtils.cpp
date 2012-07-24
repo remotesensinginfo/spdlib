@@ -32,11 +32,11 @@ namespace spdlib
         
     }
     
-	OGRGeometryCollection* SPDVectorUtils::getGeometryCollection(string inputVector) throw(SPDIOException)
+	OGRGeometryCollection* SPDVectorUtils::getGeometryCollection(std::string inputVector) throw(SPDIOException)
     {
         OGRRegisterAll();
 		
-		string SHPFileInLayer = this->getLayerName(inputVector);
+		std::string SHPFileInLayer = this->getLayerName(inputVector);
 		
 		OGRDataSource *inputSHPDS = NULL;
 		OGRLayer *inputSHPLayer = NULL;
@@ -55,13 +55,13 @@ namespace spdlib
 			inputSHPDS = OGRSFDriverRegistrar::Open(inputVector.c_str(), FALSE);
 			if(inputSHPDS == NULL)
 			{
-				string message = string("Could not open vector file ") + inputVector;
+				std::string message = std::string("Could not open vector file ") + inputVector;
 				throw SPDIOException(message.c_str());
 			}
 			inputSHPLayer = inputSHPDS->GetLayerByName(SHPFileInLayer.c_str());
 			if(inputSHPLayer == NULL)
 			{
-				string message = string("Could not open vector layer ") + SHPFileInLayer;
+				std::string message = std::string("Could not open vector layer ") + SHPFileInLayer;
 				throw SPDIOException(message.c_str());
 			}
 			
@@ -87,7 +87,7 @@ namespace spdlib
         return geomCollection;
     }
     
-    string SPDVectorUtils::getLayerName(string filepath)
+    std::string SPDVectorUtils::getLayerName(std::string filepath)
 	{
 		int strSize = filepath.size();
 		int lastSlash = 0;
@@ -98,7 +98,7 @@ namespace spdlib
 				lastSlash = i;
 			}
 		}
-		string filename = filepath.substr(lastSlash+1);
+		std::string filename = filepath.substr(lastSlash+1);
 		
 		strSize = filename.size();
 		int lastpt = 0;
@@ -110,7 +110,7 @@ namespace spdlib
 			}
 		}
 		
-		string layerName = filename.substr(0, lastpt);
+		std::string layerName = filename.substr(0, lastpt);
 		return layerName;		
 	}
     

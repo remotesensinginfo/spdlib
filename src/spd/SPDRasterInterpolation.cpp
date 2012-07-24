@@ -33,7 +33,7 @@ namespace spdlib
         this->interpolator = interpolator;
     }
         
-    void SPDDTMInterpolation::processDataBlockImage(SPDFile *inSPDFile, vector<SPDPulse*> ***pulses, float ***imageDataBlock, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast32_t numImgBands, float binSize) throw(SPDProcessingException)
+    void SPDDTMInterpolation::processDataBlockImage(SPDFile *inSPDFile, std::vector<SPDPulse*> ***pulses, float ***imageDataBlock, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast32_t numImgBands, float binSize) throw(SPDProcessingException)
     {        
         try 
 		{   
@@ -68,7 +68,7 @@ namespace spdlib
                 {
                     for(boost::uint_fast32_t j = 0; j < xSize; ++j)
                     {
-                        imageDataBlock[i][j][0] = numeric_limits<float>::signaling_NaN();
+                        imageDataBlock[i][j][0] = std::numeric_limits<float>::signaling_NaN();
                     }
                 }
             }
@@ -96,7 +96,7 @@ namespace spdlib
         this->interpolator = interpolator;
     }
     
-    void SPDDSMInterpolation::processDataBlockImage(SPDFile *inSPDFile, vector<SPDPulse*> ***pulses, float ***imageDataBlock, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast32_t numImgBands, float binSize) throw(SPDProcessingException)
+    void SPDDSMInterpolation::processDataBlockImage(SPDFile *inSPDFile, std::vector<SPDPulse*> ***pulses, float ***imageDataBlock, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast32_t numImgBands, float binSize) throw(SPDProcessingException)
     {
         try 
 		{            
@@ -131,7 +131,7 @@ namespace spdlib
                 {
                     for(boost::uint_fast32_t j = 0; j < xSize; ++j)
                     {
-                        imageDataBlock[i][j][0] = numeric_limits<float>::signaling_NaN();
+                        imageDataBlock[i][j][0] = std::numeric_limits<float>::signaling_NaN();
                     }
                 }
             }
@@ -158,7 +158,7 @@ namespace spdlib
         this->interpolator = interpolator;
     }
     
-    void SPDCHMInterpolation::processDataBlockImage(SPDFile *inSPDFile, vector<SPDPulse*> ***pulses, float ***imageDataBlock, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast32_t numImgBands, float binSize) throw(SPDProcessingException)
+    void SPDCHMInterpolation::processDataBlockImage(SPDFile *inSPDFile, std::vector<SPDPulse*> ***pulses, float ***imageDataBlock, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast32_t numImgBands, float binSize) throw(SPDProcessingException)
     {
         try 
 		{            
@@ -193,7 +193,7 @@ namespace spdlib
                 {
                     for(boost::uint_fast32_t j = 0; j < xSize; ++j)
                     {
-                        imageDataBlock[i][j][0] = numeric_limits<float>::signaling_NaN();
+                        imageDataBlock[i][j][0] = std::numeric_limits<float>::signaling_NaN();
                     }
                 }
             }
@@ -217,7 +217,7 @@ namespace spdlib
         
     }
         
-    void SPDRangeInterpolation::processDataBlockImage(SPDFile *inSPDFile, vector<SPDPulse*> ***pulses, float ***imageDataBlock, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast32_t numImgBands, float binSize) throw(SPDProcessingException)
+    void SPDRangeInterpolation::processDataBlockImage(SPDFile *inSPDFile, std::vector<SPDPulse*> ***pulses, float ***imageDataBlock, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast32_t numImgBands, float binSize) throw(SPDProcessingException)
     {
         try 
 		{
@@ -252,7 +252,7 @@ namespace spdlib
                 {
                     for(boost::uint_fast32_t j = 0; j < xSize; ++j)
                     {
-                        imageDataBlock[i][j][0] = numeric_limits<float>::signaling_NaN();
+                        imageDataBlock[i][j][0] = std::numeric_limits<float>::signaling_NaN();
                     }
                 }
             }

@@ -32,7 +32,7 @@ namespace spdlib{
      * Metric's with are neither height, Amplitude or range
      */
     
-    double SPDMetricCalcNumPulses::calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcNumPulses::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
     {
         boost::uint_fast64_t numPulses = 0;
         if(minNumReturns == 0)
@@ -43,7 +43,7 @@ namespace spdlib{
         {
             if((spdFile->getDecomposedPtDefined() == SPD_TRUE) | (spdFile->getDiscretePtDefined() == SPD_TRUE))
             {
-                for(vector<SPDPulse*>::iterator iterPulses = pulses->begin(); iterPulses != pulses->end(); ++iterPulses)
+                for(std::vector<SPDPulse*>::iterator iterPulses = pulses->begin(); iterPulses != pulses->end(); ++iterPulses)
                 {
                     if((*iterPulses)->numberOfReturns >= minNumReturns)
                     {
@@ -53,7 +53,7 @@ namespace spdlib{
             }
             else if(spdFile->getReceiveWaveformDefined() == SPD_TRUE)
             {
-                for(vector<SPDPulse*>::iterator iterPulses = pulses->begin(); iterPulses != pulses->end(); ++iterPulses)
+                for(std::vector<SPDPulse*>::iterator iterPulses = pulses->begin(); iterPulses != pulses->end(); ++iterPulses)
                 {
                     if((*iterPulses)->numOfReceivedBins >= minNumReturns)
                     {
@@ -70,7 +70,7 @@ namespace spdlib{
     }
     
     
-    double SPDMetricCalcCanopyCover::calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcCanopyCover::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
     {
         double canopyCover = 0;
         try
@@ -78,7 +78,7 @@ namespace spdlib{
             if(pulses->size() > 0)
             {
                 // 1) Get points associated with parameters provided.
-                vector<SPDPoint*> *points = this->getPointsWithinHeightParameters(pulses, spdFile, geom);
+                std::vector<SPDPoint*> *points = this->getPointsWithinHeightParameters(pulses, spdFile, geom);
                 
                 // 2) Check points > 0
                 if(points->size() > 0)
@@ -98,8 +98,8 @@ namespace spdlib{
                     boost::uint_fast32_t xBins = gridIdx->getXBins();
                     boost::uint_fast32_t yBins = gridIdx->getYBins();
                     
-                    vector<SPDPoint*> *ptsInRadius = new vector<SPDPoint*>();
-                    vector<SPDPoint*>::iterator iterPts;
+                    std::vector<SPDPoint*> *ptsInRadius = new std::vector<SPDPoint*>();
+                    std::vector<SPDPoint*>::iterator iterPts;
                     boost::uint_fast64_t allCellCount = 0;
                     boost::uint_fast64_t canopyCellCount = 0;
                     for(boost::uint_fast32_t i = 0; i < yBins; ++i)
@@ -153,7 +153,7 @@ namespace spdlib{
         return canopyCover;
     }
     
-    double SPDMetricCalcCanopyCoverPercent::calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcCanopyCoverPercent::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
     {
         double canopyCover = 0;
         try
@@ -161,7 +161,7 @@ namespace spdlib{
             if(pulses->size() > 0)
             {
                 // 1) Get points associated with parameters provided.
-                vector<SPDPoint*> *points = this->getPointsWithinHeightParameters(pulses, spdFile, geom);
+                std::vector<SPDPoint*> *points = this->getPointsWithinHeightParameters(pulses, spdFile, geom);
                 
                 // 2) Check points > 0
                 if(points->size() > 0)
@@ -181,8 +181,8 @@ namespace spdlib{
                     boost::uint_fast32_t xBins = gridIdx->getXBins();
                     boost::uint_fast32_t yBins = gridIdx->getYBins();
                     
-                    vector<SPDPoint*> *ptsInRadius = new vector<SPDPoint*>();
-                    //vector<SPDPoint*>::iterator iterPts;
+                    std::vector<SPDPoint*> *ptsInRadius = new std::vector<SPDPoint*>();
+                    //std::vector<SPDPoint*>::iterator iterPts;
                     boost::uint_fast64_t allCellCount = 0;
                     boost::uint_fast64_t canopyCellCount = 0;
                     for(boost::uint_fast32_t i = 0; i < yBins; ++i)
@@ -193,10 +193,10 @@ namespace spdlib{
                             // 6) Check point is within geometry
                             pt->setX(cellX);
                             pt->setY(cellY);
-                            //cout << "Cell [" << i << "," << j << "]\t[" << cellX << "," << cellY << "] - ";
+                            //std::cout << "Cell [" << i << "," << j << "]\t[" << cellX << "," << cellY << "] - ";
                             if(geom->Contains(pt))
                             {
-                                //cout << "CONTAINED\n";
+                                //std::cout << "CONTAINED\n";
                                 ++allCellCount;
                                 
                                 // 7) Get value for each cell and if value > 0 then increment cover counter
@@ -209,17 +209,17 @@ namespace spdlib{
                             }
                                 // else
                                 // {
-                                //    cout << "NOT CONTAINED\n";
+                                //    std::cout << "NOT CONTAINED\n";
                                 //}
                             cellX += resolution;
                         }
-                        //cout << endl << endl;
+                        //std::cout << std::endl << std::endl;
                         cellY -= resolution;
                     }
                     delete pt;
                     delete ptsInRadius;
                     
-                    //cout << "Number of Cells = "  << allCellCount << " of which " << canopyCellCount << " are canopy\n";
+                    //std::cout << "Number of Cells = "  << allCellCount << " of which " << canopyCellCount << " are canopy\n";
                     
                     // 8) Output canopy cover. (as percentage).
                     canopyCover = (((double)canopyCellCount) / ((double)allCellCount)) * 100;
@@ -243,7 +243,7 @@ namespace spdlib{
             throw e;
         }
         
-        //cout << "Returning = " << canopyCover << endl;
+        //std::cout << "Returning = " << canopyCover << std::endl;
         return canopyCover;
     }
     
@@ -254,9 +254,9 @@ namespace spdlib{
      * Metric's for height
      */
     
-    double SPDMetricCalcLeeOpennessHeight::calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcLeeOpennessHeight::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
     {
-        vector<double> *ptVals = this->getPointsValuesWithinHeightParameters(pulses, spdFile, geom);
+        std::vector<double> *ptVals = this->getPointsValuesWithinHeightParameters(pulses, spdFile, geom);
         double openness = 0;
         
         if(ptVals->size() > 0)
@@ -266,7 +266,7 @@ namespace spdlib{
             {
                 boost::uint_fast32_t nBins = ceil(max/vRes)+1;
                 
-                //cout << "\nNumber of bins = " << nBins << endl;
+                //std::cout << "\nNumber of bins = " << nBins << std::endl;
                 if((nBins > 0) & (nBins < 1000))
                 {
                     double *bins = new double[nBins];
@@ -278,41 +278,41 @@ namespace spdlib{
                     }
                     
                     boost::uint_fast32_t idx = 0;
-                    for(vector<double>::iterator iterVals = ptVals->begin(); iterVals != ptVals->end(); ++iterVals)
+                    for(std::vector<double>::iterator iterVals = ptVals->begin(); iterVals != ptVals->end(); ++iterVals)
                     {
                         try 
                         {
                             if((*iterVals) > 0)
                             {
-                                idx = numeric_cast<boost::uint_fast32_t>((*iterVals)/vRes);
+                                idx = boost::numeric_cast<boost::uint_fast32_t>((*iterVals)/vRes);
                             }
                         }
-                        catch(negative_overflow& e) 
+                        catch(boost::numeric::negative_overflow& e) 
                         {
-                            cout << "(*iterVals) = " << (*iterVals) << endl;
-                            cout << "vRes = " << vRes << endl;
+                            std::cout << "(*iterVals) = " << (*iterVals) << std::endl;
+                            std::cout << "vRes = " << vRes << std::endl;
                             throw SPDProcessingException(e.what());
                         }
-                        catch(positive_overflow& e) 
+                        catch(boost::numeric::positive_overflow& e) 
                         {
-                            cout << "(*iterVals) = " << (*iterVals) << endl;
-                            cout << "vRes = " << vRes << endl;
+                            std::cout << "(*iterVals) = " << (*iterVals) << std::endl;
+                            std::cout << "vRes = " << vRes << std::endl;
                             throw SPDProcessingException(e.what());
                         }
-                        catch(bad_numeric_cast& e) 
+                        catch(boost::numeric::bad_numeric_cast& e) 
                         {
-                            cout << "(*iterVals) = " << (*iterVals) << endl;
-                            cout << "vRes = " << vRes << endl;
+                            std::cout << "(*iterVals) = " << (*iterVals) << std::endl;
+                            std::cout << "vRes = " << vRes << std::endl;
                             throw SPDProcessingException(e.what());
                         }
                         
                         if(idx >= nBins)
                         {
-                            cout << "Value = " << *iterVals << endl;
-                            cout << "Max Value = " << max << endl;
-                            cout << "idx = " << idx << endl;
-                            cout << "nBins = " << nBins << endl;
-                            cout << "vRes = " << vRes << endl;
+                            std::cout << "Value = " << *iterVals << std::endl;
+                            std::cout << "Max Value = " << max << std::endl;
+                            std::cout << "idx = " << idx << std::endl;
+                            std::cout << "nBins = " << nBins << std::endl;
+                            std::cout << "vRes = " << vRes << std::endl;
                             
                             throw SPDProcessingException("Index is not within list.");
                         }
@@ -337,52 +337,52 @@ namespace spdlib{
                             ++numVoxels;
                         }
                     }
-                    //cout << "Number of voxels = " << numVoxels << endl;
+                    //std::cout << "Number of voxels = " << numVoxels << std::endl;
                     
                     for(boost::uint_fast32_t i = 0; i < nBins; ++i)
                     {
                         if(!binsFirst[i])
                         {
-                            //cout << bins[i] << ",";
+                            //std::cout << bins[i] << ",";
                             openness += (((max-bins[i])/max) / numVoxels);
                         }
                     }
-                    //cout << endl;
-                    //cout << "openness = " << openness << endl;
+                    //std::cout << std::endl;
+                    //std::cout << "openness = " << openness << std::endl;
                     openness = openness * 100;
-                    //cout << "openness = " << openness << endl;
+                    //std::cout << "openness = " << openness << std::endl;
                 }
                 else
                 {
-                    openness = numeric_limits<float>::signaling_NaN();
+                    openness = std::numeric_limits<float>::signaling_NaN();
                 }
             }
             else 
             {
-                openness = numeric_limits<float>::signaling_NaN();
+                openness = std::numeric_limits<float>::signaling_NaN();
             }
         }
         else
         {
-            openness = numeric_limits<float>::signaling_NaN();
+            openness = std::numeric_limits<float>::signaling_NaN();
         }
         delete ptVals;
         return openness;
     }
     
-    double SPDMetricCalcNumReturnsHeight::calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcNumReturnsHeight::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
     {
-        vector<double> *ptVals = this->getPointsValuesWithinHeightParameters(pulses, spdFile, geom);
+        std::vector<double> *ptVals = this->getPointsValuesWithinHeightParameters(pulses, spdFile, geom);
         boost::uint_fast64_t numReturns = ptVals->size();
         delete ptVals;
         return numReturns;
     }
     
-    double SPDMetricCalcSumHeight::calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcSumHeight::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
     {
-        vector<double> *ptVals = this->getPointsValuesWithinHeightParameters(pulses, spdFile, geom);
+        std::vector<double> *ptVals = this->getPointsValuesWithinHeightParameters(pulses, spdFile, geom);
         double sum = 0;
-        for(vector<double>::iterator iterVals = ptVals->begin(); iterVals != ptVals->end(); ++iterVals)
+        for(std::vector<double>::iterator iterVals = ptVals->begin(); iterVals != ptVals->end(); ++iterVals)
         {
             sum += (*iterVals);
         }
@@ -390,9 +390,9 @@ namespace spdlib{
         return sum;
     }
     
-    double SPDMetricCalcMeanHeight::calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcMeanHeight::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
     {
-        vector<double> *ptVals = this->getPointsValuesWithinHeightParameters(pulses, spdFile, geom);
+        std::vector<double> *ptVals = this->getPointsValuesWithinHeightParameters(pulses, spdFile, geom);
         double mean = 0;
         if(ptVals->size() > 0)
 		{
@@ -400,15 +400,15 @@ namespace spdlib{
         }
         else
         {
-            mean = numeric_limits<float>::signaling_NaN();
+            mean = std::numeric_limits<float>::signaling_NaN();
         }
         delete ptVals;
         return mean;
     }
 
-    double SPDMetricCalcMedianHeight::calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcMedianHeight::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
     {
-        vector<double> *ptVals = this->getPointsValuesWithinHeightParameters(pulses, spdFile, geom);
+        std::vector<double> *ptVals = this->getPointsValuesWithinHeightParameters(pulses, spdFile, geom);
         double median = 0;
         if(ptVals->size() > 0)
 		{
@@ -417,27 +417,27 @@ namespace spdlib{
             {
                 if( i == 0 )
                 {
-                    cout << &(*ptVals)[0][i];
+                    std::cout << &(*ptVals)[0][i];
                 }
                 else
                 {
-                    cout << ", " << &(*ptVals)[0][i];
+                    std::cout << ", " << &(*ptVals)[0][i];
                 }
             }
-            cout << endl << endl;*/
+            std::cout << std::endl << std::endl;*/
             median = gsl_stats_median_from_sorted_data(&(*ptVals)[0], 1, ptVals->size());
         }
         else
         {
-            median = numeric_limits<float>::signaling_NaN();
+            median = std::numeric_limits<float>::signaling_NaN();
         }
         delete ptVals;
         return median;
     }
 
-    double SPDMetricCalcModeHeight::calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcModeHeight::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
     {
-        vector<double> *ptVals = this->getPointsValuesWithinHeightParameters(pulses, spdFile, geom);
+        std::vector<double> *ptVals = this->getPointsValuesWithinHeightParameters(pulses, spdFile, geom);
         double mode = 0;
         if(ptVals->size() > 0)
         {
@@ -445,16 +445,16 @@ namespace spdlib{
         }
         else
         {
-            mode = numeric_limits<float>::signaling_NaN();
+            mode = std::numeric_limits<float>::signaling_NaN();
         }
         
         delete ptVals;
         return mode;
     }
 
-    double SPDMetricCalcMinHeight::calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcMinHeight::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
     {
-        vector<double> *ptVals = this->getPointsValuesWithinHeightParameters(pulses, spdFile, geom);
+        std::vector<double> *ptVals = this->getPointsValuesWithinHeightParameters(pulses, spdFile, geom);
         double min = 0;
         if(ptVals->size() > 0)
 		{
@@ -462,15 +462,15 @@ namespace spdlib{
         }
         else
         {
-            min = numeric_limits<float>::signaling_NaN();
+            min = std::numeric_limits<float>::signaling_NaN();
         }
         delete ptVals;
         return min;
     }
 
-    double SPDMetricCalcMaxHeight::calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcMaxHeight::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
     {
-        vector<double> *ptVals = this->getPointsValuesWithinHeightParameters(pulses, spdFile, geom);
+        std::vector<double> *ptVals = this->getPointsValuesWithinHeightParameters(pulses, spdFile, geom);
         double max = 0;
         if(ptVals->size() > 0)
 		{
@@ -478,14 +478,14 @@ namespace spdlib{
         }
         else
         {
-            max = numeric_limits<float>::signaling_NaN();
+            max = std::numeric_limits<float>::signaling_NaN();
         }
         delete ptVals;
         return max;
     }
     
     
-    double SPDMetricCalcDominantHeight::calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcDominantHeight::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
     {
         double dominantHeight = 0;
         try
@@ -498,7 +498,7 @@ namespace spdlib{
                 double yMax = 0;
                 bool first = true;
                 
-                for(vector<SPDPulse*>::iterator iterPulses = pulses->begin(); iterPulses != pulses->end(); ++iterPulses)
+                for(std::vector<SPDPulse*>::iterator iterPulses = pulses->begin(); iterPulses != pulses->end(); ++iterPulses)
                 {
                     if(first)
                     {
@@ -531,7 +531,7 @@ namespace spdlib{
                     
                     if((*iterPulses)->numberOfReturns > 0)
                     {
-                        for(vector<SPDPoint*>::iterator iterPoints = (*iterPulses)->pts->begin(); iterPoints != (*iterPulses)->pts->end(); ++iterPoints)
+                        for(std::vector<SPDPoint*>::iterator iterPoints = (*iterPulses)->pts->begin(); iterPoints != (*iterPulses)->pts->end(); ++iterPoints)
                         {
                             if(first)
                             {
@@ -569,7 +569,7 @@ namespace spdlib{
                 boost::uint_fast32_t roundingAddition = 0;
                 if(spdFile->getBinSize() < 1)
                 {
-                    roundingAddition = numeric_cast<boost::uint_fast32_t>(1/resolution);
+                    roundingAddition = boost::numeric_cast<boost::uint_fast32_t>(1/resolution);
                 }
                 else 
                 {
@@ -584,18 +584,18 @@ namespace spdlib{
                 
                 try 
 				{
-					xBins = numeric_cast<boost::uint_fast32_t>((width/resolution))+roundingAddition;
-                    yBins = numeric_cast<boost::uint_fast32_t>((height/resolution))+roundingAddition;
+					xBins = boost::numeric_cast<boost::uint_fast32_t>((width/resolution))+roundingAddition;
+                    yBins = boost::numeric_cast<boost::uint_fast32_t>((height/resolution))+roundingAddition;
 				}
-				catch(negative_overflow& e) 
+				catch(boost::numeric::negative_overflow& e) 
 				{
 					throw SPDProcessingException(e.what());
 				}
-				catch(positive_overflow& e) 
+				catch(boost::numeric::positive_overflow& e) 
 				{
 					throw SPDProcessingException(e.what());
 				}
-				catch(bad_numeric_cast& e) 
+				catch(boost::numeric::bad_numeric_cast& e) 
 				{
 					throw SPDProcessingException(e.what());
 				}
@@ -605,13 +605,13 @@ namespace spdlib{
                     throw SPDProcessingException("There insufficent number of bins for binning (try reducing resolution).");
                 }
                 
-                vector<SPDPulse*> ***plsGrd = new vector<SPDPulse*>**[yBins];
+                std::vector<SPDPulse*> ***plsGrd = new std::vector<SPDPulse*>**[yBins];
                 for(boost::uint_fast32_t i = 0; i < yBins; ++i)
                 {
-                    plsGrd[i] = new vector<SPDPulse*>*[xBins];
+                    plsGrd[i] = new std::vector<SPDPulse*>*[xBins];
                     for(boost::uint_fast32_t j = 0; j < xBins; ++j)
                     {
-                        plsGrd[i][j] = new vector<SPDPulse*>();
+                        plsGrd[i][j] = new std::vector<SPDPulse*>();
                     }
                 }
                 
@@ -620,44 +620,44 @@ namespace spdlib{
                 boost::uint_fast32_t xIdx = 0;
                 boost::uint_fast32_t yIdx = 0;
                                 
-                for(vector<SPDPulse*>::iterator iterPulses = pulses->begin(); iterPulses != pulses->end(); ++iterPulses)
+                for(std::vector<SPDPulse*>::iterator iterPulses = pulses->begin(); iterPulses != pulses->end(); ++iterPulses)
                 {
                     xDiff = ((*iterPulses)->xIdx - xMin)/resolution;
                     yDiff = (yMax - (*iterPulses)->yIdx)/resolution;				
                     
                     try 
                     {
-                        xIdx = numeric_cast<boost::uint_fast32_t>(xDiff);
-                        yIdx = numeric_cast<boost::uint_fast32_t>(yDiff);
+                        xIdx = boost::numeric_cast<boost::uint_fast32_t>(xDiff);
+                        yIdx = boost::numeric_cast<boost::uint_fast32_t>(yDiff);
                     }
-                    catch(negative_overflow& e) 
+                    catch(boost::numeric::negative_overflow& e) 
                     {
                         throw SPDProcessingException(e.what());
                     }
-                    catch(positive_overflow& e) 
+                    catch(boost::numeric::positive_overflow& e) 
                     {
                         throw SPDProcessingException(e.what());
                     }
-                    catch(bad_numeric_cast& e) 
+                    catch(boost::numeric::bad_numeric_cast& e) 
                     {
                         throw SPDProcessingException(e.what());
                     }
                     
                     if(xIdx > ((xBins)-1))
                     {
-                        cout << "Point: [" << (*iterPulses)->xIdx << "," << (*iterPulses)->yIdx << "]\n";
-                        cout << "Diff [" << xDiff << "," << yDiff << "]\n";
-                        cout << "Index [" << xIdx << "," << yIdx << "]\n";
-                        cout << "Size [" << xBins << "," << yBins << "]\n";
+                        std::cout << "Point: [" << (*iterPulses)->xIdx << "," << (*iterPulses)->yIdx << "]\n";
+                        std::cout << "Diff [" << xDiff << "," << yDiff << "]\n";
+                        std::cout << "Index [" << xIdx << "," << yIdx << "]\n";
+                        std::cout << "Size [" << xBins << "," << yBins << "]\n";
                         throw SPDProcessingException("Did not find x index within range.");
                     }
                     
                     if(yIdx > ((yBins)-1))
                     {
-                        cout << "Point: [" << (*iterPulses)->xIdx << "," << (*iterPulses)->yIdx << "]\n";
-                        cout << "Diff [" << xDiff << "," << yDiff << "]\n";
-                        cout << "Index [" << xIdx << "," << yIdx << "]\n";
-                        cout << "Size [" << xBins << "," << yBins << "]\n";
+                        std::cout << "Point: [" << (*iterPulses)->xIdx << "," << (*iterPulses)->yIdx << "]\n";
+                        std::cout << "Diff [" << xDiff << "," << yDiff << "]\n";
+                        std::cout << "Index [" << xIdx << "," << yIdx << "]\n";
+                        std::cout << "Size [" << xBins << "," << yBins << "]\n";
                         throw SPDProcessingException("Did not find y index within range.");
                     }
                     
@@ -672,7 +672,7 @@ namespace spdlib{
                     {
                         if(plsGrd[i][j]->size() > 0)
                         {
-                            vector<double> *ptVals = this->getPointsValuesWithinHeightParameters(plsGrd[i][j], spdFile, geom);
+                            std::vector<double> *ptVals = this->getPointsValuesWithinHeightParameters(plsGrd[i][j], spdFile, geom);
                             if(ptVals->size() > 0)
                             {
                                 heightSum += gsl_stats_max (&(*ptVals)[0], 1, ptVals->size());
@@ -688,7 +688,7 @@ namespace spdlib{
                 
                 if(cellCount == 0)
                 {
-                    dominantHeight = numeric_limits<float>::signaling_NaN();
+                    dominantHeight = std::numeric_limits<float>::signaling_NaN();
                 }
                 else
                 {
@@ -697,7 +697,7 @@ namespace spdlib{
             }
             else
             {
-                dominantHeight = numeric_limits<float>::signaling_NaN();
+                dominantHeight = std::numeric_limits<float>::signaling_NaN();
             }
         }
         catch(SPDProcessingException &e)
@@ -707,9 +707,9 @@ namespace spdlib{
         return dominantHeight;
     }
 
-    double SPDMetricCalcStdDevHeight::calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcStdDevHeight::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
     {
-        vector<double> *ptVals = this->getPointsValuesWithinHeightParameters(pulses, spdFile, geom);
+        std::vector<double> *ptVals = this->getPointsValuesWithinHeightParameters(pulses, spdFile, geom);
         double stddev = 0;
         if(ptVals->size() > 0)
 		{
@@ -717,15 +717,15 @@ namespace spdlib{
         }
         else
         {
-            stddev = numeric_limits<float>::signaling_NaN();
+            stddev = std::numeric_limits<float>::signaling_NaN();
         }
         delete ptVals;
         return stddev;
     }
 
-    double SPDMetricCalcVarianceHeight::calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcVarianceHeight::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
     {
-        vector<double> *ptVals = this->getPointsValuesWithinHeightParameters(pulses, spdFile, geom);
+        std::vector<double> *ptVals = this->getPointsValuesWithinHeightParameters(pulses, spdFile, geom);
         double variance = 0;
         if(ptVals->size() > 0)
 		{
@@ -733,15 +733,15 @@ namespace spdlib{
         }
         else 
         {
-            variance = numeric_limits<float>::signaling_NaN();
+            variance = std::numeric_limits<float>::signaling_NaN();
         }
         delete ptVals;
         return variance;
     }
 
-    double SPDMetricCalcAbsDeviationHeight::calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcAbsDeviationHeight::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
     {
-        vector<double> *ptVals = this->getPointsValuesWithinHeightParameters(pulses, spdFile, geom);
+        std::vector<double> *ptVals = this->getPointsValuesWithinHeightParameters(pulses, spdFile, geom);
         double absdev = 0;
         if(ptVals->size() > 0)
 		{
@@ -749,21 +749,21 @@ namespace spdlib{
         }
         else
         {
-            absdev = numeric_limits<float>::signaling_NaN();
+            absdev = std::numeric_limits<float>::signaling_NaN();
         }
         delete ptVals;
         return absdev;
     }
 
-    double SPDMetricCalcCoefficientOfVariationHeight::calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcCoefficientOfVariationHeight::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
     {
-        vector<double> *ptVals = this->getPointsValuesWithinHeightParameters(pulses, spdFile, geom);
+        std::vector<double> *ptVals = this->getPointsValuesWithinHeightParameters(pulses, spdFile, geom);
         double cv = 0;
         if(ptVals->size() > 0)
 		{
             double sumSq = 0;
             double mean = gsl_stats_mean (&(*ptVals)[0], 1, ptVals->size());
-            for(vector<double>::iterator iterVals; iterVals != ptVals->end(); ++iterVals)
+            for(std::vector<double>::iterator iterVals; iterVals != ptVals->end(); ++iterVals)
             {
                 sumSq += pow(((*iterVals) - mean),2);
             }
@@ -771,63 +771,63 @@ namespace spdlib{
         }
         else 
         {
-            cv = numeric_limits<float>::signaling_NaN();
+            cv = std::numeric_limits<float>::signaling_NaN();
         }
 
         delete ptVals;
         return cv;
     }
 
-    double SPDMetricCalcPercentileHeight::calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcPercentileHeight::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
     {
         /*
-        cout << endl << endl << endl;
-        vector<SPDPulse*>::iterator iterPulses;
+        std::cout << std::endl << std::endl << std::endl;
+        std::vector<SPDPulse*>::iterator iterPulses;
         for(iterPulses = pulses->begin(); iterPulses != pulses->end(); ++iterPulses)
         {
             if((*iterPulses)->numberOfReturns > 0)
             {
-                for(vector<SPDPoint*>::iterator iterPts = (*iterPulses)->pts->begin(); iterPts != (*iterPulses)->pts->end(); ++iterPts)
+                for(std::vector<SPDPoint*>::iterator iterPts = (*iterPulses)->pts->begin(); iterPts != (*iterPulses)->pts->end(); ++iterPts)
                 {
-                    cout << (*iterPulses)->pulseID << "," << (*iterPts)->x << "," << (*iterPts)->y << "," << (*iterPts)->z << "," << (*iterPts)->height << "," << (*iterPts)->classification << endl;
+                    std::cout << (*iterPulses)->pulseID << "," << (*iterPts)->x << "," << (*iterPts)->y << "," << (*iterPts)->z << "," << (*iterPts)->height << "," << (*iterPts)->classification << std::endl;
                 }
             }
         }
-        cout << endl << endl << endl;
+        std::cout << std::endl << std::endl << std::endl;
         */
-        vector<double> *ptVals = this->getPointsValuesWithinHeightParameters(pulses, spdFile, geom);
+        std::vector<double> *ptVals = this->getPointsValuesWithinHeightParameters(pulses, spdFile, geom);
         double percentileVal = 0;
         if(ptVals->size() > 0)
 		{
             double quatFrac = ((double)percentile)/100;
             sort(ptVals->begin(), ptVals->end());
-            /*cout << "Calc Percentile " << quatFrac << endl;
+            /*std::cout << "Calc Percentile " << quatFrac << std::endl;
             for(unsigned int i = 0; i < ptVals->size(); ++i)
             {
                 if( i == 0 )
                 {
-                    cout << &(*ptVals)[0][i];
+                    std::cout << &(*ptVals)[0][i];
                 }
                 else
                 {
-                    cout << ", " << &(*ptVals)[0][i];
+                    std::cout << ", " << &(*ptVals)[0][i];
                 }
             }
-            cout << endl;*/
+            std::cout << std::endl;*/
             percentileVal = gsl_stats_quantile_from_sorted_data(&(*ptVals)[0], 1, ptVals->size(), quatFrac);
-            //cout << "Percentile = " << percentileVal << endl << endl;
+            //std::cout << "Percentile = " << percentileVal << std::endl << std::endl;
         }
         else 
         {
-            percentileVal = numeric_limits<float>::signaling_NaN();
+            percentileVal = std::numeric_limits<float>::signaling_NaN();
         }
         delete ptVals;
         return percentileVal;
     }
 
-    double SPDMetricCalcSkewnessHeight::calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcSkewnessHeight::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
     {
-        vector<double> *ptVals = this->getPointsValuesWithinHeightParameters(pulses, spdFile, geom);
+        std::vector<double> *ptVals = this->getPointsValuesWithinHeightParameters(pulses, spdFile, geom);
         double skew = 0;
         if(ptVals->size() > 0)
 		{
@@ -835,15 +835,15 @@ namespace spdlib{
         }
         else 
         {
-            skew = numeric_limits<float>::signaling_NaN();
+            skew = std::numeric_limits<float>::signaling_NaN();
         }
         delete ptVals;
         return skew;
     }
 
-    double SPDMetricCalcPersonModeSkewnessHeight::calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcPersonModeSkewnessHeight::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
     {
-        vector<double> *ptVals = this->getPointsValuesWithinHeightParameters(pulses, spdFile, geom);
+        std::vector<double> *ptVals = this->getPointsValuesWithinHeightParameters(pulses, spdFile, geom);
         double personModeSkew = 0;
         if(ptVals->size() > 0)
 		{
@@ -856,15 +856,15 @@ namespace spdlib{
         }
         else
         {
-            personModeSkew = numeric_limits<float>::signaling_NaN();
+            personModeSkew = std::numeric_limits<float>::signaling_NaN();
         }
         delete ptVals;
         return personModeSkew;
     }
 
-    double SPDMetricCalcPersonMedianSkewnessHeight::calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcPersonMedianSkewnessHeight::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
     {
-        vector<double> *ptVals = this->getPointsValuesWithinHeightParameters(pulses, spdFile, geom);
+        std::vector<double> *ptVals = this->getPointsValuesWithinHeightParameters(pulses, spdFile, geom);
         double personMedianSkew = 0;
         if(ptVals->size() > 0)
 		{
@@ -877,15 +877,15 @@ namespace spdlib{
         }
         else
         {
-            personMedianSkew = numeric_limits<float>::signaling_NaN();
+            personMedianSkew = std::numeric_limits<float>::signaling_NaN();
         }
         delete ptVals;
         return personMedianSkew;
     }
 
-    double SPDMetricCalcKurtosisHeight::calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcKurtosisHeight::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
     {
-        vector<double> *ptVals = this->getPointsValuesWithinHeightParameters(pulses, spdFile, geom);
+        std::vector<double> *ptVals = this->getPointsValuesWithinHeightParameters(pulses, spdFile, geom);
         double kurtosis = 0;
         if(ptVals->size() > 0)
 		{
@@ -893,20 +893,20 @@ namespace spdlib{
         }
         else
         {
-            kurtosis = numeric_limits<float>::signaling_NaN();
+            kurtosis = std::numeric_limits<float>::signaling_NaN();
         }
         delete ptVals;
         return kurtosis;
     }
     
-    double SPDMetricCalcNumReturnsAboveMetricHeight::calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcNumReturnsAboveMetricHeight::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
     {
-        vector<double> *ptVals = this->getPointsValuesWithinHeightParameters(pulses, spdFile, geom);
+        std::vector<double> *ptVals = this->getPointsValuesWithinHeightParameters(pulses, spdFile, geom);
         boost::uint_fast64_t valCount = 0;
         if(ptVals->size() > 0)
 		{
             double thresValue = metric->calcValue(pulses, spdFile, geom);
-            for(vector<double>::iterator iterVals; iterVals != ptVals->end(); ++iterVals)
+            for(std::vector<double>::iterator iterVals; iterVals != ptVals->end(); ++iterVals)
             {
                 if((*iterVals) > thresValue)
                 {
@@ -918,14 +918,14 @@ namespace spdlib{
         return valCount;
     }
     
-    double SPDMetricCalcNumReturnsBelowMetricHeight::calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcNumReturnsBelowMetricHeight::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
     {
-        vector<double> *ptVals = this->getPointsValuesWithinHeightParameters(pulses, spdFile, geom);
+        std::vector<double> *ptVals = this->getPointsValuesWithinHeightParameters(pulses, spdFile, geom);
         boost::uint_fast64_t valCount = 0;
         if(ptVals->size() > 0)
 		{
             double thresValue = metric->calcValue(pulses, spdFile, geom);
-            for(vector<double>::iterator iterVals; iterVals != ptVals->end(); ++iterVals)
+            for(std::vector<double>::iterator iterVals; iterVals != ptVals->end(); ++iterVals)
             {
                 if((*iterVals) < thresValue)
                 {
@@ -937,14 +937,14 @@ namespace spdlib{
         return valCount;
     }
     
-    double SPDMetricCalcWeibullAlphaHeight::calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcWeibullAlphaHeight::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
     {
         double weibullAlpha = 0;
         try 
         {
             if(pulses->size() > 0)
             {
-                vector<double> *ptVals = this->getPointsValuesWithinHeightParameters(pulses, spdFile, geom);
+                std::vector<double> *ptVals = this->getPointsValuesWithinHeightParameters(pulses, spdFile, geom);
                 if(ptVals->size() > 0)
                 {
                     double minH = 0; 
@@ -965,20 +965,20 @@ namespace spdlib{
                     fitData->binVals = new double[numBins];
                     fitData->error = new double[numBins];
                     double binSums = 0;
-                    cout << "Bin Heights:\t";
+                    std::cout << "Bin Heights:\t";
                     for(boost::uint_fast32_t i = 0; i < numBins; ++i)
                     {
                         if(i == 0)
                         {
-                            cout << (minH + (resolution * i));
+                            std::cout << (minH + (resolution * i));
                         }
                         else
                         {
-                            cout << "," << (minH + (resolution * i));
+                            std::cout << "," << (minH + (resolution * i));
                         }
                     }
-                    cout << endl;
-                    cout << "Bins:\t";
+                    std::cout << std::endl;
+                    std::cout << "Bins:\t";
                     for(boost::uint_fast32_t i = 0; i < numBins; ++i)
                     {
                         binSums += bins[i];
@@ -986,29 +986,29 @@ namespace spdlib{
                         fitData->error[i] = 1;
                         if(i == 0)
                         {
-                            cout << bins[i];
+                            std::cout << bins[i];
                         }
                         else
                         {
-                            cout << "," << bins[i];
+                            std::cout << "," << bins[i];
                         }
                     }
-                    cout << endl;
+                    std::cout << std::endl;
                     // Make area == 1
-                    cout << "Bins (Area == 1):\t";
+                    std::cout << "Bins (Area == 1):\t";
                     for(boost::uint_fast32_t i = 0; i < numBins; ++i)
                     {
                         fitData->binVals[i] = bins[i]/binSums;
                         if(i == 0)
                         {
-                            cout << fitData->binVals[i];
+                            std::cout << fitData->binVals[i];
                         }
                         else
                         {
-                            cout << "," << fitData->binVals[i];
+                            std::cout << "," << fitData->binVals[i];
                         }
                     }
-                    cout << endl;
+                    std::cout << std::endl;
                     
                     // parameters[0] - Alpha
                     // parameters[1] - Beta
@@ -1016,14 +1016,14 @@ namespace spdlib{
                     mp_par *paramConstraints = new mp_par[2];
                     
                     parameters[0] = fitData->binVals[maxIdx]; // Alpha
-                    cout << "init alpha = " << parameters[0] << endl; 
+                    std::cout << "init alpha = " << parameters[0] << std::endl; 
                     paramConstraints[0].fixed = false;
 					paramConstraints[0].limited[0] = true;
 					paramConstraints[0].limited[1] = false;
 					paramConstraints[0].limits[0] = 0;
 					paramConstraints[0].limits[1] = 0;
-                    //cout << "Alpha constraint = [" << paramConstraints[0].limits[0] << ", " << paramConstraints[0].limits[1] << "]\n";
-					paramConstraints[0].parname = const_cast<char*>(string("Alpha").c_str());;
+                    //std::cout << "Alpha constraint = [" << paramConstraints[0].limits[0] << ", " << paramConstraints[0].limits[1] << "]\n";
+					paramConstraints[0].parname = const_cast<char*>(std::string("Alpha").c_str());;
 					paramConstraints[0].step = 0;
 					paramConstraints[0].relstep = 0;
 					paramConstraints[0].side = 0;
@@ -1031,7 +1031,7 @@ namespace spdlib{
 					
                     //double percent20height = (maxH - minH) * 0.2;
 					parameters[1] = minH + (((double)maxIdx) * resolution); // Beta
-                    cout << "init beta = " << parameters[1] << endl;
+                    std::cout << "init beta = " << parameters[1] << std::endl;
 					paramConstraints[1].fixed = false;
 					paramConstraints[1].limited[0] = false;
 					paramConstraints[1].limited[1] = false;
@@ -1045,8 +1045,8 @@ namespace spdlib{
                                                       //{
                                                       //    paramConstraints[1].limits[1] = maxHBins;
                                                       //}
-                                                      //cout << "Beta constraint = [" << paramConstraints[1].limits[0] << ", " << paramConstraints[1].limits[1] << "]\n";
-					paramConstraints[1].parname = const_cast<char*>(string("Beta").c_str());;
+                                                      //std::cout << "Beta constraint = [" << paramConstraints[1].limits[0] << ", " << paramConstraints[1].limits[1] << "]\n";
+					paramConstraints[1].parname = const_cast<char*>(std::string("Beta").c_str());;
 					paramConstraints[1].step = 0;
 					paramConstraints[1].relstep = 0;
 					paramConstraints[1].side = 0;
@@ -1120,11 +1120,11 @@ namespace spdlib{
 					}
 					else 
 					{
-						cout << "Return code is :" << returnCode << " - this can not been defined!\n";
+						std::cout << "Return code is :" << returnCode << " - this can not been defined!\n";
 					}
                     
-                    cout << "final alpha = " << parameters[0] << endl;
-                    cout << "final beta = " << parameters[1] << endl << endl;
+                    std::cout << "final alpha = " << parameters[0] << std::endl;
+                    std::cout << "final beta = " << parameters[1] << std::endl << std::endl;
                     
                     weibullAlpha = parameters[0];
                     
@@ -1134,13 +1134,13 @@ namespace spdlib{
                 }
                 else
                 {
-                    weibullAlpha = numeric_limits<float>::signaling_NaN();
+                    weibullAlpha = std::numeric_limits<float>::signaling_NaN();
                 }
                 
             }
             else
             {
-                weibullAlpha = numeric_limits<float>::signaling_NaN();
+                weibullAlpha = std::numeric_limits<float>::signaling_NaN();
             }
             
         } 
@@ -1152,14 +1152,14 @@ namespace spdlib{
         return weibullAlpha;
     }
     
-    double SPDMetricCalcWeibullBetaHeight::calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcWeibullBetaHeight::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
     {
         double weibullBeta = 0;
         try 
         {
             if(pulses->size() > 0)
             {
-                vector<double> *ptVals = this->getPointsValuesWithinHeightParameters(pulses, spdFile, geom);
+                std::vector<double> *ptVals = this->getPointsValuesWithinHeightParameters(pulses, spdFile, geom);
                 if(ptVals->size() > 0)
                 {
                     double minH = 0; 
@@ -1203,7 +1203,7 @@ namespace spdlib{
 					paramConstraints[0].limited[1] = true;
 					paramConstraints[0].limits[0] = 0.00001;
 					paramConstraints[0].limits[1] = 0.99999;
-					paramConstraints[0].parname = const_cast<char*>(string("Alpha").c_str());;
+					paramConstraints[0].parname = const_cast<char*>(std::string("Alpha").c_str());;
 					paramConstraints[0].step = 0;
 					paramConstraints[0].relstep = 0;
 					paramConstraints[0].side = 0;
@@ -1224,7 +1224,7 @@ namespace spdlib{
                     {
                         paramConstraints[1].limits[1] = maxH;
                     }
-					paramConstraints[1].parname = const_cast<char*>(string("Beta").c_str());;
+					paramConstraints[1].parname = const_cast<char*>(std::string("Beta").c_str());;
 					paramConstraints[1].step = 0;
 					paramConstraints[1].relstep = 0;
 					paramConstraints[1].side = 0;
@@ -1298,7 +1298,7 @@ namespace spdlib{
 					}
 					else 
 					{
-						cout << "Return code is :" << returnCode << " - this can not been defined!\n";
+						std::cout << "Return code is :" << returnCode << " - this can not been defined!\n";
 					}
                     
                     weibullBeta = parameters[1];
@@ -1309,13 +1309,13 @@ namespace spdlib{
                 }
                 else
                 {
-                    weibullBeta = numeric_limits<float>::signaling_NaN();
+                    weibullBeta = std::numeric_limits<float>::signaling_NaN();
                 }
                 
             }
             else
             {
-                weibullBeta = numeric_limits<float>::signaling_NaN();
+                weibullBeta = std::numeric_limits<float>::signaling_NaN();
             }
             
         } 
@@ -1327,14 +1327,14 @@ namespace spdlib{
         return weibullBeta;
     }
     
-    double SPDMetricCalcWeibullQuantileRangeHeight::calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcWeibullQuantileRangeHeight::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
     {
         double weibullQuantileRange = 0;
         try 
         {
             if(pulses->size() > 0)
             {
-                vector<double> *ptVals = this->getPointsValuesWithinHeightParameters(pulses, spdFile, geom);
+                std::vector<double> *ptVals = this->getPointsValuesWithinHeightParameters(pulses, spdFile, geom);
                 if(ptVals->size() > 0)
                 {
                     double minH = 0; 
@@ -1378,7 +1378,7 @@ namespace spdlib{
 					paramConstraints[0].limited[1] = true;
 					paramConstraints[0].limits[0] = 0.00001;
 					paramConstraints[0].limits[1] = 0.99999;
-					paramConstraints[0].parname = const_cast<char*>(string("Alpha").c_str());;
+					paramConstraints[0].parname = const_cast<char*>(std::string("Alpha").c_str());;
 					paramConstraints[0].step = 0;
 					paramConstraints[0].relstep = 0;
 					paramConstraints[0].side = 0;
@@ -1399,7 +1399,7 @@ namespace spdlib{
                     {
                         paramConstraints[1].limits[1] = maxH;
                     }
-					paramConstraints[1].parname = const_cast<char*>(string("Beta").c_str());;
+					paramConstraints[1].parname = const_cast<char*>(std::string("Beta").c_str());;
 					paramConstraints[1].step = 0;
 					paramConstraints[1].relstep = 0;
 					paramConstraints[1].side = 0;
@@ -1473,7 +1473,7 @@ namespace spdlib{
 					}
 					else 
 					{
-						cout << "Return code is :" << returnCode << " - this can not been defined!\n";
+						std::cout << "Return code is :" << returnCode << " - this can not been defined!\n";
 					}
                     
                     weibullQuantileRange = 0; // Need to calculate... TODO
@@ -1484,13 +1484,13 @@ namespace spdlib{
                 }
                 else
                 {
-                    weibullQuantileRange = numeric_limits<float>::signaling_NaN();
+                    weibullQuantileRange = std::numeric_limits<float>::signaling_NaN();
                 }
                 
             }
             else
             {
-                weibullQuantileRange = numeric_limits<float>::signaling_NaN();
+                weibullQuantileRange = std::numeric_limits<float>::signaling_NaN();
             }
             
         } 
@@ -1508,19 +1508,19 @@ namespace spdlib{
      */
     
     
-    double SPDMetricCalcNumReturnsZ::calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcNumReturnsZ::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
     {
-        vector<double> *ptVals = this->getPointsValuesWithinZParameters(pulses, spdFile, geom);
+        std::vector<double> *ptVals = this->getPointsValuesWithinZParameters(pulses, spdFile, geom);
         boost::uint_fast64_t numReturns = ptVals->size();
         delete ptVals;
         return numReturns;
     }
     
-    double SPDMetricCalcSumZ::calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcSumZ::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
     {
-        vector<double> *ptVals = this->getPointsValuesWithinZParameters(pulses, spdFile, geom);
+        std::vector<double> *ptVals = this->getPointsValuesWithinZParameters(pulses, spdFile, geom);
         double sum = 0;
-        for(vector<double>::iterator iterVals = ptVals->begin(); iterVals != ptVals->end(); ++iterVals)
+        for(std::vector<double>::iterator iterVals = ptVals->begin(); iterVals != ptVals->end(); ++iterVals)
         {
             sum += (*iterVals);
         }
@@ -1528,9 +1528,9 @@ namespace spdlib{
         return sum;
     }    
     
-    double SPDMetricCalcMeanZ::calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcMeanZ::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
     {
-        vector<double> *ptVals = this->getPointsValuesWithinZParameters(pulses, spdFile, geom);
+        std::vector<double> *ptVals = this->getPointsValuesWithinZParameters(pulses, spdFile, geom);
         double mean = 0;
         if(ptVals->size() > 0)
 		{
@@ -1538,15 +1538,15 @@ namespace spdlib{
         }
         else
         {
-            mean = numeric_limits<float>::signaling_NaN();
+            mean = std::numeric_limits<float>::signaling_NaN();
         }
         delete ptVals;
         return mean;
     }
     
-    double SPDMetricCalcMedianZ::calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcMedianZ::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
     {
-        vector<double> *ptVals = this->getPointsValuesWithinZParameters(pulses, spdFile, geom);
+        std::vector<double> *ptVals = this->getPointsValuesWithinZParameters(pulses, spdFile, geom);
         double median = 0;
         if(ptVals->size() > 0)
 		{
@@ -1555,27 +1555,27 @@ namespace spdlib{
              {
              if( i == 0 )
              {
-             cout << &(*ptVals)[0][i];
+             std::cout << &(*ptVals)[0][i];
              }
              else
              {
-             cout << ", " << &(*ptVals)[0][i];
+             std::cout << ", " << &(*ptVals)[0][i];
              }
              }
-             cout << endl << endl;*/
+             std::cout << std::endl << std::endl;*/
             median = gsl_stats_median_from_sorted_data(&(*ptVals)[0], 1, ptVals->size());
         }
         else
         {
-            median = numeric_limits<float>::signaling_NaN();
+            median = std::numeric_limits<float>::signaling_NaN();
         }
         delete ptVals;
         return median;
     }
     
-    double SPDMetricCalcModeZ::calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcModeZ::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
     {
-        vector<double> *ptVals = this->getPointsValuesWithinZParameters(pulses, spdFile, geom);
+        std::vector<double> *ptVals = this->getPointsValuesWithinZParameters(pulses, spdFile, geom);
         double mode = 0;
         if(ptVals->size() > 0)
         {
@@ -1583,16 +1583,16 @@ namespace spdlib{
         }
         else
         {
-            mode = numeric_limits<float>::signaling_NaN();
+            mode = std::numeric_limits<float>::signaling_NaN();
         }
         
         delete ptVals;
         return mode;
     }
     
-    double SPDMetricCalcMinZ::calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcMinZ::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
     {
-        vector<double> *ptVals = this->getPointsValuesWithinZParameters(pulses, spdFile, geom);
+        std::vector<double> *ptVals = this->getPointsValuesWithinZParameters(pulses, spdFile, geom);
         double min = 0;
         if(ptVals->size() > 0)
 		{
@@ -1600,15 +1600,15 @@ namespace spdlib{
         }
         else
         {
-            min = numeric_limits<float>::signaling_NaN();
+            min = std::numeric_limits<float>::signaling_NaN();
         }
         delete ptVals;
         return min;
     }
     
-    double SPDMetricCalcMaxZ::calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcMaxZ::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
     {
-        vector<double> *ptVals = this->getPointsValuesWithinZParameters(pulses, spdFile, geom);
+        std::vector<double> *ptVals = this->getPointsValuesWithinZParameters(pulses, spdFile, geom);
         double max = 0;
         if(ptVals->size() > 0)
 		{
@@ -1616,15 +1616,15 @@ namespace spdlib{
         }
         else
         {
-            max = numeric_limits<float>::signaling_NaN();
+            max = std::numeric_limits<float>::signaling_NaN();
         }
         delete ptVals;
         return max;
     }
     
-    double SPDMetricCalcStdDevZ::calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcStdDevZ::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
     {
-        vector<double> *ptVals = this->getPointsValuesWithinZParameters(pulses, spdFile, geom);
+        std::vector<double> *ptVals = this->getPointsValuesWithinZParameters(pulses, spdFile, geom);
         double stddev = 0;
         if(ptVals->size() > 0)
 		{
@@ -1632,15 +1632,15 @@ namespace spdlib{
         }
         else
         {
-            stddev = numeric_limits<float>::signaling_NaN();
+            stddev = std::numeric_limits<float>::signaling_NaN();
         }
         delete ptVals;
         return stddev;
     }
     
-    double SPDMetricCalcVarianceZ::calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcVarianceZ::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
     {
-        vector<double> *ptVals = this->getPointsValuesWithinZParameters(pulses, spdFile, geom);
+        std::vector<double> *ptVals = this->getPointsValuesWithinZParameters(pulses, spdFile, geom);
         double variance = 0;
         if(ptVals->size() > 0)
 		{
@@ -1648,15 +1648,15 @@ namespace spdlib{
         }
         else 
         {
-            variance = numeric_limits<float>::signaling_NaN();
+            variance = std::numeric_limits<float>::signaling_NaN();
         }
         delete ptVals;
         return variance;
     }
     
-    double SPDMetricCalcAbsDeviationZ::calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcAbsDeviationZ::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
     {
-        vector<double> *ptVals = this->getPointsValuesWithinZParameters(pulses, spdFile, geom);
+        std::vector<double> *ptVals = this->getPointsValuesWithinZParameters(pulses, spdFile, geom);
         double absdev = 0;
         if(ptVals->size() > 0)
 		{
@@ -1664,21 +1664,21 @@ namespace spdlib{
         }
         else
         {
-            absdev = numeric_limits<float>::signaling_NaN();
+            absdev = std::numeric_limits<float>::signaling_NaN();
         }
         delete ptVals;
         return absdev;
     }
     
-    double SPDMetricCalcCoefficientOfVariationZ::calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcCoefficientOfVariationZ::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
     {
-        vector<double> *ptVals = this->getPointsValuesWithinZParameters(pulses, spdFile, geom);
+        std::vector<double> *ptVals = this->getPointsValuesWithinZParameters(pulses, spdFile, geom);
         double cv = 0;
         if(ptVals->size() > 0)
 		{
             double sumSq = 0;
             double mean = gsl_stats_mean (&(*ptVals)[0], 1, ptVals->size());
-            for(vector<double>::iterator iterVals; iterVals != ptVals->end(); ++iterVals)
+            for(std::vector<double>::iterator iterVals; iterVals != ptVals->end(); ++iterVals)
             {
                 sumSq += pow(((*iterVals) - mean),2);
             }
@@ -1686,63 +1686,63 @@ namespace spdlib{
         }
         else 
         {
-            cv = numeric_limits<float>::signaling_NaN();
+            cv = std::numeric_limits<float>::signaling_NaN();
         }
         
         delete ptVals;
         return cv;
     }
     
-    double SPDMetricCalcPercentileZ::calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcPercentileZ::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
     {
         /*
-         cout << endl << endl << endl;
-         vector<SPDPulse*>::iterator iterPulses;
+         std::cout << std::endl << std::endl << std::endl;
+         std::vector<SPDPulse*>::iterator iterPulses;
          for(iterPulses = pulses->begin(); iterPulses != pulses->end(); ++iterPulses)
          {
          if((*iterPulses)->numberOfReturns > 0)
          {
-         for(vector<SPDPoint*>::iterator iterPts = (*iterPulses)->pts->begin(); iterPts != (*iterPulses)->pts->end(); ++iterPts)
+         for(std::vector<SPDPoint*>::iterator iterPts = (*iterPulses)->pts->begin(); iterPts != (*iterPulses)->pts->end(); ++iterPts)
          {
-         cout << (*iterPulses)->pulseID << "," << (*iterPts)->x << "," << (*iterPts)->y << "," << (*iterPts)->z << "," << (*iterPts)->z << "," << (*iterPts)->classification << endl;
+         std::cout << (*iterPulses)->pulseID << "," << (*iterPts)->x << "," << (*iterPts)->y << "," << (*iterPts)->z << "," << (*iterPts)->z << "," << (*iterPts)->classification << std::endl;
          }
          }
          }
-         cout << endl << endl << endl;
+         std::cout << std::endl << std::endl << std::endl;
          */
-        vector<double> *ptVals = this->getPointsValuesWithinZParameters(pulses, spdFile, geom);
+        std::vector<double> *ptVals = this->getPointsValuesWithinZParameters(pulses, spdFile, geom);
         double percentileVal = 0;
         if(ptVals->size() > 0)
 		{
             double quatFrac = ((double)percentile)/100;
             sort(ptVals->begin(), ptVals->end());
-            /*cout << "Calc Percentile " << quatFrac << endl;
+            /*std::cout << "Calc Percentile " << quatFrac << std::endl;
              for(unsigned int i = 0; i < ptVals->size(); ++i)
              {
              if( i == 0 )
              {
-             cout << &(*ptVals)[0][i];
+             std::cout << &(*ptVals)[0][i];
              }
              else
              {
-             cout << ", " << &(*ptVals)[0][i];
+             std::cout << ", " << &(*ptVals)[0][i];
              }
              }
-             cout << endl;*/
+             std::cout << std::endl;*/
             percentileVal = gsl_stats_quantile_from_sorted_data(&(*ptVals)[0], 1, ptVals->size(), quatFrac);
-            //cout << "Percentile = " << percentileVal << endl << endl;
+            //std::cout << "Percentile = " << percentileVal << std::endl << std::endl;
         }
         else 
         {
-            percentileVal = numeric_limits<float>::signaling_NaN();
+            percentileVal = std::numeric_limits<float>::signaling_NaN();
         }
         delete ptVals;
         return percentileVal;
     }
     
-    double SPDMetricCalcSkewnessZ::calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcSkewnessZ::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
     {
-        vector<double> *ptVals = this->getPointsValuesWithinZParameters(pulses, spdFile, geom);
+        std::vector<double> *ptVals = this->getPointsValuesWithinZParameters(pulses, spdFile, geom);
         double skew = 0;
         if(ptVals->size() > 0)
 		{
@@ -1750,15 +1750,15 @@ namespace spdlib{
         }
         else 
         {
-            skew = numeric_limits<float>::signaling_NaN();
+            skew = std::numeric_limits<float>::signaling_NaN();
         }
         delete ptVals;
         return skew;
     }
     
-    double SPDMetricCalcPersonModeSkewnessZ::calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcPersonModeSkewnessZ::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
     {
-        vector<double> *ptVals = this->getPointsValuesWithinZParameters(pulses, spdFile, geom);
+        std::vector<double> *ptVals = this->getPointsValuesWithinZParameters(pulses, spdFile, geom);
         double personModeSkew = 0;
         if(ptVals->size() > 0)
 		{
@@ -1771,15 +1771,15 @@ namespace spdlib{
         }
         else
         {
-            personModeSkew = numeric_limits<float>::signaling_NaN();
+            personModeSkew = std::numeric_limits<float>::signaling_NaN();
         }
         delete ptVals;
         return personModeSkew;
     }
     
-    double SPDMetricCalcPersonMedianSkewnessZ::calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcPersonMedianSkewnessZ::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
     {
-        vector<double> *ptVals = this->getPointsValuesWithinZParameters(pulses, spdFile, geom);
+        std::vector<double> *ptVals = this->getPointsValuesWithinZParameters(pulses, spdFile, geom);
         double personMedianSkew = 0;
         if(ptVals->size() > 0)
 		{
@@ -1792,15 +1792,15 @@ namespace spdlib{
         }
         else
         {
-            personMedianSkew = numeric_limits<float>::signaling_NaN();
+            personMedianSkew = std::numeric_limits<float>::signaling_NaN();
         }
         delete ptVals;
         return personMedianSkew;
     }
     
-    double SPDMetricCalcKurtosisZ::calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcKurtosisZ::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
     {
-        vector<double> *ptVals = this->getPointsValuesWithinZParameters(pulses, spdFile, geom);
+        std::vector<double> *ptVals = this->getPointsValuesWithinZParameters(pulses, spdFile, geom);
         double kurtosis = 0;
         if(ptVals->size() > 0)
 		{
@@ -1808,20 +1808,20 @@ namespace spdlib{
         }
         else
         {
-            kurtosis = numeric_limits<float>::signaling_NaN();
+            kurtosis = std::numeric_limits<float>::signaling_NaN();
         }
         delete ptVals;
         return kurtosis;
     }
     
-    double SPDMetricCalcNumReturnsAboveMetricZ::calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcNumReturnsAboveMetricZ::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
     {
-        vector<double> *ptVals = this->getPointsValuesWithinZParameters(pulses, spdFile, geom);
+        std::vector<double> *ptVals = this->getPointsValuesWithinZParameters(pulses, spdFile, geom);
         boost::uint_fast64_t valCount = 0;
         if(ptVals->size() > 0)
 		{
             double thresValue = metric->calcValue(pulses, spdFile, geom);
-            for(vector<double>::iterator iterVals; iterVals != ptVals->end(); ++iterVals)
+            for(std::vector<double>::iterator iterVals; iterVals != ptVals->end(); ++iterVals)
             {
                 if((*iterVals) > thresValue)
                 {
@@ -1833,14 +1833,14 @@ namespace spdlib{
         return valCount;
     }
     
-    double SPDMetricCalcNumReturnsBelowMetricZ::calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcNumReturnsBelowMetricZ::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
     {
-        vector<double> *ptVals = this->getPointsValuesWithinZParameters(pulses, spdFile, geom);
+        std::vector<double> *ptVals = this->getPointsValuesWithinZParameters(pulses, spdFile, geom);
         boost::uint_fast64_t valCount = 0;
         if(ptVals->size() > 0)
 		{
             double thresValue = metric->calcValue(pulses, spdFile, geom);
-            for(vector<double>::iterator iterVals; iterVals != ptVals->end(); ++iterVals)
+            for(std::vector<double>::iterator iterVals; iterVals != ptVals->end(); ++iterVals)
             {
                 if((*iterVals) < thresValue)
                 {
@@ -1852,14 +1852,14 @@ namespace spdlib{
         return valCount;
     }
     
-    double SPDMetricCalcWeibullAlphaZ::calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcWeibullAlphaZ::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
     {
         double weibullAlpha = 0;
         try 
         {
             if(pulses->size() > 0)
             {
-                vector<double> *ptVals = this->getPointsValuesWithinZParameters(pulses, spdFile, geom);
+                std::vector<double> *ptVals = this->getPointsValuesWithinZParameters(pulses, spdFile, geom);
                 if(ptVals->size() > 0)
                 {
                     double minH = 0; 
@@ -1903,7 +1903,7 @@ namespace spdlib{
 					paramConstraints[0].limited[1] = true;
 					paramConstraints[0].limits[0] = 0.00001;
 					paramConstraints[0].limits[1] = 0.99999;
-					paramConstraints[0].parname = const_cast<char*>(string("Alpha").c_str());;
+					paramConstraints[0].parname = const_cast<char*>(std::string("Alpha").c_str());;
 					paramConstraints[0].step = 0;
 					paramConstraints[0].relstep = 0;
 					paramConstraints[0].side = 0;
@@ -1924,7 +1924,7 @@ namespace spdlib{
                     {
                         paramConstraints[1].limits[1] = maxH;
                     }
-					paramConstraints[1].parname = const_cast<char*>(string("Beta").c_str());;
+					paramConstraints[1].parname = const_cast<char*>(std::string("Beta").c_str());;
 					paramConstraints[1].step = 0;
 					paramConstraints[1].relstep = 0;
 					paramConstraints[1].side = 0;
@@ -1998,7 +1998,7 @@ namespace spdlib{
 					}
 					else 
 					{
-						cout << "Return code is :" << returnCode << " - this can not been defined!\n";
+						std::cout << "Return code is :" << returnCode << " - this can not been defined!\n";
 					}
                     
                     weibullAlpha = parameters[0];
@@ -2009,13 +2009,13 @@ namespace spdlib{
                 }
                 else
                 {
-                    weibullAlpha = numeric_limits<float>::signaling_NaN();
+                    weibullAlpha = std::numeric_limits<float>::signaling_NaN();
                 }
                 
             }
             else
             {
-                weibullAlpha = numeric_limits<float>::signaling_NaN();
+                weibullAlpha = std::numeric_limits<float>::signaling_NaN();
             }
             
         } 
@@ -2027,14 +2027,14 @@ namespace spdlib{
         return weibullAlpha;
     }
     
-    double SPDMetricCalcWeibullBetaZ::calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcWeibullBetaZ::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
     {
         double weibullBeta = 0;
         try 
         {
             if(pulses->size() > 0)
             {
-                vector<double> *ptVals = this->getPointsValuesWithinZParameters(pulses, spdFile, geom);
+                std::vector<double> *ptVals = this->getPointsValuesWithinZParameters(pulses, spdFile, geom);
                 if(ptVals->size() > 0)
                 {
                     double minH = 0; 
@@ -2078,7 +2078,7 @@ namespace spdlib{
 					paramConstraints[0].limited[1] = true;
 					paramConstraints[0].limits[0] = 0.00001;
 					paramConstraints[0].limits[1] = 0.99999;
-					paramConstraints[0].parname = const_cast<char*>(string("Alpha").c_str());;
+					paramConstraints[0].parname = const_cast<char*>(std::string("Alpha").c_str());;
 					paramConstraints[0].step = 0;
 					paramConstraints[0].relstep = 0;
 					paramConstraints[0].side = 0;
@@ -2099,7 +2099,7 @@ namespace spdlib{
                     {
                         paramConstraints[1].limits[1] = maxH;
                     }
-					paramConstraints[1].parname = const_cast<char*>(string("Beta").c_str());;
+					paramConstraints[1].parname = const_cast<char*>(std::string("Beta").c_str());;
 					paramConstraints[1].step = 0;
 					paramConstraints[1].relstep = 0;
 					paramConstraints[1].side = 0;
@@ -2173,7 +2173,7 @@ namespace spdlib{
 					}
 					else 
 					{
-						cout << "Return code is :" << returnCode << " - this can not been defined!\n";
+						std::cout << "Return code is :" << returnCode << " - this can not been defined!\n";
 					}
                     
                     weibullBeta = parameters[1];
@@ -2184,13 +2184,13 @@ namespace spdlib{
                 }
                 else
                 {
-                    weibullBeta = numeric_limits<float>::signaling_NaN();
+                    weibullBeta = std::numeric_limits<float>::signaling_NaN();
                 }
                 
             }
             else
             {
-                weibullBeta = numeric_limits<float>::signaling_NaN();
+                weibullBeta = std::numeric_limits<float>::signaling_NaN();
             }
             
         } 
@@ -2202,14 +2202,14 @@ namespace spdlib{
         return weibullBeta;
     }
     
-    double SPDMetricCalcWeibullQuantileRangeZ::calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcWeibullQuantileRangeZ::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
     {
         double weibullQuantileRange = 0;
         try 
         {
             if(pulses->size() > 0)
             {
-                vector<double> *ptVals = this->getPointsValuesWithinZParameters(pulses, spdFile, geom);
+                std::vector<double> *ptVals = this->getPointsValuesWithinZParameters(pulses, spdFile, geom);
                 if(ptVals->size() > 0)
                 {
                     double minH = 0; 
@@ -2253,7 +2253,7 @@ namespace spdlib{
 					paramConstraints[0].limited[1] = true;
 					paramConstraints[0].limits[0] = 0.00001;
 					paramConstraints[0].limits[1] = 0.99999;
-					paramConstraints[0].parname = const_cast<char*>(string("Alpha").c_str());;
+					paramConstraints[0].parname = const_cast<char*>(std::string("Alpha").c_str());;
 					paramConstraints[0].step = 0;
 					paramConstraints[0].relstep = 0;
 					paramConstraints[0].side = 0;
@@ -2274,7 +2274,7 @@ namespace spdlib{
                     {
                         paramConstraints[1].limits[1] = maxH;
                     }
-					paramConstraints[1].parname = const_cast<char*>(string("Beta").c_str());;
+					paramConstraints[1].parname = const_cast<char*>(std::string("Beta").c_str());;
 					paramConstraints[1].step = 0;
 					paramConstraints[1].relstep = 0;
 					paramConstraints[1].side = 0;
@@ -2348,7 +2348,7 @@ namespace spdlib{
 					}
 					else 
 					{
-						cout << "Return code is :" << returnCode << " - this can not been defined!\n";
+						std::cout << "Return code is :" << returnCode << " - this can not been defined!\n";
 					}
                     
                     weibullQuantileRange = 0; // Need to calculate... TODO
@@ -2359,13 +2359,13 @@ namespace spdlib{
                 }
                 else
                 {
-                    weibullQuantileRange = numeric_limits<float>::signaling_NaN();
+                    weibullQuantileRange = std::numeric_limits<float>::signaling_NaN();
                 }
                 
             }
             else
             {
-                weibullQuantileRange = numeric_limits<float>::signaling_NaN();
+                weibullQuantileRange = std::numeric_limits<float>::signaling_NaN();
             }
             
         } 
@@ -2384,19 +2384,19 @@ namespace spdlib{
      * Metric's for Amplitude
      */
 
-    double SPDMetricCalcNumReturnsAmplitude::calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcNumReturnsAmplitude::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
     {
-        vector<double> *ptVals = this->getPointsValuesWithinAmplitudeParameters(pulses, spdFile, geom);
+        std::vector<double> *ptVals = this->getPointsValuesWithinAmplitudeParameters(pulses, spdFile, geom);
         boost::uint_fast64_t numReturns = ptVals->size();
         delete ptVals;
         return numReturns;
     }
     
-    double SPDMetricCalcSumAmplitude::calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcSumAmplitude::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
     {
-        vector<double> *ptVals = this->getPointsValuesWithinAmplitudeParameters(pulses, spdFile, geom);
+        std::vector<double> *ptVals = this->getPointsValuesWithinAmplitudeParameters(pulses, spdFile, geom);
         double sum = 0;
-        for(vector<double>::iterator iterVals = ptVals->begin(); iterVals != ptVals->end(); ++iterVals)
+        for(std::vector<double>::iterator iterVals = ptVals->begin(); iterVals != ptVals->end(); ++iterVals)
         {
             sum += (*iterVals);
         }
@@ -2404,9 +2404,9 @@ namespace spdlib{
         return sum;
     }
     
-    double SPDMetricCalcMeanAmplitude::calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcMeanAmplitude::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
     {
-        vector<double> *ptVals = this->getPointsValuesWithinAmplitudeParameters(pulses, spdFile, geom);
+        std::vector<double> *ptVals = this->getPointsValuesWithinAmplitudeParameters(pulses, spdFile, geom);
         double mean = 0;
         if(ptVals->size() > 0)
 		{
@@ -2414,15 +2414,15 @@ namespace spdlib{
         }
         else
         {
-            mean = numeric_limits<float>::signaling_NaN();
+            mean = std::numeric_limits<float>::signaling_NaN();
         }
         delete ptVals;
         return mean;
     }
     
-    double SPDMetricCalcMedianAmplitude::calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcMedianAmplitude::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
     {
-        vector<double> *ptVals = this->getPointsValuesWithinAmplitudeParameters(pulses, spdFile, geom);
+        std::vector<double> *ptVals = this->getPointsValuesWithinAmplitudeParameters(pulses, spdFile, geom);
         double median = 0;
         if(ptVals->size() > 0)
 		{
@@ -2431,15 +2431,15 @@ namespace spdlib{
         }
         else
         {
-            median = numeric_limits<float>::signaling_NaN();
+            median = std::numeric_limits<float>::signaling_NaN();
         }
         delete ptVals;
         return median;
     }
     
-    double SPDMetricCalcModeAmplitude::calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcModeAmplitude::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
     {
-        vector<double> *ptVals = this->getPointsValuesWithinAmplitudeParameters(pulses, spdFile, geom);
+        std::vector<double> *ptVals = this->getPointsValuesWithinAmplitudeParameters(pulses, spdFile, geom);
         double mode = 0;
         if(ptVals->size() > 0)
         {
@@ -2447,16 +2447,16 @@ namespace spdlib{
         }
         else
         {
-            mode = numeric_limits<float>::signaling_NaN();
+            mode = std::numeric_limits<float>::signaling_NaN();
         }
         
         delete ptVals;
         return mode;
     }
     
-    double SPDMetricCalcMinAmplitude::calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcMinAmplitude::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
     {
-        vector<double> *ptVals = this->getPointsValuesWithinAmplitudeParameters(pulses, spdFile, geom);
+        std::vector<double> *ptVals = this->getPointsValuesWithinAmplitudeParameters(pulses, spdFile, geom);
         double min = 0;
         if(ptVals->size() > 0)
 		{
@@ -2464,15 +2464,15 @@ namespace spdlib{
         }
         else
         {
-            min = numeric_limits<float>::signaling_NaN();
+            min = std::numeric_limits<float>::signaling_NaN();
         }
         delete ptVals;
         return min;
     }
     
-    double SPDMetricCalcMaxAmplitude::calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcMaxAmplitude::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
     {
-        vector<double> *ptVals = this->getPointsValuesWithinAmplitudeParameters(pulses, spdFile, geom);
+        std::vector<double> *ptVals = this->getPointsValuesWithinAmplitudeParameters(pulses, spdFile, geom);
         double max = 0;
         if(ptVals->size() > 0)
 		{
@@ -2480,15 +2480,15 @@ namespace spdlib{
         }
         else
         {
-            max = numeric_limits<float>::signaling_NaN();
+            max = std::numeric_limits<float>::signaling_NaN();
         }
         delete ptVals;
         return max;
     }
     
-    double SPDMetricCalcStdDevAmplitude::calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcStdDevAmplitude::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
     {
-        vector<double> *ptVals = this->getPointsValuesWithinAmplitudeParameters(pulses, spdFile, geom);
+        std::vector<double> *ptVals = this->getPointsValuesWithinAmplitudeParameters(pulses, spdFile, geom);
         double stddev = 0;
         if(ptVals->size() > 0)
 		{
@@ -2496,15 +2496,15 @@ namespace spdlib{
         }
         else
         {
-            stddev = numeric_limits<float>::signaling_NaN();
+            stddev = std::numeric_limits<float>::signaling_NaN();
         }
         delete ptVals;
         return stddev;
     }
     
-    double SPDMetricCalcVarianceAmplitude::calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcVarianceAmplitude::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
     {
-        vector<double> *ptVals = this->getPointsValuesWithinAmplitudeParameters(pulses, spdFile, geom);
+        std::vector<double> *ptVals = this->getPointsValuesWithinAmplitudeParameters(pulses, spdFile, geom);
         double variance = 0;
         if(ptVals->size() > 0)
 		{
@@ -2512,15 +2512,15 @@ namespace spdlib{
         }
         else 
         {
-            variance = numeric_limits<float>::signaling_NaN();
+            variance = std::numeric_limits<float>::signaling_NaN();
         }
         delete ptVals;
         return variance;
     }
     
-    double SPDMetricCalcAbsDeviationAmplitude::calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcAbsDeviationAmplitude::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
     {
-        vector<double> *ptVals = this->getPointsValuesWithinAmplitudeParameters(pulses, spdFile, geom);
+        std::vector<double> *ptVals = this->getPointsValuesWithinAmplitudeParameters(pulses, spdFile, geom);
         double absdev = 0;
         if(ptVals->size() > 0)
 		{
@@ -2528,21 +2528,21 @@ namespace spdlib{
         }
         else
         {
-            absdev = numeric_limits<float>::signaling_NaN();
+            absdev = std::numeric_limits<float>::signaling_NaN();
         }
         delete ptVals;
         return absdev;
     }
     
-    double SPDMetricCalcCoefficientOfVariationAmplitude::calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcCoefficientOfVariationAmplitude::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
     {
-        vector<double> *ptVals = this->getPointsValuesWithinAmplitudeParameters(pulses, spdFile, geom);
+        std::vector<double> *ptVals = this->getPointsValuesWithinAmplitudeParameters(pulses, spdFile, geom);
         double cv = 0;
         if(ptVals->size() > 0)
 		{
             double sumSq = 0;
             double mean = gsl_stats_mean (&(*ptVals)[0], 1, ptVals->size());
-            for(vector<double>::iterator iterVals; iterVals != ptVals->end(); ++iterVals)
+            for(std::vector<double>::iterator iterVals; iterVals != ptVals->end(); ++iterVals)
             {
                 sumSq += pow(((*iterVals) - mean),2);
             }
@@ -2550,16 +2550,16 @@ namespace spdlib{
         }
         else 
         {
-            cv = numeric_limits<float>::signaling_NaN();
+            cv = std::numeric_limits<float>::signaling_NaN();
         }
         
         delete ptVals;
         return cv;
     }
     
-    double SPDMetricCalcPercentileAmplitude::calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcPercentileAmplitude::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
     {
-        vector<double> *ptVals = this->getPointsValuesWithinAmplitudeParameters(pulses, spdFile, geom);
+        std::vector<double> *ptVals = this->getPointsValuesWithinAmplitudeParameters(pulses, spdFile, geom);
         double quantile = 0;
         if(ptVals->size() > 0)
 		{
@@ -2569,15 +2569,15 @@ namespace spdlib{
         }
         else 
         {
-            quantile = numeric_limits<float>::signaling_NaN();
+            quantile = std::numeric_limits<float>::signaling_NaN();
         }
         delete ptVals;
         return quantile;
     }
     
-    double SPDMetricCalcSkewnessAmplitude::calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcSkewnessAmplitude::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
     {
-        vector<double> *ptVals = this->getPointsValuesWithinAmplitudeParameters(pulses, spdFile, geom);
+        std::vector<double> *ptVals = this->getPointsValuesWithinAmplitudeParameters(pulses, spdFile, geom);
         double skew = 0;
         if(ptVals->size() > 0)
 		{
@@ -2585,15 +2585,15 @@ namespace spdlib{
         }
         else 
         {
-            skew = numeric_limits<float>::signaling_NaN();
+            skew = std::numeric_limits<float>::signaling_NaN();
         }
         delete ptVals;
         return skew;
     }
     
-    double SPDMetricCalcPersonModeSkewnessAmplitude::calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcPersonModeSkewnessAmplitude::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
     {
-        vector<double> *ptVals = this->getPointsValuesWithinAmplitudeParameters(pulses, spdFile, geom);
+        std::vector<double> *ptVals = this->getPointsValuesWithinAmplitudeParameters(pulses, spdFile, geom);
         double personModeSkew = 0;
         if(ptVals->size() > 0)
 		{
@@ -2606,15 +2606,15 @@ namespace spdlib{
         }
         else
         {
-            personModeSkew = numeric_limits<float>::signaling_NaN();
+            personModeSkew = std::numeric_limits<float>::signaling_NaN();
         }
         delete ptVals;
         return personModeSkew;
     }
     
-    double SPDMetricCalcPersonMedianSkewnessAmplitude::calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcPersonMedianSkewnessAmplitude::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
     {
-        vector<double> *ptVals = this->getPointsValuesWithinAmplitudeParameters(pulses, spdFile, geom);
+        std::vector<double> *ptVals = this->getPointsValuesWithinAmplitudeParameters(pulses, spdFile, geom);
         double personMedianSkew = 0;
         if(ptVals->size() > 0)
 		{
@@ -2627,15 +2627,15 @@ namespace spdlib{
         }
         else
         {
-            personMedianSkew = numeric_limits<float>::signaling_NaN();
+            personMedianSkew = std::numeric_limits<float>::signaling_NaN();
         }
         delete ptVals;
         return personMedianSkew;
     }
     
-    double SPDMetricCalcKurtosisAmplitude::calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcKurtosisAmplitude::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
     {
-        vector<double> *ptVals = this->getPointsValuesWithinAmplitudeParameters(pulses, spdFile, geom);
+        std::vector<double> *ptVals = this->getPointsValuesWithinAmplitudeParameters(pulses, spdFile, geom);
         double kurtosis = 0;
         if(ptVals->size() > 0)
 		{
@@ -2643,20 +2643,20 @@ namespace spdlib{
         }
         else
         {
-            kurtosis = numeric_limits<float>::signaling_NaN();
+            kurtosis = std::numeric_limits<float>::signaling_NaN();
         }
         delete ptVals;
         return kurtosis;
     }
     
-    double SPDMetricCalcNumReturnsAboveMetricAmplitude::calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcNumReturnsAboveMetricAmplitude::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
     {
-        vector<double> *ptVals = this->getPointsValuesWithinAmplitudeParameters(pulses, spdFile, geom);
+        std::vector<double> *ptVals = this->getPointsValuesWithinAmplitudeParameters(pulses, spdFile, geom);
         boost::uint_fast64_t valCount = 0;
         if(ptVals->size() > 0)
 		{
             double thresValue = metric->calcValue(pulses, spdFile, geom);
-            for(vector<double>::iterator iterVals; iterVals != ptVals->end(); ++iterVals)
+            for(std::vector<double>::iterator iterVals; iterVals != ptVals->end(); ++iterVals)
             {
                 if((*iterVals) > thresValue)
                 {
@@ -2668,14 +2668,14 @@ namespace spdlib{
         return valCount;
     }
     
-    double SPDMetricCalcNumReturnsBelowMetricAmplitude::calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcNumReturnsBelowMetricAmplitude::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
     {
-        vector<double> *ptVals = this->getPointsValuesWithinAmplitudeParameters(pulses, spdFile, geom);
+        std::vector<double> *ptVals = this->getPointsValuesWithinAmplitudeParameters(pulses, spdFile, geom);
         boost::uint_fast64_t valCount = 0;
         if(ptVals->size() > 0)
 		{
             double thresValue = metric->calcValue(pulses, spdFile, geom);
-            for(vector<double>::iterator iterVals; iterVals != ptVals->end(); ++iterVals)
+            for(std::vector<double>::iterator iterVals; iterVals != ptVals->end(); ++iterVals)
             {
                 if((*iterVals) < thresValue)
                 {
@@ -2694,19 +2694,19 @@ namespace spdlib{
      * Metric's for Range (Spherical Coordinates)
      */
     
-    double SPDMetricCalcNumReturnsRange::calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcNumReturnsRange::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
     {
-        vector<double> *ptVals = this->getPointsValuesWithinRangeParameters(pulses, spdFile, geom);
+        std::vector<double> *ptVals = this->getPointsValuesWithinRangeParameters(pulses, spdFile, geom);
         boost::uint_fast64_t numReturns = ptVals->size();
         delete ptVals;
         return numReturns;
     }
     
-    double SPDMetricCalcSumRange::calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcSumRange::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
     {
-        vector<double> *ptVals = this->getPointsValuesWithinRangeParameters(pulses, spdFile, geom);
+        std::vector<double> *ptVals = this->getPointsValuesWithinRangeParameters(pulses, spdFile, geom);
         double sum = 0;
-        for(vector<double>::iterator iterVals = ptVals->begin(); iterVals != ptVals->end(); ++iterVals)
+        for(std::vector<double>::iterator iterVals = ptVals->begin(); iterVals != ptVals->end(); ++iterVals)
         {
             sum += (*iterVals);
         }
@@ -2714,9 +2714,9 @@ namespace spdlib{
         return sum;
     }
     
-    double SPDMetricCalcMeanRange::calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcMeanRange::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
     {
-        vector<double> *ptVals = this->getPointsValuesWithinRangeParameters(pulses, spdFile, geom);
+        std::vector<double> *ptVals = this->getPointsValuesWithinRangeParameters(pulses, spdFile, geom);
         double mean = 0;
         if(ptVals->size() > 0)
 		{
@@ -2724,15 +2724,15 @@ namespace spdlib{
         }
         else
         {
-            mean = numeric_limits<float>::signaling_NaN();
+            mean = std::numeric_limits<float>::signaling_NaN();
         }
         delete ptVals;
         return mean;
     }
     
-    double SPDMetricCalcMedianRange::calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcMedianRange::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
     {
-        vector<double> *ptVals = this->getPointsValuesWithinRangeParameters(pulses, spdFile, geom);
+        std::vector<double> *ptVals = this->getPointsValuesWithinRangeParameters(pulses, spdFile, geom);
         double median = 0;
         if(ptVals->size() > 0)
 		{
@@ -2741,15 +2741,15 @@ namespace spdlib{
         }
         else
         {
-            median = numeric_limits<float>::signaling_NaN();
+            median = std::numeric_limits<float>::signaling_NaN();
         }
         delete ptVals;
         return median;
     }
     
-    double SPDMetricCalcModeRange::calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcModeRange::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
     {
-        vector<double> *ptVals = this->getPointsValuesWithinRangeParameters(pulses, spdFile, geom);
+        std::vector<double> *ptVals = this->getPointsValuesWithinRangeParameters(pulses, spdFile, geom);
         double mode = 0;
         if(ptVals->size() > 0)
         {
@@ -2757,16 +2757,16 @@ namespace spdlib{
         }
         else
         {
-            mode = numeric_limits<float>::signaling_NaN();
+            mode = std::numeric_limits<float>::signaling_NaN();
         }
         
         delete ptVals;
         return mode;
     }
     
-    double SPDMetricCalcMinRange::calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcMinRange::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
     {
-        vector<double> *ptVals = this->getPointsValuesWithinRangeParameters(pulses, spdFile, geom);
+        std::vector<double> *ptVals = this->getPointsValuesWithinRangeParameters(pulses, spdFile, geom);
         double min = 0;
         if(ptVals->size() > 0)
 		{
@@ -2774,15 +2774,15 @@ namespace spdlib{
         }
         else
         {
-            min = numeric_limits<float>::signaling_NaN();
+            min = std::numeric_limits<float>::signaling_NaN();
         }
         delete ptVals;
         return min;
     }
     
-    double SPDMetricCalcMaxRange::calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcMaxRange::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
     {
-        vector<double> *ptVals = this->getPointsValuesWithinRangeParameters(pulses, spdFile, geom);
+        std::vector<double> *ptVals = this->getPointsValuesWithinRangeParameters(pulses, spdFile, geom);
         double max = 0;
         if(ptVals->size() > 0)
 		{
@@ -2790,15 +2790,15 @@ namespace spdlib{
         }
         else
         {
-            max = numeric_limits<float>::signaling_NaN();
+            max = std::numeric_limits<float>::signaling_NaN();
         }
         delete ptVals;
         return max;
     }
     
-    double SPDMetricCalcStdDevRange::calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcStdDevRange::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
     {
-        vector<double> *ptVals = this->getPointsValuesWithinRangeParameters(pulses, spdFile, geom);
+        std::vector<double> *ptVals = this->getPointsValuesWithinRangeParameters(pulses, spdFile, geom);
         double stddev = 0;
         if(ptVals->size() > 0)
 		{
@@ -2806,15 +2806,15 @@ namespace spdlib{
         }
         else
         {
-            stddev = numeric_limits<float>::signaling_NaN();
+            stddev = std::numeric_limits<float>::signaling_NaN();
         }
         delete ptVals;
         return stddev;
     }
     
-    double SPDMetricCalcVarianceRange::calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcVarianceRange::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
     {
-        vector<double> *ptVals = this->getPointsValuesWithinRangeParameters(pulses, spdFile, geom);
+        std::vector<double> *ptVals = this->getPointsValuesWithinRangeParameters(pulses, spdFile, geom);
         double variance = 0;
         if(ptVals->size() > 0)
 		{
@@ -2822,15 +2822,15 @@ namespace spdlib{
         }
         else 
         {
-            variance = numeric_limits<float>::signaling_NaN();
+            variance = std::numeric_limits<float>::signaling_NaN();
         }
         delete ptVals;
         return variance;
     }
     
-    double SPDMetricCalcAbsDeviationRange::calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcAbsDeviationRange::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
     {
-        vector<double> *ptVals = this->getPointsValuesWithinRangeParameters(pulses, spdFile, geom);
+        std::vector<double> *ptVals = this->getPointsValuesWithinRangeParameters(pulses, spdFile, geom);
         double absdev = 0;
         if(ptVals->size() > 0)
 		{
@@ -2838,21 +2838,21 @@ namespace spdlib{
         }
         else
         {
-            absdev = numeric_limits<float>::signaling_NaN();
+            absdev = std::numeric_limits<float>::signaling_NaN();
         }
         delete ptVals;
         return absdev;
     }
     
-    double SPDMetricCalcCoefficientOfVariationRange::calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcCoefficientOfVariationRange::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
     {
-        vector<double> *ptVals = this->getPointsValuesWithinRangeParameters(pulses, spdFile, geom);
+        std::vector<double> *ptVals = this->getPointsValuesWithinRangeParameters(pulses, spdFile, geom);
         double cv = 0;
         if(ptVals->size() > 0)
 		{
             double sumSq = 0;
             double mean = gsl_stats_mean (&(*ptVals)[0], 1, ptVals->size());
-            for(vector<double>::iterator iterVals; iterVals != ptVals->end(); ++iterVals)
+            for(std::vector<double>::iterator iterVals; iterVals != ptVals->end(); ++iterVals)
             {
                 sumSq += pow(((*iterVals) - mean),2);
             }
@@ -2860,16 +2860,16 @@ namespace spdlib{
         }
         else 
         {
-            cv = numeric_limits<float>::signaling_NaN();
+            cv = std::numeric_limits<float>::signaling_NaN();
         }
         
         delete ptVals;
         return cv;
     }
     
-    double SPDMetricCalcPercentileRange::calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcPercentileRange::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
     {
-        vector<double> *ptVals = this->getPointsValuesWithinRangeParameters(pulses, spdFile, geom);
+        std::vector<double> *ptVals = this->getPointsValuesWithinRangeParameters(pulses, spdFile, geom);
         double quantile = 0;
         if(ptVals->size() > 0)
 		{
@@ -2879,15 +2879,15 @@ namespace spdlib{
         }
         else 
         {
-            quantile = numeric_limits<float>::signaling_NaN();
+            quantile = std::numeric_limits<float>::signaling_NaN();
         }
         delete ptVals;
         return quantile;
     }
     
-    double SPDMetricCalcSkewnessRange::calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcSkewnessRange::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
     {
-        vector<double> *ptVals = this->getPointsValuesWithinRangeParameters(pulses, spdFile, geom);
+        std::vector<double> *ptVals = this->getPointsValuesWithinRangeParameters(pulses, spdFile, geom);
         double skew = 0;
         if(ptVals->size() > 0)
 		{
@@ -2895,15 +2895,15 @@ namespace spdlib{
         }
         else 
         {
-            skew = numeric_limits<float>::signaling_NaN();
+            skew = std::numeric_limits<float>::signaling_NaN();
         }
         delete ptVals;
         return skew;
     }
     
-    double SPDMetricCalcPersonModeSkewnessRange::calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcPersonModeSkewnessRange::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
     {
-        vector<double> *ptVals = this->getPointsValuesWithinRangeParameters(pulses, spdFile, geom);
+        std::vector<double> *ptVals = this->getPointsValuesWithinRangeParameters(pulses, spdFile, geom);
         double personModeSkew = 0;
         if(ptVals->size() > 0)
 		{
@@ -2916,15 +2916,15 @@ namespace spdlib{
         }
         else
         {
-            personModeSkew = numeric_limits<float>::signaling_NaN();
+            personModeSkew = std::numeric_limits<float>::signaling_NaN();
         }
         delete ptVals;
         return personModeSkew;
     }
     
-    double SPDMetricCalcPersonMedianSkewnessRange::calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcPersonMedianSkewnessRange::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
     {
-        vector<double> *ptVals = this->getPointsValuesWithinRangeParameters(pulses, spdFile, geom);
+        std::vector<double> *ptVals = this->getPointsValuesWithinRangeParameters(pulses, spdFile, geom);
         double personMedianSkew = 0;
         if(ptVals->size() > 0)
 		{
@@ -2937,15 +2937,15 @@ namespace spdlib{
         }
         else
         {
-            personMedianSkew = numeric_limits<float>::signaling_NaN();
+            personMedianSkew = std::numeric_limits<float>::signaling_NaN();
         }
         delete ptVals;
         return personMedianSkew;
     }
     
-    double SPDMetricCalcKurtosisRange::calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcKurtosisRange::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
     {
-        vector<double> *ptVals = this->getPointsValuesWithinRangeParameters(pulses, spdFile, geom);
+        std::vector<double> *ptVals = this->getPointsValuesWithinRangeParameters(pulses, spdFile, geom);
         double kurtosis = 0;
         if(ptVals->size() > 0)
 		{
@@ -2953,20 +2953,20 @@ namespace spdlib{
         }
         else
         {
-            kurtosis = numeric_limits<float>::signaling_NaN();
+            kurtosis = std::numeric_limits<float>::signaling_NaN();
         }
         delete ptVals;
         return kurtosis;
     }
     
-    double SPDMetricCalcNumReturnsAboveMetricRange::calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcNumReturnsAboveMetricRange::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
     {
-        vector<double> *ptVals = this->getPointsValuesWithinRangeParameters(pulses, spdFile, geom);
+        std::vector<double> *ptVals = this->getPointsValuesWithinRangeParameters(pulses, spdFile, geom);
         boost::uint_fast64_t valCount = 0;
         if(ptVals->size() > 0)
 		{
             double thresValue = metric->calcValue(pulses, spdFile, geom);
-            for(vector<double>::iterator iterVals; iterVals != ptVals->end(); ++iterVals)
+            for(std::vector<double>::iterator iterVals; iterVals != ptVals->end(); ++iterVals)
             {
                 if((*iterVals) > thresValue)
                 {
@@ -2978,14 +2978,14 @@ namespace spdlib{
         return valCount;
     }
     
-    double SPDMetricCalcNumReturnsBelowMetricRange::calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcNumReturnsBelowMetricRange::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
     {
-        vector<double> *ptVals = this->getPointsValuesWithinRangeParameters(pulses, spdFile, geom);
+        std::vector<double> *ptVals = this->getPointsValuesWithinRangeParameters(pulses, spdFile, geom);
         boost::uint_fast64_t valCount = 0;
         if(ptVals->size() > 0)
 		{
             double thresValue = metric->calcValue(pulses, spdFile, geom);
-            for(vector<double>::iterator iterVals; iterVals != ptVals->end(); ++iterVals)
+            for(std::vector<double>::iterator iterVals; iterVals != ptVals->end(); ++iterVals)
             {
                 if((*iterVals) < thresValue)
                 {
@@ -2997,14 +2997,14 @@ namespace spdlib{
         return valCount;
     }
     
-    double SPDMetricCalcWeibullAlphaRange::calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcWeibullAlphaRange::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
     {
         double weibullAlpha = 0;
         try 
         {
             if(pulses->size() > 0)
             {
-                vector<double> *ptVals = this->getPointsValuesWithinRangeParameters(pulses, spdFile, geom);
+                std::vector<double> *ptVals = this->getPointsValuesWithinRangeParameters(pulses, spdFile, geom);
                 if(ptVals->size() > 0)
                 {
                     double minH = 0; 
@@ -3048,7 +3048,7 @@ namespace spdlib{
 					paramConstraints[0].limited[1] = true;
 					paramConstraints[0].limits[0] = 0.00001;
 					paramConstraints[0].limits[1] = 0.99999;
-					paramConstraints[0].parname = const_cast<char*>(string("Alpha").c_str());;
+					paramConstraints[0].parname = const_cast<char*>(std::string("Alpha").c_str());;
 					paramConstraints[0].step = 0;
 					paramConstraints[0].relstep = 0;
 					paramConstraints[0].side = 0;
@@ -3069,7 +3069,7 @@ namespace spdlib{
                     {
                         paramConstraints[1].limits[1] = maxH;
                     }
-					paramConstraints[1].parname = const_cast<char*>(string("Beta").c_str());;
+					paramConstraints[1].parname = const_cast<char*>(std::string("Beta").c_str());;
 					paramConstraints[1].step = 0;
 					paramConstraints[1].relstep = 0;
 					paramConstraints[1].side = 0;
@@ -3143,7 +3143,7 @@ namespace spdlib{
 					}
 					else 
 					{
-						cout << "Return code is :" << returnCode << " - this can not been defined!\n";
+						std::cout << "Return code is :" << returnCode << " - this can not been defined!\n";
 					}
                     
                     weibullAlpha = parameters[0];
@@ -3154,13 +3154,13 @@ namespace spdlib{
                 }
                 else
                 {
-                    weibullAlpha = numeric_limits<float>::signaling_NaN();
+                    weibullAlpha = std::numeric_limits<float>::signaling_NaN();
                 }
                 
             }
             else
             {
-                weibullAlpha = numeric_limits<float>::signaling_NaN();
+                weibullAlpha = std::numeric_limits<float>::signaling_NaN();
             }
             
         } 
@@ -3172,14 +3172,14 @@ namespace spdlib{
         return weibullAlpha;
     }
     
-    double SPDMetricCalcWeibullBetaRange::calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcWeibullBetaRange::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
     {
         double weibullBeta = 0;
         try 
         {
             if(pulses->size() > 0)
             {
-                vector<double> *ptVals = this->getPointsValuesWithinRangeParameters(pulses, spdFile, geom);
+                std::vector<double> *ptVals = this->getPointsValuesWithinRangeParameters(pulses, spdFile, geom);
                 if(ptVals->size() > 0)
                 {
                     double minH = 0; 
@@ -3223,7 +3223,7 @@ namespace spdlib{
 					paramConstraints[0].limited[1] = true;
 					paramConstraints[0].limits[0] = 0.00001;
 					paramConstraints[0].limits[1] = 0.99999;
-					paramConstraints[0].parname = const_cast<char*>(string("Alpha").c_str());;
+					paramConstraints[0].parname = const_cast<char*>(std::string("Alpha").c_str());;
 					paramConstraints[0].step = 0;
 					paramConstraints[0].relstep = 0;
 					paramConstraints[0].side = 0;
@@ -3244,7 +3244,7 @@ namespace spdlib{
                     {
                         paramConstraints[1].limits[1] = maxH;
                     }
-					paramConstraints[1].parname = const_cast<char*>(string("Beta").c_str());;
+					paramConstraints[1].parname = const_cast<char*>(std::string("Beta").c_str());;
 					paramConstraints[1].step = 0;
 					paramConstraints[1].relstep = 0;
 					paramConstraints[1].side = 0;
@@ -3318,7 +3318,7 @@ namespace spdlib{
 					}
 					else 
 					{
-						cout << "Return code is :" << returnCode << " - this can not been defined!\n";
+						std::cout << "Return code is :" << returnCode << " - this can not been defined!\n";
 					}
                     
                     weibullBeta = parameters[1];
@@ -3329,13 +3329,13 @@ namespace spdlib{
                 }
                 else
                 {
-                    weibullBeta = numeric_limits<float>::signaling_NaN();
+                    weibullBeta = std::numeric_limits<float>::signaling_NaN();
                 }
                 
             }
             else
             {
-                weibullBeta = numeric_limits<float>::signaling_NaN();
+                weibullBeta = std::numeric_limits<float>::signaling_NaN();
             }
             
         } 
@@ -3347,14 +3347,14 @@ namespace spdlib{
         return weibullBeta;
     }
     
-    double SPDMetricCalcWeibullQuantileRangeRange::calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcWeibullQuantileRangeRange::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
     {
         double weibullQuantileRange = 0;
         try 
         {
             if(pulses->size() > 0)
             {
-                vector<double> *ptVals = this->getPointsValuesWithinRangeParameters(pulses, spdFile, geom);
+                std::vector<double> *ptVals = this->getPointsValuesWithinRangeParameters(pulses, spdFile, geom);
                 if(ptVals->size() > 0)
                 {
                     double minH = 0; 
@@ -3398,7 +3398,7 @@ namespace spdlib{
 					paramConstraints[0].limited[1] = true;
 					paramConstraints[0].limits[0] = 0.00001;
 					paramConstraints[0].limits[1] = 0.99999;
-					paramConstraints[0].parname = const_cast<char*>(string("Alpha").c_str());;
+					paramConstraints[0].parname = const_cast<char*>(std::string("Alpha").c_str());;
 					paramConstraints[0].step = 0;
 					paramConstraints[0].relstep = 0;
 					paramConstraints[0].side = 0;
@@ -3419,7 +3419,7 @@ namespace spdlib{
                     {
                         paramConstraints[1].limits[1] = maxH;
                     }
-					paramConstraints[1].parname = const_cast<char*>(string("Beta").c_str());;
+					paramConstraints[1].parname = const_cast<char*>(std::string("Beta").c_str());;
 					paramConstraints[1].step = 0;
 					paramConstraints[1].relstep = 0;
 					paramConstraints[1].side = 0;
@@ -3493,7 +3493,7 @@ namespace spdlib{
 					}
 					else 
 					{
-						cout << "Return code is :" << returnCode << " - this can not been defined!\n";
+						std::cout << "Return code is :" << returnCode << " - this can not been defined!\n";
 					}
                     
                     weibullQuantileRange = 0; // Need to calculate... TODO
@@ -3504,13 +3504,13 @@ namespace spdlib{
                 }
                 else
                 {
-                    weibullQuantileRange = numeric_limits<float>::signaling_NaN();
+                    weibullQuantileRange = std::numeric_limits<float>::signaling_NaN();
                 }
                 
             }
             else
             {
-                weibullQuantileRange = numeric_limits<float>::signaling_NaN();
+                weibullQuantileRange = std::numeric_limits<float>::signaling_NaN();
             }
             
         } 
@@ -3528,19 +3528,19 @@ namespace spdlib{
      * Metric's for width
      */
     
-    double SPDMetricCalcNumReturnsWidth::calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcNumReturnsWidth::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
     {
-        vector<double> *ptVals = this->getPointsValuesWithinWidthParameters(pulses, spdFile, geom);
+        std::vector<double> *ptVals = this->getPointsValuesWithinWidthParameters(pulses, spdFile, geom);
         boost::uint_fast64_t numReturns = ptVals->size();
         delete ptVals;
         return numReturns;
     }
     
-    double SPDMetricCalcSumWidth::calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcSumWidth::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
     {
-        vector<double> *ptVals = this->getPointsValuesWithinWidthParameters(pulses, spdFile, geom);
+        std::vector<double> *ptVals = this->getPointsValuesWithinWidthParameters(pulses, spdFile, geom);
         double sum = 0;
-        for(vector<double>::iterator iterVals = ptVals->begin(); iterVals != ptVals->end(); ++iterVals)
+        for(std::vector<double>::iterator iterVals = ptVals->begin(); iterVals != ptVals->end(); ++iterVals)
         {
             sum += (*iterVals);
         }
@@ -3548,9 +3548,9 @@ namespace spdlib{
         return sum;
     }
     
-    double SPDMetricCalcMeanWidth::calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcMeanWidth::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
     {
-        vector<double> *ptVals = this->getPointsValuesWithinWidthParameters(pulses, spdFile, geom);
+        std::vector<double> *ptVals = this->getPointsValuesWithinWidthParameters(pulses, spdFile, geom);
         double mean = 0;
         if(ptVals->size() > 0)
 		{
@@ -3558,15 +3558,15 @@ namespace spdlib{
         }
         else
         {
-            mean = numeric_limits<float>::signaling_NaN();
+            mean = std::numeric_limits<float>::signaling_NaN();
         }
         delete ptVals;
         return mean;
     }
     
-    double SPDMetricCalcMedianWidth::calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcMedianWidth::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
     {
-        vector<double> *ptVals = this->getPointsValuesWithinWidthParameters(pulses, spdFile, geom);
+        std::vector<double> *ptVals = this->getPointsValuesWithinWidthParameters(pulses, spdFile, geom);
         double median = 0;
         if(ptVals->size() > 0)
 		{
@@ -3575,15 +3575,15 @@ namespace spdlib{
         }
         else
         {
-            median = numeric_limits<float>::signaling_NaN();
+            median = std::numeric_limits<float>::signaling_NaN();
         }
         delete ptVals;
         return median;
     }
     
-    double SPDMetricCalcModeWidth::calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcModeWidth::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
     {
-        vector<double> *ptVals = this->getPointsValuesWithinWidthParameters(pulses, spdFile, geom);
+        std::vector<double> *ptVals = this->getPointsValuesWithinWidthParameters(pulses, spdFile, geom);
         double mode = 0;
         if(ptVals->size() > 0)
         {
@@ -3591,16 +3591,16 @@ namespace spdlib{
         }
         else
         {
-            mode = numeric_limits<float>::signaling_NaN();
+            mode = std::numeric_limits<float>::signaling_NaN();
         }
         
         delete ptVals;
         return mode;
     }
     
-    double SPDMetricCalcMinWidth::calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcMinWidth::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
     {
-        vector<double> *ptVals = this->getPointsValuesWithinWidthParameters(pulses, spdFile, geom);
+        std::vector<double> *ptVals = this->getPointsValuesWithinWidthParameters(pulses, spdFile, geom);
         double min = 0;
         if(ptVals->size() > 0)
 		{
@@ -3608,15 +3608,15 @@ namespace spdlib{
         }
         else
         {
-            min = numeric_limits<float>::signaling_NaN();
+            min = std::numeric_limits<float>::signaling_NaN();
         }
         delete ptVals;
         return min;
     }
     
-    double SPDMetricCalcMaxWidth::calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcMaxWidth::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
     {
-        vector<double> *ptVals = this->getPointsValuesWithinWidthParameters(pulses, spdFile, geom);
+        std::vector<double> *ptVals = this->getPointsValuesWithinWidthParameters(pulses, spdFile, geom);
         double max = 0;
         if(ptVals->size() > 0)
 		{
@@ -3624,15 +3624,15 @@ namespace spdlib{
         }
         else
         {
-            max = numeric_limits<float>::signaling_NaN();
+            max = std::numeric_limits<float>::signaling_NaN();
         }
         delete ptVals;
         return max;
     }
     
-    double SPDMetricCalcStdDevWidth::calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcStdDevWidth::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
     {
-        vector<double> *ptVals = this->getPointsValuesWithinWidthParameters(pulses, spdFile, geom);
+        std::vector<double> *ptVals = this->getPointsValuesWithinWidthParameters(pulses, spdFile, geom);
         double stddev = 0;
         if(ptVals->size() > 0)
 		{
@@ -3640,15 +3640,15 @@ namespace spdlib{
         }
         else
         {
-            stddev = numeric_limits<float>::signaling_NaN();
+            stddev = std::numeric_limits<float>::signaling_NaN();
         }
         delete ptVals;
         return stddev;
     }
     
-    double SPDMetricCalcVarianceWidth::calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcVarianceWidth::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
     {
-        vector<double> *ptVals = this->getPointsValuesWithinWidthParameters(pulses, spdFile, geom);
+        std::vector<double> *ptVals = this->getPointsValuesWithinWidthParameters(pulses, spdFile, geom);
         double variance = 0;
         if(ptVals->size() > 0)
 		{
@@ -3656,15 +3656,15 @@ namespace spdlib{
         }
         else 
         {
-            variance = numeric_limits<float>::signaling_NaN();
+            variance = std::numeric_limits<float>::signaling_NaN();
         }
         delete ptVals;
         return variance;
     }
     
-    double SPDMetricCalcAbsDeviationWidth::calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcAbsDeviationWidth::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
     {
-        vector<double> *ptVals = this->getPointsValuesWithinWidthParameters(pulses, spdFile, geom);
+        std::vector<double> *ptVals = this->getPointsValuesWithinWidthParameters(pulses, spdFile, geom);
         double absdev = 0;
         if(ptVals->size() > 0)
 		{
@@ -3672,21 +3672,21 @@ namespace spdlib{
         }
         else
         {
-            absdev = numeric_limits<float>::signaling_NaN();
+            absdev = std::numeric_limits<float>::signaling_NaN();
         }
         delete ptVals;
         return absdev;
     }
     
-    double SPDMetricCalcCoefficientOfVariationWidth::calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcCoefficientOfVariationWidth::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
     {
-        vector<double> *ptVals = this->getPointsValuesWithinWidthParameters(pulses, spdFile, geom);
+        std::vector<double> *ptVals = this->getPointsValuesWithinWidthParameters(pulses, spdFile, geom);
         double cv = 0;
         if(ptVals->size() > 0)
 		{
             double sumSq = 0;
             double mean = gsl_stats_mean (&(*ptVals)[0], 1, ptVals->size());
-            for(vector<double>::iterator iterVals; iterVals != ptVals->end(); ++iterVals)
+            for(std::vector<double>::iterator iterVals; iterVals != ptVals->end(); ++iterVals)
             {
                 sumSq += pow(((*iterVals) - mean),2);
             }
@@ -3694,16 +3694,16 @@ namespace spdlib{
         }
         else 
         {
-            cv = numeric_limits<float>::signaling_NaN();
+            cv = std::numeric_limits<float>::signaling_NaN();
         }
         
         delete ptVals;
         return cv;
     }
     
-    double SPDMetricCalcPercentileWidth::calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcPercentileWidth::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
     {
-        vector<double> *ptVals = this->getPointsValuesWithinWidthParameters(pulses, spdFile, geom);
+        std::vector<double> *ptVals = this->getPointsValuesWithinWidthParameters(pulses, spdFile, geom);
         double quantile = 0;
         if(ptVals->size() > 0)
 		{
@@ -3713,15 +3713,15 @@ namespace spdlib{
         }
         else 
         {
-            quantile = numeric_limits<float>::signaling_NaN();
+            quantile = std::numeric_limits<float>::signaling_NaN();
         }
         delete ptVals;
         return quantile;
     }
     
-    double SPDMetricCalcSkewnessWidth::calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcSkewnessWidth::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
     {
-        vector<double> *ptVals = this->getPointsValuesWithinWidthParameters(pulses, spdFile, geom);
+        std::vector<double> *ptVals = this->getPointsValuesWithinWidthParameters(pulses, spdFile, geom);
         double skew = 0;
         if(ptVals->size() > 0)
 		{
@@ -3729,15 +3729,15 @@ namespace spdlib{
         }
         else 
         {
-            skew = numeric_limits<float>::signaling_NaN();
+            skew = std::numeric_limits<float>::signaling_NaN();
         }
         delete ptVals;
         return skew;
     }
     
-    double SPDMetricCalcPersonModeSkewnessWidth::calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcPersonModeSkewnessWidth::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
     {
-        vector<double> *ptVals = this->getPointsValuesWithinWidthParameters(pulses, spdFile, geom);
+        std::vector<double> *ptVals = this->getPointsValuesWithinWidthParameters(pulses, spdFile, geom);
         double personModeSkew = 0;
         if(ptVals->size() > 0)
 		{
@@ -3750,15 +3750,15 @@ namespace spdlib{
         }
         else
         {
-            personModeSkew = numeric_limits<float>::signaling_NaN();
+            personModeSkew = std::numeric_limits<float>::signaling_NaN();
         }
         delete ptVals;
         return personModeSkew;
     }
     
-    double SPDMetricCalcPersonMedianSkewnessWidth::calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcPersonMedianSkewnessWidth::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
     {
-        vector<double> *ptVals = this->getPointsValuesWithinWidthParameters(pulses, spdFile, geom);
+        std::vector<double> *ptVals = this->getPointsValuesWithinWidthParameters(pulses, spdFile, geom);
         double personMedianSkew = 0;
         if(ptVals->size() > 0)
 		{
@@ -3771,15 +3771,15 @@ namespace spdlib{
         }
         else
         {
-            personMedianSkew = numeric_limits<float>::signaling_NaN();
+            personMedianSkew = std::numeric_limits<float>::signaling_NaN();
         }
         delete ptVals;
         return personMedianSkew;
     }
     
-    double SPDMetricCalcKurtosisWidth::calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcKurtosisWidth::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
     {
-        vector<double> *ptVals = this->getPointsValuesWithinWidthParameters(pulses, spdFile, geom);
+        std::vector<double> *ptVals = this->getPointsValuesWithinWidthParameters(pulses, spdFile, geom);
         double kurtosis = 0;
         if(ptVals->size() > 0)
 		{
@@ -3787,20 +3787,20 @@ namespace spdlib{
         }
         else
         {
-            kurtosis = numeric_limits<float>::signaling_NaN();
+            kurtosis = std::numeric_limits<float>::signaling_NaN();
         }
         delete ptVals;
         return kurtosis;
     }
     
-    double SPDMetricCalcNumReturnsAboveMetricWidth::calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcNumReturnsAboveMetricWidth::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
     {
-        vector<double> *ptVals = this->getPointsValuesWithinWidthParameters(pulses, spdFile, geom);
+        std::vector<double> *ptVals = this->getPointsValuesWithinWidthParameters(pulses, spdFile, geom);
         boost::uint_fast64_t valCount = 0;
         if(ptVals->size() > 0)
 		{
             double thresValue = metric->calcValue(pulses, spdFile, geom);
-            for(vector<double>::iterator iterVals; iterVals != ptVals->end(); ++iterVals)
+            for(std::vector<double>::iterator iterVals; iterVals != ptVals->end(); ++iterVals)
             {
                 if((*iterVals) > thresValue)
                 {
@@ -3812,14 +3812,14 @@ namespace spdlib{
         return valCount;
     }
     
-    double SPDMetricCalcNumReturnsBelowMetricWidth::calcValue(vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcNumReturnsBelowMetricWidth::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
     {
-        vector<double> *ptVals = this->getPointsValuesWithinWidthParameters(pulses, spdFile, geom);
+        std::vector<double> *ptVals = this->getPointsValuesWithinWidthParameters(pulses, spdFile, geom);
         boost::uint_fast64_t valCount = 0;
         if(ptVals->size() > 0)
 		{
             double thresValue = metric->calcValue(pulses, spdFile, geom);
-            for(vector<double>::iterator iterVals; iterVals != ptVals->end(); ++iterVals)
+            for(std::vector<double>::iterator iterVals; iterVals != ptVals->end(); ++iterVals)
             {
                 if((*iterVals) < thresValue)
                 {
