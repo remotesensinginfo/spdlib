@@ -44,36 +44,29 @@
 #include "spd/SPDCommon.h"
 #include "spd/SPDProcessingException.h"
 
-using namespace std;
-using namespace H5;
-using boost::numeric_cast;
-using boost::numeric::bad_numeric_cast;
-using boost::numeric::positive_overflow;
-using boost::numeric::negative_overflow;
-
 namespace spdlib
 {
-	static const string POINTMEMBERNAME_X( "X" );
-	static const string POINTMEMBERNAME_Y( "Y" );
-	static const string POINTMEMBERNAME_Z( "Z" );
-	static const string POINTMEMBERNAME_HEIGHT( "HEIGHT" );
-	static const string POINTMEMBERNAME_RANGE( "RANGE" );
-	static const string POINTMEMBERNAME_AMPLITUDE_RETURN( "AMPLITUDE_RETURN" );
-	static const string POINTMEMBERNAME_WIDTH_RETURN( "WIDTH_RETURN" );
-	static const string POINTMEMBERNAME_RED( "RED" );
-	static const string POINTMEMBERNAME_GREEN( "GREEN" );
-	static const string POINTMEMBERNAME_BLUE( "BLUE" );
-	static const string POINTMEMBERNAME_CLASSIFICATION( "CLASSIFICATION" );
-	static const string POINTMEMBERNAME_RETURN_ID( "RETURN_ID" );
-	static const string POINTMEMBERNAME_NUMBER_OF_RETURNS( "NUMBER_OF_RETURNS" );
-	static const string POINTMEMBERNAME_GPS_TIME( "GPS_TIME" );
-	static const string POINTMEMBERNAME_USER( "USER_FIELD" );
-	static const string POINTMEMBERNAME_MODEL_KEY_POINT( "MODEL_KEY_POINT" );
-	static const string POINTMEMBERNAME_LOW_POINT( "LOW_POINT" );
-	static const string POINTMEMBERNAME_OVERLAP( "OVERLAP" );
-	static const string POINTMEMBERNAME_IGNORE( "IGNORE" );
-	static const string POINTMEMBERNAME_WAVE_PACKET_DESC_IDX( "WAVE_PACKET_DESC_IDX" );
-	static const string POINTMEMBERNAME_WAVEFORM_OFFSET( "WAVEFORM_OFFSET" );
+	static const std::string POINTMEMBERNAME_X( "X" );
+	static const std::string POINTMEMBERNAME_Y( "Y" );
+	static const std::string POINTMEMBERNAME_Z( "Z" );
+	static const std::string POINTMEMBERNAME_HEIGHT( "HEIGHT" );
+	static const std::string POINTMEMBERNAME_RANGE( "RANGE" );
+	static const std::string POINTMEMBERNAME_AMPLITUDE_RETURN( "AMPLITUDE_RETURN" );
+	static const std::string POINTMEMBERNAME_WIDTH_RETURN( "WIDTH_RETURN" );
+	static const std::string POINTMEMBERNAME_RED( "RED" );
+	static const std::string POINTMEMBERNAME_GREEN( "GREEN" );
+	static const std::string POINTMEMBERNAME_BLUE( "BLUE" );
+	static const std::string POINTMEMBERNAME_CLASSIFICATION( "CLASSIFICATION" );
+	static const std::string POINTMEMBERNAME_RETURN_ID( "RETURN_ID" );
+	static const std::string POINTMEMBERNAME_NUMBER_OF_RETURNS( "NUMBER_OF_RETURNS" );
+	static const std::string POINTMEMBERNAME_GPS_TIME( "GPS_TIME" );
+	static const std::string POINTMEMBERNAME_USER( "USER_FIELD" );
+	static const std::string POINTMEMBERNAME_MODEL_KEY_POINT( "MODEL_KEY_POINT" );
+	static const std::string POINTMEMBERNAME_LOW_POINT( "LOW_POINT" );
+	static const std::string POINTMEMBERNAME_OVERLAP( "OVERLAP" );
+	static const std::string POINTMEMBERNAME_IGNORE( "IGNORE" );
+	static const std::string POINTMEMBERNAME_WAVE_PACKET_DESC_IDX( "WAVE_PACKET_DESC_IDX" );
+	static const std::string POINTMEMBERNAME_WAVEFORM_OFFSET( "WAVEFORM_OFFSET" );
 
 	struct SPDPoint
 	{
@@ -163,31 +156,31 @@ namespace spdlib
 		 */
         boost::uint_fast32_t waveformOffset;
 		
-		friend ostream& operator<<(ostream& stream, SPDPoint &obj)
+		friend std::ostream& operator<<(std::ostream& stream, SPDPoint &obj)
 		{
-			stream << "Return " << obj.returnID << endl;
-			stream << "XYZI: [" << obj.x << "," << obj.y << "," << obj.z << "] " << obj.amplitudeReturn << endl;
-			stream << "height: " << obj.height << endl;
-			stream << "Range: " << obj.range << endl;
-			stream << "Pulse Width: " << obj.widthReturn << endl;
-			stream << "Classification: " << obj.classification << endl;
-			stream << "RGB: [" << obj.red << "," << obj.green << "," << obj.blue << "]" << endl;
-			stream << "GPS Time: " << obj.gpsTime << endl;
-			stream << "User: " << obj.user << endl;
+			stream << "Return " << obj.returnID << std::endl;
+			stream << "XYZI: [" << obj.x << "," << obj.y << "," << obj.z << "] " << obj.amplitudeReturn << std::endl;
+			stream << "height: " << obj.height << std::endl;
+			stream << "Range: " << obj.range << std::endl;
+			stream << "Pulse Width: " << obj.widthReturn << std::endl;
+			stream << "Classification: " << obj.classification << std::endl;
+			stream << "RGB: [" << obj.red << "," << obj.green << "," << obj.blue << "]" << std::endl;
+			stream << "GPS Time: " << obj.gpsTime << std::endl;
+			stream << "User: " << obj.user << std::endl;
 			return stream;
 		};
 		
-		friend ostream& operator<<(ostream& stream, SPDPoint *obj)
+		friend std::ostream& operator<<(std::ostream& stream, SPDPoint *obj)
 		{
-			stream << "Return " << obj->returnID << endl;
-			stream << "XYZI: [" << obj->x << "," << obj->y << "," << obj->z << "] " << obj->amplitudeReturn << endl;
-			stream << "height: " << obj->height << endl;
-			stream << "Range: " << obj->range << endl;
-			stream << "Pulse Width: " << obj->widthReturn << endl;
-			stream << "Classification: " << obj->classification << endl;
-			stream << "RGB: [" << obj->red << "," << obj->green << "," << obj->blue << "]" << endl;
-			stream << "GPS Time: " << obj->gpsTime << endl;
-			stream << "User: " << obj->user << endl;
+			stream << "Return " << obj->returnID << std::endl;
+			stream << "XYZI: [" << obj->x << "," << obj->y << "," << obj->z << "] " << obj->amplitudeReturn << std::endl;
+			stream << "height: " << obj->height << std::endl;
+			stream << "Range: " << obj->range << std::endl;
+			stream << "Pulse Width: " << obj->widthReturn << std::endl;
+			stream << "Classification: " << obj->classification << std::endl;
+			stream << "RGB: [" << obj->red << "," << obj->green << "," << obj->blue << "]" << std::endl;
+			stream << "GPS Time: " << obj->gpsTime << std::endl;
+			stream << "User: " << obj->user << std::endl;
 			return stream;
 		};
 	};
@@ -276,31 +269,31 @@ namespace spdlib
 		 */
 		unsigned long waveformOffset;
 		
-		friend ostream& operator<<(ostream& stream, SPDPointH5V1 &obj)
+		friend std::ostream& operator<<(std::ostream& stream, SPDPointH5V1 &obj)
 		{
-			stream << "Return " << obj.returnID << endl;
-			stream << "XYZI: [" << obj.x << "," << obj.y << "," << obj.z << "] " << obj.amplitudeReturn << endl;
-			stream << "height: " << obj.height << endl;
-			stream << "Range: " << obj.range << endl;
-			stream << "Pulse Width: " << obj.widthReturn << endl;
-			stream << "Classification: " << obj.classification << endl;
-			stream << "RGB: [" << obj.red << "," << obj.green << "," << obj.blue << "]" << endl;
-			stream << "GPS Time: " << obj.gpsTime << endl;
-			stream << "User: " << obj.user << endl;
+			stream << "Return " << obj.returnID << std::endl;
+			stream << "XYZI: [" << obj.x << "," << obj.y << "," << obj.z << "] " << obj.amplitudeReturn << std::endl;
+			stream << "height: " << obj.height << std::endl;
+			stream << "Range: " << obj.range << std::endl;
+			stream << "Pulse Width: " << obj.widthReturn << std::endl;
+			stream << "Classification: " << obj.classification << std::endl;
+			stream << "RGB: [" << obj.red << "," << obj.green << "," << obj.blue << "]" << std::endl;
+			stream << "GPS Time: " << obj.gpsTime << std::endl;
+			stream << "User: " << obj.user << std::endl;
 			return stream;
 		};
 		
-		friend ostream& operator<<(ostream& stream, SPDPointH5V1 *obj)
+		friend std::ostream& operator<<(std::ostream& stream, SPDPointH5V1 *obj)
 		{
-			stream << "Return " << obj->returnID << endl;
-			stream << "XYZI: [" << obj->x << "," << obj->y << "," << obj->z << "] " << obj->amplitudeReturn << endl;
-			stream << "height: " << obj->height << endl;
-			stream << "Range: " << obj->range << endl;
-			stream << "Pulse Width: " << obj->widthReturn << endl;
-			stream << "Classification: " << obj->classification << endl;
-			stream << "RGB: [" << obj->red << "," << obj->green << "," << obj->blue << "]" << endl;
-			stream << "GPS Time: " << obj->gpsTime << endl;
-			stream << "User: " << obj->user << endl;
+			stream << "Return " << obj->returnID << std::endl;
+			stream << "XYZI: [" << obj->x << "," << obj->y << "," << obj->z << "] " << obj->amplitudeReturn << std::endl;
+			stream << "height: " << obj->height << std::endl;
+			stream << "Range: " << obj->range << std::endl;
+			stream << "Pulse Width: " << obj->widthReturn << std::endl;
+			stream << "Classification: " << obj->classification << std::endl;
+			stream << "RGB: [" << obj->red << "," << obj->green << "," << obj->blue << "]" << std::endl;
+			stream << "GPS Time: " << obj->gpsTime << std::endl;
+			stream << "User: " << obj->user << std::endl;
 			return stream;
 		};
 	};
@@ -377,31 +370,31 @@ namespace spdlib
 		 */
 		unsigned long waveformOffset;
 		
-		friend ostream& operator<<(ostream& stream, SPDPointH5V2 &obj)
+		friend std::ostream& operator<<(std::ostream& stream, SPDPointH5V2 &obj)
 		{
-			stream << "Return " << obj.returnID << endl;
-			stream << "XYZI: [" << obj.x << "," << obj.y << "," << obj.z << "] " << obj.amplitudeReturn << endl;
-			stream << "height: " << obj.height << endl;
-			stream << "Range: " << obj.range << endl;
-			stream << "Pulse Width: " << obj.widthReturn << endl;
-			stream << "Classification: " << obj.classification << endl;
-			stream << "RGB: [" << obj.red << "," << obj.green << "," << obj.blue << "]" << endl;
-			stream << "GPS Time: " << obj.gpsTime << endl;
-			stream << "User: " << obj.user << endl;
+			stream << "Return " << obj.returnID << std::endl;
+			stream << "XYZI: [" << obj.x << "," << obj.y << "," << obj.z << "] " << obj.amplitudeReturn << std::endl;
+			stream << "height: " << obj.height << std::endl;
+			stream << "Range: " << obj.range << std::endl;
+			stream << "Pulse Width: " << obj.widthReturn << std::endl;
+			stream << "Classification: " << obj.classification << std::endl;
+			stream << "RGB: [" << obj.red << "," << obj.green << "," << obj.blue << "]" << std::endl;
+			stream << "GPS Time: " << obj.gpsTime << std::endl;
+			stream << "User: " << obj.user << std::endl;
 			return stream;
 		};
 		
-		friend ostream& operator<<(ostream& stream, SPDPointH5V2 *obj)
+		friend std::ostream& operator<<(std::ostream& stream, SPDPointH5V2 *obj)
 		{
-			stream << "Return " << obj->returnID << endl;
-			stream << "XYZI: [" << obj->x << "," << obj->y << "," << obj->z << "] " << obj->amplitudeReturn << endl;
-			stream << "height: " << obj->height << endl;
-			stream << "Range: " << obj->range << endl;
-			stream << "Pulse Width: " << obj->widthReturn << endl;
-			stream << "Classification: " << obj->classification << endl;
-			stream << "RGB: [" << obj->red << "," << obj->green << "," << obj->blue << "]" << endl;
-			stream << "GPS Time: " << obj->gpsTime << endl;
-			stream << "User: " << obj->user << endl;
+			stream << "Return " << obj->returnID << std::endl;
+			stream << "XYZI: [" << obj->x << "," << obj->y << "," << obj->z << "] " << obj->amplitudeReturn << std::endl;
+			stream << "height: " << obj->height << std::endl;
+			stream << "Range: " << obj->range << std::endl;
+			stream << "Pulse Width: " << obj->widthReturn << std::endl;
+			stream << "Classification: " << obj->classification << std::endl;
+			stream << "RGB: [" << obj->red << "," << obj->green << "," << obj->blue << "]" << std::endl;
+			stream << "GPS Time: " << obj->gpsTime << std::endl;
+			stream << "User: " << obj->user << std::endl;
 			return stream;
 		};
 	};
@@ -417,10 +410,10 @@ namespace spdlib
 		double distanceXY(double x, double y, SPDPoint *pt);
 		double distanceXYZ(SPDPoint *pt1, SPDPoint *pt2);
 		double distanceXYZ(double x, double y, double z, SPDPoint *pt);
-		CompType* createSPDPointV1DataTypeDisk();
-		CompType* createSPDPointV1DataTypeMemory();
-        CompType* createSPDPointV2DataTypeDisk();
-		CompType* createSPDPointV2DataTypeMemory();        
+		H5::CompType* createSPDPointV1DataTypeDisk();
+		H5::CompType* createSPDPointV1DataTypeMemory();
+        H5::CompType* createSPDPointV2DataTypeDisk();
+		H5::CompType* createSPDPointV2DataTypeMemory();        
 		void initSPDPoint(SPDPoint *pt);
 		void initSPDPoint(SPDPointH5V1 *pt);
         void initSPDPoint(SPDPointH5V2 *pt);
@@ -443,8 +436,8 @@ namespace spdlib
 		void copySPDPointH5To(SPDPointH5V2 *pt, SPDPointH5V2 *pt_out);
 		void copySPDPointH5To(SPDPointH5V2 *pt, SPDPoint *pt_out);
         
-        void verticalHeightBinPoints(vector<SPDPoint*> *pts, vector<SPDPoint*> **bins,boost::uint_fast32_t numBins, float min, float max, bool ignorePtsOverMax, bool ignoreGrd, float minHeightThres)throw(SPDProcessingException);
-        void verticalElevationBinPoints(vector<SPDPoint*> *pts, vector<SPDPoint*> **bins,boost::uint_fast32_t numBins, float min, float max)throw(SPDProcessingException);
+        void verticalHeightBinPoints(std::vector<SPDPoint*> *pts, std::vector<SPDPoint*> **bins,boost::uint_fast32_t numBins, float min, float max, bool ignorePtsOverMax, bool ignoreGrd, float minHeightThres)throw(SPDProcessingException);
+        void verticalElevationBinPoints(std::vector<SPDPoint*> *pts, std::vector<SPDPoint*> **bins,boost::uint_fast32_t numBins, float min, float max)throw(SPDProcessingException);
 		~SPDPointUtils();		
 	};
 	

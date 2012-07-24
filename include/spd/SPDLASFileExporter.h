@@ -40,8 +40,6 @@
 #include "spd/SPDDataExporter.h"
 #include "spd/SPDCommon.h"
 
-using namespace std;
-
 namespace spdlib
 {
 	class SPDLASFileExporter : public SPDDataExporter
@@ -51,16 +49,16 @@ namespace spdlib
 		SPDLASFileExporter(const SPDDataExporter &dataExporter) throw(SPDException);
 		SPDLASFileExporter(const SPDLASFileExporter &dataExporter) throw(SPDException);
         SPDDataExporter* getInstance();
-		bool open(SPDFile *spdFile, string outputFile) throw(SPDIOException);
-		void writeDataColumn(list<SPDPulse*> *pls,boost::uint_fast32_t col,boost::uint_fast32_t row)throw(SPDIOException);
-		void writeDataColumn(vector<SPDPulse*> *pls,boost::uint_fast32_t col,boost::uint_fast32_t row)throw(SPDIOException);
+		bool open(SPDFile *spdFile, std::string outputFile) throw(SPDIOException);
+		void writeDataColumn(std::list<SPDPulse*> *pls,boost::uint_fast32_t col,boost::uint_fast32_t row)throw(SPDIOException);
+		void writeDataColumn(std::vector<SPDPulse*> *pls,boost::uint_fast32_t col,boost::uint_fast32_t row)throw(SPDIOException);
 		void finaliseClose() throw(SPDIOException);
 		bool requireGrid();
 		bool needNumOutPts();
 		SPDLASFileExporter& operator=(const SPDLASFileExporter& dataExporter) throw(SPDException);
 		~SPDLASFileExporter();
 	private:
-		fstream *outDataStream;
+		std::fstream *outDataStream;
 		liblas::Writer *lasWriter;
         bool finalisedClosed;
 	};

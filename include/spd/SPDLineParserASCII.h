@@ -48,9 +48,6 @@
 #include "spd/SPDTextFileUtilities.h"
 #include "spd/SPDTextFileException.h"
 
-using namespace xercesc;
-using namespace std;
-
 namespace spdlib
 {
 	class SPDLineParserASCII : public SPDTextLineProcessor
@@ -58,13 +55,13 @@ namespace spdlib
         struct ASCIIField
         {
             ASCIIField(){};
-            ASCIIField(string name, SPDDataType dataType, boost::uint_fast16_t idx)
+            ASCIIField(std::string name, SPDDataType dataType, boost::uint_fast16_t idx)
             {
                 this->name = name;
                 this->dataType = dataType;
                 this->idx = idx;
             };
-            string name;
+            std::string name;
             SPDDataType dataType;
             boost::uint_fast16_t idx;
         };
@@ -73,18 +70,18 @@ namespace spdlib
 	public:
 		SPDLineParserASCII();
 		bool haveReadheader();
-		void parseHeader(string) throw(SPDIOException);
-		bool parseLine(string line, SPDPulse *pl,boost::uint_fast16_t) throw(SPDIOException);
-		bool isFileType(string fileType);
+		void parseHeader(std::string) throw(SPDIOException);
+		bool parseLine(std::string line, SPDPulse *pl,boost::uint_fast16_t) throw(SPDIOException);
+		bool isFileType(std::string fileType);
 		void saveHeaderValues(SPDFile *spdFile);
 		void reset();
-        void parseSchema(string schema)throw(SPDIOException);
+        void parseSchema(std::string schema)throw(SPDIOException);
 		~SPDLineParserASCII();
 	private:
         boost::uint_fast16_t numLinesIgnore;
         char commentChar;
         char delimiter; 
-        vector<ASCIIField> fields;
+        std::vector<ASCIIField> fields;
         boost::uint_fast16_t sourceID;
         boost::uint_fast64_t ptCount;
         boost::uint_fast64_t lineCount;

@@ -38,15 +38,11 @@
 
 #include "spd/SPDCommon.h"
 
-//using namespace boost::numeric::ublas;
-//using namespace spdlib;
-using namespace std;
-
 namespace spdlib{ namespace tps
 {
-  struct SingularMatrixError : runtime_error
+    struct SingularMatrixError : std::runtime_error
   {
-    SingularMatrixError() : runtime_error("Singular matrix occured while computing thin plate spline")
+      SingularMatrixError() : std::runtime_error("Singular matrix occured while computing thin plate spline")
     {
     }
   };
@@ -57,14 +53,14 @@ namespace spdlib{ namespace tps
   {
     public:
       // Throws SingularMatrixError if a singular matrix is detected.
-      Spline(const vector<Vec> & control_pts, double regularization);
+      Spline(const std::vector<Vec> & control_pts, double regularization);
 
       double interpolate_height(double x, double z) const;
       double compute_bending_energy() const;
 
     private:
       unsigned p;
-      const vector< Vec > & control_points;
+      const std::vector< Vec > & control_points;
       boost::numeric::ublas::matrix<double> mtx_v;
       boost::numeric::ublas::matrix<double> mtx_orig_k;
   };

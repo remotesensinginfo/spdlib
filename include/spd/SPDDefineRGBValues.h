@@ -28,15 +28,13 @@
 
 #include <iostream>
 #include <string>
-#include <list>
+#include <vector>
 
 #include "spd/SPDFile.h"
 #include "spd/SPDPulse.h"
 #include "spd/SPDProcessPulses.h"
 #include "spd/SPDPulseProcessor.h"
 #include "spd/SPDProcessingException.h"
-
-using namespace std;
 
 namespace spdlib
 {
@@ -46,16 +44,16 @@ namespace spdlib
 	public:
         SPDDefineRGBValues(uint_fast16_t redBand, boost::uint_fast16_t greenBand, boost::uint_fast16_t blueBand);
         
-        void processDataColumnImage(SPDFile *inSPDFile, vector<SPDPulse*> *pulses, float *imageData, SPDXYPoint *cenPts, boost::uint_fast32_t numImgBands, float binSize) throw(SPDProcessingException);
-		void processDataColumn(SPDFile *inSPDFile, vector<SPDPulse*> *pulses, SPDXYPoint *cenPts) throw(SPDProcessingException)
+        void processDataColumnImage(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses, float *imageData, SPDXYPoint *cenPts, boost::uint_fast32_t numImgBands, float binSize) throw(SPDProcessingException);
+		void processDataColumn(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses, SPDXYPoint *cenPts) throw(SPDProcessingException)
         {throw SPDProcessingException("Processing is not implemented for processDataColumn().");};
-        void processDataWindowImage(SPDFile *inSPDFile, vector<SPDPulse*> ***pulses, float ***imageData, SPDXYPoint ***cenPts, boost::uint_fast32_t numImgBands, boost::uint_fast16_t winSize) throw(SPDProcessingException)
+        void processDataWindowImage(SPDFile *inSPDFile, std::vector<SPDPulse*> ***pulses, float ***imageData, SPDXYPoint ***cenPts, boost::uint_fast32_t numImgBands, boost::uint_fast16_t winSize) throw(SPDProcessingException)
         {throw SPDProcessingException("Processing using a window is not implemented.");};
-		void processDataWindow(SPDFile *inSPDFile, vector<SPDPulse*> ***pulses, SPDXYPoint ***cenPts, boost::uint_fast16_t winSize) throw(SPDProcessingException)
+		void processDataWindow(SPDFile *inSPDFile, std::vector<SPDPulse*> ***pulses, SPDXYPoint ***cenPts, boost::uint_fast16_t winSize) throw(SPDProcessingException)
         {throw SPDProcessingException("Processing using a window is not implemented.");};
         
-        vector<string> getImageBandDescriptions() throw(SPDProcessingException)
-        {return vector<string>();};
+        std::vector<std::string> getImageBandDescriptions() throw(SPDProcessingException)
+        {return std::vector<std::string>();};
         void setHeaderValues(SPDFile *spdFile) throw(SPDProcessingException)
         {
             spdFile->setRGBDefined(SPD_TRUE);

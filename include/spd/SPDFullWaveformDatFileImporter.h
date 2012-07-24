@@ -26,7 +26,9 @@
 #define SPDFullWaveformDatFileImporter_H
 
 #include <list>
+#include <vector>
 #include <ctype.h>
+#include <string>
 
 #include <boost/cstdint.hpp>
 #include <boost/algorithm/string/trim.hpp>
@@ -43,25 +45,23 @@
 #include "spd/SPDMathsUtils.h"
 #include "spd/SPDProcessingException.h"
 
-using namespace std;
-
 namespace spdlib
 {
 	
 	class SPDFullWaveformDatFileImporter : public SPDDataImporter
 	{
 	public:
-		SPDFullWaveformDatFileImporter(bool convertCoords=false, string outputProjWKT="", string schema="", boost::uint_fast16_t indexCoords=SPD_START_OF_RECEIVED_WAVEFORM, bool defineOrigin=false, double originX=0, double originY=0, float originZ=0, float waveNoiseThreshold=0);
-		SPDDataImporter* getInstance(bool convertCoords, string outputProjWKT, string schema, boost::uint_fast16_t indexCoords, bool defineOrigin, double originX, double originY, float originZ, float waveNoiseThreshold);
-        list<SPDPulse*>* readAllDataToList(string inputFile, SPDFile *spdFile)throw(SPDIOException);
-		vector<SPDPulse*>* readAllDataToVector(string inputFile, SPDFile *spdFile)throw(SPDIOException);
-		void readAndProcessAllData(string inputFile, SPDFile *spdFile, SPDImporterProcessor *processor) throw(SPDIOException);
-		bool isFileType(string fileType);
-        void readHeaderInfo(string inputFile, SPDFile *spdFile) throw(SPDIOException);
+		SPDFullWaveformDatFileImporter(bool convertCoords=false, std::string outputProjWKT="", std::string schema="", boost::uint_fast16_t indexCoords=SPD_START_OF_RECEIVED_WAVEFORM, bool defineOrigin=false, double originX=0, double originY=0, float originZ=0, float waveNoiseThreshold=0);
+		SPDDataImporter* getInstance(bool convertCoords, std::string outputProjWKT, std::string schema, boost::uint_fast16_t indexCoords, bool defineOrigin, double originX, double originY, float originZ, float waveNoiseThreshold);
+        std::list<SPDPulse*>* readAllDataToList(std::string inputFile, SPDFile *spdFile)throw(SPDIOException);
+		std::vector<SPDPulse*>* readAllDataToVector(std::string inputFile, SPDFile *spdFile)throw(SPDIOException);
+		void readAndProcessAllData(std::string inputFile, SPDFile *spdFile, SPDImporterProcessor *processor) throw(SPDIOException);
+		bool isFileType(std::string fileType);
+        void readHeaderInfo(std::string inputFile, SPDFile *spdFile) throw(SPDIOException);
 		~SPDFullWaveformDatFileImporter();
 	private:
-		SPDPulse* createPulse(vector<string> *transTokens, vector<string> *transExtraLines) throw(SPDIOException);
-		SPDPulse* createPulse(vector<string> *transTokens, vector<string> *transExtraLines, vector<string> *receivedTokens, vector<string> *receivedExtraLines) throw(SPDIOException);
+		SPDPulse* createPulse(std::vector<std::string> *transTokens, std::vector<std::string> *transExtraLines) throw(SPDIOException);
+		SPDPulse* createPulse(std::vector<std::string> *transTokens, std::vector<std::string> *transExtraLines, std::vector<std::string> *receivedTokens, std::vector<std::string> *receivedExtraLines) throw(SPDIOException);
         SPDMathsUtils *mathUtils;
 	};
 }

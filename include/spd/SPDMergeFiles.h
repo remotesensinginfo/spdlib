@@ -29,7 +29,7 @@
 #include <iostream>
 #include <fstream>
 #include <string>
-#include <list>
+#include <vector>
 
 #include "spd/SPDFile.h"
 #include "spd/SPDPoint.h"
@@ -40,15 +40,13 @@
 #include "spd/SPDIOFactory.h"
 #include "spd/SPDExportAsReadUnGridded.h"
 
-using namespace std;
-
 namespace spdlib
 {	
 	class SPDMergeFiles
 	{
 	public:
 		SPDMergeFiles();
-		void mergeToUPD(vector<string> inputFiles, string output, string inFormat, string schema, string inSpatialRef, bool convertCoords, string outputProj4,boost::uint_fast16_t indexCoords, bool setSourceID, bool setReturnIDs, vector<boost::uint_fast16_t> returnID, bool setClasses, vector<boost::uint_fast16_t> classValues, bool ignoreChecks,boost::uint_fast16_t waveBinRes) throw(SPDException);
+		void mergeToUPD(std::vector<std::string> inputFiles, std::string output, std::string inFormat, std::string schema, std::string inSpatialRef, bool convertCoords, std::string outputProj4, boost::uint_fast16_t indexCoords, bool setSourceID, bool setReturnIDs, std::vector<boost::uint_fast16_t> returnID, bool setClasses, std::vector<boost::uint_fast16_t> classValues, bool ignoreChecks, boost::uint_fast16_t waveBinRes) throw(SPDException);
 		~SPDMergeFiles();
 	};
 }
