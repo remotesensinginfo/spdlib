@@ -98,10 +98,10 @@ int main (int argc, char * const argv[])
         SwitchArg sourceIDSwitch("","source","Set source ID for each input file", false);
 		cmd.add( sourceIDSwitch );
         
-        MultiArg<uint_fast16_t> returnIDsArg("","returnIDs", "Lists the return IDs for the files listed.", false, "uint_fast16_t");
+        MultiArg<boost::uint_fast16_t> returnIDsArg("","returnIDs", "Lists the return IDs for the files listed.", false, "uint_fast16_t");
         cmd.add(returnIDsArg);
         
-        MultiArg<uint_fast16_t> classesArg("","classes", "Lists the classes for the files listed.", false, "uint_fast16_t");
+        MultiArg<boost::uint_fast16_t> classesArg("","classes", "Lists the classes for the files listed.", false, "uint_fast16_t");
         cmd.add(classesArg);
         
         ValueArg<std::string> schemaArg("s","schema","A schema for the format of the file being imported (Note, most importers do not require a schema)",false,"", "std::string");
