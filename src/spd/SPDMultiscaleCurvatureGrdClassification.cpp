@@ -344,7 +344,7 @@ namespace spdlib
                     {
                         for(boost::uint_fast32_t m = filterPxlStartX; m <= filterPxlEndX; ++m)
                         {
-                            if(!std::isnan(raster[n][m]))
+                            if(!boost::math::isnan(raster[n][m]))
                             {
                                 sumValues += raster[n][m];
                                 ++valCount;
@@ -449,7 +449,7 @@ namespace spdlib
                     {
                         for(boost::uint_fast32_t m = filterPxlStartX; m <= filterPxlEndX; ++m)
                         {
-                            if(!std::isnan(raster[n][m]))
+                            if(!boost::math::isnan(raster[n][m]))
                             {
                                 elevValues->push_back(raster[n][m]);
                             }

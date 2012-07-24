@@ -460,7 +460,7 @@ namespace spdlib{
 							{
 								word = strLine.substr(start, i-start);								
 								value = textUtils.strtodouble(word);
-								if(std::isnan(value))
+								if(boost::math::isnan(value))
 								{
 									value = 0;
 								}
