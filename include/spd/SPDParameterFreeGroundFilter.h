@@ -85,7 +85,7 @@ namespace spdlib
         void performOpenning(float **elev, float **elevOpen, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast16_t filterHSize, boost::uint_fast16_t **element);
         void performClosing(float **elev, float **elevClose, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast16_t filterHSize, boost::uint_fast16_t **element);
         void performWhiteTopHat(float **elev, float **elevTH, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast16_t filterHSize, boost::uint_fast16_t **element);
-        void createStructuringElement(uint_fast16_t **element, boost::uint_fast16_t filterHSize);
+        void createStructuringElement(boost::uint_fast16_t **element, boost::uint_fast16_t filterHSize);
         float getThreshold(boost::uint_fast32_t x, boost::uint_fast32_t y, float **data, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast16_t filterHSize, boost::uint_fast16_t **element);
         std::vector<SPDPFFProcessLevel*>* generateHierarchy(float **initElev, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, float pxlRes);
         void freeHierarchy(std::vector<SPDPFFProcessLevel*> *levels);
