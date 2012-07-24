@@ -33,7 +33,7 @@
 namespace spdlib
 {
 	
-	SPDFile::SPDFile(string filepath) : filepath(""), 
+	SPDFile::SPDFile(std::string filepath) : filepath(""), 
 	spatialreference(""), 
 	indexType(SPD_CARTESIAN_IDX),
 	discretePtDefined(SPD_FALSE),
@@ -464,73 +464,73 @@ namespace spdlib
 	{
         if(this->majorSPDVersion != spdFile->majorSPDVersion)
         {
-            cout << "SPD Major version is different\n";
+            std::cout << "SPD Major version is different\n";
             return false;
         }
         
         if(this->minorSPDVersion != spdFile->minorSPDVersion)
         {
-            cout << "SPD Minor version is different\n";
+            std::cout << "SPD Minor version is different\n";
             return false;
         }
         
         if(this->pointVersion != spdFile->pointVersion)
         {
-            cout << "Point version is different\n";
+            std::cout << "Point version is different\n";
             return false;
         }
         
         if(this->pulseVersion != spdFile->pulseVersion)
         {
-            cout << "Pulse version is different\n";
+            std::cout << "Pulse version is different\n";
             return false;
         }
         
 		if(this->spatialreference != spdFile->spatialreference)
 		{
-            cout << "Spatial Reference is different\n";
+            std::cout << "Spatial Reference is different\n";
 			return false;
 		}
 		
 		if(this->indexType != spdFile->indexType)
 		{
-            cout << "Index is different\n";
+            std::cout << "Index is different\n";
 			return false;
 		}
 		
 		if(this->discretePtDefined != spdFile->discretePtDefined)
 		{
-            cout << "definiation of discrete returns is different\n";
+            std::cout << "definiation of discrete returns is different\n";
 			return false;
 		}
 		
 		if(this->decomposedPtDefined != spdFile->decomposedPtDefined)
 		{
-            cout << "definiation of decomposed returns is different\n";
+            std::cout << "definiation of decomposed returns is different\n";
 			return false;
 		}
 		
 		if(this->transWaveformDefined != spdFile->transWaveformDefined)
 		{
-            cout << "definiation of transmitted waveform is different\n";
+            std::cout << "definiation of transmitted waveform is different\n";
 			return false;
 		}
         
         if(this->receiveWaveformDefined != spdFile->receiveWaveformDefined)
 		{
-            cout << "definiation of received waveform is different\n";
+            std::cout << "definiation of received waveform is different\n";
 			return false;
 		}
         
         if(this->numOfWavelengths != spdFile->numOfWavelengths)
 		{
-            cout << "Number of wavelengths is different\n";
+            std::cout << "Number of wavelengths is different\n";
 			return false;
 		}
 		
         if(this->wavelengths.size() != spdFile->wavelengths.size())
 		{
-            cout << "Number of wavelengths in lists different\n";
+            std::cout << "Number of wavelengths in lists different\n";
 			return false;
 		}
         
@@ -538,14 +538,14 @@ namespace spdlib
         {
             if(!compare_double(this->wavelengths[i], spdFile->wavelengths[i]))
             {
-                cout << "Wavelengths are different\n";
+                std::cout << "Wavelengths are different\n";
                 return false;
             }
         }
         
         if(this->bandwidths.size() != spdFile->bandwidths.size())
 		{
-            cout << "Number of bandwidths in lists different\n";
+            std::cout << "Number of bandwidths in lists different\n";
 			return false;
 		}
         
@@ -553,128 +553,128 @@ namespace spdlib
         {
             if(!compare_double(this->bandwidths[i], spdFile->bandwidths[i]))
             {
-                cout << "Bandwidths are different\n";
+                std::cout << "Bandwidths are different\n";
                 return false;
             }
         }
 		
 		if(!compare_double(this->pulseRepetitionFreq, spdFile->pulseRepetitionFreq))
 		{
-            cout << "Pulse Repetition Freq is different\n";
+            std::cout << "Pulse Repetition Freq is different\n";
 			return false;
 		}
 		
 		if(!compare_double(this->beamDivergence, spdFile->beamDivergence))
 		{
-            cout << "Beam Divergence is different\n";
+            std::cout << "Beam Divergence is different\n";
 			return false;
 		}
 		
 		if(!compare_double(this->sensorHeight, spdFile->sensorHeight))
 		{
-            cout << "Sensor Height is different\n";
+            std::cout << "Sensor Height is different\n";
 			return false;
 		}
 		
 		if(!compare_double(this->footprint, spdFile->footprint))
 		{
-            cout << "Footprint is different\n";
+            std::cout << "Footprint is different\n";
 			return false;
 		}
 		
 		if(!compare_double(this->maxScanAngle, spdFile->maxScanAngle))
 		{
-            cout << "Max angle is different\n";
+            std::cout << "Max angle is different\n";
 			return false;
 		}
 		
 		if(this->rgbDefined != spdFile->rgbDefined)
 		{
-            cout << "RGB defined is different\n";
+            std::cout << "RGB defined is different\n";
 			return false;
 		}
 		
 		if(!compare_double(this->temporalBinSpacing, spdFile->temporalBinSpacing))
 		{
-            cout << "Temporal bin spacing is different\n";
+            std::cout << "Temporal bin spacing is different\n";
 			return false;
 		}
 		
 		if(this->returnNumsSynGen != spdFile->returnNumsSynGen)
 		{
-            cout << "Returns number synthetically generated is different\n";
+            std::cout << "Returns number synthetically generated is different\n";
 			return false;
 		}
 		
 		if(this->heightDefined != spdFile->heightDefined)
 		{
-            cout << "Height defined\n";
+            std::cout << "Height defined\n";
 			return false;
 		}
 		
 		if(!compare_double(this->sensorSpeed, spdFile->sensorSpeed))
 		{
-            cout << "Sensor Speed is different\n";
+            std::cout << "Sensor Speed is different\n";
 			return false;
 		}
 		
 		if(!compare_double(this->sensorScanRate, spdFile->sensorScanRate))
 		{
-            cout << "Sensor Scan Rate is different\n";
+            std::cout << "Sensor Scan Rate is different\n";
 			return false;
 		}
 		
 		if(!compare_double(this->pointDensity, spdFile->pointDensity))
 		{
-            cout << "Point Density is different\n";
+            std::cout << "Point Density is different\n";
 			return false;
 		}
 		
 		if(!compare_double(this->pulseDensity, spdFile->pulseDensity))
 		{
-            cout << "Pulse Density is different\n";
+            std::cout << "Pulse Density is different\n";
 			return false;
 		}
 		
 		if(!compare_double(this->pulseCrossTrackSpacing, spdFile->pulseCrossTrackSpacing))
 		{
-            cout << "Cross Track Spacing is different\n";
+            std::cout << "Cross Track Spacing is different\n";
 			return false;
 		}
 		
 		if(!compare_double(this->pulseAlongTrackSpacing, spdFile->pulseAlongTrackSpacing))
 		{
-            cout << "Pulse along track is different\n";
+            std::cout << "Pulse along track is different\n";
 			return false;
 		}
 		
 		if(this->originDefined != spdFile->originDefined)
 		{
-            cout << "Origin defined is different\n";
+            std::cout << "Origin defined is different\n";
 			return false;
 		}
 		
 		if(!compare_double(this->pulseAngularSpacingAzimuth, spdFile->pulseAngularSpacingAzimuth))
 		{
-            cout << "Pulse Angular Spacing Azimuth is different\n";
+            std::cout << "Pulse Angular Spacing Azimuth is different\n";
 			return false;
 		}
 		
 		if(!compare_double(this->pulseAngularSpacingZenith, spdFile->pulseAngularSpacingZenith))
 		{
-            cout << "Pulse Angular Spacing Zenith is different\n";
+            std::cout << "Pulse Angular Spacing Zenith is different\n";
 			return false;
 		}
 		
 		if(this->pulseIdxMethod != spdFile->pulseIdxMethod)
 		{
-            cout << "Pulse Index method is different\n";
+            std::cout << "Pulse Index method is different\n";
 			return false;
 		}
 		
 		if(!compare_double(this->binSize, spdFile->binSize))
 		{
-            cout << "Pulse bin size is different\n";
+            std::cout << "Pulse bin size is different\n";
 			return false;
 		}
 		
@@ -744,73 +744,73 @@ namespace spdlib
 	{
         if(this->majorSPDVersion != spdFile->majorSPDVersion)
         {
-            cout << "SPD Major version is different\n";
+            std::cout << "SPD Major version is different\n";
             return false;
         }
         
         if(this->minorSPDVersion != spdFile->minorSPDVersion)
         {
-            cout << "SPD Minor version is different\n";
+            std::cout << "SPD Minor version is different\n";
             return false;
         }
         
         if(this->pointVersion != spdFile->pointVersion)
         {
-            cout << "Point version is different\n";
+            std::cout << "Point version is different\n";
             return false;
         }
         
         if(this->pulseVersion != spdFile->pulseVersion)
         {
-            cout << "Pulse version is different\n";
+            std::cout << "Pulse version is different\n";
             return false;
         }
         
 		if(this->spatialreference != spdFile->spatialreference)
 		{
-            cout << "Spatial Reference is different\n";
+            std::cout << "Spatial Reference is different\n";
 			return false;
 		}
 		
 		if(this->indexType != spdFile->indexType)
 		{
-            cout << "Index is different\n";
+            std::cout << "Index is different\n";
 			return false;
 		}
 		
 		if(this->discretePtDefined != spdFile->discretePtDefined)
 		{
-            cout << "definiation of discrete returns is different\n";
+            std::cout << "definiation of discrete returns is different\n";
 			return false;
 		}
 		
 		if(this->decomposedPtDefined != spdFile->decomposedPtDefined)
 		{
-            cout << "definiation of decomposed returns is different\n";
+            std::cout << "definiation of decomposed returns is different\n";
 			return false;
 		}
 		
 		if(this->transWaveformDefined != spdFile->transWaveformDefined)
 		{
-            cout << "definiation of transmitted waveform is different\n";
+            std::cout << "definiation of transmitted waveform is different\n";
 			return false;
 		}
         
         if(this->receiveWaveformDefined != spdFile->receiveWaveformDefined)
 		{
-            cout << "definiation of received waveform is different\n";
+            std::cout << "definiation of received waveform is different\n";
 			return false;
 		}
 		
 		if(this->numOfWavelengths != spdFile->numOfWavelengths)
 		{
-            cout << "Number of wavelengths is different\n";
+            std::cout << "Number of wavelengths is different\n";
 			return false;
 		}
 		
         if(this->wavelengths.size() != spdFile->wavelengths.size())
 		{
-            cout << "Number of wavelengths in lists different\n";
+            std::cout << "Number of wavelengths in lists different\n";
 			return false;
 		}
         
@@ -818,14 +818,14 @@ namespace spdlib
         {
             if(!compare_double(this->wavelengths[i], spdFile->wavelengths[i]))
             {
-                cout << "Wavelengths are different\n";
+                std::cout << "Wavelengths are different\n";
                 return false;
             }
         }
         
         if(this->bandwidths.size() != spdFile->bandwidths.size())
 		{
-            cout << "Number of bandwidths in lists different\n";
+            std::cout << "Number of bandwidths in lists different\n";
 			return false;
 		}
         
@@ -833,122 +833,122 @@ namespace spdlib
         {
             if(!compare_double(this->bandwidths[i], spdFile->bandwidths[i]))
             {
-                cout << "Bandwidths are different\n";
+                std::cout << "Bandwidths are different\n";
                 return false;
             }
         }
 		
 		if(!compare_double(this->pulseRepetitionFreq, spdFile->pulseRepetitionFreq))
 		{
-            cout << "Pulse Repetition Freq is different\n";
+            std::cout << "Pulse Repetition Freq is different\n";
 			return false;
 		}
 		
 		if(!compare_double(this->beamDivergence, spdFile->beamDivergence))
 		{
-            cout << "Beam Divergence is different\n";
+            std::cout << "Beam Divergence is different\n";
 			return false;
 		}
 		
 		if(!compare_double(this->sensorHeight, spdFile->sensorHeight))
 		{
-            cout << "Sensor Height is different\n";
+            std::cout << "Sensor Height is different\n";
 			return false;
 		}
 		
 		if(!compare_double(this->footprint, spdFile->footprint))
 		{
-            cout << "Footprint is different\n";
+            std::cout << "Footprint is different\n";
 			return false;
 		}
 		
 		if(!compare_double(this->maxScanAngle, spdFile->maxScanAngle))
 		{
-            cout << "Max angle is different\n";
+            std::cout << "Max angle is different\n";
 			return false;
 		}
 		
 		if(this->rgbDefined != spdFile->rgbDefined)
 		{
-            cout << "RGB defined is different\n";
+            std::cout << "RGB defined is different\n";
 			return false;
 		}
 		
 		if(!compare_double(this->temporalBinSpacing, spdFile->temporalBinSpacing))
 		{
-            cout << "Temporal bin spacing is different\n";
+            std::cout << "Temporal bin spacing is different\n";
 			return false;
 		}
 		
 		if(this->returnNumsSynGen != spdFile->returnNumsSynGen)
 		{
-            cout << "Returns number synthetically generated is different\n";
+            std::cout << "Returns number synthetically generated is different\n";
 			return false;
 		}
 		
 		if(this->heightDefined != spdFile->heightDefined)
 		{
-            cout << "Height defined\n";
+            std::cout << "Height defined\n";
 			return false;
 		}
 		
 		if(!compare_double(this->sensorSpeed, spdFile->sensorSpeed))
 		{
-            cout << "Sensor Speed is different\n";
+            std::cout << "Sensor Speed is different\n";
 			return false;
 		}
 		
 		if(!compare_double(this->sensorScanRate, spdFile->sensorScanRate))
 		{
-            cout << "Sensor Scan Rate is different\n";
+            std::cout << "Sensor Scan Rate is different\n";
 			return false;
 		}
 		
 		if(!compare_double(this->pointDensity, spdFile->pointDensity))
 		{
-            cout << "Point Density is different\n";
+            std::cout << "Point Density is different\n";
 			return false;
 		}
 		
 		if(!compare_double(this->pulseDensity, spdFile->pulseDensity))
 		{
-            cout << "Pulse Density is different\n";
+            std::cout << "Pulse Density is different\n";
 			return false;
 		}
 		
 		if(!compare_double(this->pulseCrossTrackSpacing, spdFile->pulseCrossTrackSpacing))
 		{
-            cout << "Cross Track Spacing is different\n";
+            std::cout << "Cross Track Spacing is different\n";
 			return false;
 		}
 		
 		if(!compare_double(this->pulseAlongTrackSpacing, spdFile->pulseAlongTrackSpacing))
 		{
-            cout << "Pulse along track is different\n";
+            std::cout << "Pulse along track is different\n";
 			return false;
 		}
 		
 		if(this->originDefined != spdFile->originDefined)
 		{
-            cout << "Origin defined is different\n";
+            std::cout << "Origin defined is different\n";
 			return false;
 		}
 		
 		if(!compare_double(this->pulseAngularSpacingAzimuth, spdFile->pulseAngularSpacingAzimuth))
 		{
-            cout << "Pulse Angular Spacing Azimuth is different\n";
+            std::cout << "Pulse Angular Spacing Azimuth is different\n";
 			return false;
 		}
 		
 		if(!compare_double(this->pulseAngularSpacingZenith, spdFile->pulseAngularSpacingZenith))
 		{
-            cout << "Pulse Angular Spacing Zenith is different\n";
+            std::cout << "Pulse Angular Spacing Zenith is different\n";
 			return false;
 		}
 		
 		if(this->pulseIdxMethod != spdFile->pulseIdxMethod)
 		{
-            cout << "Pulse Index method is different\n";
+            std::cout << "Pulse Index method is different\n";
 			return false;
 		}
 		
@@ -1077,9 +1077,9 @@ namespace spdlib
 		}
     }
 	
-	ostream& operator<<(ostream& stream, SPDFile &obj)
+	std::ostream& operator<<(std::ostream& stream, SPDFile &obj)
 	{
-		stream << "File Path: " << obj.getFilePath() << endl;
+		stream << "File Path: " << obj.getFilePath() << std::endl;
         stream << "File Type: ";
         if(obj.fileType == SPD_SEQ_TYPE)
         {
@@ -1095,16 +1095,16 @@ namespace spdlib
         }
         else
         {
-            stream << endl;
+            stream << std::endl;
         }
-		stream << "File Format Version: " <<  obj.majorSPDVersion << "." << obj.minorSPDVersion << endl;
-        stream << "Point Version: " << obj.pointVersion << endl;
-        stream << "Pulse Version: " << obj.pulseVersion << endl;
-		stream << "Generating Software: " <<  obj.generatingSoftware << endl;
-		stream << "File Signature: " << obj.fileSignature << endl;
-        stream << "Spatial Reference: " <<  obj.spatialreference << endl;
-		stream << "Creation Time (YYYY:MM:DD HH:MM:SS): " << obj.yearOfCreation << ":" << obj.monthOfCreation << ":" << obj.dayOfCreation << ":" << obj.hourOfCreation << ":"<< obj.minuteOfCreation << ":"<< obj.secondOfCreation << endl;
-		stream << "Capture Time (YYYY:MM:DD HH:MM:SS): " << obj.yearOfCapture << ":" << obj.monthOfCapture << ":" << obj.dayOfCapture << ":" << obj.hourOfCapture << ":" << obj.minuteOfCapture << ":" << obj.secondOfCapture << endl;
+		stream << "File Format Version: " <<  obj.majorSPDVersion << "." << obj.minorSPDVersion << std::endl;
+        stream << "Point Version: " << obj.pointVersion << std::endl;
+        stream << "Pulse Version: " << obj.pulseVersion << std::endl;
+		stream << "Generating Software: " <<  obj.generatingSoftware << std::endl;
+		stream << "File Signature: " << obj.fileSignature << std::endl;
+        stream << "Spatial Reference: " <<  obj.spatialreference << std::endl;
+		stream << "Creation Time (YYYY:MM:DD HH:MM:SS): " << obj.yearOfCreation << ":" << obj.monthOfCreation << ":" << obj.dayOfCreation << ":" << obj.hourOfCreation << ":"<< obj.minuteOfCreation << ":"<< obj.secondOfCreation << std::endl;
+		stream << "Capture Time (YYYY:MM:DD HH:MM:SS): " << obj.yearOfCapture << ":" << obj.monthOfCapture << ":" << obj.dayOfCapture << ":" << obj.hourOfCapture << ":" << obj.minuteOfCapture << ":" << obj.secondOfCapture << std::endl;
         stream << "Index Type: ";
         if(obj.indexType == SPD_NO_IDX)
         {
@@ -1132,7 +1132,7 @@ namespace spdlib
         }
         else 
         {
-            stream << endl;
+            stream << std::endl;
         }
         stream << "The file contains: \n";
         if(obj.discretePtDefined == SPD_TRUE)
@@ -1151,21 +1151,21 @@ namespace spdlib
         {
             stream << "\t Contains received waveforms\n";
         }
-        stream << "Number of Points = " << obj.numPts << endl;
-		stream << "Number of Pulses = " << obj.numPulses << endl;
+        stream << "Number of Points = " << obj.numPts << std::endl;
+		stream << "Number of Pulses = " << obj.numPulses << std::endl;
 		stream << "BBOX [xmin, ymin, xmax, ymax]: [" << obj.xMin << "," << obj.yMin << "," << obj.xMax << "," << obj.yMax << "]\n";
 		stream << "BBOX [Azimuth Min, Zenith Min, Azimuth Max, Zenith Max]: [" << obj.azimuthMin << "," << obj.zenithMin << "," << obj.azimuthMax << "," << obj.zenithMax << "]\n";
 		stream << "Z : [" << obj.zMin << "," << obj.zMax << "]\n";
         stream << "Range: [" << obj.rangeMin << "," << obj.rangeMax << "]\n";
         stream << "Scanline: [" << obj.scanlineMin << "," << obj.scanlineMax << "]\n";
         stream << "Scanline Idx: [" << obj.scanlineIdxMin << "," << obj.scanlineIdxMax << "]\n";
-		stream << "Gridding [xSize,ySize] Bin Size: [" << obj.numBinsX << "," << obj.numBinsY << "] " << obj.binSize << endl;
+		stream << "Gridding [xSize,ySize] Bin Size: [" << obj.numBinsX << "," << obj.numBinsY << "] " << obj.binSize << std::endl;
         if(obj.wavelengths.size() > 0)
         {
             stream << "Wavelengths:\n";
-            for(vector<float>::iterator iterWavel = obj.wavelengths.begin(); iterWavel != obj.wavelengths.end(); ++iterWavel)
+            for(std::vector<float>::iterator iterWavel = obj.wavelengths.begin(); iterWavel != obj.wavelengths.end(); ++iterWavel)
             {
-                stream << "\t" << *iterWavel << endl;
+                stream << "\t" << *iterWavel << std::endl;
             }
         }
         else
@@ -1175,40 +1175,40 @@ namespace spdlib
         if(obj.bandwidths.size() > 0)
         {
             stream << "Bandwidths:\n";
-            for(vector<float>::iterator iterBand = obj.bandwidths.begin(); iterBand != obj.bandwidths.end(); ++iterBand)
+            for(std::vector<float>::iterator iterBand = obj.bandwidths.begin(); iterBand != obj.bandwidths.end(); ++iterBand)
             {
-                stream << "\t" << *iterBand << endl;
+                stream << "\t" << *iterBand << std::endl;
             }
         }
         else
         {
             stream << "Bandwidths: \n\tUnknown\n";
         }
-        stream << "Pulse Repetition Freq: " << obj.pulseRepetitionFreq << endl;
-        stream << "Beam Divergance: " << obj.beamDivergence << endl;
-        stream << "Sensor Height: " << obj.sensorHeight << endl;
-        stream << "Footprint: " << obj.footprint << endl;
-        stream << "Max. Scan Angle: " << obj.maxScanAngle << endl;
-        stream << "Waveform Bin Resolution: " << obj.waveformBitRes << endl;
-        stream << "Temporal Waveform Bin Spacing: " << obj.temporalBinSpacing << endl;
-        stream << "Sensor Speed: " << obj.sensorSpeed << endl;
-        stream << "Sensor Scanrate: " << obj.sensorScanRate << endl;
-        stream << "Pulse Density: " << obj.pulseDensity << endl;
-        stream << "Point Density: " << obj.pointDensity << endl;
-        stream << "Pulse cross track spacing: " << obj.pulseCrossTrackSpacing << endl;
-        stream << "Pulse along track spacing: " << obj.pulseAlongTrackSpacing << endl;
-        stream << "Pulse angular spacing azimuth: " << obj.pulseAngularSpacingAzimuth << endl;
-        stream << "Pulse angular spacing zenith: " << obj.pulseAngularSpacingZenith << endl;
-        stream << "Sensor Aperture Size: " << obj.sensorApertureSize << endl;
-        stream << "Pulse Energy: " << obj.pulseEnergy << endl;
-        stream << "Field of view: " << obj.fieldOfView << endl;
-		stream << "User Meta Data: " << obj.userMetaField << endl;
+        stream << "Pulse Repetition Freq: " << obj.pulseRepetitionFreq << std::endl;
+        stream << "Beam Divergance: " << obj.beamDivergence << std::endl;
+        stream << "Sensor Height: " << obj.sensorHeight << std::endl;
+        stream << "Footprint: " << obj.footprint << std::endl;
+        stream << "Max. Scan Angle: " << obj.maxScanAngle << std::endl;
+        stream << "Waveform Bin Resolution: " << obj.waveformBitRes << std::endl;
+        stream << "Temporal Waveform Bin Spacing: " << obj.temporalBinSpacing << std::endl;
+        stream << "Sensor Speed: " << obj.sensorSpeed << std::endl;
+        stream << "Sensor Scanrate: " << obj.sensorScanRate << std::endl;
+        stream << "Pulse Density: " << obj.pulseDensity << std::endl;
+        stream << "Point Density: " << obj.pointDensity << std::endl;
+        stream << "Pulse cross track spacing: " << obj.pulseCrossTrackSpacing << std::endl;
+        stream << "Pulse along track spacing: " << obj.pulseAlongTrackSpacing << std::endl;
+        stream << "Pulse angular spacing azimuth: " << obj.pulseAngularSpacingAzimuth << std::endl;
+        stream << "Pulse angular spacing zenith: " << obj.pulseAngularSpacingZenith << std::endl;
+        stream << "Sensor Aperture Size: " << obj.sensorApertureSize << std::endl;
+        stream << "Pulse Energy: " << obj.pulseEnergy << std::endl;
+        stream << "Field of view: " << obj.fieldOfView << std::endl;
+		stream << "User Meta Data: " << obj.userMetaField << std::endl;
 		return stream;
 	}
 	
-	ostream& operator<<(ostream& stream, SPDFile *obj)
+	std::ostream& operator<<(std::ostream& stream, SPDFile *obj)
 	{
-		stream << "File Path: " << obj->getFilePath() << endl;
+		stream << "File Path: " << obj->getFilePath() << std::endl;
         stream << "File Type: ";
         if(obj->fileType == SPD_SEQ_TYPE)
         {
@@ -1224,16 +1224,16 @@ namespace spdlib
         }
         else
         {
-            stream << endl;
+            stream << std::endl;
         }
-		stream << "File Format Version: " <<  obj->majorSPDVersion << "." << obj->minorSPDVersion << endl;
-        stream << "Point Version: " << obj->pointVersion << endl;
-        stream << "Pulse Version: " << obj->pulseVersion << endl;
-		stream << "Generating Software: " <<  obj->generatingSoftware << endl;
-		stream << "File Signature: " << obj->fileSignature << endl;
-        stream << "Spatial Reference: " <<  obj->spatialreference << endl;
-		stream << "Creation Time (YYYY:MM:DD HH:MM:SS): " << obj->yearOfCreation << ":" << obj->monthOfCreation << ":" << obj->dayOfCreation << ":" << obj->hourOfCreation << ":"<< obj->minuteOfCreation << ":"<< obj->secondOfCreation << endl;
-		stream << "Capture Time (YYYY:MM:DD HH:MM:SS): " << obj->yearOfCapture << ":" << obj->monthOfCapture << ":" << obj->dayOfCapture << ":" << obj->hourOfCapture << ":" << obj->minuteOfCapture << ":" << obj->secondOfCapture << endl;
+		stream << "File Format Version: " <<  obj->majorSPDVersion << "." << obj->minorSPDVersion << std::endl;
+        stream << "Point Version: " << obj->pointVersion << std::endl;
+        stream << "Pulse Version: " << obj->pulseVersion << std::endl;
+		stream << "Generating Software: " <<  obj->generatingSoftware << std::endl;
+		stream << "File Signature: " << obj->fileSignature << std::endl;
+        stream << "Spatial Reference: " <<  obj->spatialreference << std::endl;
+		stream << "Creation Time (YYYY:MM:DD HH:MM:SS): " << obj->yearOfCreation << ":" << obj->monthOfCreation << ":" << obj->dayOfCreation << ":" << obj->hourOfCreation << ":"<< obj->minuteOfCreation << ":"<< obj->secondOfCreation << std::endl;
+		stream << "Capture Time (YYYY:MM:DD HH:MM:SS): " << obj->yearOfCapture << ":" << obj->monthOfCapture << ":" << obj->dayOfCapture << ":" << obj->hourOfCapture << ":" << obj->minuteOfCapture << ":" << obj->secondOfCapture << std::endl;
         stream << "Index Type: ";
         if(obj->indexType == SPD_NO_IDX)
         {
@@ -1261,7 +1261,7 @@ namespace spdlib
         }
         else 
         {
-            stream << endl;
+            stream << std::endl;
         }
         stream << "The file contains: \n";
         if(obj->discretePtDefined == SPD_TRUE)
@@ -1280,21 +1280,21 @@ namespace spdlib
         {
             stream << "\t Contains received waveforms\n";
         }
-        stream << "Number of Points = " << obj->numPts << endl;
-		stream << "Number of Pulses = " << obj->numPulses << endl;
+        stream << "Number of Points = " << obj->numPts << std::endl;
+		stream << "Number of Pulses = " << obj->numPulses << std::endl;
 		stream << "BBOX [xmin, ymin, xmax, ymax]: [" << obj->xMin << "," << obj->yMin << "," << obj->xMax << "," << obj->yMax << "]\n";
 		stream << "BBOX [Azimuth Min, Zenith Min, Azimuth Max, Zenith Max]: [" << obj->azimuthMin << "," << obj->zenithMin << "," << obj->azimuthMax << "," << obj->zenithMax << "]\n";
 		stream << "Z : [" << obj->zMin << "," << obj->zMax << "]\n";
         stream << "Range: [" << obj->rangeMin << "," << obj->rangeMax << "]\n";
         stream << "Scanline: [" << obj->scanlineMin << "," << obj->scanlineMax << "]\n";
         stream << "Scanline Idx: [" << obj->scanlineIdxMin << "," << obj->scanlineIdxMax << "]\n";
-		stream << "Gridding [xSize,ySize] Bin Size: [" << obj->numBinsX << "," << obj->numBinsY << "] " << obj->binSize << endl;
+		stream << "Gridding [xSize,ySize] Bin Size: [" << obj->numBinsX << "," << obj->numBinsY << "] " << obj->binSize << std::endl;
         if(obj->wavelengths.size() > 0)
         {
             stream << "Wavelengths:\n";
-            for(vector<float>::iterator iterWavel = obj->wavelengths.begin(); iterWavel != obj->wavelengths.end(); ++iterWavel)
+            for(std::vector<float>::iterator iterWavel = obj->wavelengths.begin(); iterWavel != obj->wavelengths.end(); ++iterWavel)
             {
-                stream << "\t" << *iterWavel << endl;
+                stream << "\t" << *iterWavel << std::endl;
             }
         }
         else
@@ -1304,34 +1304,34 @@ namespace spdlib
         if(obj->bandwidths.size() > 0)
         {
             stream << "Bandwidths:\n";
-            for(vector<float>::iterator iterBand = obj->bandwidths.begin(); iterBand != obj->bandwidths.end(); ++iterBand)
+            for(std::vector<float>::iterator iterBand = obj->bandwidths.begin(); iterBand != obj->bandwidths.end(); ++iterBand)
             {
-                stream << "\t" << *iterBand << endl;
+                stream << "\t" << *iterBand << std::endl;
             }
         }
         else
         {
             stream << "Bandwidths: \n\tUnknown\n";
         }
-        stream << "Pulse Repetition Freq: " << obj->pulseRepetitionFreq << endl;
-        stream << "Beam Divergance: " << obj->beamDivergence << endl;
-        stream << "Sensor Height: " << obj->sensorHeight << endl;
-        stream << "Footprint: " << obj->footprint << endl;
-        stream << "Max. Scan Angle: " << obj->maxScanAngle << endl;
-        stream << "Waveform Bin Resolution: " << obj->waveformBitRes << endl;
-        stream << "Temporal Waveform Bin Spacing: " << obj->temporalBinSpacing << endl;
-        stream << "Sensor Speed: " << obj->sensorSpeed << endl;
-        stream << "Sensor Scanrate: " << obj->sensorScanRate << endl;
-        stream << "Pulse Density: " << obj->pulseDensity << endl;
-        stream << "Point Density: " << obj->pointDensity << endl;
-        stream << "Pulse cross track spacing: " << obj->pulseCrossTrackSpacing << endl;
-        stream << "Pulse along track spacing: " << obj->pulseAlongTrackSpacing << endl;
-        stream << "Pulse angular spacing azimuth: " << obj->pulseAngularSpacingAzimuth << endl;
-        stream << "Pulse angular spacing zenith: " << obj->pulseAngularSpacingZenith << endl;
-        stream << "Sensor Aperture Size: " << obj->sensorApertureSize << endl;
-        stream << "Pulse Energy: " << obj->pulseEnergy << endl;
-        stream << "Field of view: " << obj->fieldOfView << endl;
-		stream << "User Meta Data: " << obj->userMetaField << endl;
+        stream << "Pulse Repetition Freq: " << obj->pulseRepetitionFreq << std::endl;
+        stream << "Beam Divergance: " << obj->beamDivergence << std::endl;
+        stream << "Sensor Height: " << obj->sensorHeight << std::endl;
+        stream << "Footprint: " << obj->footprint << std::endl;
+        stream << "Max. Scan Angle: " << obj->maxScanAngle << std::endl;
+        stream << "Waveform Bin Resolution: " << obj->waveformBitRes << std::endl;
+        stream << "Temporal Waveform Bin Spacing: " << obj->temporalBinSpacing << std::endl;
+        stream << "Sensor Speed: " << obj->sensorSpeed << std::endl;
+        stream << "Sensor Scanrate: " << obj->sensorScanRate << std::endl;
+        stream << "Pulse Density: " << obj->pulseDensity << std::endl;
+        stream << "Point Density: " << obj->pointDensity << std::endl;
+        stream << "Pulse cross track spacing: " << obj->pulseCrossTrackSpacing << std::endl;
+        stream << "Pulse along track spacing: " << obj->pulseAlongTrackSpacing << std::endl;
+        stream << "Pulse angular spacing azimuth: " << obj->pulseAngularSpacingAzimuth << std::endl;
+        stream << "Pulse angular spacing zenith: " << obj->pulseAngularSpacingZenith << std::endl;
+        stream << "Sensor Aperture Size: " << obj->sensorApertureSize << std::endl;
+        stream << "Pulse Energy: " << obj->pulseEnergy << std::endl;
+        stream << "Field of view: " << obj->fieldOfView << std::endl;
+		stream << "User Meta Data: " << obj->userMetaField << std::endl;
 		
 		return stream;
 	}

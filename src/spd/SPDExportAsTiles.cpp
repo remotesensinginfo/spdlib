@@ -63,26 +63,26 @@ namespace spdlib
         boost::uint_fast32_t tileIdx = 0;
 		try 
 		{
-            tileIdx = numeric_cast<boost::uint_fast32_t>(yDiff/tileHeight);
+            tileIdx = boost::numeric_cast<boost::uint_fast32_t>(yDiff/tileHeight);
 		}
-		catch(negative_overflow& e) 
+		catch(boost::numeric::negative_overflow& e) 
 		{
 			throw SPDIOException(e.what());
 		}
-		catch(positive_overflow& e) 
+		catch(boost::numeric::positive_overflow& e) 
 		{
 			throw SPDIOException(e.what());
 		}
-		catch(bad_numeric_cast& e) 
+		catch(boost::numeric::bad_numeric_cast& e) 
 		{
 			throw SPDIOException(e.what());
 		}
 		
 		if(tileIdx >= numOfTiles)
 		{
-			cerr.precision(15);
-			cerr << "Array Index is greater equal than = " << tileIdx << " of "<< numOfTiles << endl;
-			cerr << "Pulse: " << pulse << endl;
+			std::cerr.precision(15);
+			std::cerr << "Array Index is greater equal than = " << tileIdx << " of "<< numOfTiles << std::endl;
+			std::cerr << "Pulse: " << pulse << std::endl;
 		}
 		
 		try 
@@ -100,7 +100,7 @@ namespace spdlib
 	{
 		try 
 		{
-			list<SPDPulse*>::iterator iterPulses;
+			std::list<SPDPulse*>::iterator iterPulses;
 			for(boost::uint_fast32_t i = 0; i < this->numOfTiles; ++i)
 			{
 				this->tiles[i].exporter->finaliseClose();
@@ -161,34 +161,34 @@ namespace spdlib
         boost::uint_fast32_t tileYIdx = 0;
 		try 
 		{
-            tileYIdx = numeric_cast<boost::uint_fast32_t>(yDiff/tileHeight);
-            tileXIdx = numeric_cast<boost::uint_fast32_t>(xDiff/tileWidth);
+            tileYIdx = boost::numeric_cast<boost::uint_fast32_t>(yDiff/tileHeight);
+            tileXIdx = boost::numeric_cast<boost::uint_fast32_t>(xDiff/tileWidth);
 		}
-		catch(negative_overflow& e) 
+		catch(boost::numeric::negative_overflow& e) 
 		{
 			throw SPDIOException(e.what());
 		}
-		catch(positive_overflow& e) 
+		catch(boost::numeric::positive_overflow& e) 
 		{
 			throw SPDIOException(e.what());
 		}
-		catch(bad_numeric_cast& e) 
+		catch(boost::numeric::bad_numeric_cast& e) 
 		{
 			throw SPDIOException(e.what());
 		}
 		
 		if(tileYIdx >= numOfYTiles)
 		{
-			cerr.precision(15);
-			cerr << "Array Index is greater equal than = " << tileYIdx << " of "<< numOfYTiles << endl;
-			cerr << "Pulse: " << pulse << endl;
+			std::cerr.precision(15);
+			std::cerr << "Array Index is greater equal than = " << tileYIdx << " of "<< numOfYTiles << std::endl;
+			std::cerr << "Pulse: " << pulse << std::endl;
 		}
         
         if(tileXIdx >= numOfXTiles)
 		{
-			cerr.precision(15);
-			cerr << "Array Index is greater equal than = " << tileXIdx << " of "<< numOfXTiles << endl;
-			cerr << "Pulse: " << pulse << endl;
+			std::cerr.precision(15);
+			std::cerr << "Array Index is greater equal than = " << tileXIdx << " of "<< numOfXTiles << std::endl;
+			std::cerr << "Pulse: " << pulse << std::endl;
 		}
 		
 		try 
@@ -207,7 +207,7 @@ namespace spdlib
     {
         try 
 		{
-			list<SPDPulse*>::iterator iterPulses;
+			std::list<SPDPulse*>::iterator iterPulses;
 			for(boost::uint_fast32_t i = 0; i < this->numOfTiles; ++i)
 			{
 				this->tiles[i].exporter->finaliseClose();

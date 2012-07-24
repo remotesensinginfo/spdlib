@@ -42,8 +42,8 @@ namespace spdlib
 		
 		boost::uint_fast64_t fid = 0;
 		
-		vector<SPDPulse*> *pulses = new vector<SPDPulse*>();
-		vector<SPDPulse*>::iterator iterPulses;
+		std::vector<SPDPulse*> *pulses = new std::vector<SPDPulse*>();
+		std::vector<SPDPulse*>::iterator iterPulses;
         
 		try
 		{
@@ -65,7 +65,7 @@ namespace spdlib
 			boost::uint_fast32_t feedbackCounter = 0;
 			boost::uint_fast32_t i = 0;
 			
-			cout << "Started " << flush;	
+			std::cout << "Started " << std::flush;	
 			
 			inputLayer->ResetReading();
 			while( (inFeature = inputLayer->GetNextFeature()) != NULL )
@@ -74,12 +74,12 @@ namespace spdlib
                 
 				if((numFeatures > 10) && (i % feedback) == 0)
 				{
-					cout << ".." << feedbackCounter << ".." << flush;
+					std::cout << ".." << feedbackCounter << ".." << std::flush;
 					feedbackCounter = feedbackCounter + 10;
 				}
                 else if(numFeatures <= 10)
                 {
-                    cout << ".." << fid << ".." << flush;
+                    std::cout << ".." << fid << ".." << std::flush;
                 }				
 				
 				outFeature = OGRFeature::CreateFeature(outFeatureDefn);
@@ -107,13 +107,13 @@ namespace spdlib
 				}
 				else if(geometry != NULL)
 				{
-					string message = string("Unsupport data type: ") + string(geometry->getGeometryName());
+					std::string message = std::string("Unsupport data type: ") + std::string(geometry->getGeometryName());
 					throw SPDProcessingException(message);
 				}
 				else 
 				{
 					nullGeometry = true;
-					cerr << "WARNING: NULL Geometry Present within input file - IGNORED\n";
+					std::cerr << "WARNING: NULL Geometry Present within input file - IGNORED\n";
 				}
 				
 				if(!nullGeometry)
@@ -147,7 +147,7 @@ namespace spdlib
 				OGRFeature::DestroyFeature(inFeature);
 				i++;
 			}
-			cout << " Complete.\n";
+			std::cout << " Complete.\n";
 		}
 		catch(SPDProcessingException& e)
 		{
@@ -155,7 +155,7 @@ namespace spdlib
 		}
 	}
     
-    void SPDProcessPolygons::processPolygons(SPDFile *spdFile, SPDFileIncrementalReader *spdReader, OGRLayer *inputLayer, ofstream *outASCIIFile)throw(SPDProcessingException)
+    void SPDProcessPolygons::processPolygons(SPDFile *spdFile, SPDFileIncrementalReader *spdReader, OGRLayer *inputLayer, std::ofstream *outASCIIFile)throw(SPDProcessingException)
 	{
 		OGRGeometry *geometry = NULL;
 		
@@ -164,8 +164,8 @@ namespace spdlib
 		
 		boost::uint_fast64_t fid = 0;
 		
-		vector<SPDPulse*> *pulses = new vector<SPDPulse*>();
-		vector<SPDPulse*>::iterator iterPulses;
+		std::vector<SPDPulse*> *pulses = new std::vector<SPDPulse*>();
+		std::vector<SPDPulse*>::iterator iterPulses;
         
 		try
 		{
@@ -181,7 +181,7 @@ namespace spdlib
 			boost::uint_fast32_t feedbackCounter = 0;
 			boost::uint_fast32_t i = 0;
 			
-			cout << "Started " << flush;	
+			std::cout << "Started " << std::flush;	
 			
 			inputLayer->ResetReading();
 			while( (inFeature = inputLayer->GetNextFeature()) != NULL )
@@ -190,12 +190,12 @@ namespace spdlib
                 
 				if((numFeatures > 10) && (i % feedback) == 0)
 				{
-					cout << ".." << feedbackCounter << ".." << flush;
+					std::cout << ".." << feedbackCounter << ".." << std::flush;
 					feedbackCounter = feedbackCounter + 10;
 				}
                 else if(numFeatures <= 10)
                 {
-                    cout << ".." << fid << ".." << flush;
+                    std::cout << ".." << fid << ".." << std::flush;
                 }				
 							
 				// Get Geometry.
@@ -227,19 +227,19 @@ namespace spdlib
 				}
 				else if(geometry != NULL)
 				{
-					string message = string("Unsupport data type: ") + string(geometry->getGeometryName());
+					std::string message = std::string("Unsupport data type: ") + std::string(geometry->getGeometryName());
 					throw SPDProcessingException(message);
 				}
 				else 
 				{
 					nullGeometry = true;
-					cerr << "WARNING: NULL Geometry Present within input file - IGNORED\n";
+					std::cerr << "WARNING: NULL Geometry Present within input file - IGNORED\n";
 				}
                 
 				OGRFeature::DestroyFeature(inFeature);
 				i++;
 			}
-			cout << " Complete.\n";
+			std::cout << " Complete.\n";
 		}
 		catch(SPDProcessingException& e)
 		{
@@ -254,7 +254,7 @@ namespace spdlib
 		{
 			if( outputSHPLayer->CreateField( inFeatureDefn->GetFieldDefn(i) ) != OGRERR_NONE )
 			{
-				string message = string("Creating ") + string(inFeatureDefn->GetFieldDefn(i)->GetNameRef()) + string(" field has failed.");
+				std::string message = std::string("Creating ") + std::string(inFeatureDefn->GetFieldDefn(i)->GetNameRef()) + std::string(" field has failed.");
 				throw SPDProcessingException(message.c_str());
 			}
 		}

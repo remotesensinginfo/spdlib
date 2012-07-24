@@ -44,7 +44,7 @@ namespace spdlib{ namespace tps
      *  Calculate Thin Plate Spline (TPS) weights from
      *  control points.
      */
-    Spline::Spline(const vector<Vec> & control_pts, double regularization)
+    Spline::Spline(const std::vector<Vec> & control_pts, double regularization)
       : p(control_pts.size()),
         control_points(control_pts),
         mtx_v(p+3, 1),
@@ -52,7 +52,7 @@ namespace spdlib{ namespace tps
     {
       // You We need at least 3 points to define a plane
       if ( control_points.size() < 3 )
-        throw runtime_error("need at least 3 points for thin plate spline");
+          throw std::runtime_error("need at least 3 points for thin plate spline");
 
       //unsigned p = control_points.size();
 

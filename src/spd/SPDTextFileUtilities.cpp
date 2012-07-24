@@ -30,12 +30,12 @@ namespace spdlib{
 		
 	}
 	
-	boost::uint_fast64_t SPDTextFileUtilities::countLines(string input) throw(SPDIOException)
+	boost::uint_fast64_t SPDTextFileUtilities::countLines(std::string input) throw(SPDIOException)
 	{
 		boost::uint_fast64_t count = 0;
-		string strLine;
-		ifstream inputFile;
-		inputFile.open(input.c_str(), ios_base::in);
+		std::string strLine;
+		std::ifstream inputFile;
+		inputFile.open(input.c_str(), std::ios_base::in);
 		if(inputFile.is_open())
 		{
 			char ch = ' ';
@@ -63,14 +63,14 @@ namespace spdlib{
 		}
 		else
 		{
-			string message = string("Text file ") + input + string(" could not be openned.");
+			std::string message = std::string("Text file ") + input + std::string(" could not be openned.");
 			throw SPDIOException(message.c_str());
 		}
 		
 		return count;
 	}
 	
-	bool SPDTextFileUtilities::lineStart(string line, char token)
+	bool SPDTextFileUtilities::lineStart(std::string line, char token)
 	{
 		int lineLength = line.length();
 		for(int i = 0; i < lineLength; i++)
@@ -91,7 +91,7 @@ namespace spdlib{
 		return false;
 	}
 	
-	bool SPDTextFileUtilities::blankline(string line)
+	bool SPDTextFileUtilities::blankline(std::string line)
 	{
 		int lineLength = line.length();
 		if(lineLength < 1)
@@ -115,7 +115,7 @@ namespace spdlib{
 		return true;
 	}
 	
-	string SPDTextFileUtilities::removeWhiteSpace(string line)
+	std::string SPDTextFileUtilities::removeWhiteSpace(std::string line)
 	{
 		int lineLength = line.length();
 		int firstChar = 0;
@@ -141,9 +141,9 @@ namespace spdlib{
 		return line.substr(firstChar, lastChar-firstChar);
 	}
 	
-	void SPDTextFileUtilities::tokenizeString(string line, char token, vector<string> *tokens, bool ignoreDuplicateTokens)
+	void SPDTextFileUtilities::tokenizeString(std::string line, char token, std::vector<std::string> *tokens, bool ignoreDuplicateTokens)
 	{
-		string word;
+		std::string word;
 		int start = 0;
 		int lineLength = line.length();
 		for(int i = 0; i < lineLength; i++)
@@ -173,17 +173,17 @@ namespace spdlib{
 		}		
 	}
 	
-	string SPDTextFileUtilities::readFileToString(string input) throw(SPDIOException)
+	std::string SPDTextFileUtilities::readFileToString(std::string input) throw(SPDIOException)
 	{
-		string wholeFile = "";
-		ifstream inputFileStream;
-		inputFileStream.open(input.c_str(), ios_base::in);
+		std::string wholeFile = "";
+		std::ifstream inputFileStream;
+		inputFileStream.open(input.c_str(), std::ios_base::in);
 		if(!inputFileStream.is_open())
 		{
 			throw SPDIOException("File could not be opened.");
 		}
 		
-		string strLine = "";
+		std::string strLine = "";
 		bool lineEnding = false;
 		char ch = ' ';
 		char lastch = ' ';
@@ -224,290 +224,290 @@ namespace spdlib{
 	}
 	
 	
-	double SPDTextFileUtilities::strtodouble(string inValue) throw(SPDTextFileException)
+	double SPDTextFileUtilities::strtodouble(std::string inValue) throw(SPDTextFileException)
 	{
 		double outValue = 0;
 		try
         {
-            outValue = lexical_cast<double>(inValue);
+            outValue = boost::lexical_cast<double>(inValue);
         }
-        catch(bad_lexical_cast &e)
+        catch(boost::bad_lexical_cast &e)
         {
-			string message = string("Trying to convert \"") + inValue + string("\" - ") + string(e.what());
+			std::string message = std::string("Trying to convert \"") + inValue + std::string("\" - ") + std::string(e.what());
             throw SPDTextFileException(message);
         }
 		return outValue;
 	}
 	
-	float SPDTextFileUtilities::strtofloat(string inValue) throw(SPDTextFileException)
+	float SPDTextFileUtilities::strtofloat(std::string inValue) throw(SPDTextFileException)
 	{
 		float outValue = 0;
 		try
         {
-            outValue = lexical_cast<float>(inValue);
+            outValue = boost::lexical_cast<float>(inValue);
         }
-        catch(bad_lexical_cast &e)
+        catch(boost::bad_lexical_cast &e)
         {
-            string message = string("Trying to convert \"") + inValue + string("\" - ") + string(e.what());
+            std::string message = std::string("Trying to convert \"") + inValue + std::string("\" - ") + std::string(e.what());
             throw SPDTextFileException(message);
         }
 		return outValue;
 	}
 	
-	boost::uint_fast8_t SPDTextFileUtilities::strto8bitUInt(string inValue) throw(SPDTextFileException)
+	boost::uint_fast8_t SPDTextFileUtilities::strto8bitUInt(std::string inValue) throw(SPDTextFileException)
 	{
 		boost::uint_fast8_t outValue = 0;
 		try
         {
-            outValue = lexical_cast<boost::uint_fast8_t>(inValue);
+            outValue = boost::lexical_cast<boost::uint_fast8_t>(inValue);
         }
-        catch(bad_lexical_cast &e)
+        catch(boost::bad_lexical_cast &e)
         {
-            string message = string("Trying to convert \"") + inValue + string("\" - ") + string(e.what());
+            std::string message = std::string("Trying to convert \"") + inValue + std::string("\" - ") + std::string(e.what());
             throw SPDTextFileException(message);
         }
 		return outValue;
 	}
 	
-	boost::uint_fast16_t SPDTextFileUtilities::strto16bitUInt(string inValue) throw(SPDTextFileException)
+	boost::uint_fast16_t SPDTextFileUtilities::strto16bitUInt(std::string inValue) throw(SPDTextFileException)
 	{
 		boost::uint_fast16_t outValue = 0;
 		try
         {
-            outValue = lexical_cast<boost::uint_fast16_t>(inValue);
+            outValue = boost::lexical_cast<boost::uint_fast16_t>(inValue);
         }
-        catch(bad_lexical_cast &e)
+        catch(boost::bad_lexical_cast &e)
         {
-            string message = string("Trying to convert \"") + inValue + string("\" - ") + string(e.what());
+            std::string message = std::string("Trying to convert \"") + inValue + std::string("\" - ") + std::string(e.what());
             throw SPDTextFileException(message);
         }
 		return outValue;
 	}
 	
-	boost::uint_fast32_t SPDTextFileUtilities::strto32bitUInt(string inValue) throw(SPDTextFileException)
+	boost::uint_fast32_t SPDTextFileUtilities::strto32bitUInt(std::string inValue) throw(SPDTextFileException)
 	{
 		boost::uint_fast32_t outValue = 0;
 		try
         {
-            outValue = lexical_cast<boost::uint_fast32_t>(inValue);
+            outValue = boost::lexical_cast<boost::uint_fast32_t>(inValue);
         }
-        catch(bad_lexical_cast &e)
+        catch(boost::bad_lexical_cast &e)
         {
-            string message = string("Trying to convert \"") + inValue + string("\" - ") + string(e.what());
+            std::string message = std::string("Trying to convert \"") + inValue + std::string("\" - ") + std::string(e.what());
             throw SPDTextFileException(message);
         }
 		return outValue;
 	}
 	
-	boost::uint_fast64_t SPDTextFileUtilities::strto64bitUInt(string inValue) throw(SPDTextFileException)
+	boost::uint_fast64_t SPDTextFileUtilities::strto64bitUInt(std::string inValue) throw(SPDTextFileException)
 	{
 		boost::uint_fast64_t outValue = 0;
 		try
         {
-            outValue = lexical_cast<boost::uint_fast64_t>(inValue);
+            outValue = boost::lexical_cast<boost::uint_fast64_t>(inValue);
         }
-        catch(bad_lexical_cast &e)
+        catch(boost::bad_lexical_cast &e)
         {
-            string message = string("Trying to convert \"") + inValue + string("\" - ") + string(e.what());
+            std::string message = std::string("Trying to convert \"") + inValue + std::string("\" - ") + std::string(e.what());
             throw SPDTextFileException(message);
         }
 		return outValue;
 	}
 	
-boost::int_fast8_t SPDTextFileUtilities::strto8bitInt(string inValue) throw(SPDTextFileException)
+boost::int_fast8_t SPDTextFileUtilities::strto8bitInt(std::string inValue) throw(SPDTextFileException)
 	{
 	boost::int_fast8_t outValue = 0;
 		try
         {
-            outValue = lexical_cast<int_fast8_t>(inValue);
+            outValue = boost::lexical_cast<int_fast8_t>(inValue);
         }
-        catch(bad_lexical_cast &e)
+        catch(boost::bad_lexical_cast &e)
         {
-            string message = string("Trying to convert \"") + inValue + string("\" - ") + string(e.what());
+            std::string message = std::string("Trying to convert \"") + inValue + std::string("\" - ") + std::string(e.what());
             throw SPDTextFileException(message);
         }
 		return outValue;
 	}
 	
-boost::int_fast16_t SPDTextFileUtilities::strto16bitInt(string inValue) throw(SPDTextFileException)
+boost::int_fast16_t SPDTextFileUtilities::strto16bitInt(std::string inValue) throw(SPDTextFileException)
 	{
 	boost::int_fast16_t outValue = 0;
 		try
         {
-            outValue = lexical_cast<int_fast16_t>(inValue);
+            outValue = boost::lexical_cast<int_fast16_t>(inValue);
         }
-        catch(bad_lexical_cast &e)
+        catch(boost::bad_lexical_cast &e)
         {
-            string message = string("Trying to convert \"") + inValue + string("\" - ") + string(e.what());
+            std::string message = std::string("Trying to convert \"") + inValue + std::string("\" - ") + std::string(e.what());
             throw SPDTextFileException(message);
         }
 		return outValue;
 	}
 	
-boost::int_fast32_t SPDTextFileUtilities::strto32bitInt(string inValue) throw(SPDTextFileException)
+boost::int_fast32_t SPDTextFileUtilities::strto32bitInt(std::string inValue) throw(SPDTextFileException)
 	{
 	boost::int_fast32_t outValue = 0;
 		try
         {
-            outValue = lexical_cast<int_fast32_t>(inValue);
+            outValue = boost::lexical_cast<int_fast32_t>(inValue);
         }
-        catch(bad_lexical_cast &e)
+        catch(boost::bad_lexical_cast &e)
         {
-            string message = string("Trying to convert \"") + inValue + string("\" - ") + string(e.what());
+            std::string message = std::string("Trying to convert \"") + inValue + std::string("\" - ") + std::string(e.what());
             throw SPDTextFileException(message);
         }
 		return outValue;
 	}
 	
-boost::int_fast64_t SPDTextFileUtilities::strto64bitInt(string inValue) throw(SPDTextFileException)
+boost::int_fast64_t SPDTextFileUtilities::strto64bitInt(std::string inValue) throw(SPDTextFileException)
 	{
 	boost::int_fast64_t outValue = 0;
 		try
         {
-            outValue = lexical_cast<int_fast64_t>(inValue);
+            outValue = boost::lexical_cast<int_fast64_t>(inValue);
         }
-        catch(bad_lexical_cast &e)
+        catch(boost::bad_lexical_cast &e)
         {
-            string message = string("Trying to convert \"") + inValue + string("\" - ") + string(e.what());
+            std::string message = std::string("Trying to convert \"") + inValue + std::string("\" - ") + std::string(e.what());
             throw SPDTextFileException(message);
         }
 		return outValue;
 	}
 	
-	string SPDTextFileUtilities::doubletostring(double number) throw(SPDTextFileException)
+	std::string SPDTextFileUtilities::doubletostring(double number) throw(SPDTextFileException)
 	{
-		string outValue = "";
+		std::string outValue = "";
 		try
         {
-            outValue = lexical_cast<string>(number);
+            outValue = boost::lexical_cast<std::string>(number);
         }
-        catch(bad_lexical_cast &e)
+        catch(boost::bad_lexical_cast &e)
         {
             throw SPDTextFileException(e.what());
         }
 		return outValue;
 	}
 	
-	string SPDTextFileUtilities::floattostring(float number) throw(SPDTextFileException)
+	std::string SPDTextFileUtilities::floattostring(float number) throw(SPDTextFileException)
 	{
-		string outValue = "";
+		std::string outValue = "";
 		try
         {
-            outValue = lexical_cast<string>(number);
+            outValue = boost::lexical_cast<std::string>(number);
         }
-        catch(bad_lexical_cast &e)
+        catch(boost::bad_lexical_cast &e)
         {
             throw SPDTextFileException(e.what());
         }
 		return outValue;
 	}
 	
-	string SPDTextFileUtilities::uInt8bittostring(boost::uint_fast8_t number) throw(SPDTextFileException)
+	std::string SPDTextFileUtilities::uInt8bittostring(boost::uint_fast8_t number) throw(SPDTextFileException)
 	{
-		string outValue = "";
+		std::string outValue = "";
 		try
         {
-            outValue = lexical_cast<string>(number);
+            outValue = boost::lexical_cast<std::string>(number);
         }
-        catch(bad_lexical_cast &e)
+        catch(boost::bad_lexical_cast &e)
         {
             throw SPDTextFileException(e.what());
         }
 		return outValue;
 	}
 	
-	string SPDTextFileUtilities::uInt16bittostring(boost::uint_fast16_t number) throw(SPDTextFileException)
+	std::string SPDTextFileUtilities::uInt16bittostring(boost::uint_fast16_t number) throw(SPDTextFileException)
 	{
-		string outValue = "";
+		std::string outValue = "";
 		try
         {
-            outValue = lexical_cast<string>(number);
+            outValue = boost::lexical_cast<std::string>(number);
         }
-        catch(bad_lexical_cast &e)
+        catch(boost::bad_lexical_cast &e)
         {
             throw SPDTextFileException(e.what());
         }
 		return outValue;
 	}
 	
-	string SPDTextFileUtilities::uInt32bittostring(boost::uint_fast32_t number) throw(SPDTextFileException)
+	std::string SPDTextFileUtilities::uInt32bittostring(boost::uint_fast32_t number) throw(SPDTextFileException)
 	{
-		string outValue = "";
+		std::string outValue = "";
 		try
         {
-            outValue = lexical_cast<string>(number);
+            outValue = boost::lexical_cast<std::string>(number);
         }
-        catch(bad_lexical_cast &e)
+        catch(boost::bad_lexical_cast &e)
         {
             throw SPDTextFileException(e.what());
         }
 		return outValue;
 	}
 	
-	string SPDTextFileUtilities::uInt64bittostring(boost::uint_fast64_t number) throw(SPDTextFileException)
+	std::string SPDTextFileUtilities::uInt64bittostring(boost::uint_fast64_t number) throw(SPDTextFileException)
 	{
-		string outValue = "";
+		std::string outValue = "";
 		try
         {
-            outValue = lexical_cast<string>(number);
+            outValue = boost::lexical_cast<std::string>(number);
         }
-        catch(bad_lexical_cast &e)
+        catch(boost::bad_lexical_cast &e)
         {
             throw SPDTextFileException(e.what());
         }
 		return outValue;
 	}
 	
-	string SPDTextFileUtilities::int8bittostring(boost::int_fast8_t number) throw(SPDTextFileException)
+	std::string SPDTextFileUtilities::int8bittostring(boost::int_fast8_t number) throw(SPDTextFileException)
 	{
-		string outValue = "";
+		std::string outValue = "";
 		try
         {
-            outValue = lexical_cast<string>(number);
+            outValue = boost::lexical_cast<std::string>(number);
         }
-        catch(bad_lexical_cast &e)
+        catch(boost::bad_lexical_cast &e)
         {
             throw SPDTextFileException(e.what());
         }
 		return outValue;
 	}
 	
-	string SPDTextFileUtilities::int16bittostring(boost::int_fast16_t number) throw(SPDTextFileException)
+	std::string SPDTextFileUtilities::int16bittostring(boost::int_fast16_t number) throw(SPDTextFileException)
 	{
-		string outValue = "";
+		std::string outValue = "";
 		try
         {
-            outValue = lexical_cast<string>(number);
+            outValue = boost::lexical_cast<std::string>(number);
         }
-        catch(bad_lexical_cast &e)
+        catch(boost::bad_lexical_cast &e)
         {
             throw SPDTextFileException(e.what());
         }
 		return outValue;
 	}
 	
-	string SPDTextFileUtilities::int32bittostring(boost::int_fast32_t number) throw(SPDTextFileException)
+	std::string SPDTextFileUtilities::int32bittostring(boost::int_fast32_t number) throw(SPDTextFileException)
 	{
-		string outValue = "";
+		std::string outValue = "";
 		try
         {
-            outValue = lexical_cast<string>(number);
+            outValue = boost::lexical_cast<std::string>(number);
         }
-        catch(bad_lexical_cast &e)
+        catch(boost::bad_lexical_cast &e)
         {
             throw SPDTextFileException(e.what());
         }
 		return outValue;
 	}
 	
-	string SPDTextFileUtilities::int64bittostring(boost::int_fast64_t number) throw(SPDTextFileException)
+	std::string SPDTextFileUtilities::int64bittostring(boost::int_fast64_t number) throw(SPDTextFileException)
 	{
-		string outValue = "";
+		std::string outValue = "";
 		try
         {
-            outValue = lexical_cast<string>(number);
+            outValue = boost::lexical_cast<std::string>(number);
         }
-        catch(bad_lexical_cast &e)
+        catch(boost::bad_lexical_cast &e)
         {
             throw SPDTextFileException(e.what());
         }

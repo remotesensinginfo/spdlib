@@ -28,8 +28,8 @@ namespace spdlib
 
 	SPDIOFactory::SPDIOFactory(): exporters(NULL), importers(NULL)
 	{
-		exporters = new list<SPDDataExporter*>();
-		importers = new list<SPDDataImporter*>();
+		exporters = new std::list<SPDDataExporter*>();
+		importers = new std::list<SPDDataImporter*>();
 		this->registerAll();
 	}
 
@@ -39,12 +39,12 @@ namespace spdlib
 		this->exporters = ioFactory.exporters;
 	}
 
-	SPDDataExporter* SPDIOFactory::getExporter(string filetype) throw(SPDIOException)
+	SPDDataExporter* SPDIOFactory::getExporter(std::string filetype) throw(SPDIOException)
 	{
 		SPDDataExporter *dataExporter = NULL;
 		bool found = false;
 		
-		list<SPDDataExporter*>::iterator iterExport;
+		std::list<SPDDataExporter*>::iterator iterExport;
 		for(iterExport = exporters->begin(); iterExport != exporters->end(); ++iterExport)
 		{
 			if((*iterExport)->isFileType(filetype))
@@ -63,14 +63,14 @@ namespace spdlib
 		return dataExporter;
 	}
 
-	SPDDataImporter* SPDIOFactory::getImporter(string filetype, bool convertCoords, string outputProjWKT, string schema, boost::uint_fast16_t indexCoords, bool defineOrigin, double originX, double originY, float originZ, float waveNoiseThreshold) throw(SPDIOException)
+	SPDDataImporter* SPDIOFactory::getImporter(std::string filetype, bool convertCoords, std::string outputProjWKT, std::string schema, boost::uint_fast16_t indexCoords, bool defineOrigin, double originX, double originY, float originZ, float waveNoiseThreshold) throw(SPDIOException)
 	{
 		SPDDataImporter *dataImporter = NULL;
 		bool found = false;
 		
         try
         {
-            list<SPDDataImporter*>::iterator iterImport;
+            std::list<SPDDataImporter*>::iterator iterImport;
             for(iterImport = importers->begin(); iterImport != importers->end(); ++iterImport)
             {
                 if((*iterImport)->isFileType(filetype))
@@ -132,7 +132,7 @@ namespace spdlib
 
 	SPDIOFactory::~SPDIOFactory()
 	{
-		list<SPDDataImporter*>::iterator iterImport;
+		std::list<SPDDataImporter*>::iterator iterImport;
 		for(iterImport = importers->begin(); iterImport != importers->end(); )
 		{
 			delete *iterImport;
@@ -140,7 +140,7 @@ namespace spdlib
 		}
 		delete importers;
 		
-		list<SPDDataExporter*>::iterator iterExport;
+		std::list<SPDDataExporter*>::iterator iterExport;
 		for(iterExport = exporters->begin(); iterExport != exporters->end(); )
 		{
 			delete *iterExport;

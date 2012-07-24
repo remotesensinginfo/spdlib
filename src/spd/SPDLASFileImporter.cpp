@@ -28,20 +28,20 @@ namespace spdlib
 {
 	
 
-	SPDLASFileImporter::SPDLASFileImporter(bool convertCoords, string outputProjWKT, string schema, boost::uint_fast16_t indexCoords, bool defineOrigin, double originX, double originY, float originZ, float waveNoiseThreshold):SPDDataImporter(convertCoords, outputProjWKT, schema, indexCoords, defineOrigin, originX, originY, originZ, waveNoiseThreshold)
+	SPDLASFileImporter::SPDLASFileImporter(bool convertCoords, std::string outputProjWKT, std::string schema, boost::uint_fast16_t indexCoords, bool defineOrigin, double originX, double originY, float originZ, float waveNoiseThreshold):SPDDataImporter(convertCoords, outputProjWKT, schema, indexCoords, defineOrigin, originX, originY, originZ, waveNoiseThreshold)
 	{
 		
 	}
     
-    SPDDataImporter* SPDLASFileImporter::getInstance(bool convertCoords, string outputProjWKT, string schema, boost::uint_fast16_t indexCoords, bool defineOrigin, double originX, double originY, float originZ, float waveNoiseThreshold)
+    SPDDataImporter* SPDLASFileImporter::getInstance(bool convertCoords, std::string outputProjWKT, std::string schema, boost::uint_fast16_t indexCoords, bool defineOrigin, double originX, double originY, float originZ, float waveNoiseThreshold)
     {
         return new SPDLASFileImporter(convertCoords, outputProjWKT, schema, indexCoords, defineOrigin, originX, originY, originZ, waveNoiseThreshold);
     }
 	
-	list<SPDPulse*>* SPDLASFileImporter::readAllDataToList(string inputFile, SPDFile *spdFile)throw(SPDIOException)
+	std::list<SPDPulse*>* SPDLASFileImporter::readAllDataToList(std::string inputFile, SPDFile *spdFile)throw(SPDIOException)
 	{
 		SPDPulseUtils pulseUtils;
-		list<SPDPulse*> *pulses = new list<SPDPulse*>();
+		std::list<SPDPulse*> *pulses = new std::list<SPDPulse*>();
 		boost::uint_fast64_t numOfPulses = 0;
 		boost::uint_fast64_t numOfPoints = 0;
 		
@@ -58,8 +58,8 @@ namespace spdlib
 		
 		try 
 		{
-			ifstream ifs;
-			ifs.open(inputFile.c_str(), ios::in | ios::binary);
+			std::ifstream ifs;
+			ifs.open(inputFile.c_str(), std::ios::in | std::ios::binary);
 			if(ifs.is_open())
 			{
 				liblas::ReaderFactory lasReaderFactory;
@@ -72,7 +72,7 @@ namespace spdlib
 				if(spdFile->getSpatialReference() == "")
 				{
 					liblas::SpatialReference const &lasSpatial = header.GetSRS();
-					string spatialRefProjWKT = lasSpatial.GetWKT();
+					std::string spatialRefProjWKT = lasSpatial.GetWKT();
 					spdFile->setSpatialReference(spatialRefProjWKT);
 				}
 				
@@ -88,13 +88,13 @@ namespace spdlib
 				SPDPoint *spdPt = NULL;
 				SPDPulse *spdPulse = NULL;
 				
-				cout << "Started (Read Data) ." << flush;
+				std::cout << "Started (Read Data) ." << std::flush;
 				while (reader.ReadNextPoint())
 				{
-					//cout << numOfPoints << endl;
+					//std::cout << numOfPoints << std::endl;
 					if((reportedNumOfPts > 10) && ((numOfPoints % feedback) == 0))
 					{
-						cout << "." << feedbackCounter << "." << flush;
+						std::cout << "." << feedbackCounter << "." << std::flush;
 						feedbackCounter += 10;
 					}
 					
@@ -123,9 +123,9 @@ namespace spdlib
 					spdPulse = new SPDPulse();
 					pulseUtils.initSPDPulse(spdPulse);
                     spdPulse->pulseID = numOfPulses;
-					//cout << "Pulse size " << sizeof(SPDPulse) << endl;
-					//cout << "Point size " << sizeof(SPDPoint) << endl;
-					//cout << "Points capacity (1) " << spdPulse->pts.capacity() << endl;
+					//std::cout << "Pulse size " << sizeof(SPDPulse) << std::endl;
+					//std::cout << "Point size " << sizeof(SPDPoint) << std::endl;
+					//std::cout << "Points capacity (1) " << spdPulse->pts.capacity() << std::endl;
 					spdPulse->numberOfReturns = p.GetNumberOfReturns();
                     if(spdPulse->numberOfReturns == 0)
                     {
@@ -138,7 +138,7 @@ namespace spdlib
 						{
 							if((reportedNumOfPts > 10) && ((numOfPoints % feedback) == 0))
 							{
-								cout << "." << feedbackCounter << "." << flush;
+								std::cout << "." << feedbackCounter << "." << std::flush;
 								feedbackCounter += 10;
 							}
 							liblas::Point const& pt = reader.GetPoint();
@@ -158,14 +158,14 @@ namespace spdlib
 						}
 						else
 						{
-                            cerr << "\nWarning: The file ended unexpectedly.\n";
-                            cerr << "Expected " << spdPulse->numberOfReturns << " but only found " << i + 1 << " returns" << endl;
+                            std::cerr << "\nWarning: The file ended unexpectedly.\n";
+                            std::cerr << "Expected " << spdPulse->numberOfReturns << " but only found " << i + 1 << " returns" << std::endl;
                             spdPulse->numberOfReturns = i+1;
 							//throw SPDIOException("Unexpected end to the file.");
 						}
 					}
 					++numOfPulses;
-					//cout << "Points capacity (2) " << spdPulse->pts.capacity() << endl << endl;
+					//std::cout << "Points capacity (2) " << spdPulse->pts.capacity() << std::endl << std::endl;
 					if(p.GetFlightLineEdge() == 1)
 					{
 						spdPulse->edgeFlightLineFlag = SPD_WITH_SCAN;
@@ -234,7 +234,7 @@ namespace spdlib
 				}
 				
 				ifs.close();
-				cout << ". Complete\n";
+				std::cout << ". Complete\n";
 				spdFile->setBoundingVolume(xMin, xMax, yMin, yMax, zMin, zMax);
 				if(convertCoords)
 				{
@@ -257,11 +257,11 @@ namespace spdlib
 		{
 			throw e;
 		}
-		catch(invalid_argument &e)
+		catch(std::invalid_argument &e)
 		{
 			throw SPDIOException(e.what());
 		}
-		catch(runtime_error &e)
+		catch(std::runtime_error &e)
 		{
 			throw SPDIOException(e.what());
 		}
@@ -269,10 +269,10 @@ namespace spdlib
 		return pulses;
 	}
 	
-	vector<SPDPulse*>* SPDLASFileImporter::readAllDataToVector(string inputFile, SPDFile *spdFile)throw(SPDIOException)
+	std::vector<SPDPulse*>* SPDLASFileImporter::readAllDataToVector(std::string inputFile, SPDFile *spdFile)throw(SPDIOException)
 	{
 		SPDPulseUtils pulseUtils;
-		vector<SPDPulse*> *pulses = new vector<SPDPulse*>();
+		std::vector<SPDPulse*> *pulses = new std::vector<SPDPulse*>();
 		boost::uint_fast64_t numOfPulses = 0;
 		boost::uint_fast64_t numOfPoints = 0;
 		
@@ -289,8 +289,8 @@ namespace spdlib
 		
 		try 
 		{
-			ifstream ifs;
-			ifs.open(inputFile.c_str(), ios::in | ios::binary);
+			std::ifstream ifs;
+			ifs.open(inputFile.c_str(), std::ios::in | std::ios::binary);
 			if(ifs.is_open())
 			{
 				liblas::ReaderFactory lasReaderFactory;
@@ -303,7 +303,7 @@ namespace spdlib
 				if(spdFile->getSpatialReference() == "")
 				{
 					liblas::SpatialReference const &lasSpatial = header.GetSRS();
-					string spatialRefProjWKT = lasSpatial.GetWKT();
+					std::string spatialRefProjWKT = lasSpatial.GetWKT();
 					spdFile->setSpatialReference(spatialRefProjWKT);
 				}
 				
@@ -321,13 +321,13 @@ namespace spdlib
 				SPDPoint *spdPt = NULL;
 				SPDPulse *spdPulse = NULL;
 				
-				cout << "Started (Read Data) ." << flush;
+				std::cout << "Started (Read Data) ." << std::flush;
 				while (reader.ReadNextPoint())
 				{
-					//cout << numOfPoints << endl;
+					//std::cout << numOfPoints << std::endl;
 					if((reportedNumOfPts > 10) && ((numOfPoints % feedback) == 0))
 					{
-						cout << "." << feedbackCounter << "." << flush;
+						std::cout << "." << feedbackCounter << "." << std::flush;
 						feedbackCounter += 10;
 					}
 					
@@ -356,9 +356,9 @@ namespace spdlib
 					spdPulse = new SPDPulse();
 					pulseUtils.initSPDPulse(spdPulse);
                     spdPulse->pulseID = numOfPulses;
-					//cout << "Pulse size " << sizeof(SPDPulse) << endl;
-					//cout << "Point size " << sizeof(SPDPoint) << endl;
-					//cout << "Points capacity (1) " << spdPulse->pts.capacity() << endl;
+					//std::cout << "Pulse size " << sizeof(SPDPulse) << std::endl;
+					//std::cout << "Point size " << sizeof(SPDPoint) << std::endl;
+					//std::cout << "Points capacity (1) " << spdPulse->pts.capacity() << std::endl;
 					spdPulse->numberOfReturns = p.GetNumberOfReturns();
                     if(spdPulse->numberOfReturns == 0)
                     {
@@ -371,7 +371,7 @@ namespace spdlib
 						{
 							if((reportedNumOfPts > 10) && ((numOfPoints % feedback) == 0))
 							{
-								cout << "." << feedbackCounter << "." << flush;
+								std::cout << "." << feedbackCounter << "." << std::flush;
 								feedbackCounter += 10;
 							}
 							liblas::Point const& pt = reader.GetPoint();
@@ -391,14 +391,14 @@ namespace spdlib
 						}
 						else
 						{
-							cerr << "\nWarning: The file ended unexpectedly.\n";
-                            cerr << "Expected " << spdPulse->numberOfReturns << " but only found " << i + 1 << " returns" << endl;
+							std::cerr << "\nWarning: The file ended unexpectedly.\n";
+                            std::cerr << "Expected " << spdPulse->numberOfReturns << " but only found " << i + 1 << " returns" << std::endl;
 							spdPulse->numberOfReturns = i+1;
 							//throw SPDIOException("Unexpected end to the file.");
 						}
 					}
 					++numOfPulses;
-					//cout << "Points capacity (2) " << spdPulse->pts.capacity() << endl << endl;
+					//std::cout << "Points capacity (2) " << spdPulse->pts.capacity() << std::endl << std::endl;
 					if(p.GetFlightLineEdge() == 1)
 					{
 						spdPulse->edgeFlightLineFlag = SPD_WITH_SCAN;
@@ -467,7 +467,7 @@ namespace spdlib
 				}
 				
 				ifs.close();
-				cout << ". Complete\n";
+				std::cout << ". Complete\n";
 				spdFile->setBoundingVolume(xMin, xMax, yMin, yMax, zMin, zMax);
 				if(convertCoords)
 				{
@@ -490,11 +490,11 @@ namespace spdlib
 		{
 			throw e;
 		}
-		catch(invalid_argument &e)
+		catch(std::invalid_argument &e)
 		{
 			throw SPDIOException(e.what());
 		}
-		catch(runtime_error &e)
+		catch(std::runtime_error &e)
 		{
 			throw SPDIOException(e.what());
 		}
@@ -502,7 +502,7 @@ namespace spdlib
 		return pulses;
 	}
 	
-	void SPDLASFileImporter::readAndProcessAllData(string inputFile, SPDFile *spdFile, SPDImporterProcessor *processor)throw(SPDIOException)
+	void SPDLASFileImporter::readAndProcessAllData(std::string inputFile, SPDFile *spdFile, SPDImporterProcessor *processor)throw(SPDIOException)
 	{
 		SPDPulseUtils pulseUtils;
 		boost::uint_fast64_t numOfPulses = 0;
@@ -521,8 +521,8 @@ namespace spdlib
 		
 		try 
 		{
-			ifstream ifs;
-			ifs.open(inputFile.c_str(), ios::in | ios::binary);
+			std::ifstream ifs;
+			ifs.open(inputFile.c_str(), std::ios::in | std::ios::binary);
 			if(ifs.is_open())
 			{
 				liblas::ReaderFactory lasReaderFactory;
@@ -535,7 +535,7 @@ namespace spdlib
 				if(spdFile->getSpatialReference() == "")
 				{
 					liblas::SpatialReference const &lasSpatial = header.GetSRS();
-					string spatialRefProjWKT = lasSpatial.GetWKT();
+					std::string spatialRefProjWKT = lasSpatial.GetWKT();
 					spdFile->setSpatialReference(spatialRefProjWKT);
 				}
 				
@@ -551,12 +551,12 @@ namespace spdlib
 				SPDPoint *spdPt = NULL;
 				SPDPulse *spdPulse = NULL;
 				
-				cout << "Started (Read Data) ." << flush;
+				std::cout << "Started (Read Data) ." << std::flush;
 				while (reader.ReadNextPoint())
 				{
 					if((reportedNumOfPts > 10) && ((numOfPoints % feedback) == 0))
 					{
-						cout << "." << feedbackCounter << "." << flush;
+						std::cout << "." << feedbackCounter << "." << std::flush;
 						feedbackCounter += 10;
 					}
 					
@@ -597,7 +597,7 @@ namespace spdlib
 						{
 							if((reportedNumOfPts > 10) && ((numOfPoints % feedback) == 0))
 							{
-								cout << "." << feedbackCounter << "." << flush;
+								std::cout << "." << feedbackCounter << "." << std::flush;
 								feedbackCounter += 10;
 							}
 							liblas::Point const& pt = reader.GetPoint();
@@ -617,8 +617,8 @@ namespace spdlib
 						}
 						else
 						{
-							cerr << "\nWarning: The file ended unexpectedly.\n";
-                            cerr << "Expected " << spdPulse->numberOfReturns << " but only found " << i + 1 << " returns" << endl;
+							std::cerr << "\nWarning: The file ended unexpectedly.\n";
+                            std::cerr << "Expected " << spdPulse->numberOfReturns << " but only found " << i + 1 << " returns" << std::endl;
 							spdPulse->numberOfReturns = i+1;
 							//throw SPDIOException("Unexpected end to the file.");
 						}
@@ -693,7 +693,7 @@ namespace spdlib
 				}
 				
 				ifs.close();
-				cout << ". Complete\n";
+				std::cout << ". Complete\n";
 				spdFile->setBoundingVolume(xMin, xMax, yMin, yMax, zMin, zMax);
 				if(convertCoords)
 				{
@@ -716,18 +716,18 @@ namespace spdlib
 		{
 			throw e;
 		}
-		catch(invalid_argument &e)
+		catch(std::invalid_argument &e)
 		{
 			throw SPDIOException(e.what());
 		}
-		catch(runtime_error &e)
+		catch(std::runtime_error &e)
 		{
 			throw SPDIOException(e.what());
 		}
 		
 	}
 	
-	bool SPDLASFileImporter::isFileType(string fileType)
+	bool SPDLASFileImporter::isFileType(std::string fileType)
 	{
 		if(fileType == "LAS")
 		{
@@ -736,7 +736,7 @@ namespace spdlib
 		return false;
 	}
 	
-    void SPDLASFileImporter::readHeaderInfo(string, SPDFile*) throw(SPDIOException)
+    void SPDLASFileImporter::readHeaderInfo(std::string, SPDFile*) throw(SPDIOException)
     {
         // No Header to Read..
     }
@@ -816,7 +816,7 @@ namespace spdlib
 				spdPt->classification = SPD_CREATED;
 				if(!classWarningGiven)
 				{
-					cerr << "WARNING: The class ID was not recognised - check the classes points were allocated too.";
+					std::cerr << "WARNING: The class ID was not recognised - check the classes points were allocated too.";
 					classWarningGiven = true;
 				}
 			}
@@ -835,11 +835,11 @@ namespace spdlib
 		{
 			throw e;
 		}
-		catch(invalid_argument &e)
+		catch(std::invalid_argument &e)
 		{
 			throw SPDIOException(e.what());
 		}
-		catch(runtime_error &e)
+		catch(std::runtime_error &e)
 		{
 			throw SPDIOException(e.what());
 		}

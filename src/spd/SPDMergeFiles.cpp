@@ -32,7 +32,7 @@ namespace spdlib
 		
 	}
 	
-	void SPDMergeFiles::mergeToUPD(vector<string> inputFiles, string output, string inFormat,  string schema, string inSpatialRef, bool convertCoords, string outputProj4, boost::uint_fast16_t indexCoords, bool setSourceID, bool setReturnIDs, vector<boost::uint_fast16_t> returnID, bool setClasses, vector<boost::uint_fast16_t> classValues, bool ignoreChecks, boost::uint_fast16_t waveBinRes) throw(SPDException)
+	void SPDMergeFiles::mergeToUPD(std::vector<std::string> inputFiles, std::string output, std::string inFormat,  std::string schema, std::string inSpatialRef, bool convertCoords, std::string outputProj4, boost::uint_fast16_t indexCoords, bool setSourceID, bool setReturnIDs, std::vector<boost::uint_fast16_t> returnID, bool setClasses, std::vector<boost::uint_fast16_t> classValues, bool ignoreChecks, boost::uint_fast16_t waveBinRes) throw(SPDException)
 	{
 		try 
 		{
@@ -50,7 +50,7 @@ namespace spdlib
             boost::uint_fast16_t sourceID = 0;
             boost::uint_fast16_t fileCount = 0;
             
-			for(vector<string>::iterator iterInFiles = inputFiles.begin(); iterInFiles != inputFiles.end(); ++iterInFiles)
+			for(std::vector<std::string>::iterator iterInFiles = inputFiles.begin(); iterInFiles != inputFiles.end(); ++iterInFiles)
 			{
 				SPDFile *spdFile = new SPDFile(*iterInFiles);
 				spdFile->setSpatialReference(inSpatialRef);
@@ -80,7 +80,7 @@ namespace spdlib
                     }
                     else if(!spdFileMerged->checkCompatibilityGeneralCheckExpandExtent(spdFile))
 					{
-						string message = (*iterInFiles) + string(" was not compatiable with the file(s) previously read.");
+						std::string message = (*iterInFiles) + std::string(" was not compatiable with the file(s) previously read.");
 						throw SPDException(message);
 					}
 				}
