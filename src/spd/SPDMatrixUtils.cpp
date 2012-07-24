@@ -436,14 +436,14 @@ namespace spdlib{
 					{
 						// m
 						word = strLine.substr(2);
-						number = textUtils.strto64bitUInt(word);
+						number = textUtils.strto32bitUInt(word);
 						matrix->m = number;
 					}
 					else if(lineCounter == 1)
 					{
 						// n
 						word = strLine.substr(2);
-						number = textUtils.strto64bitUInt(word);
+						number = textUtils.strto32bitUInt(word);
 						matrix->n = number;
 					}
 					else if(lineCounter == 2)
@@ -505,6 +505,7 @@ namespace spdlib{
 	
 	Matrix* SPDMatrixUtils::readMatrixFromGridTxt(std::string filepath) throw(SPDException)
 	{
+        SPDTextFileUtilities txtUtils;
 		Matrix *matrix = new Matrix();
 		std::ifstream inputMatrix;
 		inputMatrix.open(filepath.c_str());
@@ -531,7 +532,7 @@ namespace spdlib{
 					{
 						// m
 						word = strLine.substr(2);
-						number = strtol(word.c_str(), NULL, 10);
+						number = txtUtils.strto32bitInt(word);
 						matrix->m = number;
 						//std::cout << "columns = " << number << std::endl;
 					}
@@ -539,7 +540,7 @@ namespace spdlib{
 					{
 						// n
 						word = strLine.substr(2);
-						number = strtol(word.c_str(), NULL, 10);
+						number = txtUtils.strto32bitInt(word);
 						matrix->n = number;
 						//std::cout << "rows = " << number << std::endl;
 					}
@@ -572,7 +573,7 @@ namespace spdlib{
 				if(wholeline.at(i) == ',')
 				{
 					word = wholeline.substr(start, i-start);								
-					value = strtod(word.c_str(), NULL);
+					value = txtUtils.strtodouble(word);
 					matrix->matrix[dataCounter] = value;
 					dataCounter++;
 					
@@ -586,7 +587,7 @@ namespace spdlib{
 			}
 			
 			word = wholeline.substr(start);
-			value = strtod(word.c_str(), NULL);
+			value = txtUtils.strtodouble(word);
 			matrix->matrix[dataCounter] = value;
 			dataCounter++;
 			
