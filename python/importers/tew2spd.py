@@ -19,11 +19,13 @@ import optparse
 import spdpy
 from scipy import constants
 import datetime
+import time
 #import math
 
 #Constants:
 spdSpeedOfLightM = 299792458
 spdSpeedOfLightMns = 0.299792458
+spdPiHalf = np.pi/2
 
 
 class header:
@@ -202,11 +204,12 @@ class pulse:
         if(self.noOfWfBlocksCh1>0):
             print "Received Wf1, block length:", self.recWf1BlockLength
             print "Received Wf1, block offset (bins):", self.recWf1BlockOffset
-            print "Received Wf1:", self.recWf1
+            print "Received Wf1 (corrected):", self.recWf1
 
         if(self.noOfWfBlocksCh2>0):
             print "Received Wf2, block length:", self.recWf2BlockLength
             print "Received Wf2, block offset (bins):", self.recWf2BlockOffset
+            print "Received Wf2 (corrected):", self.recWf2
         
 
 
@@ -221,7 +224,7 @@ def createSPDPulse(tewHeader, tewPulse, pulseID):
     pulse.pulseID = pulseID
     pulse.wavelength = 1550.0
     pulse.numberOfReturns = 0
-    pulse.GPStime = tewPulse.GPSTime
+    pulse.gpsTime = long(tewPulse.GPSTime*1e9) #Convert to long and store as nanoseconds.
     
     # Add origin coordinates
     pulse.x0 = tewPulse.xyzRelOrigin[0] * tewHeader.xScaleFactor + tewHeader.xOffset
@@ -229,8 +232,8 @@ def createSPDPulse(tewHeader, tewPulse, pulseID):
     pulse.z0 = tewPulse.xyzRelOrigin[2] * tewHeader.zScaleFactor + tewHeader.zOffset
     range = np.sqrt(tewPulse.outgoingVector[0]**2 + tewPulse.outgoingVector[1]**2 + tewPulse.outgoingVector[2]**2)
     pulse.azimuth = np.arctan2(tewPulse.outgoingVector[1], tewPulse.outgoingVector[0]) #Will have a value between -pi..pi. Seem to be like that in spdCommon.cpp when converting cartesian to spherical coordinates.
-    pulse.zenith = np.arccos(tewPulse.outgoingVector[2] / range)
-    
+    pulse.zenith = np.arccos(tewPulse.outgoingVector[2] / range) + spdPiHalf
+
     # Received waveform
     pulse.rangeToWaveformStart = (tewPulse.recWfOffset - (tewPulse.triggerWfBlockOffset + tewPulse.triggerEchoOffset)) * tewHeader.sampleLength + tewPulse.recWfConstOffset
     pulse.receiveWaveGain = 1.0
@@ -243,6 +246,17 @@ def createSPDPulse(tewHeader, tewPulse, pulseID):
     pulse.transWaveOffset = 0.0
     pulse.numOfTransmittedBins = tewPulse.triggerWfBlockLength
     pulse.transmitted = [int(i) for i in tewPulse.triggerWf]
+    
+    if False:
+        print "x0: ", pulse.x0
+        print "y0: ", pulse.y0
+        print "z0: ", pulse.z0
+        print "tewPulse.outgoingVector[2] :", tewPulse.outgoingVector[2] 
+        print "range:", range
+        print "azimuth:", pulse.azimuth
+        print "zenith:", pulse.zenith
+        print "rangeToWaveformStart:", pulse.rangeToWaveformStart
+
     
     # Return result
     return pulse
@@ -301,6 +315,7 @@ def main(cmdargs):
     
     
     # Set SPD header values
+    spdObj.setSystemIdentifier(tewHeader.systemIdentifier)
     spdObj.setTemporalBinSpacing(tewHeader.sampleLengthNs)
     spdObj.setYearOfCapture(tewHeader.scanYear)
     spdObj.setMonthOfCapture(tewHeader.scanMonth)
@@ -313,15 +328,17 @@ def main(cmdargs):
     spdPulsesInBuffer = 0 #Count number of spdPulses in buffer before saving to file.
     spdPulseBlockSize = 10000 #Number of pulses before saving to file.
     spdPulses = list()
+    time0 = time.time() #Timers used to calculate time to finish.
+    time1 = 0 #Timers used to calculate time to finish.
    
-    for pulseId in xrange(0, spdPulseBlockSize*40):
+    for pulseId in xrange(0, tewHeader.noOfWaveformDataRecs):
         #Pulses
         pulses = list()
         pulsesInBuffer = 0
         
-
+        
         # Read tew-pulse header
-        pulse4Format = struct.Struct('=d f f H H H 3i 3i B')
+        pulse4Format = struct.Struct('=d f f H H H 3l 3l B')
         pulse4str = tewObj.read(pulse4Format.size)
         pulse4 = pulse4Format.unpack_from(pulse4str, 0)
         
@@ -336,31 +353,29 @@ def main(cmdargs):
         # Read tew trigger waveform
         triggerWfFormat = array.array('B')
         triggerWfFormat.read(tewObj, triggerHeader[0])
-        triggerWfTemp = np.array(triggerWfFormat, dtype=np.uint)
+        triggerWf = np.array(triggerWfFormat, dtype=np.uint)
         
-        triggerWf = np.zeros(len(triggerWfTemp), dtype=np.uint)
-        for j in xrange(0, len(triggerWfTemp)):
-            triggerWf[j] = tewHeader.ch1CorrectionTable[triggerWfTemp[j ]]
+        #Apply correction table (should not be done for trigger wf?)
+        #triggerWf = np.zeros(len(triggerWfTemp), dtype=np.uint)
+        #for j in xrange(0, len(triggerWfTemp)):
+        #    triggerWf[j] = tewHeader.ch1CorrectionTable[triggerWfTemp[j ]]
             
-        #triggerWfFormat = struct.Struct('='+str(triggerHeader[0])+'H')
-        #triggerWfStr = tewObj.read(triggerWfFormat.size)
-        #triggerWf = triggerWfFormat.unpack_from(triggerWfStr, 0)
-        
         #Store header and pulse for trigger waveform
         tewPulse.setTriggerWf(triggerHeader[0], triggerHeader[1], triggerWf)
         
 
-        for i in xrange(1, tewPulse.noOfWfBlocksCh1+1): #TODO: Lägg till nåt som syr ihop fler än 1 till samma paket...
-            # Read tew received pulse header
+        for i in xrange(1, tewPulse.noOfWfBlocksCh1+1): #TODO: Need to combine many blocks into one. At the moment, only the last block is stored.
+            # Read tew received waveform 1 (low ch) header
             recWf1HeaderFormat = struct.Struct('=B H') #Block length / Block offset.
             recWf1HeaderStr = tewObj.read(recWf1HeaderFormat.size)
             recWf1Header = recWf1HeaderFormat.unpack_from(recWf1HeaderStr, 0)
             
-            # Read tew received waveform
+            # Read tew received waveform 1 (low ch = sensitive)
             recWf1Format = array.array('B')
             recWf1Format.read(tewObj, recWf1Header[0])
             recWf1Temp = np.array(recWf1Format, dtype=np.uint)
             
+            # Apply correction table
             recWf1 = np.zeros(len(recWf1Temp), dtype=np.uint)
             for j in xrange(0, len(recWf1Temp)):
                 recWf1[j] = tewHeader.ch1CorrectionTable[recWf1Temp[j]]
@@ -370,16 +385,17 @@ def main(cmdargs):
         
         
         for i in xrange(1, tewPulse.noOfWfBlocksCh2+1): #TODO: Lägg till nåt som syr ihop fler än 1 till samma paket... och därefter kombinerar Ch1 och Ch2.
-            # Read tew received pulse header
+            # Read tew received waveform 2 (high ch) header
             recWf2HeaderFormat = struct.Struct('=B H') #Block length / Block offset.
             recWf2HeaderStr = tewObj.read(recWf2HeaderFormat.size)
             recWf2Header = recWf2HeaderFormat.unpack_from(recWf2HeaderStr, 0)
             
-            # Read tew received waveform
+            # Read tew received waveform 2 (high ch)
             recWf2Format = array.array('B')
             recWf2Format.read(tewObj, recWf2Header[0])
             recWf2Temp = np.array(recWf2Format, dtype=np.uint)
             
+            # Apply correction table
             recWf2 = np.zeros(len(recWf2Temp), dtype=np.uint)
             for j in xrange(0, len(recWf2Temp)):
                 recWf2[j] = tewHeader.ch2CorrectionTable[recWf2Temp[j]]
@@ -387,9 +403,10 @@ def main(cmdargs):
             #Store header and pulse for received waveform
             tewPulse.setWf2(recWf2Header[0], recWf2Header[1], recWf2)
             
-        tewPulse.combineRecWf(tewHeader) #Combine ch1 and ch2.
-
+        tewPulse.combineRecWf(tewHeader) #Combine ch1 and ch2. TODO: Only take ch 1 at the moment.
+        
         #tewPulse.summary() #Print summary about the tew-pulse header
+        
         
         #####################################
         #Store the waveform as SPDPulse.
@@ -405,14 +422,24 @@ def main(cmdargs):
             spdPulsesInBuffer = 0
             if cmdargs.verbose:
                 pulsesImported = pulseId + 1
-                sys.stdout.write("%i pulses imported\r" % pulsesImported)
+                time1 = time.time()
+                estimatedTimeToFinish = ((time1-time0)/spdPulseBlockSize * (tewHeader.noOfWaveformDataRecs-pulsesImported))/60.0
+                sys.stdout.write("%i pulses imported" % pulsesImported)
+                sys.stdout.write(" (Estimated %0.1f min to finish)\r" % estimatedTimeToFinish)
                 sys.stdout.flush()
-
+                time0 = time.time()
+                
     #End of for reading pulses.
     
-    
     sys.stdout.write("\n") #New line before exiting compilation.
-
+    print "Pulses still in buffer:", spdPulsesInBuffer
+    
+    #Write SPDPulses that still are in memory (if any)
+    if spdPulsesInBuffer>0:
+        writeSPDPulses(spdObj, spdWriter, spdPulses)
+        print "Just wrote the last pulses in buffer."
+        
+ 
     # Close files
     tewObj.close()
     spdWriter.close(spdObj)
