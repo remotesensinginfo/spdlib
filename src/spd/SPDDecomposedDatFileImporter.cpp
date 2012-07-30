@@ -28,17 +28,17 @@
 namespace spdlib
 {
 	
-	SPDDecomposedDatFileImporter::SPDDecomposedDatFileImporter(bool convertCoords, string outputProjWKT, string schema, boost::uint_fast16_t indexCoords, bool defineOrigin, double originX, double originY, float originZ, float waveNoiseThreshold) : SPDDataImporter(convertCoords, outputProjWKT, schema, indexCoords, defineOrigin, originX, originY, originZ, waveNoiseThreshold), classWarningGiven(false)
+	SPDDecomposedDatFileImporter::SPDDecomposedDatFileImporter(bool convertCoords, std::string outputProjWKT, std::string schema, boost::uint_fast16_t indexCoords, bool defineOrigin, double originX, double originY, float originZ, float waveNoiseThreshold) : SPDDataImporter(convertCoords, outputProjWKT, schema, indexCoords, defineOrigin, originX, originY, originZ, waveNoiseThreshold), classWarningGiven(false)
 	{
 		
 	}
     
-    SPDDataImporter* SPDDecomposedDatFileImporter::getInstance(bool convertCoords, string outputProjWKT, string schema, boost::uint_fast16_t indexCoords, bool defineOrigin, double originX, double originY, float originZ, float waveNoiseThreshold)
+    SPDDataImporter* SPDDecomposedDatFileImporter::getInstance(bool convertCoords, std::string outputProjWKT, std::string schema, boost::uint_fast16_t indexCoords, bool defineOrigin, double originX, double originY, float originZ, float waveNoiseThreshold)
     {
         return new SPDDecomposedDatFileImporter(convertCoords, outputProjWKT, schema, indexCoords, defineOrigin, originX, originY, originZ, waveNoiseThreshold);
     }
 	
-	list<SPDPulse*>* SPDDecomposedDatFileImporter::readAllDataToList(string inputFile, SPDFile *spdFile)throw(SPDIOException)
+	std::list<SPDPulse*>* SPDDecomposedDatFileImporter::readAllDataToList(std::string inputFile, SPDFile *spdFile)throw(SPDIOException)
 	{
 		SPDTextFileUtilities textFileUtils;
 		SPDTextFileLineReader lineReader;
@@ -60,11 +60,11 @@ namespace spdlib
         double zenith = 0;
         double gpsTime = 0;
         double rangeTime = 0;
-		string pointLine = "";
+		std::string pointLine = "";
 		
 		boost::uint_fast64_t numPulses = 0;
 		boost::uint_fast64_t totalNumPoints = 0;
-		list<SPDPulse*> *pulses = new list<SPDPulse*>();
+		std::list<SPDPulse*> *pulses = new std::list<SPDPulse*>();
 		try 
 		{
 			if(convertCoords)
@@ -75,15 +75,15 @@ namespace spdlib
 			SPDPulse *pulse = NULL;
 			SPDPoint *point = NULL;
 			
-			vector<string> *lineTokens = new vector<string>();
+			std::vector<std::string> *lineTokens = new std::vector<std::string>();
 			
 			lineReader.openFile(inputFile);
-			cout << "Read ." << flush;
+			std::cout << "Read ." << std::flush;
 			while(!lineReader.endOfFile())
 			{
 				if((numPulses % 100000) == 0)
 				{
-					cout << "." << numPulses << "." << flush;
+					std::cout << "." << numPulses << "." << std::flush;
 				}
 
 				pointLine = lineReader.readLine();
@@ -264,12 +264,12 @@ namespace spdlib
             spdFile->setReceiveWaveformDefined(SPD_FALSE);
 			lineReader.closeFile();
 			delete lineTokens;
-			cout << "." << numPulses << ".Pulses\n";
+			std::cout << "." << numPulses << ".Pulses\n";
 		}
 		catch(std::out_of_range &e)
 		{
-			cout << "ERROR (finding pulse): " << e.what() << endl;
-			cout << "\'" << pointLine << "\'\n";
+			std::cout << "ERROR (finding pulse): " << e.what() << std::endl;
+			std::cout << "\'" << pointLine << "\'\n";
 			throw SPDIOException(e.what());
 		}
 		catch(SPDTextFileException &e)
@@ -284,7 +284,7 @@ namespace spdlib
 		return pulses;
 	}
 	
-	vector<SPDPulse*>* SPDDecomposedDatFileImporter::readAllDataToVector(string inputFile, SPDFile *spdFile)throw(SPDIOException)
+	std::vector<SPDPulse*>* SPDDecomposedDatFileImporter::readAllDataToVector(std::string inputFile, SPDFile *spdFile)throw(SPDIOException)
 	{
 		SPDTextFileUtilities textFileUtils;
 		SPDTextFileLineReader lineReader;
@@ -306,11 +306,11 @@ namespace spdlib
         double zenith = 0;
         double gpsTime = 0;
         double rangeTime = 0;
-		string pointLine = "";
+		std::string pointLine = "";
 		
 		boost::uint_fast64_t numPulses = 0;
 		boost::uint_fast64_t totalNumPoints = 0;
-		vector<SPDPulse*> *pulses = new vector<SPDPulse*>();
+		std::vector<SPDPulse*> *pulses = new std::vector<SPDPulse*>();
 		try 
 		{
 			if(convertCoords)
@@ -321,15 +321,15 @@ namespace spdlib
 			SPDPulse *pulse = NULL;
 			SPDPoint *point = NULL;
 			
-			vector<string> *lineTokens = new vector<string>();
+			std::vector<std::string> *lineTokens = new std::vector<std::string>();
 			
 			lineReader.openFile(inputFile);
-			cout << "Read ." << flush;
+			std::cout << "Read ." << std::flush;
 			while(!lineReader.endOfFile())
 			{
 				if((numPulses % 10000) == 0)
 				{
-					cout << "." << numPulses << "." << flush;
+					std::cout << "." << numPulses << "." << std::flush;
 				}
 				
 				pointLine = lineReader.readLine();
@@ -509,12 +509,12 @@ namespace spdlib
             spdFile->setReceiveWaveformDefined(SPD_FALSE);
 			lineReader.closeFile();
 			delete lineTokens;
-			cout << "." << numPulses << ".Pulses\n";
+			std::cout << "." << numPulses << ".Pulses\n";
 		}
 		catch(std::out_of_range &e)
 		{
-			cout << "ERROR (finding pulse): " << e.what() << endl;
-			cout << "\'" << pointLine << "\'\n";
+			std::cout << "ERROR (finding pulse): " << e.what() << std::endl;
+			std::cout << "\'" << pointLine << "\'\n";
 			throw SPDIOException(e.what());
 		}
 		catch(SPDTextFileException &e)
@@ -529,7 +529,7 @@ namespace spdlib
 		return pulses;
 	}
 	
-	void SPDDecomposedDatFileImporter::readAndProcessAllData(string inputFile, SPDFile *spdFile, SPDImporterProcessor *processor)throw(SPDIOException)
+	void SPDDecomposedDatFileImporter::readAndProcessAllData(std::string inputFile, SPDFile *spdFile, SPDImporterProcessor *processor)throw(SPDIOException)
 	{
 		SPDTextFileUtilities textFileUtils;
 		SPDTextFileLineReader lineReader;
@@ -551,7 +551,7 @@ namespace spdlib
         double zenith = 0;
         double gpsTime = 0;
         double rangeTime = 0;
-		string pointLine = "";
+		std::string pointLine = "";
 		
 		boost::uint_fast64_t numPulses = 0;
 		boost::uint_fast64_t totalNumPoints = 0;
@@ -565,15 +565,15 @@ namespace spdlib
 			SPDPulse *pulse = NULL;
 			SPDPoint *point = NULL;
 			
-			vector<string> *lineTokens = new vector<string>();
+			std::vector<std::string> *lineTokens = new std::vector<std::string>();
 			
 			lineReader.openFile(inputFile);
-			cout << "Read ." << flush;
+			std::cout << "Read ." << std::flush;
 			while(!lineReader.endOfFile())
 			{
 				if((numPulses % 10000) == 0)
 				{
-					cout << "." << numPulses << "." << flush;
+					std::cout << "." << numPulses << "." << std::flush;
 				}
 				
 				pointLine = lineReader.readLine();
@@ -754,12 +754,12 @@ namespace spdlib
             spdFile->setReceiveWaveformDefined(SPD_FALSE);
 			lineReader.closeFile();
 			delete lineTokens;
-			cout << "." << numPulses << ".Pulses\n";
+			std::cout << "." << numPulses << ".Pulses\n";
 		}
 		catch(std::out_of_range &e)
 		{
-			cout << "ERROR (finding pulse): " << e.what() << endl;
-			cout << "\'" << pointLine << "\'\n";
+			std::cout << "ERROR (finding pulse): " << e.what() << std::endl;
+			std::cout << "\'" << pointLine << "\'\n";
 			throw SPDIOException(e.what());
 		}
 		catch(SPDTextFileException &e)
@@ -772,7 +772,7 @@ namespace spdlib
 		}
 	}
 	
-	bool SPDDecomposedDatFileImporter::isFileType(string fileType)
+	bool SPDDecomposedDatFileImporter::isFileType(std::string fileType)
 	{
 		if(fileType == "DECOMPOSED_DAT")
 		{
@@ -781,12 +781,12 @@ namespace spdlib
 		return false;
 	}
     
-    void SPDDecomposedDatFileImporter::readHeaderInfo(string, SPDFile*) throw(SPDIOException)
+    void SPDDecomposedDatFileImporter::readHeaderInfo(std::string, SPDFile*) throw(SPDIOException)
     {
         // No Header to Read..
     }
 	
-	SPDPoint* SPDDecomposedDatFileImporter::createSPDPoint(string pointLine)
+	SPDPoint* SPDDecomposedDatFileImporter::createSPDPoint(std::string pointLine)
 	{
 		SPDTextFileUtilities textFileUtils;
 		SPDPointUtils pointUtils;
@@ -794,7 +794,7 @@ namespace spdlib
 		try 
 		{
 			pointUtils.initSPDPoint(point);
-			vector<string> *lineTokens = new vector<string>();
+			std::vector<std::string> *lineTokens = new std::vector<std::string>();
 			textFileUtils.tokenizeString(pointLine, ' ', lineTokens);
 			
 			double x = textFileUtils.strtodouble(lineTokens->at(0));
@@ -866,7 +866,7 @@ namespace spdlib
 			{
 				if(!classWarningGiven)
 				{
-					cerr << "WARNING: The class ID was not recognised - check the classes points were allocated too.";
+                    std::cerr << "WARNING: The class ID was not recognised - check the classes points were allocated too.";
 					classWarningGiven = true;
 				}
 				point->classification = SPD_CREATED;
@@ -875,8 +875,8 @@ namespace spdlib
 		}
 		catch(std::out_of_range &e)
 		{
-			cout << "ERROR (creating point): " << e.what() << endl;
-			cout << "\'" << pointLine << "\'\n";
+			std::cout << "ERROR (creating point): " << e.what() << std::endl;
+			std::cout << "\'" << pointLine << "\'\n";
 			throw e;
 		}
 		

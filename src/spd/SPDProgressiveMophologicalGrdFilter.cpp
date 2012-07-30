@@ -26,7 +26,7 @@
 namespace spdlib
 {
     
-    SPDProgressiveMophologicalGrdFilter::SPDProgressiveMophologicalGrdFilter(uint_fast16_t initFilterHSize, boost::uint_fast16_t maxFilterHSize, float terrainSlope, float initElevDiff, float maxElevDiff, float grdPtDev, bool medianFilter, boost::uint_fast16_t medianFilterHSize, boost::uint_fast16_t classParameters)
+    SPDProgressiveMophologicalGrdFilter::SPDProgressiveMophologicalGrdFilter(boost::uint_fast16_t initFilterHSize, boost::uint_fast16_t maxFilterHSize, float terrainSlope, float initElevDiff, float maxElevDiff, float grdPtDev, bool medianFilter, boost::uint_fast16_t medianFilterHSize, boost::uint_fast16_t classParameters)
     {
         this->initFilterHSize = initFilterHSize;
         this->maxFilterHSize = maxFilterHSize;
@@ -39,7 +39,7 @@ namespace spdlib
         this->classParameters = classParameters;
     }
     
-    void SPDProgressiveMophologicalGrdFilter::processDataBlockImage(SPDFile *inSPDFile, vector<SPDPulse*> ***pulses, float ***imageDataBlock, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast32_t numImgBands, float binSize) throw(SPDProcessingException)
+    void SPDProgressiveMophologicalGrdFilter::processDataBlockImage(SPDFile *inSPDFile, std::vector<SPDPulse*> ***pulses, float ***imageDataBlock, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast32_t numImgBands, float binSize) throw(SPDProcessingException)
     {
         if(numImgBands < 1)
 		{
@@ -60,10 +60,10 @@ namespace spdlib
 			changeFlag[i] = new boost::uint_fast16_t*[xSize];
 			for(boost::uint_fast32_t j = 0; j < xSize; ++j)
 			{
-				elev[i][j] = numeric_limits<float>::signaling_NaN();
-				elevErode[i][j] = numeric_limits<float>::signaling_NaN();
-				elevDialate[i][j] = numeric_limits<float>::signaling_NaN();
-				imageDataBlock[0][i][j] = numeric_limits<float>::signaling_NaN();
+				elev[i][j] = std::numeric_limits<float>::signaling_NaN();
+				elevErode[i][j] = std::numeric_limits<float>::signaling_NaN();
+				elevDialate[i][j] = std::numeric_limits<float>::signaling_NaN();
+				imageDataBlock[0][i][j] = std::numeric_limits<float>::signaling_NaN();
 				changeFlag[i][j] = new boost::uint_fast16_t[2];
 				changeFlag[i][j][0] = 0;
 				changeFlag[i][j][1] = 0;
@@ -91,7 +91,7 @@ namespace spdlib
 		for(boost::uint_fast16_t filterHSize = initFilterHSize; filterHSize <= maxFilterHSize; ++filterHSize)
 		{
 			filterSize = (filterHSize * 2)+1;
-			cout << "Filter Size: " << filterHSize << " threshold = " << elevDiffThreshold << endl;
+			std::cout << "Filter Size: " << filterHSize << " threshold = " << elevDiffThreshold << std::endl;
 			
 			element = new boost::uint_fast16_t*[filterSize];
 			for(boost::uint_fast16_t i = 0; i < filterSize; ++i)
@@ -180,7 +180,7 @@ namespace spdlib
 		delete[] changeFlag;
     }
     
-    void SPDProgressiveMophologicalGrdFilter::processDataBlock(SPDFile *inSPDFile, vector<SPDPulse*> ***pulses, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, float binSize) throw(SPDProcessingException)
+    void SPDProgressiveMophologicalGrdFilter::processDataBlock(SPDFile *inSPDFile, std::vector<SPDPulse*> ***pulses, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, float binSize) throw(SPDProcessingException)
     {
 		float **elev = new float*[ySize];
 		float **elevFinal = new float*[ySize];
@@ -198,10 +198,10 @@ namespace spdlib
 			elevFinal[i] = new float[xSize];
 			for(boost::uint_fast32_t j = 0; j < xSize; ++j)
 			{
-				elev[i][j] = numeric_limits<float>::signaling_NaN();
-				elevFinal[i][j] = numeric_limits<float>::signaling_NaN();
-				elevErode[i][j] = numeric_limits<float>::signaling_NaN();
-				elevDialate[i][j] = numeric_limits<float>::signaling_NaN();
+				elev[i][j] = std::numeric_limits<float>::signaling_NaN();
+				elevFinal[i][j] = std::numeric_limits<float>::signaling_NaN();
+				elevErode[i][j] = std::numeric_limits<float>::signaling_NaN();
+				elevDialate[i][j] = std::numeric_limits<float>::signaling_NaN();
 				changeFlag[i][j] = new boost::uint_fast16_t[2];
 				changeFlag[i][j][0] = 0;
 				changeFlag[i][j][1] = 0;
@@ -229,7 +229,7 @@ namespace spdlib
 		for(boost::uint_fast16_t filterHSize = initFilterHSize; filterHSize <= maxFilterHSize; ++filterHSize)
 		{
 			filterSize = (filterHSize * 2)+1;
-			cout << "Filter Size: " << filterHSize << " threshold = " << elevDiffThreshold << endl;
+			std::cout << "Filter Size: " << filterHSize << " threshold = " << elevDiffThreshold << std::endl;
 			
 			element = new boost::uint_fast16_t*[filterSize];
 			for(boost::uint_fast16_t i = 0; i < filterSize; ++i)
@@ -300,8 +300,8 @@ namespace spdlib
 			delete[] element;
 		}
 		
-		vector<SPDPulse*>::iterator iterPulses;
-		vector<SPDPoint*>::iterator iterPoints;
+		std::vector<SPDPulse*>::iterator iterPulses;
+		std::vector<SPDPoint*>::iterator iterPoints;
 		
 		// Classifiy Ground returns
 		for(boost::uint_fast32_t i = 0; i < ySize; ++i)
@@ -369,8 +369,8 @@ namespace spdlib
 		bool first = true;
 		float minVal = 0;
 		
-		vector<float> *elevValues = new vector<float>();
-		vector<float>::iterator iterVals;
+		std::vector<float> *elevValues = new std::vector<float>();
+		std::vector<float>::iterator iterVals;
 		elevValues->reserve(maxNumFilterValues);
 		
 		for(boost::uint_fast32_t i = 0; i < ySize; ++i)
@@ -424,7 +424,7 @@ namespace spdlib
 						elementEndX = filterSize;
 					}
 					
-					//cout << "Filter [" << j << "," << i << "] [" << filterPxlStartX << "," << filterPxlEndX << "][" << filterPxlStartY << "," << filterPxlEndY << "]\n\n";
+					//std::cout << "Filter [" << j << "," << i << "] [" << filterPxlStartX << "," << filterPxlEndX << "][" << filterPxlStartY << "," << filterPxlEndY << "]\n\n";
 					
 					elevValues->clear();
 					
@@ -462,12 +462,12 @@ namespace spdlib
 					}
 					else 
 					{
-						elevErode[i][j] = numeric_limits<float>::signaling_NaN();
+						elevErode[i][j] = std::numeric_limits<float>::signaling_NaN();
 					}
 				}
 				else 
 				{
-					elevErode[i][j] = numeric_limits<float>::signaling_NaN();
+					elevErode[i][j] = std::numeric_limits<float>::signaling_NaN();
 				}
                 
 				
@@ -493,8 +493,8 @@ namespace spdlib
 		bool first = true;
 		float maxVal = 0;
 		
-		vector<float> *elevValues = new vector<float>();
-		vector<float>::iterator iterVals;
+		std::vector<float> *elevValues = new std::vector<float>();
+		std::vector<float>::iterator iterVals;
 		elevValues->reserve(maxNumFilterValues);
 		
 		for(boost::uint_fast32_t i = 0; i < ySize; ++i)
@@ -548,7 +548,7 @@ namespace spdlib
 						elementEndX = filterSize;
 					}
 					
-					//cout << "Filter [" << j << "," << i << "] [" << filterPxlStartX << "," << filterPxlEndX << "][" << filterPxlStartY << "," << filterPxlEndY << "]\n\n";
+					//std::cout << "Filter [" << j << "," << i << "] [" << filterPxlStartX << "," << filterPxlEndX << "][" << filterPxlStartY << "," << filterPxlEndY << "]\n\n";
 					
 					elevValues->clear();
 					
@@ -586,22 +586,22 @@ namespace spdlib
 					}
 					else 
 					{
-						elevDialate[i][j] = numeric_limits<float>::signaling_NaN();
+						elevDialate[i][j] = std::numeric_limits<float>::signaling_NaN();
 					}
 				}
 				else 
 				{
-					elevDialate[i][j] = numeric_limits<float>::signaling_NaN();
+					elevDialate[i][j] = std::numeric_limits<float>::signaling_NaN();
 				}
 			}
 		}
 		delete elevValues;
 	}
 	
-	void SPDProgressiveMophologicalGrdFilter::findMinSurface(vector<SPDPulse*> ***pulses, float **elev, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize)
+	void SPDProgressiveMophologicalGrdFilter::findMinSurface(std::vector<SPDPulse*> ***pulses, float **elev, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize)
 	{
-		vector<SPDPulse*>::iterator iterPulses;
-		vector<SPDPoint*>::iterator iterPoints;
+		std::vector<SPDPulse*>::iterator iterPulses;
+		std::vector<SPDPoint*>::iterator iterPoints;
 		SPDPoint *pt = NULL;
 		bool firstPls = true;
 		bool firstPts = true;
@@ -613,7 +613,7 @@ namespace spdlib
 				firstPls = true;
 				if(pulses[i][j]->size() > 0)
 				{
-					//cout << "\nBlock [" << i << "," << j << "] has " << pulses[i][j]->size() << " pulses\n";
+					//std::cout << "\nBlock [" << i << "," << j << "] has " << pulses[i][j]->size() << " pulses\n";
 					for(iterPulses = pulses[i][j]->begin(); iterPulses != pulses[i][j]->end(); ++iterPulses)
 					{
 						if((*iterPulses)->numberOfReturns > 0)
@@ -622,7 +622,7 @@ namespace spdlib
 							pt = NULL;
 							for(iterPoints = (*iterPulses)->pts->begin(); iterPoints != (*iterPulses)->pts->end(); ++iterPoints)
 							{
-								//cout << (*iterPoints)->z << endl;
+								//std::cout << (*iterPoints)->z << std::endl;
                                 if(classParameters == SPD_ALL_CLASSES)
                                 {
                                     if(firstPts)
@@ -665,11 +665,11 @@ namespace spdlib
                             }
 						}
 					}
-					//cout << "Min = " << elev[i][j] << endl;
+					//std::cout << "Min = " << elev[i][j] << std::endl;
 				}
 				else
 				{
-					elev[i][j] = numeric_limits<float>::signaling_NaN();
+					elev[i][j] = std::numeric_limits<float>::signaling_NaN();
 				}
 			}
 		}
@@ -690,7 +690,7 @@ namespace spdlib
         boost::int_fast32_t filterSize = (filterHSize * 2)+1;
 		boost::uint_fast32_t maxNumFilterValues = ((filterHSize * 2)+1)*((filterHSize * 2)+1);
 		
-		vector<float> *elevValues = new vector<float>();
+		std::vector<float> *elevValues = new std::vector<float>();
 		elevValues->reserve(maxNumFilterValues);
 		for(boost::uint_fast32_t i = 0; i < ySize; ++i)
 		{
@@ -741,7 +741,7 @@ namespace spdlib
 					elementEndX = filterSize;
 				}
 				
-				//cout << "Filter [" << j << "," << i << "] [" << filterPxlStartX << "," << filterPxlEndX << "][" << filterPxlStartY << "," << filterPxlEndY << "]\n\n";
+				//std::cout << "Filter [" << j << "," << i << "] [" << filterPxlStartX << "," << filterPxlEndX << "][" << filterPxlStartY << "," << filterPxlEndY << "]\n\n";
 				
 				elevValues->clear();
 				
@@ -762,12 +762,12 @@ namespace spdlib
 				}
 				else if(elevValues->size() > 1)
 				{
-					sort(elevValues->begin(), elevValues->end());
+                    std::sort(elevValues->begin(), elevValues->end());
 					elevMedian[i][j] = elevValues->at(elevValues->size()/2);
 				}
 				else
 				{
-					elevMedian[i][j] = numeric_limits<float>::signaling_NaN();
+					elevMedian[i][j] = std::numeric_limits<float>::signaling_NaN();
 				}
 			}
 		}
@@ -784,8 +784,8 @@ namespace spdlib
 		bool first = true;
 		float minVal = 0;
 		
-		vector<float> *elevValues = new vector<float>();
-		vector<float>::iterator iterVals;
+		std::vector<float> *elevValues = new std::vector<float>();
+		std::vector<float>::iterator iterVals;
 		elevValues->reserve(maxNumFilterValues);
 		
 		for(boost::uint_fast32_t i = 0; i < ySize; ++i)
@@ -862,7 +862,7 @@ namespace spdlib
 					}
 					else 
 					{
-						elevOut[i][j] = numeric_limits<float>::signaling_NaN();
+						elevOut[i][j] = std::numeric_limits<float>::signaling_NaN();
 					}
 				}
 				else 
@@ -889,7 +889,7 @@ namespace spdlib
 			{
 				xdiff = pow(((double)j-filterHSize), 2);
 				ydiff = pow(((double)i-filterHSize), 2);
-				//cout << "radius [" << i << "," << j << "] = " << pow((xdiff + ydiff),2) << "\n";
+				//std::cout << "radius [" << i << "," << j << "] = " << pow((xdiff + ydiff),2) << "\n";
 				if(sqrt(xdiff + ydiff) <= filterHSize)
 				{
 					element[i][j] = 1;

@@ -27,25 +27,25 @@ namespace spdlib
 {
 	
     
-	SPDASCIIMultiLineReader::SPDASCIIMultiLineReader(bool convertCoords, string outputProjWKT, string schema, boost::uint_fast16_t indexCoords, bool defineOrigin, double originX, double originY, float originZ, float waveNoiseThreshold):SPDDataImporter(convertCoords, outputProjWKT, schema, indexCoords, defineOrigin, originX, originY, originZ, waveNoiseThreshold)
+	SPDASCIIMultiLineReader::SPDASCIIMultiLineReader(bool convertCoords, std::string outputProjWKT, std::string schema, boost::uint_fast16_t indexCoords, bool defineOrigin, double originX, double originY, float originZ, float waveNoiseThreshold):SPDDataImporter(convertCoords, outputProjWKT, schema, indexCoords, defineOrigin, originX, originY, originZ, waveNoiseThreshold)
 	{
 		
 	}
     
-    SPDDataImporter* SPDASCIIMultiLineReader::getInstance(bool convertCoords, string outputProjWKT, string schema, boost::uint_fast16_t indexCoords, bool defineOrigin, double originX, double originY, float originZ, float waveNoiseThreshold)
+    SPDDataImporter* SPDASCIIMultiLineReader::getInstance(bool convertCoords, std::string outputProjWKT, std::string schema, boost::uint_fast16_t indexCoords, bool defineOrigin, double originX, double originY, float originZ, float waveNoiseThreshold)
     {
         return new SPDASCIIMultiLineReader(convertCoords, outputProjWKT, schema, indexCoords, defineOrigin, originX, originY, originZ, waveNoiseThreshold);
     }
 	
-	list<SPDPulse*>* SPDASCIIMultiLineReader::readAllDataToList(string inputFile, SPDFile *spdFile)throw(SPDIOException)
+	std::list<SPDPulse*>* SPDASCIIMultiLineReader::readAllDataToList(std::string inputFile, SPDFile *spdFile)throw(SPDIOException)
 	{
 		SPDPulseUtils pulseUtils;
         SPDTextFileUtilities textFileUtils;
 		SPDTextFileLineReader lineReader;
-		list<SPDPulse*> *pulses = new list<SPDPulse*>();
+		std::list<SPDPulse*> *pulses = new std::list<SPDPulse*>();
 		boost::uint_fast64_t numPulses = 0;
 		boost::uint_fast64_t totalNumPoints = 0;
-        string pointLine = "";
+        std::string pointLine = "";
 		
 		double xMin = 0;
 		double xMax = 0;
@@ -69,16 +69,16 @@ namespace spdlib
             SPDPulse *pulse = NULL;
 			SPDPoint *point = NULL;
 			
-			vector<string> *lineTokens = new vector<string>();
+			std::vector<std::string> *lineTokens = new std::vector<std::string>();
 			
 			lineReader.openFile(inputFile);
-			cout << "Read ." << flush;
+			std::cout << "Read ." << std::flush;
             first = true;
 			while(!lineReader.endOfFile())
 			{
 				if((numPulses % 10000) == 0)
 				{
-					cout << "." << numPulses << "." << flush;
+					std::cout << "." << numPulses << "." << std::flush;
 				}
                 
                 pointLine = lineReader.readLine();
@@ -89,7 +89,7 @@ namespace spdlib
 					textFileUtils.tokenizeString(pointLine, ' ', lineTokens);
                     if(lineTokens->size() != 8)
                     {
-                        cout << "Line: " << pointLine << endl;
+                        std::cout << "Line: " << pointLine << std::endl;
                         throw SPDIOException("Expected 8 tokens in line.");
                     }
                     
@@ -228,7 +228,7 @@ namespace spdlib
                 }
             }
             pulses->push_back(pulse);
-            cout << ". Complete\n";
+            std::cout << ". Complete\n";
 				
             spdFile->setBoundingVolume(xMin, xMax, yMin, yMax, zMin, zMax);
             if(convertCoords)
@@ -247,11 +247,11 @@ namespace spdlib
 		{
 			throw e;
 		}
-		catch(invalid_argument &e)
+		catch(std::invalid_argument &e)
 		{
 			throw SPDIOException(e.what());
 		}
-		catch(runtime_error &e)
+		catch(std::runtime_error &e)
 		{
 			throw SPDIOException(e.what());
 		}
@@ -259,15 +259,15 @@ namespace spdlib
 		return pulses;
 	}
 	
-	vector<SPDPulse*>* SPDASCIIMultiLineReader::readAllDataToVector(string inputFile, SPDFile *spdFile)throw(SPDIOException)
+	std::vector<SPDPulse*>* SPDASCIIMultiLineReader::readAllDataToVector(std::string inputFile, SPDFile *spdFile)throw(SPDIOException)
 	{
 		SPDPulseUtils pulseUtils;
         SPDTextFileUtilities textFileUtils;
 		SPDTextFileLineReader lineReader;
-		vector<SPDPulse*> *pulses = new vector<SPDPulse*>();
+		std::vector<SPDPulse*> *pulses = new std::vector<SPDPulse*>();
 		boost::uint_fast64_t numPulses = 0;
 		boost::uint_fast64_t totalNumPoints = 0;
-        string pointLine = "";
+        std::string pointLine = "";
 		
 		double xMin = 0;
 		double xMax = 0;
@@ -291,16 +291,16 @@ namespace spdlib
             SPDPulse *pulse = NULL;
 			SPDPoint *point = NULL;
 			
-			vector<string> *lineTokens = new vector<string>();
+			std::vector<std::string> *lineTokens = new std::vector<std::string>();
 			
 			lineReader.openFile(inputFile);
-			cout << "Read ." << flush;
+			std::cout << "Read ." << std::flush;
             first = true;
 			while(!lineReader.endOfFile())
 			{
 				if((numPulses % 10000) == 0)
 				{
-					cout << "." << numPulses << "." << flush;
+					std::cout << "." << numPulses << "." << std::flush;
 				}
                 
                 pointLine = lineReader.readLine();
@@ -311,7 +311,7 @@ namespace spdlib
 					textFileUtils.tokenizeString(pointLine, ' ', lineTokens);
                     if(lineTokens->size() != 8)
                     {
-                        cout << "Line: " << pointLine << endl;
+                        std::cout << "Line: " << pointLine << std::endl;
                         throw SPDIOException("Expected 8 tokens in line.");
                     }
                     
@@ -450,7 +450,7 @@ namespace spdlib
                 }
             }
             pulses->push_back(pulse);
-            cout << ". Complete\n";
+            std::cout << ". Complete\n";
             
             spdFile->setBoundingVolume(xMin, xMax, yMin, yMax, zMin, zMax);
             if(convertCoords)
@@ -469,11 +469,11 @@ namespace spdlib
 		{
 			throw e;
 		}
-		catch(invalid_argument &e)
+		catch(std::invalid_argument &e)
 		{
 			throw SPDIOException(e.what());
 		}
-		catch(runtime_error &e)
+		catch(std::runtime_error &e)
 		{
 			throw SPDIOException(e.what());
 		}
@@ -481,14 +481,14 @@ namespace spdlib
 		return pulses;
 	}
 	
-	void SPDASCIIMultiLineReader::readAndProcessAllData(string inputFile, SPDFile *spdFile, SPDImporterProcessor *processor)throw(SPDIOException)
+	void SPDASCIIMultiLineReader::readAndProcessAllData(std::string inputFile, SPDFile *spdFile, SPDImporterProcessor *processor)throw(SPDIOException)
 	{
 		SPDPulseUtils pulseUtils;
         SPDTextFileUtilities textFileUtils;
 		SPDTextFileLineReader lineReader;
 		boost::uint_fast64_t numPulses = 0;
 		boost::uint_fast64_t totalNumPoints = 0;
-        string pointLine = "";
+        std::string pointLine = "";
 		
 		double xMin = 0;
 		double xMax = 0;
@@ -512,16 +512,16 @@ namespace spdlib
             SPDPulse *pulse = NULL;
 			SPDPoint *point = NULL;
 			
-			vector<string> *lineTokens = new vector<string>();
+			std::vector<std::string> *lineTokens = new std::vector<std::string>();
 			
 			lineReader.openFile(inputFile);
-			cout << "Read ." << flush;
+			std::cout << "Read ." << std::flush;
             first = true;
 			while(!lineReader.endOfFile())
 			{
 				if((numPulses % 10000) == 0)
 				{
-					cout << "." << numPulses << "." << flush;
+					std::cout << "." << numPulses << "." << std::flush;
 				}
                 
                 pointLine = lineReader.readLine();
@@ -532,8 +532,8 @@ namespace spdlib
 					textFileUtils.tokenizeString(pointLine, ' ', lineTokens);
                     if(lineTokens->size() != 8)
                     {
-                        cout << "lineTokens->size() = " << lineTokens->size() << endl;
-                        cout << "Line: " << pointLine << endl;
+                        std::cout << "lineTokens->size() = " << lineTokens->size() << std::endl;
+                        std::cout << "Line: " << pointLine << std::endl;
                         throw SPDIOException("Expected 8 tokens in line.");
                     }
                     
@@ -672,7 +672,7 @@ namespace spdlib
                 }
             }
             processor->processImportedPulse(spdFile, pulse);
-            cout << ". Complete\n";
+            std::cout << ". Complete\n";
             
             spdFile->setBoundingVolume(xMin, xMax, yMin, yMax, zMin, zMax);
             if(convertCoords)
@@ -691,17 +691,17 @@ namespace spdlib
 		{
 			throw e;
 		}
-		catch(invalid_argument &e)
+		catch(std::invalid_argument &e)
 		{
 			throw SPDIOException(e.what());
 		}
-		catch(runtime_error &e)
+		catch(std::runtime_error &e)
 		{
 			throw SPDIOException(e.what());
 		}
 	}
 	
-	bool SPDASCIIMultiLineReader::isFileType(string fileType)
+	bool SPDASCIIMultiLineReader::isFileType(std::string fileType)
 	{
 		if(fileType == "ASCIIMULTILINE")
 		{
@@ -710,12 +710,12 @@ namespace spdlib
 		return false;
 	}
     
-    void SPDASCIIMultiLineReader::readHeaderInfo(string, SPDFile*) throw(SPDIOException)
+    void SPDASCIIMultiLineReader::readHeaderInfo(std::string, SPDFile*) throw(SPDIOException)
     {
         // No Header to Read..
     }
 	
-	SPDPoint* SPDASCIIMultiLineReader::convertLineToPoint(vector<string> *lineTokens)throw(SPDIOException)
+	SPDPoint* SPDASCIIMultiLineReader::convertLineToPoint(std::vector<std::string> *lineTokens)throw(SPDIOException)
 	{
 		try 
 		{
@@ -747,11 +747,11 @@ namespace spdlib
 		{
 			throw e;
 		}
-		catch(invalid_argument &e)
+		catch(std::invalid_argument &e)
 		{
 			throw SPDIOException(e.what());
 		}
-		catch(runtime_error &e)
+		catch(std::runtime_error &e)
 		{
 			throw SPDIOException(e.what());
 		}

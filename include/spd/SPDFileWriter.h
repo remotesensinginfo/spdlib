@@ -44,9 +44,6 @@
 
 #include "H5Cpp.h"
 
-using namespace std;
-using namespace H5;
-
 namespace spdlib
 {
     class SPDFileWriter
@@ -55,8 +52,8 @@ namespace spdlib
         SPDFileWriter(){};
         virtual ~SPDFileWriter(){};
     protected:
-        virtual void writeHeaderInfo(H5File *spdOutH5File, SPDFile *spdFile)throw(SPDIOException);
-        virtual void updateHeaderInfo(H5File *spdOutH5File, SPDFile *spdFile)throw(SPDIOException);
+        virtual void writeHeaderInfo(H5::H5File *spdOutH5File, SPDFile *spdFile)throw(SPDIOException);
+        virtual void updateHeaderInfo(H5::H5File *spdOutH5File, SPDFile *spdFile)throw(SPDIOException);
     };
     
     
@@ -67,26 +64,26 @@ namespace spdlib
 		SPDSeqFileWriter(const SPDDataExporter &dataExporter) throw(SPDException);
 		SPDSeqFileWriter(const SPDSeqFileWriter &dataExporter) throw(SPDException);
         SPDDataExporter* getInstance();
-		bool open(SPDFile *spdFile, string outputFile) throw(SPDIOException);
-		void writeDataColumn(list<SPDPulse*> *pls,boost::uint_fast32_t col,boost::uint_fast32_t row)throw(SPDIOException);
-		void writeDataColumn(vector<SPDPulse*> *pls,boost::uint_fast32_t col,boost::uint_fast32_t row)throw(SPDIOException);
+		bool open(SPDFile *spdFile, std::string outputFile) throw(SPDIOException);
+		void writeDataColumn(std::list<SPDPulse*> *pls, boost::uint_fast32_t col, boost::uint_fast32_t row)throw(SPDIOException);
+		void writeDataColumn(std::vector<SPDPulse*> *pls, boost::uint_fast32_t col, boost::uint_fast32_t row)throw(SPDIOException);
 		void finaliseClose() throw(SPDIOException);
 		bool requireGrid();
 		bool needNumOutPts();
 		SPDSeqFileWriter& operator=(const SPDSeqFileWriter& dataExporter) throw(SPDException);
 		~SPDSeqFileWriter();
 	private:
-		H5File *spdOutH5File;
-		DataSet* pulsesDataset;
-		CompType* spdPulseDataType;
-		DataSet* pointsDataset;
-		CompType* spdPointDataType;
-		DataSet *datasetPlsPerBin;
-		DataSet *datasetBinsOffset;
-		DataSet* receivedDataset;
-		DataSet* transmittedDataset;
-		DataSet *datasetQuicklook;
-        vector<SPDPulse*> *plsBuffer;
+		H5::H5File *spdOutH5File;
+		H5::DataSet* pulsesDataset;
+		H5::CompType* spdPulseDataType;
+		H5::DataSet* pointsDataset;
+		H5::CompType* spdPointDataType;
+		H5::DataSet *datasetPlsPerBin;
+		H5::DataSet *datasetBinsOffset;
+		H5::DataSet* receivedDataset;
+		H5::DataSet* transmittedDataset;
+		H5::DataSet *datasetQuicklook;
+        std::vector<SPDPulse*> *plsBuffer;
         float *qkBuffer;
         unsigned long *plsInColBuf;
         unsigned long long *plsOffsetBuf;
@@ -125,26 +122,26 @@ namespace spdlib
 		SPDNonSeqFileWriter(const SPDDataExporter &dataExporter) throw(SPDException);
 		SPDNonSeqFileWriter(const SPDSeqFileWriter &dataExporter) throw(SPDException);
         SPDDataExporter* getInstance();
-		bool open(SPDFile *spdFile, string outputFile) throw(SPDIOException);
-		void writeDataColumn(list<SPDPulse*> *pls,boost::uint_fast32_t col,boost::uint_fast32_t row)throw(SPDIOException);
-		void writeDataColumn(vector<SPDPulse*> *pls,boost::uint_fast32_t col,boost::uint_fast32_t row)throw(SPDIOException);
+		bool open(SPDFile *spdFile, std::string outputFile) throw(SPDIOException);
+		void writeDataColumn(std::list<SPDPulse*> *pls, boost::uint_fast32_t col, boost::uint_fast32_t row)throw(SPDIOException);
+		void writeDataColumn(std::vector<SPDPulse*> *pls, boost::uint_fast32_t col, boost::uint_fast32_t row)throw(SPDIOException);
 		void finaliseClose() throw(SPDIOException);
 		bool requireGrid();
 		bool needNumOutPts();
 		SPDNonSeqFileWriter& operator=(const SPDNonSeqFileWriter& dataExporter) throw(SPDException);
 		~SPDNonSeqFileWriter();
 	private:
-		H5File *spdOutH5File;
-		DataSet* pulsesDataset;
-		CompType* spdPulseDataType;
-		DataSet* pointsDataset;
-		CompType* spdPointDataType;
-		DataSet *datasetPlsPerBin;
-		DataSet *datasetBinsOffset;
-		DataSet* receivedDataset;
-		DataSet* transmittedDataset;
-		DataSet *datasetQuicklook;
-        vector<SPDPulse*> *plsBuffer;
+		H5::H5File *spdOutH5File;
+        H5::DataSet* pulsesDataset;
+		H5::CompType* spdPulseDataType;
+		H5::DataSet* pointsDataset;
+		H5::CompType* spdPointDataType;
+		H5::DataSet *datasetPlsPerBin;
+		H5::DataSet *datasetBinsOffset;
+		H5::DataSet* receivedDataset;
+		H5::DataSet* transmittedDataset;
+		H5::DataSet *datasetQuicklook;
+        std::vector<SPDPulse*> *plsBuffer;
         boost::uint_fast64_t numPulses;
         boost::uint_fast64_t numPts;
         boost::uint_fast64_t numTransVals;
@@ -176,27 +173,27 @@ namespace spdlib
 		SPDNoIdxFileWriter(const SPDDataExporter &dataExporter) throw(SPDException);
 		SPDNoIdxFileWriter(const SPDNoIdxFileWriter &dataExporter) throw(SPDException);
         SPDDataExporter* getInstance();
-		bool open(SPDFile *spdFile, string outputFile) throw(SPDIOException);
-		void writeDataColumn(list<SPDPulse*> *pls,boost::uint_fast32_t col,boost::uint_fast32_t row)throw(SPDIOException);
-		void writeDataColumn(vector<SPDPulse*> *pls,boost::uint_fast32_t col,boost::uint_fast32_t row)throw(SPDIOException);
+		bool open(SPDFile *spdFile, std::string outputFile) throw(SPDIOException);
+		void writeDataColumn(std::list<SPDPulse*> *pls, boost::uint_fast32_t col, boost::uint_fast32_t row)throw(SPDIOException);
+		void writeDataColumn(std::vector<SPDPulse*> *pls, boost::uint_fast32_t col, boost::uint_fast32_t row)throw(SPDIOException);
 		void finaliseClose() throw(SPDIOException);
 		bool requireGrid();
 		bool needNumOutPts();
 		SPDNoIdxFileWriter& operator=(const SPDNoIdxFileWriter& dataExporter) throw(SPDException);
 		~SPDNoIdxFileWriter();
 	private:
-		H5File *spdOutH5File;
-		DataSet* pulsesDataset;
-		CompType* spdPulseDataType;
-		DataSet* pointsDataset;
-		CompType* spdPointDataType;
-		DataSet* receivedDataset;
-		DataSet* transmittedDataset;
+		H5::H5File *spdOutH5File;
+		H5::DataSet* pulsesDataset;
+		H5::CompType* spdPulseDataType;
+		H5::DataSet* pointsDataset;
+		H5::CompType* spdPointDataType;
+		H5::DataSet* receivedDataset;
+		H5::DataSet* transmittedDataset;
         boost::uint_fast64_t numPulses;
         boost::uint_fast64_t numPts;
         boost::uint_fast64_t numTransVals;
         boost::uint_fast64_t numReceiveVals;
-		vector<SPDPulse*> *plsBuffer;
+		std::vector<SPDPulse*> *plsBuffer;
         double xMinWritten;
         double yMinWritten;
         float zMinWritten;

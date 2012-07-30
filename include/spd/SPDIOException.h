@@ -35,8 +35,6 @@
 
 #include "spd/SPDException.h"
 
-using namespace std;
-
 namespace spdlib
 {
 	class SPDIOException : public SPDException
@@ -44,7 +42,7 @@ namespace spdlib
 	public:
 		SPDIOException();
 		SPDIOException(const char *message);
-		SPDIOException(string message);
+		SPDIOException(std::string message);
 	};
 }
 

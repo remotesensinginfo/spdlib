@@ -37,14 +37,12 @@
 #include "spd/SPDDataExporter.h"
 #include "spd/SPDDataImporter.h"
 
-using namespace std;
-
 namespace spdlib
 {
 	struct PointDataTileFile 
 	{
 		SPDDataExporter *exporter;
-		list<SPDPulse*> *pulses;
+        std::list<SPDPulse*> *pulses;
 		OGREnvelope *env;
 		SPDFile *spdFile;
 	};

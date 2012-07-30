@@ -25,6 +25,7 @@
 #include <string>
 #include <iostream>
 #include <algorithm>
+#include <vector>
 
 #include <spd/tclap/CmdLine.h>
 
@@ -34,23 +35,22 @@
 
 #include "spd/spd-config.h"
 
-using namespace std;
 using namespace spdlib;
 using namespace TCLAP;
 
 int main (int argc, char * const argv[]) 
 {
-	cout << "spdmerge " << SPDLIB_PACKAGE_STRING << ", Copyright (C) " << SPDLIB_COPYRIGHT_YEAR << " Sorted Pulse Library (SPD)\n";
-	cout << "This program comes with ABSOLUTELY NO WARRANTY. This is free software,\n";
-	cout << "and you are welcome to redistribute it under certain conditions; See\n";
-	cout << "website (http://www.spdlib.org). Bugs are to be reported on the trac\n";
-	cout << "or directly to " << SPDLIB_PACKAGE_BUGREPORT << endl;
+	std::cout << "spdmerge " << SPDLIB_PACKAGE_STRING << ", Copyright (C) " << SPDLIB_COPYRIGHT_YEAR << " Sorted Pulse Library (SPD)\n";
+	std::cout << "This program comes with ABSOLUTELY NO WARRANTY. This is free software,\n";
+	std::cout << "and you are welcome to redistribute it under certain conditions; See\n";
+	std::cout << "website (http://www.spdlib.org). Bugs are to be reported on the trac\n";
+	std::cout << "or directly to " << SPDLIB_PACKAGE_BUGREPORT << std::endl;
 	
 	try 
 	{
 		CmdLine cmd("Merge compatable files into a single non-indexed SPD file: spdmerge", ' ', "1.0.0");
 		
-		vector<string> allowedInFormats;
+		std::vector<std::string> allowedInFormats;
 		allowedInFormats.push_back("SPD");
 		allowedInFormats.push_back("ASCIIPULSEROW");
 		allowedInFormats.push_back("ASCII");
@@ -58,35 +58,35 @@ int main (int argc, char * const argv[])
 		allowedInFormats.push_back("DECOMPOSED_DAT");
 		allowedInFormats.push_back("LAS");
         allowedInFormats.push_back("ASCIIMULTILINE");
-		ValuesConstraint<string> allowedInFormatsVals( allowedInFormats );
+		ValuesConstraint<std::string> allowedInFormatsVals( allowedInFormats );
 		
-		ValueArg<string> inFormatArg("i","inputformat","Format of the input file",true,"SPD", &allowedInFormatsVals);
+		ValueArg<std::string> inFormatArg("i","inputformat","Format of the input file",true,"SPD", &allowedInFormatsVals);
 		cmd.add( inFormatArg );
 		
-		vector<string> allowedIndexTypes;
+		std::vector<std::string> allowedIndexTypes;
 		allowedIndexTypes.push_back("FIRST_RETURN");
 		allowedIndexTypes.push_back("LAST_RETURN");
 		allowedIndexTypes.push_back("START_WAVEFORM");
 		allowedIndexTypes.push_back("END_WAVEFORM");
 		allowedIndexTypes.push_back("ORIGIN");
-		ValuesConstraint<string> allowedIndexTypeVals( allowedIndexTypes );
+		ValuesConstraint<std::string> allowedIndexTypeVals( allowedIndexTypes );
 		
-		ValueArg<string> indexTypeArg("x","indexfield","The location used to index the pulses",false,"FIRST_RETURN", &allowedIndexTypeVals);
+		ValueArg<std::string> indexTypeArg("x","indexfield","The location used to index the pulses",false,"FIRST_RETURN", &allowedIndexTypeVals);
 		cmd.add( indexTypeArg );
         
-        vector<string> allowedWaveformBitResTypes;
+        std::vector<std::string> allowedWaveformBitResTypes;
 		allowedWaveformBitResTypes.push_back("8BIT");
 		allowedWaveformBitResTypes.push_back("16BIT");
 		allowedWaveformBitResTypes.push_back("32BIT");
-		ValuesConstraint<string> allowedWaveformBitResTypesVals( allowedWaveformBitResTypes );
+		ValuesConstraint<std::string> allowedWaveformBitResTypesVals( allowedWaveformBitResTypes );
 		
-		ValueArg<string> waveBitResArg("","wavebitres","The bit resolution used for storing the waveform data (Default: 32BIT)",false,"32BIT", &allowedWaveformBitResTypesVals);
+		ValueArg<std::string> waveBitResArg("","wavebitres","The bit resolution used for storing the waveform data (Default: 32BIT)",false,"32BIT", &allowedWaveformBitResTypesVals);
 		cmd.add( waveBitResArg );
 				
-		ValueArg<string> spatialInArg("p","input_proj","WKT string representing the projection of the input file",false,"","string");
+		ValueArg<std::string> spatialInArg("p","input_proj","WKT std::string representing the projection of the input file",false,"","std::string");
 		cmd.add( spatialInArg );
 		
-		ValueArg<string> spatialOutArg("r","output_proj","WKT string representing the projection of the output file",false,"","string");
+		ValueArg<std::string> spatialOutArg("r","output_proj","WKT std::string representing the projection of the output file",false,"","std::string");
 		cmd.add( spatialOutArg );
 		
 		SwitchArg convertProjSwitch("c","convert_proj","Convert file buffering to disk", false);
@@ -98,28 +98,28 @@ int main (int argc, char * const argv[])
         SwitchArg sourceIDSwitch("","source","Set source ID for each input file", false);
 		cmd.add( sourceIDSwitch );
         
-        MultiArg<uint_fast16_t> returnIDsArg("","returnIDs", "Lists the return IDs for the files listed.", false, "uint_fast16_t");
+        MultiArg<boost::uint_fast16_t> returnIDsArg("","returnIDs", "Lists the return IDs for the files listed.", false, "uint_fast16_t");
         cmd.add(returnIDsArg);
         
-        MultiArg<uint_fast16_t> classesArg("","classes", "Lists the classes for the files listed.", false, "uint_fast16_t");
+        MultiArg<boost::uint_fast16_t> classesArg("","classes", "Lists the classes for the files listed.", false, "uint_fast16_t");
         cmd.add(classesArg);
         
-        ValueArg<string> schemaArg("s","schema","A schema for the format of the file being imported (Note, most importers do not require a schema)",false,"", "string");
+        ValueArg<std::string> schemaArg("s","schema","A schema for the format of the file being imported (Note, most importers do not require a schema)",false,"", "std::string");
 		cmd.add( schemaArg );
 		
-		UnlabeledMultiArg<string> multiFileNames("Files", "File names for the output file and input files", true, "string");
+		UnlabeledMultiArg<std::string> multiFileNames("Files", "File names for the output file and input files", true, "std::string");
 		cmd.add( multiFileNames );
 		cmd.parse( argc, argv );
 		
-		vector<string> fileNames = multiFileNames.getValue();		
+		std::vector<std::string> fileNames = multiFileNames.getValue();		
 		if(fileNames.size() < 2)
 		{			
 			SPDTextFileUtilities textUtils;
-			string message = string("Two file paths should have been specified (e.g., Input and Output). ") + textUtils.uInt32bittostring(fileNames.size()) + string(" were provided.");
+			std::string message = std::string("Two file paths should have been specified (e.g., Input and Output). ") + textUtils.uInt32bittostring(fileNames.size()) + std::string(" were provided.");
 			throw SPDException(message);
 		}
 		
-		uint_fast16_t indexType = SPD_FIRST_RETURN;
+        boost::uint_fast16_t indexType = SPD_FIRST_RETURN;
 		if(indexTypeArg.getValue() == "FIRST_RETURN")
 		{
 			indexType = SPD_FIRST_RETURN;
@@ -145,22 +145,22 @@ int main (int argc, char * const argv[])
 			throw SPDException("Index type from not recognised.");
 		}
 		
-		string outputFile = fileNames.at(0);
-		cout << "Output File: " << outputFile << endl;
-		cout << "Merging:\n";
-		vector<string> inputFiles;
+		std::string outputFile = fileNames.at(0);
+		std::cout << "Output File: " << outputFile << std::endl;
+		std::cout << "Merging:\n";
+		std::vector<std::string> inputFiles;
 		for(unsigned int i = 1; i < fileNames.size(); ++i)
 		{
 			inputFiles.push_back(fileNames.at(i));
-			cout << fileNames.at(i) << endl;
+			std::cout << fileNames.at(i) << std::endl;
 		}
-		string inputFormat = inFormatArg.getValue();
-		string inProjFile = spatialInArg.getValue();
+		std::string inputFormat = inFormatArg.getValue();
+		std::string inProjFile = spatialInArg.getValue();
 		bool convertCoords = convertProjSwitch.getValue();
-		string outProjFile  = spatialOutArg.getValue();
+		std::string outProjFile  = spatialOutArg.getValue();
         
-        string inProjWKT = "";
-		string outProjWKT = "";
+        std::string inProjWKT = "";
+		std::string outProjWKT = "";
 		
 		SPDTextFileUtilities textFileUtils;
 		if(inProjFile != "")
@@ -174,7 +174,7 @@ int main (int argc, char * const argv[])
 		}
         
 		
-        vector<uint_fast16_t> returnIds;
+        std::vector<boost::uint_fast16_t> returnIds;
         bool returnIDsSet = false;
         if(returnIDsArg.isSet())
         {
@@ -186,7 +186,7 @@ int main (int argc, char * const argv[])
             }
         }
 
-        vector<uint_fast16_t> classesValues;
+        std::vector<boost::uint_fast16_t> classesValues;
         bool classesSet = false;
         if(classesArg.isSet())
         {
@@ -198,7 +198,7 @@ int main (int argc, char * const argv[])
             }
         }
         
-        uint_fast16_t waveBitRes = SPD_32_BIT_WAVE;
+        boost::uint_fast16_t waveBitRes = SPD_32_BIT_WAVE;
 		if(waveBitResArg.isSet())
 		{
 			if(waveBitResArg.getValue() == "8BIT")
@@ -224,11 +224,11 @@ int main (int argc, char * const argv[])
 	}
 	catch (ArgException &e) 
 	{
-		cerr << "Parse Error: " << e.what() << endl;
+        std::cerr << "Parse Error: " << e.what() << std::endl;
 	}
 	catch(SPDException &e)
 	{
-		cerr << "Error: " << e.what() << endl;
+        std::cerr << "Error: " << e.what() << std::endl;
 	}
 	
 }

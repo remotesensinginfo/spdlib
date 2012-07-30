@@ -31,6 +31,7 @@
 #define SPDDataImporter_H
 
 #include <list>
+#include <string>
 
 #include <boost/cstdint.hpp>
 
@@ -43,8 +44,6 @@
 #include "spd/SPDIOException.h"
 
 //#include "spd/cmpfit/mpfit.h"
-
-using namespace std;
 
 namespace spdlib
 {
@@ -59,7 +58,7 @@ namespace spdlib
 	class SPDDataImporter
 	{
 	public:
-		SPDDataImporter(bool convertCoords, string outputProjWKT, string schema, boost::uint_fast16_t indexCoords, bool defineOrigin, double originX, double originY, float originZ, float waveNoiseThreshold):convertCoords(false),outputProjWKT(""),indexCoords(SPD_FIRST_RETURN),pj_in(),pj_out(),coordTransform(NULL),haveCoordsBeenInit(false),defineOrigin(false),originX(0),originY(0),originZ(0),waveNoiseThreshold(0)
+		SPDDataImporter(bool convertCoords, std::string outputProjWKT, std::string schema, boost::uint_fast16_t indexCoords, bool defineOrigin, double originX, double originY, float originZ, float waveNoiseThreshold):convertCoords(false),outputProjWKT(""),indexCoords(SPD_FIRST_RETURN),pj_in(),pj_out(),coordTransform(NULL),haveCoordsBeenInit(false),defineOrigin(false),originX(0),originY(0),originZ(0),waveNoiseThreshold(0)
 		{
 			this->convertCoords = convertCoords;
 			this->outputProjWKT = outputProjWKT;
@@ -71,14 +70,14 @@ namespace spdlib
             this->originZ = originZ;
             this->waveNoiseThreshold = waveNoiseThreshold;
 		};
-        virtual SPDDataImporter* getInstance(bool convertCoords, string outputProjWKT, string schema, boost::uint_fast16_t indexCoords, bool defineOrigin, double originX, double originY, float originZ, float waveNoiseThreshold)=0;
-		virtual list<SPDPulse*>* readAllDataToList(string inputFile, SPDFile *spdFile)throw(SPDIOException)=0;
-		virtual vector<SPDPulse*>* readAllDataToVector(string inputFile, SPDFile *spdFile)throw(SPDIOException)=0;
-		virtual void readAndProcessAllData(string inputFile, SPDFile *spdFile, SPDImporterProcessor *processor) throw(SPDIOException)=0;
-		virtual bool isFileType(string fileType)=0;
-        virtual void readHeaderInfo(string inputFile, SPDFile *spdFile) throw(SPDIOException)=0;
+        virtual SPDDataImporter* getInstance(bool convertCoords, std::string outputProjWKT, std::string schema, boost::uint_fast16_t indexCoords, bool defineOrigin, double originX, double originY, float originZ, float waveNoiseThreshold)=0;
+		virtual std::list<SPDPulse*>* readAllDataToList(std::string inputFile, SPDFile *spdFile)throw(SPDIOException)=0;
+		virtual std::vector<SPDPulse*>* readAllDataToVector(std::string inputFile, SPDFile *spdFile)throw(SPDIOException)=0;
+		virtual void readAndProcessAllData(std::string inputFile, SPDFile *spdFile, SPDImporterProcessor *processor) throw(SPDIOException)=0;
+		virtual bool isFileType(std::string fileType)=0;
+        virtual void readHeaderInfo(std::string inputFile, SPDFile *spdFile) throw(SPDIOException)=0;
         virtual void readSchema()throw(SPDIOException){};
-		virtual void setOutputProjWKT(string outputProjWKT){this->outputProjWKT = outputProjWKT;this->convertCoords = true;};
+		virtual void setOutputProjWKT(std::string outputProjWKT){this->outputProjWKT = outputProjWKT;this->convertCoords = true;};
 		virtual void setConvertCoords(bool convertCoords){this->convertCoords = convertCoords;};
 		virtual void setIndexCoordsType(boost::uint_fast16_t indexCoords=SPD_FIRST_RETURN){this->indexCoords = indexCoords;};
         virtual void setDefineOrigin(bool defineOrigin=false){this->defineOrigin = defineOrigin;};
@@ -97,8 +96,8 @@ namespace spdlib
 		};
 	protected:
 		bool convertCoords;
-		string outputProjWKT;
-        string schema;
+		std::string outputProjWKT;
+        std::string schema;
         boost::uint_fast16_t indexCoords;
 		OGRSpatialReference *pj_in;
 		OGRSpatialReference *pj_out;
@@ -175,7 +174,7 @@ namespace spdlib
 			inProjWKT[0] = const_cast<char *>(spdFile->getSpatialReference().c_str());
 			if(pj_in->importFromWkt(inProjWKT) != OGRERR_NONE)
 			{
-				string message = string("Could not create projection for \'") + spdFile->getSpatialReference() + string("\': ") + string(CPLGetLastErrorMsg());
+				std::string message = std::string("Could not create projection for \'") + spdFile->getSpatialReference() + std::string("\': ") + std::string(CPLGetLastErrorMsg());
 				throw SPDIOException(message);
 			}
 			
@@ -184,7 +183,7 @@ namespace spdlib
 			outProjWKT[0] = const_cast<char *>(outputProjWKT.c_str());
 			if(pj_out->importFromWkt(outProjWKT) != OGRERR_NONE)
 			{
-				string message = string("Could not create projection for \'") + outputProjWKT + string("\': ") + string(CPLGetLastErrorMsg());
+				std::string message = std::string("Could not create projection for \'") + outputProjWKT + std::string("\': ") + std::string(CPLGetLastErrorMsg());
 				throw SPDIOException(message);			
 			}
 			
@@ -400,7 +399,7 @@ namespace spdlib
 				{
 					if(pulse->numberOfReturns > 0)
 					{
-						for(vector<SPDPoint*>::iterator iterPts = pulse->pts->begin(); iterPts != pulse->pts->end(); ++iterPts)
+						for(std::vector<SPDPoint*>::iterator iterPts = pulse->pts->begin(); iterPts != pulse->pts->end(); ++iterPts)
 						{
 							this->transformCoordinateSystem(&((*iterPts)->x), &((*iterPts)->y), &((*iterPts)->z));
 						}

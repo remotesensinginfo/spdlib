@@ -35,13 +35,14 @@
 #include <gsl/gsl_multifit.h>
 #include <gsl/gsl_linalg.h>
 
+#include <boost/cstdint.hpp>
+#include <boost/math/special_functions/fpclassify.hpp>
+
 #include "spd/cmpfit/mpfit.h"
 
 #include "spd/SPDCommon.h"
 #include "spd/SPDException.h"
 #include "spd/SPDProcessingException.h"
-
-using namespace std;
 
 namespace spdlib
 {
@@ -57,8 +58,8 @@ namespace spdlib
 	{
 	public:
 		SPDInitDecomposition(){};
-		virtual vector<uint_fast32_t>* findInitPoints(uint_fast32_t *waveform,boost::uint_fast16_t waveformLength, float intThreshold) throw(SPDException) = 0;
-        virtual vector<uint_fast32_t>* findInitPoints(float *waveform,boost::uint_fast16_t waveformLength, float intThreshold) throw(SPDException) = 0;
+		virtual std::vector<uint_fast32_t>* findInitPoints(boost::uint_fast32_t *waveform,boost::uint_fast16_t waveformLength, float intThreshold) throw(SPDException) = 0;
+        virtual std::vector<uint_fast32_t>* findInitPoints(float *waveform,boost::uint_fast16_t waveformLength, float intThreshold) throw(SPDException) = 0;
 		virtual ~SPDInitDecomposition(){};
 	};
 	
@@ -66,8 +67,8 @@ namespace spdlib
 	{
 	public:
 		SPDInitDecompositionZeroCrossingSimple(float decay);
-		vector<uint_fast32_t>* findInitPoints(uint_fast32_t *waveform,boost::uint_fast16_t waveformLength, float intThreshold) throw(SPDException);
-        vector<uint_fast32_t>* findInitPoints(float *waveform,boost::uint_fast16_t waveformLength, float intThreshold) throw(SPDException);
+		std::vector<uint_fast32_t>* findInitPoints(boost::uint_fast32_t *waveform,boost::uint_fast16_t waveformLength, float intThreshold) throw(SPDException);
+        std::vector<uint_fast32_t>* findInitPoints(float *waveform,boost::uint_fast16_t waveformLength, float intThreshold) throw(SPDException);
 		~SPDInitDecompositionZeroCrossingSimple();
 	private:
 		float decay;
@@ -77,8 +78,8 @@ namespace spdlib
 	{
 	public:
 		SPDInitDecompositionZeroCrossing(float decay,boost::uint_fast32_t intDecayThres);
-		vector<uint_fast32_t>* findInitPoints(uint_fast32_t *waveform,boost::uint_fast16_t waveformLength, float intThreshold) throw(SPDException);
-        vector<uint_fast32_t>* findInitPoints(float *waveform,boost::uint_fast16_t waveformLength, float intThreshold) throw(SPDException);
+		std::vector<uint_fast32_t>* findInitPoints(boost::uint_fast32_t *waveform,boost::uint_fast16_t waveformLength, float intThreshold) throw(SPDException);
+        std::vector<uint_fast32_t>* findInitPoints(float *waveform,boost::uint_fast16_t waveformLength, float intThreshold) throw(SPDException);
 		~SPDInitDecompositionZeroCrossing();
 	private:
 		bool zeroCrossing(float grad1, float grad2);
@@ -90,8 +91,8 @@ namespace spdlib
 	{
 	public:
 		SPDInitDecompositionZeroCrossingNoRinging();
-		vector<uint_fast32_t>* findInitPoints(uint_fast32_t *waveform,boost::uint_fast16_t waveformLength, float intThreshold) throw(SPDException);
-        vector<uint_fast32_t>* findInitPoints(float *waveform,boost::uint_fast16_t waveformLength, float intThreshold) throw(SPDException);
+		std::vector<uint_fast32_t>* findInitPoints(boost::uint_fast32_t *waveform,boost::uint_fast16_t waveformLength, float intThreshold) throw(SPDException);
+        std::vector<uint_fast32_t>* findInitPoints(float *waveform,boost::uint_fast16_t waveformLength, float intThreshold) throw(SPDException);
 		~SPDInitDecompositionZeroCrossingNoRinging();
 	private:
 		bool zeroCrossing(float grad1, float grad2);
@@ -106,10 +107,10 @@ namespace spdlib
         void applySavitzkyGolaySmoothing(float *dataValuesY, float *dataValuesX,boost::uint_fast32_t numValues,boost::uint_fast16_t winHSize,boost::uint_fast16_t order, bool removeLTZeros) throw(SPDProcessingException);
         /// fitGaussianMixture is a function which fits are number of Gaussians (the number and starting points are defined
         /// by the SPDInitDecomposition class passed to the function) to the dataValues.
-        vector<GaussianDecompReturnType*>* fitGaussianMixture(SPDInitDecomposition *initDecomp, float minimumGaussianGap, float *dataValues, float *dataIntervals,boost::uint_fast32_t nVals, float intThreshold) throw(SPDProcessingException);
+        std::vector<GaussianDecompReturnType*>* fitGaussianMixture(SPDInitDecomposition *initDecomp, float minimumGaussianGap, float *dataValues, float *dataIntervals,boost::uint_fast32_t nVals, float intThreshold) throw(SPDProcessingException);
         /// decomposeSingleGaussian is a function which fits a Gaussian to the inputted data values using 
         /// the maximum peak as the starting point.
-        void decomposeSingleGaussian(uint_fast32_t *waveform,boost::uint_fast16_t waveformLength,boost::uint_fast16_t waveFitWindow, float waveformTimeInterval, float *transAmp, float *transWidth, float *peakTime) throw(SPDProcessingException);
+        void decomposeSingleGaussian(boost::uint_fast32_t *waveform,boost::uint_fast16_t waveformLength,boost::uint_fast16_t waveFitWindow, float waveformTimeInterval, float *transAmp, float *transWidth, float *peakTime) throw(SPDProcessingException);
         ~SPDMathsUtils();
     };
     

@@ -43,7 +43,7 @@ namespace spdlib
 		
 	}
 	
-	SPDProcessingException::SPDProcessingException(string message) : SPDException(message)
+	SPDProcessingException::SPDProcessingException(std::string message) : SPDException(message)
 	{
 		
 	}

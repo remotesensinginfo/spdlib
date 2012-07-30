@@ -36,16 +36,14 @@
 #include "spd/SPDDataExporter.h"
 #include "spd/SPDGridData.h"
 
-using namespace std;
-
 namespace spdlib
 {	
 	class SPDIOUtils
 	{
 	public:
 		SPDIOUtils();
-		void gridAndWriteData(SPDDataExporter *exporter, list<SPDPulse*> *pls, SPDFile *spdFile, string outputFile)throw(SPDIOException);
-		void gridAndWriteData(SPDDataExporter *exporter, vector<SPDPulse*> *pls, SPDFile *spdFile, string outputFile)throw(SPDIOException);
+		void gridAndWriteData(SPDDataExporter *exporter, std::list<SPDPulse*> *pls, SPDFile *spdFile, std::string outputFile)throw(SPDIOException);
+		void gridAndWriteData(SPDDataExporter *exporter, std::vector<SPDPulse*> *pls, SPDFile *spdFile, std::string outputFile)throw(SPDIOException);
 		~SPDIOUtils();
 	};
 }

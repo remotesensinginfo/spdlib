@@ -39,148 +39,148 @@ namespace spdlib
 		
 	}
 	
-	CompType* SPDPulseUtils::createSPDPulseH5V1DataTypeDisk()
+	H5::CompType* SPDPulseUtils::createSPDPulseH5V1DataTypeDisk()
 	{
-		CompType *spdPulseDataType = new CompType( sizeof(SPDPulseH5V1) );
-		spdPulseDataType->insertMember(PULSEMEMBERNAME_PULSE_ID, HOFFSET(SPDPulseH5V1, pulseID), PredType::STD_U64LE);
-		spdPulseDataType->insertMember(PULSEMEMBERNAME_GPS_TIME, HOFFSET(SPDPulseH5V1, gpsTime), PredType::IEEE_F64LE);
-		spdPulseDataType->insertMember(PULSEMEMBERNAME_X_ORIGIN, HOFFSET(SPDPulseH5V1, x0), PredType::IEEE_F64LE);
-		spdPulseDataType->insertMember(PULSEMEMBERNAME_Y_ORIGIN, HOFFSET(SPDPulseH5V1, y0), PredType::IEEE_F64LE);
-		spdPulseDataType->insertMember(PULSEMEMBERNAME_Z_ORIGIN, HOFFSET(SPDPulseH5V1, z0), PredType::IEEE_F32LE);
-        spdPulseDataType->insertMember(PULSEMEMBERNAME_H_ORIGIN, HOFFSET(SPDPulseH5V1, h0), PredType::IEEE_F32LE);
-		spdPulseDataType->insertMember(PULSEMEMBERNAME_X_IDX, HOFFSET(SPDPulseH5V1, xIdx), PredType::IEEE_F64LE);
-		spdPulseDataType->insertMember(PULSEMEMBERNAME_Y_IDX, HOFFSET(SPDPulseH5V1, yIdx), PredType::IEEE_F64LE);
-		spdPulseDataType->insertMember(PULSEMEMBERNAME_AZIMUTH, HOFFSET(SPDPulseH5V1, azimuth), PredType::IEEE_F32LE);
-		spdPulseDataType->insertMember(PULSEMEMBERNAME_ZENITH, HOFFSET(SPDPulseH5V1, zenith), PredType::IEEE_F32LE);
-		spdPulseDataType->insertMember(PULSEMEMBERNAME_NUMBER_OF_RETURNS, HOFFSET(SPDPulseH5V1, numberOfReturns), PredType::STD_U8LE);
-		spdPulseDataType->insertMember(PULSEMEMBERNAME_NUMBER_OF_WAVEFORM_TRANSMITTED_BINS, HOFFSET(SPDPulseH5V1, numOfTransmittedBins), PredType::STD_U16LE);
-		spdPulseDataType->insertMember(PULSEMEMBERNAME_NUMBER_OF_WAVEFORM_RECEIVED_BINS, HOFFSET(SPDPulseH5V1, numOfReceivedBins), PredType::STD_U16LE);
-		spdPulseDataType->insertMember(PULSEMEMBERNAME_RANGE_TO_WAVEFORM_START, HOFFSET(SPDPulseH5V1, rangeToWaveformStart), PredType::IEEE_F32LE);
-		spdPulseDataType->insertMember(PULSEMEMBERNAME_AMPLITUDE_PULSE, HOFFSET(SPDPulseH5V1, amplitudePulse), PredType::IEEE_F32LE);
-		spdPulseDataType->insertMember(PULSEMEMBERNAME_WIDTH_PULSE, HOFFSET(SPDPulseH5V1, widthPulse), PredType::IEEE_F32LE);
-		spdPulseDataType->insertMember(PULSEMEMBERNAME_USER, HOFFSET(SPDPulseH5V1, user), PredType::STD_U32LE);
-		spdPulseDataType->insertMember(PULSEMEMBERNAME_SOURCE_ID, HOFFSET(SPDPulseH5V1, sourceID), PredType::STD_U16LE);
-		spdPulseDataType->insertMember(PULSEMEMBERNAME_EDGE_FLIGHT_LINE_FLAG, HOFFSET(SPDPulseH5V1, edgeFlightLineFlag), PredType::STD_U8LE);
-		spdPulseDataType->insertMember(PULSEMEMBERNAME_SCAN_DIRECTION_FLAG, HOFFSET(SPDPulseH5V1, scanDirectionFlag), PredType::STD_U8LE);
-		spdPulseDataType->insertMember(PULSEMEMBERNAME_SCAN_ANGLE_RANK, HOFFSET(SPDPulseH5V1, scanAngleRank), PredType::IEEE_F32LE);
-        spdPulseDataType->insertMember(PULSEMEMBERNAME_WAVE_NOISE_THRES, HOFFSET(SPDPulseH5V1, waveNoiseThreshold), PredType::IEEE_F32LE);
-        spdPulseDataType->insertMember(PULSEMEMBERNAME_RECEIVE_WAVE_GAIN, HOFFSET(SPDPulseH5V1, receiveWaveGain), PredType::IEEE_F32LE);
-        spdPulseDataType->insertMember(PULSEMEMBERNAME_RECEIVE_WAVE_OFFSET, HOFFSET(SPDPulseH5V1, receiveWaveOffset), PredType::IEEE_F32LE);
-        spdPulseDataType->insertMember(PULSEMEMBERNAME_TRANS_WAVE_GAIN, HOFFSET(SPDPulseH5V1, transWaveGain), PredType::IEEE_F32LE);
-        spdPulseDataType->insertMember(PULSEMEMBERNAME_TRANS_WAVE_OFFSET, HOFFSET(SPDPulseH5V1, transWaveOffset), PredType::IEEE_F32LE);
-        spdPulseDataType->insertMember(PULSEMEMBERNAME_PTS_START_IDX, HOFFSET(SPDPulseH5V1, ptsStartIdx), PredType::STD_U64LE);
-		spdPulseDataType->insertMember(PULSEMEMBERNAME_RECEIVED_START_IDX, HOFFSET(SPDPulseH5V1, receivedStartIdx), PredType::STD_U64LE);
-		spdPulseDataType->insertMember(PULSEMEMBERNAME_TRANSMITTED_START_IDX, HOFFSET(SPDPulseH5V1, transmittedStartIdx), PredType::STD_U64LE);
+		H5::CompType *spdPulseDataType = new H5::CompType( sizeof(SPDPulseH5V1) );
+		spdPulseDataType->insertMember(PULSEMEMBERNAME_PULSE_ID, HOFFSET(SPDPulseH5V1, pulseID), H5::PredType::STD_U64LE);
+		spdPulseDataType->insertMember(PULSEMEMBERNAME_GPS_TIME, HOFFSET(SPDPulseH5V1, gpsTime), H5::PredType::IEEE_F64LE);
+		spdPulseDataType->insertMember(PULSEMEMBERNAME_X_ORIGIN, HOFFSET(SPDPulseH5V1, x0), H5::PredType::IEEE_F64LE);
+		spdPulseDataType->insertMember(PULSEMEMBERNAME_Y_ORIGIN, HOFFSET(SPDPulseH5V1, y0), H5::PredType::IEEE_F64LE);
+		spdPulseDataType->insertMember(PULSEMEMBERNAME_Z_ORIGIN, HOFFSET(SPDPulseH5V1, z0), H5::PredType::IEEE_F32LE);
+        spdPulseDataType->insertMember(PULSEMEMBERNAME_H_ORIGIN, HOFFSET(SPDPulseH5V1, h0), H5::PredType::IEEE_F32LE);
+		spdPulseDataType->insertMember(PULSEMEMBERNAME_X_IDX, HOFFSET(SPDPulseH5V1, xIdx), H5::PredType::IEEE_F64LE);
+		spdPulseDataType->insertMember(PULSEMEMBERNAME_Y_IDX, HOFFSET(SPDPulseH5V1, yIdx), H5::PredType::IEEE_F64LE);
+		spdPulseDataType->insertMember(PULSEMEMBERNAME_AZIMUTH, HOFFSET(SPDPulseH5V1, azimuth), H5::PredType::IEEE_F32LE);
+		spdPulseDataType->insertMember(PULSEMEMBERNAME_ZENITH, HOFFSET(SPDPulseH5V1, zenith), H5::PredType::IEEE_F32LE);
+		spdPulseDataType->insertMember(PULSEMEMBERNAME_NUMBER_OF_RETURNS, HOFFSET(SPDPulseH5V1, numberOfReturns), H5::PredType::STD_U8LE);
+		spdPulseDataType->insertMember(PULSEMEMBERNAME_NUMBER_OF_WAVEFORM_TRANSMITTED_BINS, HOFFSET(SPDPulseH5V1, numOfTransmittedBins), H5::PredType::STD_U16LE);
+		spdPulseDataType->insertMember(PULSEMEMBERNAME_NUMBER_OF_WAVEFORM_RECEIVED_BINS, HOFFSET(SPDPulseH5V1, numOfReceivedBins), H5::PredType::STD_U16LE);
+		spdPulseDataType->insertMember(PULSEMEMBERNAME_RANGE_TO_WAVEFORM_START, HOFFSET(SPDPulseH5V1, rangeToWaveformStart), H5::PredType::IEEE_F32LE);
+		spdPulseDataType->insertMember(PULSEMEMBERNAME_AMPLITUDE_PULSE, HOFFSET(SPDPulseH5V1, amplitudePulse), H5::PredType::IEEE_F32LE);
+		spdPulseDataType->insertMember(PULSEMEMBERNAME_WIDTH_PULSE, HOFFSET(SPDPulseH5V1, widthPulse), H5::PredType::IEEE_F32LE);
+		spdPulseDataType->insertMember(PULSEMEMBERNAME_USER, HOFFSET(SPDPulseH5V1, user), H5::PredType::STD_U32LE);
+		spdPulseDataType->insertMember(PULSEMEMBERNAME_SOURCE_ID, HOFFSET(SPDPulseH5V1, sourceID), H5::PredType::STD_U16LE);
+		spdPulseDataType->insertMember(PULSEMEMBERNAME_EDGE_FLIGHT_LINE_FLAG, HOFFSET(SPDPulseH5V1, edgeFlightLineFlag), H5::PredType::STD_U8LE);
+		spdPulseDataType->insertMember(PULSEMEMBERNAME_SCAN_DIRECTION_FLAG, HOFFSET(SPDPulseH5V1, scanDirectionFlag), H5::PredType::STD_U8LE);
+		spdPulseDataType->insertMember(PULSEMEMBERNAME_SCAN_ANGLE_RANK, HOFFSET(SPDPulseH5V1, scanAngleRank), H5::PredType::IEEE_F32LE);
+        spdPulseDataType->insertMember(PULSEMEMBERNAME_WAVE_NOISE_THRES, HOFFSET(SPDPulseH5V1, waveNoiseThreshold), H5::PredType::IEEE_F32LE);
+        spdPulseDataType->insertMember(PULSEMEMBERNAME_RECEIVE_WAVE_GAIN, HOFFSET(SPDPulseH5V1, receiveWaveGain), H5::PredType::IEEE_F32LE);
+        spdPulseDataType->insertMember(PULSEMEMBERNAME_RECEIVE_WAVE_OFFSET, HOFFSET(SPDPulseH5V1, receiveWaveOffset), H5::PredType::IEEE_F32LE);
+        spdPulseDataType->insertMember(PULSEMEMBERNAME_TRANS_WAVE_GAIN, HOFFSET(SPDPulseH5V1, transWaveGain), H5::PredType::IEEE_F32LE);
+        spdPulseDataType->insertMember(PULSEMEMBERNAME_TRANS_WAVE_OFFSET, HOFFSET(SPDPulseH5V1, transWaveOffset), H5::PredType::IEEE_F32LE);
+        spdPulseDataType->insertMember(PULSEMEMBERNAME_PTS_START_IDX, HOFFSET(SPDPulseH5V1, ptsStartIdx), H5::PredType::STD_U64LE);
+		spdPulseDataType->insertMember(PULSEMEMBERNAME_RECEIVED_START_IDX, HOFFSET(SPDPulseH5V1, receivedStartIdx), H5::PredType::STD_U64LE);
+		spdPulseDataType->insertMember(PULSEMEMBERNAME_TRANSMITTED_START_IDX, HOFFSET(SPDPulseH5V1, transmittedStartIdx), H5::PredType::STD_U64LE);
 		
 		return spdPulseDataType;
 	}
 	
-	CompType* SPDPulseUtils::createSPDPulseH5V1DataTypeMemory()
+	H5::CompType* SPDPulseUtils::createSPDPulseH5V1DataTypeMemory()
 	{
-		CompType *spdPulseDataType = new CompType( sizeof(SPDPulseH5V1) );
-		spdPulseDataType->insertMember(PULSEMEMBERNAME_PULSE_ID, HOFFSET(SPDPulseH5V1, pulseID), PredType::NATIVE_ULLONG);
-		spdPulseDataType->insertMember(PULSEMEMBERNAME_GPS_TIME, HOFFSET(SPDPulseH5V1, gpsTime), PredType::NATIVE_DOUBLE);
-		spdPulseDataType->insertMember(PULSEMEMBERNAME_X_ORIGIN, HOFFSET(SPDPulseH5V1, x0), PredType::NATIVE_DOUBLE);
-		spdPulseDataType->insertMember(PULSEMEMBERNAME_Y_ORIGIN, HOFFSET(SPDPulseH5V1, y0), PredType::NATIVE_DOUBLE);
-		spdPulseDataType->insertMember(PULSEMEMBERNAME_Z_ORIGIN, HOFFSET(SPDPulseH5V1, z0), PredType::NATIVE_FLOAT);
-        spdPulseDataType->insertMember(PULSEMEMBERNAME_H_ORIGIN, HOFFSET(SPDPulseH5V1, h0), PredType::NATIVE_FLOAT);
-		spdPulseDataType->insertMember(PULSEMEMBERNAME_X_IDX, HOFFSET(SPDPulseH5V1, xIdx), PredType::NATIVE_DOUBLE);
-		spdPulseDataType->insertMember(PULSEMEMBERNAME_Y_IDX, HOFFSET(SPDPulseH5V1, yIdx), PredType::NATIVE_DOUBLE);
-		spdPulseDataType->insertMember(PULSEMEMBERNAME_AZIMUTH, HOFFSET(SPDPulseH5V1, azimuth), PredType::NATIVE_FLOAT);
-		spdPulseDataType->insertMember(PULSEMEMBERNAME_ZENITH, HOFFSET(SPDPulseH5V1, zenith), PredType::NATIVE_FLOAT);
-		spdPulseDataType->insertMember(PULSEMEMBERNAME_NUMBER_OF_RETURNS, HOFFSET(SPDPulseH5V1, numberOfReturns), PredType::NATIVE_UINT);
-		spdPulseDataType->insertMember(PULSEMEMBERNAME_NUMBER_OF_WAVEFORM_TRANSMITTED_BINS, HOFFSET(SPDPulseH5V1, numOfTransmittedBins), PredType::NATIVE_UINT);
-		spdPulseDataType->insertMember(PULSEMEMBERNAME_NUMBER_OF_WAVEFORM_RECEIVED_BINS, HOFFSET(SPDPulseH5V1, numOfReceivedBins), PredType::NATIVE_UINT);
-		spdPulseDataType->insertMember(PULSEMEMBERNAME_RANGE_TO_WAVEFORM_START, HOFFSET(SPDPulseH5V1, rangeToWaveformStart), PredType::NATIVE_FLOAT);
-		spdPulseDataType->insertMember(PULSEMEMBERNAME_AMPLITUDE_PULSE, HOFFSET(SPDPulseH5V1, amplitudePulse), PredType::NATIVE_FLOAT);
-		spdPulseDataType->insertMember(PULSEMEMBERNAME_WIDTH_PULSE, HOFFSET(SPDPulseH5V1, widthPulse), PredType::NATIVE_FLOAT);
-		spdPulseDataType->insertMember(PULSEMEMBERNAME_USER, HOFFSET(SPDPulseH5V1, user), PredType::NATIVE_ULONG);
-		spdPulseDataType->insertMember(PULSEMEMBERNAME_SOURCE_ID, HOFFSET(SPDPulseH5V1, sourceID), PredType::NATIVE_UINT);
-		spdPulseDataType->insertMember(PULSEMEMBERNAME_EDGE_FLIGHT_LINE_FLAG, HOFFSET(SPDPulseH5V1, edgeFlightLineFlag), PredType::NATIVE_UINT);
-		spdPulseDataType->insertMember(PULSEMEMBERNAME_SCAN_DIRECTION_FLAG, HOFFSET(SPDPulseH5V1, scanDirectionFlag), PredType::NATIVE_UINT);
-		spdPulseDataType->insertMember(PULSEMEMBERNAME_SCAN_ANGLE_RANK, HOFFSET(SPDPulseH5V1, scanAngleRank), PredType::NATIVE_FLOAT);
-        spdPulseDataType->insertMember(PULSEMEMBERNAME_WAVE_NOISE_THRES, HOFFSET(SPDPulseH5V1, waveNoiseThreshold), PredType::NATIVE_FLOAT);
-        spdPulseDataType->insertMember(PULSEMEMBERNAME_RECEIVE_WAVE_GAIN, HOFFSET(SPDPulseH5V1, receiveWaveGain), PredType::NATIVE_FLOAT);
-        spdPulseDataType->insertMember(PULSEMEMBERNAME_RECEIVE_WAVE_OFFSET, HOFFSET(SPDPulseH5V1, receiveWaveOffset), PredType::NATIVE_FLOAT);
-        spdPulseDataType->insertMember(PULSEMEMBERNAME_TRANS_WAVE_GAIN, HOFFSET(SPDPulseH5V1, transWaveGain), PredType::NATIVE_FLOAT);
-        spdPulseDataType->insertMember(PULSEMEMBERNAME_TRANS_WAVE_OFFSET, HOFFSET(SPDPulseH5V1, transWaveOffset), PredType::NATIVE_FLOAT);
-		spdPulseDataType->insertMember(PULSEMEMBERNAME_PTS_START_IDX, HOFFSET(SPDPulseH5V1, ptsStartIdx), PredType::NATIVE_ULLONG);
-		spdPulseDataType->insertMember(PULSEMEMBERNAME_RECEIVED_START_IDX, HOFFSET(SPDPulseH5V1, receivedStartIdx), PredType::NATIVE_ULLONG);
-		spdPulseDataType->insertMember(PULSEMEMBERNAME_TRANSMITTED_START_IDX, HOFFSET(SPDPulseH5V1, transmittedStartIdx), PredType::NATIVE_ULLONG);
+		H5::CompType *spdPulseDataType = new H5::CompType( sizeof(SPDPulseH5V1) );
+		spdPulseDataType->insertMember(PULSEMEMBERNAME_PULSE_ID, HOFFSET(SPDPulseH5V1, pulseID), H5::PredType::NATIVE_ULLONG);
+		spdPulseDataType->insertMember(PULSEMEMBERNAME_GPS_TIME, HOFFSET(SPDPulseH5V1, gpsTime), H5::PredType::NATIVE_DOUBLE);
+		spdPulseDataType->insertMember(PULSEMEMBERNAME_X_ORIGIN, HOFFSET(SPDPulseH5V1, x0), H5::PredType::NATIVE_DOUBLE);
+		spdPulseDataType->insertMember(PULSEMEMBERNAME_Y_ORIGIN, HOFFSET(SPDPulseH5V1, y0), H5::PredType::NATIVE_DOUBLE);
+		spdPulseDataType->insertMember(PULSEMEMBERNAME_Z_ORIGIN, HOFFSET(SPDPulseH5V1, z0), H5::PredType::NATIVE_FLOAT);
+        spdPulseDataType->insertMember(PULSEMEMBERNAME_H_ORIGIN, HOFFSET(SPDPulseH5V1, h0), H5::PredType::NATIVE_FLOAT);
+		spdPulseDataType->insertMember(PULSEMEMBERNAME_X_IDX, HOFFSET(SPDPulseH5V1, xIdx), H5::PredType::NATIVE_DOUBLE);
+		spdPulseDataType->insertMember(PULSEMEMBERNAME_Y_IDX, HOFFSET(SPDPulseH5V1, yIdx), H5::PredType::NATIVE_DOUBLE);
+		spdPulseDataType->insertMember(PULSEMEMBERNAME_AZIMUTH, HOFFSET(SPDPulseH5V1, azimuth), H5::PredType::NATIVE_FLOAT);
+		spdPulseDataType->insertMember(PULSEMEMBERNAME_ZENITH, HOFFSET(SPDPulseH5V1, zenith), H5::PredType::NATIVE_FLOAT);
+		spdPulseDataType->insertMember(PULSEMEMBERNAME_NUMBER_OF_RETURNS, HOFFSET(SPDPulseH5V1, numberOfReturns), H5::PredType::NATIVE_UINT);
+		spdPulseDataType->insertMember(PULSEMEMBERNAME_NUMBER_OF_WAVEFORM_TRANSMITTED_BINS, HOFFSET(SPDPulseH5V1, numOfTransmittedBins), H5::PredType::NATIVE_UINT);
+		spdPulseDataType->insertMember(PULSEMEMBERNAME_NUMBER_OF_WAVEFORM_RECEIVED_BINS, HOFFSET(SPDPulseH5V1, numOfReceivedBins), H5::PredType::NATIVE_UINT);
+		spdPulseDataType->insertMember(PULSEMEMBERNAME_RANGE_TO_WAVEFORM_START, HOFFSET(SPDPulseH5V1, rangeToWaveformStart), H5::PredType::NATIVE_FLOAT);
+		spdPulseDataType->insertMember(PULSEMEMBERNAME_AMPLITUDE_PULSE, HOFFSET(SPDPulseH5V1, amplitudePulse), H5::PredType::NATIVE_FLOAT);
+		spdPulseDataType->insertMember(PULSEMEMBERNAME_WIDTH_PULSE, HOFFSET(SPDPulseH5V1, widthPulse), H5::PredType::NATIVE_FLOAT);
+		spdPulseDataType->insertMember(PULSEMEMBERNAME_USER, HOFFSET(SPDPulseH5V1, user), H5::PredType::NATIVE_ULONG);
+		spdPulseDataType->insertMember(PULSEMEMBERNAME_SOURCE_ID, HOFFSET(SPDPulseH5V1, sourceID), H5::PredType::NATIVE_UINT);
+		spdPulseDataType->insertMember(PULSEMEMBERNAME_EDGE_FLIGHT_LINE_FLAG, HOFFSET(SPDPulseH5V1, edgeFlightLineFlag), H5::PredType::NATIVE_UINT);
+		spdPulseDataType->insertMember(PULSEMEMBERNAME_SCAN_DIRECTION_FLAG, HOFFSET(SPDPulseH5V1, scanDirectionFlag), H5::PredType::NATIVE_UINT);
+		spdPulseDataType->insertMember(PULSEMEMBERNAME_SCAN_ANGLE_RANK, HOFFSET(SPDPulseH5V1, scanAngleRank), H5::PredType::NATIVE_FLOAT);
+        spdPulseDataType->insertMember(PULSEMEMBERNAME_WAVE_NOISE_THRES, HOFFSET(SPDPulseH5V1, waveNoiseThreshold), H5::PredType::NATIVE_FLOAT);
+        spdPulseDataType->insertMember(PULSEMEMBERNAME_RECEIVE_WAVE_GAIN, HOFFSET(SPDPulseH5V1, receiveWaveGain), H5::PredType::NATIVE_FLOAT);
+        spdPulseDataType->insertMember(PULSEMEMBERNAME_RECEIVE_WAVE_OFFSET, HOFFSET(SPDPulseH5V1, receiveWaveOffset), H5::PredType::NATIVE_FLOAT);
+        spdPulseDataType->insertMember(PULSEMEMBERNAME_TRANS_WAVE_GAIN, HOFFSET(SPDPulseH5V1, transWaveGain), H5::PredType::NATIVE_FLOAT);
+        spdPulseDataType->insertMember(PULSEMEMBERNAME_TRANS_WAVE_OFFSET, HOFFSET(SPDPulseH5V1, transWaveOffset), H5::PredType::NATIVE_FLOAT);
+		spdPulseDataType->insertMember(PULSEMEMBERNAME_PTS_START_IDX, HOFFSET(SPDPulseH5V1, ptsStartIdx), H5::PredType::NATIVE_ULLONG);
+		spdPulseDataType->insertMember(PULSEMEMBERNAME_RECEIVED_START_IDX, HOFFSET(SPDPulseH5V1, receivedStartIdx), H5::PredType::NATIVE_ULLONG);
+		spdPulseDataType->insertMember(PULSEMEMBERNAME_TRANSMITTED_START_IDX, HOFFSET(SPDPulseH5V1, transmittedStartIdx), H5::PredType::NATIVE_ULLONG);
 		
 		return spdPulseDataType;
 	}
     
-    CompType* SPDPulseUtils::createSPDPulseH5V2DataTypeDisk()
+    H5::CompType* SPDPulseUtils::createSPDPulseH5V2DataTypeDisk()
 	{
-		CompType *spdPulseDataType = new CompType( sizeof(SPDPulseH5V2) );
-		spdPulseDataType->insertMember(PULSEMEMBERNAME_PULSE_ID, HOFFSET(SPDPulseH5V2, pulseID), PredType::STD_U64LE);
-		spdPulseDataType->insertMember(PULSEMEMBERNAME_GPS_TIME, HOFFSET(SPDPulseH5V2, gpsTime), PredType::STD_U64LE);
-		spdPulseDataType->insertMember(PULSEMEMBERNAME_X_ORIGIN, HOFFSET(SPDPulseH5V2, x0), PredType::IEEE_F64LE);
-		spdPulseDataType->insertMember(PULSEMEMBERNAME_Y_ORIGIN, HOFFSET(SPDPulseH5V2, y0), PredType::IEEE_F64LE);
-		spdPulseDataType->insertMember(PULSEMEMBERNAME_Z_ORIGIN, HOFFSET(SPDPulseH5V2, z0), PredType::IEEE_F32LE);
-        spdPulseDataType->insertMember(PULSEMEMBERNAME_H_ORIGIN, HOFFSET(SPDPulseH5V2, h0), PredType::IEEE_F32LE);
-		spdPulseDataType->insertMember(PULSEMEMBERNAME_X_IDX, HOFFSET(SPDPulseH5V2, xIdx), PredType::IEEE_F64LE);
-		spdPulseDataType->insertMember(PULSEMEMBERNAME_Y_IDX, HOFFSET(SPDPulseH5V2, yIdx), PredType::IEEE_F64LE);
-		spdPulseDataType->insertMember(PULSEMEMBERNAME_AZIMUTH, HOFFSET(SPDPulseH5V2, azimuth), PredType::IEEE_F32LE);
-		spdPulseDataType->insertMember(PULSEMEMBERNAME_ZENITH, HOFFSET(SPDPulseH5V2, zenith), PredType::IEEE_F32LE);
-		spdPulseDataType->insertMember(PULSEMEMBERNAME_NUMBER_OF_RETURNS, HOFFSET(SPDPulseH5V2, numberOfReturns), PredType::STD_U8LE);
-		spdPulseDataType->insertMember(PULSEMEMBERNAME_NUMBER_OF_WAVEFORM_TRANSMITTED_BINS, HOFFSET(SPDPulseH5V2, numOfTransmittedBins), PredType::STD_U16LE);
-		spdPulseDataType->insertMember(PULSEMEMBERNAME_NUMBER_OF_WAVEFORM_RECEIVED_BINS, HOFFSET(SPDPulseH5V2, numOfReceivedBins), PredType::STD_U16LE);
-		spdPulseDataType->insertMember(PULSEMEMBERNAME_RANGE_TO_WAVEFORM_START, HOFFSET(SPDPulseH5V2, rangeToWaveformStart), PredType::IEEE_F32LE);
-		spdPulseDataType->insertMember(PULSEMEMBERNAME_AMPLITUDE_PULSE, HOFFSET(SPDPulseH5V2, amplitudePulse), PredType::IEEE_F32LE);
-		spdPulseDataType->insertMember(PULSEMEMBERNAME_WIDTH_PULSE, HOFFSET(SPDPulseH5V2, widthPulse), PredType::IEEE_F32LE);
-		spdPulseDataType->insertMember(PULSEMEMBERNAME_USER, HOFFSET(SPDPulseH5V2, user), PredType::STD_U32LE);
-		spdPulseDataType->insertMember(PULSEMEMBERNAME_SOURCE_ID, HOFFSET(SPDPulseH5V2, sourceID), PredType::STD_U16LE);
-        spdPulseDataType->insertMember(PULSEMEMBERNAME_SCANLINE, HOFFSET(SPDPulseH5V2, scanline), PredType::STD_U32LE);
-        spdPulseDataType->insertMember(PULSEMEMBERNAME_SCANLINE_IDX, HOFFSET(SPDPulseH5V2, scanlineIdx), PredType::STD_U16LE);
-        spdPulseDataType->insertMember(PULSEMEMBERNAME_RECEIVE_WAVE_NOISE_THRES, HOFFSET(SPDPulseH5V2, receiveWaveNoiseThreshold), PredType::IEEE_F32LE);
-        spdPulseDataType->insertMember(PULSEMEMBERNAME_TRANS_WAVE_NOISE_THRES, HOFFSET(SPDPulseH5V2, transWaveNoiseThres), PredType::IEEE_F32LE);
-        spdPulseDataType->insertMember(PULSEMEMBERNAME_WAVELENGTH, HOFFSET(SPDPulseH5V2, wavelength), PredType::IEEE_F32LE);
-        spdPulseDataType->insertMember(PULSEMEMBERNAME_RECEIVE_WAVE_GAIN, HOFFSET(SPDPulseH5V2, receiveWaveGain), PredType::IEEE_F32LE);
-        spdPulseDataType->insertMember(PULSEMEMBERNAME_RECEIVE_WAVE_OFFSET, HOFFSET(SPDPulseH5V2, receiveWaveOffset), PredType::IEEE_F32LE);
-        spdPulseDataType->insertMember(PULSEMEMBERNAME_TRANS_WAVE_GAIN, HOFFSET(SPDPulseH5V2, transWaveGain), PredType::IEEE_F32LE);
-        spdPulseDataType->insertMember(PULSEMEMBERNAME_TRANS_WAVE_OFFSET, HOFFSET(SPDPulseH5V2, transWaveOffset), PredType::IEEE_F32LE);
-        spdPulseDataType->insertMember(PULSEMEMBERNAME_PTS_START_IDX, HOFFSET(SPDPulseH5V2, ptsStartIdx), PredType::STD_U64LE);
-		spdPulseDataType->insertMember(PULSEMEMBERNAME_RECEIVED_START_IDX, HOFFSET(SPDPulseH5V2, receivedStartIdx), PredType::STD_U64LE);
-		spdPulseDataType->insertMember(PULSEMEMBERNAME_TRANSMITTED_START_IDX, HOFFSET(SPDPulseH5V2, transmittedStartIdx), PredType::STD_U64LE);
+		H5::CompType *spdPulseDataType = new H5::CompType( sizeof(SPDPulseH5V2) );
+		spdPulseDataType->insertMember(PULSEMEMBERNAME_PULSE_ID, HOFFSET(SPDPulseH5V2, pulseID), H5::PredType::STD_U64LE);
+		spdPulseDataType->insertMember(PULSEMEMBERNAME_GPS_TIME, HOFFSET(SPDPulseH5V2, gpsTime), H5::PredType::STD_U64LE);
+		spdPulseDataType->insertMember(PULSEMEMBERNAME_X_ORIGIN, HOFFSET(SPDPulseH5V2, x0), H5::PredType::IEEE_F64LE);
+		spdPulseDataType->insertMember(PULSEMEMBERNAME_Y_ORIGIN, HOFFSET(SPDPulseH5V2, y0), H5::PredType::IEEE_F64LE);
+		spdPulseDataType->insertMember(PULSEMEMBERNAME_Z_ORIGIN, HOFFSET(SPDPulseH5V2, z0), H5::PredType::IEEE_F32LE);
+        spdPulseDataType->insertMember(PULSEMEMBERNAME_H_ORIGIN, HOFFSET(SPDPulseH5V2, h0), H5::PredType::IEEE_F32LE);
+		spdPulseDataType->insertMember(PULSEMEMBERNAME_X_IDX, HOFFSET(SPDPulseH5V2, xIdx), H5::PredType::IEEE_F64LE);
+		spdPulseDataType->insertMember(PULSEMEMBERNAME_Y_IDX, HOFFSET(SPDPulseH5V2, yIdx), H5::PredType::IEEE_F64LE);
+		spdPulseDataType->insertMember(PULSEMEMBERNAME_AZIMUTH, HOFFSET(SPDPulseH5V2, azimuth), H5::PredType::IEEE_F32LE);
+		spdPulseDataType->insertMember(PULSEMEMBERNAME_ZENITH, HOFFSET(SPDPulseH5V2, zenith), H5::PredType::IEEE_F32LE);
+		spdPulseDataType->insertMember(PULSEMEMBERNAME_NUMBER_OF_RETURNS, HOFFSET(SPDPulseH5V2, numberOfReturns), H5::PredType::STD_U8LE);
+		spdPulseDataType->insertMember(PULSEMEMBERNAME_NUMBER_OF_WAVEFORM_TRANSMITTED_BINS, HOFFSET(SPDPulseH5V2, numOfTransmittedBins), H5::PredType::STD_U16LE);
+		spdPulseDataType->insertMember(PULSEMEMBERNAME_NUMBER_OF_WAVEFORM_RECEIVED_BINS, HOFFSET(SPDPulseH5V2, numOfReceivedBins), H5::PredType::STD_U16LE);
+		spdPulseDataType->insertMember(PULSEMEMBERNAME_RANGE_TO_WAVEFORM_START, HOFFSET(SPDPulseH5V2, rangeToWaveformStart), H5::PredType::IEEE_F32LE);
+		spdPulseDataType->insertMember(PULSEMEMBERNAME_AMPLITUDE_PULSE, HOFFSET(SPDPulseH5V2, amplitudePulse), H5::PredType::IEEE_F32LE);
+		spdPulseDataType->insertMember(PULSEMEMBERNAME_WIDTH_PULSE, HOFFSET(SPDPulseH5V2, widthPulse), H5::PredType::IEEE_F32LE);
+		spdPulseDataType->insertMember(PULSEMEMBERNAME_USER, HOFFSET(SPDPulseH5V2, user), H5::PredType::STD_U32LE);
+		spdPulseDataType->insertMember(PULSEMEMBERNAME_SOURCE_ID, HOFFSET(SPDPulseH5V2, sourceID), H5::PredType::STD_U16LE);
+        spdPulseDataType->insertMember(PULSEMEMBERNAME_SCANLINE, HOFFSET(SPDPulseH5V2, scanline), H5::PredType::STD_U32LE);
+        spdPulseDataType->insertMember(PULSEMEMBERNAME_SCANLINE_IDX, HOFFSET(SPDPulseH5V2, scanlineIdx), H5::PredType::STD_U16LE);
+        spdPulseDataType->insertMember(PULSEMEMBERNAME_RECEIVE_WAVE_NOISE_THRES, HOFFSET(SPDPulseH5V2, receiveWaveNoiseThreshold), H5::PredType::IEEE_F32LE);
+        spdPulseDataType->insertMember(PULSEMEMBERNAME_TRANS_WAVE_NOISE_THRES, HOFFSET(SPDPulseH5V2, transWaveNoiseThres), H5::PredType::IEEE_F32LE);
+        spdPulseDataType->insertMember(PULSEMEMBERNAME_WAVELENGTH, HOFFSET(SPDPulseH5V2, wavelength), H5::PredType::IEEE_F32LE);
+        spdPulseDataType->insertMember(PULSEMEMBERNAME_RECEIVE_WAVE_GAIN, HOFFSET(SPDPulseH5V2, receiveWaveGain), H5::PredType::IEEE_F32LE);
+        spdPulseDataType->insertMember(PULSEMEMBERNAME_RECEIVE_WAVE_OFFSET, HOFFSET(SPDPulseH5V2, receiveWaveOffset), H5::PredType::IEEE_F32LE);
+        spdPulseDataType->insertMember(PULSEMEMBERNAME_TRANS_WAVE_GAIN, HOFFSET(SPDPulseH5V2, transWaveGain), H5::PredType::IEEE_F32LE);
+        spdPulseDataType->insertMember(PULSEMEMBERNAME_TRANS_WAVE_OFFSET, HOFFSET(SPDPulseH5V2, transWaveOffset), H5::PredType::IEEE_F32LE);
+        spdPulseDataType->insertMember(PULSEMEMBERNAME_PTS_START_IDX, HOFFSET(SPDPulseH5V2, ptsStartIdx), H5::PredType::STD_U64LE);
+		spdPulseDataType->insertMember(PULSEMEMBERNAME_RECEIVED_START_IDX, HOFFSET(SPDPulseH5V2, receivedStartIdx), H5::PredType::STD_U64LE);
+		spdPulseDataType->insertMember(PULSEMEMBERNAME_TRANSMITTED_START_IDX, HOFFSET(SPDPulseH5V2, transmittedStartIdx), H5::PredType::STD_U64LE);
 		
 		return spdPulseDataType;
 	}
 	
-	CompType* SPDPulseUtils::createSPDPulseH5V2DataTypeMemory()
+	H5::CompType* SPDPulseUtils::createSPDPulseH5V2DataTypeMemory()
 	{
-		CompType *spdPulseDataType = new CompType( sizeof(SPDPulseH5V2) );
-		spdPulseDataType->insertMember(PULSEMEMBERNAME_PULSE_ID, HOFFSET(SPDPulseH5V2, pulseID), PredType::NATIVE_ULLONG);
-		spdPulseDataType->insertMember(PULSEMEMBERNAME_GPS_TIME, HOFFSET(SPDPulseH5V2, gpsTime), PredType::NATIVE_ULLONG);
-		spdPulseDataType->insertMember(PULSEMEMBERNAME_X_ORIGIN, HOFFSET(SPDPulseH5V2, x0), PredType::NATIVE_DOUBLE);
-		spdPulseDataType->insertMember(PULSEMEMBERNAME_Y_ORIGIN, HOFFSET(SPDPulseH5V2, y0), PredType::NATIVE_DOUBLE);
-		spdPulseDataType->insertMember(PULSEMEMBERNAME_Z_ORIGIN, HOFFSET(SPDPulseH5V2, z0), PredType::NATIVE_FLOAT);
-        spdPulseDataType->insertMember(PULSEMEMBERNAME_H_ORIGIN, HOFFSET(SPDPulseH5V2, h0), PredType::NATIVE_FLOAT);
-		spdPulseDataType->insertMember(PULSEMEMBERNAME_X_IDX, HOFFSET(SPDPulseH5V2, xIdx), PredType::NATIVE_DOUBLE);
-		spdPulseDataType->insertMember(PULSEMEMBERNAME_Y_IDX, HOFFSET(SPDPulseH5V2, yIdx), PredType::NATIVE_DOUBLE);
-		spdPulseDataType->insertMember(PULSEMEMBERNAME_AZIMUTH, HOFFSET(SPDPulseH5V2, azimuth), PredType::NATIVE_FLOAT);
-		spdPulseDataType->insertMember(PULSEMEMBERNAME_ZENITH, HOFFSET(SPDPulseH5V2, zenith), PredType::NATIVE_FLOAT);
-		spdPulseDataType->insertMember(PULSEMEMBERNAME_NUMBER_OF_RETURNS, HOFFSET(SPDPulseH5V2, numberOfReturns), PredType::NATIVE_UINT);
-		spdPulseDataType->insertMember(PULSEMEMBERNAME_NUMBER_OF_WAVEFORM_TRANSMITTED_BINS, HOFFSET(SPDPulseH5V2, numOfTransmittedBins), PredType::NATIVE_UINT);
-		spdPulseDataType->insertMember(PULSEMEMBERNAME_NUMBER_OF_WAVEFORM_RECEIVED_BINS, HOFFSET(SPDPulseH5V2, numOfReceivedBins), PredType::NATIVE_UINT);
-		spdPulseDataType->insertMember(PULSEMEMBERNAME_RANGE_TO_WAVEFORM_START, HOFFSET(SPDPulseH5V2, rangeToWaveformStart), PredType::NATIVE_FLOAT);
-		spdPulseDataType->insertMember(PULSEMEMBERNAME_AMPLITUDE_PULSE, HOFFSET(SPDPulseH5V2, amplitudePulse), PredType::NATIVE_FLOAT);
-		spdPulseDataType->insertMember(PULSEMEMBERNAME_WIDTH_PULSE, HOFFSET(SPDPulseH5V2, widthPulse), PredType::NATIVE_FLOAT);
-		spdPulseDataType->insertMember(PULSEMEMBERNAME_USER, HOFFSET(SPDPulseH5V2, user), PredType::NATIVE_ULONG);
-		spdPulseDataType->insertMember(PULSEMEMBERNAME_SOURCE_ID, HOFFSET(SPDPulseH5V2, sourceID), PredType::NATIVE_UINT);
-        spdPulseDataType->insertMember(PULSEMEMBERNAME_SCANLINE, HOFFSET(SPDPulseH5V2, scanline), PredType::NATIVE_ULONG);
-        spdPulseDataType->insertMember(PULSEMEMBERNAME_SCANLINE_IDX, HOFFSET(SPDPulseH5V2, scanlineIdx), PredType::NATIVE_UINT);
-		spdPulseDataType->insertMember(PULSEMEMBERNAME_RECEIVE_WAVE_NOISE_THRES, HOFFSET(SPDPulseH5V2, receiveWaveNoiseThreshold), PredType::NATIVE_FLOAT);
-        spdPulseDataType->insertMember(PULSEMEMBERNAME_TRANS_WAVE_NOISE_THRES, HOFFSET(SPDPulseH5V2, transWaveNoiseThres), PredType::NATIVE_FLOAT);
-        spdPulseDataType->insertMember(PULSEMEMBERNAME_WAVELENGTH, HOFFSET(SPDPulseH5V2, wavelength), PredType::NATIVE_FLOAT);
-        spdPulseDataType->insertMember(PULSEMEMBERNAME_RECEIVE_WAVE_GAIN, HOFFSET(SPDPulseH5V2, receiveWaveGain), PredType::NATIVE_FLOAT);
-        spdPulseDataType->insertMember(PULSEMEMBERNAME_RECEIVE_WAVE_OFFSET, HOFFSET(SPDPulseH5V2, receiveWaveOffset), PredType::NATIVE_FLOAT);
-        spdPulseDataType->insertMember(PULSEMEMBERNAME_TRANS_WAVE_GAIN, HOFFSET(SPDPulseH5V2, transWaveGain), PredType::NATIVE_FLOAT);
-        spdPulseDataType->insertMember(PULSEMEMBERNAME_TRANS_WAVE_OFFSET, HOFFSET(SPDPulseH5V2, transWaveOffset), PredType::NATIVE_FLOAT);
-		spdPulseDataType->insertMember(PULSEMEMBERNAME_PTS_START_IDX, HOFFSET(SPDPulseH5V2, ptsStartIdx), PredType::NATIVE_ULLONG);
-		spdPulseDataType->insertMember(PULSEMEMBERNAME_RECEIVED_START_IDX, HOFFSET(SPDPulseH5V2, receivedStartIdx), PredType::NATIVE_ULLONG);
-		spdPulseDataType->insertMember(PULSEMEMBERNAME_TRANSMITTED_START_IDX, HOFFSET(SPDPulseH5V2, transmittedStartIdx), PredType::NATIVE_ULLONG);
+		H5::CompType *spdPulseDataType = new H5::CompType( sizeof(SPDPulseH5V2) );
+		spdPulseDataType->insertMember(PULSEMEMBERNAME_PULSE_ID, HOFFSET(SPDPulseH5V2, pulseID), H5::PredType::NATIVE_ULLONG);
+		spdPulseDataType->insertMember(PULSEMEMBERNAME_GPS_TIME, HOFFSET(SPDPulseH5V2, gpsTime), H5::PredType::NATIVE_ULLONG);
+		spdPulseDataType->insertMember(PULSEMEMBERNAME_X_ORIGIN, HOFFSET(SPDPulseH5V2, x0), H5::PredType::NATIVE_DOUBLE);
+		spdPulseDataType->insertMember(PULSEMEMBERNAME_Y_ORIGIN, HOFFSET(SPDPulseH5V2, y0), H5::PredType::NATIVE_DOUBLE);
+		spdPulseDataType->insertMember(PULSEMEMBERNAME_Z_ORIGIN, HOFFSET(SPDPulseH5V2, z0), H5::PredType::NATIVE_FLOAT);
+        spdPulseDataType->insertMember(PULSEMEMBERNAME_H_ORIGIN, HOFFSET(SPDPulseH5V2, h0), H5::PredType::NATIVE_FLOAT);
+		spdPulseDataType->insertMember(PULSEMEMBERNAME_X_IDX, HOFFSET(SPDPulseH5V2, xIdx), H5::PredType::NATIVE_DOUBLE);
+		spdPulseDataType->insertMember(PULSEMEMBERNAME_Y_IDX, HOFFSET(SPDPulseH5V2, yIdx), H5::PredType::NATIVE_DOUBLE);
+		spdPulseDataType->insertMember(PULSEMEMBERNAME_AZIMUTH, HOFFSET(SPDPulseH5V2, azimuth), H5::PredType::NATIVE_FLOAT);
+		spdPulseDataType->insertMember(PULSEMEMBERNAME_ZENITH, HOFFSET(SPDPulseH5V2, zenith), H5::PredType::NATIVE_FLOAT);
+		spdPulseDataType->insertMember(PULSEMEMBERNAME_NUMBER_OF_RETURNS, HOFFSET(SPDPulseH5V2, numberOfReturns), H5::PredType::NATIVE_UINT);
+		spdPulseDataType->insertMember(PULSEMEMBERNAME_NUMBER_OF_WAVEFORM_TRANSMITTED_BINS, HOFFSET(SPDPulseH5V2, numOfTransmittedBins), H5::PredType::NATIVE_UINT);
+		spdPulseDataType->insertMember(PULSEMEMBERNAME_NUMBER_OF_WAVEFORM_RECEIVED_BINS, HOFFSET(SPDPulseH5V2, numOfReceivedBins), H5::PredType::NATIVE_UINT);
+		spdPulseDataType->insertMember(PULSEMEMBERNAME_RANGE_TO_WAVEFORM_START, HOFFSET(SPDPulseH5V2, rangeToWaveformStart), H5::PredType::NATIVE_FLOAT);
+		spdPulseDataType->insertMember(PULSEMEMBERNAME_AMPLITUDE_PULSE, HOFFSET(SPDPulseH5V2, amplitudePulse), H5::PredType::NATIVE_FLOAT);
+		spdPulseDataType->insertMember(PULSEMEMBERNAME_WIDTH_PULSE, HOFFSET(SPDPulseH5V2, widthPulse), H5::PredType::NATIVE_FLOAT);
+		spdPulseDataType->insertMember(PULSEMEMBERNAME_USER, HOFFSET(SPDPulseH5V2, user), H5::PredType::NATIVE_ULONG);
+		spdPulseDataType->insertMember(PULSEMEMBERNAME_SOURCE_ID, HOFFSET(SPDPulseH5V2, sourceID), H5::PredType::NATIVE_UINT);
+        spdPulseDataType->insertMember(PULSEMEMBERNAME_SCANLINE, HOFFSET(SPDPulseH5V2, scanline), H5::PredType::NATIVE_ULONG);
+        spdPulseDataType->insertMember(PULSEMEMBERNAME_SCANLINE_IDX, HOFFSET(SPDPulseH5V2, scanlineIdx), H5::PredType::NATIVE_UINT);
+		spdPulseDataType->insertMember(PULSEMEMBERNAME_RECEIVE_WAVE_NOISE_THRES, HOFFSET(SPDPulseH5V2, receiveWaveNoiseThreshold), H5::PredType::NATIVE_FLOAT);
+        spdPulseDataType->insertMember(PULSEMEMBERNAME_TRANS_WAVE_NOISE_THRES, HOFFSET(SPDPulseH5V2, transWaveNoiseThres), H5::PredType::NATIVE_FLOAT);
+        spdPulseDataType->insertMember(PULSEMEMBERNAME_WAVELENGTH, HOFFSET(SPDPulseH5V2, wavelength), H5::PredType::NATIVE_FLOAT);
+        spdPulseDataType->insertMember(PULSEMEMBERNAME_RECEIVE_WAVE_GAIN, HOFFSET(SPDPulseH5V2, receiveWaveGain), H5::PredType::NATIVE_FLOAT);
+        spdPulseDataType->insertMember(PULSEMEMBERNAME_RECEIVE_WAVE_OFFSET, HOFFSET(SPDPulseH5V2, receiveWaveOffset), H5::PredType::NATIVE_FLOAT);
+        spdPulseDataType->insertMember(PULSEMEMBERNAME_TRANS_WAVE_GAIN, HOFFSET(SPDPulseH5V2, transWaveGain), H5::PredType::NATIVE_FLOAT);
+        spdPulseDataType->insertMember(PULSEMEMBERNAME_TRANS_WAVE_OFFSET, HOFFSET(SPDPulseH5V2, transWaveOffset), H5::PredType::NATIVE_FLOAT);
+		spdPulseDataType->insertMember(PULSEMEMBERNAME_PTS_START_IDX, HOFFSET(SPDPulseH5V2, ptsStartIdx), H5::PredType::NATIVE_ULLONG);
+		spdPulseDataType->insertMember(PULSEMEMBERNAME_RECEIVED_START_IDX, HOFFSET(SPDPulseH5V2, receivedStartIdx), H5::PredType::NATIVE_ULLONG);
+		spdPulseDataType->insertMember(PULSEMEMBERNAME_TRANSMITTED_START_IDX, HOFFSET(SPDPulseH5V2, transmittedStartIdx), H5::PredType::NATIVE_ULLONG);
 		
 		return spdPulseDataType;
 	}
@@ -217,7 +217,7 @@ namespace spdlib
         pl->receiveWaveOffset = 0;
         pl->transWaveGain = 1;
         pl->transWaveOffset = 0;
-		pl->pts = new vector<SPDPoint*>();
+		pl->pts = new std::vector<SPDPoint*>();
 		pl->transmitted = NULL;
 		pl->received = NULL;
 	}
@@ -408,7 +408,7 @@ namespace spdlib
 		pl_out->pulseID = pl->pulseID;
 		pl_out->gpsTime = pl->gpsTime;
 		pl_out->numberOfReturns = pl->numberOfReturns;
-		pl_out->pts = new vector<SPDPoint*>();
+		pl_out->pts = new std::vector<SPDPoint*>();
 		pl_out->pts->reserve(pl->numberOfReturns);
 		for(boost::uint_fast16_t i = 0; i < pl->numberOfReturns; ++i)
 		{
@@ -461,7 +461,7 @@ namespace spdlib
 		pl_out->pulseID = pl->pulseID;
 		pl_out->gpsTime = pl->gpsTime;
 		pl_out->numberOfReturns = pl->numberOfReturns;
-		pl_out->pts = new vector<SPDPoint*>();
+		pl_out->pts = new std::vector<SPDPoint*>();
 		pl_out->pts->reserve(pl->numberOfReturns);
 		for(boost::uint_fast16_t i = 0; i < pl->numberOfReturns; ++i)
 		{

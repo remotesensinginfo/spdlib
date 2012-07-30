@@ -331,7 +331,7 @@ def main(cmdargs):
     time0 = time.time() #Timers used to calculate time to finish.
     time1 = 0 #Timers used to calculate time to finish.
    
-    for pulseId in xrange(0, tewHeader.noOfWaveformDataRecs):
+    for pulseId in xrange(0, 2): #tewHeader.noOfWaveformDataRecs):
         #Pulses
         pulses = list()
         pulsesInBuffer = 0
@@ -405,7 +405,7 @@ def main(cmdargs):
             
         tewPulse.combineRecWf(tewHeader) #Combine ch1 and ch2. TODO: Only take ch 1 at the moment.
         
-        #tewPulse.summary() #Print summary about the tew-pulse header
+        tewPulse.summary() #Print summary about the tew-pulse header
         
         
         #####################################

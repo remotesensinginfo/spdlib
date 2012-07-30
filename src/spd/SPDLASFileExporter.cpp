@@ -58,25 +58,25 @@ namespace spdlib
         return new SPDLASFileExporter();
     }
 	
-	bool SPDLASFileExporter::open(SPDFile *spdFile, string outputFile) throw(SPDIOException)
+	bool SPDLASFileExporter::open(SPDFile *spdFile, std::string outputFile) throw(SPDIOException)
 	{
 		try 
 		{
             if (spdFile->getDecomposedPtDefined() == SPD_TRUE)
             {
-                cout << "Decomposed Point data found - Note. widths are not stored.\n";
+                std::cout << "Decomposed Point data found - Note. widths are not stored.\n";
             }
 			else if(spdFile->getDiscretePtDefined() == SPD_TRUE)
 			{
-				cout << "Point data found\n";
+				std::cout << "Point data found\n";
 			}
             else
             {
                 throw SPDIOException("This writer can only export point data.");
             }
                 
-			outDataStream = new fstream();
-			outDataStream->open(outputFile.c_str(), ios::out | ios::binary);
+			outDataStream = new std::fstream();
+			outDataStream->open(outputFile.c_str(), std::ios::out | std::ios::binary);
 
 			liblas::Header lasFileHeader;
             lasFileHeader.SetDataFormatId(liblas::ePointFormat3);
@@ -97,11 +97,11 @@ namespace spdlib
 		{
 			throw e;
 		}
-		catch(invalid_argument &e)
+		catch(std::invalid_argument &e)
 		{
 			throw SPDIOException(e.what());
 		}
-		catch(runtime_error &e)
+		catch(std::runtime_error &e)
 		{
 			throw SPDIOException(e.what());
 		}
@@ -111,7 +111,7 @@ namespace spdlib
 		return fileOpened;
 	}
 	
-	void SPDLASFileExporter::writeDataColumn(list<SPDPulse*> *plsIn, boost::uint_fast32_t col, boost::uint_fast32_t row)throw(SPDIOException)
+	void SPDLASFileExporter::writeDataColumn(std::list<SPDPulse*> *plsIn, boost::uint_fast32_t col, boost::uint_fast32_t row)throw(SPDIOException)
 	{
 		SPDPulseUtils pulseUtils;
 		SPDPointUtils pointUtils;
@@ -122,11 +122,9 @@ namespace spdlib
 		}
 		
 		try 
-		{
-			Exception::dontPrint();
-			
-			vector<SPDPoint*>::iterator iterPts;
-			list<SPDPulse*>::iterator iterInPls;
+		{			
+			std::vector<SPDPoint*>::iterator iterPts;
+			std::list<SPDPulse*>::iterator iterInPls;
             if(plsIn->size() > 0)
             {
                 for(iterInPls = plsIn->begin(); iterInPls != plsIn->end(); ++iterInPls)
@@ -206,17 +204,17 @@ namespace spdlib
 		{
 			throw e;
 		}
-		catch(invalid_argument &e)
+		catch(std::invalid_argument &e)
 		{
 			throw SPDIOException(e.what());
 		}
-		catch(runtime_error &e)
+		catch(std::runtime_error &e)
 		{
 			throw SPDIOException(e.what());
 		}
 	}
 	
-	void SPDLASFileExporter::writeDataColumn(vector<SPDPulse*> *plsIn, boost::uint_fast32_t col, boost::uint_fast32_t row)throw(SPDIOException)
+	void SPDLASFileExporter::writeDataColumn(std::vector<SPDPulse*> *plsIn, boost::uint_fast32_t col, boost::uint_fast32_t row)throw(SPDIOException)
 	{
 		SPDPulseUtils pulseUtils;
 		SPDPointUtils pointUtils;
@@ -227,11 +225,9 @@ namespace spdlib
 		}
 		
 		try 
-		{
-			Exception::dontPrint();
-			
-			vector<SPDPoint*>::iterator iterPts;
-			vector<SPDPulse*>::iterator iterInPls;
+		{			
+			std::vector<SPDPoint*>::iterator iterPts;
+			std::vector<SPDPulse*>::iterator iterInPls;
 			if(plsIn->size() > 0)
             {
                 for(iterInPls = plsIn->begin(); iterInPls != plsIn->end(); ++iterInPls)
@@ -311,11 +307,11 @@ namespace spdlib
 		{
 			throw e;
 		}
-		catch(invalid_argument &e)
+		catch(std::invalid_argument &e)
 		{
 			throw SPDIOException(e.what());
 		}
-		catch(runtime_error &e)
+		catch(std::runtime_error &e)
 		{
 			throw SPDIOException(e.what());
 		}
@@ -358,7 +354,7 @@ namespace spdlib
 			}
 			catch (SPDIOException &e) 
 			{
-				cerr << "WARNING: " << e.what() << endl;
+				std::cerr << "WARNING: " << e.what() << std::endl;
 			}
 		}
 	}

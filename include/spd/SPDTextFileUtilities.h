@@ -33,15 +33,11 @@
 #include <boost/numeric/conversion/cast.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/cstdint.hpp>
+#include <boost/math/special_functions/fpclassify.hpp>
 #include <boost/algorithm/string/trim.hpp>
 
 #include "spd/SPDTextFileException.h"
 #include "spd/SPDIOException.h"
-
-using boost::lexical_cast;
-using boost::bad_lexical_cast;
-
-using namespace std;
 
 namespace spdlib{
 	
@@ -49,38 +45,38 @@ namespace spdlib{
 	{
 	public:
 		SPDTextFileUtilities();
-        boost::uint_fast64_t countLines(string input) throw(SPDIOException);
-		bool lineStart(string line, char token);
-		bool blankline(string line);
-		string removeWhiteSpace(string line);
-		void tokenizeString(string line, char token, vector<string> *tokens, bool ignoreDuplicateTokens=true);
-		string readFileToString(string input) throw(SPDIOException);
+        boost::uint_fast64_t countLines(std::string input) throw(SPDIOException);
+		bool lineStart(std::string line, char token);
+		bool blankline(std::string line);
+		std::string removeWhiteSpace(std::string line);
+		void tokenizeString(std::string line, char token, std::vector<std::string> *tokens, bool ignoreDuplicateTokens=true);
+		std::string readFileToString(std::string input) throw(SPDIOException);
 		
-		double strtodouble(string inValue)throw(SPDTextFileException);
-		float strtofloat(string inValue)throw(SPDTextFileException);
+		double strtodouble(std::string inValue)throw(SPDTextFileException);
+		float strtofloat(std::string inValue)throw(SPDTextFileException);
 		
-        boost::uint_fast8_t strto8bitUInt(string inValue)throw(SPDTextFileException);
-        boost::uint_fast16_t strto16bitUInt(string inValue)throw(SPDTextFileException);
-        boost::uint_fast32_t strto32bitUInt(string inValue)throw(SPDTextFileException);
-        boost::uint_fast64_t strto64bitUInt(string inValue)throw(SPDTextFileException);
+        boost::uint_fast8_t strto8bitUInt(std::string inValue)throw(SPDTextFileException);
+        boost::uint_fast16_t strto16bitUInt(std::string inValue)throw(SPDTextFileException);
+        boost::uint_fast32_t strto32bitUInt(std::string inValue)throw(SPDTextFileException);
+        boost::uint_fast64_t strto64bitUInt(std::string inValue)throw(SPDTextFileException);
             
-        boost::int_fast8_t strto8bitInt(string inValue)throw(SPDTextFileException);
-        boost::int_fast16_t strto16bitInt(string inValue)throw(SPDTextFileException);
-        boost::int_fast32_t strto32bitInt(string inValue)throw(SPDTextFileException);
-        boost::int_fast64_t strto64bitInt(string inValue)throw(SPDTextFileException);
+        boost::int_fast8_t strto8bitInt(std::string inValue)throw(SPDTextFileException);
+        boost::int_fast16_t strto16bitInt(std::string inValue)throw(SPDTextFileException);
+        boost::int_fast32_t strto32bitInt(std::string inValue)throw(SPDTextFileException);
+        boost::int_fast64_t strto64bitInt(std::string inValue)throw(SPDTextFileException);
 		
-		string doubletostring(double number)throw(SPDTextFileException);
-		string floattostring(float number)throw(SPDTextFileException);
+		std::string doubletostring(double number)throw(SPDTextFileException);
+		std::string floattostring(float number)throw(SPDTextFileException);
 		
-		string uInt8bittostring(boost::uint_fast8_t number)throw(SPDTextFileException);
-		string uInt16bittostring(boost::uint_fast16_t number)throw(SPDTextFileException);
-		string uInt32bittostring(boost::uint_fast32_t number)throw(SPDTextFileException);
-		string uInt64bittostring(boost::uint_fast64_t number)throw(SPDTextFileException);
+		std::string uInt8bittostring(boost::uint_fast8_t number)throw(SPDTextFileException);
+		std::string uInt16bittostring(boost::uint_fast16_t number)throw(SPDTextFileException);
+		std::string uInt32bittostring(boost::uint_fast32_t number)throw(SPDTextFileException);
+		std::string uInt64bittostring(boost::uint_fast64_t number)throw(SPDTextFileException);
 		
-		string int8bittostring(boost::int_fast8_t number)throw(SPDTextFileException);
-		string int16bittostring(boost::int_fast16_t number)throw(SPDTextFileException);
-		string int32bittostring(boost::int_fast32_t number)throw(SPDTextFileException);
-		string int64bittostring(boost::int_fast64_t number)throw(SPDTextFileException);
+		std::string int8bittostring(boost::int_fast8_t number)throw(SPDTextFileException);
+		std::string int16bittostring(boost::int_fast16_t number)throw(SPDTextFileException);
+		std::string int32bittostring(boost::int_fast32_t number)throw(SPDTextFileException);
+		std::string int64bittostring(boost::int_fast64_t number)throw(SPDTextFileException);
 		
 		~SPDTextFileUtilities();
 	};

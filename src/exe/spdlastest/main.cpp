@@ -80,7 +80,7 @@ namespace spdlib
                         cout << "*********************************\n";
                     }
                     
-                    for(uint_fast16_t i = 0; i < (numOfReturnsInPulse-1); ++i)
+                    for(boost::uint_fast16_t i = 0; i < (numOfReturnsInPulse-1); ++i)
 					{
 						if(reader.ReadNextPoint())
 						{
@@ -154,7 +154,7 @@ namespace spdlib
                         ++numOfPrintedPoints;
                     }
                     
-                    for(uint_fast16_t i = 0; i < (numOfReturnsInPulse-1); ++i)
+                    for(boost::uint_fast16_t i = 0; i < (numOfReturnsInPulse-1); ++i)
 					{
 						if(reader.ReadNextPoint())
 						{
@@ -198,7 +198,7 @@ namespace spdlib
                     liblas::Point const& p = reader.GetPoint();
                     ++numOfPoints;
                     numOfReturnsInPulse = p.GetNumberOfReturns();
-                    for(uint_fast16_t i = 0; i < (numOfReturnsInPulse-1); ++i)
+                    for(boost::uint_fast16_t i = 0; i < (numOfReturnsInPulse-1); ++i)
 					{
 						if(reader.ReadNextPoint())
 						{

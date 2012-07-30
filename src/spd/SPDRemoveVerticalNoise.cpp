@@ -39,13 +39,13 @@ namespace spdlib
         this->relLowThres = relLowThres;
     }
 
-    void SPDRemoveVerticalNoise::processDataColumn(SPDFile *inSPDFile, vector<SPDPulse*> *pulses, SPDXYPoint *cenPts) throw(SPDProcessingException)
+    void SPDRemoveVerticalNoise::processDataColumn(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses, SPDXYPoint *cenPts) throw(SPDProcessingException)
     {
         if(pulses->size() > 0)
         {
-            vector<SPDPulse*>::iterator iterPulses;
-            vector<SPDPoint*>::iterator iterPoints;
-            vector<double> ptVals;
+            std::vector<SPDPulse*>::iterator iterPulses;
+            std::vector<SPDPoint*>::iterator iterPoints;
+            std::vector<double> ptVals;
             bool firstPt = true;
             bool removedFirst = false;
             

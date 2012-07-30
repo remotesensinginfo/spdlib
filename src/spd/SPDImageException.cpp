@@ -37,7 +37,7 @@ namespace spdlib
 		
 	}
 	
-	SPDImageException::SPDImageException(string message) : SPDException(message)
+	SPDImageException::SPDImageException(std::string message) : SPDException(message)
 	{
 		
 	}

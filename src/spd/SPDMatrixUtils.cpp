@@ -238,9 +238,9 @@ namespace spdlib{
 		{
 			throw SPDException("Multipication required the number of columns to match the number of rows.");
 		}
-		//cout << "Creating new matrix\n";
-		//cout << "matrix2->n = " << matrix2->n << endl;
-		//cout << "matrix1->m = " << matrix1->m << endl;
+		//std::cout << "Creating new matrix\n";
+		//std::cout << "matrix2->n = " << matrix2->n << std::endl;
+		//std::cout << "matrix1->m = " << matrix1->m << std::endl;
 		Matrix *newMatrix = this->createMatrix(matrix2->n, matrix1->m);
 		
 		double value = 0;
@@ -256,7 +256,7 @@ namespace spdlib{
 				{
 					row = (i * matrix1->n) + n;
 					col = (n * matrix2->n) + j;
-					//cout << "row = " << row << " col = " << col << endl;
+					//std::cout << "row = " << row << " col = " << col << std::endl;
 					value += matrix1->matrix[row] * matrix2->matrix[col];
 				}
 				newMatrix->matrix[index] = value;
@@ -274,22 +274,22 @@ namespace spdlib{
 		{
 			for(int j = 0; j < matrix->m; j++)
 			{
-				cout << matrix->matrix[index++] << " ";
+				std::cout << matrix->matrix[index++] << " ";
 			}
-			cout << endl;
+			std::cout << std::endl;
 		}
 	}
 	
-	void SPDMatrixUtils::saveMatrix2GridTxt(Matrix *matrix, string filepath) throw(SPDException)
+	void SPDMatrixUtils::saveMatrix2GridTxt(Matrix *matrix, std::string filepath) throw(SPDException)
 	{
-		string outputFilename = filepath + string(".gmtxt");
-		ofstream outTxtFile;
-		outTxtFile.open(outputFilename.c_str(), ios::out | ios::trunc);
+		std::string outputFilename = filepath + std::string(".gmtxt");
+		std::ofstream outTxtFile;
+		outTxtFile.open(outputFilename.c_str(), std::ios::out | std::ios::trunc);
 		
 		if(outTxtFile.is_open())
 		{
-			outTxtFile << "m=" << matrix->m << endl;
-			outTxtFile << "n=" << matrix->n << endl;
+			outTxtFile << "m=" << matrix->m << std::endl;
+			outTxtFile << "n=" << matrix->n << std::endl;
 			
 			int totalElements = matrix->n * matrix->m;
 			int lastElement = totalElements-1;
@@ -297,7 +297,7 @@ namespace spdlib{
 			{
 				if(i %  matrix->m == 0)
 				{
-					outTxtFile << endl;
+					outTxtFile << std::endl;
 				}
 				if(i == lastElement)
 				{
@@ -318,11 +318,11 @@ namespace spdlib{
 		
 	}
 	
-	void SPDMatrixUtils::saveMatrix2CSV(Matrix *matrix, string filepath) throw(SPDException)
+	void SPDMatrixUtils::saveMatrix2CSV(Matrix *matrix, std::string filepath) throw(SPDException)
 	{
-		string outputFilename = filepath + string(".csv");
-		ofstream outTxtFile;
-		outTxtFile.open(outputFilename.c_str(), ios::out | ios::trunc);
+		std::string outputFilename = filepath + std::string(".csv");
+		std::ofstream outTxtFile;
+		outTxtFile.open(outputFilename.c_str(), std::ios::out | std::ios::trunc);
 		
 		if(outTxtFile.is_open())
 		{			
@@ -332,7 +332,7 @@ namespace spdlib{
 			{
 				if(i %  matrix->m == 0)
 				{
-					outTxtFile << endl;
+					outTxtFile << std::endl;
 				}
 				if(i == lastElement)
 				{
@@ -353,16 +353,16 @@ namespace spdlib{
 		
 	}
 	
-	void SPDMatrixUtils::saveMatrix2txt(Matrix *matrix, string filepath) throw(SPDException)
+	void SPDMatrixUtils::saveMatrix2txt(Matrix *matrix, std::string filepath) throw(SPDException)
 	{
-		string outputFilename = filepath + string(".mtxt");
-		ofstream outTxtFile;
-		outTxtFile.open(outputFilename.c_str(), ios::out | ios::trunc);
+		std::string outputFilename = filepath + std::string(".mtxt");
+		std::ofstream outTxtFile;
+		outTxtFile.open(outputFilename.c_str(), std::ios::out | std::ios::trunc);
 		
 		if(outTxtFile.is_open())
 		{
-			outTxtFile << "m=" << matrix->m << endl;
-			outTxtFile << "n=" << matrix->n << endl;
+			outTxtFile << "m=" << matrix->m << std::endl;
+			outTxtFile << "n=" << matrix->n << std::endl;
 			
 			int totalElements = matrix->n * matrix->m;
 			int lastElement = totalElements-1;
@@ -386,11 +386,11 @@ namespace spdlib{
 		}
 	}
 	
-	void SPDMatrixUtils::saveMatrix2Binary(Matrix *matrix, string filepath) throw(SPDException)
+	void SPDMatrixUtils::saveMatrix2Binary(Matrix *matrix, std::string filepath) throw(SPDException)
 	{
-		ofstream matrixOutput;
-		string matrixFilepath = filepath + string(".mtx");
-		matrixOutput.open(matrixFilepath.c_str(), ios::out | ios::trunc | ios::binary);
+		std::ofstream matrixOutput;
+		std::string matrixFilepath = filepath + std::string(".mtx");
+		matrixOutput.open(matrixFilepath.c_str(), std::ios::out | std::ios::trunc | std::ios::binary);
 		if(!matrixOutput.is_open())
 		{
 			throw SPDException("Could not open output stream for Matrix output.");
@@ -409,11 +409,11 @@ namespace spdlib{
 		matrixOutput.close();
 	}
 	
-	Matrix* SPDMatrixUtils::readMatrixFromTxt(string filepath) throw(SPDException)
+	Matrix* SPDMatrixUtils::readMatrixFromTxt(std::string filepath) throw(SPDException)
 	{
 		SPDTextFileUtilities textUtils;
 		Matrix *matrix = new Matrix();
-		ifstream inputMatrix;
+		std::ifstream inputMatrix;
 		inputMatrix.open(filepath.c_str());
 		if(!inputMatrix.is_open())
 		{
@@ -421,12 +421,12 @@ namespace spdlib{
 		}
 		else
 		{
-			string strLine;
-			string word;
+			std::string strLine;
+			std::string word;
 			int number;
 			float value;
 			int lineCounter = 0;
-			inputMatrix.seekg(ios_base::beg);
+			inputMatrix.seekg(std::ios_base::beg);
 			while(!inputMatrix.eof())
 			{
 				getline(inputMatrix, strLine, '\n');
@@ -436,14 +436,14 @@ namespace spdlib{
 					{
 						// m
 						word = strLine.substr(2);
-						number = textUtils.strto64bitUInt(word);
+						number = textUtils.strto32bitUInt(word);
 						matrix->m = number;
 					}
 					else if(lineCounter == 1)
 					{
 						// n
 						word = strLine.substr(2);
-						number = textUtils.strto64bitUInt(word);
+						number = textUtils.strto32bitUInt(word);
 						matrix->n = number;
 					}
 					else if(lineCounter == 2)
@@ -460,7 +460,7 @@ namespace spdlib{
 							{
 								word = strLine.substr(start, i-start);								
 								value = textUtils.strtodouble(word);
-								if(isnan(value))
+								if(boost::math::isnan(value))
 								{
 									value = 0;
 								}
@@ -503,10 +503,11 @@ namespace spdlib{
 		return matrix;
 	}
 	
-	Matrix* SPDMatrixUtils::readMatrixFromGridTxt(string filepath) throw(SPDException)
+	Matrix* SPDMatrixUtils::readMatrixFromGridTxt(std::string filepath) throw(SPDException)
 	{
+        SPDTextFileUtilities txtUtils;
 		Matrix *matrix = new Matrix();
-		ifstream inputMatrix;
+		std::ifstream inputMatrix;
 		inputMatrix.open(filepath.c_str());
 		if(!inputMatrix.is_open())
 		{
@@ -514,14 +515,14 @@ namespace spdlib{
 		}
 		else
 		{
-			string strLine;
-			string wholeline;
-			string word;
+			std::string strLine;
+			std::string wholeline;
+			std::string word;
 			int number;
 			float value;
 			int lineCounter = 0;
 			bool first = true;
-			inputMatrix.seekg(ios_base::beg);
+			inputMatrix.seekg(std::ios_base::beg);
 			while(!inputMatrix.eof())
 			{
 				getline(inputMatrix, strLine, '\n');
@@ -531,17 +532,17 @@ namespace spdlib{
 					{
 						// m
 						word = strLine.substr(2);
-						number = strtol(word.c_str(), NULL, 10);
+						number = txtUtils.strto32bitInt(word);
 						matrix->m = number;
-						//cout << "columns = " << number << endl;
+						//std::cout << "columns = " << number << std::endl;
 					}
 					else if(lineCounter == 1)
 					{
 						// n
 						word = strLine.substr(2);
-						number = strtol(word.c_str(), NULL, 10);
+						number = txtUtils.strto32bitInt(word);
 						matrix->n = number;
-						//cout << "rows = " << number << endl;
+						//std::cout << "rows = " << number << std::endl;
 					}
 					else 
 					{
@@ -552,7 +553,7 @@ namespace spdlib{
 						}
 						else 
 						{
-							wholeline = wholeline + string(",") + strLine;
+							wholeline = wholeline + std::string(",") + strLine;
 						}
 					}
 					lineCounter++;
@@ -572,7 +573,7 @@ namespace spdlib{
 				if(wholeline.at(i) == ',')
 				{
 					word = wholeline.substr(start, i-start);								
-					value = strtod(word.c_str(), NULL);
+					value = txtUtils.strtodouble(word);
 					matrix->matrix[dataCounter] = value;
 					dataCounter++;
 					
@@ -586,7 +587,7 @@ namespace spdlib{
 			}
 			
 			word = wholeline.substr(start);
-			value = strtod(word.c_str(), NULL);
+			value = txtUtils.strtodouble(word);
 			matrix->matrix[dataCounter] = value;
 			dataCounter++;
 			
@@ -599,20 +600,20 @@ namespace spdlib{
 	}
 	
 	
-	Matrix* SPDMatrixUtils::readMatrixFromBinary(string filepath) throw(SPDException)
+	Matrix* SPDMatrixUtils::readMatrixFromBinary(std::string filepath) throw(SPDException)
 	{
 		Matrix *matrix = new Matrix();
-		string matrixFilepath = filepath + string(".mtx");
-		ifstream matrixInput;
-		matrixInput.open(matrixFilepath.c_str(), ios::in | ios::binary);
+		std::string matrixFilepath = filepath + std::string(".mtx");
+		std::ifstream matrixInput;
+		matrixInput.open(matrixFilepath.c_str(), std::ios::in | std::ios::binary);
 		if(!matrixInput.is_open())
 		{
 			throw SPDException("Could not open matrix binary file.");
 		}
 		
-		matrixInput.seekg (0, ios::end);
+		matrixInput.seekg (0, std::ios::end);
 		long end = matrixInput.tellg();
-		matrixInput.seekg (0, ios::beg);
+		matrixInput.seekg (0, std::ios::beg);
 		int matrixSizeFile = (end/16) - 2;
 		
 		matrixInput.read((char *) &matrix->m, 4);
@@ -705,7 +706,7 @@ namespace spdlib{
 			
 			for(int i = 0; i < length; i++)
 			{
-				//cout << "[" << column << "," << row << "]: " << xDupCount <<  " out = " << outCounter << " in = " << inCounter << endl;
+				//std::cout << "[" << column << "," << row << "]: " << xDupCount <<  " out = " << outCounter << " in = " << inCounter << std::endl;
 				
 				outMatrix->matrix[outCounter++] = matrix->matrix[inCounter++];
 				

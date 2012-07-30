@@ -33,7 +33,7 @@ namespace spdlib
         
     }
     
-    void SPDGenBinaryMask::generateBinaryMask(boost::uint_fast32_t numPulses, string inputSPDFile, string outputImageFile, boost::uint_fast32_t blockXSize, boost::uint_fast32_t blockYSize, float processingResolution, string gdalFormat) throw(SPDProcessingException)
+    void SPDGenBinaryMask::generateBinaryMask(boost::uint_fast32_t numPulses, std::string inputSPDFile, std::string outputImageFile, boost::uint_fast32_t blockXSize, boost::uint_fast32_t blockYSize, float processingResolution, std::string gdalFormat) throw(SPDProcessingException)
     {
         try 
         {
@@ -64,7 +64,7 @@ namespace spdlib
         this->numPulses = numPulses;
     }
     
-    void SPDPulseProcessorCalcMask::processDataColumnImage(SPDFile *inSPDFile, vector<SPDPulse*> *pulses, float *imageData, SPDXYPoint *cenPts, boost::uint_fast32_t numImgBands, float binSize) throw(SPDProcessingException)
+    void SPDPulseProcessorCalcMask::processDataColumnImage(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses, float *imageData, SPDXYPoint *cenPts, boost::uint_fast32_t numImgBands, float binSize) throw(SPDProcessingException)
     {
         try
         {
@@ -88,9 +88,9 @@ namespace spdlib
         }
     }
     
-    vector<string> SPDPulseProcessorCalcMask::getImageBandDescriptions() throw(SPDProcessingException)
+    std::vector<std::string> SPDPulseProcessorCalcMask::getImageBandDescriptions() throw(SPDProcessingException)
     {
-        vector<string> bandNames;
+        std::vector<std::string> bandNames;
         bandNames.push_back("Mask");
         
         return bandNames;

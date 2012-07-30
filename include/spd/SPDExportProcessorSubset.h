@@ -38,8 +38,6 @@
 #include "spd/SPDFileWriter.h"
 #include "spd/SPDFileReader.h"
 
-using namespace std;
-
 namespace spdlib
 {
 	class SPDExportProcessorSubset : public SPDImporterProcessor
@@ -53,7 +51,7 @@ namespace spdlib
 		SPDDataExporter *exporter;
 		SPDFile *spdFileOut;
 		bool fileOpen;
-		list<SPDPulse*> *pulses;
+		std::list<SPDPulse*> *pulses;
 		double *bbox;
 		double xMin;
 		double xMax;
@@ -75,7 +73,7 @@ namespace spdlib
 		SPDDataExporter *exporter;
 		SPDFile *spdFileOut;
 		bool fileOpen;
-		list<SPDPulse*> *pulses;
+		std::list<SPDPulse*> *pulses;
 		double *bbox;
 	};
 
@@ -84,8 +82,8 @@ namespace spdlib
 	{
 	public:
 		SPDSubsetNonGriddedFile();
-		void subsetCartesian(string input, string output, double *bbox, bool *bboxDefined) throw(SPDException);
-        void subsetSpherical(string input, string output, double *bbox, bool *bboxDefined) throw(SPDException);
+		void subsetCartesian(std::string input, std::string output, double *bbox, bool *bboxDefined) throw(SPDException);
+        void subsetSpherical(std::string input, std::string output, double *bbox, bool *bboxDefined) throw(SPDException);
 		~SPDSubsetNonGriddedFile();
 	};
 }

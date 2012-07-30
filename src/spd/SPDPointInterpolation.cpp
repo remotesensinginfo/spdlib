@@ -35,11 +35,11 @@ namespace spdlib
         this->maxNumPtsPerBin = maxNumPtsPerBin;
 	}
     
-    vector<SPDPoint*>* SPDPointInterpolator::findPoints(list<SPDPulse*> ***pulses, boost::uint_fast32_t numXBins, boost::uint_fast32_t numYBins, boost::uint_fast16_t ptClass) throw(SPDProcessingException)
+    std::vector<SPDPoint*>* SPDPointInterpolator::findPoints(std::list<SPDPulse*> ***pulses, boost::uint_fast32_t numXBins, boost::uint_fast32_t numYBins, boost::uint_fast16_t ptClass) throw(SPDProcessingException)
     {
-        vector<SPDPoint*> *points = new vector<SPDPoint*>();
-        list<SPDPulse*>::iterator iterPulses;
-        vector<SPDPoint*>::iterator iterPts;
+        std::vector<SPDPoint*> *points = new std::vector<SPDPoint*>();
+        std::list<SPDPulse*>::iterator iterPulses;
+        std::vector<SPDPoint*>::iterator iterPts;
         SPDPoint *pt = NULL;
         for(boost::uint_fast32_t i = 0; i < numYBins; ++i)
         {
@@ -91,11 +91,11 @@ namespace spdlib
         return points;
     }
     
-    vector<SPDPoint*>* SPDPointInterpolator::findPoints(vector<SPDPulse*> ***pulses, boost::uint_fast32_t numXBins, boost::uint_fast32_t numYBins, boost::uint_fast16_t ptClass) throw(SPDProcessingException)
+    std::vector<SPDPoint*>* SPDPointInterpolator::findPoints(std::vector<SPDPulse*> ***pulses, boost::uint_fast32_t numXBins, boost::uint_fast32_t numYBins, boost::uint_fast16_t ptClass) throw(SPDProcessingException)
     {
-        vector<SPDPoint*> *points = new vector<SPDPoint*>();
-        vector<SPDPulse*>::iterator iterPulses;
-        vector<SPDPoint*>::iterator iterPts;
+        std::vector<SPDPoint*> *points = new std::vector<SPDPoint*>();
+        std::vector<SPDPulse*>::iterator iterPulses;
+        std::vector<SPDPoint*>::iterator iterPts;
         SPDPoint *pt = NULL;
         for(boost::uint_fast32_t i = 0; i < numYBins; ++i)
         {
@@ -147,11 +147,11 @@ namespace spdlib
         return points;
     }
     
-    vector<SPDPoint*>* SPDPointInterpolator::findPoints(list<SPDPulse*> *pulses, boost::uint_fast16_t ptClass) throw(SPDProcessingException)
+    std::vector<SPDPoint*>* SPDPointInterpolator::findPoints(std::list<SPDPulse*> *pulses, boost::uint_fast16_t ptClass) throw(SPDProcessingException)
     {
-        vector<SPDPoint*> *points = new vector<SPDPoint*>();
-        list<SPDPulse*>::iterator iterPulses;
-		vector<SPDPoint*>::iterator iterPts;
+        std::vector<SPDPoint*> *points = new std::vector<SPDPoint*>();
+        std::list<SPDPulse*>::iterator iterPulses;
+		std::vector<SPDPoint*>::iterator iterPts;
         SPDPoint *pt = NULL;
 		for(iterPulses = pulses->begin(); iterPulses != pulses->end(); ++iterPulses)
 		{
@@ -197,11 +197,11 @@ namespace spdlib
         return points;
     }
     
-    vector<SPDPoint*>* SPDPointInterpolator::findPoints(vector<SPDPulse*> *pulses, boost::uint_fast16_t ptClass) throw(SPDProcessingException)
+    std::vector<SPDPoint*>* SPDPointInterpolator::findPoints(std::vector<SPDPulse*> *pulses, boost::uint_fast16_t ptClass) throw(SPDProcessingException)
     {
-        vector<SPDPoint*> *points = new vector<SPDPoint*>();
-        vector<SPDPulse*>::iterator iterPulses;
-		vector<SPDPoint*>::iterator iterPts;
+        std::vector<SPDPoint*> *points = new std::vector<SPDPoint*>();
+        std::vector<SPDPulse*>::iterator iterPulses;
+		std::vector<SPDPoint*>::iterator iterPts;
         SPDPoint *pt = NULL;
 		for(iterPulses = pulses->begin(); iterPulses != pulses->end(); ++iterPulses)
 		{
@@ -247,7 +247,7 @@ namespace spdlib
         return points;
     }
     
-    void SPDPointInterpolator::thinPoints(vector<SPDPoint*> *points) throw(SPDProcessingException)
+    void SPDPointInterpolator::thinPoints(std::vector<SPDPoint*> *points) throw(SPDProcessingException)
     {
         try
         {
@@ -273,11 +273,11 @@ namespace spdlib
 
 	}
 	
-    void SPDTriangulationPointInterpolator::initInterpolator(list<SPDPulse*> ***pulses, boost::uint_fast32_t numXBins, boost::uint_fast32_t numYBins, boost::uint_fast16_t ptClass) throw(SPDProcessingException)
+    void SPDTriangulationPointInterpolator::initInterpolator(std::list<SPDPulse*> ***pulses, boost::uint_fast32_t numXBins, boost::uint_fast32_t numYBins, boost::uint_fast16_t ptClass) throw(SPDProcessingException)
     {
         try
         {
-            vector<SPDPoint*> *points = this->findPoints(pulses, numXBins, numYBins, ptClass);
+            std::vector<SPDPoint*> *points = this->findPoints(pulses, numXBins, numYBins, ptClass);
             if(points->size() < 3)
             {
                 delete points;
@@ -291,7 +291,7 @@ namespace spdlib
             dt = new DelaunayTriangulation();
             values = new PointValueMap();
             
-            vector<SPDPoint*>::iterator iterPts;
+            std::vector<SPDPoint*>::iterator iterPts;
             for(iterPts = points->begin(); iterPts != points->end(); ++iterPts)
             {
                 K::Point_2 cgalPt((*iterPts)->x,(*iterPts)->y);
@@ -299,12 +299,12 @@ namespace spdlib
                 if(elevVal == SPD_USE_Z)
                 {
                     CGALCoordType value = (*iterPts)->z;
-                    values->insert(make_pair(cgalPt, value));
+                    values->insert(std::make_pair(cgalPt, value));
                 }
                 else if(elevVal == SPD_USE_HEIGHT)
                 {
                     CGALCoordType value = (*iterPts)->height;
-                    values->insert(make_pair(cgalPt, value));
+                    values->insert(std::make_pair(cgalPt, value));
                 }
                 else
                 {
@@ -320,11 +320,11 @@ namespace spdlib
         initialised = true;
     }
     
-    void SPDTriangulationPointInterpolator::initInterpolator(vector<SPDPulse*> ***pulses, boost::uint_fast32_t numXBins, boost::uint_fast32_t numYBins, boost::uint_fast16_t ptClass) throw(SPDProcessingException)
+    void SPDTriangulationPointInterpolator::initInterpolator(std::vector<SPDPulse*> ***pulses, boost::uint_fast32_t numXBins, boost::uint_fast32_t numYBins, boost::uint_fast16_t ptClass) throw(SPDProcessingException)
     {
         try
         {
-            vector<SPDPoint*> *points = this->findPoints(pulses, numXBins, numYBins, ptClass);
+            std::vector<SPDPoint*> *points = this->findPoints(pulses, numXBins, numYBins, ptClass);
             if(points->size() < 3)
             {
                 delete points;
@@ -338,7 +338,7 @@ namespace spdlib
             dt = new DelaunayTriangulation();
             values = new PointValueMap();
                         
-            vector<SPDPoint*>::iterator iterPts;
+            std::vector<SPDPoint*>::iterator iterPts;
             for(iterPts = points->begin(); iterPts != points->end(); ++iterPts)
             {
                 K::Point_2 cgalPt((*iterPts)->x,(*iterPts)->y);
@@ -346,12 +346,12 @@ namespace spdlib
                 if(elevVal == SPD_USE_Z)
                 {
                     CGALCoordType value = (*iterPts)->z;
-                    values->insert(make_pair(cgalPt, value));
+                    values->insert(std::make_pair(cgalPt, value));
                 }
                 else if(elevVal == SPD_USE_HEIGHT)
                 {
                     CGALCoordType value = (*iterPts)->height;
-                    values->insert(make_pair(cgalPt, value));
+                    values->insert(std::make_pair(cgalPt, value));
                 }
                 else
                 {
@@ -367,11 +367,11 @@ namespace spdlib
         initialised = true;
     }
     
-    void SPDTriangulationPointInterpolator::initInterpolator(list<SPDPulse*> *pulses, boost::uint_fast16_t ptClass) throw(SPDProcessingException)
+    void SPDTriangulationPointInterpolator::initInterpolator(std::list<SPDPulse*> *pulses, boost::uint_fast16_t ptClass) throw(SPDProcessingException)
     {
         try
         {
-            vector<SPDPoint*> *points = this->findPoints(pulses, ptClass);
+            std::vector<SPDPoint*> *points = this->findPoints(pulses, ptClass);
             if(points->size() < 3)
             {
                 delete points;
@@ -385,7 +385,7 @@ namespace spdlib
             dt = new DelaunayTriangulation();
             values = new PointValueMap();
             
-            vector<SPDPoint*>::iterator iterPts;
+            std::vector<SPDPoint*>::iterator iterPts;
             for(iterPts = points->begin(); iterPts != points->end(); ++iterPts)
             {
                 K::Point_2 cgalPt((*iterPts)->x,(*iterPts)->y);
@@ -393,12 +393,12 @@ namespace spdlib
                 if(elevVal == SPD_USE_Z)
                 {
                     CGALCoordType value = (*iterPts)->z;
-                    values->insert(make_pair(cgalPt, value));
+                    values->insert(std::make_pair(cgalPt, value));
                 }
                 else if(elevVal == SPD_USE_HEIGHT)
                 {
                     CGALCoordType value = (*iterPts)->height;
-                    values->insert(make_pair(cgalPt, value));
+                    values->insert(std::make_pair(cgalPt, value));
                 }
                 else
                 {
@@ -414,11 +414,11 @@ namespace spdlib
         initialised = true;
     }
     
-    void SPDTriangulationPointInterpolator::initInterpolator(vector<SPDPulse*> *pulses, boost::uint_fast16_t ptClass) throw(SPDProcessingException)
+    void SPDTriangulationPointInterpolator::initInterpolator(std::vector<SPDPulse*> *pulses, boost::uint_fast16_t ptClass) throw(SPDProcessingException)
     {
         try
         {
-            vector<SPDPoint*> *points = this->findPoints(pulses, ptClass);
+            std::vector<SPDPoint*> *points = this->findPoints(pulses, ptClass);
             if(points->size() < 3)
             {
                 delete points;
@@ -432,7 +432,7 @@ namespace spdlib
             dt = new DelaunayTriangulation();
             values = new PointValueMap();
             
-            vector<SPDPoint*>::iterator iterPts;
+            std::vector<SPDPoint*>::iterator iterPts;
             for(iterPts = points->begin(); iterPts != points->end(); ++iterPts)
             {
                 K::Point_2 cgalPt((*iterPts)->x,(*iterPts)->y);
@@ -440,12 +440,12 @@ namespace spdlib
                 if(elevVal == SPD_USE_Z)
                 {
                     CGALCoordType value = (*iterPts)->z;
-                    values->insert(make_pair(cgalPt, value));
+                    values->insert(std::make_pair(cgalPt, value));
                 }
                 else if(elevVal == SPD_USE_HEIGHT)
                 {
                     CGALCoordType value = (*iterPts)->height;
-                    values->insert(make_pair(cgalPt, value));
+                    values->insert(std::make_pair(cgalPt, value));
                 }
                 else
                 {
@@ -489,11 +489,11 @@ namespace spdlib
 		this->gridResolution = gridResolution;
 	}
 	
-	void SPDGridIndexPointInterpolator::initInterpolator(list<SPDPulse*> ***pulses, boost::uint_fast32_t numXBins, boost::uint_fast32_t numYBins, boost::uint_fast16_t ptClass) throw(SPDProcessingException)
+	void SPDGridIndexPointInterpolator::initInterpolator(std::list<SPDPulse*> ***pulses, boost::uint_fast32_t numXBins, boost::uint_fast32_t numYBins, boost::uint_fast16_t ptClass) throw(SPDProcessingException)
 	{
         try
         {
-            vector<SPDPoint*> *points = this->findPoints(pulses, numXBins, numYBins, ptClass);
+            std::vector<SPDPoint*> *points = this->findPoints(pulses, numXBins, numYBins, ptClass);
             if(thinData)
             {
                 this->thinPoints(points);
@@ -510,11 +510,11 @@ namespace spdlib
         initialised = true;
 	}
 	
-	void SPDGridIndexPointInterpolator::initInterpolator(vector<SPDPulse*> ***pulses, boost::uint_fast32_t numXBins, boost::uint_fast32_t numYBins, boost::uint_fast16_t ptClass) throw(SPDProcessingException)
+	void SPDGridIndexPointInterpolator::initInterpolator(std::vector<SPDPulse*> ***pulses, boost::uint_fast32_t numXBins, boost::uint_fast32_t numYBins, boost::uint_fast16_t ptClass) throw(SPDProcessingException)
 	{
         try
         {
-            vector<SPDPoint*> *points = this->findPoints(pulses, numXBins, numYBins, ptClass);
+            std::vector<SPDPoint*> *points = this->findPoints(pulses, numXBins, numYBins, ptClass);
             if(thinData)
             {
                 this->thinPoints(points);
@@ -531,11 +531,11 @@ namespace spdlib
         initialised = true;
 	}
 	
-	void SPDGridIndexPointInterpolator::initInterpolator(list<SPDPulse*> *pulses, boost::uint_fast16_t ptClass) throw(SPDProcessingException)
+	void SPDGridIndexPointInterpolator::initInterpolator(std::list<SPDPulse*> *pulses, boost::uint_fast16_t ptClass) throw(SPDProcessingException)
 	{
         try
         {
-            vector<SPDPoint*> *points = this->findPoints(pulses, ptClass);
+            std::vector<SPDPoint*> *points = this->findPoints(pulses, ptClass);
             if(thinData)
             {
                 this->thinPoints(points);
@@ -552,11 +552,11 @@ namespace spdlib
         initialised = true;
 	}
 	
-	void SPDGridIndexPointInterpolator::initInterpolator(vector<SPDPulse*> *pulses, boost::uint_fast16_t ptClass) throw(SPDProcessingException)
+	void SPDGridIndexPointInterpolator::initInterpolator(std::vector<SPDPulse*> *pulses, boost::uint_fast16_t ptClass) throw(SPDProcessingException)
 	{
         try
         {
-            vector<SPDPoint*> *points = this->findPoints(pulses, ptClass);
+            std::vector<SPDPoint*> *points = this->findPoints(pulses, ptClass);
             if(thinData)
             {
                 this->thinPoints(points);
@@ -611,7 +611,7 @@ namespace spdlib
 	
 	float SPDNearestNeighbourInterpolator::getValue(double eastings, double northings) throw(SPDProcessingException)
 	{
-		double outElevation = numeric_limits<float>::signaling_NaN();
+		double outElevation = std::numeric_limits<float>::signaling_NaN();
 		if(initialised)
 		{
             CGALPoint p(eastings, northings);
@@ -659,7 +659,7 @@ namespace spdlib
 				bool found = ttl::locateTriangle<hed::TTLtraits>(*ptNode, dart);
 				if(!found) 
 				{
-					return numeric_limits<float>::signaling_NaN();
+					return std::numeric_limits<float>::signaling_NaN();
 				}
 				
 				// Found Triangle...
@@ -670,17 +670,17 @@ namespace spdlib
 				dart = dart.alpha0(); // Next Node
 				const SPDInterTriNode *nodeC = (const SPDInterTriNode*)dart.getNode();
 				
-				//cout << "PT 1: [" << nodeA->eastings() << "," << nodeA->northings() << "]\n";
-				//cout << "PT 2: [" << nodeB->eastings() << "," << nodeB->northings() << "]\n";
-				//cout << "PT 3: [" << nodeC->eastings() << "," << nodeC->northings() << "]\n\n";
+				//std::cout << "PT 1: [" << nodeA->eastings() << "," << nodeA->northings() << "]\n";
+				//std::cout << "PT 2: [" << nodeB->eastings() << "," << nodeB->northings() << "]\n";
+				//std::cout << "PT 3: [" << nodeC->eastings() << "," << nodeC->northings() << "]\n\n";
 				
 				
-				vector<const SPDInterTriNode*> *triPts = new vector<const SPDInterTriNode*>();
+				std::vector<const SPDInterTriNode*> *triPts = new std::vector<const SPDInterTriNode*>();
 				triPts->push_back(nodeA);
 				triPts->push_back(nodeB);
 				triPts->push_back(nodeC);
 				
-				vector<SPDInterTriNode*> *normTriPts = normaliseNodes(triPts, eastings, northings);
+				std::vector<SPDInterTriNode*> *normTriPts = normaliseNodes(triPts, eastings, northings);
 				
 				double planeA = 0;
 				double planeB = 0;
@@ -696,7 +696,7 @@ namespace spdlib
 			}
 			else 
 			{
-				outElevation = numeric_limits<float>::signaling_NaN();
+				outElevation = std::numeric_limits<float>::signaling_NaN();
 			}
 			
 		}
@@ -707,12 +707,12 @@ namespace spdlib
 		return 0;//outElevation;
 	}
 	
-	//vector<SPDInterTriNode*>* SPDTINPlaneFitInterpolator::normaliseNodes(vector<const SPDInterTriNode*> *nodes, double eastings, double northings) throw(SPDProcessingException)
+	//std::vector<SPDInterTriNode*>* SPDTINPlaneFitInterpolator::normaliseNodes(std::vector<const SPDInterTriNode*> *nodes, double eastings, double northings) throw(SPDProcessingException)
 	//{
-		/*vector<SPDInterTriNode*> *normNodesVec = new vector<SPDInterTriNode*>();
+		/*std::vector<SPDInterTriNode*> *normNodesVec = new std::vector<SPDInterTriNode*>();
 		SPDInterTriNode *tmpNode = NULL;
 		
-		vector<const SPDInterTriNode*>::iterator iterNodes;
+		std::vector<const SPDInterTriNode*>::iterator iterNodes;
 		for(iterNodes = nodes->begin(); iterNodes != nodes->end(); ++iterNodes)
 		{
 			tmpNode = new SPDInterTriNode(((*iterNodes)->eastings() - eastings), ((*iterNodes)->northings() - northings), (*iterNodes)->elevation());
@@ -722,7 +722,7 @@ namespace spdlib
 		return normNodesVec;*/
 	//}
 	
-	//void SPDTINPlaneFitInterpolator::fitPlane2Points(vector<SPDInterTriNode*> *normPts, double *a, double *b, double *c) throw(SPDProcessingException)
+	//void SPDTINPlaneFitInterpolator::fitPlane2Points(std::vector<SPDInterTriNode*> *normPts, double *a, double *b, double *c) throw(SPDProcessingException)
 	//{
 		/*SPDMatrixUtils matrices;
 		
@@ -737,7 +737,7 @@ namespace spdlib
 			double sYZ = 0;
 			double sZ = 0;
 			
-			vector<SPDInterTriNode*>::iterator iterPts;
+			std::vector<SPDInterTriNode*>::iterator iterPts;
 			
 			for(iterPts = normPts->begin(); iterPts != normPts->end(); ++iterPts)
 			{
@@ -809,10 +809,10 @@ namespace spdlib
 	
 	float SPDStdDevFilterInterpolator::getValue(double eastings, double northings) throw(SPDProcessingException)
 	{
-		float returnZVal = numeric_limits<float>::signaling_NaN();
+		float returnZVal = std::numeric_limits<float>::signaling_NaN();
 		try 
 		{
-			vector<SPDPoint*> *pts = new vector<SPDPoint*>();
+			std::vector<SPDPoint*> *pts = new std::vector<SPDPoint*>();
 			if(idx->getPointsInRadius(pts, eastings, northings, stdDevDist))
 			{
 				double minLow = 0;
@@ -825,7 +825,7 @@ namespace spdlib
 				
 				SPDPointUtils ptUtils;
 				
-				vector<SPDPoint*>::iterator iterPts;
+				std::vector<SPDPoint*>::iterator iterPts;
 				for(iterPts = pts->begin(); iterPts != pts->end(); ++iterPts)
 				{
                     if(elevVal == SPD_USE_Z)
@@ -911,7 +911,7 @@ namespace spdlib
 			}
 			else 
 			{
-				returnZVal = numeric_limits<float>::signaling_NaN();
+				returnZVal = std::numeric_limits<float>::signaling_NaN();
 			}
 			
 			delete pts;
@@ -937,31 +937,31 @@ namespace spdlib
 	
 	float SPDTPSRadiusInterpolator::getValue(double eastings, double northings) throw(SPDProcessingException)
 	{
-        float newZValue = numeric_limits<float>::signaling_NaN();
-        vector<SPDPoint*> *splinePts = new vector<SPDPoint*>();
+        float newZValue = std::numeric_limits<float>::signaling_NaN();
+        std::vector<SPDPoint*> *splinePts = new std::vector<SPDPoint*>();
 		try
         {
             if(idx->getPointsInRadius(splinePts, eastings, northings, radius))
             {
                 if(splinePts->size() < minNumPoints)
                 {
-                    newZValue = numeric_limits<float>::signaling_NaN();
+                    newZValue = std::numeric_limits<float>::signaling_NaN();
                 }
                 else
                 {
-                    vector<Vec> cntrlPts(splinePts->size());
+                    std::vector<spdlib::tps::Vec> cntrlPts(splinePts->size());
                     int ptIdx = 0;
-                    for(vector<SPDPoint*>::iterator iterPts = splinePts->begin(); iterPts != splinePts->end(); ++iterPts)
+                    for(std::vector<SPDPoint*>::iterator iterPts = splinePts->begin(); iterPts != splinePts->end(); ++iterPts)
                     {
                         // Please note that Z and Y and been switch around as the TPS code (tpsdemo) 
                         // interpolates for Y rather than Z.
                         if(elevVal == SPD_USE_Z)
                         {
-                            cntrlPts[ptIdx++] = Vec((*iterPts)->x, (*iterPts)->z, (*iterPts)->y);
+                            cntrlPts[ptIdx++] = spdlib::tps::Vec((*iterPts)->x, (*iterPts)->z, (*iterPts)->y);
                         }
                         else if(elevVal == SPD_USE_HEIGHT)
                         {
-                            cntrlPts[ptIdx++] = Vec((*iterPts)->x, (*iterPts)->height, (*iterPts)->y);
+                            cntrlPts[ptIdx++] = spdlib::tps::Vec((*iterPts)->x, (*iterPts)->height, (*iterPts)->y);
                         }
                         else
                         {
@@ -969,19 +969,19 @@ namespace spdlib
                         }
                     }
                     
-                    Spline splineFunc = Spline(cntrlPts, 0.0);
+                    spdlib::tps::Spline splineFunc = spdlib::tps::Spline(cntrlPts, 0.0);
                     newZValue = splineFunc.interpolate_height(eastings, northings);
                 }
             }
             else
             {
-                newZValue = numeric_limits<float>::signaling_NaN();
+                newZValue = std::numeric_limits<float>::signaling_NaN();
             }
         }
-        catch(SingularMatrixError &e)
+        catch(spdlib::tps::SingularMatrixError &e)
         {
             //throw SPDProcessingException(e.what());
-            newZValue = numeric_limits<float>::signaling_NaN();
+            newZValue = std::numeric_limits<float>::signaling_NaN();
         }
         catch (SPDProcessingException &e) 
         {
@@ -1006,43 +1006,43 @@ namespace spdlib
 	
 	float SPDTPSNumPtsInterpolator::getValue(double eastings, double northings) throw(SPDProcessingException)
 	{
-        float newZValue = numeric_limits<float>::signaling_NaN();
-        vector<SPDPoint*> *splinePts = new vector<SPDPoint*>();
+        float newZValue = std::numeric_limits<float>::signaling_NaN();
+        std::vector<SPDPoint*> *splinePts = new std::vector<SPDPoint*>();
 		try 
         {
             if(idx->getSetNumOfPoints(splinePts, eastings, northings, numPoints, radius))
             {
-                vector<Vec> cntrlPts(splinePts->size());
+                std::vector<spdlib::tps::Vec> cntrlPts(splinePts->size());
                 int ptIdx = 0;
-                for(vector<SPDPoint*>::iterator iterPts = splinePts->begin(); iterPts != splinePts->end(); ++iterPts)
+                for(std::vector<SPDPoint*>::iterator iterPts = splinePts->begin(); iterPts != splinePts->end(); ++iterPts)
                 {
                     // Please note that Z and Y and been switch around as the TPS code (tpsdemo) 
                     // interpolates for Y rather than Z.
                     if(elevVal == SPD_USE_Z)
                     {
-                        cntrlPts[ptIdx++] = Vec((*iterPts)->x, (*iterPts)->z, (*iterPts)->y);
+                        cntrlPts[ptIdx++] = spdlib::tps::Vec((*iterPts)->x, (*iterPts)->z, (*iterPts)->y);
                     }
                     else if(elevVal == SPD_USE_HEIGHT)
                     {
-                        cntrlPts[ptIdx++] = Vec((*iterPts)->x, (*iterPts)->height, (*iterPts)->y);
+                        cntrlPts[ptIdx++] = spdlib::tps::Vec((*iterPts)->x, (*iterPts)->height, (*iterPts)->y);
                     }
                     else
                     {
                         throw SPDProcessingException("Elevation type not recognised.");
                     }
                 }
-                Spline splineFunc = Spline(cntrlPts, 0.0);
+                spdlib::tps::Spline splineFunc = spdlib::tps::Spline(cntrlPts, 0.0);
                 newZValue = splineFunc.interpolate_height(eastings, northings);
             }
             else
             {
-                newZValue = numeric_limits<float>::signaling_NaN();
+                newZValue = std::numeric_limits<float>::signaling_NaN();
             }
         }
-        catch(SingularMatrixError &e)
+        catch(spdlib::tps::SingularMatrixError &e)
         {
             //throw SPDProcessingException(e.what());
-            newZValue = numeric_limits<float>::signaling_NaN();
+            newZValue = std::numeric_limits<float>::signaling_NaN();
         }
         catch (SPDProcessingException &e) 
         {
@@ -1066,7 +1066,7 @@ namespace spdlib
     
     float SPDNaturalNeighborPointInterpolator::getValue(double eastings, double northings) throw(SPDProcessingException)
     {
-        float newZValue = numeric_limits<float>::signaling_NaN(); 
+        float newZValue = std::numeric_limits<float>::signaling_NaN(); 
         if(initialised)
         {
             try
@@ -1076,7 +1076,7 @@ namespace spdlib
                 CGAL::Triple<std::back_insert_iterator<CoordinateVector>, K::FT, bool> result = CGAL::natural_neighbor_coordinates_2(*dt, p, std::back_inserter(coords));
                 if(!result.third)
                 {
-                    newZValue = numeric_limits<float>::signaling_NaN();
+                    newZValue = std::numeric_limits<float>::signaling_NaN();
                 }
                 else
                 {                    
@@ -1115,11 +1115,11 @@ namespace spdlib
         this->maxNumPtsPerBin = maxNumPtsPerBin;
 	}
     
-    vector<SPDPoint*>* SPDSphericalPointInterpolator::findPoints(list<SPDPulse*> ***pulses, boost::uint_fast32_t numXBins, boost::uint_fast32_t numYBins, boost::uint_fast16_t ptClass) throw(SPDProcessingException)
+    std::vector<SPDPoint*>* SPDSphericalPointInterpolator::findPoints(std::list<SPDPulse*> ***pulses, boost::uint_fast32_t numXBins, boost::uint_fast32_t numYBins, boost::uint_fast16_t ptClass) throw(SPDProcessingException)
     {
-        vector<SPDPoint*> *points = new vector<SPDPoint*>();
-        list<SPDPulse*>::iterator iterPulses;
-        vector<SPDPoint*>::iterator iterPts;
+        std::vector<SPDPoint*> *points = new std::vector<SPDPoint*>();
+        std::list<SPDPulse*>::iterator iterPulses;
+        std::vector<SPDPoint*>::iterator iterPts;
         SPDPoint *pt = NULL;
         SPDPoint *newPt = NULL;
         for(boost::uint_fast32_t i = 0; i < numYBins; ++i)
@@ -1184,11 +1184,11 @@ namespace spdlib
         return points;
     }
     
-    vector<SPDPoint*>* SPDSphericalPointInterpolator::findPoints(vector<SPDPulse*> ***pulses, boost::uint_fast32_t numXBins, boost::uint_fast32_t numYBins, boost::uint_fast16_t ptClass) throw(SPDProcessingException)
+    std::vector<SPDPoint*>* SPDSphericalPointInterpolator::findPoints(std::vector<SPDPulse*> ***pulses, boost::uint_fast32_t numXBins, boost::uint_fast32_t numYBins, boost::uint_fast16_t ptClass) throw(SPDProcessingException)
     {
-        vector<SPDPoint*> *points = new vector<SPDPoint*>();
-        vector<SPDPulse*>::iterator iterPulses;
-        vector<SPDPoint*>::iterator iterPts;
+        std::vector<SPDPoint*> *points = new std::vector<SPDPoint*>();
+        std::vector<SPDPulse*>::iterator iterPulses;
+        std::vector<SPDPoint*>::iterator iterPts;
         SPDPoint *pt = NULL;
         SPDPoint *newPt = NULL;
         for(boost::uint_fast32_t i = 0; i < numYBins; ++i)
@@ -1253,11 +1253,11 @@ namespace spdlib
         return points;
     }
     
-    vector<SPDPoint*>* SPDSphericalPointInterpolator::findPoints(list<SPDPulse*> *pulses, boost::uint_fast16_t ptClass) throw(SPDProcessingException)
+    std::vector<SPDPoint*>* SPDSphericalPointInterpolator::findPoints(std::list<SPDPulse*> *pulses, boost::uint_fast16_t ptClass) throw(SPDProcessingException)
     {
-        vector<SPDPoint*> *points = new vector<SPDPoint*>();
-        list<SPDPulse*>::iterator iterPulses;
-		vector<SPDPoint*>::iterator iterPts;
+        std::vector<SPDPoint*> *points = new std::vector<SPDPoint*>();
+        std::list<SPDPulse*>::iterator iterPulses;
+		std::vector<SPDPoint*>::iterator iterPts;
         SPDPoint *pt = NULL;
         SPDPoint *newPt = NULL;
 		for(iterPulses = pulses->begin(); iterPulses != pulses->end(); ++iterPulses)
@@ -1316,11 +1316,11 @@ namespace spdlib
         return points;
     }
     
-    vector<SPDPoint*>* SPDSphericalPointInterpolator::findPoints(vector<SPDPulse*> *pulses, boost::uint_fast16_t ptClass) throw(SPDProcessingException)
+    std::vector<SPDPoint*>* SPDSphericalPointInterpolator::findPoints(std::vector<SPDPulse*> *pulses, boost::uint_fast16_t ptClass) throw(SPDProcessingException)
     {
-        vector<SPDPoint*> *points = new vector<SPDPoint*>();
-        vector<SPDPulse*>::iterator iterPulses;
-		vector<SPDPoint*>::iterator iterPts;
+        std::vector<SPDPoint*> *points = new std::vector<SPDPoint*>();
+        std::vector<SPDPulse*>::iterator iterPulses;
+		std::vector<SPDPoint*>::iterator iterPts;
         SPDPoint *pt = NULL;
         SPDPoint *newPt = NULL;
 		for(iterPulses = pulses->begin(); iterPulses != pulses->end(); ++iterPulses)
@@ -1379,7 +1379,7 @@ namespace spdlib
         return points;
     }
     
-    void SPDSphericalPointInterpolator::thinPoints(vector<SPDPoint*> *points) throw(SPDProcessingException)
+    void SPDSphericalPointInterpolator::thinPoints(std::vector<SPDPoint*> *points) throw(SPDProcessingException)
     {
         try
         {
@@ -1408,7 +1408,7 @@ namespace spdlib
         returnNaNValue = false;
 	}
 	
-    void SPDTriangulationSphericalPointInterpolator::initInterpolator(list<SPDPulse*> ***pulses, boost::uint_fast32_t numXBins, boost::uint_fast32_t numYBins, boost::uint_fast16_t ptClass) throw(SPDProcessingException)
+    void SPDTriangulationSphericalPointInterpolator::initInterpolator(std::list<SPDPulse*> ***pulses, boost::uint_fast32_t numXBins, boost::uint_fast32_t numYBins, boost::uint_fast16_t ptClass) throw(SPDProcessingException)
     {
         try
         {
@@ -1423,13 +1423,13 @@ namespace spdlib
             if(points->size() > 2)
             {
                 returnNaNValue = false;
-                vector<SPDPoint*>::iterator iterPts;
+                std::vector<SPDPoint*>::iterator iterPts;
                 for(iterPts = points->begin(); iterPts != points->end(); ++iterPts)
                 {
                     CGALPoint cgalPt((*iterPts)->x, (*iterPts)->y);
                     dt->insert(cgalPt);
                     CGALCoordType value = (*iterPts)->z;
-                    values->insert(make_pair(cgalPt, value));
+                    values->insert(std::make_pair(cgalPt, value));
                 }
             }
             else
@@ -1444,7 +1444,7 @@ namespace spdlib
         initialised = true;
     }
     
-    void SPDTriangulationSphericalPointInterpolator::initInterpolator(vector<SPDPulse*> ***pulses, boost::uint_fast32_t numXBins, boost::uint_fast32_t numYBins, boost::uint_fast16_t ptClass) throw(SPDProcessingException)
+    void SPDTriangulationSphericalPointInterpolator::initInterpolator(std::vector<SPDPulse*> ***pulses, boost::uint_fast32_t numXBins, boost::uint_fast32_t numYBins, boost::uint_fast16_t ptClass) throw(SPDProcessingException)
     {
         try
         {
@@ -1462,13 +1462,13 @@ namespace spdlib
             if(points->size() > 2)
             {
                 returnNaNValue = false;
-                vector<SPDPoint*>::iterator iterPts;
+                std::vector<SPDPoint*>::iterator iterPts;
                 for(iterPts = points->begin(); iterPts != points->end(); ++iterPts)
                 {
                     CGALPoint cgalPt((*iterPts)->x, (*iterPts)->y);
                     dt->insert(cgalPt);
                     CGALCoordType value = (*iterPts)->z;
-                    values->insert(make_pair(cgalPt, value));
+                    values->insert(std::make_pair(cgalPt, value));
                 }
             }
             else
@@ -1484,7 +1484,7 @@ namespace spdlib
         initialised = true;
     }
     
-    void SPDTriangulationSphericalPointInterpolator::initInterpolator(list<SPDPulse*> *pulses, boost::uint_fast16_t ptClass) throw(SPDProcessingException)
+    void SPDTriangulationSphericalPointInterpolator::initInterpolator(std::list<SPDPulse*> *pulses, boost::uint_fast16_t ptClass) throw(SPDProcessingException)
     {
         try
         {
@@ -1502,13 +1502,13 @@ namespace spdlib
             if(points->size() > 2)
             {
                 returnNaNValue = false;
-                vector<SPDPoint*>::iterator iterPts;
+                std::vector<SPDPoint*>::iterator iterPts;
                 for(iterPts = points->begin(); iterPts != points->end(); ++iterPts)
                 {
                     CGALPoint cgalPt((*iterPts)->x, (*iterPts)->y);
                     dt->insert(cgalPt);
                     CGALCoordType value = (*iterPts)->z;
-                    values->insert(make_pair(cgalPt, value));
+                    values->insert(std::make_pair(cgalPt, value));
                 }
             }
             else
@@ -1523,7 +1523,7 @@ namespace spdlib
         initialised = true;
     }
     
-    void SPDTriangulationSphericalPointInterpolator::initInterpolator(vector<SPDPulse*> *pulses, boost::uint_fast16_t ptClass) throw(SPDProcessingException)
+    void SPDTriangulationSphericalPointInterpolator::initInterpolator(std::vector<SPDPulse*> *pulses, boost::uint_fast16_t ptClass) throw(SPDProcessingException)
     {
         try
         {
@@ -1541,13 +1541,13 @@ namespace spdlib
             if(points->size() > 2)
             {
                 returnNaNValue = false;
-                vector<SPDPoint*>::iterator iterPts;
+                std::vector<SPDPoint*>::iterator iterPts;
                 for(iterPts = points->begin(); iterPts != points->end(); ++iterPts)
                 {
                     CGALPoint cgalPt((*iterPts)->x, (*iterPts)->y);
                     dt->insert(cgalPt);
                     CGALCoordType value = (*iterPts)->z;
-                    values->insert(make_pair(cgalPt, value));
+                    values->insert(std::make_pair(cgalPt, value));
                 }
             }
             else
@@ -1568,7 +1568,7 @@ namespace spdlib
         {
             delete dt;
             delete values;
-            for(vector<SPDPoint*>::iterator iterPts = points->begin(); iterPts != points->end(); )
+            for(std::vector<SPDPoint*>::iterator iterPts = points->begin(); iterPts != points->end(); )
             {
                 delete *iterPts;
                 iterPts = points->erase(iterPts);
@@ -1586,7 +1586,7 @@ namespace spdlib
         {
             delete dt;
             delete values;
-            for(vector<SPDPoint*>::iterator iterPts = points->begin(); iterPts != points->end(); )
+            for(std::vector<SPDPoint*>::iterator iterPts = points->begin(); iterPts != points->end(); )
             {
                 delete *iterPts;
                 iterPts = points->erase(iterPts);
@@ -1608,7 +1608,7 @@ namespace spdlib
 		this->gridResolution = gridResolution;
 	}
 	
-	void SPDGridIndexSphericalPointInterpolator::initInterpolator(list<SPDPulse*> ***pulses, boost::uint_fast32_t numXBins, boost::uint_fast32_t numYBins, boost::uint_fast16_t ptClass) throw(SPDProcessingException)
+	void SPDGridIndexSphericalPointInterpolator::initInterpolator(std::list<SPDPulse*> ***pulses, boost::uint_fast32_t numXBins, boost::uint_fast32_t numYBins, boost::uint_fast16_t ptClass) throw(SPDProcessingException)
 	{
         try
         {
@@ -1628,7 +1628,7 @@ namespace spdlib
         initialised = true;
 	}
 	
-	void SPDGridIndexSphericalPointInterpolator::initInterpolator(vector<SPDPulse*> ***pulses, boost::uint_fast32_t numXBins, boost::uint_fast32_t numYBins, boost::uint_fast16_t ptClass) throw(SPDProcessingException)
+	void SPDGridIndexSphericalPointInterpolator::initInterpolator(std::vector<SPDPulse*> ***pulses, boost::uint_fast32_t numXBins, boost::uint_fast32_t numYBins, boost::uint_fast16_t ptClass) throw(SPDProcessingException)
 	{
         try
         {
@@ -1649,7 +1649,7 @@ namespace spdlib
         initialised = true;
 	}
 	
-	void SPDGridIndexSphericalPointInterpolator::initInterpolator(list<SPDPulse*> *pulses, boost::uint_fast16_t ptClass) throw(SPDProcessingException)
+	void SPDGridIndexSphericalPointInterpolator::initInterpolator(std::list<SPDPulse*> *pulses, boost::uint_fast16_t ptClass) throw(SPDProcessingException)
 	{
         try
         {
@@ -1669,7 +1669,7 @@ namespace spdlib
         initialised = true;
 	}
 	
-	void SPDGridIndexSphericalPointInterpolator::initInterpolator(vector<SPDPulse*> *pulses, boost::uint_fast16_t ptClass) throw(SPDProcessingException)
+	void SPDGridIndexSphericalPointInterpolator::initInterpolator(std::vector<SPDPulse*> *pulses, boost::uint_fast16_t ptClass) throw(SPDProcessingException)
 	{
         try
         {
@@ -1695,7 +1695,7 @@ namespace spdlib
 		{
 			delete idx;
             totalNumPoints = 0;
-            for(vector<SPDPoint*>::iterator iterPts = points->begin(); iterPts != points->end(); )
+            for(std::vector<SPDPoint*>::iterator iterPts = points->begin(); iterPts != points->end(); )
             {
                 delete *iterPts;
                 iterPts = points->erase(iterPts);
@@ -1710,7 +1710,7 @@ namespace spdlib
 		if(initialised)
 		{
 			delete idx;
-            for(vector<SPDPoint*>::iterator iterPts = points->begin(); iterPts != points->end(); )
+            for(std::vector<SPDPoint*>::iterator iterPts = points->begin(); iterPts != points->end(); )
             {
                 delete *iterPts;
                 iterPts = points->erase(iterPts);
@@ -1730,7 +1730,7 @@ namespace spdlib
     
     float SPDNaturalNeighborSphericalPointInterpolator::getValue(double azimuth, double zenith) throw(SPDProcessingException)
     {
-        float newRangeValue = numeric_limits<float>::signaling_NaN(); 
+        float newRangeValue = std::numeric_limits<float>::signaling_NaN(); 
         if(initialised)
         {
             if(!returnNaNValue)
@@ -1742,7 +1742,7 @@ namespace spdlib
                     CGAL::Triple<std::back_insert_iterator<CoordinateVector>, K::FT, bool> result = CGAL::natural_neighbor_coordinates_2(*dt, p, std::back_inserter(coords));
                     if(!result.third)
                     {
-                        newRangeValue = numeric_limits<float>::signaling_NaN();
+                        newRangeValue = std::numeric_limits<float>::signaling_NaN();
                     }
                     else
                     {
@@ -1776,7 +1776,7 @@ namespace spdlib
 	
 	float SPDNearestNeighborSphericalPointInterpolator::getValue(double azimuth, double zenith) throw(SPDProcessingException)
 	{
-		double newRangeValue = numeric_limits<float>::signaling_NaN();
+		double newRangeValue = std::numeric_limits<float>::signaling_NaN();
 		if(initialised)
 		{
             if(!returnNaNValue)
@@ -1794,7 +1794,7 @@ namespace spdlib
                 }
                 else
                 {
-                    newRangeValue = numeric_limits<float>::signaling_NaN();
+                    newRangeValue = std::numeric_limits<float>::signaling_NaN();
                 }
             }
 		}
@@ -1821,40 +1821,40 @@ namespace spdlib
 	
 	float SPDTPSRadiusSphericalInterpolator::getValue(double azimuth, double zenith) throw(SPDProcessingException)
 	{
-        float newRangeValue = numeric_limits<float>::signaling_NaN();
-        vector<SPDPoint*> *splinePts = new vector<SPDPoint*>();
+        float newRangeValue = std::numeric_limits<float>::signaling_NaN();
+        std::vector<SPDPoint*> *splinePts = new std::vector<SPDPoint*>();
 		try
         {
             if(idx->getPointsInRadius(splinePts, azimuth, zenith, radius))
             {                
                 if(splinePts->size() < minNumPoints)
                 {
-                    newRangeValue = numeric_limits<float>::signaling_NaN();
+                    newRangeValue = std::numeric_limits<float>::signaling_NaN();
                 }
                 else
                 {
-                    vector<Vec> cntrlPts(splinePts->size());
+                    std::vector<spdlib::tps::Vec> cntrlPts(splinePts->size());
                     int ptIdx = 0;
-                    for(vector<SPDPoint*>::iterator iterPts = splinePts->begin(); iterPts != splinePts->end(); ++iterPts)
+                    for(std::vector<SPDPoint*>::iterator iterPts = splinePts->begin(); iterPts != splinePts->end(); ++iterPts)
                     {
                         // Please note that Z and Y and been switch around as the TPS code (tpsdemo) 
                         // interpolates for Y rather than Z.
-                        cntrlPts[ptIdx++] = Vec((*iterPts)->x, (*iterPts)->z, (*iterPts)->y);
+                        cntrlPts[ptIdx++] = spdlib::tps::Vec((*iterPts)->x, (*iterPts)->z, (*iterPts)->y);
                     }
                     
-                    Spline splineFunc = Spline(cntrlPts, 0.0);
+                    spdlib::tps::Spline splineFunc = spdlib::tps::Spline(cntrlPts, 0.0);
                     newRangeValue = splineFunc.interpolate_height(azimuth, zenith);
                 }
             }
             else
             {
-                newRangeValue = numeric_limits<float>::signaling_NaN();
+                newRangeValue = std::numeric_limits<float>::signaling_NaN();
             }
         }
-        catch(SingularMatrixError &e)
+        catch(spdlib::tps::SingularMatrixError &e)
         {
             //throw SPDProcessingException(e.what());
-            newRangeValue = numeric_limits<float>::signaling_NaN();
+            newRangeValue = std::numeric_limits<float>::signaling_NaN();
         }
         catch (SPDProcessingException &e) 
         {
@@ -1880,32 +1880,32 @@ namespace spdlib
 	
 	float SPDTPSNumPtsSphericalInterpolator::getValue(double azimuth, double zenith) throw(SPDProcessingException)
 	{
-        float newRangeValue = numeric_limits<float>::signaling_NaN();
-        vector<SPDPoint*> *splinePts = new vector<SPDPoint*>();
+        float newRangeValue = std::numeric_limits<float>::signaling_NaN();
+        std::vector<SPDPoint*> *splinePts = new std::vector<SPDPoint*>();
 		try 
         {
             if(idx->getSetNumOfPoints(splinePts, azimuth, zenith, numPoints, radius))
             {                
-                vector<Vec> cntrlPts(splinePts->size());
+                std::vector<spdlib::tps::Vec> cntrlPts(splinePts->size());
                 int ptIdx = 0;
-                for(vector<SPDPoint*>::iterator iterPts = splinePts->begin(); iterPts != splinePts->end(); ++iterPts)
+                for(std::vector<SPDPoint*>::iterator iterPts = splinePts->begin(); iterPts != splinePts->end(); ++iterPts)
                 {
                     // Please note that Z and Y and been switch around as the TPS code (tpsdemo) 
                     // interpolates for Y rather than Z.
-                    cntrlPts[ptIdx++] = Vec((*iterPts)->x, (*iterPts)->z, (*iterPts)->y);
+                    cntrlPts[ptIdx++] = spdlib::tps::Vec((*iterPts)->x, (*iterPts)->z, (*iterPts)->y);
                 }
-                Spline splineFunc = Spline(cntrlPts, 0.0);
+                spdlib::tps::Spline splineFunc = spdlib::tps::Spline(cntrlPts, 0.0);
                 newRangeValue = splineFunc.interpolate_height(azimuth, zenith);
             }
             else
             {
-                newRangeValue = numeric_limits<float>::signaling_NaN();
+                newRangeValue = std::numeric_limits<float>::signaling_NaN();
             }
         }
-        catch(SingularMatrixError &e)
+        catch(spdlib::tps::SingularMatrixError &e)
         {
             //throw SPDProcessingException(e.what());
-            newRangeValue = numeric_limits<float>::signaling_NaN();
+            newRangeValue = std::numeric_limits<float>::signaling_NaN();
         }
         catch (SPDProcessingException &e) 
         {
