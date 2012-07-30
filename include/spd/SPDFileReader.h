@@ -34,6 +34,7 @@
 #include <iostream>
 #include <string>
 #include <list>
+#include <vector>
 
 #include <boost/cstdint.hpp>
 #include <boost/numeric/conversion/cast.hpp>
@@ -44,27 +45,23 @@
 #include "spd/SPDPulse.h"
 #include "spd/SPDIOException.h"
 
-using namespace std;
-using boost::numeric_cast;
-using boost::numeric::bad_numeric_cast;
-using boost::numeric::positive_overflow;
-using boost::numeric::negative_overflow;
+#include "H5Cpp.h"
 
 namespace spdlib
 {
 	class SPDFileReader : public SPDDataImporter
 	{
 	public:
-		SPDFileReader(bool convertCoords=false, string outputProjWKT="", string schema="", boost::uint_fast16_t indexCoords=SPD_FIRST_RETURN, bool defineOrigin=false, double originX=0, double originY=0, float originZ=0, float waveNoiseThreshold=0);
-		SPDDataImporter* getInstance(bool convertCoords, string outputProjWKT,string schema, boost::uint_fast16_t indexCoords, bool defineOrigin, double originX, double originY, float originZ, float waveNoiseThreshold);
-        list<SPDPulse*>* readAllDataToList(string, SPDFile *spdFile)throw(SPDIOException);
-		vector<SPDPulse*>* readAllDataToVector(string, SPDFile *spdFile)throw(SPDIOException);
-		void readAndProcessAllData(string inputFile, SPDFile *spdFile, SPDImporterProcessor *processor) throw(SPDIOException);
-        bool isFileType(string fileType);
-		void readHeaderInfo(string inputFile, SPDFile *spdFile) throw(SPDIOException);
+		SPDFileReader(bool convertCoords=false, std::string outputProjWKT="", std::string schema="", boost::uint_fast16_t indexCoords=SPD_FIRST_RETURN, bool defineOrigin=false, double originX=0, double originY=0, float originZ=0, float waveNoiseThreshold=0);
+		SPDDataImporter* getInstance(bool convertCoords, std::string outputProjWKT,std::string schema, boost::uint_fast16_t indexCoords, bool defineOrigin, double originX, double originY, float originZ, float waveNoiseThreshold);
+        std::list<SPDPulse*>* readAllDataToList(std::string, SPDFile *spdFile)throw(SPDIOException);
+		std::vector<SPDPulse*>* readAllDataToVector(std::string, SPDFile *spdFile)throw(SPDIOException);
+		void readAndProcessAllData(std::string inputFile, SPDFile *spdFile, SPDImporterProcessor *processor) throw(SPDIOException);
+        bool isFileType(std::string fileType);
+		void readHeaderInfo(std::string inputFile, SPDFile *spdFile) throw(SPDIOException);
 		~SPDFileReader();	
 	private:
-		void readRefHeaderRow(H5File *spdInFile,boost::uint_fast32_t row, unsigned long long *binOffsets, unsigned long *numPtsInBin,boost::uint_fast32_t numXBins) throw(SPDIOException);
+		void readRefHeaderRow(H5::H5File *spdInFile,boost::uint_fast32_t row, unsigned long long *binOffsets, unsigned long *numPtsInBin,boost::uint_fast32_t numXBins) throw(SPDIOException);
 	};
 }
 

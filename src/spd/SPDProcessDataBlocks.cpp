@@ -56,7 +56,7 @@ namespace spdlib
 		return *this;
     }
 
-    void SPDProcessDataBlocks::processDataBlocksGridPulsesInputImage(SPDFile *spdInFile, string outFile, string imageFilePath) throw(SPDProcessingException)
+    void SPDProcessDataBlocks::processDataBlocksGridPulsesInputImage(SPDFile *spdInFile, std::string outFile, std::string imageFilePath) throw(SPDProcessingException)
     {
         try
         {
@@ -82,7 +82,7 @@ namespace spdlib
             GDALDataset *gdalDataset = (GDALDataset *) GDALOpenShared(imageFilePath.c_str(), GA_ReadOnly);
             if(gdalDataset == NULL)
             {
-                string message = string("Could not open image ") + imageFilePath;
+                std::string message = std::string("Could not open image ") + imageFilePath;
                 throw SPDProcessingException(message);
             }
             double *geoTrans = new double[6];
@@ -124,7 +124,7 @@ namespace spdlib
                 geoHeight = spdInFile->getZenithMax() - spdInFile->getZenithMin();
             }
 
-            //cout << "Geo: [" << geoWidth << "," << geoHeight << "]\n";
+            //std::cout << "Geo: [" << geoWidth << "," << geoHeight << "]\n";
 
             bool usingNativeRes = false;
             bool scaleDown = true;
@@ -139,63 +139,63 @@ namespace spdlib
             {
                 if(fmod(processingResolution, spdInFile->getBinSize()) != 0)
                 {
-                    cerr << "Native Res: " << spdInFile->getBinSize() << endl;
-                    cerr << "Process Res: " << processingResolution << endl;
+                    std::cerr << "Native Res: " << spdInFile->getBinSize() << std::endl;
+                    std::cerr << "Process Res: " << processingResolution << std::endl;
                     throw SPDProcessingException("The processing resolution must be a multiple of the native resoltion.");
                 }
                 usingNativeRes = false;
-                procResXBins = numeric_cast<boost::uint_fast64_t>(geoWidth / processingResolution)+1;
-                procResYBins = numeric_cast<boost::uint_fast64_t>(geoHeight / processingResolution)+1;
+                procResXBins = boost::numeric_cast<boost::uint_fast64_t>(geoWidth / processingResolution)+1;
+                procResYBins = boost::numeric_cast<boost::uint_fast64_t>(geoHeight / processingResolution)+1;
 
                 scaleDown = false;
-                binScaling = numeric_cast<boost::uint_fast32_t>(processingResolution/spdInFile->getBinSize());
+                binScaling = boost::numeric_cast<boost::uint_fast32_t>(processingResolution/spdInFile->getBinSize());
             }
             else
             {
                 float tmpNumOutBins = spdInFile->getBinSize()/processingResolution;
                 if(fmod(tmpNumOutBins, ((float)1.0)) != 0)
                 {
-                    cerr << "Native Res: " << spdInFile->getBinSize() << endl;
-                    cerr << "Process Res: " << processingResolution << endl;
+                    std::cerr << "Native Res: " << spdInFile->getBinSize() << std::endl;
+                    std::cerr << "Process Res: " << processingResolution << std::endl;
                     throw SPDProcessingException("The processing resolution must be a multiple of the native resolution.");
                 }
                 usingNativeRes = false;
-                procResXBins = numeric_cast<boost::uint_fast64_t>(geoWidth / processingResolution)+1;
-                procResYBins = numeric_cast<boost::uint_fast64_t>(geoHeight / processingResolution)+1;
+                procResXBins = boost::numeric_cast<boost::uint_fast64_t>(geoWidth / processingResolution)+1;
+                procResYBins = boost::numeric_cast<boost::uint_fast64_t>(geoHeight / processingResolution)+1;
 
                 scaleDown = true;
-                binScaling = numeric_cast<boost::uint_fast32_t>(spdInFile->getBinSize()/processingResolution);
+                binScaling = boost::numeric_cast<boost::uint_fast32_t>(spdInFile->getBinSize()/processingResolution);
             }
 
-            //cout << "Bin Scaling: " << binScaling << endl;
-            //cout << "Process Bins: [" << procResXBins << "," << procResYBins << "]\n";
+            //std::cout << "Bin Scaling: " << binScaling << std::endl;
+            //std::cout << "Process Bins: [" << procResXBins << "," << procResYBins << "]\n";
 
             if(usingNativeRes)
             {
-                cout << "Using native resolution for processing\n";
+                std::cout << "Using native resolution for processing\n";
             }
             else
             {
-                cout << "Resampling native resolution\n";
+                std::cout << "Resampling native resolution\n";
                 if(scaleDown)
                 {
-                    cout << "Scaling down\n";
+                    std::cout << "Scaling down\n";
                 }
                 else
                 {
-                    cout << "Scaling up\n";
+                    std::cout << "Scaling up\n";
                 }
             }
 
             boost::uint_fast32_t numXFullBlocks = floor(((double)nativeXBins)/this->blockXSize);
             boost::uint_fast32_t numYFullBlocks = floor(((double)nativeYBins)/this->blockYSize);
 
-            //cout << "Number of full blocks: [" << numXFullBlocks << "," << numYFullBlocks << "]\n";
+            //std::cout << "Number of full blocks: [" << numXFullBlocks << "," << numYFullBlocks << "]\n";
 
             boost::uint_fast32_t remainingCols = nativeXBins - (numXFullBlocks * this->blockXSize);
             boost::uint_fast32_t remainingRows = nativeYBins - (numYFullBlocks * this->blockYSize);
 
-            //cout << "Remainder: [" << remainingCols << "," << remainingRows << "]\n";
+            //std::cout << "Remainder: [" << remainingCols << "," << remainingRows << "]\n";
 
             double blockMinX = 0;
             double blockMaxX = 0;
@@ -224,10 +224,10 @@ namespace spdlib
                 procResYBlockSize = ceil(((double)blockYSize) / binScaling);
             }
 
-            //cout << "Native block size: [" << this->blockXSize << "," << this->blockXSize << "]\n";
-            //cout << "Process block size: [" << procResXBlockSize << "," << procResYBlockSize << "]\n";
+            //std::cout << "Native block size: [" << this->blockXSize << "," << this->blockXSize << "]\n";
+            //std::cout << "Process block size: [" << procResXBlockSize << "," << procResYBlockSize << "]\n";
 
-            //cout << "Block Size: [" << blockWidth << "," << blockHeight << "]\n";
+            //std::cout << "Block Size: [" << blockWidth << "," << blockHeight << "]\n";
 
             boost::uint_fast32_t numBlocks = numYFullBlocks * numXFullBlocks;
             if(remainingCols > 0)
@@ -281,33 +281,33 @@ namespace spdlib
             boost::uint_fast32_t pulsesScaledBlockSizeX = procResXBlockSize + (2 * scaledOverlap);
             boost::uint_fast32_t pulsesScaledBlockSizeY = procResYBlockSize + (2 * scaledOverlap);
 
-            vector<SPDPulse*> ***pulses = new vector<SPDPulse*>**[pulsesBlockSizeY];
+            std::vector<SPDPulse*> ***pulses = new std::vector<SPDPulse*>**[pulsesBlockSizeY];
             for(boost::uint_fast32_t i = 0; i < pulsesBlockSizeY; ++i)
             {
-                pulses[i] = new vector<SPDPulse*>*[pulsesBlockSizeX];
+                pulses[i] = new std::vector<SPDPulse*>*[pulsesBlockSizeX];
                 for(boost::uint_fast32_t j = 0; j < pulsesBlockSizeX; ++j)
                 {
-                    pulses[i][j] = new vector<SPDPulse*>();
+                    pulses[i][j] = new std::vector<SPDPulse*>();
                 }
             }
 
 
             SPDXYPoint ***cenPts = NULL;
-            vector<SPDPulse*> ***pulseScaled = NULL;
+            std::vector<SPDPulse*> ***pulseScaled = NULL;
             float ***imageBlockVals = NULL;
             if(binScaling != 0)
             {
-                pulseScaled = new vector<SPDPulse*>**[pulsesScaledBlockSizeY];
+                pulseScaled = new std::vector<SPDPulse*>**[pulsesScaledBlockSizeY];
                 cenPts = new SPDXYPoint**[pulsesScaledBlockSizeY];
                 imageBlockVals = new float**[pulsesScaledBlockSizeY];
                 for(boost::uint_fast32_t i = 0; i < pulsesScaledBlockSizeY; ++i)
                 {
-                    pulseScaled[i] = new vector<SPDPulse*>*[pulsesScaledBlockSizeX];
+                    pulseScaled[i] = new std::vector<SPDPulse*>*[pulsesScaledBlockSizeX];
                     cenPts[i] = new SPDXYPoint*[pulsesScaledBlockSizeX];
                     imageBlockVals[i] = new float*[pulsesScaledBlockSizeX];
                     for(boost::uint_fast32_t j = 0; j < pulsesScaledBlockSizeX; ++j)
                     {
-                        pulseScaled[i][j] = new vector<SPDPulse*>();
+                        pulseScaled[i][j] = new std::vector<SPDPulse*>();
                         cenPts[i][j] = new SPDXYPoint();
                         imageBlockVals[i][j] = new float[numImgBands];
                     }
@@ -366,14 +366,14 @@ namespace spdlib
                 {
                     if(this->printProgress)
                     {
-                        cout << "Processing block " << cBlocksIdx++ << " of " << numBlocks << " blocks\n";
+                        std::cout << "Processing block " << cBlocksIdx++ << " of " << numBlocks << " blocks\n";
                     }
 
-                    //cout << "Block [" << blockMinX << "," << blockMaxX << "][" << blockMinY << "," << blockMaxY << "]\n";
+                    //std::cout << "Block [" << blockMinX << "," << blockMaxX << "][" << blockMinY << "," << blockMaxY << "]\n";
 
-                    //cout << "Block Origin [" << blockXOrigin << "," << blockYOrigin <<"]\n";
+                    //std::cout << "Block Origin [" << blockXOrigin << "," << blockYOrigin <<"]\n";
 
-                    //cout << "Block Size [" << blockXSize << "," << blockYSize << "]\n";
+                    //std::cout << "Block Size [" << blockXSize << "," << blockYSize << "]\n";
 
                     bbox[0] = blockMinX;
                     bbox[1] = blockMinY;
@@ -454,14 +454,14 @@ namespace spdlib
                 {
                     if(this->printProgress)
                     {
-                        cout << "Processing block " << cBlocksIdx++ << " of " << numBlocks << " blocks\n";
+                        std::cout << "Processing block " << cBlocksIdx++ << " of " << numBlocks << " blocks\n";
                     }
                     blockMaxX -= (blockXSize-remainingCols);
-                    //cout << "Block [" << blockMinX << "," << blockMaxX << "][" << blockMinY << "," << blockMaxY << "]\n";
+                    //std::cout << "Block [" << blockMinX << "," << blockMaxX << "][" << blockMinY << "," << blockMaxY << "]\n";
 
-                    //cout << "Block Origin [" << blockXOrigin << "," << blockYOrigin <<"]\n";
+                    //std::cout << "Block Origin [" << blockXOrigin << "," << blockYOrigin <<"]\n";
 
-                    //cout << "Block Size [" << blockXSize << "," << blockYSize << "]\n";
+                    //std::cout << "Block Size [" << blockXSize << "," << blockYSize << "]\n";
 
                     bbox[0] = blockMinX;
                     bbox[1] = blockMinY;
@@ -567,14 +567,14 @@ namespace spdlib
                 {
                     if(this->printProgress)
                     {
-                        cout << "Processing block " << cBlocksIdx++ << " of " << numBlocks << " blocks\n";
+                        std::cout << "Processing block " << cBlocksIdx++ << " of " << numBlocks << " blocks\n";
                     }
 
-                    //cout << "Block [" << blockMinX << "," << blockMaxX << "][" << blockMinY << "," << blockMaxY << "]\n";
+                    //std::cout << "Block [" << blockMinX << "," << blockMaxX << "][" << blockMinY << "," << blockMaxY << "]\n";
 
-                    //cout << "Block Origin [" << blockXOrigin << "," << blockYOrigin << "]\n";
+                    //std::cout << "Block Origin [" << blockXOrigin << "," << blockYOrigin << "]\n";
 
-                    //cout << "Block Size [" << blockXSize << "," << blockYSize << "]\n";
+                    //std::cout << "Block Size [" << blockXSize << "," << blockYSize << "]\n";
 
                     bbox[0] = blockMinX;
                     bbox[1] = blockMinY;
@@ -654,13 +654,13 @@ namespace spdlib
                 {
                     if(this->printProgress)
                     {
-                        cout << "Processing block " << cBlocksIdx++ << " of " << numBlocks << " blocks\n";
+                        std::cout << "Processing block " << cBlocksIdx++ << " of " << numBlocks << " blocks\n";
                     }
                     blockMaxX -= (blockXSize-remainingCols);
 
-                    //cout << "Block [" << blockMinX << "," << blockMaxX << "][" << blockMinY << "," << blockMaxY << "]\n";
+                    //std::cout << "Block [" << blockMinX << "," << blockMaxX << "][" << blockMinY << "," << blockMaxY << "]\n";
 
-                    //cout << "Block Origin [" << blockXOrigin << "," << blockYOrigin <<"]\n";
+                    //std::cout << "Block Origin [" << blockXOrigin << "," << blockYOrigin <<"]\n";
 
                     bbox[0] = blockMinX;
                     bbox[1] = blockMinY;
@@ -733,7 +733,7 @@ namespace spdlib
                     }
                 }
             }
-            cout << "Complete\n";
+            std::cout << "Complete\n";
             
             dataBlockProcessor->setHeaderValues(spdOutFile);
 
@@ -788,15 +788,15 @@ namespace spdlib
             delete[] imgBands;
             GDALClose(gdalDataset);
         }
-		catch(negative_overflow& e)
+		catch(boost::numeric::negative_overflow& e)
 		{
 			throw SPDProcessingException(e.what());
 		}
-		catch(positive_overflow& e)
+		catch(boost::numeric::positive_overflow& e)
 		{
 			throw SPDProcessingException(e.what());
 		}
-		catch(bad_numeric_cast& e)
+		catch(boost::numeric::bad_numeric_cast& e)
 		{
 			throw SPDProcessingException(e.what());
 		}
@@ -810,7 +810,7 @@ namespace spdlib
         }
     }
 
-    void SPDProcessDataBlocks::processDataBlocksGridPulsesOutputImage(SPDFile *spdInFile, string outImagePath, float processingResolution, boost::uint_fast16_t numImgBands, string gdalFormat) throw(SPDProcessingException)
+    void SPDProcessDataBlocks::processDataBlocksGridPulsesOutputImage(SPDFile *spdInFile, std::string outImagePath, float processingResolution, boost::uint_fast16_t numImgBands, std::string gdalFormat) throw(SPDProcessingException)
     {
         try
         {
@@ -859,7 +859,7 @@ namespace spdlib
                 geoHeight = spdInFile->getZenithMax() - spdInFile->getZenithMin();
             }
             
-            //cout << "Geo: [" << geoWidth << "," << geoHeight << "]\n";
+            //std::cout << "Geo: [" << geoWidth << "," << geoHeight << "]\n";
             
             bool usingNativeRes = false;
             bool scaleDown = true;
@@ -874,63 +874,63 @@ namespace spdlib
             {
                 if(fmod(processingResolution, spdInFile->getBinSize()) != 0)
                 {
-                    cerr << "Native Res: " << spdInFile->getBinSize() << endl;
-                    cerr << "Process Res: " << processingResolution << endl;
+                    std::cerr << "Native Res: " << spdInFile->getBinSize() << std::endl;
+                    std::cerr << "Process Res: " << processingResolution << std::endl;
                     throw SPDProcessingException("The processing resolution must be a multiple of the native resoltion.");
                 }
                 usingNativeRes = false;
-                procResXBins = ceil(geoWidth / processingResolution)+1;
-                procResYBins = ceil(geoHeight / processingResolution)+1;
+                procResXBins = ceil(((double)geoWidth / processingResolution))+1;
+                procResYBins = ceil(((double)geoHeight / processingResolution))+1;
                 
                 scaleDown = false;
-                binScaling = numeric_cast<boost::uint_fast32_t>(processingResolution/spdInFile->getBinSize());
+                binScaling = boost::numeric_cast<boost::uint_fast32_t>(processingResolution/spdInFile->getBinSize());
             }
             else
             {
                 float tmpNumOutBins = spdInFile->getBinSize()/processingResolution;
                 if(fmod(tmpNumOutBins, ((float)1.0)) != 0)
                 {
-                    cerr << "Native Res: " << spdInFile->getBinSize() << endl;
-                    cerr << "Process Res: " << processingResolution << endl;
+                    std::cerr << "Native Res: " << spdInFile->getBinSize() << std::endl;
+                    std::cerr << "Process Res: " << processingResolution << std::endl;
                     throw SPDProcessingException("The processing resolution must be a multiple of the native resoltion.");
                 }
                 usingNativeRes = false;
-                procResXBins = ceil(geoWidth / processingResolution)+1;
-                procResYBins = ceil(geoHeight / processingResolution)+1;
+                procResXBins = ceil(((double)geoWidth / processingResolution))+1;
+                procResYBins = ceil(((double)geoHeight / processingResolution))+1;
                 
                 scaleDown = true;
-                binScaling = numeric_cast<boost::uint_fast32_t>(spdInFile->getBinSize()/processingResolution);
+                binScaling = boost::numeric_cast<boost::uint_fast32_t>(spdInFile->getBinSize()/processingResolution);
             }
             
-            //cout << "Bin Scaling: " << binScaling << endl;
-            //cout << "Process Bins: [" << procResXBins << "," << procResYBins << "]\n";
+            //std::cout << "Bin Scaling: " << binScaling << std::endl;
+            //std::cout << "Process Bins: [" << procResXBins << "," << procResYBins << "]\n";
                         
             if(usingNativeRes)
             {
-                cout << "Using native resolution for processing\n";
+                std::cout << "Using native resolution for processing\n";
             }
             else
             {
-                cout << "Resampling native resolution\n";
+                std::cout << "Resampling native resolution\n";
                 if(scaleDown)
                 {
-                    cout << "Scaling down\n";
+                    std::cout << "Scaling down\n";
                 }
                 else
                 {
-                    cout << "Scaling up\n";
+                    std::cout << "Scaling up\n";
                 }
             }
             
             boost::uint_fast32_t numXFullBlocks = floor(((double)nativeXBins)/this->blockXSize);
             boost::uint_fast32_t numYFullBlocks = floor(((double)nativeYBins)/this->blockYSize);
             
-            //cout << "Number of full blocks: [" << numXFullBlocks << "," << numYFullBlocks << "]\n";
+            //std::cout << "Number of full blocks: [" << numXFullBlocks << "," << numYFullBlocks << "]\n";
             
             boost::uint_fast32_t remainingCols = nativeXBins - (numXFullBlocks * this->blockXSize);
             boost::uint_fast32_t remainingRows = nativeYBins - (numYFullBlocks * this->blockYSize);
             
-            //cout << "Remainder: [" << remainingCols << "," << remainingRows << "]\n";
+            //std::cout << "Remainder: [" << remainingCols << "," << remainingRows << "]\n";
             
             double blockMinX = 0;
             double blockMaxX = 0;
@@ -959,9 +959,9 @@ namespace spdlib
                 procResYBlockSize = ceil(((double)blockYSize) / binScaling);
             }
             
-            //cout << "Native block size: [" << this->blockXSize << "," << this->blockYSize << "]\n";
-            //cout << "Process block size: [" << procResXBlockSize << "," << procResYBlockSize << "]\n";
-            //cout << "Block Size: [" << blockWidth << "," << blockHeight << "]\n";
+            //std::cout << "Native block size: [" << this->blockXSize << "," << this->blockYSize << "]\n";
+            //std::cout << "Process block size: [" << procResXBlockSize << "," << procResYBlockSize << "]\n";
+            //std::cout << "Block Size: [" << blockWidth << "," << blockHeight << "]\n";
             
             boost::uint_fast32_t numBlocks = numYFullBlocks * numXFullBlocks;
             if(remainingCols > 0)
@@ -992,23 +992,23 @@ namespace spdlib
                 if(scaleDown)
                 {
                     scaledOverlap = this->overlap * binScaling;
-                    remainingColsScaled = ceil(remainingCols * binScaling);
-                    remainingRowsScaled = ceil(remainingRows * binScaling);
+                    remainingColsScaled = ceil(((double)remainingCols * binScaling));
+                    remainingRowsScaled = ceil(((double)remainingRows * binScaling));
                 }
                 else
                 {
                     scaledOverlap = this->overlap / binScaling;
-                    remainingColsScaled = ceil(remainingCols / binScaling);
-                    remainingRowsScaled = ceil(remainingRows / binScaling);
+                    remainingColsScaled = ceil(((double)remainingCols / binScaling));
+                    remainingRowsScaled = ceil(((double)remainingRows / binScaling));
                 }
             }
             
             boost::uint_fast32_t pulsesScaledBlockSizeX = procResXBlockSize + (2 * scaledOverlap);
             boost::uint_fast32_t pulsesScaledBlockSizeY = procResYBlockSize + (2 * scaledOverlap);
             
-            //cout << "Pulses Block Size: [" << pulsesBlockSizeX << "," << pulsesBlockSizeY << "]\n";
-            //cout << "Processing Pulses Block Size: [" << procResXBlockSize << "," << procResYBlockSize << "]\n";
-            //cout << "Remaining: [" << remainingColsScaled << "," << remainingRowsScaled << "]\n";
+            //std::cout << "Pulses Block Size: [" << pulsesBlockSizeX << "," << pulsesBlockSizeY << "]\n";
+            //std::cout << "Processing Pulses Block Size: [" << procResXBlockSize << "," << procResYBlockSize << "]\n";
+            //std::cout << "Remaining: [" << remainingColsScaled << "," << remainingRowsScaled << "]\n";
             
             boost::uint_fast32_t imageXSize = (procResXBlockSize * numXFullBlocks) + remainingColsScaled;
             boost::uint_fast32_t imageYSize = (procResYBlockSize * numYFullBlocks) + remainingRowsScaled;
@@ -1017,24 +1017,24 @@ namespace spdlib
             GDALDriver *gdalDriver = GetGDALDriverManager()->GetDriverByName(gdalFormat.c_str());
 			if(gdalDriver == NULL)
 			{
-                string message = gdalFormat + string(" gdal driver cannot be found.");
+                std::string message = gdalFormat + std::string(" gdal driver cannot be found.");
 				throw SPDProcessingException(message);
 			}
             char **papszMetadata;
             papszMetadata = gdalDriver->GetMetadata();
             if( CSLFetchBoolean( papszMetadata, GDAL_DCAP_CREATE, FALSE ) )
             {
-                string message = gdalFormat + string(" does not support create method. Select a GDAL driver which does (see http://www.gdal.org/formats_list.html).");
+                std::string message = gdalFormat + std::string(" does not support create method. Select a GDAL driver which does (see http://www.gdal.org/formats_list.html).");
             }
             GDALDataset *outImage = gdalDriver->Create(outImagePath.c_str(), imageXSize, imageYSize, numImgBands, GDT_Float32, papszMetadata);
             
             if(outImage == NULL)
             {
-                string message = string("Failed to create image ") + outImagePath;
+                std::string message = std::string("Failed to create image ") + outImagePath;
 				throw SPDProcessingException(message);
             }
             
-            //cout << spdInFile << endl;
+            //std::cout << spdInFile << std::endl;
             
             double *gdalTransform = new double[6];
             gdalTransform[0] = spdInFile->getXMin();
@@ -1049,7 +1049,7 @@ namespace spdlib
             {
                 outImage->SetProjection(spdInFile->getSpatialReference().c_str());
             }
-            vector<string> bandNames = this->dataBlockProcessor->getImageBandDescriptions();
+            std::vector<std::string> bandNames = this->dataBlockProcessor->getImageBandDescriptions();
             
             GDALRasterBand **imageBands = new GDALRasterBand*[numImgBands];
             for(boost::uint_fast16_t n = 0; n < numImgBands; ++n)
@@ -1069,32 +1069,32 @@ namespace spdlib
             SPDFileIncrementalReader incReader;
             incReader.open(spdInFile);
                         
-            vector<SPDPulse*> ***pulses = new vector<SPDPulse*>**[pulsesBlockSizeY];
+            std::vector<SPDPulse*> ***pulses = new std::vector<SPDPulse*>**[pulsesBlockSizeY];
             for(boost::uint_fast32_t i = 0; i < pulsesBlockSizeY; ++i)
             {
-                pulses[i] = new vector<SPDPulse*>*[pulsesBlockSizeX];
+                pulses[i] = new std::vector<SPDPulse*>*[pulsesBlockSizeX];
                 for(boost::uint_fast32_t j = 0; j < pulsesBlockSizeX; ++j)
                 {
-                    pulses[i][j] = new vector<SPDPulse*>();
+                    pulses[i][j] = new std::vector<SPDPulse*>();
                 }
             }
             
             SPDXYPoint ***cenPts = NULL;
-            vector<SPDPulse*> ***pulseScaled = NULL;
+            std::vector<SPDPulse*> ***pulseScaled = NULL;
             float ***imageBlockVals = NULL;
             if(binScaling != 0)
             {
-                pulseScaled = new vector<SPDPulse*>**[pulsesScaledBlockSizeY];
+                pulseScaled = new std::vector<SPDPulse*>**[pulsesScaledBlockSizeY];
                 cenPts = new SPDXYPoint**[pulsesScaledBlockSizeY];
                 imageBlockVals = new float**[pulsesScaledBlockSizeY];
                 for(boost::uint_fast32_t i = 0; i < pulsesScaledBlockSizeY; ++i)
                 {
-                    pulseScaled[i] = new vector<SPDPulse*>*[pulsesScaledBlockSizeX];
+                    pulseScaled[i] = new std::vector<SPDPulse*>*[pulsesScaledBlockSizeX];
                     cenPts[i] = new SPDXYPoint*[pulsesScaledBlockSizeX];
                     imageBlockVals[i] = new float*[pulsesScaledBlockSizeX];
                     for(boost::uint_fast32_t j = 0; j < pulsesScaledBlockSizeX; ++j)
                     {
-                        pulseScaled[i][j] = new vector<SPDPulse*>();
+                        pulseScaled[i][j] = new std::vector<SPDPulse*>();
                         cenPts[i][j] = new SPDXYPoint();
                         imageBlockVals[i][j] = new float[numImgBands];
                         for(boost::uint_fast32_t k = 0; k < numImgBands; ++k)
@@ -1164,7 +1164,7 @@ namespace spdlib
                 {
                     if(this->printProgress)
                     {
-                        cout << "Processing block " << cBlocksIdx++ << " of " << numBlocks << " blocks\n";
+                        std::cout << "Processing block " << cBlocksIdx++ << " of " << numBlocks << " blocks\n";
                     }
                     
                     bbox[0] = blockMinX;
@@ -1214,8 +1214,8 @@ namespace spdlib
                         bbox[3] = blockMaxY + overlap;
                     }
                     
-                    //cout << "xOffset = " << xOffset << endl;
-                    //cout << "yOffset = " << yOffset << endl;
+                    //std::cout << "xOffset = " << xOffset << std::endl;
+                    //std::cout << "yOffset = " << yOffset << std::endl;
                     incReader.readPulseDataBlock(pulses, bbox, xOffset, yOffset);
                     
                     if(binScaling == 0)
@@ -1256,7 +1256,7 @@ namespace spdlib
                 {
                     if(this->printProgress)
                     {
-                        cout << "Processing block " << cBlocksIdx++ << " of " << numBlocks << " blocks\n";
+                        std::cout << "Processing block " << cBlocksIdx++ << " of " << numBlocks << " blocks\n";
                     }
                     blockMaxX -= (blockXSize-remainingCols);
                     
@@ -1372,7 +1372,7 @@ namespace spdlib
                 {
                     if(this->printProgress)
                     {
-                        cout << "Processing block " << cBlocksIdx++ << " of " << numBlocks << " blocks\n";
+                        std::cout << "Processing block " << cBlocksIdx++ << " of " << numBlocks << " blocks\n";
                     }
                     
                     bbox[0] = blockMinX;
@@ -1461,7 +1461,7 @@ namespace spdlib
                 {
                     if(this->printProgress)
                     {
-                        cout << "Processing block " << cBlocksIdx++ << " of " << numBlocks << " blocks\n";
+                        std::cout << "Processing block " << cBlocksIdx++ << " of " << numBlocks << " blocks\n";
                     }
                     
                     bbox[0] = blockMinX;
@@ -1543,7 +1543,7 @@ namespace spdlib
                     }
                 }
             }
-            cout << "Complete\n";
+            std::cout << "Complete\n";
             
             for(boost::uint_fast32_t i = 0; i < pulsesBlockSizeY; ++i)
             {
@@ -1595,15 +1595,15 @@ namespace spdlib
             GDALClose(outImage);
             delete[] gdalTransform;
         }
-		catch(negative_overflow& e)
+		catch(boost::numeric::negative_overflow& e)
 		{
 			throw SPDProcessingException(e.what());
 		}
-		catch(positive_overflow& e)
+		catch(boost::numeric::positive_overflow& e)
 		{
 			throw SPDProcessingException(e.what());
 		}
-		catch(bad_numeric_cast& e)
+		catch(boost::numeric::bad_numeric_cast& e)
 		{
 			throw SPDProcessingException(e.what());
 		}
@@ -1617,7 +1617,7 @@ namespace spdlib
         }
     }
 
-    void SPDProcessDataBlocks::processDataBlocksGridPulsesOutputSPD(SPDFile *spdInFile, string outFile, float processingResolution) throw(SPDProcessingException)
+    void SPDProcessDataBlocks::processDataBlocksGridPulsesOutputSPD(SPDFile *spdInFile, std::string outFile, float processingResolution) throw(SPDProcessingException)
     {
         try
         {
@@ -1668,7 +1668,7 @@ namespace spdlib
                 geoHeight = spdInFile->getZenithMax() - spdInFile->getZenithMin();
             }
 
-            //cout << "Geo: [" << geoWidth << "," << geoHeight << "]\n";
+            //std::cout << "Geo: [" << geoWidth << "," << geoHeight << "]\n";
 
             bool usingNativeRes = false;
             bool scaleDown = true;
@@ -1683,63 +1683,63 @@ namespace spdlib
             {
                 if(fmod(processingResolution, spdInFile->getBinSize()) != 0)
                 {
-                    cerr << "Native Res: " << spdInFile->getBinSize() << endl;
-                    cerr << "Process Res: " << processingResolution << endl;
+                    std::cerr << "Native Res: " << spdInFile->getBinSize() << std::endl;
+                    std::cerr << "Process Res: " << processingResolution << std::endl;
                     throw SPDProcessingException("The processing resolution must be a multiple of the native resoltion.");
                 }
                 usingNativeRes = false;
-                procResXBins = numeric_cast<boost::uint_fast64_t>(geoWidth / processingResolution)+1;
-                procResYBins = numeric_cast<boost::uint_fast64_t>(geoHeight / processingResolution)+1;
+                procResXBins = boost::numeric_cast<boost::uint_fast64_t>(geoWidth / processingResolution)+1;
+                procResYBins = boost::numeric_cast<boost::uint_fast64_t>(geoHeight / processingResolution)+1;
 
                 scaleDown = false;
-                binScaling = numeric_cast<boost::uint_fast32_t>(processingResolution/spdInFile->getBinSize());
+                binScaling = boost::numeric_cast<boost::uint_fast32_t>(processingResolution/spdInFile->getBinSize());
             }
             else
             {
                 float tmpNumOutBins = spdInFile->getBinSize()/processingResolution;
                 if(fmod(tmpNumOutBins, ((float)1.0)) != 0)
                 {
-                    cerr << "Native Res: " << spdInFile->getBinSize() << endl;
-                    cerr << "Process Res: " << processingResolution << endl;
+                    std::cerr << "Native Res: " << spdInFile->getBinSize() << std::endl;
+                    std::cerr << "Process Res: " << processingResolution << std::endl;
                     throw SPDProcessingException("The processing resolution must be a multiple of the native resoltion.");
                 }
                 usingNativeRes = false;
-                procResXBins = numeric_cast<boost::uint_fast64_t>(geoWidth / processingResolution)+1;
-                procResYBins = numeric_cast<boost::uint_fast64_t>(geoHeight / processingResolution)+1;
+                procResXBins = boost::numeric_cast<boost::uint_fast64_t>(geoWidth / processingResolution)+1;
+                procResYBins = boost::numeric_cast<boost::uint_fast64_t>(geoHeight / processingResolution)+1;
 
                 scaleDown = true;
-                binScaling = numeric_cast<boost::uint_fast32_t>(spdInFile->getBinSize()/processingResolution);
+                binScaling = boost::numeric_cast<boost::uint_fast32_t>(spdInFile->getBinSize()/processingResolution);
             }
 
-            //cout << "Bin Scaling: " << binScaling << endl;
-            //cout << "Process Bins: [" << procResXBins << "," << procResYBins << "]\n";
+            //std::cout << "Bin Scaling: " << binScaling << std::endl;
+            //std::cout << "Process Bins: [" << procResXBins << "," << procResYBins << "]\n";
 
             if(usingNativeRes)
             {
-                cout << "Using native resolution for processing\n";
+                std::cout << "Using native resolution for processing\n";
             }
             else
             {
-                cout << "Resampling native resolution\n";
+                std::cout << "Resampling native resolution\n";
                 if(scaleDown)
                 {
-                    cout << "Scaling down\n";
+                    std::cout << "Scaling down\n";
                 }
                 else
                 {
-                    cout << "Scaling up\n";
+                    std::cout << "Scaling up\n";
                 }
             }
 
             boost::uint_fast32_t numXFullBlocks = floor(((double)nativeXBins)/this->blockXSize);
             boost::uint_fast32_t numYFullBlocks = floor(((double)nativeYBins)/this->blockYSize);
 
-            //cout << "Number of full blocks: [" << numXFullBlocks << "," << numYFullBlocks << "]\n";
+            //std::cout << "Number of full blocks: [" << numXFullBlocks << "," << numYFullBlocks << "]\n";
 
             boost::uint_fast32_t remainingCols = nativeXBins - (numXFullBlocks * this->blockXSize);
             boost::uint_fast32_t remainingRows = nativeYBins - (numYFullBlocks * this->blockYSize);
 
-            //cout << "Remainder: [" << remainingCols << "," << remainingRows << "]\n";
+            //std::cout << "Remainder: [" << remainingCols << "," << remainingRows << "]\n";
 
             double blockMinX = 0;
             double blockMaxX = 0;
@@ -1768,10 +1768,10 @@ namespace spdlib
                 procResYBlockSize = ceil(((double)blockYSize) / binScaling);
             }
 
-            //cout << "Native block size: [" << this->blockXSize << "," << this->blockXSize << "]\n";
-            //cout << "Process block size: [" << procResXBlockSize << "," << procResYBlockSize << "]\n";
+            //std::cout << "Native block size: [" << this->blockXSize << "," << this->blockXSize << "]\n";
+            //std::cout << "Process block size: [" << procResXBlockSize << "," << procResYBlockSize << "]\n";
 
-            //cout << "Block Size: [" << blockWidth << "," << blockHeight << "]\n";
+            //std::cout << "Block Size: [" << blockWidth << "," << blockHeight << "]\n";
 
 
 
@@ -1827,30 +1827,30 @@ namespace spdlib
             boost::uint_fast32_t pulsesScaledBlockSizeX = procResXBlockSize + (2 * scaledOverlap);
             boost::uint_fast32_t pulsesScaledBlockSizeY = procResYBlockSize + (2 * scaledOverlap);
 
-            vector<SPDPulse*> ***pulses = new vector<SPDPulse*>**[pulsesBlockSizeY];
+            std::vector<SPDPulse*> ***pulses = new std::vector<SPDPulse*>**[pulsesBlockSizeY];
             for(boost::uint_fast32_t i = 0; i < pulsesBlockSizeY; ++i)
             {
-                pulses[i] = new vector<SPDPulse*>*[pulsesBlockSizeX];
+                pulses[i] = new std::vector<SPDPulse*>*[pulsesBlockSizeX];
                 for(boost::uint_fast32_t j = 0; j < pulsesBlockSizeX; ++j)
                 {
-                    pulses[i][j] = new vector<SPDPulse*>();
+                    pulses[i][j] = new std::vector<SPDPulse*>();
                 }
             }
 
 
             SPDXYPoint ***cenPts = NULL;
-            vector<SPDPulse*> ***pulseScaled = NULL;
+            std::vector<SPDPulse*> ***pulseScaled = NULL;
             if(binScaling != 0)
             {
-                pulseScaled = new vector<SPDPulse*>**[pulsesScaledBlockSizeY];
+                pulseScaled = new std::vector<SPDPulse*>**[pulsesScaledBlockSizeY];
                 cenPts = new SPDXYPoint**[pulsesScaledBlockSizeY];
                 for(boost::uint_fast32_t i = 0; i < pulsesScaledBlockSizeY; ++i)
                 {
-                    pulseScaled[i] = new vector<SPDPulse*>*[pulsesScaledBlockSizeX];
+                    pulseScaled[i] = new std::vector<SPDPulse*>*[pulsesScaledBlockSizeX];
                     cenPts[i] = new SPDXYPoint*[pulsesScaledBlockSizeX];
                     for(boost::uint_fast32_t j = 0; j < pulsesScaledBlockSizeX; ++j)
                     {
-                        pulseScaled[i][j] = new vector<SPDPulse*>();
+                        pulseScaled[i][j] = new std::vector<SPDPulse*>();
                         cenPts[i][j] = new SPDXYPoint();
                     }
                 }
@@ -1905,14 +1905,14 @@ namespace spdlib
                 {
                     if(this->printProgress)
                     {
-                        cout << "Processing block " << cBlocksIdx++ << " of " << numBlocks << " blocks\n";
+                        std::cout << "Processing block " << cBlocksIdx++ << " of " << numBlocks << " blocks\n";
                     }
 
-                    //cout << "Block [" << blockMinX << "," << blockMaxX << "][" << blockMinY << "," << blockMaxY << "]\n";
+                    //std::cout << "Block [" << blockMinX << "," << blockMaxX << "][" << blockMinY << "," << blockMaxY << "]\n";
 
-                    //cout << "Block Origin [" << blockXOrigin << "," << blockYOrigin <<"]\n";
+                    //std::cout << "Block Origin [" << blockXOrigin << "," << blockYOrigin <<"]\n";
 
-                    //cout << "Block Size [" << blockXSize << "," << blockYSize << "]\n";
+                    //std::cout << "Block Size [" << blockXSize << "," << blockYSize << "]\n";
 
                     bbox[0] = blockMinX;
                     bbox[1] = blockMinY;
@@ -1992,14 +1992,14 @@ namespace spdlib
                 {
                     if(this->printProgress)
                     {
-                        cout << "Processing block " << cBlocksIdx++ << " of " << numBlocks << " blocks\n";
+                        std::cout << "Processing block " << cBlocksIdx++ << " of " << numBlocks << " blocks\n";
                     }
                     blockMaxX -= (blockXSize-remainingCols);
-                    //cout << "Block [" << blockMinX << "," << blockMaxX << "][" << blockMinY << "," << blockMaxY << "]\n";
+                    //std::cout << "Block [" << blockMinX << "," << blockMaxX << "][" << blockMinY << "," << blockMaxY << "]\n";
 
-                    //cout << "Block Origin [" << blockXOrigin << "," << blockYOrigin <<"]\n";
+                    //std::cout << "Block Origin [" << blockXOrigin << "," << blockYOrigin <<"]\n";
 
-                    //cout << "Block Size [" << blockXSize << "," << blockYSize << "]\n";
+                    //std::cout << "Block Size [" << blockXSize << "," << blockYSize << "]\n";
 
                     bbox[0] = blockMinX;
                     bbox[1] = blockMinY;
@@ -2103,14 +2103,14 @@ namespace spdlib
                 {
                     if(this->printProgress)
                     {
-                        cout << "Processing block " << cBlocksIdx++ << " of " << numBlocks << " blocks\n";
+                        std::cout << "Processing block " << cBlocksIdx++ << " of " << numBlocks << " blocks\n";
                     }
 
-                    //cout << "Block [" << blockMinX << "," << blockMaxX << "][" << blockMinY << "," << blockMaxY << "]\n";
+                    //std::cout << "Block [" << blockMinX << "," << blockMaxX << "][" << blockMinY << "," << blockMaxY << "]\n";
 
-                    //cout << "Block Origin [" << blockXOrigin << "," << blockYOrigin << "]\n";
+                    //std::cout << "Block Origin [" << blockXOrigin << "," << blockYOrigin << "]\n";
 
-                    //cout << "Block Size [" << blockXSize << "," << blockYSize << "]\n";
+                    //std::cout << "Block Size [" << blockXSize << "," << blockYSize << "]\n";
 
                     bbox[0] = blockMinX;
                     bbox[1] = blockMinY;
@@ -2188,13 +2188,13 @@ namespace spdlib
                 {
                     if(this->printProgress)
                     {
-                        cout << "Processing block " << cBlocksIdx++ << " of " << numBlocks << " blocks\n";
+                        std::cout << "Processing block " << cBlocksIdx++ << " of " << numBlocks << " blocks\n";
                     }
                     blockMaxX -= (blockXSize-remainingCols);
 
-                    //cout << "Block [" << blockMinX << "," << blockMaxX << "][" << blockMinY << "," << blockMaxY << "]\n";
+                    //std::cout << "Block [" << blockMinX << "," << blockMaxX << "][" << blockMinY << "," << blockMaxY << "]\n";
 
-                    //cout << "Block Origin [" << blockXOrigin << "," << blockYOrigin <<"]\n";
+                    //std::cout << "Block Origin [" << blockXOrigin << "," << blockYOrigin <<"]\n";
 
                     bbox[0] = blockMinX;
                     bbox[1] = blockMinY;
@@ -2265,7 +2265,7 @@ namespace spdlib
                     }
                 }
             }
-            cout << "Complete\n";
+            std::cout << "Complete\n";
             
             dataBlockProcessor->setHeaderValues(spdOutFile);
 
@@ -2312,15 +2312,15 @@ namespace spdlib
             fileWriter->finaliseClose();
             delete fileWriter;
         }
-		catch(negative_overflow& e)
+		catch(boost::numeric::negative_overflow& e)
 		{
 			throw SPDProcessingException(e.what());
 		}
-		catch(positive_overflow& e)
+		catch(boost::numeric::positive_overflow& e)
 		{
 			throw SPDProcessingException(e.what());
 		}
-		catch(bad_numeric_cast& e)
+		catch(boost::numeric::bad_numeric_cast& e)
 		{
 			throw SPDProcessingException(e.what());
 		}
@@ -2395,48 +2395,48 @@ namespace spdlib
             {
                 if(fmod(processingResolution, spdInFile->getBinSize()) != 0)
                 {
-                    cerr << "Native Res: " << spdInFile->getBinSize() << endl;
-                    cerr << "Process Res: " << processingResolution << endl;
+                    std::cerr << "Native Res: " << spdInFile->getBinSize() << std::endl;
+                    std::cerr << "Process Res: " << processingResolution << std::endl;
                     throw SPDProcessingException("The processing resolution must be a multiple of the native resoltion.");
                 }
                 usingNativeRes = false;
-                procResXBins = numeric_cast<boost::uint_fast64_t>(geoWidth / processingResolution)+1;
-                procResYBins = numeric_cast<boost::uint_fast64_t>(geoHeight / processingResolution)+1;
+                procResXBins = boost::numeric_cast<boost::uint_fast64_t>(geoWidth / processingResolution)+1;
+                procResYBins = boost::numeric_cast<boost::uint_fast64_t>(geoHeight / processingResolution)+1;
 
                 scaleDown = false;
-                binScaling = numeric_cast<boost::uint_fast32_t>(processingResolution/spdInFile->getBinSize());
+                binScaling = boost::numeric_cast<boost::uint_fast32_t>(processingResolution/spdInFile->getBinSize());
             }
             else
             {
                 float tmpNumOutBins = spdInFile->getBinSize()/processingResolution;
                 if(fmod(tmpNumOutBins, ((float)1.0)) != 0)
                 {
-                    cerr << "Native Res: " << spdInFile->getBinSize() << endl;
-                    cerr << "Process Res: " << processingResolution << endl;
+                    std::cerr << "Native Res: " << spdInFile->getBinSize() << std::endl;
+                    std::cerr << "Process Res: " << processingResolution << std::endl;
                     throw SPDProcessingException("The processing resolution must be a multiple of the native resoltion.");
                 }
                 usingNativeRes = false;
-                procResXBins = numeric_cast<boost::uint_fast64_t>(geoWidth / processingResolution)+1;
-                procResYBins = numeric_cast<boost::uint_fast64_t>(geoHeight / processingResolution)+1;
+                procResXBins = boost::numeric_cast<boost::uint_fast64_t>(geoWidth / processingResolution)+1;
+                procResYBins = boost::numeric_cast<boost::uint_fast64_t>(geoHeight / processingResolution)+1;
 
                 scaleDown = true;
-                binScaling = numeric_cast<boost::uint_fast32_t>(spdInFile->getBinSize()/processingResolution);
+                binScaling = boost::numeric_cast<boost::uint_fast32_t>(spdInFile->getBinSize()/processingResolution);
             }
 
             if(usingNativeRes)
             {
-                cout << "Using native resolution for processing\n";
+                std::cout << "Using native resolution for processing\n";
             }
             else
             {
-                cout << "Resampling native resolution\n";
+                std::cout << "Resampling native resolution\n";
                 if(scaleDown)
                 {
-                    cout << "Scaling down\n";
+                    std::cout << "Scaling down\n";
                 }
                 else
                 {
-                    cout << "Scaling up\n";
+                    std::cout << "Scaling up\n";
                 }
             }
 
@@ -2513,30 +2513,30 @@ namespace spdlib
             boost::uint_fast32_t pulsesScaledBlockSizeX = procResXBlockSize + (2 * scaledOverlap);
             boost::uint_fast32_t pulsesScaledBlockSizeY = procResYBlockSize + (2 * scaledOverlap);
 
-            vector<SPDPulse*> ***pulses = new vector<SPDPulse*>**[pulsesBlockSizeY];
+            std::vector<SPDPulse*> ***pulses = new std::vector<SPDPulse*>**[pulsesBlockSizeY];
             for(boost::uint_fast32_t i = 0; i < pulsesBlockSizeY; ++i)
             {
-                pulses[i] = new vector<SPDPulse*>*[pulsesBlockSizeX];
+                pulses[i] = new std::vector<SPDPulse*>*[pulsesBlockSizeX];
                 for(boost::uint_fast32_t j = 0; j < pulsesBlockSizeX; ++j)
                 {
-                    pulses[i][j] = new vector<SPDPulse*>();
+                    pulses[i][j] = new std::vector<SPDPulse*>();
                 }
             }
 
 
             SPDXYPoint ***cenPts = NULL;
-            vector<SPDPulse*> ***pulseScaled = NULL;
+            std::vector<SPDPulse*> ***pulseScaled = NULL;
             if(binScaling != 0)
             {
-                pulseScaled = new vector<SPDPulse*>**[pulsesScaledBlockSizeY];
+                pulseScaled = new std::vector<SPDPulse*>**[pulsesScaledBlockSizeY];
                 cenPts = new SPDXYPoint**[pulsesScaledBlockSizeY];
                 for(boost::uint_fast32_t i = 0; i < pulsesScaledBlockSizeY; ++i)
                 {
-                    pulseScaled[i] = new vector<SPDPulse*>*[pulsesScaledBlockSizeX];
+                    pulseScaled[i] = new std::vector<SPDPulse*>*[pulsesScaledBlockSizeX];
                     cenPts[i] = new SPDXYPoint*[pulsesScaledBlockSizeX];
                     for(boost::uint_fast32_t j = 0; j < pulsesScaledBlockSizeX; ++j)
                     {
-                        pulseScaled[i][j] = new vector<SPDPulse*>();
+                        pulseScaled[i][j] = new std::vector<SPDPulse*>();
                         cenPts[i][j] = new SPDXYPoint();
                     }
                 }
@@ -2591,7 +2591,7 @@ namespace spdlib
                 {
                     if(this->printProgress)
                     {
-                        cout << "Processing block " << cBlocksIdx++ << " of " << numBlocks << " blocks\n";
+                        std::cout << "Processing block " << cBlocksIdx++ << " of " << numBlocks << " blocks\n";
                     }
 
                     bbox[0] = blockMinX;
@@ -2667,7 +2667,7 @@ namespace spdlib
                 {
                     if(this->printProgress)
                     {
-                        cout << "Processing block " << cBlocksIdx++ << " of " << numBlocks << " blocks\n";
+                        std::cout << "Processing block " << cBlocksIdx++ << " of " << numBlocks << " blocks\n";
                     }
                     blockMaxX -= (blockXSize-remainingCols);
 
@@ -2769,7 +2769,7 @@ namespace spdlib
                 {
                     if(this->printProgress)
                     {
-                        cout << "Processing block " << cBlocksIdx++ << " of " << numBlocks << " blocks\n";
+                        std::cout << "Processing block " << cBlocksIdx++ << " of " << numBlocks << " blocks\n";
                     }
 
                     bbox[0] = blockMinX;
@@ -2844,7 +2844,7 @@ namespace spdlib
                 {
                     if(this->printProgress)
                     {
-                        cout << "Processing block " << cBlocksIdx++ << " of " << numBlocks << " blocks\n";
+                        std::cout << "Processing block " << cBlocksIdx++ << " of " << numBlocks << " blocks\n";
                     }
                     blockMaxX -= (blockXSize-remainingCols);
 
@@ -2913,7 +2913,7 @@ namespace spdlib
                     }
                 }
             }
-            cout << "Complete\n";
+            std::cout << "Complete\n";
 
             for(boost::uint_fast32_t i = 0; i < pulsesBlockSizeY; ++i)
             {
@@ -2956,15 +2956,15 @@ namespace spdlib
             delete[] bbox;
             incReader.close();
         }
-		catch(negative_overflow& e)
+		catch(boost::numeric::negative_overflow& e)
 		{
 			throw SPDProcessingException(e.what());
 		}
-		catch(positive_overflow& e)
+		catch(boost::numeric::positive_overflow& e)
 		{
 			throw SPDProcessingException(e.what());
 		}
-		catch(bad_numeric_cast& e)
+		catch(boost::numeric::bad_numeric_cast& e)
 		{
 			throw SPDProcessingException(e.what());
 		}
@@ -2978,7 +2978,7 @@ namespace spdlib
         }
     }
 
-    void SPDProcessDataBlocks::processDataBlocksOutputImage(SPDFile *spdInFile, string outImagePath, float processingResolution, boost::uint_fast16_t numImgBands, string gdalFormat) throw(SPDProcessingException)
+    void SPDProcessDataBlocks::processDataBlocksOutputImage(SPDFile *spdInFile, std::string outImagePath, float processingResolution, boost::uint_fast16_t numImgBands, std::string gdalFormat) throw(SPDProcessingException)
     {
         //GDALAllRegister();
     }
@@ -3064,7 +3064,7 @@ namespace spdlib
             SPDFileIncrementalReader incReader;
             incReader.open(spdInFile);
 
-            vector<SPDPulse*> *pulses = new vector<SPDPulse*>();
+            std::vector<SPDPulse*> *pulses = new std::vector<SPDPulse*>();
 
             boost::uint_fast32_t *bbox = new boost::uint_fast32_t[4];
 
@@ -3103,7 +3103,7 @@ namespace spdlib
                 {
                     if(this->printProgress)
                     {
-                        cout << "Processing block " << cBlocksIdx++ << " of " << numBlocks << " blocks\n";
+                        std::cout << "Processing block " << cBlocksIdx++ << " of " << numBlocks << " blocks\n";
                     }
 
                     bbox[0] = blockMinX;
@@ -3167,7 +3167,7 @@ namespace spdlib
                 {
                     if(this->printProgress)
                     {
-                        cout << "Processing block " << cBlocksIdx++ << " of " << numBlocks << " blocks\n";
+                        std::cout << "Processing block " << cBlocksIdx++ << " of " << numBlocks << " blocks\n";
                     }
                     blockMaxX -= (blockXSize-remainingCols);
 
@@ -3257,7 +3257,7 @@ namespace spdlib
                 {
                     if(this->printProgress)
                     {
-                        cout << "Processing block " << cBlocksIdx++ << " of " << numBlocks << " blocks\n";
+                        std::cout << "Processing block " << cBlocksIdx++ << " of " << numBlocks << " blocks\n";
                     }
 
                     bbox[0] = blockMinX;
@@ -3320,7 +3320,7 @@ namespace spdlib
                 {
                     if(this->printProgress)
                     {
-                        cout << "Processing block " << cBlocksIdx++ << " of " << numBlocks << " blocks\n";
+                        std::cout << "Processing block " << cBlocksIdx++ << " of " << numBlocks << " blocks\n";
                     }
                     blockMaxX -= (blockXSize-remainingCols);
 
@@ -3377,22 +3377,22 @@ namespace spdlib
                     this->clearPulses(pulses);
                 }
             }
-            cout << "Complete\n";
+            std::cout << "Complete\n";
 
             delete pulses;
 
             delete[] bbox;
             incReader.close();
         }
-		catch(negative_overflow& e)
+		catch(boost::numeric::negative_overflow& e)
 		{
 			throw SPDProcessingException(e.what());
 		}
-		catch(positive_overflow& e)
+		catch(boost::numeric::positive_overflow& e)
 		{
 			throw SPDProcessingException(e.what());
 		}
-		catch(bad_numeric_cast& e)
+		catch(boost::numeric::bad_numeric_cast& e)
 		{
 			throw SPDProcessingException(e.what());
 		}
@@ -3406,7 +3406,7 @@ namespace spdlib
         }
     }
 
-    void SPDProcessDataBlocks::removeNullPulses(vector<SPDPulse*> ***pulses, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize)
+    void SPDProcessDataBlocks::removeNullPulses(std::vector<SPDPulse*> ***pulses, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize)
     {
         for(boost::uint_fast32_t i = 0; i < ySize; ++i)
         {
@@ -3414,7 +3414,7 @@ namespace spdlib
             {
                 if(pulses[i][j]->size() > 0)
                 {
-                    for(vector<SPDPulse*>::iterator iterPulses = pulses[i][j]->begin(); iterPulses != pulses[i][j]->end(); )
+                    for(std::vector<SPDPulse*>::iterator iterPulses = pulses[i][j]->begin(); iterPulses != pulses[i][j]->end(); )
                     {
                         if((*iterPulses) ==  NULL)
                         {
@@ -3430,7 +3430,7 @@ namespace spdlib
         }
     }
 
-    void SPDProcessDataBlocks::clearPulses(vector<SPDPulse*> ***pulses, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize)
+    void SPDProcessDataBlocks::clearPulses(std::vector<SPDPulse*> ***pulses, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize)
     {
         SPDPulseUtils pulseUtils;
         for(boost::uint_fast32_t i = 0; i < ySize; ++i)
@@ -3439,7 +3439,7 @@ namespace spdlib
             {
                 if(pulses[i][j]->size() > 0)
                 {
-                    for(vector<SPDPulse*>::iterator iterPulses = pulses[i][j]->begin(); iterPulses != pulses[i][j]->end(); ++iterPulses)
+                    for(std::vector<SPDPulse*>::iterator iterPulses = pulses[i][j]->begin(); iterPulses != pulses[i][j]->end(); ++iterPulses)
                     {
                         pulseUtils.deleteSPDPulse(*iterPulses);
                     }
@@ -3449,17 +3449,17 @@ namespace spdlib
         }
     }
 
-    void SPDProcessDataBlocks::clearPulses(vector<SPDPulse*> *pulses)
+    void SPDProcessDataBlocks::clearPulses(std::vector<SPDPulse*> *pulses)
     {
         SPDPulseUtils pulseUtils;
-        for(vector<SPDPulse*>::iterator iterPulses = pulses->begin(); iterPulses != pulses->end(); ++iterPulses)
+        for(std::vector<SPDPulse*>::iterator iterPulses = pulses->begin(); iterPulses != pulses->end(); ++iterPulses)
         {
             pulseUtils.deleteSPDPulse(*iterPulses);
         }
         pulses->clear();
     }
 
-    void SPDProcessDataBlocks::clearPulsesNoDelete(vector<SPDPulse*> ***pulses, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize)
+    void SPDProcessDataBlocks::clearPulsesNoDelete(std::vector<SPDPulse*> ***pulses, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize)
     {
         SPDPulseUtils pulseUtils;
         for(boost::uint_fast32_t i = 0; i < ySize; ++i)
@@ -3492,12 +3492,12 @@ namespace spdlib
 
     void SPDProcessDataBlocks::populateFromImage(float ***imageDataBlock, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast16_t numImgBands, GDALRasterBand **imgBands, double imgXOrigin, double imgYOrigin, float imgRes, double blockXOrigin, double blockYOrigin) throw(SPDProcessingException)
     {
-        cout.precision(12);
+        std::cout.precision(12);
         /*
-        cout << "xSize = " << xSize << endl;
-        cout << "ySize = " << ySize << endl;
-        cout << "Num Image Bands = " << numImgBands << endl;
-        cout << "Image Resolution = " << imgRes << endl;
+        std::cout << "xSize = " << xSize << std::endl;
+        std::cout << "ySize = " << ySize << std::endl;
+        std::cout << "Num Image Bands = " << numImgBands << std::endl;
+        std::cout << "Image Resolution = " << imgRes << std::endl;
         */
         try
         {
@@ -3521,18 +3521,18 @@ namespace spdlib
             double blockBRX = blockXOrigin + (xSize * imgRes);
             double blockBRY = blockYOrigin - (ySize * imgRes);
             /*
-            cout << "blockXOrigin = " << blockXOrigin << endl;
-            cout << "blockYOrigin = " << blockYOrigin << endl;
-            cout << "blockBRX = " << blockBRX << endl;
-            cout << "blockBRY = " << blockBRY << endl;
+            std::cout << "blockXOrigin = " << blockXOrigin << std::endl;
+            std::cout << "blockYOrigin = " << blockYOrigin << std::endl;
+            std::cout << "blockBRX = " << blockBRX << std::endl;
+            std::cout << "blockBRY = " << blockBRY << std::endl;
             */
             double imgBRX = imgXOrigin + (imgXSize * imgRes);
             double imgBRY = imgYOrigin - (imgYSize * imgRes);
             /*
-            cout << "imgXOrigin = " << imgXOrigin << endl;
-            cout << "imgYOrigin = " << imgYOrigin << endl;
-            cout << "imgBRX = " << imgBRX << endl;
-            cout << "imgBRY = " << imgBRY << endl;
+            std::cout << "imgXOrigin = " << imgXOrigin << std::endl;
+            std::cout << "imgYOrigin = " << imgYOrigin << std::endl;
+            std::cout << "imgBRX = " << imgBRX << std::endl;
+            std::cout << "imgBRY = " << imgBRY << std::endl;
             */
             // Block and Image offsets - initialised.
             
@@ -3556,12 +3556,12 @@ namespace spdlib
             {
                 tlXDiff = blockXOrigin - imgXOrigin;
                 blockOffsetXTL = 0;
-                imgOffsetXTL = numeric_cast<boost::uint_fast32_t>(tlXDiff/imgRes);
+                imgOffsetXTL = boost::numeric_cast<boost::uint_fast32_t>(tlXDiff/imgRes);
             }
             else
             {
                 tlXDiff = imgXOrigin - blockXOrigin;
-                blockOffsetXTL = numeric_cast<boost::uint_fast32_t>(tlXDiff/imgRes);
+                blockOffsetXTL = boost::numeric_cast<boost::uint_fast32_t>(tlXDiff/imgRes);
                 imgOffsetXTL = 0;
             }
             
@@ -3569,27 +3569,27 @@ namespace spdlib
             {
                 tlYDiff = imgYOrigin - blockYOrigin;
                 blockOffsetYTL = 0;
-                imgOffsetYTL = numeric_cast<boost::uint_fast32_t>(tlYDiff/imgRes);
+                imgOffsetYTL = boost::numeric_cast<boost::uint_fast32_t>(tlYDiff/imgRes);
             }
             else
             {
                 tlYDiff = blockYOrigin - imgYOrigin;
-                blockOffsetYTL = numeric_cast<boost::uint_fast32_t>(tlYDiff/imgRes);
+                blockOffsetYTL = boost::numeric_cast<boost::uint_fast32_t>(tlYDiff/imgRes);
                 imgOffsetYTL = 0;
             }
             
             /*
-            cout << "blockOffsetXTL = " << blockOffsetXTL << endl;
-            cout << "blockOffsetYTL = " << blockOffsetYTL << endl;
+            std::cout << "blockOffsetXTL = " << blockOffsetXTL << std::endl;
+            std::cout << "blockOffsetYTL = " << blockOffsetYTL << std::endl;
             
-            cout << "imgOffsetXTL = " << imgOffsetXTL << endl;
-            cout << "imgOffsetYTL = " << imgOffsetYTL << endl;
+            std::cout << "imgOffsetXTL = " << imgOffsetXTL << std::endl;
+            std::cout << "imgOffsetYTL = " << imgOffsetYTL << std::endl;
             */
             
             if(imgBRX > blockBRX)
             {
                 brXDiff = imgBRX - blockBRX;
-                boost::uint_fast32_t diff = numeric_cast<boost::uint_fast32_t>(brXDiff/imgRes);
+                boost::uint_fast32_t diff = boost::numeric_cast<boost::uint_fast32_t>(brXDiff/imgRes);
                 blockOffsetXBR = xSize;
                 if(diff > imgXSize)
                 {
@@ -3603,7 +3603,7 @@ namespace spdlib
             else
             {
                 brXDiff = blockBRX - imgBRX;
-                boost::uint_fast32_t diff = numeric_cast<boost::uint_fast32_t>(brXDiff/imgRes);
+                boost::uint_fast32_t diff = boost::numeric_cast<boost::uint_fast32_t>(brXDiff/imgRes);
                 if(diff > xSize)
                 {
                     blockOffsetXBR = 0;
@@ -3618,7 +3618,7 @@ namespace spdlib
             if(blockBRY > imgBRY)
             {
                 brYDiff = blockBRY - imgBRY;
-                boost::uint_fast32_t diff = numeric_cast<boost::uint_fast32_t>(brYDiff/imgRes);
+                boost::uint_fast32_t diff = boost::numeric_cast<boost::uint_fast32_t>(brYDiff/imgRes);
                 blockOffsetYBR = ySize;
                 if(diff > imgYSize)
                 {
@@ -3632,7 +3632,7 @@ namespace spdlib
             else
             {
                 brYDiff = imgBRY - blockBRY;
-                boost::uint_fast32_t diff = numeric_cast<boost::uint_fast32_t>(brYDiff/imgRes);
+                boost::uint_fast32_t diff = boost::numeric_cast<boost::uint_fast32_t>(brYDiff/imgRes);
                 if(diff > ySize)
                 {
                     blockOffsetYBR = 0;
@@ -3645,11 +3645,11 @@ namespace spdlib
             }
             
             /*
-            cout << "blockOffsetXBR = " << blockOffsetXBR << endl;
-            cout << "blockOffsetYBR = " << blockOffsetYBR << endl;
+            std::cout << "blockOffsetXBR = " << blockOffsetXBR << std::endl;
+            std::cout << "blockOffsetYBR = " << blockOffsetYBR << std::endl;
             
-            cout << "imgOffsetXBR = " << imgOffsetXBR << endl;
-            cout << "imgOffsetYBR = " << imgOffsetYBR << endl;
+            std::cout << "imgOffsetXBR = " << imgOffsetXBR << std::endl;
+            std::cout << "imgOffsetYBR = " << imgOffsetYBR << std::endl;
             */
             
             if(blockOffsetXTL > blockOffsetXBR)
@@ -3679,11 +3679,11 @@ namespace spdlib
             boost::uint_fast32_t imgHeight = imgOffsetYBR - imgOffsetYTL;
             
             /*
-            cout << "blockWidth = " << blockWidth << endl;
-            cout << "blockHeight = " << blockHeight << endl;
+            std::cout << "blockWidth = " << blockWidth << std::endl;
+            std::cout << "blockHeight = " << blockHeight << std::endl;
             
-            cout << "imgWidth = " << imgWidth << endl;
-            cout << "imgHeight = " << imgHeight << endl;
+            std::cout << "imgWidth = " << imgWidth << std::endl;
+            std::cout << "imgHeight = " << imgHeight << std::endl;
             */
             
             if(blockWidth > imgWidth)
@@ -3705,11 +3705,11 @@ namespace spdlib
             }
             
             /*
-            cout << "blockWidth = " << blockWidth << endl;
-            cout << "blockHeight = " << blockHeight << endl;
+            std::cout << "blockWidth = " << blockWidth << std::endl;
+            std::cout << "blockHeight = " << blockHeight << std::endl;
             
-            cout << "imgWidth = " << imgWidth << endl;
-            cout << "imgHeight = " << imgHeight << endl;
+            std::cout << "imgWidth = " << imgWidth << std::endl;
+            std::cout << "imgHeight = " << imgHeight << std::endl;
             */
             
             float *data = new float[blockWidth];
@@ -3723,10 +3723,10 @@ namespace spdlib
                     for(boost::uint_fast32_t j = 0, x = blockOffsetXTL; j < blockWidth; ++j, ++x)
                     {
                         /*
-                        cout << "y = " << y << endl;
-                        cout << "x = " << x << endl;
-                        cout << "n = " << n << endl;
-                        cout << "j = " << j << endl << endl;
+                        std::cout << "y = " << y << std::endl;
+                        std::cout << "x = " << x << std::endl;
+                        std::cout << "n = " << n << std::endl;
+                        std::cout << "j = " << j << std::endl << std::endl;
                         */
                         imageDataBlock[y][x][n] = data[j];
                     }
@@ -3738,15 +3738,15 @@ namespace spdlib
         {
             throw e;
         }
-        catch(negative_overflow& e)
+        catch(boost::numeric::negative_overflow& e)
 		{
 			throw SPDProcessingException(e.what());
 		}
-		catch(positive_overflow& e)
+		catch(boost::numeric::positive_overflow& e)
 		{
 			throw SPDProcessingException(e.what());
 		}
-		catch(bad_numeric_cast& e)
+		catch(boost::numeric::bad_numeric_cast& e)
 		{
 			throw SPDProcessingException(e.what());
 		}

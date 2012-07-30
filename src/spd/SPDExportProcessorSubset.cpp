@@ -45,7 +45,7 @@ namespace spdlib
 			throw e;
 		}
 		this->fileOpen = true;
-		this->pulses = new list<SPDPulse*>();
+		this->pulses = new std::list<SPDPulse*>();
 		
 		this->xMin = 0;
 		this->xMax = 0;
@@ -236,7 +236,7 @@ namespace spdlib
 			throw e;
 		}
 		this->fileOpen = true;
-		this->pulses = new list<SPDPulse*>();
+		this->pulses = new std::list<SPDPulse*>();
 	}
 	
 	void SPDExportProcessorSubsetSpherical::processImportedPulse(SPDFile *spdFile, SPDPulse *pulse) throw(SPDIOException)
@@ -309,7 +309,7 @@ namespace spdlib
 		
 	}
 	
-	void SPDSubsetNonGriddedFile::subsetCartesian(string input, string output, double *bbox, bool *bboxDefined) throw(SPDException)
+	void SPDSubsetNonGriddedFile::subsetCartesian(std::string input, std::string output, double *bbox, bool *bboxDefined) throw(SPDException)
 	{
         try
         {
@@ -358,7 +358,7 @@ namespace spdlib
                 }
             }
             
-            cout << "BBOX: [" << bbox[0] << "," << bbox[1] << "][" << bbox[2] << "," << bbox[3] << "][" << bbox[4] << "," << bbox[5] << "]\n";
+            std::cout << "BBOX: [" << bbox[0] << "," << bbox[1] << "][" << bbox[2] << "," << bbox[3] << "][" << bbox[4] << "," << bbox[5] << "]\n";
             
             SPDDataExporter *exporter = new SPDNoIdxFileWriter();
             
@@ -376,7 +376,7 @@ namespace spdlib
         }
 	}
     
-    void SPDSubsetNonGriddedFile::subsetSpherical(string input, string output, double *bbox, bool *bboxDefined) throw(SPDException)
+    void SPDSubsetNonGriddedFile::subsetSpherical(std::string input, std::string output, double *bbox, bool *bboxDefined) throw(SPDException)
     {
         try
         {                        
@@ -424,7 +424,7 @@ namespace spdlib
                 }
             }
             
-            cout << "BBOX: [" << bbox[0] << "," << bbox[1] << "][" << bbox[2] << "," << bbox[3] << "][" << bbox[4] << "," << bbox[5] << "]\n";
+            std::cout << "BBOX: [" << bbox[0] << "," << bbox[1] << "][" << bbox[2] << "," << bbox[3] << "][" << bbox[4] << "," << bbox[5] << "]\n";
             
             SPDDataExporter *exporter = new SPDNoIdxFileWriter();
             

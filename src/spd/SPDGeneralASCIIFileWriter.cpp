@@ -57,16 +57,16 @@ namespace spdlib
         return new SPDGeneralASCIIFileWriter();
     }
 	
-	bool SPDGeneralASCIIFileWriter::open(SPDFile *spdFile, string outputFile) throw(SPDIOException)
+	bool SPDGeneralASCIIFileWriter::open(SPDFile *spdFile, std::string outputFile) throw(SPDIOException)
 	{
-		outASCIIFile = new ofstream();
-		outASCIIFile->open(outputFile.c_str(), ios::out | ios::trunc);
+		outASCIIFile = new std::ofstream();
+		outASCIIFile->open(outputFile.c_str(), std::ios::out | std::ios::trunc);
 		
 		if(!outASCIIFile->is_open())
 		{
 			fileOpened = false;
 			
-			string message = string("Could not open file ") + outputFile;
+			std::string message = std::string("Could not open file ") + outputFile;
 			throw SPDIOException(message);
 		}
 		fileOpened = true;
@@ -98,7 +98,7 @@ namespace spdlib
 		return fileOpened;
 	}
 	
-	void SPDGeneralASCIIFileWriter::writeDataColumn(list<SPDPulse*> *plsIn, boost::uint_fast32_t col, boost::uint_fast32_t row)throw(SPDIOException)
+	void SPDGeneralASCIIFileWriter::writeDataColumn(std::list<SPDPulse*> *plsIn, boost::uint_fast32_t col, boost::uint_fast32_t row)throw(SPDIOException)
 	{
 		SPDPulseUtils pulseUtils;
 		SPDPointUtils pointUtils;
@@ -109,11 +109,9 @@ namespace spdlib
 		}
 		
 		try 
-		{
-			Exception::dontPrint();
-			
-			vector<SPDPoint*>::iterator iterPts;
-			list<SPDPulse*>::iterator iterInPls;
+		{			
+			std::vector<SPDPoint*>::iterator iterPts;
+			std::list<SPDPulse*>::iterator iterInPls;
 			for(iterInPls = plsIn->begin(); iterInPls != plsIn->end(); )
 			{
 				if(fileType == SPD_WAVEFORM_PT)
@@ -130,7 +128,7 @@ namespace spdlib
 							(*outASCIIFile) << " " << (*iterInPls)->transmitted[i];
 						}
 					}
-					(*outASCIIFile) << endl;
+					(*outASCIIFile) << std::endl;
 					
 					(*outASCIIFile) << (*iterInPls)->pulseID << " " << (*iterInPls)->gpsTime << " " << (*iterInPls)->x0 << " " << (*iterInPls)->y0 << " " << (*iterInPls)->z0 << " " << (*iterInPls)->azimuth << " " << (*iterInPls)->zenith << " " << (*iterInPls)->rangeToWaveformStart << " 1 " << (*iterInPls)->numOfReceivedBins << " ";
 					for(boost::uint_fast16_t i = 0; i < (*iterInPls)->numOfReceivedBins; ++i)
@@ -144,20 +142,20 @@ namespace spdlib
 							(*outASCIIFile) << " " << (*iterInPls)->received[i];
 						}
 					}
-					(*outASCIIFile) << endl;
+					(*outASCIIFile) << std::endl;
 				}
 				else if(fileType == SPD_DECOMPOSED_PT)
 				{
 					for(iterPts = (*iterInPls)->pts->begin(); iterPts != (*iterInPls)->pts->end(); ++iterPts)
 					{
-						(*outASCIIFile) << (*iterInPls)->pulseID << " " << (*iterInPls)->gpsTime << " " << (*iterInPls)->x0 << " " << (*iterInPls)->y0 << " " << (*iterInPls)->z0 << " " << (*iterInPls)->h0 << " " << (*iterInPls)->amplitudePulse << " " << (*iterInPls)->widthPulse << " " << (*iterInPls)->numberOfReturns << " " << (*iterPts)->returnID << " " << (*iterPts)->x << " " << (*iterPts)->y << " " << (*iterPts)->z << " " << (*iterPts)->height  << " " << (*iterPts)->gpsTime << " " << (*iterPts)->amplitudeReturn << " " << (*iterPts)->widthReturn << " " << (*iterPts)->classification << endl;
+						(*outASCIIFile) << (*iterInPls)->pulseID << " " << (*iterInPls)->gpsTime << " " << (*iterInPls)->x0 << " " << (*iterInPls)->y0 << " " << (*iterInPls)->z0 << " " << (*iterInPls)->h0 << " " << (*iterInPls)->amplitudePulse << " " << (*iterInPls)->widthPulse << " " << (*iterInPls)->numberOfReturns << " " << (*iterPts)->returnID << " " << (*iterPts)->x << " " << (*iterPts)->y << " " << (*iterPts)->z << " " << (*iterPts)->height  << " " << (*iterPts)->gpsTime << " " << (*iterPts)->amplitudeReturn << " " << (*iterPts)->widthReturn << " " << (*iterPts)->classification << std::endl;
 					}
 				}
 				else if(fileType == SPD_DISCRETE_PT)
 				{
 					for(iterPts = (*iterInPls)->pts->begin(); iterPts != (*iterInPls)->pts->end(); ++iterPts)
 					{
-						(*outASCIIFile) << (*iterInPls)->pulseID << " " << (*iterInPls)->gpsTime << " " << (*iterInPls)->x0 << " " << (*iterInPls)->y0 << " " << (*iterInPls)->z0 << " " << (*iterInPls)->h0 << " " << (*iterInPls)->numberOfReturns << " " << (*iterPts)->returnID << " " << (*iterPts)->x << " " << (*iterPts)->y << " " << (*iterPts)->z  << " " << (*iterPts)->height  << " " << (*iterPts)->gpsTime  << " " << (*iterPts)->amplitudeReturn << " " << (*iterPts)->classification << endl;
+						(*outASCIIFile) << (*iterInPls)->pulseID << " " << (*iterInPls)->gpsTime << " " << (*iterInPls)->x0 << " " << (*iterInPls)->y0 << " " << (*iterInPls)->z0 << " " << (*iterInPls)->h0 << " " << (*iterInPls)->numberOfReturns << " " << (*iterPts)->returnID << " " << (*iterPts)->x << " " << (*iterPts)->y << " " << (*iterPts)->z  << " " << (*iterPts)->height  << " " << (*iterPts)->gpsTime  << " " << (*iterPts)->amplitudeReturn << " " << (*iterPts)->classification << std::endl;
 					}
 				}
 				else
@@ -176,7 +174,7 @@ namespace spdlib
 		
 	}
 	
-	void SPDGeneralASCIIFileWriter::writeDataColumn(vector<SPDPulse*> *plsIn, boost::uint_fast32_t col, boost::uint_fast32_t row)throw(SPDIOException)
+	void SPDGeneralASCIIFileWriter::writeDataColumn(std::vector<SPDPulse*> *plsIn, boost::uint_fast32_t col, boost::uint_fast32_t row)throw(SPDIOException)
 	{
 		SPDPulseUtils pulseUtils;
 		SPDPointUtils pointUtils;
@@ -187,11 +185,9 @@ namespace spdlib
 		}
 		
 		try 
-		{
-			Exception::dontPrint();
-			
-			vector<SPDPoint*>::iterator iterPts;
-			vector<SPDPulse*>::iterator iterInPls;
+		{			
+			std::vector<SPDPoint*>::iterator iterPts;
+			std::vector<SPDPulse*>::iterator iterInPls;
 			for(iterInPls = plsIn->begin(); iterInPls != plsIn->end(); )
 			{
 				if(fileType == SPD_WAVEFORM_PT)
@@ -208,7 +204,7 @@ namespace spdlib
 							(*outASCIIFile) << " " << (*iterInPls)->transmitted[i];
 						}
 					}
-					(*outASCIIFile) << endl;
+					(*outASCIIFile) << std::endl;
 					
 					(*outASCIIFile) << (*iterInPls)->pulseID << " " << (*iterInPls)->gpsTime << " " << (*iterInPls)->x0 << " " << (*iterInPls)->y0 << " " << (*iterInPls)->z0 << " " << (*iterInPls)->azimuth << " " << (*iterInPls)->zenith << " " << (*iterInPls)->rangeToWaveformStart << " 1 " << (*iterInPls)->numOfReceivedBins << " ";
 					for(boost::uint_fast16_t i = 0; i < (*iterInPls)->numOfReceivedBins; ++i)
@@ -222,20 +218,20 @@ namespace spdlib
 							(*outASCIIFile) << " " << (*iterInPls)->received[i];
 						}
 					}
-					(*outASCIIFile) << endl;
+					(*outASCIIFile) << std::endl;
 				}
 				else if(fileType == SPD_DECOMPOSED_PT)
 				{
 					for(iterPts = (*iterInPls)->pts->begin(); iterPts != (*iterInPls)->pts->end(); ++iterPts)
 					{
-						(*outASCIIFile) << (*iterInPls)->pulseID << " " << (*iterInPls)->gpsTime << " " << (*iterInPls)->x0 << " " << (*iterInPls)->y0 << " " << (*iterInPls)->z0 << " " << (*iterInPls)->amplitudePulse << " " << (*iterInPls)->widthPulse << " " << (*iterInPls)->numberOfReturns << " " << (*iterPts)->returnID << " " << (*iterPts)->x << " " << (*iterPts)->y << " " << (*iterPts)->z << " " << (*iterPts)->gpsTime << " " << (*iterPts)->amplitudeReturn << " " << (*iterPts)->widthReturn << " " << (*iterPts)->classification << endl;
+						(*outASCIIFile) << (*iterInPls)->pulseID << " " << (*iterInPls)->gpsTime << " " << (*iterInPls)->x0 << " " << (*iterInPls)->y0 << " " << (*iterInPls)->z0 << " " << (*iterInPls)->amplitudePulse << " " << (*iterInPls)->widthPulse << " " << (*iterInPls)->numberOfReturns << " " << (*iterPts)->returnID << " " << (*iterPts)->x << " " << (*iterPts)->y << " " << (*iterPts)->z << " " << (*iterPts)->gpsTime << " " << (*iterPts)->amplitudeReturn << " " << (*iterPts)->widthReturn << " " << (*iterPts)->classification << std::endl;
 					}
 				}
 				else if(fileType == SPD_DISCRETE_PT)
 				{
 					for(iterPts = (*iterInPls)->pts->begin(); iterPts != (*iterInPls)->pts->end(); ++iterPts)
 					{
-						(*outASCIIFile) << (*iterInPls)->pulseID << " " << (*iterInPls)->gpsTime << " " << (*iterInPls)->x0 << " " << (*iterInPls)->y0 << " " << (*iterInPls)->z0 << " " << (*iterInPls)->numberOfReturns << " " << (*iterPts)->returnID << " " << (*iterPts)->x << " " << (*iterPts)->y << " " << (*iterPts)->z  << " " << (*iterPts)->gpsTime  << " " << (*iterPts)->amplitudeReturn << " " << (*iterPts)->classification << endl;
+						(*outASCIIFile) << (*iterInPls)->pulseID << " " << (*iterInPls)->gpsTime << " " << (*iterInPls)->x0 << " " << (*iterInPls)->y0 << " " << (*iterInPls)->z0 << " " << (*iterInPls)->numberOfReturns << " " << (*iterPts)->returnID << " " << (*iterPts)->x << " " << (*iterPts)->y << " " << (*iterPts)->z  << " " << (*iterPts)->gpsTime  << " " << (*iterPts)->amplitudeReturn << " " << (*iterPts)->classification << std::endl;
 					}
 				}
 				else
@@ -284,7 +280,7 @@ namespace spdlib
 			}
 			catch (SPDIOException &e) 
 			{
-				cerr << "WARNING: " << e.what() << endl;
+                std::cerr << "WARNING: " << e.what() << std::endl;
 			}
 		}
 	}

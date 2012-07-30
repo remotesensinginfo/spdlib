@@ -26,7 +26,7 @@
 
 #include <iostream>
 #include <string>
-#include <list>
+#include <vector>
 #include <math.h>
 
 #include "gdal_priv.h"
@@ -34,6 +34,7 @@
 #include "ogr_api.h"
 
 #include <boost/cstdint.hpp>
+#include <boost/math/special_functions/fpclassify.hpp>
 #include <boost/numeric/conversion/cast.hpp>
 
 #include "spd/SPDFile.h"
@@ -46,13 +47,6 @@
 #include "spd/SPDFileWriter.h"
 #include "spd/SPDGridData.h"
 
-using boost::numeric_cast;
-using boost::numeric::bad_numeric_cast;
-using boost::numeric::positive_overflow;
-using boost::numeric::negative_overflow;
-
-using namespace std;
-
 namespace spdlib
 {
 	class SPDProcessDataBlocks
@@ -61,22 +55,22 @@ namespace spdlib
 		SPDProcessDataBlocks(SPDDataBlockProcessor *dataBlockProcessor, boost::uint_fast32_t overlap=25, boost::uint_fast32_t blockXSize=250, boost::uint_fast32_t blockYSize=250, bool printProgress=true);
 		SPDProcessDataBlocks(const SPDProcessDataBlocks &processDataBlock);
 		
-        void processDataBlocksGridPulsesInputImage(SPDFile *spdInFile, string outFile, string imageFilePath) throw(SPDProcessingException);
-        void processDataBlocksGridPulsesOutputImage(SPDFile *spdInFile, string outImagePath, float processingResolution, boost::uint_fast16_t numImgBands, string gdalFormat) throw(SPDProcessingException);
-		void processDataBlocksGridPulsesOutputSPD(SPDFile *spdInFile, string outFile, float processingResolution) throw(SPDProcessingException);
+        void processDataBlocksGridPulsesInputImage(SPDFile *spdInFile, std::string outFile, std::string imageFilePath) throw(SPDProcessingException);
+        void processDataBlocksGridPulsesOutputImage(SPDFile *spdInFile, std::string outImagePath, float processingResolution, boost::uint_fast16_t numImgBands, std::string gdalFormat) throw(SPDProcessingException);
+		void processDataBlocksGridPulsesOutputSPD(SPDFile *spdInFile, std::string outFile, float processingResolution) throw(SPDProcessingException);
         void processDataBlocksGridPulses(SPDFile *spdInFile, float processingResolution) throw(SPDProcessingException);
         
-        void processDataBlocksOutputImage(SPDFile *spdInFile, string outImagePath, float processingResolution, boost::uint_fast16_t numImgBands, string gdalFormat) throw(SPDProcessingException);
+        void processDataBlocksOutputImage(SPDFile *spdInFile, std::string outImagePath, float processingResolution, boost::uint_fast16_t numImgBands, std::string gdalFormat) throw(SPDProcessingException);
         void processDataBlocks(SPDFile *spdInFile) throw(SPDProcessingException);
         
         
 		SPDProcessDataBlocks& operator=(const SPDProcessDataBlocks& processDataBlock);
 		~SPDProcessDataBlocks();
 	protected:
-        void removeNullPulses(vector<SPDPulse*> ***pulses, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize);
-        void clearPulses(vector<SPDPulse*> ***pulses, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize);
-        void clearPulses(vector<SPDPulse*> *pulses);
-        void clearPulsesNoDelete(vector<SPDPulse*> ***pulses, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize);
+        void removeNullPulses(std::vector<SPDPulse*> ***pulses, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize);
+        void clearPulses(std::vector<SPDPulse*> ***pulses, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize);
+        void clearPulses(std::vector<SPDPulse*> *pulses);
+        void clearPulsesNoDelete(std::vector<SPDPulse*> ***pulses, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize);
         void populateCentrePoints(SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, double xOrigin, double yOrigin, float binRes);
 		void populateFromImage(float ***imageDataBlock, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast16_t numImgBands, GDALRasterBand **imgBands, double imgXOrigin, double imgYOrigin, float imgRes, double blockXOrigin, double blockYOrigin)throw(SPDProcessingException);
         void resetImageBlock2Zeros(float ***imageDataBlock, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast16_t numImgBands);

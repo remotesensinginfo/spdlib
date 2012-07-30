@@ -47,18 +47,16 @@
 
 #include "spd/SPDVectorUtils.h"
 
-using namespace std;
-
 namespace spdlib
 {	
 	class SPDSubsetSPDFile
 	{
 	public:
 		SPDSubsetSPDFile();
-		void subsetSPDFile(string inputFile, string outputFile, double *bbox, bool *bboxDefined) throw(SPDException);
-        void subsetSPDFile(string inputFile, string outputFile, string shapefile) throw(SPDException);
-        void subsetSPDFileHeightOnly(string inputFile, string outputFile, double lowHeight, double upperHeight) throw(SPDException);
-        void subsetSphericalSPDFile(string inputFile, string outputFile, double *bbox, bool *bboxDefined) throw(SPDException);
+		void subsetSPDFile(std::string inputFile, std::string outputFile, double *bbox, bool *bboxDefined) throw(SPDException);
+        void subsetSPDFile(std::string inputFile, std::string outputFile, std::string shapefile) throw(SPDException);
+        void subsetSPDFileHeightOnly(std::string inputFile, std::string outputFile, double lowHeight, double upperHeight) throw(SPDException);
+        void subsetSphericalSPDFile(std::string inputFile, std::string outputFile, double *bbox, bool *bboxDefined) throw(SPDException);
 		~SPDSubsetSPDFile();
 	};
     
@@ -66,7 +64,7 @@ namespace spdlib
 	{
 	public:
 		SPDUPDPulseSubset();
-		void subsetUPD(string inputFile, string outputFile, boost::uint_fast32_t startPulse, boost::uint_fast32_t numOfPulses)throw(SPDIOException);
+		void subsetUPD(std::string inputFile, std::string outputFile, boost::uint_fast32_t startPulse, boost::uint_fast32_t numOfPulses)throw(SPDIOException);
 		~SPDUPDPulseSubset();
 	};
 }

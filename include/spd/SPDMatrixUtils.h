@@ -30,10 +30,11 @@
 #include <fstream>
 #include <math.h>
 
+#include <boost/cstdint.hpp>
+#include <boost/math/special_functions/fpclassify.hpp>
+
 #include "spd/SPDException.h"
 #include "spd/SPDTextFileUtilities.h"
-
-using namespace std;
 
 namespace spdlib{
 	/// Utilities for SPD matrices
@@ -62,13 +63,13 @@ namespace spdlib{
 		void multipleSingle(Matrix *matrix, double multiple) throw(SPDException);
 		Matrix* multiplication(Matrix *matrixA, Matrix *matrixB) throw(SPDException);
 		void printMatrix(Matrix *matrix);
-		void saveMatrix2GridTxt(Matrix *matrix, string filepath) throw(SPDException);
-		void saveMatrix2CSV(Matrix *matrix, string filepath) throw(SPDException);
-		void saveMatrix2txt(Matrix *matrix, string filepath) throw(SPDException);
-		void saveMatrix2Binary(Matrix *matrix, string filepath) throw(SPDException);
-		Matrix* readMatrixFromTxt(string filepath) throw(SPDException);
-		Matrix* readMatrixFromGridTxt(string filepath) throw(SPDException);
-		Matrix* readMatrixFromBinary(string filepath) throw(SPDException);
+		void saveMatrix2GridTxt(Matrix *matrix, std::string filepath) throw(SPDException);
+		void saveMatrix2CSV(Matrix *matrix, std::string filepath) throw(SPDException);
+		void saveMatrix2txt(Matrix *matrix, std::string filepath) throw(SPDException);
+		void saveMatrix2Binary(Matrix *matrix, std::string filepath) throw(SPDException);
+		Matrix* readMatrixFromTxt(std::string filepath) throw(SPDException);
+		Matrix* readMatrixFromGridTxt(std::string filepath) throw(SPDException);
+		Matrix* readMatrixFromBinary(std::string filepath) throw(SPDException);
 		Matrix* normalisedMatrix(Matrix *matrix, double min, double max) throw(SPDException);
 		Matrix* duplicateMatrix(Matrix *matrix, int xDuplications, int yDuplications) throw(SPDException);
 		~SPDMatrixUtils();

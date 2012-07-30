@@ -34,12 +34,13 @@
 #include "ogrsf_frmts.h"
 #include "ogr_api.h"
 
+#include <boost/cstdint.hpp>
+#include <boost/math/special_functions/fpclassify.hpp>
+
 #include "spd/SPDFile.h"
 #include "spd/SPDPoint.h"
 #include "spd/SPDPulse.h"
 #include "spd/SPDProcessingException.h"
-
-using namespace std;
 
 namespace spdlib
 {
@@ -48,10 +49,10 @@ namespace spdlib
 	{
 	public:
 		SPDPolygonProcessor(){};
-		virtual void processFeature(OGRFeature *inFeature, OGRFeature *outFeature, boost::uint_fast64_t fid, vector<SPDPulse*> *pulses, SPDFile *spdFile) throw(SPDProcessingException)= 0;
-        virtual void processFeature(OGRFeature *inFeature, ofstream *outASCIIFile, boost::uint_fast64_t fid, vector<SPDPulse*> *pulses, SPDFile *spdFile) throw(SPDProcessingException)= 0;
+		virtual void processFeature(OGRFeature *inFeature, OGRFeature *outFeature, boost::uint_fast64_t fid, std::vector<SPDPulse*> *pulses, SPDFile *spdFile) throw(SPDProcessingException)= 0;
+        virtual void processFeature(OGRFeature *inFeature, std::ofstream *outASCIIFile, boost::uint_fast64_t fid, std::vector<SPDPulse*> *pulses, SPDFile *spdFile) throw(SPDProcessingException)= 0;
 		virtual void createOutputLayerDefinition(OGRLayer *outputLayer, OGRFeatureDefn *inFeatureDefn) throw(SPDProcessingException) = 0;
-		virtual void writeASCIIHeader(ofstream *outASCIIFile) throw(SPDProcessingException) = 0;
+		virtual void writeASCIIHeader(std::ofstream *outASCIIFile) throw(SPDProcessingException) = 0;
         virtual ~SPDPolygonProcessor(){};
 	};
 }

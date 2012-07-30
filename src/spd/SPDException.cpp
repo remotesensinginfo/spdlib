@@ -34,17 +34,17 @@
 namespace spdlib
 {
 	
-	SPDException::SPDException() : exception(), msgs("A SPDException has been created..")
+	SPDException::SPDException() : std::exception(), msgs("A SPDException has been created..")
 	{
 		;
 	}
 	
-	SPDException::SPDException(const char* message) : exception(), msgs("A SPDException has been created..")
+	SPDException::SPDException(const char* message) : std::exception(), msgs("A SPDException has been created..")
 	{
-		msgs = string(message);
+		msgs = std::string(message);
 	}
 	
-	SPDException::SPDException(string message) : exception(), msgs("A SPDException has been created..")
+	SPDException::SPDException(std::string message) : std::exception(), msgs("A SPDException has been created..")
 	{
 		msgs = message;
 	}

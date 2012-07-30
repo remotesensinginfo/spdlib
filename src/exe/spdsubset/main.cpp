@@ -242,7 +242,7 @@ int main (int argc, char * const argv[])
                 bbox[5] = NAN;
             }
                 
-            if(isnan(bbox[0]))
+            if(boost::math::isnan(bbox[0]))
             {
                 bboxDefined[0] = false;
             }
@@ -250,7 +250,7 @@ int main (int argc, char * const argv[])
             {
                 bboxDefined[0] = true;
             }
-            if(isnan(bbox[1]))
+            if(boost::math::isnan(bbox[1]))
             {
                 bboxDefined[1] = false;
             }
@@ -258,7 +258,7 @@ int main (int argc, char * const argv[])
             {
                 bboxDefined[1] = true;
             }
-            if(isnan(bbox[2]))
+            if(boost::math::isnan(bbox[2]))
             {
                 bboxDefined[2] = false;
             }
@@ -266,7 +266,7 @@ int main (int argc, char * const argv[])
             {
                 bboxDefined[2] = true;
             }
-            if(isnan(bbox[3]))
+            if(boost::math::isnan(bbox[3]))
             {
                 bboxDefined[3] = false;
             }
@@ -274,7 +274,7 @@ int main (int argc, char * const argv[])
             {
                 bboxDefined[3] = true;
             }
-            if(isnan(bbox[4]))
+            if(boost::math::isnan(bbox[4]))
             {
                 bboxDefined[4] = false;
             }
@@ -282,7 +282,7 @@ int main (int argc, char * const argv[])
             {
                 bboxDefined[4] = true;
             }
-            if(isnan(bbox[5]))
+            if(boost::math::isnan(bbox[5]))
             {
                 bboxDefined[5] = false;
             }

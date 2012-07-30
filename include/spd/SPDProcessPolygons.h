@@ -33,14 +33,15 @@
 #include "ogrsf_frmts.h"
 #include "ogr_api.h"
 
+#include <boost/cstdint.hpp>
+#include <boost/math/special_functions/fpclassify.hpp>
+
 #include "spd/SPDFile.h"
 #include "spd/SPDPoint.h"
 #include "spd/SPDPulse.h"
 #include "spd/SPDProcessingException.h"
 #include "spd/SPDPolygonProcessor.h"
 #include "spd/SPDFileIncrementalReader.h"
-
-using namespace std;
 
 namespace spdlib
 {	
@@ -49,7 +50,7 @@ namespace spdlib
 	public:
 		SPDProcessPolygons(SPDPolygonProcessor *processor);
 		void processPolygons(SPDFile *spdFile, SPDFileIncrementalReader *spdReader, OGRLayer *inputLayer, OGRLayer *outputLayer, bool copyAttributes)throw(SPDProcessingException);
-        void processPolygons(SPDFile *spdFile, SPDFileIncrementalReader *spdReader, OGRLayer *inputLayer, ofstream *outASCIIFile)throw(SPDProcessingException);
+        void processPolygons(SPDFile *spdFile, SPDFileIncrementalReader *spdReader, OGRLayer *inputLayer, std::ofstream *outASCIIFile)throw(SPDProcessingException);
 		~SPDProcessPolygons();
 	private:
 		SPDPolygonProcessor *processor;

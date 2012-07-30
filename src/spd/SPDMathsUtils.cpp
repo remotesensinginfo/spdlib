@@ -107,47 +107,47 @@ namespace spdlib {
 
     }
     
-    vector<GaussianDecompReturnType*>* SPDMathsUtils::fitGaussianMixture(SPDInitDecomposition *initDecomp, float minimumGaussianGap, float *dataValues, float *dataIntervals, boost::uint_fast32_t nVals, float intThreshold) throw(SPDProcessingException)
+    std::vector<GaussianDecompReturnType*>* SPDMathsUtils::fitGaussianMixture(SPDInitDecomposition *initDecomp, float minimumGaussianGap, float *dataValues, float *dataIntervals, boost::uint_fast32_t nVals, float intThreshold) throw(SPDProcessingException)
     {
         if(nVals < 5)
         {
             throw SPDProcessingException("Less than 5 values were passed to the fitGaussianMixture function, insuficiant for fitting.");
         }
         
-        vector<GaussianDecompReturnType*> *gaussianPeaks = new vector<GaussianDecompReturnType*>();
+        std::vector<GaussianDecompReturnType*> *gaussianPeaks = new std::vector<GaussianDecompReturnType*>();
         
         /*for(boost::uint_fast32_t i = 0; i < nVals; ++i)
         {
             if(i == 0)
             {
-                cout << dataValues[i];
+                std::cout << dataValues[i];
             }
             else
             {
-                cout << "," << dataValues[i];
+                std::cout << "," << dataValues[i];
             }
         }
-        cout << endl;
+        std::cout << std::endl;
         
         for(boost::uint_fast32_t i = 0; i < nVals; ++i)
         {
             if(i == 0)
             {
-                cout << dataIntervals[i];
+                std::cout << dataIntervals[i];
             }
             else
             {
-                cout << "," << dataIntervals[i];
+                std::cout << "," << dataIntervals[i];
             }
         }
-        cout << endl;*/
+        std::cout << std::endl;*/
         
         try 
         {
-            vector<boost::uint_fast32_t> *peaks = new vector<boost::uint_fast32_t>();
-            vector<boost::uint_fast32_t> *initPeaks = initDecomp->findInitPoints(dataValues, nVals, intThreshold);
+            std::vector<boost::uint_fast32_t> *peaks = new std::vector<boost::uint_fast32_t>();
+            std::vector<boost::uint_fast32_t> *initPeaks = initDecomp->findInitPoints(dataValues, nVals, intThreshold);
                         
-            //cout << "There are " << initPeaks->size() << " initial peaks.\n";
+            //std::cout << "There are " << initPeaks->size() << " initial peaks.\n";
             
             /*for(unsigned int i = 0; i < initPeaks->size(); ++i)
             {
@@ -168,23 +168,23 @@ namespace spdlib {
                     float intervalDiff = 0;
                     for(unsigned int i = 0; i < initPeaks->size()-1; ++i)
                     {
-                        //cout << "dataIntervals[" << initPeaks->at(i) << "]: " << dataIntervals[initPeaks->at(i)] << endl;
-                        //cout << "dataIntervals[" << initPeaks->at(i+1) << "]: " << dataIntervals[initPeaks->at(i+1)] << endl;
+                        //std::cout << "dataIntervals[" << initPeaks->at(i) << "]: " << dataIntervals[initPeaks->at(i)] << std::endl;
+                        //std::cout << "dataIntervals[" << initPeaks->at(i+1) << "]: " << dataIntervals[initPeaks->at(i+1)] << std::endl;
                         intervalDiff = dataIntervals[initPeaks->at(i+1)] - dataIntervals[initPeaks->at(i)];
-                        //cout << "Diff: " << intervalDiff << endl;
+                        //std::cout << "Diff: " << intervalDiff << std::endl;
                         if(intervalDiff <= minimumGaussianGap)
                         {
-                            //cout << "dataValues[" << initPeaks->at(i) << "]: " << dataValues[initPeaks->at(i)] << endl;
-                            //cout << "dataValues[" << initPeaks->at(i+1) << "]: " << dataValues[initPeaks->at(i+1)] << endl;
+                            //std::cout << "dataValues[" << initPeaks->at(i) << "]: " << dataValues[initPeaks->at(i)] << std::endl;
+                            //std::cout << "dataValues[" << initPeaks->at(i+1) << "]: " << dataValues[initPeaks->at(i+1)] << std::endl;
                             if(dataValues[initPeaks->at(i)] >= dataValues[initPeaks->at(i+1)])
                             {
                                 peaks->push_back(initPeaks->at(i));
-                                //cout << "Keep " << initPeaks->at(i) << endl;
+                                //std::cout << "Keep " << initPeaks->at(i) << std::endl;
                             }
                             else
                             {
                                 peaks->push_back(initPeaks->at(i+1));
-                                //cout << "Keep " << initPeaks->at(i+1) << endl;
+                                //std::cout << "Keep " << initPeaks->at(i+1) << std::endl;
                             }
                             ++i;
                         }
@@ -207,7 +207,7 @@ namespace spdlib {
                 }
             }
             
-            //cout << "There are " << peaks->size() << " peaks.\n";
+            //std::cout << "There are " << peaks->size() << " peaks.\n";
             
             if(peaks->size() > 0)
             {
@@ -254,7 +254,7 @@ namespace spdlib {
 					paramConstraints[idx].limited[1] = true;
 					paramConstraints[idx].limits[0] = parameters[idx] - ampVar;
 					paramConstraints[idx].limits[1] = parameters[idx] + ampVar;
-					paramConstraints[idx].parname = const_cast<char*>(string("Amplitude").c_str());;
+					paramConstraints[idx].parname = const_cast<char*>(std::string("Amplitude").c_str());;
 					paramConstraints[idx].step = 0;
 					paramConstraints[idx].relstep = 0;
 					paramConstraints[idx].side = 0;
@@ -266,7 +266,7 @@ namespace spdlib {
 					paramConstraints[idx+1].limited[1] = true;
 					paramConstraints[idx+1].limits[0] = parameters[idx+1] - 5;
 					paramConstraints[idx+1].limits[1] = parameters[idx+1] + 5;
-					paramConstraints[idx+1].parname = const_cast<char*>(string("Height").c_str());;
+					paramConstraints[idx+1].parname = const_cast<char*>(std::string("Height").c_str());;
 					paramConstraints[idx+1].step = 0;
 					paramConstraints[idx+1].relstep = 0;
 					paramConstraints[idx+1].side = 0;
@@ -278,17 +278,17 @@ namespace spdlib {
 					paramConstraints[idx+2].limited[1] = true;
 					paramConstraints[idx+2].limits[0] = 0.01;
 					paramConstraints[idx+2].limits[1] = 10;
-					paramConstraints[idx+2].parname = const_cast<char*>(string("Width").c_str());;
+					paramConstraints[idx+2].parname = const_cast<char*>(std::string("Width").c_str());;
 					paramConstraints[idx+2].step = 0.01;
 					paramConstraints[idx+2].relstep = 0;
 					paramConstraints[idx+2].side = 0;
 					paramConstraints[idx+2].deriv_debug = 0;
                     
                     
-                    //cout << "Peak: " << i << endl;
-                    //cout << "Amp: " << parameters[idx] << endl;
-                    //cout << "Height: " << parameters[idx+1] << endl;
-                    //cout << "Width: " << parameters[idx+2] << endl;
+                    //std::cout << "Peak: " << i << std::endl;
+                    //std::cout << "Amp: " << parameters[idx] << std::endl;
+                    //std::cout << "Height: " << parameters[idx+1] << std::endl;
+                    //std::cout << "Width: " << parameters[idx+2] << std::endl;
 				}
 				
 				PulseWaveform *waveformData = new PulseWaveform();
@@ -325,9 +325,9 @@ namespace spdlib {
 				 * void *private_data - Waveform data structure
 				 * mp_result *result - diagnostic info from function
 				 */
-                //cout << "Called mpfit\n";
+                //std::cout << "Called mpfit\n";
 				int returnCode = mpfit(gaussianSumNoNoise, nVals, numOfParams, parameters, paramConstraints, mpConfigValues, waveformData, mpResultsValues);
-				//cout << "mpfit returned\n";
+				//std::cout << "mpfit returned\n";
                 if((returnCode == MP_OK_CHI) | (returnCode == MP_OK_PAR) |
                    (returnCode == MP_OK_BOTH) | (returnCode == MP_OK_DIR) |
                    (returnCode == MP_MAXITER) | (returnCode == MP_FTOL)
@@ -338,52 +338,52 @@ namespace spdlib {
                     /* DEBUG INFO...
                      if(returnCode == MP_OK_CHI)
                      {
-                     cout << "mpfit - Convergence in chi-square value.\n";
+                     std::cout << "mpfit - Convergence in chi-square value.\n";
                      }
                      else if(returnCode == MP_OK_PAR)
                      {
-                     cout << "mpfit - Convergence in parameter value.\n";
+                     std::cout << "mpfit - Convergence in parameter value.\n";
                      }
                      else if(returnCode == MP_OK_BOTH)
                      {
-                     cout << "mpfit - Convergence in chi-square and parameter value.\n";
+                     std::cout << "mpfit - Convergence in chi-square and parameter value.\n";
                      }
                      else if(returnCode == MP_OK_DIR)
                      {
-                     cout << "mpfit - Convergence in orthogonality.\n";
+                     std::cout << "mpfit - Convergence in orthogonality.\n";
                      }
                      else if(returnCode == MP_MAXITER)
                      {
-                     cout << "mpfit - Maximum number of iterations reached.\n";
+                     std::cout << "mpfit - Maximum number of iterations reached.\n";
                      }
                      else if(returnCode == MP_FTOL)
                      {
-                     cout << "mpfit - ftol is too small; cannot make further improvements.\n";
+                     std::cout << "mpfit - ftol is too small; cannot make further improvements.\n";
                      }
                      else if(returnCode == MP_XTOL)
                      {
-                     cout << "mpfit - xtol is too small; cannot make further improvements.\n";
+                     std::cout << "mpfit - xtol is too small; cannot make further improvements.\n";
                      }
                      else if(returnCode == MP_XTOL)
                      {
-                     cout << "mpfit - gtol is too small; cannot make further improvements.\n";
+                     std::cout << "mpfit - gtol is too small; cannot make further improvements.\n";
                      }
                      else 
                      {
-                     cout << "An error has probably occurred - wait for exception...\n";
+                     std::cout << "An error has probably occurred - wait for exception...\n";
                      }
                      
                      
-                     cout << "Run Results (MPFIT version: " << mpResultsValues->version << "):\n";
-                     cout << "Final Chi-Squaured = " << mpResultsValues->bestnorm << endl;
-                     cout << "Start Chi-Squaured = " << mpResultsValues->orignorm << endl;
-                     cout << "Num Iterations = " << mpResultsValues->niter << endl;
-                     cout << "Num Func Evals = " << mpResultsValues->nfev << endl;
-                     cout << "Status Fit Code = " << mpResultsValues->status << endl;
-                     cout << "Num Params = " << mpResultsValues->npar << endl;
-                     cout << "Num Free Params = " << mpResultsValues->nfree << endl;
-                     cout << "Num Pegged Params = " << mpResultsValues->npegged << endl;
-                     cout << "Num Residuals Params = " << mpResultsValues->nfunc << endl << endl;
+                     std::cout << "Run Results (MPFIT version: " << mpResultsValues->version << "):\n";
+                     std::cout << "Final Chi-Squaured = " << mpResultsValues->bestnorm << std::endl;
+                     std::cout << "Start Chi-Squaured = " << mpResultsValues->orignorm << std::endl;
+                     std::cout << "Num Iterations = " << mpResultsValues->niter << std::endl;
+                     std::cout << "Num Func Evals = " << mpResultsValues->nfev << std::endl;
+                     std::cout << "Status Fit Code = " << mpResultsValues->status << std::endl;
+                     std::cout << "Num Params = " << mpResultsValues->npar << std::endl;
+                     std::cout << "Num Free Params = " << mpResultsValues->nfree << std::endl;
+                     std::cout << "Num Pegged Params = " << mpResultsValues->npegged << std::endl;
+                     std::cout << "Num Residuals Params = " << mpResultsValues->nfunc << std::endl << std::endl;
                      */
 				}
 				else if(returnCode == MP_ERR_INPUT)
@@ -424,8 +424,8 @@ namespace spdlib {
 				}
 				else 
 				{
-                    cout << "Returned values may have errors associated with...\n";
-					cout << "Return code was :" << returnCode << " - this can not been defined!\n";
+                    std::cout << "Returned values may have errors associated with...\n";
+					std::cout << "Return code was :" << returnCode << " - this can not been defined!\n";
 				}
                 
                 for(unsigned int i = 0; i < peaks->size(); ++i)
@@ -435,11 +435,11 @@ namespace spdlib {
                     gausReturn->gaussianAmplitude = parameters[idx];
                     gausReturn->gaussianWidth = parameters[idx+2] * (2.0*sqrt(2.0*log(2.0)));
                     gausReturn->axisInterval = parameters[idx+1];
-                    //cout << "Peak: " << i << endl;
-                    //cout << "Amp: " << parameters[idx] << endl;
-                    //cout << "Height: " << parameters[idx+1] << endl;
-                    //cout << "Width: " << parameters[idx+2] << endl;
-                    //cout << "FWHM: " << gausReturn->gaussianWidth << endl;
+                    //std::cout << "Peak: " << i << std::endl;
+                    //std::cout << "Amp: " << parameters[idx] << std::endl;
+                    //std::cout << "Height: " << parameters[idx+1] << std::endl;
+                    //std::cout << "Width: " << parameters[idx+2] << std::endl;
+                    //std::cout << "FWHM: " << gausReturn->gaussianWidth << std::endl;
                     
                     gaussianPeaks->push_back(gausReturn);
                 }
@@ -546,21 +546,21 @@ namespace spdlib {
             paramConstraints[0].limited[1] = true;
             paramConstraints[0].limits[0] = parameters[0] - ampVar;
             paramConstraints[0].limits[1] = parameters[0] + ampVar;
-            paramConstraints[0].parname = const_cast<char*>(string("Amplitude").c_str());;
+            paramConstraints[0].parname = const_cast<char*>(std::string("Amplitude").c_str());;
             paramConstraints[0].step = 0;
             paramConstraints[0].relstep = 0;
             paramConstraints[0].side = 0;
             paramConstraints[0].deriv_debug = 0;
             
             parameters[1] = waveformPeakIdx; // Time
-                                             //cout << "Peak Time (Full): " << maxIdx << endl;
-                                             //cout << "Peak Time (Local): " << waveformPeakIdx << endl;
+                                             //std::cout << "Peak Time (Full): " << maxIdx << std::endl;
+                                             //std::cout << "Peak Time (Local): " << waveformPeakIdx << std::endl;
             paramConstraints[1].fixed = false;
             paramConstraints[1].limited[0] = true;
             paramConstraints[1].limited[1] = true;
             paramConstraints[1].limits[0] = parameters[1] - 2;
             paramConstraints[1].limits[1] = parameters[1] + 2;
-            paramConstraints[1].parname = const_cast<char*>(string("Time").c_str());;
+            paramConstraints[1].parname = const_cast<char*>(std::string("Time").c_str());;
             paramConstraints[1].step = 0;
             paramConstraints[1].relstep = 0;
             paramConstraints[1].side = 0;
@@ -572,7 +572,7 @@ namespace spdlib {
             paramConstraints[2].limited[1] = true;
             paramConstraints[2].limits[0] = 0.01;
             paramConstraints[2].limits[1] = 10;
-            paramConstraints[2].parname = const_cast<char*>(string("Width").c_str());
+            paramConstraints[2].parname = const_cast<char*>(std::string("Width").c_str());
             paramConstraints[2].step = 0.01;
             paramConstraints[2].relstep = 0;
             paramConstraints[2].side = 0;
@@ -673,7 +673,7 @@ namespace spdlib {
             }
             else 
             {
-                cout << "Return code is :" << returnCode << " - this can not been defined!\n";
+                std::cout << "Return code is :" << returnCode << " - this can not been defined!\n";
             }
             
             float timeDiff = ((float)parameters[1]) - ((float)waveformPeakIdx);
@@ -682,8 +682,8 @@ namespace spdlib {
             *peakTime = (((float)maxIdx) + timeDiff) * waveformTimeInterval;
             *transWidth = (parameters[2] * 10) * (2.0*sqrt(2.0*log(2.0)));
             
-            //cout << "Output peak time (local): " << parameters[1] << endl;
-            //cout << "Output peak time (Global): " << *peakTime << endl << endl;
+            //std::cout << "Output peak time (local): " << parameters[1] << std::endl;
+            //std::cout << "Output peak time (Global): " << *peakTime << std::endl << std::endl;
             
             delete mpConfigValues;
             delete mpResultsValues;
@@ -713,9 +713,9 @@ namespace spdlib {
 		this->decay = decay;
 	}
 	
-	vector<boost::uint_fast32_t>* SPDInitDecompositionZeroCrossingSimple::findInitPoints(boost::uint_fast32_t *waveform, boost::uint_fast16_t waveformLength, float intThreshold) throw(SPDException)
+	std::vector<boost::uint_fast32_t>* SPDInitDecompositionZeroCrossingSimple::findInitPoints(boost::uint_fast32_t *waveform, boost::uint_fast16_t waveformLength, float intThreshold) throw(SPDException)
 	{
-		vector<boost::uint_fast32_t> *pts = new vector<boost::uint_fast32_t>();
+		std::vector<boost::uint_fast32_t> *pts = new std::vector<boost::uint_fast32_t>();
 		if(waveformLength > 0)
 		{
 			boost::uint_fast16_t waveformLengthLess1 = waveformLength - 1;
@@ -761,9 +761,9 @@ namespace spdlib {
 		return pts;
 	}
     
-    vector<boost::uint_fast32_t>* SPDInitDecompositionZeroCrossingSimple::findInitPoints(float *waveform, boost::uint_fast16_t waveformLength, float intThreshold) throw(SPDException)
+    std::vector<boost::uint_fast32_t>* SPDInitDecompositionZeroCrossingSimple::findInitPoints(float *waveform, boost::uint_fast16_t waveformLength, float intThreshold) throw(SPDException)
 	{
-		vector<boost::uint_fast32_t> *pts = new vector<boost::uint_fast32_t>();
+		std::vector<boost::uint_fast32_t> *pts = new std::vector<boost::uint_fast32_t>();
 		if(waveformLength > 0)
 		{
 			boost::uint_fast16_t waveformLengthLess1 = waveformLength - 1;
@@ -820,41 +820,41 @@ namespace spdlib {
 		this->intDecayThres = intDecayThres;
 	}
 	
-	vector<boost::uint_fast32_t>* SPDInitDecompositionZeroCrossing::findInitPoints(boost::uint_fast32_t *waveform, boost::uint_fast16_t waveformLength, float intThreshold) throw(SPDException)
+	std::vector<boost::uint_fast32_t>* SPDInitDecompositionZeroCrossing::findInitPoints(boost::uint_fast32_t *waveform, boost::uint_fast16_t waveformLength, float intThreshold) throw(SPDException)
 	{
-		vector<boost::uint_fast32_t> *pts = new vector<boost::uint_fast32_t>();
+		std::vector<boost::uint_fast32_t> *pts = new std::vector<boost::uint_fast32_t>();
 		if(waveformLength > 0)
 		{
 			boost::uint_fast16_t waveformLengthLess1 = waveformLength - 1;
 			float *gradients = new float[waveformLengthLess1];
 			/*
-            cout << endl;
+            std::cout << std::endl;
             for(boost::uint_fast16_t i = 0; i < waveformLength; ++i)
             {
                 if(i == 0)
                 {
-                    cout << ((((float)waveform[i])*gain)+offset);
+                    std::cout << ((((float)waveform[i])*gain)+offset);
                 }
                 else 
                 {
-                    cout << "," << ((((float)waveform[i])*gain)+offset);
+                    std::cout << "," << ((((float)waveform[i])*gain)+offset);
                 }
             }
-            cout << endl;
+            std::cout << std::endl;
 			*/
 			for(boost::uint_fast16_t i = 0; i < waveformLengthLess1; ++i)
 			{
 				gradients[i] = ((float)waveform[i+1]) - ((float)waveform[i]);
 				/*if(i == 0)
                 {
-                    cout << gradients[i];
+                    std::cout << gradients[i];
                 }
                 else 
                 {
-                    cout << "," << gradients[i];
+                    std::cout << "," << gradients[i];
                 }*/
 			}
-			//cout << endl << endl;
+			//std::cout << std::endl << std::endl;
 			
 			bool firstPeak = true;
 			boost::uint_fast32_t peakInt = 0;
@@ -868,13 +868,13 @@ namespace spdlib {
 				{
 					if((!compare_double(gradients[j], 0)) & this->zeroCrossing(gradients[i], gradients[j]))
 					{
-						//cout << "Crossing: " << i+1 << " - amplitude = " << waveform[i+1] << endl;
+						//std::cout << "Crossing: " << i+1 << " - amplitude = " << waveform[i+1] << std::endl;
 						if(((float)waveform[i+1]) > intThreshold)
 						{
-							//cout << "Under threshold\n";
+							//std::cout << "Under threshold\n";
 							if(firstPeak)
 							{
-								//cout << "push (first) = " << i << " = " << waveform[i] << endl;
+								//std::cout << "push (first) = " << i << " = " << waveform[i] << std::endl;
 								pts->push_back(i+1);
 								peakInt = ((float)waveform[i+1]);
 								peakTime = i+1;
@@ -890,23 +890,23 @@ namespace spdlib {
 								else 
 								{
 									calcThreshold = peakInt * pow(E, ((double)((timeDiff/decay)*(-1))));
-									//cout << "calcThreshold = " << calcThreshold << endl;
-									//cout << "peakInt = " << peakInt << endl;
-									//cout << "timeDiff = " << timeDiff << endl;
-									//cout << "decay = " << decay << endl;
-									//cout << "intThreshold = " << intThreshold << endl;
+									//std::cout << "calcThreshold = " << calcThreshold << std::endl;
+									//std::cout << "peakInt = " << peakInt << std::endl;
+									//std::cout << "timeDiff = " << timeDiff << std::endl;
+									//std::cout << "decay = " << decay << std::endl;
+									//std::cout << "intThreshold = " << intThreshold << std::endl;
 								}
 								
 								if(calcThreshold < intThreshold)
 								{
-									//cout << "push (calcThreshold < intThreshold) = " << i << " = " << ((((float)waveform[i+1])*gain)+offset) << endl;
+									//std::cout << "push (calcThreshold < intThreshold) = " << i << " = " << ((((float)waveform[i+1])*gain)+offset) << std::endl;
 									pts->push_back(i+1);
 									peakInt = ((float)waveform[i+1]);
 									peakTime = i+1;
 								}
 								else if(waveform[i] > calcThreshold)
 								{
-									//cout << "push (waveform[i] > calcThreshold) = " << i << " = " << ((((float)waveform[i+1])*gain)+offset) << endl;
+									//std::cout << "push (waveform[i] > calcThreshold) = " << i << " = " << ((((float)waveform[i+1])*gain)+offset) << std::endl;
 									pts->push_back(i+1);
 									peakInt = ((float)waveform[i+1]);
 									peakTime = i+1;
@@ -929,40 +929,40 @@ namespace spdlib {
 		return pts;
 	}
     
-    vector<boost::uint_fast32_t>* SPDInitDecompositionZeroCrossing::findInitPoints(float *waveform, boost::uint_fast16_t waveformLength, float intThreshold) throw(SPDException)
+    std::vector<boost::uint_fast32_t>* SPDInitDecompositionZeroCrossing::findInitPoints(float *waveform, boost::uint_fast16_t waveformLength, float intThreshold) throw(SPDException)
 	{
-		vector<boost::uint_fast32_t> *pts = new vector<boost::uint_fast32_t>();
+		std::vector<boost::uint_fast32_t> *pts = new std::vector<boost::uint_fast32_t>();
 		if(waveformLength > 0)
 		{
 			boost::uint_fast16_t waveformLengthLess1 = waveformLength - 1;
 			float *gradients = new float[waveformLengthLess1];
-			/*cout << endl;
+			/*std::cout << std::endl;
              for(boost::uint_fast16_t i = 0; i < waveformLength; ++i)
              {
              if(i == 0)
              {
-             cout << waveform[i];
+             std::cout << waveform[i];
              }
              else 
              {
-             cout << "," << waveform[i];
+             std::cout << "," << waveform[i];
              }
              }
-             cout << endl;*/
+             std::cout << std::endl;*/
 			
 			for(boost::uint_fast16_t i = 0; i < waveformLengthLess1; ++i)
 			{
 				gradients[i] = (waveform[i+1]) - (waveform[i]);
 				/*if(i == 0)
                  {
-                 cout << gradients[i];
+                 std::cout << gradients[i];
                  }
                  else 
                  {
-                 cout << "," << gradients[i];
+                 std::cout << "," << gradients[i];
                  }*/
 			}
-			//cout << endl << endl;
+			//std::cout << std::endl << std::endl;
 			
 			bool firstPeak = true;
 			boost::uint_fast32_t peakInt = 0;
@@ -976,13 +976,13 @@ namespace spdlib {
 				{
 					if((!compare_double(gradients[j], 0)) & this->zeroCrossing(gradients[i], gradients[j]))
 					{
-						//cout << "Crossing: " << i+1 << " - amplitude = " << waveform[i+1] << endl;
+						//std::cout << "Crossing: " << i+1 << " - amplitude = " << waveform[i+1] << std::endl;
 						if(waveform[i+1] > intThreshold)
 						{
-							//cout << "Under threshold\n";
+							//std::cout << "Under threshold\n";
 							if(firstPeak)
 							{
-								//cout << "push (first) = " << i << " = " << waveform[i] << endl;
+								//std::cout << "push (first) = " << i << " = " << waveform[i] << std::endl;
 								pts->push_back(i+1);
 								peakInt = waveform[i+1];
 								peakTime = i+1;
@@ -998,23 +998,23 @@ namespace spdlib {
 								else 
 								{
 									calcThreshold = peakInt * pow(E, ((double)((timeDiff/decay)*(-1))));
-									//cout << "calcThreshold = " << calcThreshold << endl;
-									//cout << "peakInt = " << peakInt << endl;
-									//cout << "timeDiff = " << timeDiff << endl;
-									//cout << "decay = " << decay << endl;
-									//cout << "intThreshold = " << intThreshold << endl;
+									//std::cout << "calcThreshold = " << calcThreshold << std::endl;
+									//std::cout << "peakInt = " << peakInt << std::endl;
+									//std::cout << "timeDiff = " << timeDiff << std::endl;
+									//std::cout << "decay = " << decay << std::endl;
+									//std::cout << "intThreshold = " << intThreshold << std::endl;
 								}
 								
 								if(calcThreshold < intThreshold)
 								{
-									//cout << "push (calcThreshold < intThreshold) = " << i << " = " << waveform[i] << endl;
+									//std::cout << "push (calcThreshold < intThreshold) = " << i << " = " << waveform[i] << std::endl;
 									pts->push_back(i+1);
 									peakInt = waveform[i+1];
 									peakTime = i+1;
 								}
 								else if(waveform[i] > calcThreshold)
 								{
-									//cout << "push (waveform[i] > calcThreshold) = " << i << " = " << waveform[i] << endl;
+									//std::cout << "push (waveform[i] > calcThreshold) = " << i << " = " << waveform[i] << std::endl;
 									pts->push_back(i+1);
 									peakInt = waveform[i+1];
 									peakTime = i+1;
@@ -1057,9 +1057,9 @@ namespace spdlib {
 
 	}
 	
-	vector<boost::uint_fast32_t>* SPDInitDecompositionZeroCrossingNoRinging::findInitPoints(boost::uint_fast32_t *waveform, boost::uint_fast16_t waveformLength, float intThreshold) throw(SPDException)
+	std::vector<boost::uint_fast32_t>* SPDInitDecompositionZeroCrossingNoRinging::findInitPoints(boost::uint_fast32_t *waveform, boost::uint_fast16_t waveformLength, float intThreshold) throw(SPDException)
 	{
-		vector<boost::uint_fast32_t> *pts = new vector<boost::uint_fast32_t>();
+		std::vector<boost::uint_fast32_t> *pts = new std::vector<boost::uint_fast32_t>();
 		if(waveformLength > 0)
 		{
 			boost::uint_fast16_t waveformLengthLess1 = waveformLength - 1;
@@ -1095,9 +1095,9 @@ namespace spdlib {
 		return pts;
 	}
     
-    vector<boost::uint_fast32_t>* SPDInitDecompositionZeroCrossingNoRinging::findInitPoints(float *waveform, boost::uint_fast16_t waveformLength, float intThreshold) throw(SPDException)
+    std::vector<boost::uint_fast32_t>* SPDInitDecompositionZeroCrossingNoRinging::findInitPoints(float *waveform, boost::uint_fast16_t waveformLength, float intThreshold) throw(SPDException)
 	{
-		vector<boost::uint_fast32_t> *pts = new vector<boost::uint_fast32_t>();
+		std::vector<boost::uint_fast32_t> *pts = new std::vector<boost::uint_fast32_t>();
 		if(waveformLength > 0)
 		{
 			boost::uint_fast16_t waveformLengthLess1 = waveformLength - 1;
@@ -1235,12 +1235,12 @@ namespace spdlib {
 		
 		
 		/*
-         cout << "----------------------------------------------------------------------------" << endl;
-         cout << "coefficients are : ";
+         std::cout << "----------------------------------------------------------------------------" << std::endl;
+         std::cout << "coefficients are : ";
          vectorUtils.printGSLVector(outCoefficients); 
-         cout << " chisq = " << chisq << endl;
-         cout << "----------------------------------------------------------------------------" << endl;
-         cout << endl;
+         std::cout << " chisq = " << chisq << std::endl;
+         std::cout << "----------------------------------------------------------------------------" << std::endl;
+         std::cout << std::endl;
          */
 		
 		// Clean up
@@ -1294,12 +1294,12 @@ namespace spdlib {
 		gsl_multifit_linear(indVarPow, depVar, outCoefficients, cov, &chisq, workspace);
 		
 		/*
-        cout << "----------------------------------------------------------------------------" << endl;
-		cout << "coefficients are : ";
+        std::cout << "----------------------------------------------------------------------------" << std::endl;
+		std::cout << "coefficients are : ";
 		vectorUtils.printGSLVector(outCoefficients); 
-		cout << " chisq = " << chisq << endl;
-		cout << "----------------------------------------------------------------------------" << endl;
-		cout << endl;
+		std::cout << " chisq = " << chisq << std::endl;
+		std::cout << "----------------------------------------------------------------------------" << std::endl;
+		std::cout << std::endl;
 		*/
         
 		// Clean up
@@ -1353,7 +1353,7 @@ namespace spdlib {
 		
 		// Solve Equation
 		svd.SVDLinSolve(outCoefficients, depVar);
-		//cout << "coefficents are : ";
+		//std::cout << "coefficents are : ";
 		//vectorUtils.printGSLVector(outCoefficients);
 		
 		// Clean up
@@ -1388,7 +1388,7 @@ namespace spdlib {
 				yPredicted = yPredicted + coeffXPow;
 			}
 			
-			//cout << "measured = " << yMeasured << " predicted = " << yPredicted << endl;
+			//std::cout << "measured = " << yMeasured << " predicted = " << yPredicted << std::endl;
 			
 			gsl_matrix_set(measuredVpredictted, i, 0, yMeasured);
 			gsl_matrix_set(measuredVpredictted, i, 1, yPredicted);
@@ -1444,7 +1444,7 @@ namespace spdlib {
 		{
 			// Populate matrix
 			indexY = y * numX;
-			//cout << "solving set " << y + 1 << "...." << endl;
+			//std::cout << "solving set " << y + 1 << "...." << std::endl;
 			double yelement = gsl_matrix_get(inData, indexY, 1);
 			gsl_vector_set(indVar2, y, yelement); // Add y values to indVar2 vector
 			
@@ -1462,7 +1462,7 @@ namespace spdlib {
 				}
 			}
 			
-			//cout << "Starting to solve " << endl;
+			//std::cout << "Starting to solve " << std::endl;
 			
 			// Solve
 			gsl_multifit_linear_workspace *workspace;
@@ -1471,7 +1471,7 @@ namespace spdlib {
 			double chisq;
 			cov = gsl_matrix_alloc(orderX, orderX);
 			gsl_multifit_linear(indVarPow, depVar, tempAcoeff, cov, &chisq, workspace); // Perform least squares fit
-                                                                                        //cout << "solved!" << endl;
+                                                                                        //std::cout << "solved!" << std::endl;
                                                                                         //vectorUtils.printGSLVector(tempAcoeff);
 			
 			// Add coefficents to Matrix
@@ -1488,10 +1488,10 @@ namespace spdlib {
 		}
 		
 		errorA = errorA / numY; // Calculate average ChiSq
-		cout << "-----------------------------" << endl;
-		cout << "First set of fits complete!" << endl;
-		cout << " Average ChiSq = " << errorA << endl;
-		cout << endl;
+		std::cout << "-----------------------------" << std::endl;
+		std::cout << "First set of fits complete!" << std::endl;
+		std::cout << " Average ChiSq = " << errorA << std::endl;
+		std::cout << std::endl;
 		//matrixUtils.printGSLMatrix(aCoeff);
 		//matrixUtils.saveGSLMatrix2GridTxt(aCoeff, "/users/danclewley/Documents/Temp/L_HH_aCoeff");
 		
@@ -1549,17 +1549,17 @@ namespace spdlib {
 			}
 			
 			// ChiSq
-			//cout << "chisq = "<< chisq << endl;
+			//std::cout << "chisq = "<< chisq << std::endl;
 			errorB = errorB + chisq;
 			gsl_matrix_set(bCoeff, i, orderY, chisq);
 		}
 		
 		errorB = errorB / orderX; // Calculate average ChiSq
-		cout << "Second set of fits complete!" << endl;
-		cout << " Average ChiSq = " << errorB << endl;
-		cout << "-----------------------------" << endl;
-		cout << endl;
-		//cout << "Coefficients are : " << endl;
+		std::cout << "Second set of fits complete!" << std::endl;
+		std::cout << " Average ChiSq = " << errorB << std::endl;
+		std::cout << "-----------------------------" << std::endl;
+		std::cout << std::endl;
+		//std::cout << "Coefficients are : " << std::endl;
 		//matrixUtils.printGSLMatrix(bCoeff);
 		
 		// Clean up
@@ -1606,7 +1606,7 @@ namespace spdlib {
 				zPredicted = zPredicted + acoeffXPow;
 			}
 			
-			//cout << "measured = " << yMeasured << " predicted = " << yPredicted << endl;
+			//std::cout << "measured = " << yMeasured << " predicted = " << yPredicted << std::endl;
 			
 			gsl_matrix_set(measuredVpredictted, i, 0, zMeasured);
 			gsl_matrix_set(measuredVpredictted, i, 1, zPredicted);
@@ -1642,7 +1642,7 @@ namespace spdlib {
 		 * The b coefficients are outputted as a gsl_matrix with the errors stored in the last column. \n
 		 */
 		
-		cout << "Order X, Y, X = " << orderX << ", " << orderY << ", " << orderZ << endl;
+		std::cout << "Order X, Y, X = " << orderX << ", " << orderY << ", " << orderZ << std::endl;
 		
 		gsl_matrix *aCoeff, *bCoeff, *cCoeff, *indVarXPow;
 		
@@ -1708,11 +1708,11 @@ namespace spdlib {
 					}
 				}
 				
-				/*cout << "indVarX = " << endl;
+				/*std::cout << "indVarX = " << std::endl;
 				 matrixUtils.printGSLMatrix(indVarXPow);
-				 cout << "depVarX = " << endl;
+				 std::cout << "depVarX = " << std::endl;
 				 vectorUtils.printGSLVector(depVarX);
-				 cout << endl;*/
+				 std::cout << std::endl;*/
 				
 				// Solve
 				gsl_multifit_linear_workspace *workspace;
@@ -1721,7 +1721,7 @@ namespace spdlib {
 				double chisq;
 				cov = gsl_matrix_alloc(orderX, orderX);
 				gsl_multifit_linear(indVarXPow, depVarX, tempAcoeff, cov, &chisq, workspace); // Perform least squares fit
-                                                                                              //cout << "a Coeff = " << endl;
+                                                                                              //std::cout << "a Coeff = " << std::endl;
                                                                                               //vectorUtils.printGSLVector(tempAcoeff);
 				
 				// Add coefficents to Matrix
@@ -1732,7 +1732,7 @@ namespace spdlib {
 				}
 				// ChiSq
 				gsl_matrix_set(aCoeff, y, orderX, chisq);
-				//cout << "chiSq for first set of fits  = " << chisq << endl;
+				//std::cout << "chiSq for first set of fits  = " << chisq << std::endl;
 				errorA = errorA + chisq;
 			}
 			
@@ -1762,11 +1762,11 @@ namespace spdlib {
 				}
 				
 				/*
-				 cout << "indVarY = " << endl;
+				 std::cout << "indVarY = " << std::endl;
 				 vectorUtils.printGSLVector(indVarY);
-				 cout << "depVarY = " << endl;
+				 std::cout << "depVarY = " << std::endl;
 				 vectorUtils.printGSLVector(depVarY);
-				 cout << endl;
+				 std::cout << std::endl;
 				 */
 				
 				// Solve
@@ -1796,22 +1796,22 @@ namespace spdlib {
 		errorA = errorA / (numY * numZ); // Calculate average ChiSq
 		errorB = errorB / (orderY * numZ); // Calculate average ChiSq	
 		
-		cout << "----------------------------------------------" << endl;
-		cout << "First and second set of fits complete " << endl;
-		cout << " Average ChiSq for first set of fits = " << errorA << endl;
-		cout << " Average ChiSq for second set of fits = " << errorB << endl;
+		std::cout << "----------------------------------------------" << std::endl;
+		std::cout << "First and second set of fits complete " << std::endl;
+		std::cout << " Average ChiSq for first set of fits = " << errorA << std::endl;
+		std::cout << " Average ChiSq for second set of fits = " << errorB << std::endl;
 		
 		/*
-		 cout << "==============================================================" << endl;
+		 std::cout << "==============================================================" << std::endl;
 		 matrixUtils.printGSLMatrix(bCoeff);
-		 cout << "==============================================================" << endl;
+		 std::cout << "==============================================================" << std::endl;
 		 */
 		
-		/*cout << "indVarZ = " << endl;
+		/*std::cout << "indVarZ = " << std::endl;
 		 vectorUtils.printGSLVector(indVarZ);
-		 cout << "coeffB = " << endl;
+		 std::cout << "coeffB = " << std::endl;
 		 matrixUtils.printGSLMatrix(bCoeff);
-		 cout << endl;*/
+		 std::cout << std::endl;*/
 		
 		/***************************************************
 		 * PERFORM THIRD SET OF FITS                       
@@ -1858,9 +1858,9 @@ namespace spdlib {
 				}
 				
 				/*
-				 cout << "IndVar " << endl;
+				 std::cout << "IndVar " << std::endl;
 				 vectorUtils.printGSLVector(indVarZ);
-				 cout << "DepVar " << endl;
+				 std::cout << "DepVar " << std::endl;
 				 vectorUtils.printGSLVector(depVarZ);
 				 */
 				
@@ -1882,7 +1882,7 @@ namespace spdlib {
 				}
 				
 				// ChiSq
-				//cout << "chisq = "<< chisq << endl;
+				//std::cout << "chisq = "<< chisq << std::endl;
 				errorC = errorC + chisq;
 				gsl_matrix_set(cCoeff, c, orderZ, chisq);
 				c++;
@@ -1890,10 +1890,10 @@ namespace spdlib {
 		}
 		
 		errorC = errorC / c; // Calculate average ChiSq
-		cout << "Third set of fits complete " << endl;
-		cout << " Average ChiSq for first set of fits = " << errorC << endl;
-		cout << "----------------------------------------------" << endl;
-		cout << endl;
+		std::cout << "Third set of fits complete " << std::endl;
+		std::cout << " Average ChiSq for first set of fits = " << errorC << std::endl;
+		std::cout << "----------------------------------------------" << std::endl;
+		std::cout << std::endl;
 		
 		// Clean up
 		
@@ -1946,16 +1946,16 @@ namespace spdlib {
 				for(int y = 0; y < orderY; y++)
 				{
 					cCoeffPowZ = 0.0;
-					//cout << "cCoeff = ";
+					//std::cout << "cCoeff = ";
 					for(int z = 0; z < orderZ; z++)
 					{     
 						zPow = pow(zVal, z);
 						//cCoeff = gsl_matrix_get(coefficients, c, z);
 						cCoeff = gsl_matrix_get(coefficients, y + (x * orderX), z);
-						//cout << cCoeff;
+						//std::cout << cCoeff;
 						cCoeffPowZ = cCoeffPowZ + (cCoeff * zPow);
 					}
-					//cout << endl;
+					//std::cout << std::endl;
 					yPow = pow(yVal, y); // y^n;
 					bcoeffPowY = bcoeffPowY + (cCoeffPowZ * yPow); // c_n * y^n
 				}
@@ -1963,7 +1963,7 @@ namespace spdlib {
 				fPredicted = fPredicted + (bcoeffPowY * xPow);
 			}
 			
-			//cout << "measured = " << yMeasured << " predicted = " << yPredicted << endl;
+			//std::cout << "measured = " << yMeasured << " predicted = " << yPredicted << std::endl;
 			
 			gsl_matrix_set(measuredVpredictted, i, 0, fMeasured);
 			gsl_matrix_set(measuredVpredictted, i, 1, fPredicted);
@@ -2011,9 +2011,9 @@ namespace spdlib {
 		
 		double rSq = (ssXY * ssXY ) / (ssXX * ssYY);
 		
-		cout << "**************************" << endl;
-		cout << "  R squared = " << rSq << endl;
-		cout << "**************************" << endl;
+		std::cout << "**************************" << std::endl;
+		std::cout << "  R squared = " << rSq << std::endl;
+		std::cout << "**************************" << std::endl;
 	}
 	
 	double SPDPolyFit::calcRSquaredGSLMatrixQuiet(gsl_matrix *dataXY)
@@ -2069,9 +2069,9 @@ namespace spdlib {
 		
 		double rmse = sqrt(sqMean);
 		
-		cout << "**************************" << endl;
-		cout << "  RMSE = " << rmse << endl;
-		cout << "**************************" << endl;
+		std::cout << "**************************" << std::endl;
+		std::cout << "  RMSE = " << rmse << std::endl;
+		std::cout << "**************************" << std::endl;
 	}
 	
 	void SPDPolyFit::calcMeanErrorGSLMatrix(gsl_matrix *dataXY)
@@ -2086,9 +2086,9 @@ namespace spdlib {
 		
 		double meanError = sum / double(dataXY->size1);
 		
-		cout << "**************************" << endl;
-		cout << "  Mean Error = " << meanError << endl;
-		cout << "**************************" << endl;
+		std::cout << "**************************" << std::endl;
+		std::cout << "  Mean Error = " << meanError << std::endl;
+		std::cout << "**************************" << std::endl;
 	}
 	
 	double SPDPolyFit::calcRMSErrorGSLMatrixQuiet(gsl_matrix *dataXY)

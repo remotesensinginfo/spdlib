@@ -51,7 +51,7 @@ namespace spdlib
 			throw e;
 		}
 		this->fileOpen = true;
-		this->pulses = new list<SPDPulse*>();
+		this->pulses = new std::list<SPDPulse*>();
 		
 	}
 		
@@ -67,7 +67,7 @@ namespace spdlib
             {
                 if(pulse->numberOfReturns > 0)
                 {
-                    vector<SPDPoint*>::iterator iterPts;
+                    std::vector<SPDPoint*>::iterator iterPts;
                     for(iterPts = pulse->pts->begin(); iterPts != pulse->pts->end(); ++iterPts)
                     {
                         (*iterPts)->returnID = returnID;
@@ -78,7 +78,7 @@ namespace spdlib
             {
                 if(pulse->numberOfReturns > 0)
                 {
-                    vector<SPDPoint*>::iterator iterPts;
+                    std::vector<SPDPoint*>::iterator iterPts;
                     for(iterPts = pulse->pts->begin(); iterPts != pulse->pts->end(); ++iterPts)
                     {
                         (*iterPts)->classification = classValue;

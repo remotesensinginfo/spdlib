@@ -34,8 +34,6 @@
 #include <iostream>
 #include <string>
 
-using namespace std;
-
 namespace spdlib
 {
 	class SPDException : public std::exception
@@ -43,11 +41,11 @@ namespace spdlib
 	public:
 		SPDException();
 		SPDException(const char *message);
-		SPDException(string message);
+		SPDException(std::string message);
 		virtual ~SPDException() throw();
 		virtual const char* what() const throw();
 	protected:
-		string msgs;
+        std::string msgs;
 	};
 }
 

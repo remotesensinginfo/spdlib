@@ -40,16 +40,14 @@
 #include "spd/SPDPulseProcessor.h"
 #include "spd/SPDProcessingException.h"
 
-using namespace std;
-
 namespace spdlib
 {	
 	class SPDCalcFileStats
 	{
 	public:
 		SPDCalcFileStats();
-        void calcImagePulsePointDensity(string inputSPDFile, string outputImageFile, boost::uint_fast32_t blockXSize=250, boost::uint_fast32_t blockYSize=250, float processingResolution=0, string gdalFormat="ENVI") throw(SPDProcessingException);
-        void calcOverallPulsePointDensityStats(string inputSPDFile, string outputTextFile, boost::uint_fast32_t blockXSize=250, boost::uint_fast32_t blockYSize=250, float processingResolution=0) throw(SPDProcessingException);
+        void calcImagePulsePointDensity(std::string inputSPDFile, std::string outputImageFile, boost::uint_fast32_t blockXSize=250, boost::uint_fast32_t blockYSize=250, float processingResolution=0, std::string gdalFormat="ENVI") throw(SPDProcessingException);
+        void calcOverallPulsePointDensityStats(std::string inputSPDFile, std::string outputTextFile, boost::uint_fast32_t blockXSize=250, boost::uint_fast32_t blockYSize=250, float processingResolution=0) throw(SPDProcessingException);
 		~SPDCalcFileStats();
 	};
     
@@ -59,15 +57,15 @@ namespace spdlib
 	public:
         SPDPulseProcessorCalcStats();
         
-        void processDataColumnImage(SPDFile *inSPDFile, vector<SPDPulse*> *pulses, float *imageData, SPDXYPoint *cenPts, boost::uint_fast32_t numImgBands, float binSize) throw(SPDProcessingException);
-		void processDataColumn(SPDFile *inSPDFile, vector<SPDPulse*> *pulses, SPDXYPoint *cenPts) throw(SPDProcessingException);
+        void processDataColumnImage(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses, float *imageData, SPDXYPoint *cenPts, boost::uint_fast32_t numImgBands, float binSize) throw(SPDProcessingException);
+		void processDataColumn(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses, SPDXYPoint *cenPts) throw(SPDProcessingException);
         
-        void processDataWindowImage(SPDFile *inSPDFile, vector<SPDPulse*> ***pulses, float ***imageData, SPDXYPoint ***cenPts, boost::uint_fast32_t numImgBands, boost::uint_fast16_t winSize) throw(SPDProcessingException)
+        void processDataWindowImage(SPDFile *inSPDFile, std::vector<SPDPulse*> ***pulses, float ***imageData, SPDXYPoint ***cenPts, boost::uint_fast32_t numImgBands, boost::uint_fast16_t winSize) throw(SPDProcessingException)
         {throw SPDProcessingException("Processing using a window is not implemented.");};
-		void processDataWindow(SPDFile *inSPDFile, vector<SPDPulse*> ***pulses, SPDXYPoint ***cenPts, boost::uint_fast16_t winSize) throw(SPDProcessingException)
+		void processDataWindow(SPDFile *inSPDFile, std::vector<SPDPulse*> ***pulses, SPDXYPoint ***cenPts, boost::uint_fast16_t winSize) throw(SPDProcessingException)
         {throw SPDProcessingException("Processing using a window is not implemented.");};
         
-        vector<string> getImageBandDescriptions() throw(SPDProcessingException);
+        std::vector<std::string> getImageBandDescriptions() throw(SPDProcessingException);
         void setHeaderValues(SPDFile *spdFile) throw(SPDProcessingException);
         
         void setCalcStdDev(float meanPulses, float meanPoints)

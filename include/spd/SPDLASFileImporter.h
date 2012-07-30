@@ -43,21 +43,19 @@
 #include "spd/SPDTextFileUtilities.h"
 #include "spd/SPDDataImporter.h"
 
-using namespace std;
-
 namespace spdlib
 {
 	
 	class SPDLASFileImporter : public SPDDataImporter
 	{
 	public:
-		SPDLASFileImporter(bool convertCoords=false, string outputProjWKT="", string schema="", boost::uint_fast16_t indexCoords=SPD_FIRST_RETURN, bool defineOrigin=false, double originX=0, double originY=0, float originZ=0, float waveNoiseThreshold=0);
-		SPDDataImporter* getInstance(bool convertCoords, string outputProjWKT,string schema,boost::uint_fast16_t indexCoords, bool defineOrigin, double originX, double originY, float originZ, float waveNoiseThreshold);
-        list<SPDPulse*>* readAllDataToList(string, SPDFile *spdFile)throw(SPDIOException);
-		vector<SPDPulse*>* readAllDataToVector(string inputFile, SPDFile *spdFile)throw(SPDIOException);
-		void readAndProcessAllData(string inputFile, SPDFile *spdFile, SPDImporterProcessor *processor) throw(SPDIOException);
-		bool isFileType(string fileType);
-        void readHeaderInfo(string inputFile, SPDFile *spdFile) throw(SPDIOException);
+		SPDLASFileImporter(bool convertCoords=false, std::string outputProjWKT="", std::string schema="", boost::uint_fast16_t indexCoords=SPD_FIRST_RETURN, bool defineOrigin=false, double originX=0, double originY=0, float originZ=0, float waveNoiseThreshold=0);
+		SPDDataImporter* getInstance(bool convertCoords, std::string outputProjWKT,std::string schema,boost::uint_fast16_t indexCoords, bool defineOrigin, double originX, double originY, float originZ, float waveNoiseThreshold);
+        std::list<SPDPulse*>* readAllDataToList(std::string, SPDFile *spdFile)throw(SPDIOException);
+		std::vector<SPDPulse*>* readAllDataToVector(std::string inputFile, SPDFile *spdFile)throw(SPDIOException);
+		void readAndProcessAllData(std::string inputFile, SPDFile *spdFile, SPDImporterProcessor *processor) throw(SPDIOException);
+		bool isFileType(std::string fileType);
+        void readHeaderInfo(std::string inputFile, SPDFile *spdFile) throw(SPDIOException);
 		~SPDLASFileImporter();
 	private:
 		SPDPoint* createSPDPoint(liblas::Point const& pt)throw(SPDIOException);
