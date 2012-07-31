@@ -48,6 +48,15 @@ namespace spdlib
 		SPDPointUtils ptsUtils;
 		SPDPulseUtils pulseUtils;
 		std::list<SPDPulse*> *pulses = new std::list<SPDPulse*>();
+        
+        double maxAzimuth = 0;
+        double minAzimuth = 0;
+        double maxZenith = 0;
+        double minZenith = 0;
+        double maxRange = 0;
+        double minRange = 0;
+        bool firstSph = true;
+        
 		try 
 		{
 			H5::Exception::dontPrint();
@@ -434,6 +443,65 @@ namespace spdlib
 							}
 						}
 					}
+                    
+                    if(this->defineOrigin)
+                    {
+                        pulse->x0 = this->originX;
+                        pulse->y0 = this->originY;
+                        pulse->z0 = this->originZ;
+                        
+                        double zenith = 0;
+                        double azimuth = 0;
+                        double range = 0;
+                        
+                        for(std::vector<SPDPoint*>::iterator iterPts = pulse->pts->begin(); iterPts != pulse->pts->end(); ++iterPts)
+                        {
+                            SPDConvertToSpherical(pulse->x0, pulse->y0, pulse->z0, (*iterPts)->x, (*iterPts)->y, (*iterPts)->z, &zenith, &azimuth, &range);
+                            (*iterPts)->range = range;
+                            if(firstSph)
+                            {
+                                maxAzimuth = azimuth;
+                                minAzimuth = azimuth;
+                                maxZenith = zenith;
+                                minZenith = zenith;
+                                maxRange = range;
+                                minRange = range;
+                                firstSph = false;
+                            }
+                            else
+                            {
+                                if(azimuth < minAzimuth)
+                                {
+                                    minAzimuth = azimuth;
+                                }
+                                else if(azimuth > maxAzimuth)
+                                {
+                                    maxAzimuth = azimuth;
+                                }
+                                
+                                if(zenith < minZenith)
+                                {
+                                    minZenith = zenith;
+                                }
+                                else if(zenith > maxZenith)
+                                {
+                                    maxZenith = zenith;
+                                }
+                                
+                                if(range < minRange)
+                                {
+                                    minRange = range;
+                                }
+                                else if(range > maxRange)
+                                {
+                                    maxRange = range;
+                                }
+                            }
+                        }
+                        
+                        pulse->zenith = zenith;
+                        pulse->azimuth = azimuth;
+                    }
 					
 					pulses->push_back(pulse);
 				}
@@ -713,6 +781,66 @@ namespace spdlib
 							}
 						}
 					}
+                    
+                    if(this->defineOrigin)
+                    {
+                        pulse->x0 = this->originX;
+                        pulse->y0 = this->originY;
+                        pulse->z0 = this->originZ;
+                        
+                        double zenith = 0;
+                        double azimuth = 0;
+                        double range = 0;
+                        
+                        for(std::vector<SPDPoint*>::iterator iterPts = pulse->pts->begin(); iterPts != pulse->pts->end(); ++iterPts)
+                        {
+                            SPDConvertToSpherical(pulse->x0, pulse->y0, pulse->z0, (*iterPts)->x, (*iterPts)->y, (*iterPts)->z, &zenith, &azimuth, &range);
+                            (*iterPts)->range = range;
+                            if(firstSph)
+                            {
+                                maxAzimuth = azimuth;
+                                minAzimuth = azimuth;
+                                maxZenith = zenith;
+                                minZenith = zenith;
+                                maxRange = range;
+                                minRange = range;
+                                firstSph = false;
+                            }
+                            else
+                            {
+                                if(azimuth < minAzimuth)
+                                {
+                                    minAzimuth = azimuth;
+                                }
+                                else if(azimuth > maxAzimuth)
+                                {
+                                    maxAzimuth = azimuth;
+                                }
+                                
+                                if(zenith < minZenith)
+                                {
+                                    minZenith = zenith;
+                                }
+                                else if(zenith > maxZenith)
+                                {
+                                    maxZenith = zenith;
+                                }
+                                
+                                if(range < minRange)
+                                {
+                                    minRange = range;
+                                }
+                                else if(range > maxRange)
+                                {
+                                    maxRange = range;
+                                }
+                            }
+                        }
+                        
+                        pulse->zenith = zenith;
+                        pulse->azimuth = azimuth;
+                    }
+                    
 					pulses->push_back(pulse);
 				}
 				
@@ -756,6 +884,11 @@ namespace spdlib
 			{
 				spdFile->setBoundingBox(xMin, xMax, yMin, yMax);
 			}
+            
+            if(defineOrigin)
+            {
+                spdFile->setBoundingVolumeSpherical(minZenith, maxZenith, minAzimuth, maxAzimuth, minRange, maxRange);
+            }
 			
 			spdInFile->close();
 		}
@@ -788,6 +921,15 @@ namespace spdlib
 		SPDPointUtils ptsUtils;
 		SPDPulseUtils pulseUtils;
 		std::vector<SPDPulse*> *pulses = new std::vector<SPDPulse*>();
+        
+        double maxAzimuth = 0;
+        double minAzimuth = 0;
+        double maxZenith = 0;
+        double minZenith = 0;
+        double maxRange = 0;
+        double minRange = 0;
+        bool firstSph = true;
+        
 		try 
 		{
 			H5::Exception::dontPrint();
@@ -1174,6 +1316,65 @@ namespace spdlib
 							}
 						}
 					}
+                    
+                    if(this->defineOrigin)
+                    {
+                        pulse->x0 = this->originX;
+                        pulse->y0 = this->originY;
+                        pulse->z0 = this->originZ;
+                        
+                        double zenith = 0;
+                        double azimuth = 0;
+                        double range = 0;
+                        
+                        for(std::vector<SPDPoint*>::iterator iterPts = pulse->pts->begin(); iterPts != pulse->pts->end(); ++iterPts)
+                        {
+                            SPDConvertToSpherical(pulse->x0, pulse->y0, pulse->z0, (*iterPts)->x, (*iterPts)->y, (*iterPts)->z, &zenith, &azimuth, &range);
+                            (*iterPts)->range = range;
+                            if(firstSph)
+                            {
+                                maxAzimuth = azimuth;
+                                minAzimuth = azimuth;
+                                maxZenith = zenith;
+                                minZenith = zenith;
+                                maxRange = range;
+                                minRange = range;
+                                firstSph = false;
+                            }
+                            else
+                            {
+                                if(azimuth < minAzimuth)
+                                {
+                                    minAzimuth = azimuth;
+                                }
+                                else if(azimuth > maxAzimuth)
+                                {
+                                    maxAzimuth = azimuth;
+                                }
+                                
+                                if(zenith < minZenith)
+                                {
+                                    minZenith = zenith;
+                                }
+                                else if(zenith > maxZenith)
+                                {
+                                    maxZenith = zenith;
+                                }
+                                
+                                if(range < minRange)
+                                {
+                                    minRange = range;
+                                }
+                                else if(range > maxRange)
+                                {
+                                    maxRange = range;
+                                }
+                            }
+                        }
+                        
+                        pulse->zenith = zenith;
+                        pulse->azimuth = azimuth;
+                    }
 					
 					pulses->push_back(pulse);
 				}
@@ -1453,6 +1654,66 @@ namespace spdlib
 							}
 						}
 					}
+                    
+                    if(this->defineOrigin)
+                    {
+                        pulse->x0 = this->originX;
+                        pulse->y0 = this->originY;
+                        pulse->z0 = this->originZ;
+                        
+                        double zenith = 0;
+                        double azimuth = 0;
+                        double range = 0;
+                        
+                        for(std::vector<SPDPoint*>::iterator iterPts = pulse->pts->begin(); iterPts != pulse->pts->end(); ++iterPts)
+                        {
+                            SPDConvertToSpherical(pulse->x0, pulse->y0, pulse->z0, (*iterPts)->x, (*iterPts)->y, (*iterPts)->z, &zenith, &azimuth, &range);
+                            (*iterPts)->range = range;
+                            if(firstSph)
+                            {
+                                maxAzimuth = azimuth;
+                                minAzimuth = azimuth;
+                                maxZenith = zenith;
+                                minZenith = zenith;
+                                maxRange = range;
+                                minRange = range;
+                                firstSph = false;
+                            }
+                            else
+                            {
+                                if(azimuth < minAzimuth)
+                                {
+                                    minAzimuth = azimuth;
+                                }
+                                else if(azimuth > maxAzimuth)
+                                {
+                                    maxAzimuth = azimuth;
+                                }
+                                
+                                if(zenith < minZenith)
+                                {
+                                    minZenith = zenith;
+                                }
+                                else if(zenith > maxZenith)
+                                {
+                                    maxZenith = zenith;
+                                }
+                                
+                                if(range < minRange)
+                                {
+                                    minRange = range;
+                                }
+                                else if(range > maxRange)
+                                {
+                                    maxRange = range;
+                                }
+                            }
+                        }
+                        
+                        pulse->zenith = zenith;
+                        pulse->azimuth = azimuth;
+                    }
+                    
 					pulses->push_back(pulse);
 				}
 				
@@ -1496,6 +1757,11 @@ namespace spdlib
 			{
 				spdFile->setBoundingBox(xMin, xMax, yMin, yMax);
 			}
+            
+            if(defineOrigin)
+            {
+                spdFile->setBoundingVolumeSpherical(minZenith, maxZenith, minAzimuth, maxAzimuth, minRange, maxRange);
+            }
 			
 			spdInFile->close();
 		}
@@ -1527,6 +1793,15 @@ namespace spdlib
 	{
 		SPDPointUtils ptsUtils;
 		SPDPulseUtils pulseUtils;
+        
+        double maxAzimuth = 0;
+        double minAzimuth = 0;
+        double maxZenith = 0;
+        double minZenith = 0;
+        double maxRange = 0;
+        double minRange = 0;
+        bool firstSph = true;
+        
 		try 
 		{
 			H5::Exception::dontPrint();
@@ -1913,6 +2188,65 @@ namespace spdlib
 							}
 						}
 					}
+                    
+                    if(this->defineOrigin)
+                    {
+                        pulse->x0 = this->originX;
+                        pulse->y0 = this->originY;
+                        pulse->z0 = this->originZ;
+                        
+                        double zenith = 0;
+                        double azimuth = 0;
+                        double range = 0;
+                        
+                        for(std::vector<SPDPoint*>::iterator iterPts = pulse->pts->begin(); iterPts != pulse->pts->end(); ++iterPts)
+                        {
+                            SPDConvertToSpherical(pulse->x0, pulse->y0, pulse->z0, (*iterPts)->x, (*iterPts)->y, (*iterPts)->z, &zenith, &azimuth, &range);
+                            (*iterPts)->range = range;
+                            if(firstSph)
+                            {
+                                maxAzimuth = azimuth;
+                                minAzimuth = azimuth;
+                                maxZenith = zenith;
+                                minZenith = zenith;
+                                maxRange = range;
+                                minRange = range;
+                                firstSph = false;
+                            }
+                            else
+                            {
+                                if(azimuth < minAzimuth)
+                                {
+                                    minAzimuth = azimuth;
+                                }
+                                else if(azimuth > maxAzimuth)
+                                {
+                                    maxAzimuth = azimuth;
+                                }
+                                
+                                if(zenith < minZenith)
+                                {
+                                    minZenith = zenith;
+                                }
+                                else if(zenith > maxZenith)
+                                {
+                                    maxZenith = zenith;
+                                }
+                                
+                                if(range < minRange)
+                                {
+                                    minRange = range;
+                                }
+                                else if(range > maxRange)
+                                {
+                                    maxRange = range;
+                                }
+                            }
+                        }
+                        
+                        pulse->zenith = zenith;
+                        pulse->azimuth = azimuth;
+                    }
 					
 					processor->processImportedPulse(spdFile, pulse);
 				}
@@ -2192,6 +2526,66 @@ namespace spdlib
 							}
 						}
 					}
+                    
+                    if(this->defineOrigin)
+                    {
+                        pulse->x0 = this->originX;
+                        pulse->y0 = this->originY;
+                        pulse->z0 = this->originZ;
+                        
+                        double zenith = 0;
+                        double azimuth = 0;
+                        double range = 0;
+                        
+                        for(std::vector<SPDPoint*>::iterator iterPts = pulse->pts->begin(); iterPts != pulse->pts->end(); ++iterPts)
+                        {
+                            SPDConvertToSpherical(pulse->x0, pulse->y0, pulse->z0, (*iterPts)->x, (*iterPts)->y, (*iterPts)->z, &zenith, &azimuth, &range);
+                            (*iterPts)->range = range;
+                            if(firstSph)
+                            {
+                                maxAzimuth = azimuth;
+                                minAzimuth = azimuth;
+                                maxZenith = zenith;
+                                minZenith = zenith;
+                                maxRange = range;
+                                minRange = range;
+                                firstSph = false;
+                            }
+                            else
+                            {
+                                if(azimuth < minAzimuth)
+                                {
+                                    minAzimuth = azimuth;
+                                }
+                                else if(azimuth > maxAzimuth)
+                                {
+                                    maxAzimuth = azimuth;
+                                }
+                                
+                                if(zenith < minZenith)
+                                {
+                                    minZenith = zenith;
+                                }
+                                else if(zenith > maxZenith)
+                                {
+                                    maxZenith = zenith;
+                                }
+                                
+                                if(range < minRange)
+                                {
+                                    minRange = range;
+                                }
+                                else if(range > maxRange)
+                                {
+                                    maxRange = range;
+                                }
+                            }
+                        }
+                        
+                        pulse->zenith = zenith;
+                        pulse->azimuth = azimuth;
+                    }
+                    
 					processor->processImportedPulse(spdFile, pulse);
 				}
 				
@@ -2235,6 +2629,11 @@ namespace spdlib
 			{
 				spdFile->setBoundingBox(xMin, xMax, yMin, yMax);
 			}
+            
+            if(defineOrigin)
+            {
+                spdFile->setBoundingVolumeSpherical(minZenith, maxZenith, minAzimuth, maxAzimuth, minRange, maxRange);
+            }
 			
 			spdInFile->close();
 		}
