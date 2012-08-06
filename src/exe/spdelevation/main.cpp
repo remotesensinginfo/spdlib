@@ -52,12 +52,12 @@ int main (int argc, char * const argv[])
 	{
 		CmdLine cmd("Alter the elevation of the pulses: spdelevation", ' ', "1.0.0");
 		
-		ValueArg<double> constantArg("c","constant","Alter pulse elevation by a constant amount",false,0,"double");
-		ValueArg<string> variableArg("v","variable","Alter pulse elevation by a variable amount defined using an image",false,"","string");
+		ValueArg<double> constantArg("","constant","Alter pulse elevation by a constant amount",false,0,"double");
+		ValueArg<string> variableArg("","variable","Alter pulse elevation by a variable amount defined using an image",false,"","string");
 		cmd.xorAdd(constantArg, variableArg);
         
-		SwitchArg addSwitch("a","add","Add offset", false);		
-		SwitchArg minusSwitch("m","minus","Remove offset", false);		
+		SwitchArg addSwitch("","add","Add offset", false);		
+		SwitchArg minusSwitch("","minus","Remove offset", false);		
 		cmd.xorAdd(addSwitch, minusSwitch);
         
         ValueArg<boost::uint_fast32_t> numOfRowsBlockArg("r","blockrows","Number of rows within a block (Default 100)",false,100,"unsigned int");
