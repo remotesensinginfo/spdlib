@@ -53,7 +53,15 @@ namespace spdlib
             float scale = initScale + (numOfScalesAbove * scaleGaps); // Start at lowest resolution...
             std::cout << "scale = " << scale << std::endl;
             // Initialise point classification (all classified to ground) and find point cloud dimensions
-            double *bbox = this->findDataExtentAndClassifyAllPtsAsGrd(pulses, xSize, ySize);
+            double *bbox = NULL;
+            try
+            {
+                bbox = this->findDataExtentAndClassifyAllPtsAsGrd(pulses, xSize, ySize);
+            }
+            catch(SPDProcessingException &)
+            {
+                return; // There were no pulses within the block.
+            }
             
             std::cout << "BBOX: [" << bbox[0] << "," << bbox[1] << "," << bbox[2] << "," << bbox[3] << "]\n";
             
@@ -189,6 +197,11 @@ namespace spdlib
                         }
                     }
                 }
+            }
+            
+            if(first)
+            {
+                throw SPDProcessingException("There were no pulses present.");
             }
         }
         catch(SPDProcessingException &e)

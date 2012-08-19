@@ -71,7 +71,7 @@ int main (int argc, char * const argv[])
 		}
         else
         {
-            cout << "SVN Version: " << SPDLIB_SVN_VERSION << endl;
+            cout << "SVN Version: " << SPDLIB_REPO_VERSION << endl;
             cout << "SPD IO Library Version: " << SPDLIB_IO_VERSION << endl;
             cout << "SPD Library Version: " << SPDLIB_VERSION << endl;
         }
