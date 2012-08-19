@@ -53,14 +53,15 @@ namespace spdlib
             float scale = initScale + (numOfScalesAbove * scaleGaps); // Start at lowest resolution...
             std::cout << "scale = " << scale << std::endl;
             // Initialise point classification (all classified to ground) and find point cloud dimensions
-            double *bbox = NULL;
-            try
+            std::pair<double*,size_t> data = this->findDataExtentAndClassifyAllPtsAsGrd(pulses, xSize, ySize);
+            double *bbox = data.first;
+            
+            std::cout << "Number of pulses in block: " << data.second << std::endl;
+            
+            if(data.second < 1)
             {
-                bbox = this->findDataExtentAndClassifyAllPtsAsGrd(pulses, xSize, ySize);
-            }
-            catch(SPDProcessingException &)
-            {
-                return; // There were no pulses within the block.
+                delete[] bbox;
+                return;
             }
             
             std::cout << "BBOX: [" << bbox[0] << "," << bbox[1] << "," << bbox[2] << "," << bbox[3] << "]\n";
@@ -131,10 +132,11 @@ namespace spdlib
     }
     
     
-    double* SPDMultiscaleCurvatureGrdClassification::findDataExtentAndClassifyAllPtsAsGrd(std::vector<SPDPulse*> ***pulses, boost::uint_fast32_t xSizePulses, boost::uint_fast32_t ySizePulses) throw(SPDProcessingException)
+    std::pair<double*,size_t> SPDMultiscaleCurvatureGrdClassification::findDataExtentAndClassifyAllPtsAsGrd(std::vector<SPDPulse*> ***pulses, boost::uint_fast32_t xSizePulses, boost::uint_fast32_t ySizePulses) throw(SPDProcessingException)
     {
         // bbox - TLX TLY BRX BRY
         double *bbox = new double[4];
+        size_t numPulses = 0;
         try
         {
             bool first = true;
@@ -196,12 +198,8 @@ namespace spdlib
                             }
                         }
                     }
+                    ++numPulses;
                 }
-            }
-            
-            if(first)
-            {
-                throw SPDProcessingException("There were no pulses present.");
             }
         }
         catch(SPDProcessingException &e)
@@ -209,7 +207,7 @@ namespace spdlib
             throw e;
         }
         
-        return bbox;
+        return std::pair<double*,size_t>(bbox, numPulses);
     }
     
     float** SPDMultiscaleCurvatureGrdClassification::createElevationRaster(double *bbox, float rasterScale, boost::uint_fast32_t *xSizeRaster, boost::uint_fast32_t *ySizeRaster, std::vector<SPDPulse*> ***pulses, boost::uint_fast32_t xSizePulses, boost::uint_fast32_t ySizePulses) throw(SPDProcessingException)
