@@ -185,6 +185,7 @@ namespace spdlib
 					}
 					
 					spdPulse->scanAngleRank = p.GetScanAngleRank();
+					spdPulse->sourceID = p.GetPointSourceID();
 					
 					if(indexCoords == SPD_FIRST_RETURN)
 					{
@@ -418,7 +419,8 @@ namespace spdlib
 					}
 					
 					spdPulse->scanAngleRank = p.GetScanAngleRank();
-					
+					spdPulse->sourceID = p.GetPointSourceID();
+                    
 					if(indexCoords == SPD_FIRST_RETURN)
 					{
 						spdPulse->xIdx = spdPulse->pts->front()->x;
@@ -644,6 +646,7 @@ namespace spdlib
 					}
 					
 					spdPulse->scanAngleRank = p.GetScanAngleRank();
+					spdPulse->sourceID = p.GetPointSourceID();
 					
 					if(indexCoords == SPD_FIRST_RETURN)
 					{
@@ -761,6 +764,7 @@ namespace spdlib
 			spdPt->y = y;
 			spdPt->z = z;
 			spdPt->amplitudeReturn = pt.GetIntensity();
+			spdPt->user = pt.GetUserData();
 			
 			liblas::Classification lasClass = pt.GetClassification();
 			
