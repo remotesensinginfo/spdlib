@@ -677,6 +677,7 @@ namespace spdlib
 			}
 			
 			idx = new SPDPointGridIndex();
+            std::cout << "Building Index with " << pts->size() << " points\n";
 			idx->buildIndex(pts, this->gridResolution);
             
             if(thinGrid)
@@ -742,6 +743,7 @@ namespace spdlib
 			}
 			
 			idx = new SPDPointGridIndex();
+            std::cout << "Building Index with " << pts->size() << " points\n";
 			idx->buildIndex(pts, this->gridResolution);
             
             if(thinGrid)
@@ -802,6 +804,7 @@ namespace spdlib
             }
             
             idx = new SPDPointGridIndex();
+            std::cout << "Building Index with " << pts->size() << " points\n";
             idx->buildIndex(pts, this->gridResolution);
             
             if(thinGrid)
@@ -862,6 +865,7 @@ namespace spdlib
             }
             
             idx = new SPDPointGridIndex();
+            std::cout << "Building Index with " << pts->size() << " points\n";
             idx->buildIndex(pts, this->gridResolution);
             
             if(thinGrid)
