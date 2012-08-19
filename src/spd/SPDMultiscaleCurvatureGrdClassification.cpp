@@ -64,6 +64,7 @@ namespace spdlib
                 return;
             }
             
+            std::cout.precision(12);
             std::cout << "BBOX: [" << bbox[0] << "," << bbox[1] << "," << bbox[2] << "," << bbox[3] << "]\n";
             
             boost::uint_fast32_t xSizeRaster = 0;
@@ -113,6 +114,11 @@ namespace spdlib
                         throw e;
                     }
                     std::cout << "Change:\t" << proportionOfChange << std::endl;
+                    if(proportionOfChange == 1)
+                    {
+                        delete[] bbox;
+                        return;
+                    }
                 }while(proportionOfChange > thresOfChange);
                 
                 scale -= scaleGaps; // decrement the scale parameter
