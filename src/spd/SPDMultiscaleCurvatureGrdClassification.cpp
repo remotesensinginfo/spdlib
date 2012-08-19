@@ -58,8 +58,10 @@ namespace spdlib
             
             std::cout << "Number of points in block: " << data.second << std::endl;
             
-            if(data.second < 1)
+            if(data.second < 20)
             {
+                std::cout << "Too few points in block, assigned to unclassified\n";
+                this->assignToUnclassified(pulses, xSize, ySize);
                 delete[] bbox;
                 return;
             }
@@ -219,6 +221,35 @@ namespace spdlib
         }
         
         return std::pair<double*,size_t>(bbox, numPoints);
+    }
+    
+    void SPDMultiscaleCurvatureGrdClassification::assignToUnclassified(std::vector<SPDPulse*> ***pulses,boost::uint_fast32_t xSizePulses,boost::uint_fast32_t ySizePulses) throw(SPDProcessingException)
+    {
+        try
+        {
+            std::vector<SPDPulse*>::iterator iterPulses;
+            std::vector<SPDPoint*>::iterator iterPoints;
+            for(boost::uint_fast32_t i = 0; i < ySizePulses; ++i)
+            {
+                for(boost::uint_fast32_t j = 0; j < xSizePulses; ++j)
+                {
+                    for(iterPulses = pulses[i][j]->begin(); iterPulses != pulses[i][j]->end(); ++iterPulses)
+                    {
+                        if((*iterPulses)->numberOfReturns > 0)
+                        {
+                            for(iterPoints = (*iterPulses)->pts->begin(); iterPoints != (*iterPulses)->pts->end(); ++iterPoints)
+                            {
+                                (*iterPoints)->classification = SPD_UNCLASSIFIED;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        catch(SPDProcessingException &e)
+        {
+            throw e;
+        }
     }
     
     float** SPDMultiscaleCurvatureGrdClassification::createElevationRaster(double *bbox, float rasterScale, boost::uint_fast32_t *xSizeRaster, boost::uint_fast32_t *ySizeRaster, std::vector<SPDPulse*> ***pulses, boost::uint_fast32_t xSizePulses, boost::uint_fast32_t ySizePulses) throw(SPDProcessingException)
