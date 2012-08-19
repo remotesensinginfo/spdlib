@@ -84,7 +84,7 @@ namespace spdlib
         ~SPDMultiscaleCurvatureGrdClassification();
         
     protected:
-        double* findDataExtentAndClassifyAllPtsAsGrd(std::vector<SPDPulse*> ***pulses,boost::uint_fast32_t xSizePulses,boost::uint_fast32_t ySizePulses) throw(SPDProcessingException);
+        std::pair<double*,size_t> findDataExtentAndClassifyAllPtsAsGrd(std::vector<SPDPulse*> ***pulses,boost::uint_fast32_t xSizePulses,boost::uint_fast32_t ySizePulses) throw(SPDProcessingException);
         float** createElevationRaster(double *bbox, float rasterScale,boost::uint_fast32_t *xSizeRaster,boost::uint_fast32_t *ySizeRaster, std::vector<SPDPulse*> ***pulses,boost::uint_fast32_t xSizePulses,boost::uint_fast32_t ySizePulses) throw(SPDProcessingException);
         void smoothMeanRaster(float **raster,boost::uint_fast32_t xSizeRaster,boost::uint_fast32_t ySizeRasterr,boost::uint_fast16_t filterHSize) throw(SPDProcessingException);
         void smoothMedianRaster(float **raster,boost::uint_fast32_t xSizeRaster,boost::uint_fast32_t ySizeRasterr,boost::uint_fast16_t filterHSize) throw(SPDProcessingException);
