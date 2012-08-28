@@ -36,15 +36,21 @@ class header:
         self.fileSignature = "".join(headerTuple[0:4]) # 4 bytes ("TEWF")    - File signature
         self.versionMajor = headerTuple[4] # 1 bytes                                    - Will be 1 if version is 1.20
         self.versionMinor = headerTuple[5] # 1 bytes                                    - Will be 20 if version is 1.20
+        if self.versionMinor <> 20:
+            print "Only tew-format 1.20 is supported."
+            sys.exit()
         scanDate = datetime.datetime(headerTuple[6], 1, 1) + datetime.timedelta(headerTuple[7] - 1)
-        #2 bytes                    - E.g. 2009
-        # 2 bytes                   - Julian date of the year, (=Day of the year? E.g. 32 is Feb 1?) TODO
+        # 2 bytes                    - E.g. 2009
+        # 2 bytes                   - Julian date of the year, (=Day of the year. E.g. 32 is Feb 1)
         self.scanYear = scanDate.year
         self.scanMonth = scanDate.month
         self.scanDay = scanDate.day
         self.headerSize = headerTuple[8] # 2 bytes                                 - The total size, in bytes, of the entire header block
         self.offsetToData = headerTuple[9] # 4 bytes                                - Total offset, in bytes, from the beginning of the file to the first data record.
-        self.waveformDataFormat = headerTuple[10] # 1 byte (0-255)    - Waveform Data record format. TODO: Only supporting version 4. Check if WaveformDataFormat == 4 and give error otherwise.
+        self.waveformDataFormat = headerTuple[10] # 1 byte (0-255)    - Waveform Data record format. (Only supporting version 4 at the moment).
+        if self.waveformDataFormat <> 4:
+            print "Only waveform data format 4 is supported."
+            sys.exit()
         self.sampleLength = headerTuple[11] # 8 bytes                          - The distance, in meters, between the samples in the waveform.
         self.sampleLengthNs = self.sampleLength / spdSpeedOfLightMns #         - Calculated distance in nanoseconds.
         self.noOfWaveformDataRecs = headerTuple[12] # 4 bytes            - Number of waweform data records within the file.
@@ -154,7 +160,7 @@ class pulse:
         self.triggerWfBlockLength = blockLength # 1 byte                - The number of waveform bytes in this block.
         self.triggerWfBlockOffset = blockOffset # 2 bytes               - The sample number of the first sample in the block.
         self.triggerWf = list(wf) # array with triggerWfBlockLength bytes       - Array with waveform amplitude values
-        self.triggerEchoOffset = 13.45 # TODO: Calculate distance to the trigger pulse.
+        self.triggerEchoOffset = self.triggerWf.index(max(self.triggerWf)) # Using the maximum value while that's the peak. The peak is used when decomposing using Gaussian too.
 
 
     def setWf1(self, blockLength, blockOffset, wf):
@@ -232,8 +238,8 @@ def createSPDPulse(tewHeader, tewPulse, pulseID):
     pulse.y0 = tewPulse.xyzRelOrigin[1] * tewHeader.yScaleFactor + tewHeader.yOffset
     pulse.z0 = tewPulse.xyzRelOrigin[2] * tewHeader.zScaleFactor + tewHeader.zOffset
     range = np.sqrt(tewPulse.outgoingVector[0]**2 + tewPulse.outgoingVector[1]**2 + tewPulse.outgoingVector[2]**2)
-    pulse.azimuth = np.arctan2(tewPulse.outgoingVector[1], tewPulse.outgoingVector[0]) #Will have a value between -pi..pi. Seem to be like that in spdCommon.cpp when converting cartesian to spherical coordinates.
-    if pulse.azimuth < 0:
+    pulse.azimuth = np.arctan2(tewPulse.outgoingVector[0], tewPulse.outgoingVector[1]) #Should be (y, x), but in SPD it's (x, y).
+    if pulse.azimuth < 0: #It has a value between -pi..pi, but change to a value between 0..2*pi.
         pulse.azimuth += spdTwoPi
     pulse.zenith = np.arccos(tewPulse.outgoingVector[2] / range)
 
@@ -284,7 +290,10 @@ def main(cmdargs):
     Convert TEW files to SPD
     """
     # Create SPD file
-    spdFile = cmdargs.tewFile.replace(".tew",".spd")
+    if cmdargs.spdFile is None:
+        spdFile = cmdargs.tewFile.replace(".tew", ".spd")
+    else:
+        spdFile = cmdargs.spdFile
     spdObj = spdpy.createSPDFile(spdFile)
     spdWriter = spdpy.SPDPyNoIdxWriter()
     spdWriter.open(spdObj,spdFile)
@@ -342,6 +351,9 @@ def main(cmdargs):
 
     print "Converting", numPulsesToConvert, "pulses"
 
+    #Formats to read from pulse
+    pulse4Format = struct.Struct('=d f f H H H 3l 3l B')
+    wfHeaderFormat = struct.Struct('=B H') #Block length / Block offset.
 
     for pulseId in xrange(0, numPulsesToConvert):
         #Pulses
@@ -350,17 +362,16 @@ def main(cmdargs):
 
 
         # Read tew-pulse header
-        pulse4Format = struct.Struct('=d f f H H H 3l 3l B')
         pulse4str = tewObj.read(pulse4Format.size)
         pulse4 = pulse4Format.unpack_from(pulse4str, 0)
 
+        #Create and set pulse
         tewPulse = pulse(pulse4)
 
 
         # Read tew trigger pulse header
-        triggerHeaderFormat = struct.Struct('=B H') #Block length / Block offset.
-        triggerHeaderStr = tewObj.read(triggerHeaderFormat.size)
-        triggerHeader = triggerHeaderFormat.unpack_from(triggerHeaderStr, 0)
+        triggerHeaderStr = tewObj.read(wfHeaderFormat.size)
+        triggerHeader = wfHeaderFormat.unpack_from(triggerHeaderStr, 0)
 
         # Read tew trigger waveform
         triggerWfFormat = array.array('B')
@@ -376,31 +387,35 @@ def main(cmdargs):
         tewPulse.setTriggerWf(triggerHeader[0], triggerHeader[1], triggerWf)
 
 
-        for i in xrange(1, tewPulse.noOfWfBlocksCh1+1): #TODO: Need to combine many blocks into one. At the moment, only the last block is stored.
+        # Received waveform ch1
+        recWf1Header = list()
+        recWf1 = list()
+        for i in xrange(0, tewPulse.noOfWfBlocksCh1):
             # Read tew received waveform 1 (low ch) header
-            recWf1HeaderFormat = struct.Struct('=B H') #Block length / Block offset.
-            recWf1HeaderStr = tewObj.read(recWf1HeaderFormat.size)
-            recWf1Header = recWf1HeaderFormat.unpack_from(recWf1HeaderStr, 0)
+            recWf1HeaderStr = tewObj.read(wfHeaderFormat.size)
+            recWf1Header.append(wfHeaderFormat.unpack_from(recWf1HeaderStr, 0))
 
             # Read tew received waveform 1 (low ch = sensitive)
             recWf1Format = array.array('B')
-            recWf1Format.read(tewObj, recWf1Header[0])
+            recWf1Format.read(tewObj, recWf1Header[i][0])
             recWf1Temp = np.array(recWf1Format, dtype=np.uint)
 
             # Apply correction table
-            recWf1 = np.zeros(len(recWf1Temp), dtype=np.uint)
+            recWf1.append(np.zeros(len(recWf1Temp), dtype=np.uint))
             for j in xrange(0, len(recWf1Temp)):
-                recWf1[j] = tewHeader.ch1CorrectionTable[recWf1Temp[j]]
+                recWf1[i][j] = tewHeader.ch1CorrectionTable[recWf1Temp[j]]
 
-            #Store header and pulse for received waveform
-            tewPulse.setWf1(recWf1Header[0], recWf1Header[1], recWf1)
+        #Store header and pulse for received waveform #TODO: Need to combine many blocks into one. At the moment, only the last block is stored.
+        tewPulse.setWf1(recWf1Header[i][0], recWf1Header[i][1], recWf1[i])
 
 
-        for i in xrange(1, tewPulse.noOfWfBlocksCh2+1): #TODO: Lägg till nåt som syr ihop fler än 1 till samma paket... och därefter kombinerar Ch1 och Ch2.
+ee
+        recWf2Header = list()
+        recWf2 = list()
+        for i in xrange(0, tewPulse.noOfWfBlocksCh2): #TODO: Lägg till nåt som syr ihop fler än 1 till samma paket... och därefter kombinerar Ch1 och Ch2.
             # Read tew received waveform 2 (high ch) header
-            recWf2HeaderFormat = struct.Struct('=B H') #Block length / Block offset.
-            recWf2HeaderStr = tewObj.read(recWf2HeaderFormat.size)
-            recWf2Header = recWf2HeaderFormat.unpack_from(recWf2HeaderStr, 0)
+            recWf2HeaderStr = tewObj.read(wfHeaderFormat.size)
+            recWf2Header = wfHeaderFormat.unpack_from(recWf2HeaderStr, 0)
 
             # Read tew received waveform 2 (high ch)
             recWf2Format = array.array('B')
@@ -465,6 +480,7 @@ class CmdArgs:
   def __init__(self):
     p = optparse.OptionParser()
     p.add_option("-i", "--inputFile", dest="tewFile", default=None, help="Input TEW-file (required)")
+    p.add_option("-o", "--outputFile", dest="spdFile", default=None, help="Output SPD-file (default: same as input with .spd-ending)")
     p.add_option("-v", "--verbose", dest="verbose", default=False, action="store_true", help="Verbose output.")
     p.add_option("--verbosePulses", dest="verbosePulses", default=False, action="store_true", help="Verbose each pulses' header and values.")
     p.add_option("-n", "--numPulses", dest="numPulses", default=0, type="int", help="Number of pulses to convert (and show if verbosePulses). Default 0 (=all pulses).")
