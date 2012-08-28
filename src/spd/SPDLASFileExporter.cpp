@@ -23,7 +23,7 @@
  */
 
 #include "spd/SPDLASFileExporter.h"
-
+#include "spd/spd-config.h"
 
 
 namespace spdlib
@@ -64,7 +64,7 @@ namespace spdlib
 		{
             if (spdFile->getDecomposedPtDefined() == SPD_TRUE)
             {
-                std::cout << "Decomposed Point data found - Note. widths are not stored.\n";
+                std::cout << "Decomposed Point data found - Note. Widths are not stored.\n";
             }
 			else if(spdFile->getDiscretePtDefined() == SPD_TRUE)
 			{
@@ -88,7 +88,11 @@ namespace spdlib
 				lasFileHeader.SetSRS(lasSpatRef);
 			}
 			lasFileHeader.SetCompressed(false);
-
+            lasFileHeader.SetScale(0.01,0.01,0.01);
+            lasFileHeader.SetMin(spdFile->getXMin(),spdFile->getYMin(),spdFile->getZMin());
+            lasFileHeader.SetMax(spdFile->getXMax(),spdFile->getYMax(),spdFile->getZMax());
+            lasFileHeader.SetSoftwareId(SPDLIB_PACKAGE_STRING);
+            lasFileHeader.SetSystemId("EXPORT");
 			lasWriter = new liblas::Writer(*outDataStream, lasFileHeader);
 			
 			fileOpened = true;
@@ -135,14 +139,15 @@ namespace spdlib
                         {
                             liblas::Point point;
                             //cout << "PT (list): [" << (*iterPts)->x << ", " << (*iterPts)->y << ", " << (*iterPts)->z << "]\n";
-                            point.SetCoordinates((*iterPts)->x, (*iterPts)->y, (*iterPts)->z);
+                            point.SetCoordinates((*iterPts)->x/0.01, (*iterPts)->y/0.01, (*iterPts)->z/0.01);
                             point.SetIntensity((*iterPts)->amplitudeReturn);
-                            point.SetReturnNumber((*iterPts)->returnID);
+                            point.SetReturnNumber((*iterPts)->returnID);                            
                             point.SetNumberOfReturns((*iterInPls)->numberOfReturns);
                             point.SetPointSourceID((*iterInPls)->sourceID);
-                            point.SetTime((*iterPts)->gpsTime);
+                            point.SetScanAngleRank((*iterInPls)->zenith*180.0/3.141592653589793+0.5-180.0);
+                            point.SetTime((*iterPts)->gpsTime/1000000.0);
+                            point.SetUserData((*iterPts)->widthReturn);
                             point.SetColor(liblas::Color ((*iterPts)->red, (*iterPts)->blue, (*iterPts)->green));
-                            
                             
                             liblas::Classification lasClass;
                             if((*iterPts)->classification == SPD_CREATED)
@@ -238,12 +243,14 @@ namespace spdlib
                         {
                             liblas::Point point;
                             //cout << "PT (list): [" << (*iterPts)->x << ", " << (*iterPts)->y << ", " << (*iterPts)->z << "]\n";
-                            point.SetCoordinates((*iterPts)->x, (*iterPts)->y, (*iterPts)->z);
+                            point.SetCoordinates((*iterPts)->x/0.01, (*iterPts)->y/0.01, (*iterPts)->z/0.01);
                             point.SetIntensity((*iterPts)->amplitudeReturn);
                             point.SetReturnNumber((*iterPts)->returnID);
                             point.SetNumberOfReturns((*iterInPls)->numberOfReturns);
                             point.SetPointSourceID((*iterInPls)->sourceID);
-                            point.SetTime((*iterPts)->gpsTime);
+                            point.SetScanAngleRank((*iterInPls)->zenith*180.0/3.141592653589793+0.5-180.0);
+                            point.SetTime((*iterPts)->gpsTime/1000000.0);
+                            point.SetUserData((*iterPts)->widthReturn);
                             point.SetColor(liblas::Color ((*iterPts)->red, (*iterPts)->blue, (*iterPts)->green));
                             
                             
@@ -359,6 +366,3 @@ namespace spdlib
 		}
 	}
 }
-
-
-
