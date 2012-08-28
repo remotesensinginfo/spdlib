@@ -29,99 +29,99 @@ namespace spdlib
 
     SPDCalcMetrics::SPDCalcMetrics()
     {
-        
+
     }
-    
+
     void SPDCalcMetrics::calcMetricToImage(std::string inXMLFilePath, std::string inputSPDFile, std::string outputImage, boost::uint_fast32_t blockXSize, boost::uint_fast32_t blockYSize, float processingResolution, std::string gdalFormat) throw (SPDProcessingException)
     {
-        try 
+        try
         {
             std::vector<SPDMetric*> *metrics = new std::vector<SPDMetric*>();
             std::vector<std::string> *fieldNames = new std::vector<std::string>();
             this->parseMetricsXML(inXMLFilePath, metrics, fieldNames);
-            
+
             if(metrics->size() != fieldNames->size())
             {
                 throw SPDProcessingException("The number of metrics and fieldnames needs to be the same.");
             }
-            
+
             std::cout << metrics->size() << " metrics where found." << std::endl;
-            
-            
+
+
             SPDFile *spdInFile = new SPDFile(inputSPDFile);
-            SPDPulseProcessor *pulseStatsProcessor = new SPDCalcImageMetrics(metrics, fieldNames);           
+            SPDPulseProcessor *pulseStatsProcessor = new SPDCalcImageMetrics(metrics, fieldNames);
             SPDSetupProcessPulses processPulses = SPDSetupProcessPulses(blockXSize, blockYSize, true);
             processPulses.processPulsesWithOutputImage(pulseStatsProcessor, spdInFile, outputImage, metrics->size(), processingResolution, gdalFormat, false, 0);
-            
+
             delete spdInFile;
             delete pulseStatsProcessor;
-        } 
-        catch (SPDProcessingException &e) 
+        }
+        catch (SPDProcessingException &e)
         {
             throw e;
         }
     }
-    
+
     void SPDCalcMetrics::calcMetricToVectorShp(std::string inXMLFilePath, std::string inputSPDFile, std::string inputVectorShp, std::string outputVectorShp, bool deleteOutShp, bool copyAttributes) throw (SPDProcessingException)
     {
-        try 
+        try
         {
             std::vector<SPDMetric*> *metrics = new std::vector<SPDMetric*>();
             std::vector<std::string> *fieldNames = new std::vector<std::string>();
             this->parseMetricsXML(inXMLFilePath, metrics, fieldNames);
-            
+
             if(metrics->size() != fieldNames->size())
             {
                 throw SPDProcessingException("The number of metrics and fieldnames needs to be the same.");
             }
-            
+
             std::cout << metrics->size() << " metrics where found." << std::endl;
-            
+
             SPDPolygonProcessor *polyProcessor = new SPDCalcPolyMetrics(metrics, fieldNames);
             SPDSetupProcessShapefilePolygons processPolygons;
             processPolygons.processPolygons(inputSPDFile, inputVectorShp, outputVectorShp, deleteOutShp, copyAttributes, polyProcessor);
             delete polyProcessor;
-        } 
-        catch (SPDProcessingException &e) 
+        }
+        catch (SPDProcessingException &e)
         {
             throw e;
         }
     }
-    
+
     void SPDCalcMetrics::calcMetricForVector2ASCII(std::string inXMLFilePath, std::string inputSPDFile, std::string inputVectorShp, std::string outputASCII) throw (SPDProcessingException)
     {
-        try 
+        try
         {
             std::vector<SPDMetric*> *metrics = new std::vector<SPDMetric*>();
             std::vector<std::string> *fieldNames = new std::vector<std::string>();
             this->parseMetricsXML(inXMLFilePath, metrics, fieldNames);
-            
+
             if(metrics->size() != fieldNames->size())
             {
                 throw SPDProcessingException("The number of metrics and fieldnames needs to be the same.");
             }
-            
+
             std::cout << metrics->size() << " metrics where found." << std::endl;
-            
+
             SPDPolygonProcessor *polyProcessor = new SPDCalcPolyMetrics(metrics, fieldNames);
             SPDSetupProcessShapefilePolygons processPolygons;
             processPolygons.processPolygons(inputSPDFile, inputVectorShp, outputASCII, polyProcessor);
             delete polyProcessor;
-        } 
-        catch (SPDProcessingException &e) 
+        }
+        catch (SPDProcessingException &e)
         {
             throw e;
         }
     }
-    
+
     void SPDCalcMetrics::parseMetricsXML(std::string inXMLFilePath, std::vector<SPDMetric*> *metrics, std::vector<std::string> *fieldNames) throw(SPDProcessingException)
     {
         std::cout << "Reading XML file: " << inXMLFilePath << std::endl;
         xercesc::DOMLSParser* parser = NULL;
-		try 
+		try
 		{
 			xercesc::XMLPlatformUtils::Initialize();
-            
+
             XMLCh tempStr[100];
             xercesc::DOMImplementation *impl = NULL;
             xercesc::ErrorHandler* errHandler = NULL;
@@ -131,33 +131,33 @@ namespace spdlib
             XMLCh *metricTagStr = NULL;
             xercesc::DOMElement *metricElement = NULL;
             XMLCh *fieldXMLStr = xercesc::XMLString::transcode("field");
-            
-            
+
+
 			metricsTagStr = xercesc::XMLString::transcode("spdlib:metrics");
 			metricTagStr = xercesc::XMLString::transcode("spdlib:metric");
-            
+
 			xercesc::XMLString::transcode("LS", tempStr, 99);
 			impl = xercesc::DOMImplementationRegistry::getDOMImplementation(tempStr);
 			if(impl == NULL)
 			{
 				throw SPDProcessingException("DOMImplementation is NULL");
 			}
-			
+
 			// Create Parser
 			parser = ((xercesc::DOMImplementationLS*)impl)->createLSParser(xercesc::DOMImplementationLS::MODE_SYNCHRONOUS, 0);
 			errHandler = (xercesc::ErrorHandler*) new xercesc::HandlerBase();
 			parser->getDomConfig()->setParameter(xercesc::XMLUni::fgDOMErrorHandler, errHandler);
-			
+
 			// Open Document
-			xmlDoc = parser->parseURI(inXMLFilePath.c_str());	
-			
+			xmlDoc = parser->parseURI(inXMLFilePath.c_str());
+
 			// Get the Root element
 			rootElement = xmlDoc->getDocumentElement();
 			if(!xercesc::XMLString::equals(rootElement->getTagName(), metricsTagStr))
 			{
 				throw SPDProcessingException("Incorrect root element; Root element should be \"spdlib:metrics\"");
 			}
-            
+
 			boost::uint_fast32_t numMetrics = rootElement->getChildElementCount();
             metricElement = rootElement->getFirstElementChild();
             for(boost::uint_fast32_t i = 0; i < numMetrics; ++i)
@@ -173,30 +173,30 @@ namespace spdlib
                 {
                     throw SPDProcessingException("No \'field\' attribute was provided for root metric.");
                 }
-                
+
                 // Retrieve Metric and add to list.
                 metrics->push_back(this->createMetric(metricElement));
-                
+
                 // Move on to next metric
 				metricElement = metricElement->getNextElementSibling();
             }
-            
+
             parser->release();
 			delete errHandler;
 			xercesc::XMLString::release(&metricsTagStr);
 			xercesc::XMLString::release(&metricTagStr);
             xercesc::XMLString::release(&fieldXMLStr);
-			
+
 			xercesc::XMLPlatformUtils::Terminate();
         }
-		catch (const xercesc::XMLException& e) 
+		catch (const xercesc::XMLException& e)
 		{
 			parser->release();
 			char *message = xercesc::XMLString::transcode(e.getMessage());
 			std::string outMessage =  std::string("XMLException : ") + std::string(message);
 			throw SPDProcessingException(outMessage.c_str());
 		}
-		catch (const xercesc::DOMException& e) 
+		catch (const xercesc::DOMException& e)
 		{
 			parser->release();
 			char *message = xercesc::XMLString::transcode(e.getMessage());
@@ -208,7 +208,7 @@ namespace spdlib
 			throw e;
 		}
     }
-    
+
     SPDMetric* SPDCalcMetrics::createMetric(xercesc::DOMElement *metricElement) throw(SPDProcessingException)
     {
         XMLCh *metricadd = xercesc::XMLString::transcode("add");
@@ -347,12 +347,12 @@ namespace spdlib
         XMLCh *notGrdXMLStr = xercesc::XMLString::transcode("NotGrd");
         XMLCh *vegXMLStr = xercesc::XMLString::transcode("Veg");
         XMLCh *grdXMLStr = xercesc::XMLString::transcode("Grd");
-        
+
         SPDTextFileUtilities textUtils;
         const char *nanVal = "NaN";
         SPDMetric *metric = NULL;
         XMLCh *metricNameStr = NULL;
-        
+
         boost::uint_fast32_t returnID = 0;
         boost::uint_fast32_t classID = 0;
         boost::uint_fast32_t minNumReturns = 0;
@@ -360,7 +360,7 @@ namespace spdlib
         double lowThreshold = 0;
         double heightUpThreshold = 0;
         double heightLowThreshold = 0;
-        
+
         try
         {
             if(metricElement->hasAttribute(metricNameXMLStr))
@@ -373,7 +373,7 @@ namespace spdlib
             {
                 throw SPDProcessingException("The \'metric\' attribute was not provided for the metric element.");
             }
-            
+
             if(metricElement->hasAttribute(metricReturnXMLStr))
             {
                 if(xercesc::XMLString::equals(allXMLStr, metricElement->getAttribute(metricReturnXMLStr)))
@@ -407,7 +407,7 @@ namespace spdlib
             {
                 returnID = SPD_ALL_RETURNS;
             }
-            
+
             if(metricElement->hasAttribute(metricClassXMLStr))
             {
                 if(xercesc::XMLString::equals(allXMLStr, metricElement->getAttribute(metricClassXMLStr)))
@@ -437,7 +437,7 @@ namespace spdlib
             {
                 classID = SPD_ALL_CLASSES;
             }
-            
+
             if(metricElement->hasAttribute(metricMinNumReturnsXMLStr))
             {
                 char *charValue = xercesc::XMLString::transcode(metricElement->getAttribute(metricMinNumReturnsXMLStr));
@@ -448,7 +448,7 @@ namespace spdlib
             {
                 minNumReturns = 0;
             }
-            
+
             if(metricElement->hasAttribute(metricUpThresholdXMLStr))
             {
                 char *charValue = xercesc::XMLString::transcode(metricElement->getAttribute(metricUpThresholdXMLStr));
@@ -459,7 +459,7 @@ namespace spdlib
             {
                 upThreshold = nan(nanVal);
             }
-            
+
             if(metricElement->hasAttribute(metricLowThresholdXMLStr))
             {
                 char *charValue = xercesc::XMLString::transcode(metricElement->getAttribute(metricLowThresholdXMLStr));
@@ -470,7 +470,7 @@ namespace spdlib
             {
                 lowThreshold = nan(nanVal);
             }
-            
+
             if(metricElement->hasAttribute(heightUpThresholdXMLStr))
             {
                 char *charValue = xercesc::XMLString::transcode(metricElement->getAttribute(heightUpThresholdXMLStr));
@@ -481,7 +481,7 @@ namespace spdlib
             {
                 heightUpThreshold = nan(nanVal);
             }
-            
+
             if(metricElement->hasAttribute(heightLowThresholdXMLStr))
             {
                 char *charValue = xercesc::XMLString::transcode(metricElement->getAttribute(heightLowThresholdXMLStr));
@@ -492,8 +492,8 @@ namespace spdlib
             {
                 heightLowThreshold = nan(nanVal);
             }
-            
-            
+
+
             if(xercesc::XMLString::equals(metricNameStr, metricadd))
             {
                 unsigned int numMetrics = metricElement->getChildElementCount();
@@ -502,19 +502,19 @@ namespace spdlib
                     std::cout << "Number of metrics = " << numMetrics << std::endl;
                     throw SPDProcessingException("The \'add\' metric needs at least two child metrics.");
                 }
-                
+
                 std::vector<SPDMetric*> *metrics = new std::vector<SPDMetric*>();
-                
+
                 xercesc::DOMElement *tmpMetricElement = metricElement->getFirstElementChild();
                 for(boost::uint_fast32_t i = 0; i < numMetrics; ++i)
                 {
                     // Retrieve Metric and add to list.
                     metrics->push_back(this->createMetric(tmpMetricElement));
-                    
+
                     // Move on to next metric
                     tmpMetricElement = tmpMetricElement->getNextElementSibling();
                 }
-                
+
                 metric = new SPDMetricAdd(metrics);
             }
             else if(xercesc::XMLString::equals(metricNameStr, metricminus))
@@ -524,12 +524,12 @@ namespace spdlib
                 {
                     throw SPDProcessingException("The \'minus\' metric needs two child metrics.");
                 }
-                
+
                 xercesc::DOMElement *metricElementIn = metricElement->getFirstElementChild();
                 SPDMetric *metric1 = this->createMetric(metricElementIn);
                 metricElementIn = metricElementIn->getNextElementSibling();
                 SPDMetric *metric2 = this->createMetric(metricElementIn);
-                
+
                 metric = new SPDMetricMinus(metric1, metric2);
             }
             else if(xercesc::XMLString::equals(metricNameStr, metricmultiply))
@@ -539,19 +539,19 @@ namespace spdlib
                 {
                     throw SPDProcessingException("The \'multiply\' metric needs at least two child metrics.");
                 }
-                
+
                 std::vector<SPDMetric*> *metrics = new std::vector<SPDMetric*>();
-                
+
                 xercesc::DOMElement *tmpMetricElement = metricElement->getFirstElementChild();
                 for(boost::uint_fast32_t i = 0; i < numMetrics; ++i)
                 {
                     // Retrieve Metric and add to list.
                     metrics->push_back(this->createMetric(tmpMetricElement));
-                    
+
                     // Move on to next metric
                     tmpMetricElement = tmpMetricElement->getNextElementSibling();
                 }
-                
+
                 metric = new SPDMetricMultiply(metrics);
             }
             else if(xercesc::XMLString::equals(metricNameStr, metricdivide))
@@ -561,12 +561,12 @@ namespace spdlib
                 {
                     throw SPDProcessingException("The \'divide\' metric needs two child metrics.");
                 }
-                
+
                 xercesc::DOMElement *metricElementIn = metricElement->getFirstElementChild();
                 SPDMetric *metric1 = this->createMetric(metricElementIn);
                 metricElementIn = metricElementIn->getNextElementSibling();
                 SPDMetric *metric2 = this->createMetric(metricElementIn);
-                
+
                 metric = new SPDMetricDivide(metric1, metric2);
             }
             else if(xercesc::XMLString::equals(metricNameStr, metricpow))
@@ -576,12 +576,12 @@ namespace spdlib
                 {
                     throw SPDProcessingException("The \'pow\' metric needs two child metrics.");
                 }
-                
+
                 xercesc::DOMElement *metricElementIn = metricElement->getFirstElementChild();
                 SPDMetric *metric1 = this->createMetric(metricElementIn);
                 metricElementIn = metricElementIn->getNextElementSibling();
                 SPDMetric *metric2 = this->createMetric(metricElementIn);
-                
+
                 metric = new SPDMetricPow(metric1, metric2);
             }
             else if(xercesc::XMLString::equals(metricNameStr, metricabs))
@@ -591,10 +591,10 @@ namespace spdlib
                 {
                     throw SPDProcessingException("The \'abs\' metric needs one child metric.");
                 }
-                
+
                 xercesc::DOMElement *metricElementIn = metricElement->getFirstElementChild();
                 SPDMetric *metric1 = this->createMetric(metricElementIn);
-                
+
                 metric = new SPDMetricAbs(metric1);
             }
             else if(xercesc::XMLString::equals(metricNameStr, metricsqrt))
@@ -604,10 +604,10 @@ namespace spdlib
                 {
                     throw SPDProcessingException("The \'sqrt\' metric needs one child metric.");
                 }
-                
+
                 xercesc::DOMElement *metricElementIn = metricElement->getFirstElementChild();
                 SPDMetric *metric1 = this->createMetric(metricElementIn);
-                
+
                 metric = new SPDMetricSqrt(metric1);
             }
             else if(xercesc::XMLString::equals(metricNameStr, metricsine))
@@ -617,10 +617,10 @@ namespace spdlib
                 {
                     throw SPDProcessingException("The \'sine\' metric needs one child metric.");
                 }
-                
+
                 xercesc::DOMElement *metricElementIn = metricElement->getFirstElementChild();
                 SPDMetric *metric1 = this->createMetric(metricElementIn);
-                
+
                 metric = new SPDMetricSine(metric1);
             }
             else if(xercesc::XMLString::equals(metricNameStr, metricabs))
@@ -630,10 +630,10 @@ namespace spdlib
                 {
                     throw SPDProcessingException("The \'abs\' metric needs one child metric.");
                 }
-                
+
                 xercesc::DOMElement *metricElementIn = metricElement->getFirstElementChild();
                 SPDMetric *metric1 = this->createMetric(metricElementIn);
-                
+
                 metric = new SPDMetricAbs(metric1);
             }
             else if(xercesc::XMLString::equals(metricNameStr, metriccosine))
@@ -643,10 +643,10 @@ namespace spdlib
                 {
                     throw SPDProcessingException("The \'cosine\' metric needs one child metric.");
                 }
-                
+
                 xercesc::DOMElement *metricElementIn = metricElement->getFirstElementChild();
                 SPDMetric *metric1 = this->createMetric(metricElementIn);
-                
+
                 metric = new SPDMetricCosine(metric1);
             }
             else if(xercesc::XMLString::equals(metricNameStr, metrictangent))
@@ -656,10 +656,10 @@ namespace spdlib
                 {
                     throw SPDProcessingException("The \'tangent\' metric needs one child metric.");
                 }
-                
+
                 xercesc::DOMElement *metricElementIn = metricElement->getFirstElementChild();
                 SPDMetric *metric1 = this->createMetric(metricElementIn);
-                
+
                 metric = new SPDMetricTangent(metric1);
             }
             else if(xercesc::XMLString::equals(metricNameStr, metricinvsine))
@@ -669,10 +669,10 @@ namespace spdlib
                 {
                     throw SPDProcessingException("The \'invsine\' metric needs one child metric.");
                 }
-                
+
                 xercesc::DOMElement *metricElementIn = metricElement->getFirstElementChild();
                 SPDMetric *metric1 = this->createMetric(metricElementIn);
-                
+
                 metric = new SPDMetricInvSine(metric1);
             }
             else if(xercesc::XMLString::equals(metricNameStr, metricinvcos))
@@ -682,10 +682,10 @@ namespace spdlib
                 {
                     throw SPDProcessingException("The \'invcos\' metric needs one child metric.");
                 }
-                
+
                 xercesc::DOMElement *metricElementIn = metricElement->getFirstElementChild();
                 SPDMetric *metric1 = this->createMetric(metricElementIn);
-                
+
                 metric = new SPDMetricInvCos(metric1);
             }
             else if(xercesc::XMLString::equals(metricNameStr, metricinvtan))
@@ -695,10 +695,10 @@ namespace spdlib
                 {
                     throw SPDProcessingException("The \'invtan\' metric needs one child metric.");
                 }
-                
+
                 xercesc::DOMElement *metricElementIn = metricElement->getFirstElementChild();
                 SPDMetric *metric1 = this->createMetric(metricElementIn);
-                
+
                 metric = new SPDMetricInvTan(metric1);
             }
             else if(xercesc::XMLString::equals(metricNameStr, metriclog10))
@@ -708,10 +708,10 @@ namespace spdlib
                 {
                     throw SPDProcessingException("The \'log10\' metric needs one child metric.");
                 }
-                
+
                 xercesc::DOMElement *metricElementIn = metricElement->getFirstElementChild();
                 SPDMetric *metric1 = this->createMetric(metricElementIn);
-                
+
                 metric = new SPDMetricLog10(metric1);
             }
             else if(xercesc::XMLString::equals(metricNameStr, metricln))
@@ -721,10 +721,10 @@ namespace spdlib
                 {
                     throw SPDProcessingException("The \'ln\' metric needs one child metric.");
                 }
-                
+
                 xercesc::DOMElement *metricElementIn = metricElement->getFirstElementChild();
                 SPDMetric *metric1 = this->createMetric(metricElementIn);
-                
+
                 metric = new SPDMetricLn(metric1);
             }
             else if(xercesc::XMLString::equals(metricNameStr, metricexp))
@@ -734,10 +734,10 @@ namespace spdlib
                 {
                     throw SPDProcessingException("The \'exp\' metric needs one child metric.");
                 }
-                
+
                 xercesc::DOMElement *metricElementIn = metricElement->getFirstElementChild();
                 SPDMetric *metric1 = this->createMetric(metricElementIn);
-                
+
                 metric = new SPDMetricExp(metric1);
             }
             else if(xercesc::XMLString::equals(metricNameStr, metricpercentage))
@@ -747,12 +747,12 @@ namespace spdlib
                 {
                     throw SPDProcessingException("The \'percentage\' metric needs two child metrics.");
                 }
-                
+
                 xercesc::DOMElement *metricElementIn = metricElement->getFirstElementChild();
                 SPDMetric *metric1 = this->createMetric(metricElementIn);
                 metricElementIn = metricElementIn->getNextElementSibling();
                 SPDMetric *metric2 = this->createMetric(metricElementIn);
-                
+
                 metric = new SPDMetricPercentage(metric1, metric2);
             }
             else if(xercesc::XMLString::equals(metricNameStr, metricaddconst))
@@ -762,10 +762,10 @@ namespace spdlib
                 {
                     throw SPDProcessingException("The \'add const\' metric needs one child metric.");
                 }
-                
+
                 xercesc::DOMElement *metricElementIn = metricElement->getFirstElementChild();
                 SPDMetric *metric1 = this->createMetric(metricElementIn);
-                
+
                 double constVal = 0;
                 XMLCh *constXMLStr = xercesc::XMLString::transcode("const");
                 if(metricElement->hasAttribute(constXMLStr))
@@ -779,7 +779,7 @@ namespace spdlib
                     throw SPDProcessingException("The \'const\' value has not been provided.");
                 }
                 xercesc::XMLString::release(&constXMLStr);
-                
+
                 metric = new SPDMetricAddConst(metric1, constVal);
             }
             else if(xercesc::XMLString::equals(metricNameStr, metricminusconstfrom))
@@ -789,10 +789,10 @@ namespace spdlib
                 {
                     throw SPDProcessingException("The \'minus const from\' metric needs one child metric.");
                 }
-                
+
                 xercesc::DOMElement *metricElementIn = metricElement->getFirstElementChild();
                 SPDMetric *metric1 = this->createMetric(metricElementIn);
-                
+
                 double constVal = 0;
                 XMLCh *constXMLStr = xercesc::XMLString::transcode("const");
                 if(metricElement->hasAttribute(constXMLStr))
@@ -806,7 +806,7 @@ namespace spdlib
                     throw SPDProcessingException("The \'const\' value has not been provided.");
                 }
                 xercesc::XMLString::release(&constXMLStr);
-                
+
                 metric = new SPDMetricMinusConstFrom(metric1, constVal);
             }
             else if(xercesc::XMLString::equals(metricNameStr, metricminusfromconst))
@@ -816,10 +816,10 @@ namespace spdlib
                 {
                     throw SPDProcessingException("The \'minus from const\' metric needs one child metric.");
                 }
-                
+
                 xercesc::DOMElement *metricElementIn = metricElement->getFirstElementChild();
                 SPDMetric *metric1 = this->createMetric(metricElementIn);
-                
+
                 double constVal = 0;
                 XMLCh *constXMLStr = xercesc::XMLString::transcode("const");
                 if(metricElement->hasAttribute(constXMLStr))
@@ -833,7 +833,7 @@ namespace spdlib
                     throw SPDProcessingException("The \'const\' value has not been provided.");
                 }
                 xercesc::XMLString::release(&constXMLStr);
-                
+
                 metric = new SPDMetricMinusFromConst(metric1, constVal);
             }
             else if(xercesc::XMLString::equals(metricNameStr, metricmultiplyconst))
@@ -843,10 +843,10 @@ namespace spdlib
                 {
                     throw SPDProcessingException("The \'multiply const\' metric needs one child metric.");
                 }
-                
+
                 xercesc::DOMElement *metricElementIn = metricElement->getFirstElementChild();
                 SPDMetric *metric1 = this->createMetric(metricElementIn);
-                
+
                 double constVal = 0;
                 XMLCh *constXMLStr = xercesc::XMLString::transcode("const");
                 if(metricElement->hasAttribute(constXMLStr))
@@ -860,7 +860,7 @@ namespace spdlib
                     throw SPDProcessingException("The \'const\' value has not been provided.");
                 }
                 xercesc::XMLString::release(&constXMLStr);
-                
+
                 metric = new SPDMetricMultiplyConst(metric1, constVal);
             }
             else if(xercesc::XMLString::equals(metricNameStr, metricdividebyconst))
@@ -870,10 +870,10 @@ namespace spdlib
                 {
                     throw SPDProcessingException("The \'divide by const\' metric needs one child metric.");
                 }
-                
+
                 xercesc::DOMElement *metricElementIn = metricElement->getFirstElementChild();
                 SPDMetric *metric1 = this->createMetric(metricElementIn);
-                
+
                 double constVal = 0;
                 XMLCh *constXMLStr = xercesc::XMLString::transcode("const");
                 if(metricElement->hasAttribute(constXMLStr))
@@ -887,7 +887,7 @@ namespace spdlib
                     throw SPDProcessingException("The \'const\' value has not been provided.");
                 }
                 xercesc::XMLString::release(&constXMLStr);
-                
+
                 metric = new SPDMetricDivideByConst(metric1, constVal);
             }
             else if(xercesc::XMLString::equals(metricNameStr, metricdivideconstby))
@@ -897,10 +897,10 @@ namespace spdlib
                 {
                     throw SPDProcessingException("The \'divide const by\' metric needs one child metric.");
                 }
-                
+
                 xercesc::DOMElement *metricElementIn = metricElement->getFirstElementChild();
                 SPDMetric *metric1 = this->createMetric(metricElementIn);
-                
+
                 double constVal = 0;
                 XMLCh *constXMLStr = xercesc::XMLString::transcode("const");
                 if(metricElement->hasAttribute(constXMLStr))
@@ -914,7 +914,7 @@ namespace spdlib
                     throw SPDProcessingException("The \'const\' value has not been provided.");
                 }
                 xercesc::XMLString::release(&constXMLStr);
-                
+
                 metric = new SPDMetricDivideConstBy(metric1, constVal);
             }
             else if(xercesc::XMLString::equals(metricNameStr, metricpowmetricconst))
@@ -924,10 +924,10 @@ namespace spdlib
                 {
                     throw SPDProcessingException("The \'pow metric const\' metric needs one child metric.");
                 }
-                
+
                 xercesc::DOMElement *metricElementIn = metricElement->getFirstElementChild();
                 SPDMetric *metric1 = this->createMetric(metricElementIn);
-                
+
                 double constVal = 0;
                 XMLCh *constXMLStr = xercesc::XMLString::transcode("const");
                 if(metricElement->hasAttribute(constXMLStr))
@@ -941,7 +941,7 @@ namespace spdlib
                     throw SPDProcessingException("The \'const\' value has not been provided.");
                 }
                 xercesc::XMLString::release(&constXMLStr);
-                
+
                 metric = new SPDMetricPowMetricConst(metric1, constVal);
             }
             else if(xercesc::XMLString::equals(metricNameStr, metricpowconstmetric))
@@ -951,10 +951,10 @@ namespace spdlib
                 {
                     throw SPDProcessingException("The \'pow const metric\' metric needs one child metric.");
                 }
-                
+
                 xercesc::DOMElement *metricElementIn = metricElement->getFirstElementChild();
                 SPDMetric *metric1 = this->createMetric(metricElementIn);
-                
+
                 double constVal = 0;
                 XMLCh *constXMLStr = xercesc::XMLString::transcode("const");
                 if(metricElement->hasAttribute(constXMLStr))
@@ -968,7 +968,7 @@ namespace spdlib
                     throw SPDProcessingException("The \'const\' value has not been provided.");
                 }
                 xercesc::XMLString::release(&constXMLStr);
-                
+
                 metric = new SPDMetricPowConstMetric(metric1, constVal);
             }
             else if(xercesc::XMLString::equals(metricNameStr, metricnumpulses))
@@ -1004,7 +1004,7 @@ namespace spdlib
                     throw SPDProcessingException("The \'radius\' value has not been provided.");
                 }
                 xercesc::XMLString::release(&radiusXMLStr);
-                
+
                 metric = new SPDMetricCalcCanopyCover(resolution, radius, returnID, classID, minNumReturns, upThreshold, lowThreshold);
             }
             else if(xercesc::XMLString::equals(metricNameStr, metriccanopycoverpercent))
@@ -1022,7 +1022,7 @@ namespace spdlib
                     throw SPDProcessingException("The \'resolution\' value has not been provided.");
                 }
                 xercesc::XMLString::release(&resolutionXMLStr);
-                
+
                 float radius = 0;
                 XMLCh *radiusXMLStr = xercesc::XMLString::transcode("radius");
                 if(metricElement->hasAttribute(radiusXMLStr))
@@ -1036,7 +1036,7 @@ namespace spdlib
                     throw SPDProcessingException("The \'radius\' value has not been provided.");
                 }
                 xercesc::XMLString::release(&radiusXMLStr);
-                
+
                 metric = new SPDMetricCalcCanopyCoverPercent(resolution, radius, returnID, classID, minNumReturns, upThreshold, lowThreshold);
             }
             else if(xercesc::XMLString::equals(metricNameStr, metricleeopenness))
@@ -1054,9 +1054,9 @@ namespace spdlib
                     throw SPDProcessingException("The \'vres\' value has not been provided.");
                 }
                 xercesc::XMLString::release(&vresolutionXMLStr);
-                
+
                 metric = new SPDMetricCalcLeeOpennessHeight(vres, returnID, classID, minNumReturns, upThreshold, lowThreshold);
-            }            
+            }
             else if(xercesc::XMLString::equals(metricNameStr, metricnumreturnsheight))
             {
                 metric = new SPDMetricCalcNumReturnsHeight(returnID, classID, minNumReturns, upThreshold, lowThreshold);
@@ -1088,7 +1088,7 @@ namespace spdlib
                     throw SPDProcessingException("The \'resolution\' value has not been provided.");
                 }
                 xercesc::XMLString::release(&resolutionXMLStr);
-                
+
                 metric = new SPDMetricCalcModeHeight(resolution, returnID, classID, minNumReturns, upThreshold, lowThreshold);
             }
             else if(xercesc::XMLString::equals(metricNameStr, metricminheight))
@@ -1114,7 +1114,7 @@ namespace spdlib
                     throw SPDProcessingException("The \'resolution\' value has not been provided.");
                 }
                 xercesc::XMLString::release(&resolutionXMLStr);
-                
+
                 metric = new SPDMetricCalcDominantHeight(resolution, returnID, classID, minNumReturns, upThreshold, lowThreshold);
             }
             else if(xercesc::XMLString::equals(metricNameStr, metricstddevheight))
@@ -1186,10 +1186,10 @@ namespace spdlib
                 {
                     throw SPDProcessingException("The \'returns above height metric\' metric needs one child metric.");
                 }
-                
+
                 xercesc::DOMElement *metricElementIn = metricElement->getFirstElementChild();
                 SPDMetric *metric1 = this->createMetric(metricElementIn);
-                
+
                 metric = new SPDMetricCalcNumReturnsAboveMetricHeight(metric1, returnID, classID, minNumReturns, upThreshold, lowThreshold);
             }
             else if(xercesc::XMLString::equals(metricNameStr, metricreturnsbelowheightmetric))
@@ -1199,10 +1199,10 @@ namespace spdlib
                 {
                     throw SPDProcessingException("The \'returns below height metric\' metric needs one child metric.");
                 }
-                
+
                 xercesc::DOMElement *metricElementIn = metricElement->getFirstElementChild();
                 SPDMetric *metric1 = this->createMetric(metricElementIn);
-                
+
                 metric = new SPDMetricCalcNumReturnsBelowMetricHeight(metric1, returnID, classID, minNumReturns, upThreshold, lowThreshold);
             }
             else if(xercesc::XMLString::equals(metricNameStr, metricnumreturnsz))
@@ -1236,7 +1236,7 @@ namespace spdlib
                     throw SPDProcessingException("The \'resolution\' value has not been provided.");
                 }
                 xercesc::XMLString::release(&resolutionXMLStr);
-                
+
                 metric = new SPDMetricCalcModeZ(resolution, returnID, classID, minNumReturns, upThreshold, lowThreshold);
             }
             else if(xercesc::XMLString::equals(metricNameStr, metricminz))
@@ -1316,10 +1316,10 @@ namespace spdlib
                 {
                     throw SPDProcessingException("The \'returns above z metric\' metric needs one child metric.");
                 }
-                
+
                 xercesc::DOMElement *metricElementIn = metricElement->getFirstElementChild();
                 SPDMetric *metric1 = this->createMetric(metricElementIn);
-                
+
                 metric = new SPDMetricCalcNumReturnsAboveMetricZ(metric1, returnID, classID, minNumReturns, upThreshold, lowThreshold);
             }
             else if(xercesc::XMLString::equals(metricNameStr, metricreturnsbelowzmetric))
@@ -1329,10 +1329,10 @@ namespace spdlib
                 {
                     throw SPDProcessingException("The \'returns below z metric\' metric needs one child metric.");
                 }
-                
+
                 xercesc::DOMElement *metricElementIn = metricElement->getFirstElementChild();
                 SPDMetric *metric1 = this->createMetric(metricElementIn);
-                
+
                 metric = new SPDMetricCalcNumReturnsBelowMetricZ(metric1, returnID, classID, minNumReturns, upThreshold, lowThreshold);
             }
             else if(xercesc::XMLString::equals(metricNameStr, metricnumreturnsamplitude))
@@ -1445,10 +1445,10 @@ namespace spdlib
                 {
                     throw SPDProcessingException("The \'returns above amplitude metric\' metric needs one child metric.");
                 }
-                
+
                 xercesc::DOMElement *metricElementIn = metricElement->getFirstElementChild();
                 SPDMetric *metric1 = this->createMetric(metricElementIn);
-                
+
                 metric = new SPDMetricCalcNumReturnsAboveMetricAmplitude(metric1, returnID, classID, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold);
             }
             else if(xercesc::XMLString::equals(metricNameStr, metricreturnsbelowamplitudemetric))
@@ -1458,10 +1458,10 @@ namespace spdlib
                 {
                     throw SPDProcessingException("The \'returns below amplitude metric\' metric needs one child metric.");
                 }
-                
+
                 xercesc::DOMElement *metricElementIn = metricElement->getFirstElementChild();
                 SPDMetric *metric1 = this->createMetric(metricElementIn);
-                
+
                 metric = new SPDMetricCalcNumReturnsBelowMetricAmplitude(metric1, returnID, classID, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold);
             }
             else if(xercesc::XMLString::equals(metricNameStr, metricnumreturnsrange))
@@ -1574,10 +1574,10 @@ namespace spdlib
                 {
                     throw SPDProcessingException("The \'returns above range metric\' metric needs one child metric.");
                 }
-                
+
                 xercesc::DOMElement *metricElementIn = metricElement->getFirstElementChild();
                 SPDMetric *metric1 = this->createMetric(metricElementIn);
-                
+
                 metric = new SPDMetricCalcNumReturnsAboveMetricRange(metric1, returnID, classID, minNumReturns, upThreshold, lowThreshold);
             }
             else if(xercesc::XMLString::equals(metricNameStr, metricreturnsbelowrangemetric))
@@ -1587,10 +1587,10 @@ namespace spdlib
                 {
                     throw SPDProcessingException("The \'returns below range metric\' metric needs one child metric.");
                 }
-                
+
                 xercesc::DOMElement *metricElementIn = metricElement->getFirstElementChild();
                 SPDMetric *metric1 = this->createMetric(metricElementIn);
-                
+
                 metric = new SPDMetricCalcNumReturnsBelowMetricRange(metric1, returnID, classID, minNumReturns, upThreshold, lowThreshold);
             }
             else if(xercesc::XMLString::equals(metricNameStr, metricnumreturnswidth))
@@ -1703,10 +1703,10 @@ namespace spdlib
                 {
                     throw SPDProcessingException("The \'returns above width metric\' metric needs one child metric.");
                 }
-                
+
                 xercesc::DOMElement *metricElementIn = metricElement->getFirstElementChild();
                 SPDMetric *metric1 = this->createMetric(metricElementIn);
-                
+
                 metric = new SPDMetricCalcNumReturnsAboveMetricWidth(metric1, returnID, classID, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold);
             }
             else if(xercesc::XMLString::equals(metricNameStr, metricreturnsbelowwidthmetric))
@@ -1716,10 +1716,10 @@ namespace spdlib
                 {
                     throw SPDProcessingException("The \'returns below width metric\' metric needs one child metric.");
                 }
-                
+
                 xercesc::DOMElement *metricElementIn = metricElement->getFirstElementChild();
                 SPDMetric *metric1 = this->createMetric(metricElementIn);
-                
+
                 metric = new SPDMetricCalcNumReturnsBelowMetricWidth(metric1, returnID, classID, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold);
             }
             else
@@ -1728,13 +1728,13 @@ namespace spdlib
                 throw SPDProcessingException(message);
             }
         }
-        catch (const xercesc::XMLException& e) 
+        catch (const xercesc::XMLException& e)
 		{
 			char *message = xercesc::XMLString::transcode(e.getMessage());
 			std::string outMessage =  std::string("XMLException : ") + std::string(message);
 			throw SPDProcessingException(outMessage.c_str());
 		}
-		catch (const xercesc::DOMException& e) 
+		catch (const xercesc::DOMException& e)
 		{
 			char *message = xercesc::XMLString::transcode(e.getMessage());
 			std::string outMessage =  std::string("DOMException : ") + std::string(message);
@@ -1744,7 +1744,7 @@ namespace spdlib
 		{
 			throw e;
 		}
-        
+
         xercesc::XMLString::release(&metricadd);
         xercesc::XMLString::release(&metricminus);
         xercesc::XMLString::release(&metricmultiply);
@@ -1881,38 +1881,38 @@ namespace spdlib
         xercesc::XMLString::release(&notGrdXMLStr);
         xercesc::XMLString::release(&vegXMLStr);
         xercesc::XMLString::release(&grdXMLStr);
-        
+
         return metric;
     }
 
     SPDCalcMetrics::~SPDCalcMetrics()
     {
-        
+
     }
-    
-    
-    
-    
+
+
+
+
     SPDCalcImageMetrics::SPDCalcImageMetrics(std::vector<SPDMetric*> *metrics, std::vector<std::string> *fieldNames)
     {
         this->metrics = metrics;
         this->fieldNames = fieldNames;
     }
-        
+
     void SPDCalcImageMetrics::processDataColumnImage(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses, float *imageData, SPDXYPoint *cenPts, boost::uint_fast32_t numImgBands, float binSize) throw(SPDProcessingException)
     {
         if(numImgBands != metrics->size())
         {
             throw SPDProcessingException("The number of image bands needs to be the same as the number of metrics.");
         }
-        
+
         try
         {
             double tlX = cenPts->x - (binSize/2);
             double tlY = cenPts->y + (binSize/2);
             double brX = cenPts->x + (binSize/2);
             double brY = cenPts->y - (binSize/2);
-            
+
             double xCoords[5];
             double yCoords[5];
             xCoords[0] = tlX;
@@ -1925,18 +1925,18 @@ namespace spdlib
             yCoords[3] = brY;
             xCoords[4] = tlX;
             yCoords[4] = tlY;
-            
+
             OGRLinearRing *polyRing = new OGRLinearRing();
             polyRing->setPoints(5, xCoords, yCoords);
             OGRPolygon *geom = new OGRPolygon();
             geom->addRingDirectly(polyRing);
-            
+
             boost::uint_fast32_t idx = 0;
             for(std::vector<SPDMetric*>::iterator iterMetrics = metrics->begin(); iterMetrics != metrics->end(); ++iterMetrics)
             {
                 imageData[idx++] = (*iterMetrics)->calcValue(pulses, inSPDFile, geom);
             }
-            
+
             delete geom;
         }
         catch(SPDProcessingException &e)
@@ -1960,72 +1960,72 @@ namespace spdlib
         }
         return bandNames;
     }
-    
+
     void SPDCalcImageMetrics::setHeaderValues(SPDFile *spdFile) throw(SPDProcessingException)
     {
         // Nothing to do here.
     }
-        
+
     SPDCalcImageMetrics::~SPDCalcImageMetrics()
     {
-        
-    }
-    
-    
-    
 
-      
+    }
+
+
+
+
+
 
     SPDCalcPolyMetrics::SPDCalcPolyMetrics(std::vector<SPDMetric*> *metrics, std::vector<std::string> *fieldNames)
     {
         this->metrics = metrics;
         this->fieldNames = fieldNames;
     }
-		
+
     void SPDCalcPolyMetrics::processFeature(OGRFeature *inFeature, OGRFeature *outFeature, boost::uint_fast64_t fid, std::vector<SPDPulse*> *pulses, SPDFile *spdFile) throw(SPDProcessingException)
     {
         std::vector<SPDMetric*>::iterator iterMetrics = metrics->begin();
         std::vector<std::string>::iterator iterNames = fieldNames->begin();
-        
+
         OGRFeatureDefn *outFeatureDefn = outFeature->GetDefnRef();
-        
+
         OGRGeometry *geometry = inFeature->GetGeometryRef();
-        
+
         boost::uint_fast32_t numMetrics = metrics->size();
         double outVal = 0;
         for(boost::uint_fast32_t i = 0; i < numMetrics; ++i)
         {
-            outVal = (*iterMetrics)->calcValue(pulses, spdFile, geometry);            
+            outVal = (*iterMetrics)->calcValue(pulses, spdFile, geometry);
             outFeature->SetField(outFeatureDefn->GetFieldIndex((*iterNames).c_str()), outVal);
-            
+
             ++iterMetrics;
             ++iterNames;
         }
     }
-    
+
     void SPDCalcPolyMetrics::processFeature(OGRFeature *inFeature, std::ofstream *outASCIIFile, boost::uint_fast64_t fid, std::vector<SPDPulse*> *pulses, SPDFile *spdFile) throw(SPDProcessingException)
     {
         (*outASCIIFile) << fid;
-        
+
         OGRGeometry *geometry = inFeature->GetGeometryRef();
-        
+
         double outVal = 0;
         for(std::vector<SPDMetric*>::iterator iterMetrics = metrics->begin(); iterMetrics != metrics->end(); ++iterMetrics)
         {
-            outVal = (*iterMetrics)->calcValue(pulses, spdFile, geometry);            
+            outVal = (*iterMetrics)->calcValue(pulses, spdFile, geometry);
             (*outASCIIFile) << "," << outVal;
         }
-        
+
         (*outASCIIFile) << std::endl;
     }
-    
+
     void SPDCalcPolyMetrics::createOutputLayerDefinition(OGRLayer *outputLayer, OGRFeatureDefn *inFeatureDefn) throw(SPDProcessingException)
     {
         if(metrics->size() != fieldNames->size())
         {
             throw SPDProcessingException("The number of metrics and fieldnames needs to be the same.");
         }
-        
+
         for(std::vector<std::string>::iterator iterNames = fieldNames->begin(); iterNames != fieldNames->end(); ++iterNames)
         {
             OGRFieldDefn shpField((*iterNames).c_str(), OFTReal);
@@ -2037,7 +2037,7 @@ namespace spdlib
             }
         }
     }
-    
+
     void SPDCalcPolyMetrics::writeASCIIHeader(std::ofstream *outASCIIFile) throw(SPDProcessingException)
     {
         (*outASCIIFile) << "FID";
@@ -2047,12 +2047,12 @@ namespace spdlib
         }
         (*outASCIIFile) << std::endl;
     }
-    
+
     SPDCalcPolyMetrics::~SPDCalcPolyMetrics()
     {
-        
+
     }
-    
+
 
 }
 
