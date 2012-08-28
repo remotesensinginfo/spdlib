@@ -2543,7 +2543,7 @@ namespace spdlib{
 		{
             double sumSq = 0;
             double mean = gsl_stats_mean (&(*ptVals)[0], 1, ptVals->size());
-            for(std::vector<double>::iterator iterVals; iterVals != ptVals->end(); ++iterVals)
+            for(std::vector<double>::iterator iterVals=ptVals->begin(); iterVals != ptVals->end(); ++iterVals)
             {
                 sumSq += pow(((*iterVals) - mean),2);
             }
