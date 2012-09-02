@@ -184,7 +184,7 @@ namespace spdlib
 						spdPulse->scanDirectionFlag = SPD_NEGATIVE;
 					}
 					
-					spdPulse->scanAngleRank = p.GetScanAngleRank();
+					spdPulse->zenith = p.GetScanAngleRank();
 					spdPulse->sourceID = p.GetPointSourceID();
 					
 					if(indexCoords == SPD_FIRST_RETURN)
@@ -418,7 +418,7 @@ namespace spdlib
 						spdPulse->scanDirectionFlag = SPD_NEGATIVE;
 					}
 					
-					spdPulse->scanAngleRank = p.GetScanAngleRank();
+					spdPulse->zenith = p.GetScanAngleRank();
 					spdPulse->sourceID = p.GetPointSourceID();
                     
 					if(indexCoords == SPD_FIRST_RETURN)
@@ -645,7 +645,7 @@ namespace spdlib
 						spdPulse->scanDirectionFlag = SPD_NEGATIVE;
 					}
 					
-					spdPulse->scanAngleRank = p.GetScanAngleRank();
+					spdPulse->zenith = p.GetScanAngleRank();
 					spdPulse->sourceID = p.GetPointSourceID();
 					
 					if(indexCoords == SPD_FIRST_RETURN)
