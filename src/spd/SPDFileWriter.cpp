@@ -5385,7 +5385,7 @@ namespace spdlib
 					numReceiveVals += numReceiveValsInCol;
 				}                
 			}
-            plsBuffer->clear();
+            plsIn->clear();
 		}
 		catch( H5::FileIException &e )
 		{
