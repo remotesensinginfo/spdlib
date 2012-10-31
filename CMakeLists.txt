@@ -29,7 +29,7 @@ set (PROJECT_HEADER_DIR include)
 set (PROJECT_TOOLS_DIR tools)
 
 # The version number.
-set (SPDLIB_REPO_VERSION 87)
+set (SPDLIB_REPO_VERSION 88)
 set (SPDLIB_VERSION_MAJOR 3)
 set (SPDLIB_VERSION_MINOR 0)
 set (SPDLIB_VERSION_PATCH 0)
@@ -272,6 +272,8 @@ if (SPDLIB_WITH_UTILITIES)
 	target_link_libraries (spdpffgrd ${SPDLIB_MITLIB_NAME} ${SPDLIB_LIB_NAME} )
 	add_executable(spdinfo ${PROJECT_SOURCE_DIR}/exe/spdinfo/main.cpp)
 	target_link_libraries (spdinfo ${SPDLIB_MITLIB_NAME} ${SPDLIB_LIB_NAME} )
+	add_executable(spdtsample ${PROJECT_SOURCE_DIR}/exe/spdtsample/main.cpp)
+	target_link_libraries (spdtsample ${SPDLIB_MITLIB_NAME} ${SPDLIB_LIB_NAME} )
 endif(SPDLIB_WITH_UTILITIES)
 ###############################################################################
 

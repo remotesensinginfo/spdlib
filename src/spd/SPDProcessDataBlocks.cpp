@@ -1017,16 +1017,18 @@ namespace spdlib
             GDALDriver *gdalDriver = GetGDALDriverManager()->GetDriverByName(gdalFormat.c_str());
 			if(gdalDriver == NULL)
 			{
-                std::string message = gdalFormat + std::string(" gdal driver cannot be found.");
+                std::string message = gdalFormat + std::string(" GDAL driver cannot be found.");
 				throw SPDProcessingException(message);
 			}
             char **papszMetadata;
             papszMetadata = gdalDriver->GetMetadata();
-            if( CSLFetchBoolean( papszMetadata, GDAL_DCAP_CREATE, FALSE ) )
+            if( !CSLFetchBoolean( papszMetadata, GDAL_DCAP_CREATE, FALSE ) )
             {
                 std::string message = gdalFormat + std::string(" does not support create method. Select a GDAL driver which does (see http://www.gdal.org/formats_list.html).");
+                throw SPDProcessingException(message);
             }
-            GDALDataset *outImage = gdalDriver->Create(outImagePath.c_str(), imageXSize, imageYSize, numImgBands, GDT_Float32, papszMetadata);
+
+            GDALDataset *outImage = gdalDriver->Create(outImagePath.c_str(), imageXSize, imageYSize, numImgBands, GDT_Float32, NULL);
             
             if(outImage == NULL)
             {
