@@ -98,7 +98,8 @@ set(SPDLIB_H_Processing_Algorithms
 	${SPDLIB_HEADERS_DIR}/SPDProgressiveMophologicalGrdFilter.h
 	${SPDLIB_HEADERS_DIR}/SPDRasterInterpolation.h 
 	${SPDLIB_HEADERS_DIR}/SPDRemoveVerticalNoise.h
-	${SPDLIB_HEADERS_DIR}/SPDSampleInTime.h)
+	${SPDLIB_HEADERS_DIR}/SPDSampleInTime.h
+	${SPDLIB_HEADERS_DIR}/SPDThinPulses.h )
 
 set(SPDLIB_H_Utils
 	${SPDLIB_HEADERS_DIR}/SPDFileUtilities.h
@@ -179,7 +180,8 @@ set(SPDLIB_CPP_Processing_Algorithms
 	${SPDLIB_SRC_DIR}/SPDProgressiveMophologicalGrdFilter.cpp
 	${SPDLIB_SRC_DIR}/SPDRasterInterpolation.cpp 
 	${SPDLIB_SRC_DIR}/SPDRemoveVerticalNoise.cpp
-	${SPDLIB_SRC_DIR}/SPDSampleInTime.cpp)
+	${SPDLIB_SRC_DIR}/SPDSampleInTime.cpp
+	${SPDLIB_SRC_DIR}/SPDThinPulses.cpp )
 		
 set(SPDLIB_CPP_Utils
 	${SPDLIB_SRC_DIR}/SPDFileUtilities.cpp
