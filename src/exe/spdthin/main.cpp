@@ -53,10 +53,10 @@ int main (int argc, char * const argv[])
         
         TCLAP::ValueArg<boost::uint_fast32_t> numOfColsBlockArg("c","blockcols","Number of columns within a block (Default 0) - Note values greater than 1 result in a non-sequencial SPD file.",false,0,"unsigned int");
 		cmd.add( numOfColsBlockArg );
-        
+        /*
         TCLAP::ValueArg<float> binSizeArg("b","binsize","Bin size for processing and output image (Default 0) - Note 0 will use the native SPD file bin size.",false,0,"float");
 		cmd.add( binSizeArg );
-        
+        */
         TCLAP::ValueArg<boost::uint_fast16_t> numPulsesArg("n","numpulses","Number of pulses within the bin (Default 1).",false,1,"unsigned int");
 		cmd.add( numPulsesArg );
         
@@ -83,7 +83,7 @@ int main (int argc, char * const argv[])
         spdlib::SPDFile *spdInFile = new spdlib::SPDFile(inputFile);
         spdlib::SPDPulseProcessor *pulseProcessor = new spdlib::SPDThinPulses(numPulsesArg.getValue());
         spdlib::SPDSetupProcessPulses processPulses = spdlib::SPDSetupProcessPulses(numOfColsBlockArg.getValue(), numOfRowsBlockArg.getValue(), true);
-        processPulses.processPulsesWithOutputSPD(pulseProcessor, spdInFile, outputFile, binSizeArg.getValue());
+        processPulses.processPulsesWithOutputSPD(pulseProcessor, spdInFile, outputFile);//, binSizeArg.getValue());
         delete pulseProcessor;
         delete spdInFile;
 	}

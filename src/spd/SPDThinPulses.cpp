@@ -88,8 +88,8 @@ namespace spdlib
                 }
                 
                 SPDPulseUtils plsUtils;
-                //for(std::vector<SPDPulse*>::iterator iterPulse = pulses->begin(); iterPulse != pulses->end(); )
-                for(size_t i = 0; i < pulses->size(); ++i)
+                size_t i = 0;
+                for(std::vector<SPDPulse*>::iterator iterPulse = pulses->begin(); iterPulse != pulses->end(); )
                 {
                     found = false;
                     for(std::vector<boost::uint_fast16_t>::iterator iterIdxes = idxes.begin(); iterIdxes != idxes.end(); ++iterIdxes)
@@ -103,9 +103,12 @@ namespace spdlib
                     
                     if(!found)
                     {
-                        //std::cout << "Remove idx " << i << std::endl;
-                        //plsUtils.deleteSPDPulse(pulses->at(i));
-                        pulses->at(i) = NULL;
+                        plsUtils.deleteSPDPulse(*iterPulse);
+                        pulses->erase(iterPulse);
+                    }
+                    else
+                    {
+                        ++iterPulse;
                     }
                     
                     ++i;
