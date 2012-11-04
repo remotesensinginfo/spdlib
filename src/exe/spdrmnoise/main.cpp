@@ -57,10 +57,10 @@ int main (int argc, char * const argv[])
         
         ValueArg<boost::uint_fast32_t> numOfColsBlockArg("c","blockcols","Number of columns within a block (Default 0) - Note values greater than 1 result in a non-sequencial SPD file.",false,0,"unsigned int");
 		cmd.add( numOfColsBlockArg );
-        
-        TCLAP::ValueArg<float> binSizeArg("b","binsize","Bin size for processing and output image (Default 0) - Note 0 will use the native SPD file bin size.",false,0,"float");
+        /*
+        ValueArg<float> binSizeArg("b","binsize","Bin size for processing and output image (Default 0) - Note 0 will use the native SPD file bin size.",false,0,"float");
 		cmd.add( binSizeArg );
-        
+        */
         ValueArg<float> absUpperArg("","absup","Absolute upper threshold for returns which are to be removed.",false,0,"float");
         cmd.add( absUpperArg );
         
@@ -101,7 +101,7 @@ int main (int argc, char * const argv[])
         SPDFile *spdInFile = new SPDFile(inputFile);
         SPDPulseProcessor *pulseProcessor = new SPDRemoveVerticalNoise(absUpSet, absLowSet, relUpSet, relLowSet, absUpperArg.getValue(), absLowerArg.getValue(), relUpperArg.getValue(), relLowerArg.getValue());            
         SPDSetupProcessPulses processPulses = SPDSetupProcessPulses(numOfColsBlockArg.getValue(), numOfRowsBlockArg.getValue(), true);
-        processPulses.processPulsesWithOutputSPD(pulseProcessor, spdInFile, outputFile, binSizeArg.getValue());
+        processPulses.processPulsesWithOutputSPD(pulseProcessor, spdInFile, outputFile);
         delete pulseProcessor;
         delete spdInFile;
 	}
