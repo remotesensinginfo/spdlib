@@ -59,7 +59,7 @@ class SPDPlotPulses (object):
         for i in range(len(pulse.received)):
             rangeVals.append(((i*temporalBinSpacing)*speedLightNS)/2+pulse.rangeToWaveformStart)
             timeVals.append(i*temporalBinSpacing)
-            thresVals.append((pulse.waveNoiseThreshold*pulse.receiveWaveGain)+pulse.receiveWaveOffset)
+            thresVals.append((pulse.receiveWaveNoiseThreshold*pulse.receiveWaveGain)+pulse.receiveWaveOffset)
             ampVals.append(((pulse.received[i])*pulse.receiveWaveGain)+pulse.receiveWaveOffset)
         plot(ampVals, rangeVals)
         plot(thresVals, rangeVals, linestyle='dashed', color='grey')
@@ -72,8 +72,8 @@ class SPDPlotPulses (object):
                 ptWSD = (pt.widthReturn / (2.0*sqrt(2.0*log(2.0))) / 10.0)
                 rangeOffset = array(timeVals) - pt.waveformOffset/1000.0
                 predVals = predVals + (((pt.amplitudeReturn*pulse.receiveWaveGain)+pulse.receiveWaveOffset) * exp(-(rangeOffset**2 / (2.0*ptWSD**2))))
-                ptAmp.append(((pt.amplitudeReturn + pulse.waveNoiseThreshold)*pulse.receiveWaveGain)+pulse.receiveWaveOffset)
-            predVals = predVals + ((pulse.waveNoiseThreshold*pulse.receiveWaveGain)+pulse.receiveWaveOffset)
+                ptAmp.append(((pt.amplitudeReturn + pulse.receiveWaveNoiseThreshold)*pulse.receiveWaveGain)+pulse.receiveWaveOffset)
+            predVals = predVals + ((pulse.receiveWaveNoiseThreshold*pulse.receiveWaveGain)+pulse.receiveWaveOffset)
             scatter(ptAmp, ptRange, marker='o', color='red')
             plot(predVals, rangeVals, color='red')
         axis(axisDims)
