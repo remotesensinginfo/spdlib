@@ -5407,6 +5407,10 @@ namespace spdlib
 		{
 			throw e;
 		}
+        catch(std::exception &e)
+		{
+			throw SPDIOException(e.what());
+		}
 	}
     
 	void SPDNoIdxFileWriter::finaliseClose() throw(SPDIOException)
