@@ -61,7 +61,7 @@ int main (int argc, char * const argv[])
         allowedInFormats.push_back("ASCIIMULTILINE");
 		ValuesConstraint<string> allowedInFormatsVals( allowedInFormats );
 		
-		ValueArg<string> inFormatArg("i","inputformat","Format of the input file (Default SPD)",true,"SUPD", &allowedInFormatsVals);
+		ValueArg<string> inFormatArg("i","inputformat","Format of the input file (Default SPD)",true,"SPD", &allowedInFormatsVals);
 		cmd.add( inFormatArg );
 		
 		vector<string> allowedOutFormats;
