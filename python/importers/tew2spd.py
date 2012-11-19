@@ -1,13 +1,13 @@
-﻿#!/usr/bin/env python
+#! /usr/bin/env python
 
 ############################################################################
 # tew2spd.py
 # spdlib
 #
-# Created by Mattias Nyström on 15/05/2012.
-# Copyright (c) 2012 Mattias Nyström, Swedish University of Agricultural Sciences
+# Created by Mattias Nystrom on 15/05/2012.
+# Copyright (c) 2012 Mattias Nystrom, Swedish University of Agricultural Sciences
 #
- ############################################################################
+############################################################################
 
 
 import numpy as np
@@ -409,10 +409,10 @@ def main(cmdargs):
         tewPulse.setWf1(recWf1Header[i][0], recWf1Header[i][1], recWf1[i])
 
 
-ee
+
         recWf2Header = list()
         recWf2 = list()
-        for i in xrange(0, tewPulse.noOfWfBlocksCh2): #TODO: Lägg till nåt som syr ihop fler än 1 till samma paket... och därefter kombinerar Ch1 och Ch2.
+        for i in xrange(0, tewPulse.noOfWfBlocksCh2): #TODO: Add something that combines multiple blocks. And after that combines ch 1 and 2.
             # Read tew received waveform 2 (high ch) header
             recWf2HeaderStr = tewObj.read(wfHeaderFormat.size)
             recWf2Header = wfHeaderFormat.unpack_from(recWf2HeaderStr, 0)
