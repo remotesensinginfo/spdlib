@@ -49,6 +49,10 @@ void addPulseFields(RecArrayCreator *pCreator);
 PulseArrayIndices getPulseIndices(PyObject *pArray);
 void copyPulseToRecord(void *pRecord, spdlib::SPDPulse *pulse, PulseArrayIndices &indices);
 
+#if PY_MAJOR_VERSION >= 3
+PyObject* pulsearray_init();
+#else
 void pulsearray_init();
+#endif
 
 #endif // __PULSEARRAY_H__

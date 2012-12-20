@@ -3,7 +3,7 @@
 """
 Test script for new generation SPDLib Python bindings
 """
-
+from __future__ import print_function
 import sys
 import spdpy2
 import numpy
@@ -29,7 +29,7 @@ vfunc = numpy.vectorize(countAboveLevel)
 
 # do the calculations
 result = vfunc(pointArray)
-print result
+print(result)
 
 
 

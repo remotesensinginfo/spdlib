@@ -85,7 +85,10 @@ void copyPointToRecord(void *pRecord, spdlib::SPDPoint *point, PointArrayIndices
     indices.waveformOffset.setValue(pRecord, point->waveformOffset);
 }
 
-void pointarray_init()
+PyMODINIT_FUNC pointarray_init()
 {
     import_array();
+#if PY_MAJOR_VERSION >= 3
+    return NULL;
+#endif
 }

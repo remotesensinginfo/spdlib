@@ -9,8 +9,8 @@
 #include "pulsearray.h"
 #include "pointarray.h"
 
-// declared in spdpy2module.cpp
-extern PyObject *PySPDError;
+// global error pointer - set in the pyspdfile_init method
+PyObject *PySPDError;
 
 // Python object wrapping a spdlib::SPDFile*
 typedef struct
@@ -24,7 +24,7 @@ static void
 PySPDFile_dealloc(PySPDFile *self)
 {
     delete self->pFile;
-    self->ob_type->tp_free((PyObject*)self);
+    Py_TYPE(self)->tp_free((PyObject*)self);
 }
 
 // init method - construct a spdlib::SPDFile
@@ -56,7 +56,33 @@ PySPDFile_init(PySPDFile *self, PyObject *args, PyObject *kwds)
 // Note: ## is the preprocesser append operator
 
 // Get and Set of a string attribute.
-#define CREATE_GET_SET_STRING(BASE) static PyObject * \
+#if PY_MAJOR_VERSION >= 3
+    #define CREATE_GET_SET_STRING(BASE) static PyObject * \
+        PySPDFile_get ## BASE(PySPDFile *self, void *closure) \
+        { \
+            std::string strVal = self->pFile->get ## BASE(); \
+            return PyUnicode_FromString(strVal.c_str()); \
+        } \
+        static int \
+        PySPDFile_set ## BASE(PySPDFile *self, PyObject *value, void *closure)\
+        { \
+            if( value == NULL ) \
+            { \
+                PyErr_SetString(PySPDError, "Can't delete attributes"); \
+                return -1; \
+            } \
+            if( !PyUnicode_Check(value) ) \
+            { \
+                PyErr_SetString(PySPDError, "Must be a string"); \
+                return -1; \
+            } \
+            PyObject *bytes = PyUnicode_AsEncodedString(value, NULL, NULL); \
+            self->pFile->set ## BASE(PyBytes_AsString(bytes)); \
+            Py_DECREF(bytes); \
+            return 0; \
+        }
+#else
+    #define CREATE_GET_SET_STRING(BASE) static PyObject * \
         PySPDFile_get ## BASE(PySPDFile *self, void *closure) \
         { \
             std::string strVal = self->pFile->get ## BASE(); \
@@ -78,8 +104,33 @@ PySPDFile_init(PySPDFile *self, PyObject *args, PyObject *kwds)
             self->pFile->set ## BASE(PyString_AsString(value)); \
             return 0; \
         }
+#endif
 
 // Get and Set of an integer attribute.
+#if PY_MAJOR_VERSION >= 3
+#define CREATE_GET_SET_INT(BASE) static PyObject * \
+        PySPDFile_get ## BASE(PySPDFile *self, void *closure) \
+        { \
+            long nVal = self->pFile->get ## BASE(); \
+            return PyLong_FromLong(nVal); \
+        } \
+        static int \
+        PySPDFile_set ## BASE(PySPDFile *self, PyObject *value, void *closure)\
+        { \
+            if( value == NULL ) \
+            { \
+                PyErr_SetString(PySPDError, "Can't delete attributes"); \
+                return -1; \
+            } \
+            if( !PyLong_Check(value) ) \
+            { \
+                PyErr_SetString(PySPDError, "Must be an int"); \
+                return -1; \
+            } \
+            self->pFile->set ## BASE(PyLong_AsLong(value)); \
+            return 0; \
+        }
+#else
 #define CREATE_GET_SET_INT(BASE) static PyObject * \
         PySPDFile_get ## BASE(PySPDFile *self, void *closure) \
         { \
@@ -102,6 +153,7 @@ PySPDFile_init(PySPDFile *self, PyObject *args, PyObject *kwds)
             self->pFile->set ## BASE(PyInt_AsLong(value)); \
             return 0; \
         }
+#endif
 
 // Get and Set of a double attribute.
 #define CREATE_GET_SET_DOUBLE(BASE) static PyObject * \
@@ -436,13 +488,21 @@ PySPDFile_readPulsesIntoBlock1d(PySPDFile *self, PyObject *args)
     for( int n = 0; n < 4; n++ )
     {
         PyObject *o = PySequence_GetItem(pSeq, n); 
+#if PY_MAJOR_VERSION >= 3
+        if( !PyLong_Check(o) ) 
+#else
         if( !PyInt_Check(o) ) 
+#endif
         { 
             PyErr_SetString(PySPDError, "Must be a sequence of ints" ); 
             Py_DECREF(o); 
             return NULL;
         } 
+#if PY_MAJOR_VERSION >= 3
+        bboxArr[n] = PyLong_AsLong(o);
+#else
         bboxArr[n] = PyInt_AsLong(o); 
+#endif
         Py_DECREF(o); 
     }
 
@@ -521,13 +581,21 @@ PySPDFile_readPulsesIntoBlock2d(PySPDFile *self, PyObject *args)
     for( int n = 0; n < 4; n++ )
     {
         PyObject *o = PySequence_GetItem(pSeq, n); 
+#if PY_MAJOR_VERSION >= 3
+        if( !PyLong_Check(o) ) 
+#else
         if( !PyInt_Check(o) ) 
+#endif
         { 
             PyErr_SetString(PySPDError, "Must be a sequence of ints" ); 
             Py_DECREF(o); 
             return NULL;
         } 
+#if PY_MAJOR_VERSION >= 3
+        bboxArr[n] = PyLong_AsLong(o);
+#else
         bboxArr[n] = PyInt_AsLong(o); 
+#endif
         Py_DECREF(o); 
     }
 
@@ -628,13 +696,21 @@ PySPDFile_readPointsIntoBlock2d(PySPDFile *self, PyObject *args)
     for( int n = 0; n < 4; n++ )
     {
         PyObject *o = PySequence_GetItem(pSeq, n); 
+#if PY_MAJOR_VERSION >= 3
+        if( !PyLong_Check(o) ) 
+#else
         if( !PyInt_Check(o) ) 
+#endif
         { 
             PyErr_SetString(PySPDError, "Must be a sequence of ints" ); 
             Py_DECREF(o); 
             return NULL;
         } 
+#if PY_MAJOR_VERSION >= 3
+        bboxArr[n] = PyLong_AsLong(o);
+#else
         bboxArr[n] = PyInt_AsLong(o); 
+#endif
         Py_DECREF(o); 
     }
 
@@ -740,8 +816,12 @@ static PyMethodDef PySPDFile_methods[] = {
 };
 
 static PyTypeObject PySPDFileType = {
+#if PY_MAJOR_VERSION >= 3
+    PyVarObject_HEAD_INIT(NULL, 0)
+#else
     PyObject_HEAD_INIT(NULL)
     0,                         /*ob_size*/
+#endif
     "spdpy2.SPDFile",         /*tp_name*/
     sizeof(PySPDFile),             /*tp_basicsize*/
     0,                         /*tp_itemsize*/
@@ -781,16 +861,25 @@ static PyTypeObject PySPDFileType = {
     0,                 /* tp_new */
 };
 
-void pyspdfile_init(PyObject *module)
+PyMODINIT_FUNC pyspdfile_init(PyObject *module, PyObject *error)
 {
     import_array();
+    
+    PySPDError = error;
 
     PySPDFileType.tp_new = PyType_GenericNew;
     if (PyType_Ready(&PySPDFileType) < 0)
+#if PY_MAJOR_VERSION >= 3
+        return NULL;
+#else
         return;
+#endif
 
     Py_INCREF(&PySPDFileType);
     PyModule_AddObject(module, "SPDFile", (PyObject *)&PySPDFileType);
+#if PY_MAJOR_VERSION >= 3
+    return NULL;
+#endif
 }
 
 

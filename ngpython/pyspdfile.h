@@ -2,7 +2,7 @@
 #ifndef PYSPDFILE_H
 #define PYSPDFILE_H
 
-void pyspdfile_init(PyObject *module);
+PyMODINIT_FUNC pyspdfile_init(PyObject *module, PyObject *error);
 
 #endif //PYSPDFILE_H
 
