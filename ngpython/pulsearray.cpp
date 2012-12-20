@@ -115,7 +115,14 @@ void copyPulseToRecord(void *pRecord, spdlib::SPDPulse *pulse, PulseArrayIndices
     indices.transWaveOffset.setValue(pRecord, pulse->transWaveOffset);
 }
 
+#if PY_MAJOR_VERSION >= 3
+PyObject* pulsearray_init()
+#else
 void pulsearray_init()
+#endif
 {
     import_array();
+#if PY_MAJOR_VERSION >= 3
+    return NULL;
+#endif
 }

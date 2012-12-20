@@ -1,46 +1,43 @@
+from __future__ import print_function
 import os
 import sys
 from numpy.distutils.core import setup, Extension
 
+INCLUDE_OPTIONS = ('--gdalinclude=', '--boostinclude=', '--gslinclude=', 
+                '--cgalinclude=', '--lasinclude=', '--hdf5include=')
 
-def getGDALFlags():
+def getFlags():
     """
-    Return the flags needed to link in GDAL as a dictionary
+    Return the include flags required
     """
-    extraargs = {}
-    if sys.platform == 'win32':
-        # Windows - rely on $GDAL_HOME being set and set 
-        # paths appropriately
-        gdalhome = os.getenv('GDAL_HOME')
-        if gdalhome is None:
-            raise SystemExit("need to define $GDAL_HOME")
-        extraargs['include_dirs'] = [os.path.join(gdalhome, 'include')]
-        #extraargs['library_dirs'] = [os.path.join(gdalhome, 'lib')]
-        #extraargs['libraries'] = ['gdal_i']
-    else:
-        # Unix - can do better with actual flags using gdal-config
-        import subprocess
-        try:
-            cflags = subprocess.check_output(['gdal-config', '--cflags']).strip()
-            extraargs['extra_compile_args'] = cflags.split()
+    extra_includes = []
+    new_argv = [sys.argv[0]]
+    for arg in sys.argv[1:]:
+        handled = False
+        for opt in INCLUDE_OPTIONS:
+            if arg.startswith(opt):
+                inc = arg.split('=')[1]
+                extra_includes.append(inc)
+                handled = True
+        if arg.startswith('--help'):
+            print('Header options:')
+            for opt in INCLUDE_OPTIONS:
+                print(opt, 'Include path')
+        if not handled:
+            new_argv.append(arg)
 
-            #ldflags = subprocess.check_output(['gdal-config', '--libs']).strip()
-            #extraargs['extra_link_args'] = ldflags.split()
-        except OSError:
-            raise SystemExit("can't find gdal-config")
-    return extraargs
+    sys.argv = new_argv
+    return extra_includes
 
-# get the flags for GDAL
-gdalargs = getGDALFlags()
+# get the flags for GDAL etc
+extraincludes = getFlags()
 
 # create our extension
 extkwargs = {'name':"spdpy2", 
                 'sources':["spdpy2module.cpp", "pyspdfile.cpp", "recarray.cpp", "pulsearray.cpp", "pointarray.cpp"],
                 'library_dirs':[os.path.join('..', 'src')],
                 'libraries':['spdio'],
-                'include_dirs':[os.path.join("..","include")]}
-# add gdalargs
-extkwargs.update(gdalargs)
+                'include_dirs':[os.path.join("..","include")] + extraincludes}
 
 spdpy2module = Extension(**extkwargs)
 

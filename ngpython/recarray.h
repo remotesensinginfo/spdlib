@@ -25,7 +25,7 @@ protected:
 
 // must call this in module initilisation function
 // so we have full access to numpy API
-void recarray_init();
+PyMODINIT_FUNC recarray_init();
 
 // class for creating structred arrays
 class RecArrayCreator
