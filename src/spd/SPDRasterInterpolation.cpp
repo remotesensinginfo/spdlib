@@ -125,7 +125,7 @@ namespace spdlib
                     {
                         imageDataBlock[i][j][0] = interpolator->getValue(cenPts[i][j]->x, cenPts[i][j]->y);
                         numProcessed = (i*xSize) + j;
-                        std::cout << floor(((float)numProcessed)/((float)totalNumPoints)) << "% Complete.\r";
+                        std::cout << floor((((float)numProcessed)/((float)totalNumPoints))*100) << "% Complete.\r";
                         //std::cout << " [" << i << "][" << j << "] = " << imageDataBlock[i][j][0] << std::endl;
                     }
                 }
