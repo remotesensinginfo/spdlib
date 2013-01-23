@@ -50,74 +50,86 @@ namespace spdlib
         
         void printPulsesFromLASFile(string inputFile, uint_fast32_t startIdx, uint_fast16_t numPulses) throw(SPDException)
         {
-            cout.precision(10);
-            ifstream ifs;
-			ifs.open(inputFile.c_str(), ios::in | ios::binary);
-			if(ifs.is_open())
-			{
-                liblas::ReaderFactory lasReaderFactory;
-				liblas::Reader reader = lasReaderFactory.CreateWithStream(ifs);
-				liblas::Header const& header = reader.GetHeader();
-                cout << "Number of Points in LAS file: " <<  header.GetPointRecordsCount() << endl;
-                
-                uint_fast16_t numOfReturnsInPulse = 0;
-                uint_fast64_t numOfPoints = 0;
-                uint_fast64_t numOfPulses = 0;
-                uint_fast64_t numOfPrintedPulses = 0;
-                
-                while (reader.ReadNextPoint())
-				{
-                    liblas::Point const& p = reader.GetPoint();
-                    ++numOfPoints;
-                    numOfReturnsInPulse = p.GetNumberOfReturns();
-                    if(numOfPulses >= startIdx)
-                    {
-                        cout << "###################################\n";
-                        cout << "Pulse " << numOfPulses << endl;
-                        cout << "Number of Returns: " << numOfReturnsInPulse << endl;
-                        cout << "Return: " << p.GetReturnNumber() << endl;
-                        cout << "[X,Y,Z]: [" << p.GetX() << "," << p.GetY() << "," << p.GetZ() << "]\n";
-                        cout << "*********************************\n";
-                    }
+            try
+            {
+                cout.precision(10);
+                ifstream ifs;
+                ifs.open(inputFile.c_str(), ios::in | ios::binary);
+                if(ifs.is_open())
+                {
+                    liblas::ReaderFactory lasReaderFactory;
+                    liblas::Reader reader = lasReaderFactory.CreateWithStream(ifs);
+                    std::cout << "here\n";
+                    liblas::Header const& header = reader.GetHeader();
+                    cout << "Number of Points in LAS file: " <<  header.GetPointRecordsCount() << endl;
                     
-                    for(boost::uint_fast16_t i = 0; i < (numOfReturnsInPulse-1); ++i)
-					{
-						if(reader.ReadNextPoint())
-						{
-                            if(numOfPulses >= startIdx)
-                            {
-                                liblas::Point const& pt = reader.GetPoint();
-                                cout << "Return: " << pt.GetReturnNumber() << endl;
-                                cout << "[X,Y,Z]: [" << pt.GetX() << "," << pt.GetY() << "," << pt.GetZ() << "]\n";
-                                cout << "*********************************\n";
-                            }
-							++numOfPoints;
-						}
-						else
-						{
-							cerr << "\nWarning: The file ended unexpectedly.\n";
-                            cerr << "Expected " << numOfReturnsInPulse << " but only found " << i + 1 << " returns" << endl;
-						}
-					}
-                    ++numOfPulses;
+                    uint_fast16_t numOfReturnsInPulse = 0;
+                    uint_fast64_t numOfPoints = 0;
+                    uint_fast64_t numOfPulses = 0;
+                    uint_fast64_t numOfPrintedPulses = 0;
                     
-                    if(numOfPulses >= startIdx)
+                    while (reader.ReadNextPoint())
                     {
-                        cout << "###################################\n";
-                        ++numOfPrintedPulses;
-                        if(numOfPrintedPulses >= numPulses)
+                        liblas::Point const& p = reader.GetPoint();
+                        ++numOfPoints;
+                        numOfReturnsInPulse = p.GetNumberOfReturns();
+                        if(numOfPulses >= startIdx)
                         {
-                            break;
+                            cout << "###################################\n";
+                            cout << "Pulse " << numOfPulses << endl;
+                            cout << "Number of Returns: " << numOfReturnsInPulse << endl;
+                            cout << "Return: " << p.GetReturnNumber() << endl;
+                            cout << "[X,Y,Z]: [" << p.GetX() << "," << p.GetY() << "," << p.GetZ() << "]\n";
+                            cout << "*********************************\n";
+                        }
+                        
+                        for(boost::uint_fast16_t i = 0; i < (numOfReturnsInPulse-1); ++i)
+                        {
+                            if(reader.ReadNextPoint())
+                            {
+                                if(numOfPulses >= startIdx)
+                                {
+                                    liblas::Point const& pt = reader.GetPoint();
+                                    cout << "Return: " << pt.GetReturnNumber() << endl;
+                                    cout << "[X,Y,Z]: [" << pt.GetX() << "," << pt.GetY() << "," << pt.GetZ() << "]\n";
+                                    cout << "*********************************\n";
+                                }
+                                ++numOfPoints;
+                            }
+                            else
+                            {
+                                cerr << "\nWarning: The file ended unexpectedly.\n";
+                                cerr << "Expected " << numOfReturnsInPulse << " but only found " << i + 1 << " returns" << endl;
+                            }
+                        }
+                        ++numOfPulses;
+                        
+                        if(numOfPulses >= startIdx)
+                        {
+                            cout << "###################################\n";
+                            ++numOfPrintedPulses;
+                            if(numOfPrintedPulses >= numPulses)
+                            {
+                                break;
+                            }
                         }
                     }
+                    
+                    cout << "Number of Points counted: " << numOfPoints << endl;
+                    cout << "Number of Pulses counted: " << numOfPulses << endl;
                 }
-                
-                cout << "Number of Points counted: " << numOfPoints << endl;
-                cout << "Number of Pulses counted: " << numOfPulses << endl;
+                else
+                {
+                    throw SPDException("Couldn't open input file.");
+                }
             }
-            else
+            catch(SPDException &e)
             {
-                throw SPDException("Couldn't open input file.");
+                throw e;
+            }
+            catch(std::exception &e)
+            {
+                throw SPDException(e.what());
             }
         };
         
