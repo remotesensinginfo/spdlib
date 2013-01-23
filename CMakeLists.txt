@@ -276,6 +276,8 @@ if (SPDLIB_WITH_UTILITIES)
 	target_link_libraries (spdthin ${SPDLIB_MITLIB_NAME} ${SPDLIB_LIB_NAME} )
 	add_executable(spdextract ${PROJECT_SOURCE_DIR}/exe/spdextract/main.cpp)
 	target_link_libraries (spdextract ${SPDLIB_MITLIB_NAME} ${SPDLIB_LIB_NAME} )
+	add_executable(spdwarp ${PROJECT_SOURCE_DIR}/exe/spdwarp/main.cpp)
+	target_link_libraries (spdwarp ${SPDLIB_MITLIB_NAME} ${SPDLIB_LIB_NAME} )
 endif(SPDLIB_WITH_UTILITIES)
 ###############################################################################
 
