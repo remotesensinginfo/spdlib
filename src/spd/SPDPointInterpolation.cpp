@@ -276,7 +276,7 @@ namespace spdlib
         
         totalNumPoints = points->size();
         
-        std::cout << "totalNumPoints = " << totalNumPoints << std::endl;
+        //std::cout << "totalNumPoints = " << totalNumPoints << std::endl;
         
         if(totalNumPoints < 1)
         {
