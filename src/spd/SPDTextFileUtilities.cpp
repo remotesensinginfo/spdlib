@@ -229,6 +229,7 @@ namespace spdlib{
 		double outValue = 0;
 		try
         {
+            boost::algorithm::trim(inValue);
             outValue = boost::lexical_cast<double>(inValue);
         }
         catch(boost::bad_lexical_cast &e)
@@ -244,6 +245,7 @@ namespace spdlib{
 		float outValue = 0;
 		try
         {
+            boost::algorithm::trim(inValue);
             outValue = boost::lexical_cast<float>(inValue);
         }
         catch(boost::bad_lexical_cast &e)
@@ -259,6 +261,7 @@ namespace spdlib{
 		boost::uint_fast8_t outValue = 0;
 		try
         {
+            boost::algorithm::trim(inValue);
             outValue = boost::lexical_cast<boost::uint_fast8_t>(inValue);
         }
         catch(boost::bad_lexical_cast &e)
@@ -274,6 +277,7 @@ namespace spdlib{
 		boost::uint_fast16_t outValue = 0;
 		try
         {
+            boost::algorithm::trim(inValue);
             outValue = boost::lexical_cast<boost::uint_fast16_t>(inValue);
         }
         catch(boost::bad_lexical_cast &e)
@@ -289,6 +293,7 @@ namespace spdlib{
 		boost::uint_fast32_t outValue = 0;
 		try
         {
+            boost::algorithm::trim(inValue);
             outValue = boost::lexical_cast<boost::uint_fast32_t>(inValue);
         }
         catch(boost::bad_lexical_cast &e)
@@ -304,6 +309,7 @@ namespace spdlib{
 		boost::uint_fast64_t outValue = 0;
 		try
         {
+            boost::algorithm::trim(inValue);
             outValue = boost::lexical_cast<boost::uint_fast64_t>(inValue);
         }
         catch(boost::bad_lexical_cast &e)
@@ -314,11 +320,12 @@ namespace spdlib{
 		return outValue;
 	}
 	
-boost::int_fast8_t SPDTextFileUtilities::strto8bitInt(std::string inValue) throw(SPDTextFileException)
+    boost::int_fast8_t SPDTextFileUtilities::strto8bitInt(std::string inValue) throw(SPDTextFileException)
 	{
-	boost::int_fast8_t outValue = 0;
+        boost::int_fast8_t outValue = 0;
 		try
         {
+            boost::algorithm::trim(inValue);
             outValue = boost::lexical_cast<int_fast8_t>(inValue);
         }
         catch(boost::bad_lexical_cast &e)
@@ -329,11 +336,12 @@ boost::int_fast8_t SPDTextFileUtilities::strto8bitInt(std::string inValue) throw
 		return outValue;
 	}
 	
-boost::int_fast16_t SPDTextFileUtilities::strto16bitInt(std::string inValue) throw(SPDTextFileException)
+    boost::int_fast16_t SPDTextFileUtilities::strto16bitInt(std::string inValue) throw(SPDTextFileException)
 	{
-	boost::int_fast16_t outValue = 0;
+        boost::int_fast16_t outValue = 0;
 		try
         {
+            boost::algorithm::trim(inValue);
             outValue = boost::lexical_cast<int_fast16_t>(inValue);
         }
         catch(boost::bad_lexical_cast &e)
@@ -344,11 +352,12 @@ boost::int_fast16_t SPDTextFileUtilities::strto16bitInt(std::string inValue) thr
 		return outValue;
 	}
 	
-boost::int_fast32_t SPDTextFileUtilities::strto32bitInt(std::string inValue) throw(SPDTextFileException)
+    boost::int_fast32_t SPDTextFileUtilities::strto32bitInt(std::string inValue) throw(SPDTextFileException)
 	{
-	boost::int_fast32_t outValue = 0;
+        boost::int_fast32_t outValue = 0;
 		try
         {
+            boost::algorithm::trim(inValue);
             outValue = boost::lexical_cast<int_fast32_t>(inValue);
         }
         catch(boost::bad_lexical_cast &e)
@@ -359,11 +368,12 @@ boost::int_fast32_t SPDTextFileUtilities::strto32bitInt(std::string inValue) thr
 		return outValue;
 	}
 	
-boost::int_fast64_t SPDTextFileUtilities::strto64bitInt(std::string inValue) throw(SPDTextFileException)
+    boost::int_fast64_t SPDTextFileUtilities::strto64bitInt(std::string inValue) throw(SPDTextFileException)
 	{
-	boost::int_fast64_t outValue = 0;
+        boost::int_fast64_t outValue = 0;
 		try
         {
+            boost::algorithm::trim(inValue);
             outValue = boost::lexical_cast<int_fast64_t>(inValue);
         }
         catch(boost::bad_lexical_cast &e)
