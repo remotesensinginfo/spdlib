@@ -163,7 +163,7 @@ namespace spdlib
 		~SPDDecomposePulseImportProcessor()
         {
             delete pulses;
-        }
+        };
 	private:
 		SPDDecomposePulse *decompose;
 		SPDDataExporter *exporter;
