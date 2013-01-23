@@ -40,30 +40,97 @@ namespace spdlib
         std::vector<SPDPoint*> *points = new std::vector<SPDPoint*>();
         std::list<SPDPulse*>::iterator iterPulses;
         std::vector<SPDPoint*>::iterator iterPts;
-        SPDPoint *pt = NULL;
-        for(boost::uint_fast32_t i = 0; i < numYBins; ++i)
+        
+        bool firstPt = true;
+        double maxZ = 0;
+        SPDPoint *maxPt = NULL;
+        
+        if((ptClass == SPD_VEGETATION_TOP) || (ptClass == SPD_ALL_CLASSES_TOP))
         {
-            for(boost::uint_fast32_t j = 0; j < numXBins; ++j)
+            for(boost::uint_fast32_t i = 0; i < numYBins; ++i)
             {
-                for(iterPulses = pulses[i][j]->begin(); iterPulses != pulses[i][j]->end(); ++iterPulses)
+                for(boost::uint_fast32_t j = 0; j < numXBins; ++j)
                 {
-                    if((*iterPulses)->numberOfReturns > 0)
+                    firstPt = true;
+                    maxPt = NULL;
+                    for(iterPulses = pulses[i][j]->begin(); iterPulses != pulses[i][j]->end(); ++iterPulses)
                     {
-                        if(ptClass == SPD_VEGETATION_TOP)
+                        if((*iterPulses)->numberOfReturns > 0)
                         {
-                            pt = (*iterPulses)->pts->front();
-                            if((pt->classification == SPD_HIGH_VEGETATION) |
-                               (pt->classification == SPD_MEDIUM_VEGETATION) |
-                               (pt->classification == SPD_LOW_VEGETATION))
+                            for(iterPts = (*iterPulses)->pts->begin(); iterPts != (*iterPulses)->pts->end(); ++iterPts)
                             {
-                                points->push_back(pt);
+                                if(ptClass == SPD_VEGETATION_TOP)
+                                {
+                                    if(((*iterPts)->classification == SPD_HIGH_VEGETATION) |
+                                       ((*iterPts)->classification == SPD_MEDIUM_VEGETATION) |
+                                       ((*iterPts)->classification == SPD_LOW_VEGETATION))
+                                    {
+                                        if(firstPt)
+                                        {
+                                            maxPt = (*iterPts);
+                                            if(elevVal == SPD_USE_Z)
+                                            {
+                                                maxZ = (*iterPts)->z;
+                                            }
+                                            else if(elevVal == SPD_USE_HEIGHT)
+                                            {
+                                                maxZ = (*iterPts)->height;
+                                            }
+                                            firstPt = false;
+                                        }
+                                        else if((elevVal == SPD_USE_Z) && ((*iterPts)->z > maxZ))
+                                        {
+                                            maxZ = (*iterPts)->z;
+                                        }
+                                        else if((elevVal == SPD_USE_HEIGHT) && ((*iterPts)->height > maxZ))
+                                        {
+                                            maxZ = (*iterPts)->height;
+                                        }
+                                    }
+                                }
+                                else if(ptClass == SPD_ALL_CLASSES_TOP)
+                                {
+                                    if(firstPt)
+                                    {
+                                        maxPt = (*iterPts);
+                                        if(elevVal == SPD_USE_Z)
+                                        {
+                                            maxZ = (*iterPts)->z;
+                                        }
+                                        else if(elevVal == SPD_USE_HEIGHT)
+                                        {
+                                            maxZ = (*iterPts)->height;
+                                        }
+                                        firstPt = false;
+                                    }
+                                    else if((elevVal == SPD_USE_Z) && ((*iterPts)->z > maxZ))
+                                    {
+                                        maxZ = (*iterPts)->z;
+                                    }
+                                    else if((elevVal == SPD_USE_HEIGHT) && ((*iterPts)->height > maxZ))
+                                    {
+                                        maxZ = (*iterPts)->height;
+                                    }
+                                }
                             }
                         }
-                        else if(ptClass == SPD_ALL_CLASSES_TOP)
-                        {
-                            points->push_back((*iterPulses)->pts->front());
-                        }
-                        else
+                    }
+                    if(!firstPt)
+                    {
+                        points->push_back(maxPt);
+                    }
+                }
+            }
+        }
+        else
+        {
+            for(boost::uint_fast32_t i = 0; i < numYBins; ++i)
+            {
+                for(boost::uint_fast32_t j = 0; j < numXBins; ++j)
+                {
+                    for(iterPulses = pulses[i][j]->begin(); iterPulses != pulses[i][j]->end(); ++iterPulses)
+                    {
+                        if((*iterPulses)->numberOfReturns > 0)
                         {
                             for(iterPts = (*iterPulses)->pts->begin(); iterPts != (*iterPulses)->pts->end(); ++iterPts)
                             {
@@ -81,6 +148,8 @@ namespace spdlib
                 }
             }
         }
+        
+        
         totalNumPoints = points->size();
         
         if(totalNumPoints < 1)
@@ -96,30 +165,97 @@ namespace spdlib
         std::vector<SPDPoint*> *points = new std::vector<SPDPoint*>();
         std::vector<SPDPulse*>::iterator iterPulses;
         std::vector<SPDPoint*>::iterator iterPts;
-        SPDPoint *pt = NULL;
-        for(boost::uint_fast32_t i = 0; i < numYBins; ++i)
+        
+        bool firstPt = true;
+        double maxZ = 0;
+        SPDPoint *maxPt = NULL;
+        
+        if((ptClass == SPD_VEGETATION_TOP) || (ptClass == SPD_ALL_CLASSES_TOP))
         {
-            for(boost::uint_fast32_t j = 0; j < numXBins; ++j)
+            for(boost::uint_fast32_t i = 0; i < numYBins; ++i)
             {
-                for(iterPulses = pulses[i][j]->begin(); iterPulses != pulses[i][j]->end(); ++iterPulses)
+                for(boost::uint_fast32_t j = 0; j < numXBins; ++j)
                 {
-                    if((*iterPulses)->numberOfReturns > 0)
+                    firstPt = true;
+                    maxPt = NULL;
+                    for(iterPulses = pulses[i][j]->begin(); iterPulses != pulses[i][j]->end(); ++iterPulses)
                     {
-                        if(ptClass == SPD_VEGETATION_TOP)
+                        if((*iterPulses)->numberOfReturns > 0)
                         {
-                            pt = (*iterPulses)->pts->front();
-                            if((pt->classification == SPD_HIGH_VEGETATION) |
-                               (pt->classification == SPD_MEDIUM_VEGETATION) |
-                               (pt->classification == SPD_LOW_VEGETATION))
+                            for(iterPts = (*iterPulses)->pts->begin(); iterPts != (*iterPulses)->pts->end(); ++iterPts)
                             {
-                                points->push_back(pt);
-                            }
+                                if(ptClass == SPD_VEGETATION_TOP)
+                                {
+                                    if(((*iterPts)->classification == SPD_HIGH_VEGETATION) |
+                                       ((*iterPts)->classification == SPD_MEDIUM_VEGETATION) |
+                                       ((*iterPts)->classification == SPD_LOW_VEGETATION))
+                                    {
+                                        if(firstPt)
+                                        {
+                                            maxPt = (*iterPts);
+                                            if(elevVal == SPD_USE_Z)
+                                            {
+                                                maxZ = (*iterPts)->z;
+                                            }
+                                            else if(elevVal == SPD_USE_HEIGHT)
+                                            {
+                                                maxZ = (*iterPts)->height;
+                                            }
+                                            firstPt = false;
+                                        }
+                                        else if((elevVal == SPD_USE_Z) && ((*iterPts)->z > maxZ))
+                                        {
+                                            maxZ = (*iterPts)->z;
+                                        }
+                                        else if((elevVal == SPD_USE_HEIGHT) && ((*iterPts)->height > maxZ))
+                                        {
+                                            maxZ = (*iterPts)->height;
+                                        }
+                                    }
+                                }
+                                else if(ptClass == SPD_ALL_CLASSES_TOP)
+                                {
+                                    if(firstPt)
+                                    {
+                                        maxPt = (*iterPts);
+                                        if(elevVal == SPD_USE_Z)
+                                        {
+                                            maxZ = (*iterPts)->z;
+                                        }
+                                        else if(elevVal == SPD_USE_HEIGHT)
+                                        {
+                                            maxZ = (*iterPts)->height;
+                                        }
+                                        firstPt = false;
+                                    }
+                                    else if((elevVal == SPD_USE_Z) && ((*iterPts)->z > maxZ))
+                                    {
+                                        maxZ = (*iterPts)->z;
+                                    }
+                                    else if((elevVal == SPD_USE_HEIGHT) && ((*iterPts)->height > maxZ))
+                                    {
+                                        maxZ = (*iterPts)->height;
+                                    }
+                                }
+                            } 
                         }
-                        else if(ptClass == SPD_ALL_CLASSES_TOP)
-                        {
-                            points->push_back((*iterPulses)->pts->front());
-                        }
-                        else
+                    }
+                    if(!firstPt)
+                    {
+                        points->push_back(maxPt);
+                    }
+                }
+            }
+        }
+        else
+        {
+            for(boost::uint_fast32_t i = 0; i < numYBins; ++i)
+            {
+                for(boost::uint_fast32_t j = 0; j < numXBins; ++j)
+                {
+                    for(iterPulses = pulses[i][j]->begin(); iterPulses != pulses[i][j]->end(); ++iterPulses)
+                    {
+                        if((*iterPulses)->numberOfReturns > 0)
                         {
                             for(iterPts = (*iterPulses)->pts->begin(); iterPts != (*iterPulses)->pts->end(); ++iterPts)
                             {
@@ -137,7 +273,10 @@ namespace spdlib
                 }
             }
         }
+        
         totalNumPoints = points->size();
+        
+        std::cout << "totalNumPoints = " << totalNumPoints << std::endl;
         
         if(totalNumPoints < 1)
         {
@@ -706,88 +845,7 @@ namespace spdlib
 		}*/
 		return 0;//outElevation;
 	}
-	
-	//std::vector<SPDInterTriNode*>* SPDTINPlaneFitInterpolator::normaliseNodes(std::vector<const SPDInterTriNode*> *nodes, double eastings, double northings) throw(SPDProcessingException)
-	//{
-		/*std::vector<SPDInterTriNode*> *normNodesVec = new std::vector<SPDInterTriNode*>();
-		SPDInterTriNode *tmpNode = NULL;
-		
-		std::vector<const SPDInterTriNode*>::iterator iterNodes;
-		for(iterNodes = nodes->begin(); iterNodes != nodes->end(); ++iterNodes)
-		{
-			tmpNode = new SPDInterTriNode(((*iterNodes)->eastings() - eastings), ((*iterNodes)->northings() - northings), (*iterNodes)->elevation());
-			normNodesVec->push_back(tmpNode);
-		}
-		
-		return normNodesVec;*/
-	//}
-	
-	//void SPDTINPlaneFitInterpolator::fitPlane2Points(std::vector<SPDInterTriNode*> *normPts, double *a, double *b, double *c) throw(SPDProcessingException)
-	//{
-		/*SPDMatrixUtils matrices;
-		
-		try
-		{
-			double sXY = 0;
-			double sX = 0;
-			double sXSqu = 0;
-			double sY = 0;
-			double sYSqu = 0;
-			double sXZ = 0;
-			double sYZ = 0;
-			double sZ = 0;
-			
-			std::vector<SPDInterTriNode*>::iterator iterPts;
-			
-			for(iterPts = normPts->begin(); iterPts != normPts->end(); ++iterPts)
-			{
-				sXY += ((*iterPts)->eastings() * (*iterPts)->northings());
-				sX += (*iterPts)->eastings();
-				sXSqu += ((*iterPts)->eastings() * (*iterPts)->eastings());
-				sY += (*iterPts)->northings();
-				sYSqu += ((*iterPts)->northings() * (*iterPts)->northings());
-				sXZ += ((*iterPts)->eastings() * (*iterPts)->elevation());
-				sYZ += ((*iterPts)->northings() * (*iterPts)->elevation());
-				sZ += (*iterPts)->elevation();
-			}
-			
-			Matrix *matrixA = matrices.createMatrix(3, 3);
-			matrixA->matrix[0] = sXSqu;
-			matrixA->matrix[1] = sXY;
-			matrixA->matrix[2] = sX;
-			matrixA->matrix[3] = sXY;
-			matrixA->matrix[4] = sYSqu;
-			matrixA->matrix[5] = sY;
-			matrixA->matrix[6] = sX;
-			matrixA->matrix[7] = sY;
-			matrixA->matrix[8] = normPts->size();
-			Matrix *matrixB = matrices.createMatrix(1, 3);
-			matrixB->matrix[0] = sXZ;
-			matrixB->matrix[1] = sYZ;
-			matrixB->matrix[2] = sZ;
-			
-			double determinantA = matrices.determinant(matrixA);
-			Matrix *matrixCoFactors = matrices.cofactors(matrixA);
-			Matrix *matrixCoFactorsT = matrices.transpose(matrixCoFactors);
-			double multiplier = 1/determinantA;
-			matrices.multipleSingle(matrixCoFactorsT, multiplier);
-			Matrix *outputs = matrices.multiplication(matrixCoFactorsT, matrixB);
-			*a = outputs->matrix[0];
-			*b = outputs->matrix[1];
-			*c = outputs->matrix[2];
-			
-			matrices.freeMatrix(matrixA);
-			matrices.freeMatrix(matrixB);
-			matrices.freeMatrix(matrixCoFactors);
-			matrices.freeMatrix(matrixCoFactorsT);
-			matrices.freeMatrix(outputs);
-		}
-		catch(SPDException &e)
-		{
-			throw e;
-		}*/
-	//}
-	
+
 	
 	SPDTINPlaneFitInterpolator::~SPDTINPlaneFitInterpolator()
 	{
@@ -815,99 +873,198 @@ namespace spdlib
 			std::vector<SPDPoint*> *pts = new std::vector<SPDPoint*>();
 			if(idx->getPointsInRadius(pts, eastings, northings, stdDevDist))
 			{
-				double minLow = 0;
-				double minHigh = 0;
-				double sum = 0;
-				bool firstLow = true;
-				bool firstHigh = true;
-				double dist = 0;
-                double elev = 0;
-				
-				SPDPointUtils ptUtils;
-				
-				std::vector<SPDPoint*>::iterator iterPts;
-				for(iterPts = pts->begin(); iterPts != pts->end(); ++iterPts)
-				{
-                    if(elevVal == SPD_USE_Z)
+                if( selectHighOrLow == SPD_SELECT_LOWEST)
+                {
+                    double minLow = 0;
+                    double minHigh = 0;
+                    double sum = 0;
+                    bool firstLow = true;
+                    bool firstHigh = true;
+                    double dist = 0;
+                    double elev = 0;
+                    
+                    SPDPointUtils ptUtils;
+                    
+                    std::vector<SPDPoint*>::iterator iterPts;
+                    for(iterPts = pts->begin(); iterPts != pts->end(); ++iterPts)
                     {
-                        elev = (*iterPts)->z;
-                    }
-                    else if(elevVal == SPD_USE_HEIGHT)
-                    {
-                        elev = (*iterPts)->height;
-                    }
-                    else
-                    {
-                        throw SPDProcessingException("Elevation type not recognised.");
-                    }
-					sum += elev;
-					dist = ptUtils.distanceXY(eastings, northings, *iterPts);
-					if(dist < this->highDist)
-					{
-						if(firstHigh)
-						{
-							minHigh = elev;
-							firstHigh = false;
-						}
-						else if(elev < minHigh)
-						{
-							minHigh = elev;
-						}
-						
-						if(dist < this->lowDist)
-						{
-							if(firstLow)
-							{
-								minLow = elev;
-								firstLow = false;
-							}
-							else if(elev < minLow)
-							{
-								minLow = elev;
-							}
-						}
-					}
-				}
-				
-				double mean = sum / pts->size();
-				double sumSq = 0;
-				
-				for(iterPts = pts->begin(); iterPts != pts->end(); ++iterPts)
-				{
-                    if(elevVal == SPD_USE_Z)
-                    {
-                        elev = (*iterPts)->z;
-                    }
-                    else if(elevVal == SPD_USE_HEIGHT)
-                    {
-                        elev = (*iterPts)->height;
-                    }
-                    else
-                    {
-                        throw SPDProcessingException("Elevation type not recognised.");
+                        if(elevVal == SPD_USE_Z)
+                        {
+                            elev = (*iterPts)->z;
+                        }
+                        else if(elevVal == SPD_USE_HEIGHT)
+                        {
+                            elev = (*iterPts)->height;
+                        }
+                        else
+                        {
+                            throw SPDProcessingException("Elevation type not recognised.");
+                        }
+                        sum += elev;
+                        dist = ptUtils.distanceXY(eastings, northings, *iterPts);
+                        if(dist < this->highDist)
+                        {
+                            if(firstHigh)
+                            {
+                                minHigh = elev;
+                                firstHigh = false;
+                            }
+                            else if(elev < minHigh)
+                            {
+                                minHigh = elev;
+                            }
+                            
+                            if(dist < this->lowDist)
+                            {
+                                if(firstLow)
+                                {
+                                    minLow = elev;
+                                    firstLow = false;
+                                }
+                                else if(elev < minLow)
+                                {
+                                    minLow = elev;
+                                }
+                            }
+                        }
                     }
                     
-					sumSq += (elev - mean) * (elev - mean);
-				}
-				
-				double stdDev = sqrt(sumSq);
-				
-				if(stdDev < this->stdDevThreshold)
-				{
-					returnZVal = minHigh;
-				}
-				else 
-				{
-					if(firstLow)
-					{
-						returnZVal = minHigh;
-					}
-					else 
-					{
-						returnZVal = minLow;
-					}
+                    double mean = sum / pts->size();
+                    double sumSq = 0;
+                    
+                    for(iterPts = pts->begin(); iterPts != pts->end(); ++iterPts)
+                    {
+                        if(elevVal == SPD_USE_Z)
+                        {
+                            elev = (*iterPts)->z;
+                        }
+                        else if(elevVal == SPD_USE_HEIGHT)
+                        {
+                            elev = (*iterPts)->height;
+                        }
+                        else
+                        {
+                            throw SPDProcessingException("Elevation type not recognised.");
+                        }
+                        
+                        sumSq += (elev - mean) * (elev - mean);
+                    }
+                    
+                    double stdDev = sqrt(sumSq);
+                    
+                    if(stdDev < this->stdDevThreshold)
+                    {
+                        returnZVal = minHigh;
+                    }
+                    else
+                    {
+                        if(firstLow)
+                        {
+                            returnZVal = minHigh;
+                        }
+                        else 
+                        {
+                            returnZVal = minLow;
+                        }
 
-				}
+                    }
+                }
+                else if( selectHighOrLow == SPD_SELECT_HIGHEST)
+                {
+                    double maxLow = 0;
+                    double maxHigh = 0;
+                    double sum = 0;
+                    bool firstLow = true;
+                    bool firstHigh = true;
+                    double dist = 0;
+                    double elev = 0;
+                    
+                    SPDPointUtils ptUtils;
+                    
+                    std::vector<SPDPoint*>::iterator iterPts;
+                    for(iterPts = pts->begin(); iterPts != pts->end(); ++iterPts)
+                    {
+                        if(elevVal == SPD_USE_Z)
+                        {
+                            elev = (*iterPts)->z;
+                        }
+                        else if(elevVal == SPD_USE_HEIGHT)
+                        {
+                            elev = (*iterPts)->height;
+                        }
+                        else
+                        {
+                            throw SPDProcessingException("Elevation type not recognised.");
+                        }
+                        sum += elev;
+                        dist = ptUtils.distanceXY(eastings, northings, *iterPts);
+                        if(dist < this->highDist)
+                        {
+                            if(firstHigh)
+                            {
+                                maxHigh = elev;
+                                firstHigh = false;
+                            }
+                            else if(elev > maxHigh)
+                            {
+                                maxHigh = elev;
+                            }
+                            
+                            if(dist < this->lowDist)
+                            {
+                                if(firstLow)
+                                {
+                                    maxLow = elev;
+                                    firstLow = false;
+                                }
+                                else if(elev > maxLow)
+                                {
+                                    maxLow = elev;
+                                }
+                            }
+                        }
+                    }
+                    
+                    double mean = sum / pts->size();
+                    double sumSq = 0;
+                    
+                    for(iterPts = pts->begin(); iterPts != pts->end(); ++iterPts)
+                    {
+                        if(elevVal == SPD_USE_Z)
+                        {
+                            elev = (*iterPts)->z;
+                        }
+                        else if(elevVal == SPD_USE_HEIGHT)
+                        {
+                            elev = (*iterPts)->height;
+                        }
+                        else
+                        {
+                            throw SPDProcessingException("Elevation type not recognised.");
+                        }
+                        
+                        sumSq += (elev - mean) * (elev - mean);
+                    }
+                    
+                    double stdDev = sqrt(sumSq);
+                    
+                    if(stdDev < this->stdDevThreshold)
+                    {
+                        returnZVal = maxHigh;
+                    }
+                    else
+                    {
+                        if(firstLow)
+                        {
+                            returnZVal = maxHigh;
+                        }
+                        else
+                        {
+                            returnZVal = maxLow;
+                        }
+                        
+                    }
+                }
 			}
 			else 
 			{
@@ -920,6 +1077,8 @@ namespace spdlib
 		{
 			throw e;
 		}
+        
+        //std::cout << "returnZVal " << returnZVal << std::endl;
 		return returnZVal;
 	}
 	
