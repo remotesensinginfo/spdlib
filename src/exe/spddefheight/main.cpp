@@ -117,7 +117,7 @@ int main (int argc, char * const argv[])
         ValueArg<float> gridIdxResolutionArg("","idxres","Resolution of the grid index used for some interpolates",false,0.5,"float");
 		cmd.add( gridIdxResolutionArg );
         
-		UnlabeledMultiArg<string> multiFileNames("File", "File names for the input files", false, "string");
+		UnlabeledMultiArg<string> multiFileNames("File", "File names for the input files (in.spd in.dem out.spd | in.spd out.spd)", false, "string");
 		cmd.add( multiFileNames );
 		cmd.parse( argc, argv );
 		
