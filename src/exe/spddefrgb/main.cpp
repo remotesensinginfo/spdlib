@@ -47,6 +47,19 @@ int main (int argc, char * const argv[])
 	{
         TCLAP::CmdLine cmd("Define the RGB values on the SPDFile: spddefrgb", ' ', "1.0.0");
 		
+        TCLAP::SwitchArg defRGBSwitch("","define","Define the RGB values on an SPD file from an input image.", false);
+		TCLAP::SwitchArg stretchRGBSwitch("","stretch","Stretch existing RGB values to a range of 0 to 255.", false);
+        
+        std::vector<TCLAP::Arg*> arguments;
+        arguments.push_back(&defRGBSwitch);
+        arguments.push_back(&stretchRGBSwitch);
+        cmd.xorAdd(arguments);
+        
+        TCLAP::SwitchArg linearStretchSwitch("","linear","Use a linear stretch between the min and max values.", false);
+		TCLAP::SwitchArg stddevRGBSwitch("","stddev","Use a linear 2 standard deviation stretch.", false);
+        cmd.add(linearStretchSwitch);
+        cmd.add(stddevRGBSwitch);
+        
         TCLAP::ValueArg<boost::uint_fast32_t> numOfRowsBlockArg("r","blockrows","Number of rows within a block (Default 100)",false,100,"unsigned int");
 		cmd.add( numOfRowsBlockArg );
         
@@ -62,40 +75,167 @@ int main (int argc, char * const argv[])
 		TCLAP::ValueArg<uint_fast16_t> blueBandArg("","blue","Image band for blue channel",false,3,"uint_fast16_t");
 		cmd.add( blueBandArg );
 		
-		TCLAP::UnlabeledMultiArg<std::string> multiFileNames("Files", "File names for the input and output files (Image: Input SPD, Input Image, Output SPD)", true, "string");
+		TCLAP::UnlabeledMultiArg<std::string> multiFileNames("Files", "File names for the input and output files. (Define RGB: Input SPD, Input Image, Output SPD) (Stretch: Input SPD, Output SPD)", true, "string");
 		cmd.add( multiFileNames );
 		cmd.parse( argc, argv );
-		
-		std::vector<std::string> fileNames = multiFileNames.getValue();		
-		if(fileNames.size() != 3)
-		{
-			for(unsigned int i = 0; i < fileNames.size(); ++i)
-			{
-				std::cout << i << ": " << fileNames.at(i) << std::endl;
-			}
-			
-            spdlib::SPDTextFileUtilities textUtils;
-			std::string message = std::string("Three file paths should have been specified (e.g., Input and Output). ") + textUtils.uInt32bittostring(fileNames.size()) + std::string(" were provided.");
-			throw spdlib::SPDException(message);
-		}
-		
-        std::string inputSPDFile = fileNames.at(0);
-   		std::string inputImageFile = fileNames.at(1);
-		std::string outputSPDFile = fileNames.at(2);
+		        
+        if(defRGBSwitch.getValue())
+        {
+            std::cout << "Defining the RGB values from an input image.\n";
+            std::vector<std::string> fileNames = multiFileNames.getValue();
+            if(fileNames.size() != 3)
+            {
+                for(unsigned int i = 0; i < fileNames.size(); ++i)
+                {
+                    std::cout << i << ": " << fileNames.at(i) << std::endl;
+                }
+                
+                spdlib::SPDTextFileUtilities textUtils;
+                std::string message = std::string("Three file paths should have been specified (i.e., Input SPD, Input Image and Output SPD). ") + textUtils.uInt32bittostring(fileNames.size()) + std::string(" were provided.");
+                throw spdlib::SPDException(message);
+            }
+            
+            std::string inputSPDFile = fileNames.at(0);
+            std::string inputImageFile = fileNames.at(1);
+            std::string outputSPDFile = fileNames.at(2);
 
-		uint_fast16_t redBand = redBandArg.getValue()-1;	
-        uint_fast16_t greenBand = greenBandArg.getValue()-1;	
-        uint_fast16_t blueBand = blueBandArg.getValue()-1;
-        
-        spdlib::SPDFile *spdInFile = new spdlib::SPDFile(inputSPDFile);
-        spdlib::SPDPulseProcessor *pulseProcessor = new spdlib::SPDDefineRGBValues(redBand, greenBand, blueBand);            
-        spdlib::SPDSetupProcessPulses processPulses = spdlib::SPDSetupProcessPulses(numOfColsBlockArg.getValue(), numOfRowsBlockArg.getValue(), true);
-        processPulses.processPulsesWithInputImage(pulseProcessor, spdInFile, outputSPDFile, inputImageFile);
-        
-        delete spdInFile;
-        delete pulseProcessor;
+            uint_fast16_t redBand = redBandArg.getValue()-1;	
+            uint_fast16_t greenBand = greenBandArg.getValue()-1;	
+            uint_fast16_t blueBand = blueBandArg.getValue()-1;
+            
+            spdlib::SPDFile *spdInFile = new spdlib::SPDFile(inputSPDFile);
+            spdlib::SPDPulseProcessor *pulseProcessor = new spdlib::SPDDefineRGBValues(redBand, greenBand, blueBand);            
+            spdlib::SPDSetupProcessPulses processPulses = spdlib::SPDSetupProcessPulses(numOfColsBlockArg.getValue(), numOfRowsBlockArg.getValue(), true);
+            processPulses.processPulsesWithInputImage(pulseProcessor, spdInFile, outputSPDFile, inputImageFile);
+            
+            delete spdInFile;
+            delete pulseProcessor;
+        }
+        else if(stretchRGBSwitch.getValue())
+        {
+            std::cout << "Scaling the RGB values within an SPD file.\n";
+            std::vector<std::string> fileNames = multiFileNames.getValue();
+            if(fileNames.size() != 2)
+            {
+                for(unsigned int i = 0; i < fileNames.size(); ++i)
+                {
+                    std::cout << i << ": " << fileNames.at(i) << std::endl;
+                }
+                
+                spdlib::SPDTextFileUtilities textUtils;
+                std::string message = std::string("Two file paths should have been specified (i.e., Input SPD and Output SPD). ") + textUtils.uInt32bittostring(fileNames.size()) + std::string(" were provided.");
+                throw spdlib::SPDException(message);
+            }
+            
+            std::string inputSPDFile = fileNames.at(0);
+            std::string outputSPDFile = fileNames.at(1);
+            
+            spdlib::SPDFile *spdInFile = new spdlib::SPDFile(inputSPDFile);
+            spdlib::SPDFindRGBValuesStats *pulseProcessorStats = new spdlib::SPDFindRGBValuesStats();
+            spdlib::SPDSetupProcessPulses processPulses = spdlib::SPDSetupProcessPulses(numOfColsBlockArg.getValue(), numOfRowsBlockArg.getValue(), true);
+            std::cout << "Calculating Statistics (Mean, Min Max).\n";
+            processPulses.processPulses(pulseProcessorStats, spdInFile);
+            
+            float redStretchMin = 0;
+            float redStretchMax = 0;
+            float greenStretchMin = 0;
+            float greenStretchMax = 0;
+            float blueStretchMin = 0;
+            float blueStretchMax = 0;
+            
+            if(linearStretchSwitch.getValue())
+            {
+                redStretchMin = pulseProcessorStats->getRedMin();
+                redStretchMax = pulseProcessorStats->getRedMax();
+                greenStretchMin = pulseProcessorStats->getGreenMin();
+                greenStretchMax = pulseProcessorStats->getGreenMax();
+                blueStretchMin = pulseProcessorStats->getBlueMin();
+                blueStretchMax = pulseProcessorStats->getBlueMax();
+            }
+            else if(stddevRGBSwitch.getValue())
+            {
+                float redMean = pulseProcessorStats->getRedMean();
+                float greenMean = pulseProcessorStats->getGreenMean();
+                float blueMean = pulseProcessorStats->getBlueMean();
+                boost::uint_least16_t redMin = pulseProcessorStats->getRedMin();
+                boost::uint_least16_t redMax = pulseProcessorStats->getRedMax();
+                boost::uint_least16_t greenMin = pulseProcessorStats->getGreenMin();
+                boost::uint_least16_t greenMax = pulseProcessorStats->getGreenMax();
+                boost::uint_least16_t blueMin = pulseProcessorStats->getBlueMin();
+                boost::uint_least16_t blueMax = pulseProcessorStats->getBlueMax();
+                
+                std::cout << "Red Mean = " << redMean << std::endl;
+                std::cout << "Green Mean = " << greenMean << std::endl;
+                std::cout << "Blue Mean = " << blueMean << std::endl;
+                
+                pulseProcessorStats->setCalcStdDev(true, redMean, greenMean, blueMean);
+                std::cout << "Calculating Statistics (Std Dev).\n";
+                processPulses.processPulses(pulseProcessorStats, spdInFile);
+                
+                float redStdDev = pulseProcessorStats->getRedStdDev();
+                float greenStdDev = pulseProcessorStats->getGreenStdDev();
+                float blueStdDev = pulseProcessorStats->getBlueStdDev();
+                
+                std::cout << "Red Standard Deviation = " << redStdDev << std::endl;
+                std::cout << "Green Standard Deviation = " << greenStdDev << std::endl;
+                std::cout << "Blue Standard Deviation = " << blueStdDev << std::endl;
+
+                redStretchMin = redMean - (redStdDev*2);
+                redStretchMax = redMean + (redStdDev*2);
+                if(redStretchMin < redMin)
+                {
+                    redStretchMin = redMin;
+                }
+                if(redStretchMax > redMax)
+                {
+                    redStretchMax = redMax;
+                }
+                
+                greenStretchMin = greenMean - (greenStdDev*2);
+                greenStretchMax = greenMean + (greenStdDev*2);
+                if(greenStretchMin < greenMin)
+                {
+                    greenStretchMin = greenMin;
+                }
+                if(greenStretchMax > greenMax)
+                {
+                    greenStretchMax = greenMax;
+                }
+                
+                blueStretchMin = blueMean - (blueStdDev*2);
+                blueStretchMax = blueMean + (blueStdDev*2);
+                if(blueStretchMin < blueMin)
+                {
+                    blueStretchMin = blueMin;
+                }
+                if(blueStretchMax > blueMax)
+                {
+                    blueStretchMax = blueMax;
+                }
+            }
+            else
+            {
+                throw spdlib::SPDException("A stretch switch needs to be defined (linear or stddev).");
+            }
+            
+            std::cout << "Linear stretch red between " << redStretchMin << " and " << redStretchMax << std::endl;
+            std::cout << "Linear stretch green between " << greenStretchMin << " and " << greenStretchMax << std::endl;
+            std::cout << "Linear stretch blue between " << blueStretchMin << " and " << blueStretchMax << std::endl;
+            
+            std::cout << "\nStretching RGB values and creating new output file.\n";
+            spdlib::SPDLinearStretchRGBValues *pulseProcessorStretch = new spdlib::SPDLinearStretchRGBValues(redStretchMin, redStretchMax, greenStretchMin, greenStretchMax, blueStretchMin, blueStretchMax);
+            processPulses.processPulsesWithOutputSPD(pulseProcessorStretch, spdInFile, outputSPDFile);
+            
+            delete spdInFile;
+            delete pulseProcessorStats;
+            delete pulseProcessorStretch;
+        }
+        else
+        {
+            throw spdlib::SPDException("Either the stretch or define switches are required to define the functionality of the command.");
+        }
 	}
-	catch (TCLAP::ArgException &e) 
+	catch (TCLAP::ArgException &e)
 	{
 		std::cerr << "Parse Error: " << e.what() << std::endl;
 	}

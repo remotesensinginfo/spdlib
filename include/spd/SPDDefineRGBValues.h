@@ -67,6 +67,144 @@ namespace spdlib
         boost::uint_fast16_t greenBand;
         boost::uint_fast16_t blueBand;
 	};
+    
+    class SPDFindRGBValuesStats : public SPDPulseProcessor
+	{
+	public:
+        SPDFindRGBValuesStats();
+        
+        void processDataColumnImage(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses, float *imageData, SPDXYPoint *cenPts, boost::uint_fast32_t numImgBands, float binSize) throw(SPDProcessingException)
+        {throw SPDProcessingException("Processing is not implemented for processDataColumnImage().");};
+		void processDataColumn(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses, SPDXYPoint *cenPts) throw(SPDProcessingException);
+        void processDataWindowImage(SPDFile *inSPDFile, std::vector<SPDPulse*> ***pulses, float ***imageData, SPDXYPoint ***cenPts, boost::uint_fast32_t numImgBands, boost::uint_fast16_t winSize) throw(SPDProcessingException)
+        {throw SPDProcessingException("Processing using a window is not implemented.");};
+		void processDataWindow(SPDFile *inSPDFile, std::vector<SPDPulse*> ***pulses, SPDXYPoint ***cenPts, boost::uint_fast16_t winSize) throw(SPDProcessingException)
+        {throw SPDProcessingException("Processing using a window is not implemented.");};
+        
+        std::vector<std::string> getImageBandDescriptions() throw(SPDProcessingException)
+        {return std::vector<std::string>();};
+        void setHeaderValues(SPDFile *spdFile) throw(SPDProcessingException)
+        {};
+        
+        void setCalcStdDev(bool calcStdDev, float redMean, float greenMean, float blueMean)
+        {
+            this->calcStdDev = calcStdDev;
+            
+            first = true;
+            countPts = 0;
+            
+            this->redMean = 0;
+            this->redStdDev = 0;
+            this->redMin = 0;
+            this->redMax = 0;
+            
+            this->greenMean = 0;
+            this->greenStdDev = 0;
+            this->greenMin = 0;
+            this->greenMax = 0;
+            
+            this->blueMean = 0;
+            this->blueStdDev = 0;
+            this->blueMin = 0;
+            this->blueMax = 0;
+            
+            this->redMean = redMean;
+            this->greenMean = greenMean;
+            this->blueMean = blueMean;
+        };
+        
+        void reset()
+        {
+            this->calcStdDev = false;
+            first = true;
+            countPts = 0;
+            
+            this->redMean = 0;
+            this->redStdDev = 0;
+            this->redMin = 0;
+            this->redMax = 0;
+            
+            this->greenMean = 0;
+            this->greenStdDev = 0;
+            this->greenMin = 0;
+            this->greenMax = 0;
+            
+            this->blueMean = 0;
+            this->blueStdDev = 0;
+            this->blueMin = 0;
+            this->blueMax = 0;
+        }
+        
+        float getRedMean(){return this->redMean/this->countPts;};
+        float getRedStdDev(){return sqrt(this->redStdDev/this->countPts);};
+        boost::uint_fast16_t getRedMin(){return this->redMin;};
+        boost::uint_fast16_t getRedMax(){return this->redMax;};
+        
+        float getGreenMean(){return this->greenMean/this->countPts;};
+        float getGreenStdDev(){return sqrt(this->greenStdDev/this->countPts);};
+        boost::uint_fast16_t getGreenMin(){return this->greenMin;};
+        boost::uint_fast16_t getGreenMax(){return this->greenMax;};
+        
+        float getBlueMean(){return this->blueMean/this->countPts;};
+        float getBlueStdDev(){return sqrt(this->blueStdDev/this->countPts);};
+        boost::uint_fast16_t getBlueMin(){return this->blueMin;};
+        boost::uint_fast16_t getBlueMax(){return this->blueMax;};
+        
+        ~SPDFindRGBValuesStats();
+    protected:
+        bool calcStdDev;
+        
+        double redMean;
+        double redStdDev;
+        boost::uint_fast16_t redMin;
+        boost::uint_fast16_t redMax;
+        
+        double greenMean;
+        double greenStdDev;
+        boost::uint_fast16_t greenMin;
+        boost::uint_fast16_t greenMax;
+        
+        double blueMean;
+        double blueStdDev;
+        boost::uint_fast16_t blueMin;
+        boost::uint_fast16_t blueMax;
+        
+        bool first;
+        boost::uint_fast64_t countPts;
+	};
+    
+    
+    class SPDLinearStretchRGBValues : public SPDPulseProcessor
+	{
+	public:
+        SPDLinearStretchRGBValues(float redMin, float redMax, float greenMin, float greenMax, float blueMin, float blueMax);
+        
+        void processDataColumnImage(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses, float *imageData, SPDXYPoint *cenPts, boost::uint_fast32_t numImgBands, float binSize) throw(SPDProcessingException)
+        {throw SPDProcessingException("Processing is not implemented for processDataColumnImage().");};
+		void processDataColumn(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses, SPDXYPoint *cenPts) throw(SPDProcessingException);
+        void processDataWindowImage(SPDFile *inSPDFile, std::vector<SPDPulse*> ***pulses, float ***imageData, SPDXYPoint ***cenPts, boost::uint_fast32_t numImgBands, boost::uint_fast16_t winSize) throw(SPDProcessingException)
+        {throw SPDProcessingException("Processing using a window is not implemented.");};
+		void processDataWindow(SPDFile *inSPDFile, std::vector<SPDPulse*> ***pulses, SPDXYPoint ***cenPts, boost::uint_fast16_t winSize) throw(SPDProcessingException)
+        {throw SPDProcessingException("Processing using a window is not implemented.");};
+        
+        std::vector<std::string> getImageBandDescriptions() throw(SPDProcessingException)
+        {return std::vector<std::string>();};
+        void setHeaderValues(SPDFile *spdFile) throw(SPDProcessingException)
+        {};
+        
+        ~SPDLinearStretchRGBValues();
+    protected:
+        float redMin;
+        float redMax;
+        float greenMin;
+        float greenMax;
+        float blueMin;
+        float blueMax;
+        float redRange;
+        float greenRange;
+        float blueRange;
+	};
+    
 }
 
 #endif
