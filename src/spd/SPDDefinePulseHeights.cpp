@@ -33,7 +33,7 @@ namespace spdlib
         
     void SPDDefinePulseHeights::processDataBlockImage(SPDFile *inSPDFile, std::vector<SPDPulse*> ***pulses, float ***imageDataBlock, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast32_t numImgBands, float binSize) throw(SPDProcessingException)
     {
-        if(numImgBands > 0)
+        if(numImgBands == 0)
         {
             throw SPDProcessingException("The input image needs to have at least 1 image band.");
         }
