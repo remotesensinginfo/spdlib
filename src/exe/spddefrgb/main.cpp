@@ -35,77 +35,73 @@
 
 #include "spd/spd-config.h"
 
-using namespace std;
-using namespace spdlib;
-using namespace TCLAP;
-
 int main (int argc, char * const argv[]) 
 {
-    cout << "spddefrgb " << SPDLIB_PACKAGE_STRING << ", Copyright (C) " << SPDLIB_COPYRIGHT_YEAR << " Sorted Pulse Library (SPD)\n";
-	cout << "This program comes with ABSOLUTELY NO WARRANTY. This is free software,\n";
-	cout << "and you are welcome to redistribute it under certain conditions; See\n";
-	cout << "website (http://www.spdlib.org). Bugs are to be reported on the trac\n";
-	cout << "or directly to " << SPDLIB_PACKAGE_BUGREPORT << endl;
+    std::cout << "spddefrgb " << SPDLIB_PACKAGE_STRING << ", Copyright (C) " << SPDLIB_COPYRIGHT_YEAR << " Sorted Pulse Library (SPD)\n";
+	std::cout << "This program comes with ABSOLUTELY NO WARRANTY. This is free software,\n";
+	std::cout << "and you are welcome to redistribute it under certain conditions; See\n";
+	std::cout << "website (http://www.spdlib.org). Bugs are to be reported on the trac\n";
+	std::cout << "or directly to " << SPDLIB_PACKAGE_BUGREPORT << std::endl;
 	
 	try 
 	{
-		CmdLine cmd("Define the RGB values on the SPDFile: spddefrgb", ' ', "1.0.0");
+        TCLAP::CmdLine cmd("Define the RGB values on the SPDFile: spddefrgb", ' ', "1.0.0");
 		
-        ValueArg<boost::uint_fast32_t> numOfRowsBlockArg("r","blockrows","Number of rows within a block (Default 100)",false,100,"unsigned int");
+        TCLAP::ValueArg<boost::uint_fast32_t> numOfRowsBlockArg("r","blockrows","Number of rows within a block (Default 100)",false,100,"unsigned int");
 		cmd.add( numOfRowsBlockArg );
         
-        ValueArg<boost::uint_fast32_t> numOfColsBlockArg("c","blockcols","Number of columns within a block (Default 0) - Note values greater than 1 result in a non-sequencial SPD file.",false,0,"unsigned int");
+        TCLAP::ValueArg<boost::uint_fast32_t> numOfColsBlockArg("c","blockcols","Number of columns within a block (Default 0) - Note values greater than 1 result in a non-sequencial SPD file.",false,0,"unsigned int");
 		cmd.add( numOfColsBlockArg );
 		
-		ValueArg<uint_fast16_t> redBandArg("","red","Image band for red channel",false,1,"uint_fast16_t");
+		TCLAP::ValueArg<uint_fast16_t> redBandArg("","red","Image band for red channel",false,1,"uint_fast16_t");
 		cmd.add( redBandArg );
 		
-		ValueArg<uint_fast16_t> greenBandArg("","green","Image band for green channel",false,2,"uint_fast16_t");
+		TCLAP::ValueArg<uint_fast16_t> greenBandArg("","green","Image band for green channel",false,2,"uint_fast16_t");
 		cmd.add( greenBandArg );
 		
-		ValueArg<uint_fast16_t> blueBandArg("","blue","Image band for blue channel",false,3,"uint_fast16_t");
+		TCLAP::ValueArg<uint_fast16_t> blueBandArg("","blue","Image band for blue channel",false,3,"uint_fast16_t");
 		cmd.add( blueBandArg );
 		
-		UnlabeledMultiArg<string> multiFileNames("Files", "File names for the input and output files (Image: Input SPD, Input Image, Output SPD)", true, "string");
+		TCLAP::UnlabeledMultiArg<std::string> multiFileNames("Files", "File names for the input and output files (Image: Input SPD, Input Image, Output SPD)", true, "string");
 		cmd.add( multiFileNames );
 		cmd.parse( argc, argv );
 		
-		vector<string> fileNames = multiFileNames.getValue();		
+		std::vector<std::string> fileNames = multiFileNames.getValue();		
 		if(fileNames.size() != 3)
 		{
 			for(unsigned int i = 0; i < fileNames.size(); ++i)
 			{
-				cout << i << ": " << fileNames.at(i) << endl;
+				std::cout << i << ": " << fileNames.at(i) << std::endl;
 			}
 			
-			SPDTextFileUtilities textUtils;
-			string message = string("Three file paths should have been specified (e.g., Input and Output). ") + textUtils.uInt32bittostring(fileNames.size()) + string(" were provided.");
-			throw SPDException(message);
+            spdlib::SPDTextFileUtilities textUtils;
+			std::string message = std::string("Three file paths should have been specified (e.g., Input and Output). ") + textUtils.uInt32bittostring(fileNames.size()) + std::string(" were provided.");
+			throw spdlib::SPDException(message);
 		}
 		
-        string inputSPDFile = fileNames.at(0);
-   		string inputImageFile = fileNames.at(1);
-		string outputSPDFile = fileNames.at(2);
+        std::string inputSPDFile = fileNames.at(0);
+   		std::string inputImageFile = fileNames.at(1);
+		std::string outputSPDFile = fileNames.at(2);
 
 		uint_fast16_t redBand = redBandArg.getValue()-1;	
         uint_fast16_t greenBand = greenBandArg.getValue()-1;	
         uint_fast16_t blueBand = blueBandArg.getValue()-1;
         
-        SPDFile *spdInFile = new SPDFile(inputSPDFile);
-        SPDPulseProcessor *pulseProcessor = new SPDDefineRGBValues(redBand, greenBand, blueBand);            
-        SPDSetupProcessPulses processPulses = SPDSetupProcessPulses(numOfColsBlockArg.getValue(), numOfRowsBlockArg.getValue(), true);
+        spdlib::SPDFile *spdInFile = new spdlib::SPDFile(inputSPDFile);
+        spdlib::SPDPulseProcessor *pulseProcessor = new spdlib::SPDDefineRGBValues(redBand, greenBand, blueBand);            
+        spdlib::SPDSetupProcessPulses processPulses = spdlib::SPDSetupProcessPulses(numOfColsBlockArg.getValue(), numOfRowsBlockArg.getValue(), true);
         processPulses.processPulsesWithInputImage(pulseProcessor, spdInFile, outputSPDFile, inputImageFile);
         
         delete spdInFile;
         delete pulseProcessor;
 	}
-	catch (ArgException &e) 
+	catch (TCLAP::ArgException &e) 
 	{
-		cerr << "Parse Error: " << e.what() << endl;
+		std::cerr << "Parse Error: " << e.what() << std::endl;
 	}
-	catch(SPDException &e)
+	catch(spdlib::SPDException &e)
 	{
-		cerr << "Error: " << e.what() << endl;
+		std::cerr << "Error: " << e.what() << std::endl;
 	}
 }
 
