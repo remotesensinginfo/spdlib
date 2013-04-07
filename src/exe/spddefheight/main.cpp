@@ -52,7 +52,7 @@ int main (int argc, char * const argv[])
 	
 	try 
 	{
-		CmdLine cmd("Define the height field within pulses: spddefheight", ' ', "1.0.0");
+		CmdLine cmd("Define the height field within pulses and points: spddefheight", ' ', "1.1.0");
 		
         ValueArg<boost::uint_fast32_t> numOfRowsBlockArg("r","blockrows","Number of rows within a block (Default 100)",false,100,"unsigned int");
 		cmd.add( numOfRowsBlockArg );
@@ -117,7 +117,7 @@ int main (int argc, char * const argv[])
         ValueArg<float> gridIdxResolutionArg("","idxres","Resolution of the grid index used for some interpolates",false,0.5,"float");
 		cmd.add( gridIdxResolutionArg );
         
-		UnlabeledMultiArg<string> multiFileNames("File", "File names for the input files (in.spd in.dem out.spd | in.spd out.spd)", false, "string");
+		UnlabeledMultiArg<string> multiFileNames("Files", "File names for the input files (in.spd in.dem out.spd | in.spd out.spd)", true, "string");
 		cmd.add( multiFileNames );
 		cmd.parse( argc, argv );
 		
