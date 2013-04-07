@@ -78,6 +78,192 @@ namespace spdlib
     {
         
     }
+    
+    
+    
+    SPDFindRGBValuesStats::SPDFindRGBValuesStats()
+    {
+        this->redMean = 0;
+        this->redStdDev = 0;
+        this->redMin = 0;
+        this->redMax = 0;
+        
+        this->greenMean = 0;
+        this->greenStdDev = 0;
+        this->greenMin = 0;
+        this->greenMax = 0;
+        
+        this->blueMean = 0;
+        this->blueStdDev = 0;
+        this->blueMin = 0;
+        this->blueMax = 0;
+        
+        this->calcStdDev = false;
+        this->first = true;
+        this->countPts = 0;
+    }
+    
+    void SPDFindRGBValuesStats::processDataColumn(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses, SPDXYPoint *cenPts) throw(SPDProcessingException)
+    {
+        for(std::vector<SPDPulse*>::iterator iterPulses = pulses->begin(); iterPulses != pulses->end(); ++iterPulses)
+        {
+            if((*iterPulses)->numberOfReturns > 0)
+            {
+                for(std::vector<SPDPoint*>::iterator iterPts = (*iterPulses)->pts->begin(); iterPts != (*iterPulses)->pts->end(); ++iterPts)
+                {
+                    if(first)
+                    {
+                        if(!calcStdDev)
+                        {
+                            this->redMean = (*iterPts)->red;
+                            this->redMin = (*iterPts)->red;
+                            this->redMax = (*iterPts)->red;
+                            
+                            this->greenMean = (*iterPts)->green;
+                            this->greenMin = (*iterPts)->green;
+                            this->greenMax = (*iterPts)->green;
+                            
+                            this->blueMean = (*iterPts)->blue;
+                            this->blueMin = (*iterPts)->blue;
+                            this->blueMax = (*iterPts)->blue;
+                        }
+                        else
+                        {
+                            this->redStdDev = pow((*iterPts)->red - this->redMean, 2);
+                            this->greenStdDev = pow((*iterPts)->green - this->greenMean, 2);
+                            this->blueStdDev = pow((*iterPts)->blue - this->blueMean, 2);
+                        }
+                        first = false;
+                    }
+                    else
+                    {
+                        if(!calcStdDev)
+                        {
+                            this->redMean += (*iterPts)->red;
+                            if((*iterPts)->red < this->redMin)
+                            {
+                                this->redMin = (*iterPts)->red;
+                            }
+                            else if((*iterPts)->red > this->redMax)
+                            {
+                                this->redMax = (*iterPts)->red;
+                            }
+                            
+                            this->greenMean += (*iterPts)->green;
+                            if((*iterPts)->green < this->greenMin)
+                            {
+                                this->greenMin = (*iterPts)->green;
+                            }
+                            else if((*iterPts)->green > this->greenMin)
+                            {
+                                this->greenMax = (*iterPts)->green;
+                            }
+                            
+                            this->blueMean += (*iterPts)->blue;
+                            if((*iterPts)->blue < this->blueMin)
+                            {
+                                this->blueMin = (*iterPts)->blue;
+                            }
+                            else if((*iterPts)->blue > this->blueMax)
+                            {
+                                this->blueMax = (*iterPts)->blue;
+                            }
+                        }
+                        else
+                        {
+                            this->redStdDev += pow((*iterPts)->red - this->redMean, 2);
+                            this->greenStdDev += pow((*iterPts)->green - this->greenMean, 2);
+                            this->blueStdDev += pow((*iterPts)->blue - this->blueMean, 2);
+                        }
+                    }
+                    
+                    ++this->countPts;
+                }
+            }
+            
+            
+        }
+    }
+
+    SPDFindRGBValuesStats::~SPDFindRGBValuesStats()
+    {
+        
+    }
+    
+    
+    
+    SPDLinearStretchRGBValues::SPDLinearStretchRGBValues(float redMin, float redMax, float greenMin, float greenMax, float blueMin, float blueMax)
+    {
+        this->redMin = redMin;
+        this->redMax = redMax;
+        this->greenMin = greenMin;
+        this->greenMax = greenMax;
+        this->blueMin = blueMin;
+        this->blueMax = blueMax;
+        
+        this->redRange = redMax - redMin;
+        this->greenRange = greenMax - greenMin;
+        this->blueRange = blueMax - blueMin;
+    }
+    
+    void SPDLinearStretchRGBValues::processDataColumn(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses, SPDXYPoint *cenPts) throw(SPDProcessingException)
+    {
+        for(std::vector<SPDPulse*>::iterator iterPulses = pulses->begin(); iterPulses != pulses->end(); ++iterPulses)
+        {
+            if((*iterPulses)->numberOfReturns > 0)
+            {
+                for(std::vector<SPDPoint*>::iterator iterPts = (*iterPulses)->pts->begin(); iterPts != (*iterPulses)->pts->end(); ++iterPts)
+                {
+                    if((*iterPts)->red < redMin)
+                    {
+                        (*iterPts)->red = 0;
+                    }
+                    else if((*iterPts)->red > redMax)
+                    {
+                        (*iterPts)->red = 255;
+                    }
+                    else
+                    {
+                        (*iterPts)->red = (((*iterPts)->red-redMin)/redRange)*255;
+                    }
+                    
+                    if((*iterPts)->green < greenMin)
+                    {
+                        (*iterPts)->green = 0;
+                    }
+                    else if((*iterPts)->green > greenMax)
+                    {
+                        (*iterPts)->green = 255;
+                    }
+                    else
+                    {
+                        (*iterPts)->green = (((*iterPts)->green-greenMin)/greenRange)*255;
+                    }
+                    
+                    if((*iterPts)->blue < blueMin)
+                    {
+                        (*iterPts)->blue = 0;
+                    }
+                    else if((*iterPts)->blue > blueMax)
+                    {
+                        (*iterPts)->blue = 255;
+                    }
+                    else
+                    {
+                        (*iterPts)->blue = (((*iterPts)->blue-blueMin)/blueRange)*255;
+                    }                    
+                }
+            }
+            
+            
+        }
+    }
+    
+        
+    SPDLinearStretchRGBValues::~SPDLinearStretchRGBValues()
+    {
+        
+    }
 
 }
 
