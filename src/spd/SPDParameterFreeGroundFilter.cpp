@@ -67,33 +67,33 @@ namespace spdlib
             }
             
             
-            boost::uint_fast16_t **openElement9 = new boost::uint_fast16_t*[9];
-            for(boost::uint_fast32_t i = 0; i < 9; ++i)
+            boost::uint_fast16_t **openElement11 = new boost::uint_fast16_t*[11];
+            for(boost::uint_fast32_t i = 0; i < 11; ++i)
             {
-                openElement9[i] = new boost::uint_fast16_t[9];
+                openElement11[i] = new boost::uint_fast16_t[11];
             }
-            boost::uint_fast16_t structElemSize = 4;
-            this->createStructuringElement(openElement9, structElemSize);
-            this->performOpenning(elev, elevOpen, xSize, ySize, structElemSize, openElement9);
-            for(boost::uint_fast32_t i = 0; i < 9; ++i)
+            boost::uint_fast16_t structElemSize = 5;
+            this->createStructuringElement(openElement11, structElemSize);
+            this->performOpenning(elev, elevOpen, xSize, ySize, structElemSize, openElement11);
+            for(boost::uint_fast32_t i = 0; i < 11; ++i)
             {
-                delete[] openElement9[i];
+                delete[] openElement11[i];
             }
-            delete[] openElement9;
+            delete[] openElement11;
             
-            boost::uint_fast16_t **closeElement11 = new boost::uint_fast16_t*[11];
-            for(boost::uint_fast32_t i = 0; i < 11; ++i)
+            boost::uint_fast16_t **closeElement9 = new boost::uint_fast16_t*[9];
+            for(boost::uint_fast32_t i = 0; i < 9; ++i)
             {
-                closeElement11[i] = new boost::uint_fast16_t[11];
+                closeElement9[i] = new boost::uint_fast16_t[9];
             }
-            structElemSize = 5;
-            this->createStructuringElement(closeElement11, structElemSize);
-            this->performClosing(elevOpen, elevClose, xSize, ySize, structElemSize, closeElement11);
-            for(boost::uint_fast32_t i = 0; i < 11; ++i)
+            structElemSize = 4;
+            this->createStructuringElement(closeElement9, structElemSize);
+            this->performClosing(elevOpen, elevClose, xSize, ySize, structElemSize, closeElement9);
+            for(boost::uint_fast32_t i = 0; i < 9; ++i)
             {
-                delete[] closeElement11[i];
+                delete[] closeElement9[i];
             }
-            delete[] closeElement11;
+            delete[] closeElement9;
             
             for(boost::uint_fast32_t i = 0; i < ySize; ++i)
             {
@@ -119,6 +119,7 @@ namespace spdlib
         std::vector<SPDPFFProcessLevel*> *elevLevels = this->generateHierarchy(elev, xSize, ySize, binSize);
         
  
+        /*
         for(boost::int_fast16_t i = elevLevels->size()-1; i >= 0; --i)
         {
             SPDPFFProcessLevel *level = elevLevels->at(i);
@@ -138,7 +139,7 @@ namespace spdlib
                 }
                 std::cout << std::endl;
             }
-        }
+        }*/
         
         
         // Prepare first level
@@ -159,8 +160,8 @@ namespace spdlib
         float **elevTH = new float*[cLevel->ySize];
         for(boost::uint_fast32_t i = 0; i < cLevel->ySize; ++i)
         {
-            elevRes[i] = new float[cLevel->ySize];
-            elevTH[i] = new float[cLevel->ySize];
+            elevRes[i] = new float[cLevel->xSize];
+            elevTH[i] = new float[cLevel->xSize];
             for(boost::uint_fast32_t j = 0; j < cLevel->xSize; ++j)
             {
                 elevRes[i][j] = cLevel->data[i][j] - interpdLevel->data[i][j];
@@ -260,8 +261,8 @@ namespace spdlib
                 float **elevTH = new float*[cLevel->ySize];
                 for(boost::uint_fast32_t i = 0; i < cLevel->ySize; ++i)
                 {
-                    elevRes[i] = new float[cLevel->ySize];
-                    elevTH[i] = new float[cLevel->ySize];
+                    elevRes[i] = new float[cLevel->xSize];
+                    elevTH[i] = new float[cLevel->xSize];
                     for(boost::uint_fast32_t j = 0; j < cLevel->xSize; ++j)
                     {
                         elevRes[i][j] = cLevel->data[i][j] - interpdLevel->data[i][j];
