@@ -51,8 +51,11 @@ namespace spdlib
 		// Define the inital minimum surface grid
 		this->findMinSurface(pulses, elev, xSize, ySize);
         
+        
+        
         if(checkForFalseMinma)
         {
+            std::cout << "Applying morphological opening and closing to remove low outliers" << std::endl;
             float **elevOpen = new float*[ySize];
             float **elevClose = new float*[ySize];
             for(boost::uint_fast32_t i = 0; i < ySize; ++i)
@@ -119,6 +122,7 @@ namespace spdlib
         std::vector<SPDPFFProcessLevel*> *elevLevels = this->generateHierarchy(elev, xSize, ySize, binSize);
         
  
+ 
         /*
         for(boost::int_fast16_t i = elevLevels->size()-1; i >= 0; --i)
         {
@@ -141,7 +145,28 @@ namespace spdlib
             }
         }*/
         
+        // DEBUG IMAGE GENERATION: save a desired level of the hierarchy
+        /*
+        int debugHierarchyLevel = 2;
+        int levelIndex = pow(2, debugHierarchyLevel);
         
+        std::cout << "DEBUG: Saving (pre-filtering) hierarchy level " << debugHierarchyLevel << " as DTM image" << std::endl;
+        for(boost::uint_fast32_t i = 0; i < ySize; ++i)
+        {
+            for(boost::uint_fast32_t j = 0; j < xSize; ++j)
+            {
+                if(i/levelIndex < elevLevels->at(debugHierarchyLevel)->ySize && j/levelIndex < elevLevels->at(debugHierarchyLevel)->xSize)
+                {
+                    imageDataBlock[i][j][0] = elevLevels->at(debugHierarchyLevel)->data[i/levelIndex][j/levelIndex];
+                } else {
+                    imageDataBlock[i][j][0] = std::numeric_limits<float>::signaling_NaN();
+                }
+            }
+        }
+        */
+        // END OF DEBUG IMAGE GENERATION
+        
+         
         // Prepare first level
         SPDPFFProcessLevel *cLevel = NULL;
         SPDPFFProcessLevel *prevLevel = NULL;
@@ -256,6 +281,36 @@ namespace spdlib
                 cLevel = elevLevels->at(i);
                 interpdLevel = this->interpLevel(prevLevel, cLevel, tlY, tlX);
                 
+                // DEBUG: Output interpolated level
+                // DEBUG: As text as well probably
+                /*
+                int scaleIdx = pow(2, i);
+                int desiredLevel = 0;
+                if(i == desiredLevel) {
+                    std::cout << "Outputting interpd level for " << i << " as image." << std::endl;
+                    std::cout << "Interpolation level size: " << interpdLevel->xSize << "x" << interpdLevel->ySize << std::endl;
+                    std::cout << "Control level size: " << cLevel->xSize << "x" << cLevel->ySize << std::endl;
+                    std::cout << "Image size: " << xSize << "x" << ySize << std::endl;
+                    for(boost::uint_fast32_t i = 0; i < ySize; ++i)
+                    {
+                        for(boost::uint_fast32_t j = 0; j < xSize; ++j)
+                        {
+                            if(i/scaleIdx < interpdLevel->ySize && j/scaleIdx < interpdLevel->xSize)
+                            {
+                                imageDataBlock[i][j][0] = interpdLevel->data[i/scaleIdx][j/scaleIdx];
+                            } else {
+                                imageDataBlock[i][j][0] = std::numeric_limits<float>::signaling_NaN();
+                            }
+                            if(i < interpdLevel->ySize && j < interpdLevel->xSize) {
+                                //std::cout << interpdLevel->data[i][j] << ",";
+                            }
+                        }
+                        if(i < interpdLevel->ySize) {
+                           // std::cout << std::endl;
+                        }
+                    }
+                }*/
+                
                 // Decide on values which are to be taken forward...
                 float **elevRes = new float*[cLevel->ySize];
                 float **elevTH = new float*[cLevel->ySize];
@@ -269,6 +324,9 @@ namespace spdlib
                         elevTH[i][j] = std::numeric_limits<float>::signaling_NaN();
                     }
                 }
+                
+                
+                
                 boost::uint_fast16_t **wTHElem = new boost::uint_fast16_t*[7];
                 for(boost::uint_fast32_t i = 0; i < 7; ++i)
                 {
@@ -278,6 +336,7 @@ namespace spdlib
                 this->createStructuringElement(wTHElem, structElemSize);
                 
                 this->performWhiteTopHat(elevRes, elevTH, cLevel->xSize, cLevel->ySize, structElemSize, wTHElem);
+                
                 /*
                 for(boost::uint_fast32_t i = 0; i < cLevel->ySize; ++i)
                 {
@@ -348,6 +407,8 @@ namespace spdlib
             }
         }
         
+        // COMMENTED OUT FOR DEBUGING TO OUTPUT OTHER PARTS AS IMAGES
+        
         for(boost::uint_fast32_t i = 0; i < ySize; ++i)
         {
             for(boost::uint_fast32_t j = 0; j < xSize; ++j)
@@ -362,6 +423,7 @@ namespace spdlib
                 }
             }
         }
+        
         this->freeLevel(prevLevel);
         
         // Clean up memory
@@ -403,7 +465,8 @@ namespace spdlib
 							pt = NULL;
 							for(iterPoints = (*iterPulses)->pts->begin(); iterPoints != (*iterPulses)->pts->end(); ++iterPoints)
 							{
-								//std::cout << (*iterPoints)->z << std::endl;
+                                
+								//std::cout << (*iterPoints)->x << "," << (*iterPoints)->y << "|" << i << "," << j << std::endl;
                                 if(classParameters == SPD_ALL_CLASSES)
                                 {
                                     if(firstPts)
@@ -1072,13 +1135,20 @@ namespace spdlib
     {
         // Generate interpolator...
         double eastings = tlX + (cLevel->pxlRes/2);
-        double northings = tlY - (cLevel->pxlRes/2);        
+        double northings = tlY - (cLevel->pxlRes/2);
+        
+        std::cout << "Original - e: " << tlX << " n: " << tlY << std::endl;
+        std::cout << "From level - e: " << eastings << " n: " << northings << std::endl;
 
         SPDTPSPFFGrdFilteringInterpolator interpolator = SPDTPSPFFGrdFilteringInterpolator(cLevel->pxlRes*4);
         interpolator.initInterpolator(cLevel->data, cLevel->xSize, cLevel->ySize, eastings, northings, cLevel->pxlRes);
         
         eastings = tlX + (processLevel->pxlRes/2);
         northings = tlY - (processLevel->pxlRes/2);
+        
+        std::cout << "To level - e: " << eastings << " n: " << northings << std::endl;
+        std::cout << "Pix Res Interp From: " << cLevel->pxlRes << " Interp to: " << processLevel->pxlRes << std::endl;
+        
         SPDPFFProcessLevel *interpdLevel = new SPDPFFProcessLevel();
         interpdLevel->xSize = processLevel->xSize;
         interpdLevel->ySize = processLevel->ySize;
@@ -1098,9 +1168,9 @@ namespace spdlib
                 {
                     interpdLevel->data[i][j] = std::numeric_limits<float>::signaling_NaN();
                 }
-                eastings += (processLevel->pxlRes/2);
+                eastings += (processLevel->pxlRes); // seb replaced pxlRes/2
             }
-            northings -= (processLevel->pxlRes/2);
+            northings -= (processLevel->pxlRes); // seb replaced pxlRes/2
         }
         interpolator.resetInterpolator();
         
@@ -1281,7 +1351,7 @@ namespace spdlib
                                 }
                             }
                             cEast += this->binSize;
-                            cEast += this->binSize;
+                            //cEast += this->binSize;
                         }
                         cNorth -= this->binSize;
                     }
