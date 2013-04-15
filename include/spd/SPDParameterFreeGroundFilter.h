@@ -66,6 +66,9 @@ namespace spdlib
         void processDataBlock(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses) throw(SPDProcessingException)
         {throw SPDProcessingException("SPDProgressiveMophologicalGrdFilter requires processing with a grid.");};
         
+        boost::uint_fast16_t** generateHoldingElement(boost::uint_fast16_t elSize);
+        void deleteHoldingElement(boost::uint_fast16_t** toDelete, boost::uint_fast16_t elSize);
+        
         std::vector<std::string> getImageBandDescriptions() throw(SPDProcessingException)
         {
             std::vector<std::string> bandNames;

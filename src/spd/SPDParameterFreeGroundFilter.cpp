@@ -52,7 +52,6 @@ namespace spdlib
 		this->findMinSurface(pulses, elev, xSize, ySize);
         
         
-        
         if(checkForFalseMinma)
         {
             std::cout << "Applying morphological opening and closing to remove low outliers" << std::endl;
@@ -120,8 +119,6 @@ namespace spdlib
         
         // Generate resolution hierarchy...
         std::vector<SPDPFFProcessLevel*> *elevLevels = this->generateHierarchy(elev, xSize, ySize, binSize);
-        
- 
  
         /*
         for(boost::int_fast16_t i = elevLevels->size()-1; i >= 0; --i)
@@ -181,6 +178,7 @@ namespace spdlib
         interpdLevel = this->interpLevel(prevLevel, cLevel, tlY, tlX);
         
         // Decide on values which are to be taken forward...
+        // Set up residual and topHat arrays
         float **elevRes = new float*[cLevel->ySize];
         float **elevTH = new float*[cLevel->ySize];
         for(boost::uint_fast32_t i = 0; i < cLevel->ySize; ++i)
@@ -193,14 +191,11 @@ namespace spdlib
                 elevTH[i][j] = std::numeric_limits<float>::signaling_NaN();
             }
         }
-        boost::uint_fast16_t **wTHElem = new boost::uint_fast16_t*[3];
-        for(boost::uint_fast32_t i = 0; i < 3; ++i)
-        {
-            wTHElem[i] = new boost::uint_fast16_t[3];
-        }
-        boost::uint_fast16_t structElemSize = 1;
-        this->createStructuringElement(wTHElem, structElemSize);
         
+        // create window element for the tophat transformation and perform
+        boost::uint_fast16_t structElemSize = 1;
+        boost::uint_fast16_t **wTHElem = this->generateHoldingElement(structElemSize);
+        this->createStructuringElement(wTHElem, structElemSize);
         this->performWhiteTopHat(elevRes, elevTH, cLevel->xSize, cLevel->ySize, structElemSize, wTHElem);
                 
         /*for(boost::uint_fast32_t i = 0; i < cLevel->ySize; ++i)
@@ -233,6 +228,8 @@ namespace spdlib
             }
             std::cout << std::endl;
         }*/
+        
+        // use auto threshold to replace interpd values with actual values, unless they are non ground
         float threshold = 0;
         for(boost::uint_fast32_t i = 0; i < cLevel->ySize; ++i)
         {
@@ -243,22 +240,12 @@ namespace spdlib
                 {
                     interpdLevel->data[i][j] = cLevel->data[i][j];
                 }
-                /*if(j == 0)
-                {
-                    std::cout << threshold;
-                }
-                else 
-                {
-                    std::cout << "," << threshold;
-                }*/
+
             }
-            //std::cout << std::endl;
         }
-        for(boost::uint_fast32_t i = 0; i < 3; ++i)
-        {
-            delete[] wTHElem[i];
-        }
-        delete[] wTHElem;
+        
+        // cleanup
+        this->deleteHoldingElement(wTHElem, structElemSize);
         for(boost::uint_fast32_t i = 0; i < cLevel->ySize; ++i)
 		{
 			delete[] elevRes[i];
@@ -269,7 +256,7 @@ namespace spdlib
         
         // Copy to previous level variable for next level
         prevLevel = interpdLevel;
-        
+        int topHatFactor = 2;
         if(elevLevels->size() > 2)
         {
             // Iterate through remaining levels
@@ -282,7 +269,6 @@ namespace spdlib
                 interpdLevel = this->interpLevel(prevLevel, cLevel, tlY, tlX);
                 
                 // DEBUG: Output interpolated level
-                // DEBUG: As text as well probably
                 /*
                 int scaleIdx = pow(2, i);
                 int desiredLevel = 0;
@@ -320,21 +306,26 @@ namespace spdlib
                     elevTH[i] = new float[cLevel->xSize];
                     for(boost::uint_fast32_t j = 0; j < cLevel->xSize; ++j)
                     {
-                        elevRes[i][j] = cLevel->data[i][j] - interpdLevel->data[i][j];
+                        elevRes[i][j] = fabs(cLevel->data[i][j] - interpdLevel->data[i][j]); // should residuals be fabs?
                         elevTH[i][j] = std::numeric_limits<float>::signaling_NaN();
                     }
                 }
                 
-                
-                
-                boost::uint_fast16_t **wTHElem = new boost::uint_fast16_t*[7];
-                for(boost::uint_fast32_t i = 0; i < 7; ++i)
+                // Lets have dynamic changing window sizes for the white tophat transformation
+                // Should these increase or decrease going down the levels? increase for now
+                // then apply white top hat
+                topHatFactor += 1;
+                if(cLevel->ySize < cLevel->xSize)
                 {
-                    wTHElem[i] = new boost::uint_fast16_t[7];
+                    structElemSize = cLevel->ySize/topHatFactor;
                 }
-                boost::uint_fast16_t structElemSize = 3;
+                else
+                {
+                    structElemSize = cLevel->xSize/topHatFactor;
+                }
+                std::cout << "Struct size: " << structElemSize << std::endl;
+                boost::uint_fast16_t **wTHElem = this->generateHoldingElement(structElemSize);
                 this->createStructuringElement(wTHElem, structElemSize);
-                
                 this->performWhiteTopHat(elevRes, elevTH, cLevel->xSize, cLevel->ySize, structElemSize, wTHElem);
                 
                 /*
@@ -388,11 +379,7 @@ namespace spdlib
                     }
                     //std::cout << std::endl;
                 }
-                for(boost::uint_fast32_t i = 0; i < 7; ++i)
-                {
-                    delete[] wTHElem[i];
-                }
-                delete[] wTHElem;
+                this->deleteHoldingElement(wTHElem, structElemSize);
                 for(boost::uint_fast32_t i = 0; i < cLevel->ySize; ++i)
                 {
                     delete[] elevRes[i];
@@ -407,7 +394,7 @@ namespace spdlib
             }
         }
         
-        // COMMENTED OUT FOR DEBUGING TO OUTPUT OTHER PARTS AS IMAGES
+        // COMMENT THIS OUT TO DISABLE IMAGE SAVING: USEFUL FOR OTHER DEBUG OUTPUT
         
         for(boost::uint_fast32_t i = 0; i < ySize; ++i)
         {
@@ -438,6 +425,26 @@ namespace spdlib
     void SPDParameterFreeGroundFilter::processDataBlock(SPDFile *inSPDFile, std::vector<SPDPulse*> ***pulses, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, float binSize) throw(SPDProcessingException)
     {
         
+    }
+    
+    boost::uint_fast16_t** SPDParameterFreeGroundFilter::generateHoldingElement(boost::uint_fast16_t elSize)
+    {
+        boost::uint_fast16_t elArraySize = (elSize*2)+1;
+        boost::uint_fast16_t **wTHElem = new boost::uint_fast16_t*[elArraySize];
+        for(boost::uint_fast32_t i = 0; i < elArraySize; ++i)
+        {
+            wTHElem[i] = new boost::uint_fast16_t[elArraySize];
+        }
+        return wTHElem;
+    }
+    
+    void SPDParameterFreeGroundFilter::deleteHoldingElement(boost::uint_fast16_t** toDelete, boost::uint_fast16_t elSize)
+    {
+        uint_fast32_t elArraySize = (elSize*2)+1;
+        for(boost::uint_fast32_t i = 0; i < elArraySize; ++i) {
+            delete[] toDelete[i];
+        }
+        delete[] toDelete;
     }
     
     
@@ -1136,18 +1143,12 @@ namespace spdlib
         // Generate interpolator...
         double eastings = tlX + (cLevel->pxlRes/2);
         double northings = tlY - (cLevel->pxlRes/2);
-        
-        std::cout << "Original - e: " << tlX << " n: " << tlY << std::endl;
-        std::cout << "From level - e: " << eastings << " n: " << northings << std::endl;
-
+      
         SPDTPSPFFGrdFilteringInterpolator interpolator = SPDTPSPFFGrdFilteringInterpolator(cLevel->pxlRes*4);
         interpolator.initInterpolator(cLevel->data, cLevel->xSize, cLevel->ySize, eastings, northings, cLevel->pxlRes);
         
         eastings = tlX + (processLevel->pxlRes/2);
         northings = tlY - (processLevel->pxlRes/2);
-        
-        std::cout << "To level - e: " << eastings << " n: " << northings << std::endl;
-        std::cout << "Pix Res Interp From: " << cLevel->pxlRes << " Interp to: " << processLevel->pxlRes << std::endl;
         
         SPDPFFProcessLevel *interpdLevel = new SPDPFFProcessLevel();
         interpdLevel->xSize = processLevel->xSize;
