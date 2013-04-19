@@ -49,6 +49,7 @@ namespace spdlib
 		SPDGeneralASCIIFileWriter(const SPDGeneralASCIIFileWriter &dataExporter) throw(SPDException);
         SPDDataExporter* getInstance();
 		bool open(SPDFile *spdFile, std::string outputFile) throw(SPDIOException);
+        bool reopen(SPDFile *spdFile, std::string outputFile) throw(SPDIOException);
 		void writeDataColumn(std::list<SPDPulse*> *pls,boost::uint_fast32_t col,boost::uint_fast32_t row)throw(SPDIOException);
 		void writeDataColumn(std::vector<SPDPulse*> *pls,boost::uint_fast32_t col,boost::uint_fast32_t row)throw(SPDIOException);
 		void finaliseClose() throw(SPDIOException);
