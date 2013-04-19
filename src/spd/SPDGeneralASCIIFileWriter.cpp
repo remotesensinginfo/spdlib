@@ -97,6 +97,11 @@ namespace spdlib
 		
 		return fileOpened;
 	}
+    
+    bool SPDGeneralASCIIFileWriter::reopen(SPDFile *spdFile, std::string outputFile) throw(SPDIOException)
+    {
+        throw SPDIOException("No reopen option available.");
+    }
 	
 	void SPDGeneralASCIIFileWriter::writeDataColumn(std::list<SPDPulse*> *plsIn, boost::uint_fast32_t col, boost::uint_fast32_t row)throw(SPDIOException)
 	{

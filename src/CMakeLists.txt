@@ -91,6 +91,7 @@ set(SPDLIB_H_Processing_Algorithms
 	${SPDLIB_HEADERS_DIR}/SPDDefinePulseHeights.h
 	${SPDLIB_HEADERS_DIR}/SPDDefineRGBValues.h
 	${SPDLIB_HEADERS_DIR}/SPDExtractReturns.h
+	${SPDLIB_HEADERS_DIR}/SPDGenerateTiles.h
 	${SPDLIB_HEADERS_DIR}/SPDMetrics.h
 	${SPDLIB_HEADERS_DIR}/SPDMultiscaleCurvatureGrdClassification.h
 	${SPDLIB_HEADERS_DIR}/SPDParameterFreeGroundFilter.h
@@ -176,6 +177,7 @@ set(SPDLIB_CPP_Processing_Algorithms
 	${SPDLIB_SRC_DIR}/SPDDefinePulseHeights.cpp
 	${SPDLIB_SRC_DIR}/SPDDefineRGBValues.cpp
 	${SPDLIB_SRC_DIR}/SPDExtractReturns.cpp
+	${SPDLIB_SRC_DIR}/SPDGenerateTiles.cpp
 	${SPDLIB_SRC_DIR}/SPDMetrics.cpp
 	${SPDLIB_SRC_DIR}/SPDMultiscaleCurvatureGrdClassification.cpp
 	${SPDLIB_SRC_DIR}/SPDParameterFreeGroundFilter.cpp

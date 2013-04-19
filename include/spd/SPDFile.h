@@ -153,6 +153,7 @@ namespace spdlib
 		
 		void copyAttributesTo(SPDFile *spdFile);
 		void copyAttributesFrom(SPDFile *spdFile);
+        void copyAttributesFromTemplate(SPDFile *spdFile);
 		bool checkCompatibility(SPDFile *spdFile);
 		bool checkCompatibilityExpandExtent(SPDFile *spdFile);
         bool checkCompatibilityGeneralCheckExpandExtent(SPDFile *spdFile);

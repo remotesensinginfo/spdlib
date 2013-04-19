@@ -208,6 +208,7 @@ namespace spdlib{
 				boost::algorithm::trim(strLine);
 				wholeFile += strLine;
 				strLine = "";
+                lineEnding = false;
 			}
 			else 
 			{
@@ -222,6 +223,58 @@ namespace spdlib{
 		
 		return wholeFile;
 	}
+    
+    std::vector<std::string> SPDTextFileUtilities::readFileLinesToVector(std::string input) throw(SPDIOException)
+    {
+        std::vector<std::string> wholeFile;
+		std::ifstream inputFileStream;
+		inputFileStream.open(input.c_str(), std::ios_base::in);
+		if(!inputFileStream.is_open())
+		{
+			throw SPDIOException("File could not be opened.");
+		}
+		
+		std::string strLine = "";
+		bool lineEnding = false;
+		char ch = ' ';
+		char lastch = ' ';
+		inputFileStream.get(ch);
+		while (!inputFileStream.eof())
+		{
+			if ((ch == 0x0a) && (lastch == 0x0d))
+			{
+				lineEnding = true; // Windows Line Ending
+			}
+			else if ((lastch == 0x0d) && (ch != 0x0a))
+			{
+				lineEnding = true; // Mac Line Ending
+			}
+			else if (ch == 0x0a)
+			{
+				lineEnding = true; // UNIX Line Ending
+			}
+			
+			if(lineEnding)
+			{
+				boost::algorithm::trim(strLine);
+                //std::cout << "\'" << strLine << "\'" << std::endl;
+				wholeFile.push_back(strLine);
+				strLine = "";
+                lineEnding = false;
+			}
+			else
+			{
+				strLine += ch;
+			}
+			
+			lastch = ch;
+			inputFileStream.get(ch);
+		}
+		wholeFile.push_back(strLine);
+		inputFileStream.close();
+		
+		return wholeFile;
+    }
 	
 	
 	double SPDTextFileUtilities::strtodouble(std::string inValue) throw(SPDTextFileException)

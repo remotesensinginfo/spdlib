@@ -258,7 +258,7 @@ namespace spdlib
 		pt_out->ignore = pt->ignore;
 		pt_out->wavePacketDescIdx = pt->wavePacketDescIdx;
 		pt_out->waveformOffset = pt->waveformOffset;
-		
+
 		return pt_out;
 	}
     

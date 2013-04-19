@@ -409,11 +409,15 @@ namespace spdlib
 		pl_out->gpsTime = pl->gpsTime;
 		pl_out->numberOfReturns = pl->numberOfReturns;
 		pl_out->pts = new std::vector<SPDPoint*>();
-		pl_out->pts->reserve(pl->numberOfReturns);
-		for(boost::uint_fast16_t i = 0; i < pl->numberOfReturns; ++i)
-		{
-			pl_out->pts->at(i) = ptUtils.createSPDPointCopy(pl->pts->at(i));
-		}
+        if(pl->numberOfReturns > 0)
+        {
+            pl_out->pts->reserve(pl->numberOfReturns);
+            //for(boost::uint_fast16_t i = 0; i < pl->numberOfReturns; ++i)
+            for(std::vector<SPDPoint*>::iterator iterPts = pl->pts->begin(); iterPts != pl->pts->end(); ++iterPts)
+            {
+                pl_out->pts->push_back(ptUtils.createSPDPointCopy(*iterPts));//(pl->pts->at(i)));
+            }
+        }
 		pl_out->transmitted = new boost::uint_fast32_t[pl->numOfTransmittedBins];
 		for(boost::uint_fast16_t i = 0; i < pl->numOfTransmittedBins; ++i)
 		{
