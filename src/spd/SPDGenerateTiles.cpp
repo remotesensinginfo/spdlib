@@ -33,6 +33,70 @@ namespace spdlib
         
     }
     
+    void SPDTilesUtils::calcFileExtent(std::vector<std::string> inputFiles, double *xMin, double *xMax, double *yMin, double *yMax) throw(SPDProcessingException)
+    {
+        try
+        {
+            SPDFileReader reader;
+            SPDFile *inSPDFile = NULL;
+            bool first = true;
+            for(std::vector<std::string>::iterator iterFiles = inputFiles.begin(); iterFiles != inputFiles.end(); ++iterFiles)
+            {
+                std::cout << "Processing: \'" << *iterFiles << "\'" << std::endl;
+                
+                // STEP 1: Read file header - Need file extent.
+                inSPDFile = new SPDFile(*iterFiles);
+                reader.readHeaderInfo(*iterFiles, inSPDFile);
+                
+                if(first)
+                {
+                    *xMin = inSPDFile->getXMin();
+                    *xMax = inSPDFile->getXMax();
+                    *yMin = inSPDFile->getYMin();
+                    *yMax = inSPDFile->getYMax();
+                    first = false;
+                }
+                else
+                {
+                    if(inSPDFile->getXMin() < (*xMin))
+                    {
+                        *xMin = inSPDFile->getXMin();
+                    }
+                    
+                    if(inSPDFile->getXMax() > (*xMax))
+                    {
+                        *xMax = inSPDFile->getXMax();
+                    }
+                    
+                    if(inSPDFile->getYMin() < (*yMin))
+                    {
+                        *yMin = inSPDFile->getYMin();
+                    }
+                    
+                    if(inSPDFile->getYMax() > (*yMax))
+                    {
+                        *yMax = inSPDFile->getYMax();
+                    }
+                }
+                
+                delete inSPDFile;
+            }
+        }
+        catch (SPDProcessingException &e)
+        {
+            throw e;
+        }
+        catch (SPDException &e)
+        {
+            throw SPDProcessingException(e.what());
+        }
+        catch (std::exception &e)
+        {
+            throw SPDProcessingException(e.what());
+        }
+        
+    }
+    
     std::vector<SPDTile*>* SPDTilesUtils::createTiles(double xSize, double ySize, double overlap, double xMin, double xMax, double yMin, double yMax, boost::uint_fast32_t *rows, boost::uint_fast32_t *cols)throw(SPDProcessingException)
     {
         std::vector<SPDTile*> *tiles = NULL;

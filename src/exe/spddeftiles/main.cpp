@@ -47,77 +47,119 @@ int main (int argc, char * const argv[])
 	{
         TCLAP::CmdLine cmd("Tools for defining a set of tiles: spddeftiles", ' ', "1.0.0");
 		
+        TCLAP::SwitchArg defTilesSwitch("t","tiles","Define a set of tiles for a region.", false);
+		TCLAP::SwitchArg filesExtentSwitch("e","extent","Calculate the extent of a set of files.", false);
         
-        TCLAP::ValueArg<double> xSizeArg("","xsize","X size (in units of coordinate systems) of the tiles (Default 1000)",false,1000,"double");
+        std::vector<TCLAP::Arg*> arguments;
+        arguments.push_back(&defTilesSwitch);
+        arguments.push_back(&filesExtentSwitch);
+        cmd.xorAdd(arguments);
+        
+        TCLAP::ValueArg<double> xSizeArg("","xsize","X size (in units of coordinate systems) of the tiles (Default 1000) (--tiles).",false,1000,"double");
 		cmd.add( xSizeArg );
         
-        TCLAP::ValueArg<double> ySizeArg("","ysize","Y size (in units of coordinate systems) of the tiles (Default 1000)",false,1000,"double");
+        TCLAP::ValueArg<double> ySizeArg("","ysize","Y size (in units of coordinate systems) of the tiles (Default 1000) (--tiles).",false,1000,"double");
 		cmd.add( ySizeArg );
         
-        TCLAP::ValueArg<double> overlapArg("","overlap","Size (in units of coordinate systems) of the overlap for tiles (Default 100)",false,100,"double");
+        TCLAP::ValueArg<double> overlapArg("","overlap","Size (in units of coordinate systems) of the overlap for tiles (Default 100) (--tiles).",false,100,"double");
 		cmd.add( overlapArg );
         
-        TCLAP::ValueArg<double> xMinArg("","xmin","X min (in units of coordinate systems) of the region to be tiled",true,0,"double");
+        TCLAP::ValueArg<double> xMinArg("","xmin","X min (in units of coordinate systems) of the region to be tiled (--tiles).",false,0,"double");
 		cmd.add( xMinArg );
         
-        TCLAP::ValueArg<double> yMinArg("","ymin","Y min (in units of coordinate systems) of the region to be tiled",true,0,"double");
+        TCLAP::ValueArg<double> yMinArg("","ymin","Y min (in units of coordinate systems) of the region to be tiled (--tiles).",false,0,"double");
 		cmd.add( yMinArg );
         
-        TCLAP::ValueArg<double> xMaxArg("","xmax","X max (in units of coordinate systems) of the region to be tiled",true,0,"double");
+        TCLAP::ValueArg<double> xMaxArg("","xmax","X max (in units of coordinate systems) of the region to be tiled (--tiles).",false,0,"double");
 		cmd.add( xMaxArg );
         
-        TCLAP::ValueArg<double> yMaxArg("","ymax","Y max (in units of coordinate systems) of the region to be tiled",true,0,"double");
+        TCLAP::ValueArg<double> yMaxArg("","ymax","Y max (in units of coordinate systems) of the region to be tiled (--tiles).",false,0,"double");
 		cmd.add( yMaxArg );
         
-        TCLAP::ValueArg<std::string> outputArg("o","output","Output XML file defining the tiles",true,"","String");
+        TCLAP::ValueArg<std::string> outputArg("o","output","Output XML file defining the tiles (--tiles).",false,"","String");
 		cmd.add( outputArg );
+        
+        TCLAP::ValueArg<std::string> inputArg("i","input","Input file listing the set of input files (--extent).",false,"","String");
+		cmd.add( inputArg );
         
 		cmd.parse( argc, argv );
     
-        if( outputArg.getValue() != "" )
+        if(defTilesSwitch.getValue())
         {
-            if(xSizeArg.getValue() <= 0)
+            if( outputArg.getValue() != "" )
             {
-                throw TCLAP::ArgException("X tile size must be greater than zero.");
+                if(xSizeArg.getValue() <= 0)
+                {
+                    throw TCLAP::ArgException("X tile size must be greater than zero.");
+                }
+                else if(ySizeArg.getValue() <= 0)
+                {
+                    throw TCLAP::ArgException("Y tile size must be greater than zero.");
+                }
+                
+                
+                double xSize = xSizeArg.getValue();
+                double ySize = ySizeArg.getValue();
+                double overlap = overlapArg.getValue();
+                
+                double xMin = xMinArg.getValue();
+                double xMax = xMaxArg.getValue();
+                double yMin = yMinArg.getValue();
+                double yMax = yMaxArg.getValue();
+                
+                boost::uint_fast32_t rows = 0;
+                boost::uint_fast32_t cols = 0;
+                
+                if(xMax <= xMin)
+                {
+                    throw TCLAP::ArgException("xMax must be larger than xMin.");
+                }
+                else if(yMax <= yMin)
+                {
+                    throw TCLAP::ArgException("yMax must be larger than yMin.");
+                }
+                
+                spdlib::SPDTilesUtils tileUtils;
+                std::vector<spdlib::SPDTile*> *tiles = tileUtils.createTiles(xSize, ySize, overlap, xMin, xMax, yMin, yMax, &rows, &cols);
+                tileUtils.printTiles2Console(tiles);
+                std::cout << "Exporting to XML: " << outputArg.getValue() << std::endl;
+                tileUtils.exportTiles2XML(outputArg.getValue(), tiles, xSize, ySize, overlap, xMin, xMax, yMin, yMax, rows, cols);
+                tileUtils.deleteTiles(tiles);
             }
-            else if(ySizeArg.getValue() <= 0)
+            else
             {
-                throw TCLAP::ArgException("Y tile size must be greater than zero.");
+                throw TCLAP::ArgException("Output argument must not be a blank string.");
             }
-            
-            
-            double xSize = xSizeArg.getValue();
-            double ySize = ySizeArg.getValue();
-            double overlap = overlapArg.getValue();
-            
-            double xMin = xMinArg.getValue();
-            double xMax = xMaxArg.getValue();
-            double yMin = yMinArg.getValue();
-            double yMax = yMaxArg.getValue();
-            
-            boost::uint_fast32_t rows = 0;
-            boost::uint_fast32_t cols = 0;
-            
-            if(xMax <= xMin)
+        }
+        else if (filesExtentSwitch.getValue())
+        {
+            if( inputArg.getValue() != "" )
+            {                
+                double xMin = 0;
+                double xMax = 0;
+                double yMin = 0;
+                double yMax = 0;
+                
+                spdlib::SPDTextFileUtilities txtUtils;
+                std::vector<std::string> inputFiles = txtUtils.readFileLinesToVector(inputArg.getValue());
+                
+                spdlib::SPDTilesUtils tileUtils;
+                tileUtils.calcFileExtent(inputFiles, &xMin, &xMax, &yMin, &yMax);
+                
+                std::cout.precision(12);
+                std::cout << "Extent [xMin, xMax, yMin, yMax]: [" << xMin << ", " << xMax << ", " << yMin << ", " << yMax << "]\n";
+            }
+            else
             {
-                throw TCLAP::ArgException("xMax must be larger than xMin.");
+                throw TCLAP::ArgException("Input argument must not be a blank string.");
             }
-            else if(yMax <= yMin)
-            {
-                throw TCLAP::ArgException("yMax must be larger than yMin.");
-            }
-            
-            spdlib::SPDTilesUtils tileUtils;
-            std::vector<spdlib::SPDTile*> *tiles = tileUtils.createTiles(xSize, ySize, overlap, xMin, xMax, yMin, yMax, &rows, &cols);
-            tileUtils.printTiles2Console(tiles);
-            std::cout << "Exporting to XML: " << outputArg.getValue() << std::endl;
-            tileUtils.exportTiles2XML(outputArg.getValue(), tiles, xSize, ySize, overlap, xMin, xMax, yMin, yMax, rows, cols);
-            tileUtils.deleteTiles(tiles);
         }
         else
         {
-            throw TCLAP::ArgException("Output argument must not be a blank string.");
-        }        
+            throw TCLAP::ArgException("Either the define tiles or calculate extent options must be provided.");
+        }
+        
+                
 	}
 	catch (TCLAP::ArgException &e)
 	{
