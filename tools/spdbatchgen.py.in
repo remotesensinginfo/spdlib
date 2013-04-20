@@ -74,7 +74,7 @@ class SPDLibBatchGenerator (object):
                 dirFileList = os.listdir(directory)
                 for filename in dirFileList:
                     if(os.path.isdir(os.path.join(directory,filename))):
-                        print os.path.join(directory,filename) + ' is a directory and therefore ignored!'
+                        print(os.path.join(directory,filename) + ' is a directory and therefore ignored!')
                     elif(os.path.isfile(os.path.join(directory,filename))):
                         if(self.checkFileExtension(filename, extension)):
                             filelist.append(os.path.join(directory,filename))
