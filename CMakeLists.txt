@@ -29,7 +29,7 @@ set (PROJECT_HEADER_DIR include)
 set (PROJECT_TOOLS_DIR tools)
 
 # The version number.
-set (SPDLIB_REPO_VERSION 117)
+set (SPDLIB_REPO_VERSION 118)
 set (SPDLIB_VERSION_MAJOR 3)
 set (SPDLIB_VERSION_MINOR 0)
 set (SPDLIB_VERSION_PATCH 0)
@@ -56,6 +56,12 @@ endif()
 
 option (BUILD_SHARED_LIBS "Build with shared library" ON)
 set(SPDLIB_WITH_UTILITIES TRUE CACHE BOOL "Choose if SPDLib utilities should be built")
+
+set(BOOST_INCLUDE_DIR /usr/local/include CACHE PATH "Include PATH for Boost")
+set(BOOST_LIB_PATH /usr/local/lib CACHE PATH "Library PATH for Boost")
+
+set(GDAL_INCLUDE_DIR /usr/local/include CACHE PATH "Include PATH for GDAL")
+set(GDAL_LIB_PATH /usr/local/lib CACHE PATH "Library PATH for GDAL")
 
 set(HDF5_INCLUDE_DIR /usr/local/include CACHE PATH "Include PATH for HDF5")
 set(HDF5_LIB_PATH /usr/local/lib CACHE PATH "Library PATH for HDF5")
@@ -177,22 +183,11 @@ endif(APPLE)
 ###############################################################################
 # Check the required libraries are present
 
-FIND_PACKAGE(Boost)
-IF(Boost_FOUND)
-  INCLUDE_DIRECTORIES("${Boost_INCLUDE_DIRS}")
-  LINK_DIRECTORIES(${LINK_DIRECTORIES} ${Boost_LIBRARY_DIRS})
-  SET(Boost_USE_STATIC_LIBS OFF)
-  SET(Boost_USE_MULTITHREADED ON)
-  SET(Boost_USE_STATIC_RUNTIME OFF)
-  set(Boost_LIBRARIES -lboost_exception -lboost_filesystem -lboost_iostreams -lboost_random -lboost_system )
-ELSEIF(NOT Boost_FOUND)
-  MESSAGE(FATAL_ERROR "Unable to find correct Boost version. Did you set BOOST_ROOT?")
-ENDIF()
+include_directories(${BOOST_INCLUDE_DIR})
+set(BOOST_LIBRARIES -L${BOOST_LIB_PATH} -lboost_filesystem -lboost_system)
 
-find_package( GDAL 1.6.0 REQUIRED )
-if (GDAL_FOUND)
-	include_directories (${GDAL_INCLUDE_DIR})
-endif(GDAL_FOUND)
+include_directories(${GDAL_INCLUDE_DIR})
+set(GDAL_LIBRARIES -L${GDAL_LIB_PATH} -lgdal)
 
 include_directories(${HDF5_INCLUDE_DIR})
 set(HDF5_LIBRARIES -L${HDF5_LIB_PATH} -lhdf5 -lhdf5_hl -lhdf5_cpp)
@@ -201,10 +196,10 @@ include_directories(${GSL_INCLUDE_DIR})
 set(GSL_LIBRARIES -L${GSL_LIB_PATH} -lgsl -lgslcblas)
 
 include_directories(${LIBLAS_INCLUDE_DIR})
-set(LIBLAS_LIBRARY -L${LIBLAS_LIB_PATH} -llas -llas_c)
+set(LIBLAS_LIBRARIES -L${LIBLAS_LIB_PATH} -llas -llas_c)
 
 include_directories(${CGAL_INCLUDE_DIR})
-set(CGAL_LIBRARY -L${CGAL_LIB_PATH} -lCGAL)
+set(CGAL_LIBRARIES -L${CGAL_LIB_PATH} -lCGAL)
 
 include_directories(${XERCESC_INCLUDE_DIR})
 set(XERCESC_LIBRARIES -L${XERCESC_LIB_PATH} -lxerces-c)
