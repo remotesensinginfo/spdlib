@@ -811,6 +811,7 @@ namespace spdlib
                     (*iterTiles)->writer->writeDataColumn(this->pls, 0, 0);
                 }
             }
+            SPDPulseUtils::deleteSPDPulse(pulse);
         }
         catch(SPDIOException &e)
         {
