@@ -61,11 +61,11 @@ class SPDLibBatchGenerator (object):
                         if(self.checkFileExtension(filename, extension)):
                             filelist.append(os.path.join(directory,filename))
                     else:
-                        print filename + ' is NOT a file or directory!'
+                        print(filename + ' is NOT a file or directory!')
             else:
-                print directory + ' is not a directory!'
+                print(directory + ' is not a directory!')
         else:
-            print directory + ' does not exist!'
+            print(directory + ' does not exist!')
 
 
     def findFiles(self, filelist, directory, extension):
@@ -79,11 +79,11 @@ class SPDLibBatchGenerator (object):
                         if(self.checkFileExtension(filename, extension)):
                             filelist.append(os.path.join(directory,filename))
                     else:
-                        print filename + ' is NOT a file or directory!'
+                        print(filename + ' is NOT a file or directory!')
             else:
-                print directory + ' is not a directory!'
+                print(directory + ' is not a directory!')
         else:
-            print directory + ' does not exist!'
+            print(directory + ' does not exist!')
 
     def readInputTemplate(self, inputFile):
         outline = str()
@@ -140,28 +140,28 @@ class SPDLibBatchGenerator (object):
         args = parser.parse_args()    
 
         if args.xmloutlineFile is None:
-            print "Input XML template must be set."
+            print("Input XML template must be set.")
             parser.print_help()
             sys.exit()
             
         if args.outfile is None:
-            print "Output XML must be set."
+            print("Output XML must be set.")
             parser.print_help()
             sys.exit()
 
         if args.extension is None:
-            print "Extension must be set."
+            print("Extension must be set.")
             parser.print_help()
             sys.exit()
         
         if args.dir is None:
-            print "Directory must be set."
+            print("Directory must be set.")
             parser.print_help()
             sys.exit()
         
         if args.path is None:
-            print "WARNING: No path set, assuming the same as search directory:"
-            print args.dir
+            print("WARNING: No path set, assuming the same as search directory:")
+            print(args.dir)
             args.path = args.dir
 
 
@@ -178,23 +178,23 @@ class SPDLibBatchGenerator (object):
                 self.constructMultiOutputFile(filelist, outline, args.outfile, args.path)
             else:
                 self.constructOutputFile(filelist, outline, args.outfile, args.path)
-                print "Complete. Run script:"
-                print "\t\tsh ", args.outfile
+                print("Complete. Run script:")
+                print("\t\tsh ", args.outfile)
 
         else:
-            print 'Input File does not exist'
+            print('Input File does not exist')
 
 
     def help(self):
-        print 'spdbatchgen.py script generates the shell commands for the '
-        print 'SPD software library from a user defined template'
+        print('spdbatchgen.py script generates the shell commands for the ')
+        print('SPD software library from a user defined template')
         
-        print 'Within shell Template (--input):'
-        print '\t$FILEPATH - Replaced with full file path'
-        print '\t$FILENAME - Replaced with file name'
-        print '\t$PATH - Replaced with path (--path)'
-        print '\nThis script was distributed with version @SPDLIB_PACKAGE_VERSION@ of the @SPDLIB_PACKAGE@ library.'
-        print 'For maintenance email @SPDLIB_PACKAGE_BUGREPORT@'
+        print('Within shell Template (--input):')
+        print('\t$FILEPATH - Replaced with full file path')
+        print('\t$FILENAME - Replaced with file name')
+        print('\t$PATH - Replaced with path (--path)')
+        print('\nThis script was distributed with version @SPDLIB_PACKAGE_VERSION@ of the @SPDLIB_PACKAGE@ library.')
+        print('For maintenance email @SPDLIB_PACKAGE_BUGREPORT@')
 
 if __name__ == '__main__':
     obj = SPDLibBatchGenerator()
