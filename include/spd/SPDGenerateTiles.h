@@ -26,6 +26,7 @@
 #define SPDGenerateTiles_H
 
 #include <boost/cstdint.hpp>
+#include "boost/filesystem.hpp"
 
 #include "ogrsf_frmts.h"
 
@@ -79,6 +80,7 @@ namespace spdlib
         void printTiles2Console(std::vector<SPDTile*> *tiles);
         void createTileSPDFiles(std::vector<SPDTile*> *tiles, SPDFile *templateSPDFile, std::string outputBase, double xSize, double ySize, double overlap, double xMin, double xMax, double yMin, double yMax, boost::uint_fast32_t rows, boost::uint_fast32_t cols) throw(SPDProcessingException);
         void populateTileWithData(std::vector<SPDTile*> *tiles, std::vector<std::string> inputFiles) throw(SPDProcessingException);
+        void deleteTilesWithNoPulses(std::vector<SPDTile*> *tiles) throw(SPDProcessingException);
         ~SPDTilesUtils();
 	};
     

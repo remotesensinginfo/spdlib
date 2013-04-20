@@ -56,6 +56,12 @@ int main (int argc, char * const argv[])
         TCLAP::ValueArg<std::string> inputFilesArg("i","input","A text file with a list of input files, one per line.",true,"","String");
 		cmd.add( inputFilesArg );
         
+        TCLAP::SwitchArg rmEmptyTilesSwitch("r","rmempty","Remove tiles which have no data.", false);
+        cmd.add( rmEmptyTilesSwitch );
+        
+        TCLAP::SwitchArg updateXMLSwitch("u","updatexml","Update the tiles XML file.", false);
+        cmd.add( updateXMLSwitch );
+        
 		cmd.parse( argc, argv );
         
         if(tilesFileArg.getValue() == "")
@@ -119,12 +125,23 @@ int main (int argc, char * const argv[])
         spdlib::SPDFileReader reader;
         reader.readHeaderInfo(inputFiles.front(), inSPDFile);
         
-        std::cout << "Creating blank output files.\n";
+        std::cout << "Opening and creating output files.\n";
         tileUtils.createTileSPDFiles(tiles, inSPDFile, outputBaseArg.getValue(), xSize, ySize, overlap, xMin, xMax, yMin, yMax, rows, cols);
         
-        
-        std::cout << "Populate the blank files with data\n.";
+        std::cout << "Populate the tiles with data\n.";
         tileUtils.populateTileWithData(tiles, inputFiles);
+        
+        if(rmEmptyTilesSwitch.getValue())
+        {
+            std::cout << "Remove empty tiles\n";
+            tileUtils.deleteTilesWithNoPulses(tiles);
+        }
+        
+        if(updateXMLSwitch.getValue())
+        {
+            std::cout << "Export updated tiles XML.";
+            tileUtils.exportTiles2XML(tilesFileArg.getValue(), tiles, xSize, ySize, overlap, xMin, xMax, yMin, yMax, rows, cols);
+        }
         
 	}
 	catch (TCLAP::ArgException &e)
