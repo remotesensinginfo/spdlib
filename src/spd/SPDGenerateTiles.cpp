@@ -126,21 +126,8 @@ namespace spdlib
             double sceneXSize = xMax - xMin;
             double sceneYSize = yMax - yMin;
             
-            boost::uint_fast32_t numCols = floor(sceneXSize/xSize);
-            boost::uint_fast32_t numRows = floor(sceneYSize/ySize);
-            
-            double leftOverX = sceneXSize - (numCols * xSize);
-            double leftOverY = sceneYSize - (numRows * ySize);
-            
-            if( leftOverX > 0)
-            {
-                ++leftOverX;
-            }
-            
-            if( leftOverY > 0)
-            {
-                ++leftOverY;
-            }
+            boost::uint_fast32_t numCols = ceil(sceneXSize/xSize);
+            boost::uint_fast32_t numRows = ceil(sceneYSize/ySize);
             
             //std::cout << "Number of Columns = " << numCols << std::endl;
             //std::cout << "Number of Rows = " << numRows << std::endl;
@@ -771,7 +758,6 @@ namespace spdlib
                 std::cout << "There are " << openTiles->size() << " open\n";
                 if(openTiles->size() == 0)
                 {
-                    std::cout << "Input file: " << *iterFiles << std::endl;
                     throw SPDProcessingException("No intersecting tiles were found.");
                 }
                 
