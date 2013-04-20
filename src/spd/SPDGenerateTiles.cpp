@@ -182,6 +182,7 @@ namespace spdlib
                 tileElem->setAttribute(xercesc::XMLString::transcode("corexmax"), xercesc::XMLString::transcode(txtUtils.doubletostring((*iterTiles)->xMaxCore).c_str()));
                 tileElem->setAttribute(xercesc::XMLString::transcode("coreymin"), xercesc::XMLString::transcode(txtUtils.doubletostring((*iterTiles)->yMinCore).c_str()));
                 tileElem->setAttribute(xercesc::XMLString::transcode("coreymax"), xercesc::XMLString::transcode(txtUtils.doubletostring((*iterTiles)->yMaxCore).c_str()));
+                tileElem->setAttribute(xercesc::XMLString::transcode("file"), xercesc::XMLString::transcode((*iterTiles)->outFileName.c_str()));
                 
                 tilesRootElem->appendChild(tileElem);
             }
@@ -530,6 +531,19 @@ namespace spdlib
                 }
                 xercesc::XMLString::release(&yMaxCoreTileXMLStr);
                 
+                XMLCh *fileTileXMLStr = xercesc::XMLString::transcode("file");
+                if(tileElement->hasAttribute(fileTileXMLStr))
+                {
+                    char *charValue = xercesc::XMLString::transcode(tileElement->getAttribute(fileTileXMLStr));
+                    tile->outFileName = std::string(charValue);
+                    xercesc::XMLString::release(&charValue);
+                }
+                else
+                {
+                    throw SPDProcessingException("No \'file\' attribute was provided.");
+                }
+                xercesc::XMLString::release(&fileTileXMLStr);
+                
                 
                 tiles->push_back(tile);
             }
@@ -590,16 +604,57 @@ namespace spdlib
             for(std::vector<SPDTile*>::iterator iterTiles = tiles->begin(); iterTiles != tiles->end(); ++iterTiles)
             {
                 //std::cout << "[" << (*iterTiles)->col << " " << (*iterTiles)->row << "] ALL: [" << (*iterTiles)->xMin << "," << (*iterTiles)->xMax << "][" << (*iterTiles)->yMin << "," << (*iterTiles)->yMax << "] CORE: [" << (*iterTiles)->xMinCore << "," << (*iterTiles)->xMaxCore << "][" << (*iterTiles)->yMinCore << "," << (*iterTiles)->yMaxCore << "]" << std::endl;
-                (*iterTiles)->outFileName = outputBase + std::string("_r") + txtUtils.uInt32bittostring((*iterTiles)->row) + std::string("c") + txtUtils.uInt32bittostring((*iterTiles)->col) + std::string(".spd");
-                std::cout << "File: " << (*iterTiles)->outFileName << std::endl;
-                (*iterTiles)->spdFile = new SPDFile((*iterTiles)->outFileName);
-                (*iterTiles)->spdFile->copyAttributesFromTemplate(templateSPDFile);
-                (*iterTiles)->spdFile->setBoundingBox((*iterTiles)->xMin, (*iterTiles)->xMax, (*iterTiles)->yMin, (*iterTiles)->yMax);
-                (*iterTiles)->writer = new SPDNoIdxFileWriter();
-                (*iterTiles)->writer->open((*iterTiles)->spdFile, (*iterTiles)->outFileName);
-                (*iterTiles)->writer->finaliseClose();
-                delete (*iterTiles)->writer;
-                (*iterTiles)->writerOpen = false;
+                if((*iterTiles)->outFileName == "")
+                {
+                    (*iterTiles)->outFileName = outputBase + std::string("_r") + txtUtils.uInt32bittostring((*iterTiles)->row) + std::string("c") + txtUtils.uInt32bittostring((*iterTiles)->col) + std::string(".spd");
+                    std::cout << "Creating File: " << (*iterTiles)->outFileName << std::endl;
+                    (*iterTiles)->spdFile = new SPDFile((*iterTiles)->outFileName);
+                    (*iterTiles)->spdFile->copyAttributesFromTemplate(templateSPDFile);
+                    (*iterTiles)->spdFile->setBoundingBox((*iterTiles)->xMin, (*iterTiles)->xMax, (*iterTiles)->yMin, (*iterTiles)->yMax);
+                    (*iterTiles)->writer = new SPDNoIdxFileWriter();
+                    (*iterTiles)->writer->open((*iterTiles)->spdFile, (*iterTiles)->outFileName);
+                    (*iterTiles)->writer->finaliseClose();
+                    delete (*iterTiles)->writer;
+                    (*iterTiles)->writerOpen = false;
+                }
+                else
+                {
+                    std::cout << "Opening File: " << (*iterTiles)->outFileName << std::endl;
+                    (*iterTiles)->spdFile = new SPDFile((*iterTiles)->outFileName);
+                    
+                    (*iterTiles)->writer = new SPDNoIdxFileWriter();
+                    (*iterTiles)->writer->reopen((*iterTiles)->spdFile, (*iterTiles)->outFileName);
+                    /*
+                    if((*iterTiles)->spdFile->getXMin() != (*iterTiles)->xMin)
+                    {
+                        std::cout << "Tile xMin = " << (*iterTiles)->xMin << std::endl;
+                        std::cout << "SPD File xMin = " << (*iterTiles)->spdFile->getXMin() << std::endl;
+                        throw SPDProcessingException("Warning: x Min in SPDFile and tile do not match.");
+                    }
+                    else if((*iterTiles)->spdFile->getXMax() != (*iterTiles)->xMax)
+                    {
+                        std::cout << "Tile xMax = " << (*iterTiles)->xMax << std::endl;
+                        std::cout << "SPD File xMax = " << (*iterTiles)->spdFile->getXMax() << std::endl;
+                        throw SPDProcessingException("Warning: x Max in SPDFile and tile do not match.");
+                    }
+                    else if((*iterTiles)->spdFile->getYMin() != (*iterTiles)->yMin)
+                    {
+                        std::cout << "Tile yMin = " << (*iterTiles)->yMin << std::endl;
+                        std::cout << "SPD File yMin = " << (*iterTiles)->spdFile->getYMin() << std::endl;
+                        throw SPDProcessingException("Warning: y Min in SPDFile and tile do not match.");
+                    }
+                    else if((*iterTiles)->spdFile->getYMax() != (*iterTiles)->yMax)
+                    {
+                        std::cout << "Tile yMax = " << (*iterTiles)->yMax << std::endl;
+                        std::cout << "SPD File yMax = " << (*iterTiles)->spdFile->getYMax() << std::endl;
+                        throw SPDProcessingException("Warning: y Max in SPDFile and tile do not match.");
+                    }
+                    */
+                    (*iterTiles)->writer->finaliseClose();
+                    delete (*iterTiles)->writer;
+                    (*iterTiles)->writerOpen = false;
+                }
+                
             }
         }
         catch (SPDProcessingException &e)
@@ -675,6 +730,50 @@ namespace spdlib
             throw SPDProcessingException(e.what());
         }
         catch (std::exception &e)
+        {
+            throw SPDProcessingException(e.what());
+        }
+    }
+    
+    
+    void SPDTilesUtils::deleteTilesWithNoPulses(std::vector<SPDTile*> *tiles) throw(SPDProcessingException)
+    {
+        SPDTextFileUtilities txtUtils;
+        try
+        {
+            for(std::vector<SPDTile*>::iterator iterTiles = tiles->begin(); iterTiles != tiles->end(); )
+            {
+                if((*iterTiles)->spdFile->getNumberOfPulses() == 0)
+                {
+                    if((*iterTiles)->spdFile != NULL)
+                    {
+                        delete (*iterTiles)->spdFile;
+                    }
+                    /*if((*iterTiles)->writer != NULL)
+                    {
+                        (*iterTiles)->writer->finaliseClose();
+                        delete (*iterTiles)->writer;
+                    }*/
+                    boost::filesystem::path rFilePath((*iterTiles)->outFileName);
+                    boost::filesystem::remove(rFilePath);
+                    delete *iterTiles;
+                    tiles->erase(iterTiles);
+                }
+                else
+                {
+                    ++iterTiles;
+                }
+            }
+        }
+        catch (SPDProcessingException &e)
+        {
+            throw e;
+        }
+        catch(SPDException &e)
+        {
+            throw SPDProcessingException(e.what());
+        }
+        catch(std::exception &e)
         {
             throw SPDProcessingException(e.what());
         }
