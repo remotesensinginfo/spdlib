@@ -60,11 +60,11 @@ class BuildSPDMerge (object):
                         if(self.checkFileExtension(filename, extension)):
                             filelist.append(os.path.join(directory,filename))
                     else:
-                        print filename + ' is NOT a file or directory!'
+                        print(filename + ' is NOT a file or directory!')
             else:
-                print directory + ' is not a directory!'
+                print(directory + ' is not a directory!')
         else:
-            print directory + ' does not exist!'
+            print(directory + ' does not exist!')
 
 
     def findFiles(self, filelist, directory, extension):
@@ -73,31 +73,31 @@ class BuildSPDMerge (object):
                 dirFileList = os.listdir(directory)
                 for filename in dirFileList:
                     if(os.path.isdir(os.path.join(directory,filename))):
-                        print os.path.join(directory,filename) + ' is a directory and therefore ignored!'
+                        print(os.path.join(directory,filename) + ' is a directory and therefore ignored!')
                     elif(os.path.isfile(os.path.join(directory,filename))):
                         if(self.checkFileExtension(filename, extension)):
                             filelist.append(os.path.join(directory,filename))
                     else:
-                        print filename + ' is NOT a file or directory!'
+                        print(filename + ' is NOT a file or directory!')
             else:
-                print directory + ' is not a directory!'
+                print(directory + ' is not a directory!')
         else:
-            print directory + ' does not exist!'
+            print(directory + ' does not exist!')
 
     def buildCmd(self, fileList, outClass, classProvided, spdInput, outputSPD, ignoreChecks):
-        print "spdmerge -i ", spdInput,
+        print("spdmerge -i ", spdInput,)
         
         if ignoreChecks:
-            print "--ignorechecks ",
+            print("--ignorechecks ",)
         
         if classProvided:
             for file in fileList:
-                print "--classes ", outClass,
+                print("--classes ", outClass,)
 
-        print outputSPD, " ",
+        print(outputSPD, " ",)
 
         for file in fileList:
-            print file, " ",
+            print(file, " ",)
 
 
     def run(self, cmdargs):
@@ -127,12 +127,12 @@ class CmdArgs:
 
     if self.inputDir is None:
         p.print_help()
-        print "Input direction path must be set."
+        print("Input direction path must be set.")
         sys.exit()
 
     if self.extension is None:
         p.print_help()
-        print "Input file extension must be set."
+        print("Input file extension must be set.")
         sys.exit()
 
 if __name__ == '__main__':
