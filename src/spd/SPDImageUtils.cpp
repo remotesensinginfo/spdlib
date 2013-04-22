@@ -360,6 +360,495 @@ namespace spdlib
 		return newValue;
 		
 	}
+    
+    void SPDImageUtils::getImageOverlapCut2Env(GDALDataset **datasets, int numDS,  int **dsOffsets, int *width, int *height, double *gdalTransform, OGREnvelope *env, int *maxBlockX, int *maxBlockY) throw(SPDImageException)
+	{
+		double **transformations = new double*[numDS];
+		int *xSize = new int[numDS];
+		int *ySize = new int[numDS];
+        int *xBlockSize = new int[numDS];
+		int *yBlockSize = new int[numDS];
+		for(int i = 0; i < numDS; i++)
+		{
+			transformations[i] = new double[6];
+			datasets[i]->GetGeoTransform(transformations[i]);
+			xSize[i] = datasets[i]->GetRasterXSize();
+			ySize[i] = datasets[i]->GetRasterYSize();
+			datasets[i]->GetRasterBand(1)->GetBlockSize(&xBlockSize[i], &yBlockSize[i]);
+			//std::cout << "TL [" << transformations[i][0] << "," << transformations[i][3] << "]\n";
+		}
+		double rotateX = 0;
+		double rotateY = 0;
+		double pixelXRes = 0;
+		double pixelYRes = 0;
+		double pixelYResPos = 0;
+		double minX = 0;
+		double maxX = 0;
+		double tmpMaxX = 0;
+		double minY = 0;
+		double tmpMinY = 0;
+		double maxY = 0;
+		const char *proj = NULL;
+		bool first = true;
+		
+		
+		try
+		{
+			// Calculate Image Overlap.
+			for(int i = 0; i < numDS; ++i)
+			{
+				if(first)
+				{
+                    *maxBlockX = xBlockSize[i];
+                    *maxBlockY = yBlockSize[i];
+                    
+					pixelXRes = transformations[i][1];
+					pixelYRes = transformations[i][5];
+					
+					rotateX = transformations[i][2];
+					rotateY = transformations[i][4];
+					
+					if(pixelYRes < 0)
+					{
+						pixelYResPos = pixelYRes * (-1);
+					}
+					else
+					{
+						pixelYResPos = pixelYRes;
+					}
+					
+					minX = transformations[i][0];
+					maxY = transformations[i][3];
+					
+					maxX = minX + (xSize[i] * pixelXRes);
+					minY = maxY - (ySize[i] * pixelYResPos);
+					
+					proj = datasets[i]->GetProjectionRef(); // Get projection of first band in image
+					
+					first = false;
+				}
+				else
+				{
+					if((this->closeResTest(pixelXRes, transformations[i][1]) == false) | (this->closeResTest(pixelYRes, transformations[i][5]) == false))
+					{
+						throw SPDImageException("Not all image bands have the same resolution..");
+					}
+					
+					if(std::string(datasets[i]->GetProjectionRef()) != std::string(proj))
+					{
+						//std::cout << "Band 1 Projection = " << proj << std::endl;
+						//std::cout << "Band " << i <<  " Projection = " << datasets[i]->GetProjectionRef()<< std::endl;
+						throw SPDImageException("Not all image bands have the same projection..");
+					}
+					
+					if(transformations[i][2] != rotateX & transformations[i][4] != rotateY)
+					{
+						throw SPDImageException("Not all image bands have the same rotation..");
+					}
+					
+					if(transformations[i][0] > minX)
+					{
+						minX = transformations[i][0];
+					}
+					
+					if(transformations[i][3] < maxY)
+					{
+						maxY = transformations[i][3];
+					}
+					
+					tmpMaxX = transformations[i][0] + (xSize[i] * pixelXRes);
+					tmpMinY = transformations[i][3] - (ySize[i] * pixelYResPos);
+					
+					if(tmpMaxX < maxX)
+					{
+						maxX = tmpMaxX;
+					}
+					
+					if(tmpMinY > minY)
+					{
+						minY = tmpMinY;
+					}
+                    
+                    if(xBlockSize[i] > (*maxBlockX))
+                    {
+                        *maxBlockX = xBlockSize[i];
+                    }
+                    
+                    if(yBlockSize[i] > (*maxBlockY))
+                    {
+                        *maxBlockY = yBlockSize[i];
+                    }
+				}
+			}
+            
+			if(maxX - minX <= 0)
+			{
+				std::cout << "MinX = " << minX << std::endl;
+				std::cout << "MaxX = " << maxX << std::endl;
+				throw SPDImageException("Images do not overlap in the X axis");
+			}
+			
+			if(maxY - minY <= 0)
+			{
+				std::cout << "MinY = " << minY << std::endl;
+				std::cout << "MaxY = " << maxY << std::endl;
+				throw SPDImageException("Images do not overlap in the Y axis");
+			}
+			
+			// Cut to env extent
+			if(env->MinX > minX)
+			{
+                minX = env->MinX;
+			}
+			
+			if(env->MinY > minY)
+			{
+				minY = env->MinY;
+			}
+			
+			if(env->MaxX < maxX)
+			{
+				maxX = env->MaxX;
+			}
+			
+			if(env->MaxY < maxY)
+			{
+				maxY = env->MaxY;
+			}
+			
+            if(maxX - minX <= 0)
+			{
+				std::cout << "MinX = " << minX << std::endl;
+				std::cout << "MaxX = " << maxX << std::endl;
+				throw SPDImageException("Images and Envelope do not overlap in the X axis");
+			}
+			
+			if(maxY - minY <= 0)
+			{
+				std::cout << "MinY = " << minY << std::endl;
+				std::cout << "MaxY = " << maxY << std::endl;
+				throw SPDImageException("Images and Envelope do not overlap in the Y axis");
+			}
+            
+            gdalTransform[0] = minX;
+			gdalTransform[1] = pixelXRes;
+			gdalTransform[2] = rotateX;
+			gdalTransform[3] = maxY;
+			gdalTransform[4] = rotateY;
+			gdalTransform[5] = pixelYRes;
+			
+			*width = floor(((maxX - minX)/pixelXRes)+0.5);
+			*height = floor(((maxY - minY)/pixelYResPos)+0.5);
+			
+			double diffX = 0;
+			double diffY = 0;
+			
+			for(int i = 0; i < numDS; i++)
+			{
+				diffX = minX - transformations[i][0];
+				diffY = transformations[i][3] - maxY;
+				
+				if(diffX != 0)
+				{
+					dsOffsets[i][0] = ceil(diffX/pixelXRes);
+				}
+				else
+				{
+					dsOffsets[i][0] = 0;
+				}
+				
+				if(diffY != 0)
+				{
+					dsOffsets[i][1] = ceil(diffY/pixelYResPos);
+				}
+				else
+				{
+					dsOffsets[i][1] = 0;
+				}
+			}
+			
+		}
+		catch(SPDImageException& e)
+		{
+			if(transformations != NULL)
+			{
+				for(int i = 0; i < numDS; i++)
+				{
+					delete[] transformations[i];
+				}
+				delete[] transformations;
+			}
+			if(xSize != NULL)
+			{
+				delete[] xSize;
+			}
+			if(ySize != NULL)
+			{
+				delete[] ySize;
+			}
+			throw e;
+		}
+		
+		if(transformations != NULL)
+		{
+			for(int i = 0; i < numDS; i++)
+			{
+				delete[] transformations[i];
+			}
+			delete[] transformations;
+		}
+		if(xSize != NULL)
+		{
+			delete[] xSize;
+		}
+		if(ySize != NULL)
+		{
+			delete[] ySize;
+		}
+        
+        delete[] xBlockSize;
+        delete[] yBlockSize;
+	}
+    
+    bool SPDImageUtils::closeResTest(double baseRes, double targetRes, double resDiffThresh)
+    {
+    	/** Calculates if two doubles are close to each other with the threshold
+    	 * defined in the class.
+    	 * - A two sided test is used rather than the absolute value to prevent
+    	 * 	 overflows.
+    	 */
+        
+    	bool closeRes = true;
+    	double resDiff = baseRes - targetRes;
+    	double resDiffVal = resDiffThresh * baseRes;
+        
+    	if((resDiff > 0) && (resDiff > resDiffVal)){closeRes = false;}
+    	else if((resDiff < 0) && (resDiff > -1.*resDiffVal)){closeRes = false;}
+        
+    	return closeRes;
+    }
+    
+    
+    void SPDImageUtils::copyInDatasetIntoOutDataset(GDALDataset *dataset, GDALDataset *outputImageDS, OGREnvelope *env) throw(SPDImageException)
+    {
+        GDALAllRegister();
+		double *gdalTranslation = new double[6];
+		int **dsOffsets = new int*[2];
+		for(int i = 0; i < 2; i++)
+		{
+			dsOffsets[i] = new int[2];
+		}
+		int *inImgOffset = NULL;
+        int *outImgOffset = NULL;
+		int height = 0;
+		int width = 0;
+		int numOfBands = 0;
+		
+		float **inputData = NULL;
+        int xBlockSize = 0;
+        int yBlockSize = 0;
+		
+		GDALRasterBand **inputRasterBands = NULL;
+		GDALRasterBand **outputRasterBands = NULL;
+		
+		try
+		{            
+            if(outputImageDS->GetRasterCount() != dataset->GetRasterCount())
+            {
+                throw SPDImageException("The input and output datasets do not have the same number of image bands\n");
+            }
+            
+            
+            GDALDataset **tmpDatasets = new GDALDataset*[2];
+            tmpDatasets[0] = dataset;
+            tmpDatasets[1] = outputImageDS;
+            
+            
+			// Find image overlap
+			this->getImageOverlapCut2Env(tmpDatasets, 2,  dsOffsets, &width, &height, gdalTranslation, env, &xBlockSize, &yBlockSize);
+            
+            delete[] tmpDatasets;
+            
+			if(width < 1)
+            {
+                throw SPDImageException("The output dataset does not have the correct width\n");
+            }
+            
+            if(height < 1)
+            {
+                throw SPDImageException("The output dataset does not have the correct height\n");
+            }
+			
+            numOfBands = dataset->GetRasterCount();
+            
+            
+			// Get Image Input Bands
+			inImgOffset = new int[2];
+            inImgOffset[0] = dsOffsets[0][0];
+            inImgOffset[1] = dsOffsets[0][1];
+			inputRasterBands = new GDALRasterBand*[numOfBands];
+			for(int j = 0; j < numOfBands; j++)
+            {
+                inputRasterBands[j] = dataset->GetRasterBand(j+1);
+            }
+            
+			//Get Image Output Bands
+            outImgOffset = new int[2];
+            outImgOffset[0] = dsOffsets[1][0];
+            outImgOffset[1] = dsOffsets[1][1];
+			outputRasterBands = new GDALRasterBand*[numOfBands];
+			for(int i = 0; i < numOfBands; i++)
+			{
+				outputRasterBands[i] = outputImageDS->GetRasterBand(i+1);
+			}
+            
+            //std::cout << "Max. block size: " << yBlockSize << std::endl;
+            
+			// Allocate memory
+			inputData = new float*[numOfBands];
+			for(int i = 0; i < numOfBands; i++)
+			{
+				inputData[i] = (float *) CPLMalloc(sizeof(float)*width*yBlockSize);
+			}
+            
+			int nYBlocks = height / yBlockSize;
+            int remainRows = height - (nYBlocks * yBlockSize);
+            int rowOffset = 0;
+            
+			// Loop images to process data
+			for(int i = 0; i < nYBlocks; i++)
+			{                
+				for(int n = 0; n < numOfBands; n++)
+				{
+                    rowOffset = inImgOffset[1] + (yBlockSize * i);
+					inputRasterBands[n]->RasterIO(GF_Read, inImgOffset[0], rowOffset, width, yBlockSize, inputData[n], width, yBlockSize, GDT_Float32, 0, 0);
+				}
+				
+				for(int n = 0; n < numOfBands; n++)
+				{
+                    rowOffset = outImgOffset[1] + (yBlockSize * i);
+					outputRasterBands[n]->RasterIO(GF_Write, outImgOffset[0], rowOffset, width, yBlockSize, inputData[n], width, yBlockSize, GDT_Float32, 0, 0);
+				}
+			}
+            
+            if(remainRows > 0)
+            {
+                for(int n = 0; n < numOfBands; n++)
+				{
+                    rowOffset = inImgOffset[1] + (yBlockSize * nYBlocks);
+					inputRasterBands[n]->RasterIO(GF_Read, inImgOffset[0], rowOffset, width, remainRows, inputData[n], width, remainRows, GDT_Float32, 0, 0);
+				}
+				
+				for(int n = 0; n < numOfBands; n++)
+				{
+                    rowOffset = outImgOffset[1] + (yBlockSize * nYBlocks);
+					outputRasterBands[n]->RasterIO(GF_Write, outImgOffset[0], rowOffset, width, remainRows, inputData[n], width, remainRows, GDT_Float32, 0, 0);
+				}
+            }
+		}
+		catch(SPDImageException& e)
+		{
+			if(gdalTranslation != NULL)
+			{
+				delete[] gdalTranslation;
+			}
+			
+			if(dsOffsets != NULL)
+			{
+				for(int i = 0; i < 2; i++)
+				{
+					if(dsOffsets[i] != NULL)
+					{
+						delete[] dsOffsets[i];
+					}
+				}
+				delete[] dsOffsets;
+			}
+			
+			if(inImgOffset != NULL)
+			{
+				delete[] inImgOffset;
+			}
+            
+            if(outImgOffset != NULL)
+			{
+				delete[] outImgOffset;
+			}
+			
+			if(inputData != NULL)
+			{
+				for(int i = 0; i < numOfBands; i++)
+				{
+					if(inputData[i] != NULL)
+					{
+						delete[] inputData[i];
+					}
+				}
+				delete[] inputData;
+			}
+
+			if(inputRasterBands != NULL)
+			{
+				delete[] inputRasterBands;
+			}
+			
+			if(outputRasterBands != NULL)
+			{
+				delete[] outputRasterBands;
+			}
+			throw e;
+		}
+        
+		if(gdalTranslation != NULL)
+		{
+			delete[] gdalTranslation;
+		}
+		
+		if(dsOffsets != NULL)
+		{
+			for(int i = 0; i < 2; i++)
+			{
+				if(dsOffsets[i] != NULL)
+				{
+					delete[] dsOffsets[i];
+				}
+			}
+			delete[] dsOffsets;
+		}
+		
+		if(inImgOffset != NULL)
+        {
+            delete[] inImgOffset;
+        }
+        
+        if(outImgOffset != NULL)
+        {
+            delete[] outImgOffset;
+        }
+		
+		if(inputData != NULL)
+		{
+			for(int i = 0; i < numOfBands; i++)
+			{
+				if(inputData[i] != NULL)
+				{
+					CPLFree(inputData[i]);
+				}
+			}
+			delete[] inputData;
+		}
+		
+		if(inputRasterBands != NULL)
+		{
+			delete[] inputRasterBands;
+		}
+		
+		if(outputRasterBands != NULL)
+		{
+			delete[] outputRasterBands;
+		}
+    }
+    
 	
 	SPDImageUtils::~SPDImageUtils()
 	{

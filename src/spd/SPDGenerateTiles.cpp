@@ -785,7 +785,6 @@ namespace spdlib
         }
     }
     
-    
     void SPDTilesUtils::deleteTilesWithNoPulses(std::vector<SPDTile*> *tiles) throw(SPDProcessingException)
     {
         SPDTextFileUtilities txtUtils;
@@ -824,6 +823,185 @@ namespace spdlib
             throw SPDProcessingException(e.what());
         }
         catch(std::exception &e)
+        {
+            throw SPDProcessingException(e.what());
+        }
+    }
+    
+    GDALDataset* SPDTilesUtils::createNewImageFile(std::string imageFile, std::string format, GDALDataType dataType, std::string wktFile, double xRes, double yRes, double tlX, double tlY, unsigned int xImgSize, unsigned int yImgSize, unsigned int numBands) throw(SPDProcessingException)
+    {
+        // Process dataset in memory
+        GDALDriver *gdalDriver = GetGDALDriverManager()->GetDriverByName(format.c_str());
+        if(gdalDriver == NULL)
+        {
+            std::string message = std::string("Driver for ") + format + std::string(" does not exist\n");
+            throw SPDProcessingException(message.c_str());
+        }
+        GDALDataset *dataset = gdalDriver->Create(imageFile.c_str(), xImgSize, yImgSize, numBands, dataType, NULL);
+        if(dataset == NULL)
+        {
+            std::string message = std::string("Could not create GDALDataset.");
+            throw SPDProcessingException(message);
+        }
+        
+        double *gdalTranslation = new double[6];
+        gdalTranslation[0] = tlX;
+        gdalTranslation[1] = xRes;
+        gdalTranslation[2] = 0;
+        gdalTranslation[3] = tlY;
+        gdalTranslation[4] = 0;
+        gdalTranslation[5] = yRes;
+        
+        dataset->SetGeoTransform(gdalTranslation);
+        dataset->SetProjection(wktFile.c_str());
+        delete[] gdalTranslation;
+        
+        int xBlockSize = 0;
+        int yBlockSize = 0;
+        
+        dataset->GetRasterBand(1)->GetBlockSize (&xBlockSize, &yBlockSize);
+        
+        float **outData = new float*[numBands];
+        GDALRasterBand **rasterBands = new GDALRasterBand*[numBands];
+        for(int i = 0; i < numBands; i++)
+        {
+            outData[i] = (float *) CPLMalloc(sizeof(float)*xImgSize*yBlockSize);
+            for(unsigned int j = 0; j < (xImgSize*yBlockSize); ++j)
+            {
+                outData[i][j] = 0.0;
+            }
+            rasterBands[i] = dataset->GetRasterBand(i+1);
+        }
+        
+        int nYBlocks = yImgSize / yBlockSize;
+        int remainRows = yImgSize - (nYBlocks * yBlockSize);
+        int rowOffset = 0;
+
+        // Loop images to process data
+        for(int i = 0; i < nYBlocks; i++)
+        {
+            for(int n = 0; n < numBands; n++)
+            {
+                rowOffset = yBlockSize * i;
+                rasterBands[n]->RasterIO(GF_Write, 0, rowOffset, xImgSize, yBlockSize, outData[n], xImgSize, yBlockSize, GDT_Float32, 0, 0);
+            }
+        }
+        
+        if(remainRows > 0)
+        {            
+            for(int n = 0; n < numBands; n++)
+            {
+                rowOffset = (yBlockSize * nYBlocks);
+                rasterBands[n]->RasterIO(GF_Write, 0, rowOffset, xImgSize, remainRows, outData[n], xImgSize, remainRows, GDT_Float32, 0, 0);
+            }
+        }
+        
+        for(int i = 0; i < numBands; i++)
+        {
+            delete[] outData[i];
+        }
+        delete[] outData;
+        delete[] rasterBands;
+        
+        return dataset;
+    }
+    
+    void SPDTilesUtils::addImageTiles(GDALDataset *image, std::vector<SPDTile*> *tiles, std::vector<std::string> inputImageFiles) throw(SPDProcessingException)
+    {
+        try
+        {
+            SPDMathsUtils mathUtils;
+            SPDImageUtils imgUtils;
+            GDALDataset *tileDataset = NULL;
+            double *geoTrans = new double[6];
+            double xMin = 0;
+            double xMax = 0;
+            double yMin = 0;
+            double yMax = 0;
+            unsigned int xTileSize = 0;
+            unsigned int yTileSize = 0;
+            double intersection = 0;
+            bool first = 0;
+            double maxInsect;
+            SPDTile *maxInsectTile = NULL;
+            OGREnvelope *env = new OGREnvelope();
+            for(std::vector<std::string>::iterator iterFiles = inputImageFiles.begin(); iterFiles != inputImageFiles.end(); ++iterFiles)
+            {
+                std::cout << "Processing \'" << (*iterFiles) << "\'\n";
+                
+                /*
+                 * OPEN IMAGE FILE TILE.
+                 */
+                
+                tileDataset = (GDALDataset *) GDALOpen((*iterFiles).c_str(), GA_ReadOnly);
+                if(tileDataset == NULL)
+                {
+                    std::string message = std::string("Could not open image ") + (*iterFiles);
+                    throw spdlib::SPDException(message.c_str());
+                }
+                tileDataset->GetGeoTransform(geoTrans);
+                
+                xTileSize = tileDataset->GetRasterXSize();
+                yTileSize = tileDataset->GetRasterYSize();
+                
+                xMin = geoTrans[0];
+                yMax = geoTrans[3];
+                xMax = xMin + (xTileSize * geoTrans[1]);
+                yMin = yMax + (yTileSize * geoTrans[5]);
+                
+                /*
+                 * FIND TILE ASSOCIATED WITH FILE.
+                 */
+                
+                //std::cout << "Image: [" << xMin << ", " << xMax << "][" << yMin << ", " << yMax << "]\n";
+                first = true;
+                for(std::vector<SPDTile*>::iterator iterTiles = tiles->begin(); iterTiles != tiles->end(); ++iterTiles)
+                {
+                    //std::cout << "\tTile: [" << (*iterTiles)->xMinCore << ", " << (*iterTiles)->xMaxCore << "][" << (*iterTiles)->yMinCore << ", " << (*iterTiles)->yMaxCore << "]\n";
+                    intersection = mathUtils.calcRectangleIntersection((*iterTiles)->xMinCore, (*iterTiles)->xMaxCore, (*iterTiles)->yMinCore, (*iterTiles)->yMaxCore, xMin,xMax, yMin, yMax);
+                    //std::cout << "\t\t" << intersection << std::endl;
+                    if(first)
+                    {
+                        maxInsect = intersection;
+                        maxInsectTile = *iterTiles;
+                        first = false;
+                    }
+                    else if(intersection > maxInsect)
+                    {
+                        maxInsect = intersection;
+                        maxInsectTile = *iterTiles;
+                    }
+                }
+                
+                //std::cout << "\t Intersect Tile: [" << maxInsectTile->xMinCore << ", " << maxInsectTile->xMaxCore << "][" << maxInsectTile->yMinCore << ", " << maxInsectTile->yMaxCore << "]\n";
+                
+                //std::cout << "\t Intersection Tile: Row = " << maxInsectTile->row << " Column = " << maxInsectTile->col << std::endl;
+                
+                /*
+                 * INCLUDE THE TILE WITHIN THE WHOLE IMAGE.
+                 */
+                
+                env->MinX = maxInsectTile->xMinCore;
+                env->MaxX = maxInsectTile->xMaxCore;
+                env->MinY = maxInsectTile->yMinCore;
+                env->MaxY = maxInsectTile->yMaxCore;
+                
+                imgUtils.copyInDatasetIntoOutDataset(tileDataset, image, env);
+                
+                GDALClose(tileDataset);
+            }
+            delete[] geoTrans;
+            delete env;
+        }
+        catch (SPDProcessingException &e)
+        {
+            throw e;
+        }
+        catch (SPDException &e)
+        {
+            throw SPDProcessingException(e.what());
+        }
+        catch (std::exception &e)
         {
             throw SPDProcessingException(e.what());
         }
