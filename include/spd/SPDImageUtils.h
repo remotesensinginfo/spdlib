@@ -55,6 +55,10 @@ namespace spdlib
 		 * For a cubic interpolation 4 data values are required. Therefore, winSize must equal 4.
 		 */ 
 		float cubicInterpValue(float xShift, float yShift, float **pixels,boost::uint_fast32_t winSize) throw(SPDImageException);
+        
+        void getImageOverlapCut2Env(GDALDataset **datasets, int numDS,  int **dsOffsets, int *width, int *height, double *gdalTransform, OGREnvelope *env, int *maxBlockX, int *maxBlockY) throw(SPDImageException);
+        bool closeResTest(double baseRes, double targetRes, double resDiffThresh=0.0001);
+        void copyInDatasetIntoOutDataset(GDALDataset *dataset, GDALDataset *outputImageDS, OGREnvelope *env) throw(SPDImageException);
 		~SPDImageUtils();
 	private:
 		/**

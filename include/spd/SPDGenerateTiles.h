@@ -47,6 +47,7 @@
 #include "spd/SPDProcessingException.h"
 #include "spd/SPDTextFileUtilities.h"
 #include "spd/SPDMathsUtils.h"
+#include "spd/SPDImageUtils.h"
 
 namespace spdlib
 {
@@ -82,6 +83,8 @@ namespace spdlib
         void createTileSPDFiles(std::vector<SPDTile*> *tiles, SPDFile *templateSPDFile, std::string outputBase, double xSize, double ySize, double overlap, double xMin, double xMax, double yMin, double yMax, boost::uint_fast32_t rows, boost::uint_fast32_t cols) throw(SPDProcessingException);
         void populateTileWithData(std::vector<SPDTile*> *tiles, std::vector<std::string> inputFiles) throw(SPDProcessingException);
         void deleteTilesWithNoPulses(std::vector<SPDTile*> *tiles) throw(SPDProcessingException);
+        GDALDataset* createNewImageFile(std::string imageFile, std::string format, GDALDataType dataType, std::string wktFile, double xRes, double yRes, double tlX, double tlY, unsigned int xImgSize, unsigned int yImgSize, unsigned int numBands) throw(SPDProcessingException);
+        void addImageTiles(GDALDataset *image, std::vector<SPDTile*> *tiles, std::vector<std::string> inputImageFiles) throw(SPDProcessingException);
         ~SPDTilesUtils();
 	};
     
