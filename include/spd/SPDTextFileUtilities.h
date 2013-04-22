@@ -52,6 +52,7 @@ namespace spdlib{
 		void tokenizeString(std::string line, char token, std::vector<std::string> *tokens, bool ignoreDuplicateTokens=true);
 		std::string readFileToString(std::string input) throw(SPDIOException);
         std::vector<std::string> readFileLinesToVector(std::string input) throw(SPDIOException);
+        bool isNumber(char val);
 		
 		double strtodouble(std::string inValue)throw(SPDTextFileException);
 		float strtofloat(std::string inValue)throw(SPDTextFileException);

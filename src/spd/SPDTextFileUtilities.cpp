@@ -276,6 +276,53 @@ namespace spdlib{
 		return wholeFile;
     }
 	
+    
+    bool SPDTextFileUtilities::isNumber(char val)
+    {
+        bool num = false;
+        if(val == '0')
+        {
+            num = true;
+        }
+        else if(val == '1')
+        {
+            num = true;
+        }
+        else if(val == '2')
+        {
+            num = true;
+        }
+        else if(val == '3')
+        {
+            num = true;
+        }
+        else if(val == '4')
+        {
+            num = true;
+        }
+        else if(val == '5')
+        {
+            num = true;
+        }
+        else if(val == '6')
+        {
+            num = true;
+        }
+        else if(val == '7')
+        {
+            num = true;
+        }
+        else if(val == '8')
+        {
+            num = true;
+        }
+        else if(val == '9')
+        {
+            num = true;
+        }
+        
+        return num;
+    }
 	
 	double SPDTextFileUtilities::strtodouble(std::string inValue) throw(SPDTextFileException)
 	{

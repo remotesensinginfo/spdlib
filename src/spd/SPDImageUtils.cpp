@@ -849,6 +849,55 @@ namespace spdlib
 		}
     }
     
+    
+    boost::uint_fast32_t SPDImageUtils::findColumnIndex(const GDALRasterAttributeTable *gdalATT, std::string colName) throw(SPDImageException)
+    {
+        int numColumns = gdalATT->GetColumnCount();
+        bool foundCol = false;
+        boost::uint_fast32_t colIdx = 0;
+        for(int i = 0; i < numColumns; ++i)
+        {
+            if(std::string(gdalATT->GetNameOfCol(i)) == colName)
+            {
+                foundCol = true;
+                colIdx = i;
+                break;
+            }
+        }
+        
+        if(!foundCol)
+        {
+            std::string message = std::string("The column ") + colName + std::string(" could not be found.");
+            throw SPDImageException(message);
+        }
+        
+        return colIdx;
+    }
+    
+    boost::uint_fast32_t SPDImageUtils::findColumnIndexOrCreate(GDALRasterAttributeTable *gdalATT, std::string colName, GDALRATFieldType dType) throw(SPDImageException)
+    {
+        int numColumns = gdalATT->GetColumnCount();
+        bool foundCol = false;
+        boost::uint_fast32_t colIdx = 0;
+        for(int i = 0; i < numColumns; ++i)
+        {
+            if(std::string(gdalATT->GetNameOfCol(i)) == colName)
+            {
+                foundCol = true;
+                colIdx = i;
+                break;
+            }
+        }
+        
+        if(!foundCol)
+        {
+            gdalATT->CreateColumn(colName.c_str(), dType, GFU_Generic);
+            colIdx = numColumns;
+        }
+        
+        return colIdx;
+    }
+    
 	
 	SPDImageUtils::~SPDImageUtils()
 	{

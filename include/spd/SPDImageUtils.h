@@ -32,6 +32,7 @@
 
 #include "gdal_priv.h"
 #include "ogrsf_frmts.h"
+#include "gdal_rat.h"
 
 #include <boost/cstdint.hpp>
 
@@ -59,7 +60,9 @@ namespace spdlib
         void getImageOverlapCut2Env(GDALDataset **datasets, int numDS,  int **dsOffsets, int *width, int *height, double *gdalTransform, OGREnvelope *env, int *maxBlockX, int *maxBlockY) throw(SPDImageException);
         bool closeResTest(double baseRes, double targetRes, double resDiffThresh=0.0001);
         void copyInDatasetIntoOutDataset(GDALDataset *dataset, GDALDataset *outputImageDS, OGREnvelope *env) throw(SPDImageException);
-		~SPDImageUtils();
+		boost::uint_fast32_t findColumnIndex(const GDALRasterAttributeTable *gdalATT, std::string colName) throw(SPDImageException);
+        boost::uint_fast32_t findColumnIndexOrCreate(GDALRasterAttributeTable *gdalATT, std::string colName, GDALRATFieldType dType) throw(SPDImageException);
+        ~SPDImageUtils();
 	private:
 		/**
 		 * For a cubic interpolation 4 data values are required. Therefore, pixels must have length 4.

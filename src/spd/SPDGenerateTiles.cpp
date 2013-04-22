@@ -657,7 +657,7 @@ namespace spdlib
                 //std::cout << "[" << (*iterTiles)->col << " " << (*iterTiles)->row << "] ALL: [" << (*iterTiles)->xMin << "," << (*iterTiles)->xMax << "][" << (*iterTiles)->yMin << "," << (*iterTiles)->yMax << "] CORE: [" << (*iterTiles)->xMinCore << "," << (*iterTiles)->xMaxCore << "][" << (*iterTiles)->yMinCore << "," << (*iterTiles)->yMaxCore << "]" << std::endl;
                 if((*iterTiles)->outFileName == "")
                 {
-                    (*iterTiles)->outFileName = outputBase + std::string("_r") + txtUtils.uInt32bittostring((*iterTiles)->row) + std::string("c") + txtUtils.uInt32bittostring((*iterTiles)->col) + std::string(".spd");
+                    (*iterTiles)->outFileName = outputBase + std::string("_row") + txtUtils.uInt32bittostring((*iterTiles)->row) + std::string("col") + txtUtils.uInt32bittostring((*iterTiles)->col) + std::string(".spd");
                     std::cout << "Creating File: " << (*iterTiles)->outFileName << std::endl;
                     (*iterTiles)->spdFile = new SPDFile((*iterTiles)->outFileName);
                     (*iterTiles)->spdFile->copyAttributesFromTemplate(templateSPDFile);
@@ -828,7 +828,7 @@ namespace spdlib
         }
     }
     
-    GDALDataset* SPDTilesUtils::createNewImageFile(std::string imageFile, std::string format, GDALDataType dataType, std::string wktFile, double xRes, double yRes, double tlX, double tlY, unsigned int xImgSize, unsigned int yImgSize, unsigned int numBands) throw(SPDProcessingException)
+    GDALDataset* SPDTilesUtils::createNewImageFile(std::string imageFile, std::string format, GDALDataType dataType, std::string wktFile, double xRes, double yRes, double tlX, double tlY, boost::uint_fast32_t xImgSize, boost::uint_fast32_t yImgSize, boost::uint_fast32_t numBands) throw(SPDProcessingException)
     {
         // Process dataset in memory
         GDALDriver *gdalDriver = GetGDALDriverManager()->GetDriverByName(format.c_str());
@@ -918,10 +918,11 @@ namespace spdlib
             double xMax = 0;
             double yMin = 0;
             double yMax = 0;
+            
             unsigned int xTileSize = 0;
             unsigned int yTileSize = 0;
             double intersection = 0;
-            bool first = 0;
+            bool first = false;
             double maxInsect;
             SPDTile *maxInsectTile = NULL;
             OGREnvelope *env = new OGREnvelope();
@@ -954,7 +955,7 @@ namespace spdlib
                  */
                 
                 //std::cout << "Image: [" << xMin << ", " << xMax << "][" << yMin << ", " << yMax << "]\n";
-                first = true;
+                first = false;
                 for(std::vector<SPDTile*>::iterator iterTiles = tiles->begin(); iterTiles != tiles->end(); ++iterTiles)
                 {
                     //std::cout << "\tTile: [" << (*iterTiles)->xMinCore << ", " << (*iterTiles)->xMaxCore << "][" << (*iterTiles)->yMinCore << ", " << (*iterTiles)->yMaxCore << "]\n";
@@ -1004,6 +1005,328 @@ namespace spdlib
         catch (std::exception &e)
         {
             throw SPDProcessingException(e.what());
+        }
+    }
+    
+    void SPDTilesUtils::addImageTilesParseFileName(GDALDataset *image, std::vector<SPDTile*> *tiles, std::vector<std::string> inputImageFiles) throw(SPDProcessingException)
+    {
+        try
+        {
+            SPDMathsUtils mathUtils;
+            SPDImageUtils imgUtils;
+            GDALDataset *tileDataset = NULL;
+            double *geoTrans = new double[6];
+            double xMin = 0;
+            double xMax = 0;
+            double yMin = 0;
+            double yMax = 0;
+            
+            boost::uint_fast32_t tileRow = 0;
+            boost::uint_fast32_t tileCol = 0;
+            
+            unsigned int xTileSize = 0;
+            unsigned int yTileSize = 0;
+            double intersection = 0;
+            double maxInsect;
+            SPDTile *maxInsectTile = NULL;
+            OGREnvelope *env = new OGREnvelope();
+            for(std::vector<std::string>::iterator iterFiles = inputImageFiles.begin(); iterFiles != inputImageFiles.end(); ++iterFiles)
+            {
+                std::cout << "Processing \'" << (*iterFiles) << "\'\n";
+                
+                this->extractRowColFromFileName((*iterFiles), &tileRow, &tileCol);
+                
+                /*
+                 * OPEN IMAGE FILE TILE.
+                 */
+                
+                tileDataset = (GDALDataset *) GDALOpen((*iterFiles).c_str(), GA_ReadOnly);
+                if(tileDataset == NULL)
+                {
+                    std::string message = std::string("Could not open image ") + (*iterFiles);
+                    throw spdlib::SPDException(message.c_str());
+                }
+                tileDataset->GetGeoTransform(geoTrans);
+                
+                xTileSize = tileDataset->GetRasterXSize();
+                yTileSize = tileDataset->GetRasterYSize();
+                
+                xMin = geoTrans[0];
+                yMax = geoTrans[3];
+                xMax = xMin + (xTileSize * geoTrans[1]);
+                yMin = yMax + (yTileSize * geoTrans[5]);
+                
+                /*
+                 * FIND TILE ASSOCIATED WITH FILE.
+                 */
+                
+                //std::cout << "Image: [" << xMin << ", " << xMax << "][" << yMin << ", " << yMax << "]\n";
+                for(std::vector<SPDTile*>::iterator iterTiles = tiles->begin(); iterTiles != tiles->end(); ++iterTiles)
+                {
+                    if(((*iterTiles)->row == tileRow) & ((*iterTiles)->col == tileCol))
+                    {
+                        intersection = mathUtils.calcRectangleIntersection((*iterTiles)->xMinCore, (*iterTiles)->xMaxCore, (*iterTiles)->yMinCore, (*iterTiles)->yMaxCore, xMin,xMax, yMin, yMax);
+                        
+                        if(intersection > 0)
+                        {
+                            maxInsect = intersection;
+                            maxInsectTile = *iterTiles;
+                        }
+                        else
+                        {
+                            throw SPDProcessingException("Tile is incorrect as rows and cols does not correspond with intersection of the image and tile core - does the tiles XML file match the tiles?");
+                        }
+                    }
+                }
+                
+                //std::cout << "\t Intersect Tile: [" << maxInsectTile->xMinCore << ", " << maxInsectTile->xMaxCore << "][" << maxInsectTile->yMinCore << ", " << maxInsectTile->yMaxCore << "]\n";
+                
+                //std::cout << "\t Intersection Tile: Row = " << maxInsectTile->row << " Column = " << maxInsectTile->col << std::endl;
+                
+                /*
+                 * INCLUDE THE TILE WITHIN THE WHOLE IMAGE.
+                 */
+                
+                env->MinX = maxInsectTile->xMinCore;
+                env->MaxX = maxInsectTile->xMaxCore;
+                env->MinY = maxInsectTile->yMinCore;
+                env->MaxY = maxInsectTile->yMaxCore;
+                
+                imgUtils.copyInDatasetIntoOutDataset(tileDataset, image, env);
+                
+                GDALClose(tileDataset);
+            }
+            delete[] geoTrans;
+            delete env;
+        }
+        catch (SPDProcessingException &e)
+        {
+            throw e;
+        }
+        catch (SPDException &e)
+        {
+            throw SPDProcessingException(e.what());
+        }
+        catch (std::exception &e)
+        {
+            throw SPDProcessingException(e.what());
+        }
+    }
+    
+    void SPDTilesUtils::addTiles2ClumpImage(GDALDataset *image, std::vector<SPDTile*> *tiles) throw(SPDProcessingException)
+    {
+        try
+        {
+            SPDImageUtils imgUtils;
+            double *geoTrans = new double[6];
+            image->GetGeoTransform(geoTrans);
+            
+            double tlX = geoTrans[0];
+            double tlY = geoTrans[3];
+            
+            double xRes = geoTrans[1];
+            double yRes = geoTrans[5];
+            double posYRes = yRes;
+            if(yRes < 0)
+            {
+                posYRes = yRes * (-1);
+            }
+            
+            delete[] geoTrans;
+            
+            GDALRasterBand *imgBand = image->GetRasterBand(1);
+            
+            //std::cout << "Image Size: X = " << image->GetRasterXSize() << " Y = " << image->GetRasterYSize() << std::endl;
+            
+            GDALRasterAttributeTable *gdalATT = new GDALRasterAttributeTable();
+            gdalATT->SetRowCount(tiles->size()+1);
+            
+            int xBlock = 0;
+            int yBlock = 0;
+            boost::uint_fast32_t numBlocks = 0;
+            boost::uint_fast32_t remainingLines = 0;
+            imgBand->GetBlockSize(&xBlock, &yBlock);
+            
+            boost::uint_fast32_t colIdx = imgUtils.findColumnIndexOrCreate(gdalATT, "Col", GFT_Integer);
+            boost::uint_fast32_t rowIdx = imgUtils.findColumnIndexOrCreate(gdalATT, "Row", GFT_Integer);
+            
+            boost::uint_fast32_t tilePxlX = 0;
+            boost::uint_fast32_t tilePxlY = 0;
+            
+            boost::uint_fast32_t tileSizeX = 0;
+            boost::uint_fast32_t tileSizeY = 0;
+            
+            boost::uint_fast32_t rowOffset = 0;
+            
+            double tileWidth = 0;
+            double tileHeight = 0;
+            
+            double xDist = 0;
+            double yDist = 0;
+            
+            unsigned int *imgData = NULL;
+            
+            boost::uint_fast32_t counter = 1;
+            for(std::vector<SPDTile*>::iterator iterTiles = tiles->begin(); iterTiles != tiles->end(); ++iterTiles)
+            {
+                //std::cout << "\nTile: Row = " << (*iterTiles)->row << " Column = " << (*iterTiles)->col << std::endl;
+                gdalATT->SetValue(counter, rowIdx, (*iterTiles)->row);
+                gdalATT->SetValue(counter, colIdx, (*iterTiles)->col);
+                
+                tileWidth = (*iterTiles)->xMaxCore - (*iterTiles)->xMinCore;
+                tileHeight = (*iterTiles)->yMaxCore - (*iterTiles)->yMinCore;
+                
+                //std::cout << "tileWidth = " << tileWidth << std::endl;
+                //std::cout << "tileHeight = " << tileHeight << std::endl;
+                
+                tileSizeX = floor((tileWidth/xRes)+0.5);
+                tileSizeY = floor((tileHeight/posYRes)+0.5);
+                
+                //std::cout << "tileSizeX = " << tileSizeX << std::endl;
+                //std::cout << "tileSizeY = " << tileSizeY << std::endl;
+                
+                xDist = (*iterTiles)->xMinCore - tlX;
+                yDist = tlY - (*iterTiles)->yMaxCore;
+                
+                //std::cout << "xDist = " << xDist << std::endl;
+                //std::cout << "yDist = " << yDist << std::endl;
+                
+                tilePxlX = floor((xDist/xRes)+0.5);
+                tilePxlY = floor((yDist/posYRes)+0.5);
+                
+                //std::cout << "tilePxlX = " << tilePxlX << std::endl;
+                //std::cout << "tilePxlY = " << tilePxlY << std::endl;
+                
+                imgData = (unsigned int *) CPLMalloc(sizeof(unsigned int)*tileSizeX*yBlock);
+                
+                for(unsigned int i = 0; i < (tileSizeX*yBlock); ++i)
+                {
+                    imgData[i] = counter;
+                }
+                
+                numBlocks = floor(tileSizeY/yBlock);
+                remainingLines = tileSizeY - (numBlocks*yBlock);
+                
+                //std::cout << "numBlocks = " << numBlocks << std::endl;
+                //std::cout << "remainingLines = " << remainingLines << std::endl;
+                
+                for(int i = 0; i < numBlocks; i++)
+                {
+                    rowOffset = tilePxlY + (yBlock * i);
+                    //std::cout << "Writing to image band (In block)\n";
+                    imgBand->RasterIO(GF_Write, tilePxlX, rowOffset, tileSizeX, yBlock, imgData, tileSizeX, yBlock, GDT_UInt32, 0, 0);
+                }
+                
+                if(remainingLines > 0)
+                {
+                    rowOffset = tilePxlY + (yBlock * numBlocks);
+                    //std::cout << "Writing to image band (In Remaining)\n";
+                    imgBand->RasterIO(GF_Write, tilePxlX, rowOffset, tileSizeX, remainingLines, imgData, tileSizeX, remainingLines, GDT_UInt32, 0, 0);
+                }
+                
+                delete imgData;
+                ++counter;
+            }
+            
+            imgBand->SetDefaultRAT(gdalATT);
+            delete gdalATT;
+        }
+        catch (SPDProcessingException &e)
+        {
+            throw e;
+        }
+        catch (SPDException &e)
+        {
+            throw SPDProcessingException(e.what());
+        }
+        catch (std::exception &e)
+        {
+            throw SPDProcessingException(e.what());
+        }
+    }
+    
+    void SPDTilesUtils::extractRowColFromFileName(std::string filePathStr, boost::uint_fast32_t *row, boost::uint_fast32_t *col) throw(SPDProcessingException)
+    {
+        try
+        {
+            SPDTextFileUtilities txtUtils;
+            boost::filesystem::path rFilePath(filePathStr);
+            std::string filename = rFilePath.filename().generic_string();
+                        
+            std::string rowStr = "";
+            bool foundRow = false;
+            std::string colStr = "";
+            bool foundCol = false;
+            
+            int lineLength = filename.length();
+            for(int i = 0; i < lineLength; i++)
+            {
+                if(filename.at(i) == 'r')
+                {
+                    if(i+8 < lineLength)
+                    {
+                        if((filename.at(i+1) == 'o') & (filename.at(i+2) == 'w'))
+                        {
+                            foundRow = true;
+                            for(int j = i+3; j < lineLength; ++j)
+                            {
+                                if(txtUtils.isNumber(filename.at(j)))
+                                {
+                                    rowStr += filename.at(j);
+                                }
+                                else
+                                {
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+                
+                if(filename.at(i) == 'c')
+                {
+                    if(i+8 < lineLength)
+                    {
+                        if((filename.at(i+1) == 'o') & (filename.at(i+2) == 'l'))
+                        {
+                            foundCol = true;
+                            for(int j = i+3; j < lineLength; ++j)
+                            {
+                                if(txtUtils.isNumber(filename.at(j)))
+                                {
+                                    colStr += filename.at(j);
+                                }
+                                else
+                                {
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            
+            //std::cout << "ROW = " << rowStr << std::endl;
+            //std::cout << "COL = " << colStr << std::endl;
+            
+            if(!foundRow | (rowStr == ""))
+            {
+                SPDProcessingException("Row could not be found from the file name.");
+            }
+            
+            *row = txtUtils.strto32bitUInt(rowStr);
+            
+            if(!foundCol | (colStr == ""))
+            {
+                SPDProcessingException("Col could not be found from the file name.");
+            }
+            
+            *col = txtUtils.strto32bitUInt(colStr);
+            
+        }
+        catch(SPDProcessingException &e)
+        {
+            throw e;
         }
     }
 		
