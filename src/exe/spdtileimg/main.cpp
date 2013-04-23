@@ -153,8 +153,8 @@ int main (int argc, char * const argv[])
             std::string wktStr = std::string(tmpDataset->GetProjectionRef());
             GDALDataType dataType = tmpDataset->GetRasterBand(1)->GetRasterDataType();
             
-            boost::uint_fast32_t xImgSize = ceil(((xMax - xMin)/xRes)+0.5);
-            boost::uint_fast32_t yImgSize = ceil(((yMax - yMin)/pYRes)+0.5);
+            boost::uint_fast32_t xImgSize = floor(((xMax - xMin)/xRes)+0.5);
+            boost::uint_fast32_t yImgSize = floor(((yMax - yMin)/pYRes)+0.5);
             GDALClose(tmpDataset);
             
             std::cout << "Create blank image\n";
@@ -203,8 +203,8 @@ int main (int argc, char * const argv[])
             spdlib::SPDTextFileUtilities txtUtils;
             std::string wktStr = txtUtils.readFileToString(wktFileArg.getValue());
             
-            boost::uint_fast32_t xImgSize = ceil(((xMax - xMin)/xRes)+0.5);
-            boost::uint_fast32_t yImgSize = ceil(((yMax - yMin)/xRes)+0.5);
+            boost::uint_fast32_t xImgSize = floor(((xMax - xMin)/xRes)+0.5);
+            boost::uint_fast32_t yImgSize = floor(((yMax - yMin)/xRes)+0.5);
             
             std::cout << "Output Image Size = [" << xImgSize << ", " << yImgSize << "]\n";
             
