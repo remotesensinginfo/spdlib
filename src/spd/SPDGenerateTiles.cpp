@@ -828,6 +828,51 @@ namespace spdlib
         }
     }
     
+    
+    void SPDTilesUtils::deleteTileIfNoPulses(std::vector<SPDTile*> *tiles, boost::uint_fast32_t row, boost::uint_fast32_t col) throw(SPDProcessingException)
+    {
+        SPDTextFileUtilities txtUtils;
+        try
+        {
+            for(std::vector<SPDTile*>::iterator iterTiles = tiles->begin(); iterTiles != tiles->end(); )
+            {
+                if(((*iterTiles)->row == row) & ((*iterTiles)->col == col))
+                {
+                    if(((*iterTiles)->spdFile != NULL) && ((*iterTiles)->spdFile->getNumberOfPulses() == 0))
+                    {
+                        boost::filesystem::path rFilePath((*iterTiles)->outFileName);
+                        boost::filesystem::remove(rFilePath);
+                        
+                        delete (*iterTiles)->spdFile;
+                        
+                        delete *iterTiles;
+                        tiles->erase(iterTiles);
+                    }
+                    else
+                    {
+                        ++iterTiles;
+                    }
+                }
+                else
+                {
+                    ++iterTiles;
+                }
+            }
+        }
+        catch (SPDProcessingException &e)
+        {
+            throw e;
+        }
+        catch(SPDException &e)
+        {
+            throw SPDProcessingException(e.what());
+        }
+        catch(std::exception &e)
+        {
+            throw SPDProcessingException(e.what());
+        }
+    }
+    
     GDALDataset* SPDTilesUtils::createNewImageFile(std::string imageFile, std::string format, GDALDataType dataType, std::string wktFile, double xRes, double yRes, double tlX, double tlY, boost::uint_fast32_t xImgSize, boost::uint_fast32_t yImgSize, boost::uint_fast32_t numBands) throw(SPDProcessingException)
     {
         // Process dataset in memory
