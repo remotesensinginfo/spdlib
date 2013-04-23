@@ -1189,7 +1189,7 @@ namespace spdlib
             
             GDALRasterBand *imgBand = image->GetRasterBand(1);
             
-            std::cout << "Image Size: X = " << image->GetRasterXSize() << " Y = " << image->GetRasterYSize() << std::endl;
+            //std::cout << "Image Size: X = " << image->GetRasterXSize() << " Y = " << image->GetRasterYSize() << std::endl;
             
             GDALRasterAttributeTable *gdalATT = new GDALRasterAttributeTable();
             gdalATT->SetRowCount(tiles->size()+1);
@@ -1222,27 +1222,27 @@ namespace spdlib
             boost::uint_fast32_t counter = 1;
             for(std::vector<SPDTile*>::iterator iterTiles = tiles->begin(); iterTiles != tiles->end(); ++iterTiles)
             {
-                std::cout << "\nTile: Row = " << (*iterTiles)->row << " Column = " << (*iterTiles)->col << std::endl;
+                //std::cout << "\nTile: Row = " << (*iterTiles)->row << " Column = " << (*iterTiles)->col << std::endl;
                 gdalATT->SetValue(counter, rowIdx, ((int)(*iterTiles)->row));
                 gdalATT->SetValue(counter, colIdx, ((int)(*iterTiles)->col));
                 
                 tileWidth = (*iterTiles)->xMaxCore - (*iterTiles)->xMinCore;
                 tileHeight = (*iterTiles)->yMaxCore - (*iterTiles)->yMinCore;
                 
-                std::cout << "tileWidth = " << tileWidth << std::endl;
-                std::cout << "tileHeight = " << tileHeight << std::endl;
+                //std::cout << "tileWidth = " << tileWidth << std::endl;
+                //std::cout << "tileHeight = " << tileHeight << std::endl;
                 
                 tileSizeX = floor((tileWidth/xRes)+0.5);
                 tileSizeY = floor((tileHeight/posYRes)+0.5);
                 
-                std::cout << "tileSizeX = " << tileSizeX << std::endl;
-                std::cout << "tileSizeY = " << tileSizeY << std::endl;
+                //std::cout << "tileSizeX = " << tileSizeX << std::endl;
+                //std::cout << "tileSizeY = " << tileSizeY << std::endl;
                 
                 xDist = (*iterTiles)->xMinCore - tlX;
                 yDist = tlY - (*iterTiles)->yMaxCore;
                 
-                std::cout << "xDist = " << xDist << std::endl;
-                std::cout << "yDist = " << yDist << std::endl;
+                //std::cout << "xDist = " << xDist << std::endl;
+                //std::cout << "yDist = " << yDist << std::endl;
                 
                 if(yDist < 0)
                 {
@@ -1266,8 +1266,8 @@ namespace spdlib
                 tilePxlX = floor((xDist/xRes)+0.5);
                 tilePxlY = floor((yDist/posYRes)+0.5);
                 
-                std::cout << "tilePxlX = " << tilePxlX << std::endl;
-                std::cout << "tilePxlY = " << tilePxlY << std::endl;
+                //std::cout << "tilePxlX = " << tilePxlX << std::endl;
+                //std::cout << "tilePxlY = " << tilePxlY << std::endl;
                 
                 imgData = (unsigned int *) CPLMalloc(sizeof(unsigned int)*tileSizeX*yBlock);
                 
@@ -1279,20 +1279,20 @@ namespace spdlib
                 numBlocks = floor(tileSizeY/yBlock);
                 remainingLines = tileSizeY - (numBlocks*yBlock);
                 
-                std::cout << "numBlocks = " << numBlocks << std::endl;
-                std::cout << "remainingLines = " << remainingLines << std::endl;
+                //std::cout << "numBlocks = " << numBlocks << std::endl;
+                //std::cout << "remainingLines = " << remainingLines << std::endl;
                 
                 for(int i = 0; i < numBlocks; i++)
                 {
                     rowOffset = tilePxlY + (yBlock * i);
-                    std::cout << "Writing to image band (In block)\n";
+                    //std::cout << "Writing to image band (In block)\n";
                     imgBand->RasterIO(GF_Write, tilePxlX, rowOffset, tileSizeX, yBlock, imgData, tileSizeX, yBlock, GDT_UInt32, 0, 0);
                 }
                 
                 if(remainingLines > 0)
                 {
                     rowOffset = tilePxlY + (yBlock * numBlocks);
-                    std::cout << "Writing to image band (In Remaining)\n";
+                    //std::cout << "Writing to image band (In Remaining)\n";
                     imgBand->RasterIO(GF_Write, tilePxlX, rowOffset, tileSizeX, remainingLines, imgData, tileSizeX, remainingLines, GDT_UInt32, 0, 0);
                 }
                 
