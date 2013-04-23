@@ -1215,8 +1215,8 @@ namespace spdlib
             for(std::vector<SPDTile*>::iterator iterTiles = tiles->begin(); iterTiles != tiles->end(); ++iterTiles)
             {
                 //std::cout << "\nTile: Row = " << (*iterTiles)->row << " Column = " << (*iterTiles)->col << std::endl;
-                gdalATT->SetValue(counter, rowIdx, (*iterTiles)->row);
-                gdalATT->SetValue(counter, colIdx, (*iterTiles)->col);
+                gdalATT->SetValue(counter, rowIdx, ((int)(*iterTiles)->row));
+                gdalATT->SetValue(counter, colIdx, ((int)(*iterTiles)->col));
                 
                 tileWidth = (*iterTiles)->xMaxCore - (*iterTiles)->xMinCore;
                 tileHeight = (*iterTiles)->yMaxCore - (*iterTiles)->yMinCore;
