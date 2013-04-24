@@ -1029,68 +1029,72 @@ namespace spdlib
             OGREnvelope *env = new OGREnvelope();
             for(std::vector<std::string>::iterator iterFiles = inputImageFiles.begin(); iterFiles != inputImageFiles.end(); ++iterFiles)
             {
-                std::cout << "Processing \'" << (*iterFiles) << "\'\n";
-                
-                /*
-                 * OPEN IMAGE FILE TILE.
-                 */
-                
-                tileDataset = (GDALDataset *) GDALOpen((*iterFiles).c_str(), GA_ReadOnly);
-                if(tileDataset == NULL)
+                if((*iterFiles) != "")
                 {
-                    std::string message = std::string("Could not open image ") + (*iterFiles);
-                    throw spdlib::SPDException(message.c_str());
-                }
-                tileDataset->GetGeoTransform(geoTrans);
                 
-                xTileSize = tileDataset->GetRasterXSize();
-                yTileSize = tileDataset->GetRasterYSize();
-                
-                xMin = geoTrans[0];
-                yMax = geoTrans[3];
-                xMax = xMin + (xTileSize * geoTrans[1]);
-                yMin = yMax + (yTileSize * geoTrans[5]);
-                
-                /*
-                 * FIND TILE ASSOCIATED WITH FILE.
-                 */
-                
-                //std::cout << "Image: [" << xMin << ", " << xMax << "][" << yMin << ", " << yMax << "]\n";
-                first = false;
-                for(std::vector<SPDTile*>::iterator iterTiles = tiles->begin(); iterTiles != tiles->end(); ++iterTiles)
-                {
-                    //std::cout << "\tTile: [" << (*iterTiles)->xMinCore << ", " << (*iterTiles)->xMaxCore << "][" << (*iterTiles)->yMinCore << ", " << (*iterTiles)->yMaxCore << "]\n";
-                    intersection = mathUtils.calcRectangleIntersection((*iterTiles)->xMinCore, (*iterTiles)->xMaxCore, (*iterTiles)->yMinCore, (*iterTiles)->yMaxCore, xMin,xMax, yMin, yMax);
-                    //std::cout << "\t\t" << intersection << std::endl;
-                    if(first)
+                    std::cout << "Processing \'" << (*iterFiles) << "\'\n";
+                    
+                    /*
+                     * OPEN IMAGE FILE TILE.
+                     */
+                    
+                    tileDataset = (GDALDataset *) GDALOpen((*iterFiles).c_str(), GA_ReadOnly);
+                    if(tileDataset == NULL)
                     {
-                        maxInsect = intersection;
-                        maxInsectTile = *iterTiles;
-                        first = false;
+                        std::string message = std::string("Could not open image ") + (*iterFiles);
+                        throw spdlib::SPDException(message.c_str());
                     }
-                    else if(intersection > maxInsect)
+                    tileDataset->GetGeoTransform(geoTrans);
+                    
+                    xTileSize = tileDataset->GetRasterXSize();
+                    yTileSize = tileDataset->GetRasterYSize();
+                    
+                    xMin = geoTrans[0];
+                    yMax = geoTrans[3];
+                    xMax = xMin + (xTileSize * geoTrans[1]);
+                    yMin = yMax + (yTileSize * geoTrans[5]);
+                    
+                    /*
+                     * FIND TILE ASSOCIATED WITH FILE.
+                     */
+                    
+                    //std::cout << "Image: [" << xMin << ", " << xMax << "][" << yMin << ", " << yMax << "]\n";
+                    first = false;
+                    for(std::vector<SPDTile*>::iterator iterTiles = tiles->begin(); iterTiles != tiles->end(); ++iterTiles)
                     {
-                        maxInsect = intersection;
-                        maxInsectTile = *iterTiles;
+                        //std::cout << "\tTile: [" << (*iterTiles)->xMinCore << ", " << (*iterTiles)->xMaxCore << "][" << (*iterTiles)->yMinCore << ", " << (*iterTiles)->yMaxCore << "]\n";
+                        intersection = mathUtils.calcRectangleIntersection((*iterTiles)->xMinCore, (*iterTiles)->xMaxCore, (*iterTiles)->yMinCore, (*iterTiles)->yMaxCore, xMin,xMax, yMin, yMax);
+                        //std::cout << "\t\t" << intersection << std::endl;
+                        if(first)
+                        {
+                            maxInsect = intersection;
+                            maxInsectTile = *iterTiles;
+                            first = false;
+                        }
+                        else if(intersection > maxInsect)
+                        {
+                            maxInsect = intersection;
+                            maxInsectTile = *iterTiles;
+                        }
                     }
+                    
+                    //std::cout << "\t Intersect Tile: [" << maxInsectTile->xMinCore << ", " << maxInsectTile->xMaxCore << "][" << maxInsectTile->yMinCore << ", " << maxInsectTile->yMaxCore << "]\n";
+                    
+                    //std::cout << "\t Intersection Tile: Row = " << maxInsectTile->row << " Column = " << maxInsectTile->col << std::endl;
+                    
+                    /*
+                     * INCLUDE THE TILE WITHIN THE WHOLE IMAGE.
+                     */
+                    
+                    env->MinX = maxInsectTile->xMinCore;
+                    env->MaxX = maxInsectTile->xMaxCore;
+                    env->MinY = maxInsectTile->yMinCore;
+                    env->MaxY = maxInsectTile->yMaxCore;
+                    
+                    imgUtils.copyInDatasetIntoOutDataset(tileDataset, image, env);
+                    
+                    GDALClose(tileDataset);
                 }
-                
-                //std::cout << "\t Intersect Tile: [" << maxInsectTile->xMinCore << ", " << maxInsectTile->xMaxCore << "][" << maxInsectTile->yMinCore << ", " << maxInsectTile->yMaxCore << "]\n";
-                
-                //std::cout << "\t Intersection Tile: Row = " << maxInsectTile->row << " Column = " << maxInsectTile->col << std::endl;
-                
-                /*
-                 * INCLUDE THE TILE WITHIN THE WHOLE IMAGE.
-                 */
-                
-                env->MinX = maxInsectTile->xMinCore;
-                env->MaxX = maxInsectTile->xMaxCore;
-                env->MinY = maxInsectTile->yMinCore;
-                env->MaxY = maxInsectTile->yMaxCore;
-                
-                imgUtils.copyInDatasetIntoOutDataset(tileDataset, image, env);
-                
-                GDALClose(tileDataset);
             }
             delete[] geoTrans;
             delete env;
@@ -1134,76 +1138,79 @@ namespace spdlib
             OGREnvelope *env = new OGREnvelope();
             for(std::vector<std::string>::iterator iterFiles = inputImageFiles.begin(); iterFiles != inputImageFiles.end(); ++iterFiles)
             {
-                std::cout << "Processing \'" << (*iterFiles) << "\'\n";
-                
-                this->extractRowColFromFileName((*iterFiles), &tileRow, &tileCol);
-                
-                /*
-                 * OPEN IMAGE FILE TILE.
-                 */
-                
-                tileDataset = (GDALDataset *) GDALOpen((*iterFiles).c_str(), GA_ReadOnly);
-                if(tileDataset == NULL)
+                if((*iterFiles) != "")
                 {
-                    std::string message = std::string("Could not open image ") + (*iterFiles);
-                    throw spdlib::SPDException(message.c_str());
-                }
-                tileDataset->GetGeoTransform(geoTrans);
-                
-                xTileSize = tileDataset->GetRasterXSize();
-                yTileSize = tileDataset->GetRasterYSize();
-                
-                xMin = geoTrans[0];
-                yMax = geoTrans[3];
-                xMax = xMin + (xTileSize * geoTrans[1]);
-                yMin = yMax + (yTileSize * geoTrans[5]);
-                
-                /*
-                 * FIND TILE ASSOCIATED WITH FILE.
-                 */
-                
-                //std::cout << "Image: [" << xMin << ", " << xMax << "][" << yMin << ", " << yMax << "]\n";
-                tileFound = false;
-                for(std::vector<SPDTile*>::iterator iterTiles = tiles->begin(); iterTiles != tiles->end(); ++iterTiles)
-                {
-                    if(((*iterTiles)->row == tileRow) & ((*iterTiles)->col == tileCol))
+                    std::cout << "Processing \'" << (*iterFiles) << "\'\n";
+                    
+                    this->extractRowColFromFileName((*iterFiles), &tileRow, &tileCol);
+                    
+                    /*
+                     * OPEN IMAGE FILE TILE.
+                     */
+                    
+                    tileDataset = (GDALDataset *) GDALOpen((*iterFiles).c_str(), GA_ReadOnly);
+                    if(tileDataset == NULL)
                     {
-                        intersection = mathUtils.calcRectangleIntersection((*iterTiles)->xMinCore, (*iterTiles)->xMaxCore, (*iterTiles)->yMinCore, (*iterTiles)->yMaxCore, xMin,xMax, yMin, yMax);
-                        
-                        if(intersection > 0)
+                        std::string message = std::string("Could not open image ") + (*iterFiles);
+                        throw spdlib::SPDException(message.c_str());
+                    }
+                    tileDataset->GetGeoTransform(geoTrans);
+                    
+                    xTileSize = tileDataset->GetRasterXSize();
+                    yTileSize = tileDataset->GetRasterYSize();
+                    
+                    xMin = geoTrans[0];
+                    yMax = geoTrans[3];
+                    xMax = xMin + (xTileSize * geoTrans[1]);
+                    yMin = yMax + (yTileSize * geoTrans[5]);
+                    
+                    /*
+                     * FIND TILE ASSOCIATED WITH FILE.
+                     */
+                    
+                    //std::cout << "Image: [" << xMin << ", " << xMax << "][" << yMin << ", " << yMax << "]\n";
+                    tileFound = false;
+                    for(std::vector<SPDTile*>::iterator iterTiles = tiles->begin(); iterTiles != tiles->end(); ++iterTiles)
+                    {
+                        if(((*iterTiles)->row == tileRow) & ((*iterTiles)->col == tileCol))
                         {
-                            maxInsect = intersection;
-                            maxInsectTile = *iterTiles;
-                            tileFound = true;
-                        }
-                        else
-                        {
-                            //throw SPDProcessingException("Tile is incorrect as rows and cols does not correspond with intersection of the image and tile core - does the tiles XML file match the tiles?");
-                            std::cout << "WARNING: Tile is being skipped [" << tileRow << "," << tileCol << "]\n";
-                            std::cout << "\tTile is incorrect as rows and cols does not correspond with intersection of the image and tile core - does the tiles XML file match the tiles?\n";
-                            tileFound = false;
+                            intersection = mathUtils.calcRectangleIntersection((*iterTiles)->xMinCore, (*iterTiles)->xMaxCore, (*iterTiles)->yMinCore, (*iterTiles)->yMaxCore, xMin,xMax, yMin, yMax);
+                            
+                            if(intersection > 0)
+                            {
+                                maxInsect = intersection;
+                                maxInsectTile = *iterTiles;
+                                tileFound = true;
+                            }
+                            else
+                            {
+                                //throw SPDProcessingException("Tile is incorrect as rows and cols does not correspond with intersection of the image and tile core - does the tiles XML file match the tiles?");
+                                std::cout << "WARNING: Tile is being skipped [" << tileRow << "," << tileCol << "]\n";
+                                std::cout << "\tTile is incorrect as rows and cols does not correspond with intersection of the image and tile core - does the tiles XML file match the tiles?\n";
+                                tileFound = false;
+                            }
                         }
                     }
-                }
-                
-                //std::cout << "\t Intersect Tile: [" << maxInsectTile->xMinCore << ", " << maxInsectTile->xMaxCore << "][" << maxInsectTile->yMinCore << ", " << maxInsectTile->yMaxCore << "]\n";
-                
-                //std::cout << "\t Intersection Tile: Row = " << maxInsectTile->row << " Column = " << maxInsectTile->col << std::endl;
-                
-                /*
-                 * INCLUDE THE TILE WITHIN THE WHOLE IMAGE.
-                 */
-                if(tileFound)
-                {
-                    env->MinX = maxInsectTile->xMinCore;
-                    env->MaxX = maxInsectTile->xMaxCore;
-                    env->MinY = maxInsectTile->yMinCore;
-                    env->MaxY = maxInsectTile->yMaxCore;
                     
-                    imgUtils.copyInDatasetIntoOutDataset(tileDataset, image, env);
+                    //std::cout << "\t Intersect Tile: [" << maxInsectTile->xMinCore << ", " << maxInsectTile->xMaxCore << "][" << maxInsectTile->yMinCore << ", " << maxInsectTile->yMaxCore << "]\n";
+                    
+                    //std::cout << "\t Intersection Tile: Row = " << maxInsectTile->row << " Column = " << maxInsectTile->col << std::endl;
+                    
+                    /*
+                     * INCLUDE THE TILE WITHIN THE WHOLE IMAGE.
+                     */
+                    if(tileFound)
+                    {
+                        env->MinX = maxInsectTile->xMinCore;
+                        env->MaxX = maxInsectTile->xMaxCore;
+                        env->MinY = maxInsectTile->yMinCore;
+                        env->MaxY = maxInsectTile->yMaxCore;
+                        
+                        imgUtils.copyInDatasetIntoOutDataset(tileDataset, image, env);
+                    }
+                    
+                    GDALClose(tileDataset);
                 }
-                
-                GDALClose(tileDataset);
             }
             delete[] geoTrans;
             delete env;
