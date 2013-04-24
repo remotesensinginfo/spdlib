@@ -147,7 +147,7 @@ int main (int argc, char * const argv[])
             tileUtils.createTileSPDFiles(tiles, inSPDFile, outputBaseArg.getValue(), xSize, ySize, overlap, xMin, xMax, yMin, yMax, rows, cols);
             
             std::cout << "Populate the tiles with data\n.";
-            tileUtils.populateTileWithData(tiles, inputFiles);
+            tileUtils.populateTilesWithData(tiles, inputFiles);
             
             if(rmEmptyTilesSwitch.getValue())
             {
@@ -160,6 +160,8 @@ int main (int argc, char * const argv[])
                 std::cout << "Export updated tiles XML.";
                 tileUtils.exportTiles2XML(tilesFileArg.getValue(), tiles, xSize, ySize, overlap, xMin, xMax, yMin, yMax, rows, cols);
             }
+            
+            tileUtils.deleteTiles(tiles);
         }
         else if(extractIndividualSwitch.getValue())
         {
@@ -205,7 +207,7 @@ int main (int argc, char * const argv[])
                 spdlib::SPDFileReader reader;
                 reader.readHeaderInfo(inputFiles.front(), inSPDFile);
                                 
-                std::vector<spdlib::SPDTile*> *tileToProcess = new std::vector<spdlib::SPDTile*>();
+                spdlib::SPDTile *tileToProcess = NULL;
                 
                 for(std::vector<spdlib::SPDTile*>::iterator iterTiles = tiles->begin(); iterTiles != tiles->end(); ++iterTiles)
                 {
@@ -235,13 +237,22 @@ int main (int argc, char * const argv[])
                             (*iterTiles)->writerOpen = false;
                         }
                         
-                        tileToProcess->push_back(*iterTiles);
+                        tileToProcess = (*iterTiles);
                         break;
                     }
                 }
                 
-                tileUtils.populateTileWithData(tileToProcess, inputFiles);
                 
+                try
+                {
+                    tileUtils.populateTileWithData(tileToProcess, inputFiles);
+                }
+                catch(spdlib::SPDException &e)
+                {
+                    tileUtils.deleteTileIfNoPulses(tiles, row, col);
+                    throw e;
+                }
+                                
                 if(rmEmptyTilesSwitch.getValue())
                 {
                     std::cout << "Remove if tile empty.\n";
@@ -255,8 +266,7 @@ int main (int argc, char * const argv[])
                 }
                 
                 delete inSPDFile;
-                delete tileToProcess;
-                
+                tileUtils.deleteTiles(tiles);
             }
             else
             {
