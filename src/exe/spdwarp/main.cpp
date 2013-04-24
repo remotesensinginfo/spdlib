@@ -205,5 +205,7 @@ int main (int argc, char * const argv[])
 	{
 		std::cerr << "Error: " << e.what() << std::endl;
 	}
+    
+    std::cout << "spdwarp - end\n";
 }
 

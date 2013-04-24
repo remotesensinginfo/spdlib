@@ -45,11 +45,11 @@ using namespace spdlib;
 
 int main (int argc, char * const argv[]) 
 {
-	cout << "spdproj " << SPDLIB_PACKAGE_STRING << ", Copyright (C) " << SPDLIB_COPYRIGHT_YEAR << " Sorted Pulse Library (SPD)\n";
-	cout << "This program comes with ABSOLUTELY NO WARRANTY. This is free software,\n";
-	cout << "and you are welcome to redistribute it under certain conditions; See\n";
-	cout << "website (http://www.spdlib.org). Bugs are to be reported on the trac\n";
-	cout << "or directly to " << SPDLIB_PACKAGE_BUGREPORT << endl;
+    //cout << "spdproj " << SPDLIB_PACKAGE_STRING << ", Copyright (C) " << SPDLIB_COPYRIGHT_YEAR << " Sorted Pulse Library (SPD)\n";
+	//cout << "This program comes with ABSOLUTELY NO WARRANTY. This is free software,\n";
+	//cout << "and you are welcome to redistribute it under certain conditions; See\n";
+	//cout << "website (http://www.spdlib.org). Bugs are to be reported on the trac\n";
+	//cout << "or directly to " << SPDLIB_PACKAGE_BUGREPORT << endl;
 	
 	try 
 	{
