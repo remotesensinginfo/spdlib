@@ -2,6 +2,7 @@
 
 import argparse
 import xml.etree.ElementTree as ET
+import sys
 
 def createExtractTilesCommands(outputFile, tileXMLFile, spdFilesLst, outBase, delTiles):
     tree = ET.parse(tileXMLFile)
