@@ -260,7 +260,7 @@ namespace spdlib{
                 //std::cout << "\'" << strLine << "\'" << std::endl;
                 if(strLine != "")
                 {
-                    //strLine = this->removeWhiteSpace(strLine);
+                    strLine = this->removeWhiteSpace(strLine);
                     wholeFile.push_back(strLine);
                 }
 				strLine = "";
