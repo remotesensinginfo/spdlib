@@ -7,7 +7,6 @@ import sys
 def createExtractTilesCommands(outputFile, tileXMLFile, spdFilesLst, outBase, delTiles):
     tree = ET.parse(tileXMLFile)
     root = tree.getroot()
-    print(root.attrib)
     
     numRows = int(root.attrib['rows'])
     numCols = int(root.attrib['columns'])
@@ -28,6 +27,7 @@ def createExtractTilesCommands(outputFile, tileXMLFile, spdFilesLst, outBase, de
             outFile.write(cmd)
     
     outFile.close()
+	print('Complete.')
 
 
 if __name__ == '__main__':
