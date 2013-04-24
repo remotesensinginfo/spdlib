@@ -60,5 +60,5 @@ int main (int argc, char * const argv[])
     {
         cerr << "ERROR: " << e.what() << endl;
     }
-    
+    std::cout << "spdtest - end\n";
 }

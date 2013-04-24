@@ -258,7 +258,11 @@ namespace spdlib{
 			{
 				boost::algorithm::trim(strLine);
                 //std::cout << "\'" << strLine << "\'" << std::endl;
-				wholeFile.push_back(strLine);
+                strLine = this->removeWhiteSpace(strLine);
+                if(strLine != "")
+                {
+                    wholeFile.push_back(strLine);
+                }
 				strLine = "";
                 lineEnding = false;
 			}

@@ -328,6 +328,6 @@ int main (int argc, char * const argv[])
 	{
 		cerr << "Error: " << e.what() << endl;
 	}
-	
+    std::cout << "spdtranslate - end\n";
 }
 

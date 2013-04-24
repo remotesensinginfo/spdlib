@@ -152,5 +152,6 @@ int main (int argc, char * const argv[])
 	{
 		cerr << "Error: " << e.what() << endl;
 	}
+    std::cout << "spdmccgrd - end\n";
 }
 
