@@ -47,19 +47,19 @@ if __name__ == '__main__':
     
     if args.filelist == None:
         # Print an error message if not and exit.
-        print "Error: No filelist option provided."
+        print("Error: No filelist option provided.")
         sys.exit()
     if args.tiles == None:
         # Print an error message if not and exit.
-        print "Error: No tiles option provided."
+        print("Error: No tiles option provided.")
         sys.exit()
     if args.outputbase == None:
         # Print an error message if not and exit.
-        print "Error: No outputbase option provided."
+        print("Error: No outputbase option provided.")
         sys.exit()
     if args.output == None:
         # Print an error message if not and exit.
-        print "Error: No output option provided."
+        print("Error: No output option provided.")
         sys.exit()
         
     createExtractTilesCommands(args.output, args.tiles, args.filelist, args.outputbase, args.deltile)
