@@ -29,7 +29,7 @@ set (PROJECT_HEADER_DIR include)
 set (PROJECT_TOOLS_DIR tools)
 
 # The version number.
-set (SPDLIB_REPO_VERSION 130)
+set (SPDLIB_REPO_VERSION 131)
 set (SPDLIB_VERSION_MAJOR 3)
 set (SPDLIB_VERSION_MINOR 0)
 set (SPDLIB_VERSION_PATCH 0)
@@ -113,6 +113,7 @@ configure_file ( "${PROJECT_TOOLS_DIR}/spd-config.in" "${PROJECT_BINARY_DIR}/spd
 configure_file ( "${PROJECT_TOOLS_DIR}/spdbatchgen.py.in" "${PROJECT_BINARY_DIR}/spdbatchgen.py" )
 configure_file ( "${PROJECT_TOOLS_DIR}/spdbuildmergecmd.py.in" "${PROJECT_BINARY_DIR}/spdbuildmergecmd.py" )
 configure_file ( "${PROJECT_TOOLS_DIR}/spdcmdgen.py.in" "${PROJECT_BINARY_DIR}/spdcmdgen.py" )
+configure_file ( "${PROJECT_TOOLS_DIR}/spdbuildtileextractcmd.py.in" "${PROJECT_BINARY_DIR}/spdbuildtileextractcmd.py" )
 ###############################################################################
 
 ###############################################################################
@@ -297,6 +298,7 @@ install (FILES "${PROJECT_BINARY_DIR}/spd-config" DESTINATION bin PERMISSIONS OW
 install (FILES "${PROJECT_BINARY_DIR}/spdbatchgen.py" DESTINATION bin PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE)
 install (FILES "${PROJECT_BINARY_DIR}/spdbuildmergecmd.py" DESTINATION bin PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE)
 install (FILES "${PROJECT_BINARY_DIR}/spdcmdgen.py" DESTINATION bin PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE)
+install (FILES "${PROJECT_BINARY_DIR}/spdbuildtileextractcmd.py" DESTINATION bin PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE)
 ###############################################################################
 
 ###############################################################################
