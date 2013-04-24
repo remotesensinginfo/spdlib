@@ -804,20 +804,23 @@ namespace spdlib
             
             for(std::vector<std::string>::iterator iterFiles = inputFiles.begin(); iterFiles != inputFiles.end(); ++iterFiles)
             {
-                std::cout << "Processing: \'" << *iterFiles << "\'" << std::endl;
-                
-                // STEP 1: Read file header - Need file extent.
-                inSPDFile = new SPDFile(*iterFiles);
-                reader.readHeaderInfo(*iterFiles, inSPDFile);
-                
-                // If intersect copy data into tile.
-                if(mathUtils.rectangleIntersection(inSPDFile->getXMin(), inSPDFile->getXMax(), inSPDFile->getYMin(), inSPDFile->getYMax(), tile->xMin, tile->xMax, tile->yMin, tile->yMax))
+                if((*iterFiles) != "")
                 {
-                    reader.readAndProcessAllData((*iterFiles), inSPDFile, write2Tiles);
+                    std::cout << "Processing: \'" << *iterFiles << "\'" << std::endl;
+                    
+                    // STEP 1: Read file header - Need file extent.
+                    inSPDFile = new SPDFile(*iterFiles);
+                    reader.readHeaderInfo(*iterFiles, inSPDFile);
+                    
+                    // If intersect copy data into tile.
+                    if(mathUtils.rectangleIntersection(inSPDFile->getXMin(), inSPDFile->getXMax(), inSPDFile->getYMin(), inSPDFile->getYMax(), tile->xMin, tile->xMax, tile->yMin, tile->yMax))
+                    {
+                        reader.readAndProcessAllData((*iterFiles), inSPDFile, write2Tiles);
+                    }
+                    
+                    // Close tile.
+                    delete inSPDFile;
                 }
-                
-                // Close tile.
-                delete inSPDFile;
             }
             write2Tiles->completeFileAndClose();
             delete write2Tiles;
