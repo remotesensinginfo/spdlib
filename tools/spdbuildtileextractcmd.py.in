@@ -27,7 +27,7 @@ def createExtractTilesCommands(outputFile, tileXMLFile, spdFilesLst, outBase, de
             outFile.write(cmd)
     
     outFile.close()
-	print('Complete.')
+    print('Complete.')
 
 
 if __name__ == '__main__':
@@ -36,7 +36,7 @@ if __name__ == '__main__':
     print('\nThis script was distributed with version @SPDLIB_PACKAGE_VERSION@ of the @SPDLIB_PACKAGE@ library.')
     print('For maintenance email @SPDLIB_PACKAGE_BUGREPORT@')
 
-	# Create the command line options parser.
+    # Create the command line options parser.
     parser = argparse.ArgumentParser()
     parser.add_argument("-f", "--filelist", type=str, help="A text file with a list of input files, one per line.")
     parser.add_argument("-t", "--tiles", type=str, help="Tiles XML file.")
