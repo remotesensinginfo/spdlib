@@ -405,7 +405,7 @@ namespace spdlib
 				float peakTime = 0;
 				
 				SPDPointUtils ptUtils;
-				pulse->pts = new std::vector<SPDPoint*>();
+				//pulse->pts = new std::vector<SPDPoint*>();
 				pulse->pts->reserve(peaks->size());
 				pulse->numberOfReturns = peaks->size();
                 pulse->receiveWaveNoiseThreshold = parameters[0];
@@ -901,7 +901,7 @@ namespace spdlib
 				// Add points to pulse
                 std::sort(outPoints->begin(), outPoints->end(), cmpSPDPointTime);
 				
-				pulse->pts = new std::vector<SPDPoint*>();
+				//pulse->pts = new std::vector<SPDPoint*>();
 				pulse->pts->reserve(outPoints->size());
 				pulse->numberOfReturns = outPoints->size();
                 //pulse->waveNoiseThreshold = parameters[0]
