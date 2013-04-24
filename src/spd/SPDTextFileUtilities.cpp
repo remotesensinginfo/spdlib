@@ -133,7 +133,7 @@ namespace spdlib{
 		{
 			if((line.at(i) != ' ') | (line.at(i) != '\t') | (line.at(i) != '\n'))
 			{
-				lastChar = i;
+				lastChar = i+1;
 				break;
 			}
 		}
