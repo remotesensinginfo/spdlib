@@ -723,7 +723,7 @@ namespace spdlib
         
     }
     
-    void SPDTilesUtils::populateTileWithData(std::vector<SPDTile*> *tiles, std::vector<std::string> inputFiles) throw(SPDProcessingException)
+    void SPDTilesUtils::populateTilesWithData(std::vector<SPDTile*> *tiles, std::vector<std::string> inputFiles) throw(SPDProcessingException)
     {
         try
         {
@@ -770,6 +770,59 @@ namespace spdlib
                 delete inSPDFile;
                 openTiles->clear();
             }
+            delete openTiles;
+        }
+        catch (SPDProcessingException &e)
+        {
+            throw e;
+        }
+        catch (SPDException &e)
+        {
+            throw SPDProcessingException(e.what());
+        }
+        catch (std::exception &e)
+        {
+            throw SPDProcessingException(e.what());
+        }
+    }
+    
+    void SPDTilesUtils::populateTileWithData(SPDTile *tile, std::vector<std::string> inputFiles) throw(SPDProcessingException)
+    {
+        try
+        {
+            SPDFileReader reader;
+            SPDMathsUtils mathUtils;
+            SPDFile *inSPDFile = NULL;
+            std::vector<SPDTile*> *openTiles = new std::vector<SPDTile*>();
+            SPDWrite2OverlapTiles *write2Tiles = NULL;
+            
+            tile->writer = new SPDNoIdxFileWriter();
+            tile->writer->reopen(tile->spdFile, tile->outFileName);
+            tile->writerOpen = true;
+            openTiles->push_back(tile);
+            write2Tiles = new SPDWrite2OverlapTiles(openTiles);
+            
+            for(std::vector<std::string>::iterator iterFiles = inputFiles.begin(); iterFiles != inputFiles.end(); ++iterFiles)
+            {
+                std::cout << "Processing: \'" << *iterFiles << "\'" << std::endl;
+                
+                // STEP 1: Read file header - Need file extent.
+                inSPDFile = new SPDFile(*iterFiles);
+                reader.readHeaderInfo(*iterFiles, inSPDFile);
+                
+                // If intersect copy data into tile.
+                if(mathUtils.rectangleIntersection(inSPDFile->getXMin(), inSPDFile->getXMax(), inSPDFile->getYMin(), inSPDFile->getYMax(), tile->xMin, tile->xMax, tile->yMin, tile->yMax))
+                {
+                    reader.readAndProcessAllData((*iterFiles), inSPDFile, write2Tiles);
+                }
+                
+                // Close tile.
+                delete inSPDFile;
+            }
+            write2Tiles->completeFileAndClose();
+            delete write2Tiles;
+            openTiles->clear();
+            delete openTiles;
         }
         catch (SPDProcessingException &e)
         {
