@@ -131,6 +131,11 @@ namespace spdlib
                     {
                         spdPulse->numberOfReturns = 1;
                     }
+                    if(spdPulse->numberOfReturns > 0)
+                    {
+                        spdPulse->pts->reserve(spdPulse->numberOfReturns);
+                    }
+                    
 					spdPulse->pts->push_back(spdPt);
 					for(boost::uint_fast16_t i = 0; i < (spdPulse->numberOfReturns-1); ++i)
 					{
@@ -365,6 +370,11 @@ namespace spdlib
                     {
                         spdPulse->numberOfReturns = 1;
                     }
+                    if(spdPulse->numberOfReturns > 0)
+                    {
+                        spdPulse->pts->reserve(spdPulse->numberOfReturns);
+                    }
+                    
 					spdPulse->pts->push_back(spdPt);
 					for(boost::uint_fast16_t i = 0; i < (spdPulse->numberOfReturns-1); ++i)
 					{
@@ -592,6 +602,11 @@ namespace spdlib
                     {
                         spdPulse->numberOfReturns = 1;
                     }
+                    if(spdPulse->numberOfReturns > 0)
+                    {
+                        spdPulse->pts->reserve(spdPulse->numberOfReturns);
+                    }
+                    
 					spdPulse->pts->push_back(spdPt);
 					for(boost::uint_fast16_t i = 0; i < (spdPulse->numberOfReturns-1); ++i)
 					{
