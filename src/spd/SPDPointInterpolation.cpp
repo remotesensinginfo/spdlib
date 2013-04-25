@@ -417,7 +417,7 @@ namespace spdlib
         try
         {
             std::vector<SPDPoint*> *points = this->findPoints(pulses, numXBins, numYBins, ptClass);
-            if(points->size() < 3)
+            if(points->size() < 30)
             {
                 delete points;
                 throw SPDProcessingException("Not enough points, need at least 3.");
@@ -467,7 +467,7 @@ namespace spdlib
         try
         {
             std::vector<SPDPoint*> *points = this->findPoints(pulses, numXBins, numYBins, ptClass);
-            if(points->size() < 3)
+            if(points->size() < 30)
             {
                 delete points;
                 throw SPDProcessingException("Not enough points, need at least 3.");
@@ -517,7 +517,7 @@ namespace spdlib
         try
         {
             std::vector<SPDPoint*> *points = this->findPoints(pulses, ptClass);
-            if(points->size() < 3)
+            if(points->size() < 30)
             {
                 delete points;
                 throw SPDProcessingException("Not enough points, need at least 3.");
@@ -567,7 +567,7 @@ namespace spdlib
         try
         {
             std::vector<SPDPoint*> *points = this->findPoints(pulses, ptClass);
-            if(points->size() < 3)
+            if(points->size() < 30)
             {
                 delete points;
                 throw SPDProcessingException("Not enough points, need at least 3.");
