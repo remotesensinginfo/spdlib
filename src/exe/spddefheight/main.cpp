@@ -122,7 +122,7 @@ int main (int argc, char * const argv[])
 		cmd.parse( argc, argv );
 		
 		vector<string> fileNames = multiFileNames.getValue();		
-        cout << "fileNames.size() = " << fileNames.size() << endl;
+        cout.precision(12);
 		if((fileNames.size() == 2) & interpSwitch.getValue())
 		{
             string inSPDFilePath = fileNames.at(0);
