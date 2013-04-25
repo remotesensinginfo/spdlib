@@ -417,10 +417,48 @@ namespace spdlib
         try
         {
             std::vector<SPDPoint*> *points = this->findPoints(pulses, numXBins, numYBins, ptClass);
-            if(points->size() < 30)
+            if(points->size() < 3)
             {
                 delete points;
                 throw SPDProcessingException("Not enough points, need at least 3.");
+            }
+            else if(points->size() < 100)
+            {
+                double meanX = 0;
+                double meanY = 0;
+                
+                double varX = 0;
+                double varY = 0;
+                
+                for(std::vector<SPDPoint*>::iterator iterPts = points->begin(); iterPts != points->end(); ++iterPts)
+                {
+                    meanX += (*iterPts)->x;
+                    meanY += (*iterPts)->y;
+                }
+                
+                meanX = meanX / points->size();
+                meanY = meanY / points->size();
+                
+                //std::cout << "meanX = " << meanX << std::endl;
+                //std::cout << "meanY = " << meanY << std::endl;
+                
+                for(std::vector<SPDPoint*>::iterator iterPts = points->begin(); iterPts != points->end(); ++iterPts)
+                {
+                    varX += (*iterPts)->x - meanX;
+                    varY += (*iterPts)->y - meanY;
+                }
+                
+                varX = fabs(varX / points->size());
+                varY = fabs(varY / points->size());
+                
+                //std::cout << "varX = " << varX << std::endl;
+                //std::cout << "varY = " << varX << std::endl;
+                
+                if((varX < 4) | (varY < 4))
+                {
+                    delete points;
+                    throw SPDProcessingException("Points are all within a line.");
+                }
             }
             if(thinData)
             {
@@ -467,10 +505,48 @@ namespace spdlib
         try
         {
             std::vector<SPDPoint*> *points = this->findPoints(pulses, numXBins, numYBins, ptClass);
-            if(points->size() < 30)
+            if(points->size() < 3)
             {
                 delete points;
                 throw SPDProcessingException("Not enough points, need at least 3.");
+            }
+            else if(points->size() < 100)
+            {
+                double meanX = 0;
+                double meanY = 0;
+                
+                double varX = 0;
+                double varY = 0;
+                
+                for(std::vector<SPDPoint*>::iterator iterPts = points->begin(); iterPts != points->end(); ++iterPts)
+                {
+                    meanX += (*iterPts)->x;
+                    meanY += (*iterPts)->y;
+                }
+                
+                meanX = meanX / points->size();
+                meanY = meanY / points->size();
+                
+                //std::cout << "meanX = " << meanX << std::endl;
+                //std::cout << "meanY = " << meanY << std::endl;
+                
+                for(std::vector<SPDPoint*>::iterator iterPts = points->begin(); iterPts != points->end(); ++iterPts)
+                {
+                    varX += (*iterPts)->x - meanX;
+                    varY += (*iterPts)->y - meanY;
+                }
+                
+                varX = fabs(varX / points->size());
+                varY = fabs(varY / points->size());
+                
+                //std::cout << "varX = " << varX << std::endl;
+                //std::cout << "varY = " << varX << std::endl;
+                
+                if((varX < 4) | (varY < 4))
+                {
+                    delete points;
+                    throw SPDProcessingException("Points are all within a line.");
+                }
             }
             if(thinData)
             {
@@ -517,10 +593,48 @@ namespace spdlib
         try
         {
             std::vector<SPDPoint*> *points = this->findPoints(pulses, ptClass);
-            if(points->size() < 30)
+            if(points->size() < 3)
             {
                 delete points;
                 throw SPDProcessingException("Not enough points, need at least 3.");
+            }
+            else if(points->size() < 100)
+            {
+                double meanX = 0;
+                double meanY = 0;
+                
+                double varX = 0;
+                double varY = 0;
+                
+                for(std::vector<SPDPoint*>::iterator iterPts = points->begin(); iterPts != points->end(); ++iterPts)
+                {
+                    meanX += (*iterPts)->x;
+                    meanY += (*iterPts)->y;
+                }
+                
+                meanX = meanX / points->size();
+                meanY = meanY / points->size();
+                
+                //std::cout << "meanX = " << meanX << std::endl;
+                //std::cout << "meanY = " << meanY << std::endl;
+                
+                for(std::vector<SPDPoint*>::iterator iterPts = points->begin(); iterPts != points->end(); ++iterPts)
+                {
+                    varX += (*iterPts)->x - meanX;
+                    varY += (*iterPts)->y - meanY;
+                }
+                
+                varX = fabs(varX / points->size());
+                varY = fabs(varY / points->size());
+                
+                //std::cout << "varX = " << varX << std::endl;
+                //std::cout << "varY = " << varX << std::endl;
+                
+                if((varX < 4) | (varY < 4))
+                {
+                    delete points;
+                    throw SPDProcessingException("Points are all within a line.");
+                }
             }
             if(thinData)
             {
@@ -567,10 +681,48 @@ namespace spdlib
         try
         {
             std::vector<SPDPoint*> *points = this->findPoints(pulses, ptClass);
-            if(points->size() < 30)
+            if(points->size() < 3)
             {
                 delete points;
                 throw SPDProcessingException("Not enough points, need at least 3.");
+            }
+            else if(points->size() < 100)
+            {
+                double meanX = 0;
+                double meanY = 0;
+                
+                double varX = 0;
+                double varY = 0;
+                
+                for(std::vector<SPDPoint*>::iterator iterPts = points->begin(); iterPts != points->end(); ++iterPts)
+                {
+                    meanX += (*iterPts)->x;
+                    meanY += (*iterPts)->y;
+                }
+                
+                meanX = meanX / points->size();
+                meanY = meanY / points->size();
+                
+                //std::cout << "meanX = " << meanX << std::endl;
+                //std::cout << "meanY = " << meanY << std::endl;
+                
+                for(std::vector<SPDPoint*>::iterator iterPts = points->begin(); iterPts != points->end(); ++iterPts)
+                {
+                    varX += (*iterPts)->x - meanX;
+                    varY += (*iterPts)->y - meanY;
+                }
+                
+                varX = fabs(varX / points->size());
+                varY = fabs(varY / points->size());
+                
+                //std::cout << "varX = " << varX << std::endl;
+                //std::cout << "varY = " << varX << std::endl;
+                
+                if((varX < 4) | (varY < 4))
+                {
+                    delete points;
+                    throw SPDProcessingException("Points are all within a line.");
+                }
             }
             if(thinData)
             {
