@@ -36,82 +36,71 @@
 
 #include "spd/spd-config.h"
 
-using namespace std;
-using namespace spdlib;
-using namespace TCLAP;
-
 int main (int argc, char * const argv[]) 
 {
-    cout << "spdrmnoise " << SPDLIB_PACKAGE_STRING << ", Copyright (C) " << SPDLIB_COPYRIGHT_YEAR << " Sorted Pulse Library (SPD)\n";
-	cout << "This program comes with ABSOLUTELY NO WARRANTY. This is free software,\n";
-	cout << "and you are welcome to redistribute it under certain conditions; See\n";
-	cout << "website (http://www.spdlib.org). Bugs are to be reported on the trac\n";
-	cout << "or directly to " << SPDLIB_PACKAGE_BUGREPORT << endl;
+    std::cout.precision(12);
+    
+    std::cout << "spdrmnoise " << SPDLIB_PACKAGE_STRING << ", Copyright (C) " << SPDLIB_COPYRIGHT_YEAR << " Sorted Pulse Library (SPD)\n";
+	std::cout << "This program comes with ABSOLUTELY NO WARRANTY. This is free software,\n";
+	std::cout << "and you are welcome to redistribute it under certain conditions; See\n";
+	std::cout << "website (http://www.spdlib.org). Bugs are to be reported on the trac\n";
+	std::cout << "or directly to " << SPDLIB_PACKAGE_BUGREPORT << std::endl;
 	
 	try 
 	{
-		CmdLine cmd("Remove vertical noise from LiDAR datasets: spdrmnoise", ' ', "1.0.0");
+        TCLAP::CmdLine cmd("Remove vertical noise from LiDAR datasets: spdrmnoise", ' ', "1.0.0");
         
-        ValueArg<boost::uint_fast32_t> numOfRowsBlockArg("r","blockrows","Number of rows within a block (Default 100)",false,100,"unsigned int");
+        TCLAP::ValueArg<boost::uint_fast32_t> numOfRowsBlockArg("r","blockrows","Number of rows within a block (Default 100)",false,100,"unsigned int");
 		cmd.add( numOfRowsBlockArg );
         
-        ValueArg<boost::uint_fast32_t> numOfColsBlockArg("c","blockcols","Number of columns within a block (Default 0) - Note values greater than 1 result in a non-sequencial SPD file.",false,0,"unsigned int");
+        TCLAP::ValueArg<boost::uint_fast32_t> numOfColsBlockArg("c","blockcols","Number of columns within a block (Default 0) - Note values greater than 1 result in a non-sequencial SPD file.",false,0,"unsigned int");
 		cmd.add( numOfColsBlockArg );
         /*
         ValueArg<float> binSizeArg("b","binsize","Bin size for processing and output image (Default 0) - Note 0 will use the native SPD file bin size.",false,0,"float");
 		cmd.add( binSizeArg );
         */
-        ValueArg<float> absUpperArg("","absup","Absolute upper threshold for returns which are to be removed.",false,0,"float");
+        TCLAP::ValueArg<float> absUpperArg("","absup","Absolute upper threshold for returns which are to be removed.",false,0,"float");
         cmd.add( absUpperArg );
         
-        ValueArg<float> absLowerArg("","abslow","Absolute lower threshold for returns which are to be removed.",false,0,"float");
+        TCLAP::ValueArg<float> absLowerArg("","abslow","Absolute lower threshold for returns which are to be removed.",false,0,"float");
         cmd.add( absLowerArg );
         
-        ValueArg<float> relUpperArg("","relup","Relative (to median) upper threshold for returns which are to be removed.",false,0,"float");
+        TCLAP::ValueArg<float> relUpperArg("","relup","Relative (to median) upper threshold for returns which are to be removed.",false,0,"float");
         cmd.add( relUpperArg );
         
-        ValueArg<float> relLowerArg("","rellow","Relative (to median) lower threshold for returns which are to be removed.",false,0,"float");
+        TCLAP::ValueArg<float> relLowerArg("","rellow","Relative (to median) lower threshold for returns which are to be removed.",false,0,"float");
         cmd.add( relLowerArg );
         
-		UnlabeledMultiArg<string> multiFileNames("Files", "File names for the input and output files", true, "string");
-		cmd.add( multiFileNames );
+		TCLAP::ValueArg<std::string> inputFileArg("i","input","The input SPD file.",true,"","String");
+		cmd.add( inputFileArg );
+        
+        TCLAP::ValueArg<std::string> outputFileArg("o","output","The output SPD file.",true,"","String");
+		cmd.add( outputFileArg );
+        
 		cmd.parse( argc, argv );
-		
-		vector<string> fileNames = multiFileNames.getValue();		
-		if(fileNames.size() != 2)
-		{
-			for(unsigned int i = 0; i < fileNames.size(); ++i)
-			{
-				cout << i << ": " << fileNames.at(i) << endl;
-			}
-			
-			SPDTextFileUtilities textUtils;
-			string message = string("Two file paths should have been specified (e.g., Input and Output). ") + textUtils.uInt32bittostring(fileNames.size()) + string(" were provided.");
-			throw SPDException(message);
-		}
 				
-		string inputFile = fileNames.at(0);
-		string outputFile = fileNames.at(1);
+		std::string inputFile = inputFileArg.getValue();
+		std::string outputFile = outputFileArg.getValue();
         
         bool absUpSet = absUpperArg.isSet();
         bool absLowSet = absLowerArg.isSet();
         bool relUpSet = relUpperArg.isSet();
         bool relLowSet = relLowerArg.isSet();
         
-        SPDFile *spdInFile = new SPDFile(inputFile);
-        SPDPulseProcessor *pulseProcessor = new SPDRemoveVerticalNoise(absUpSet, absLowSet, relUpSet, relLowSet, absUpperArg.getValue(), absLowerArg.getValue(), relUpperArg.getValue(), relLowerArg.getValue());            
-        SPDSetupProcessPulses processPulses = SPDSetupProcessPulses(numOfColsBlockArg.getValue(), numOfRowsBlockArg.getValue(), true);
+        spdlib::SPDFile *spdInFile = new spdlib::SPDFile(inputFile);
+        spdlib::SPDPulseProcessor *pulseProcessor = new spdlib::SPDRemoveVerticalNoise(absUpSet, absLowSet, relUpSet, relLowSet, absUpperArg.getValue(), absLowerArg.getValue(), relUpperArg.getValue(), relLowerArg.getValue());            
+        spdlib::SPDSetupProcessPulses processPulses = spdlib::SPDSetupProcessPulses(numOfColsBlockArg.getValue(), numOfRowsBlockArg.getValue(), true);
         processPulses.processPulsesWithOutputSPD(pulseProcessor, spdInFile, outputFile);
         delete pulseProcessor;
         delete spdInFile;
 	}
-	catch (ArgException &e) 
+	catch (TCLAP::ArgException &e) 
 	{
-		cerr << "Parse Error: " << e.what() << endl;
+		std::cerr << "Parse Error: " << e.what() << std::endl;
 	}
-	catch(SPDException &e)
+	catch(spdlib::SPDException &e)
 	{
-		cerr << "Error: " << e.what() << endl;
+		std::cerr << "Error: " << e.what() << std::endl;
 	}
 	std::cout << "spdrmnoise - end\n";
 }

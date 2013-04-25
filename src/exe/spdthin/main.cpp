@@ -38,6 +38,8 @@
 
 int main (int argc, char * const argv[])
 {
+    std::cout.precision(12);
+    
     std::cout << "spdthin " << SPDLIB_PACKAGE_STRING << ", Copyright (C) " << SPDLIB_COPYRIGHT_YEAR << " Sorted Pulse Library (SPD)\n";
 	std::cout << "This program comes with ABSOLUTELY NO WARRANTY. This is free software,\n";
 	std::cout << "and you are welcome to redistribute it under certain conditions; See\n";
@@ -57,25 +59,16 @@ int main (int argc, char * const argv[])
         TCLAP::ValueArg<boost::uint_fast16_t> numPulsesArg("n","numpulses","Number of pulses within the bin (Default 1).",false,1,"unsigned int");
 		cmd.add( numPulsesArg );
         
-		TCLAP::UnlabeledMultiArg<std::string> multiFileNames("Files", "File names for the input and output files", true, "string");
-		cmd.add( multiFileNames );
+		TCLAP::ValueArg<std::string> inputFileArg("i","input","The input SPD file.",true,"","String");
+		cmd.add( inputFileArg );
+        
+        TCLAP::ValueArg<std::string> outputFileArg("o","output","The output SPD file.",true,"","String");
+		cmd.add( outputFileArg );
+        
 		cmd.parse( argc, argv );
 		
-		std::vector<std::string> fileNames = multiFileNames.getValue();
-		if(fileNames.size() != 2)
-		{
-			for(unsigned int i = 0; i < fileNames.size(); ++i)
-			{
-				std::cout << i << ": " << fileNames.at(i) << std::endl;
-			}
-			
-            spdlib::SPDTextFileUtilities textUtils;
-			std::string message = std::string("Two file paths should have been specified (e.g., Input and Output). ") + textUtils.uInt32bittostring(fileNames.size()) + std::string(" were provided.");
-			throw spdlib::SPDException(message);
-		}
-        
-		std::string inputFile = fileNames.at(0);
-		std::string outputFile = fileNames.at(1);
+		std::string inputFile = inputFileArg.getValue();
+		std::string outputFile = outputFileArg.getValue();
         
         spdlib::SPDFile *spdInFile = new spdlib::SPDFile(inputFile);
         spdlib::SPDPulseProcessor *pulseProcessor = new spdlib::SPDThinPulses(numPulsesArg.getValue());

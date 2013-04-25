@@ -37,6 +37,8 @@
 
 int main (int argc, char * const argv[])
 {
+    std::cout.precision(12);
+    
     std::cout << "spddeftiles " << SPDLIB_PACKAGE_STRING << ", Copyright (C) " << SPDLIB_COPYRIGHT_YEAR << " Sorted Pulse Library (SPD)\n";
 	std::cout << "This program comes with ABSOLUTELY NO WARRANTY. This is free software,\n";
 	std::cout << "and you are welcome to redistribute it under certain conditions; See\n";

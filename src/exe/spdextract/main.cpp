@@ -39,6 +39,8 @@
 
 int main (int argc, char * const argv[])
 {
+    std::cout.precision(12);
+    
     std::cout << "spdextract " << SPDLIB_PACKAGE_STRING << ", Copyright (C) " << SPDLIB_COPYRIGHT_YEAR << " Sorted Pulse Library (SPD)\n";
 	std::cout << "This program comes with ABSOLUTELY NO WARRANTY. This is free software,\n";
 	std::cout << "and you are welcome to redistribute it under certain conditions; See\n";
@@ -69,25 +71,16 @@ int main (int argc, char * const argv[])
 		TCLAP::ValueArg<std::string> returnOfInterestArg("", "return", "The return(s) of interest", false, "ALL", &allowedReturnVals);
 		cmd.add( returnOfInterestArg );
         
-		TCLAP::UnlabeledMultiArg<std::string> multiFileNames("Files", "File names for the input and output files", true, "string");
-		cmd.add( multiFileNames );
-		cmd.parse( argc, argv );
-		
-		std::vector<std::string> fileNames = multiFileNames.getValue();
-		if(fileNames.size() != 2)
-		{
-			for(unsigned int i = 0; i < fileNames.size(); ++i)
-			{
-				std::cout << i << ": " << fileNames.at(i) << std::endl;
-			}
-			
-            spdlib::SPDTextFileUtilities textUtils;
-			std::string message = std::string("Two file paths should have been specified (e.g., Input and Output). ") + textUtils.uInt32bittostring(fileNames.size()) + std::string(" were provided.");
-			throw spdlib::SPDException(message);
-		}
+		TCLAP::ValueArg<std::string> inputFileArg("i","input","The input SPD file.",true,"","String");
+		cmd.add( inputFileArg );
         
-		std::string inputFile = fileNames.at(0);
-		std::string outputFile = fileNames.at(1);
+        TCLAP::ValueArg<std::string> outputFileArg("o","output","The output SPD file.",true,"","String");
+		cmd.add( outputFileArg );
+        
+		cmd.parse( argc, argv );
+        
+		std::string inputFile = inputFileArg.getValue();
+		std::string outputFile = outputFileArg.getValue();
         
         bool classValSet = false;
         boost::uint_fast16_t classVal = 0;
@@ -129,17 +122,6 @@ int main (int argc, char * const argv[])
                 returnVal = spdlib::SPD_ALL_RETURNS;
             }
         }
-        /*
-        spdlib::SPDExtractReturnsImportProcess *processor = new spdlib::SPDExtractReturnsImportProcess(outputFile, classValSet, classVal, returnValSet, returnVal);
-        
-        spdlib::SPDFileReader spdReader = spdlib::SPDFileReader();
-        spdlib::SPDFile *spdFile = new spdlib::SPDFile(inputFile);
-        spdReader.readAndProcessAllData(inputFile, spdFile, processor);
-        processor->completeFileAndClose();
-        
-        delete spdFile;
-        delete processor;
-        */
         
         spdlib::SPDFile *spdInFile = new spdlib::SPDFile(inputFile);
         spdlib::SPDPulseProcessor *pulseProcessor = new spdlib::SPDExtractReturnsBlockProcess(classValSet, classVal, returnValSet, returnVal);
@@ -147,9 +129,6 @@ int main (int argc, char * const argv[])
         processPulses.processPulsesWithOutputSPD(pulseProcessor, spdInFile, outputFile);
         delete pulseProcessor;
         delete spdInFile;
-        
-        
-        
 	}
 	catch (TCLAP::ArgException &e)
 	{
