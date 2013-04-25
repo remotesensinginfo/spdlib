@@ -80,7 +80,7 @@ int main (int argc, char * const argv[])
 		cmd.add( xmlFileArg );
         
         TCLAP::ValueArg<std::string> vectorFileArg("v","vector","The input vector file.",false,"","String");
-		cmd.add( xmlFileArg );
+		cmd.add( vectorFileArg );
 		
         cmd.parse( argc, argv );
 		
