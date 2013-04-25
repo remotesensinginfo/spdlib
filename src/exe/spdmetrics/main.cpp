@@ -76,10 +76,10 @@ int main (int argc, char * const argv[])
         TCLAP::ValueArg<std::string> outputFileArg("o","output","The output file.",true,"","String");
 		cmd.add( outputFileArg );
         
-		TCLAP::ValueArg<std::string> xmlFileArg("m","metrics","The output SPD file.",true,"","String");
+		TCLAP::ValueArg<std::string> xmlFileArg("m","metricsxml","The output SPD file.",true,"","String");
 		cmd.add( xmlFileArg );
         
-        TCLAP::ValueArg<std::string> vectorFileArg("v","vector","The input vector file.",false,"","String");
+        TCLAP::ValueArg<std::string> vectorFileArg("v","vectorfile","The input vector file.",false,"","String");
 		cmd.add( vectorFileArg );
 		
         cmd.parse( argc, argv );
