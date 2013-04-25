@@ -42,44 +42,47 @@ namespace spdlib
             bool first = true;
             for(std::vector<std::string>::iterator iterFiles = inputFiles.begin(); iterFiles != inputFiles.end(); ++iterFiles)
             {
-                std::cout << "Processing: \'" << *iterFiles << "\'" << std::endl;
-                
-                // STEP 1: Read file header - Need file extent.
-                inSPDFile = new SPDFile(*iterFiles);
-                reader.readHeaderInfo(*iterFiles, inSPDFile);
-                
-                if(first)
+                if((*iterFiles) != "")
                 {
-                    *xMin = inSPDFile->getXMin();
-                    *xMax = inSPDFile->getXMax();
-                    *yMin = inSPDFile->getYMin();
-                    *yMax = inSPDFile->getYMax();
-                    first = false;
-                }
-                else
-                {
-                    if(inSPDFile->getXMin() < (*xMin))
+                    std::cout << "Processing: \'" << *iterFiles << "\'" << std::endl;
+
+                    // STEP 1: Read file header - Need file extent.
+                    inSPDFile = new SPDFile(*iterFiles);
+                    reader.readHeaderInfo(*iterFiles, inSPDFile);
+                    
+                    if(first)
                     {
                         *xMin = inSPDFile->getXMin();
-                    }
-                    
-                    if(inSPDFile->getXMax() > (*xMax))
-                    {
                         *xMax = inSPDFile->getXMax();
-                    }
-                    
-                    if(inSPDFile->getYMin() < (*yMin))
-                    {
                         *yMin = inSPDFile->getYMin();
+                        *yMax = inSPDFile->getYMax();
+                        first = false;
+                    }
+                    else
+                    {
+                        if(inSPDFile->getXMin() < (*xMin))
+                        {
+                            *xMin = inSPDFile->getXMin();
+                        }
+                        
+                        if(inSPDFile->getXMax() > (*xMax))
+                        {
+                            *xMax = inSPDFile->getXMax();
+                        }
+                        
+                        if(inSPDFile->getYMin() < (*yMin))
+                        {
+                            *yMin = inSPDFile->getYMin();
+                        }
+                        
+                        if(inSPDFile->getYMax() > (*yMax))
+                        {
+                            *yMax = inSPDFile->getYMax();
+                        }
                     }
                     
-                    if(inSPDFile->getYMax() > (*yMax))
-                    {
-                        *yMax = inSPDFile->getYMax();
-                    }
+                    delete inSPDFile;
                 }
-                
-                delete inSPDFile;
             }
         }
         catch (SPDProcessingException &e)
@@ -734,41 +737,44 @@ namespace spdlib
             SPDWrite2OverlapTiles *write2Tiles = NULL;
             for(std::vector<std::string>::iterator iterFiles = inputFiles.begin(); iterFiles != inputFiles.end(); ++iterFiles)
             {
-                std::cout << "Processing: \'" << *iterFiles << "\'" << std::endl;
-                
-                // STEP 1: Read file header - Need file extent.
-                inSPDFile = new SPDFile(*iterFiles);
-                reader.readHeaderInfo(*iterFiles, inSPDFile);
-                
-                // STEP 2: Find the tiles intersecting with the file extent
-                for(std::vector<SPDTile*>::iterator iterTiles = tiles->begin(); iterTiles != tiles->end(); ++iterTiles)
+                if((*iterFiles) != "")
                 {
-                    // If intersect open the writer (reopen) and add to list of tiles for processing...
-                    if(mathUtils.rectangleIntersection(inSPDFile->getXMin(), inSPDFile->getXMax(), inSPDFile->getYMin(), inSPDFile->getYMax(), (*iterTiles)->xMin, (*iterTiles)->xMax, (*iterTiles)->yMin, (*iterTiles)->yMax))
+                    std::cout << "Processing: \'" << *iterFiles << "\'" << std::endl;
+                    
+                    // STEP 1: Read file header - Need file extent.
+                    inSPDFile = new SPDFile(*iterFiles);
+                    reader.readHeaderInfo(*iterFiles, inSPDFile);
+                    
+                    // STEP 2: Find the tiles intersecting with the file extent
+                    for(std::vector<SPDTile*>::iterator iterTiles = tiles->begin(); iterTiles != tiles->end(); ++iterTiles)
                     {
-                        //std::cout << "Opening tile [" << (*iterTiles)->col << ", " << (*iterTiles)->row << "]\n";
-                        (*iterTiles)->writer = new SPDNoIdxFileWriter();
-                        (*iterTiles)->writer->reopen((*iterTiles)->spdFile, (*iterTiles)->outFileName);
-                        (*iterTiles)->writerOpen = true;
-                        openTiles->push_back((*iterTiles));
+                        // If intersect open the writer (reopen) and add to list of tiles for processing...
+                        if(mathUtils.rectangleIntersection(inSPDFile->getXMin(), inSPDFile->getXMax(), inSPDFile->getYMin(), inSPDFile->getYMax(), (*iterTiles)->xMin, (*iterTiles)->xMax, (*iterTiles)->yMin, (*iterTiles)->yMax))
+                        {
+                            //std::cout << "Opening tile [" << (*iterTiles)->col << ", " << (*iterTiles)->row << "]\n";
+                            (*iterTiles)->writer = new SPDNoIdxFileWriter();
+                            (*iterTiles)->writer->reopen((*iterTiles)->spdFile, (*iterTiles)->outFileName);
+                            (*iterTiles)->writerOpen = true;
+                            openTiles->push_back((*iterTiles));
+                        }
                     }
+                    
+                    // STEP 3: Copy data into the tiles.
+                    std::cout << "There are " << openTiles->size() << " open\n";
+                    if(openTiles->size() == 0)
+                    {
+                        throw SPDProcessingException("No intersecting tiles were found.");
+                    }
+                    
+                    write2Tiles = new SPDWrite2OverlapTiles(openTiles);
+                    reader.readAndProcessAllData((*iterFiles), inSPDFile, write2Tiles);
+                    
+                    // STEP 4: Close open tiles
+                    write2Tiles->completeFileAndClose();
+                    delete write2Tiles;
+                    delete inSPDFile;
+                    openTiles->clear();
                 }
-                
-                // STEP 3: Copy data into the tiles.
-                std::cout << "There are " << openTiles->size() << " open\n";
-                if(openTiles->size() == 0)
-                {
-                    throw SPDProcessingException("No intersecting tiles were found.");
-                }
-                
-                write2Tiles = new SPDWrite2OverlapTiles(openTiles);
-                reader.readAndProcessAllData((*iterFiles), inSPDFile, write2Tiles);
-                
-                // STEP 4: Close open tiles
-                write2Tiles->completeFileAndClose();
-                delete write2Tiles;
-                delete inSPDFile;
-                openTiles->clear();
             }
             delete openTiles;
         }
