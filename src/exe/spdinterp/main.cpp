@@ -94,7 +94,7 @@ int main (int argc, char * const argv[])
         interpolators.push_back("TPS_PTNO");
 		TCLAP::ValuesConstraint<std::string> allowedInterpolatorVals( interpolators );
 		
-		TCLAP::ValueArg<std::string> interpolatorsArg("","interpolator","The interpolator to be used.",false,"NATURAL_NEIGHBOR", &allowedInterpolatorVals);
+		TCLAP::ValueArg<std::string> interpolatorsArg("","in","The interpolator to be used.",false,"NATURAL_NEIGHBOR", &allowedInterpolatorVals);
 		cmd.add( interpolatorsArg );
 		
 		TCLAP::ValueArg<float> stddevThresholdArg("","stddevThreshold","STDEV_MULTISCALE: Standard Deviation threshold",false,3,"float");

@@ -47,9 +47,9 @@ int main (int argc, char * const argv[])
 	{
         TCLAP::CmdLine cmd("Calculate metrics : spdmetrics", ' ', "1.0.0");
 		
-        TCLAP::SwitchArg imageStatsSwitch("i","image","Run metrics with image output", false);		
-		TCLAP::SwitchArg vectorStatsSwitch("v","vector","Run metrics with vector output", false);
-        TCLAP::SwitchArg asciiStatsSwitch("a","ascii","Run metrics with ASCII output", false);
+        TCLAP::SwitchArg imageStatsSwitch("","image","Run metrics with image output", false);
+		TCLAP::SwitchArg vectorStatsSwitch("","vector","Run metrics with vector output", false);
+        TCLAP::SwitchArg asciiStatsSwitch("","ascii","Run metrics with ASCII output", false);
         
         std::vector<TCLAP::Arg*> arguments;
         arguments.push_back(&imageStatsSwitch);

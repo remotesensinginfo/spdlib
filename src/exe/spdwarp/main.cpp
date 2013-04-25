@@ -76,7 +76,7 @@ int main (int argc, char * const argv[])
 		cmd.add( pulseWarpArg );
         
 		
-		TCLAP::ValueArg<boost::uint_fast32_t> polyOrderArg("o","order","POLY TRANSFORM (Default=3): The order of the polynomial fitted.",false,3,"unsigned int");
+		TCLAP::ValueArg<boost::uint_fast32_t> polyOrderArg("","order","POLY TRANSFORM (Default=3): The order of the polynomial fitted.",false,3,"unsigned int");
 		cmd.add( polyOrderArg );
         
         TCLAP::ValueArg<std::string> gcpsFileArg("g","gcps","WARP: The path and file name of the gcps file.",false,"","std::string");
