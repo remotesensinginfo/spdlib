@@ -37,97 +37,87 @@
 
 #include "spd/spd-config.h"
 
-using namespace std;
-using namespace spdlib;
-using namespace TCLAP;
-
 int main (int argc, char * const argv[]) 
 {
-	cout << "spdpffgrd " << SPDLIB_PACKAGE_STRING << ", Copyright (C) " << SPDLIB_COPYRIGHT_YEAR << " Sorted Pulse Library (SPD)\n";
-	cout << "This program comes with ABSOLUTELY NO WARRANTY. This is free software,\n";
-	cout << "and you are welcome to redistribute it under certain conditions; See\n";
-	cout << "website (http://www.spdlib.org). Bugs are to be reported on the trac\n";
-	cout << "or directly to " << SPDLIB_PACKAGE_BUGREPORT << endl;
+    std::cout.precision(12);
+    
+	std::cout << "spdpffgrd " << SPDLIB_PACKAGE_STRING << ", Copyright (C) " << SPDLIB_COPYRIGHT_YEAR << " Sorted Pulse Library (SPD)\n";
+	std::cout << "This program comes with ABSOLUTELY NO WARRANTY. This is free software,\n";
+	std::cout << "and you are welcome to redistribute it under certain conditions; See\n";
+	std::cout << "website (http://www.spdlib.org). Bugs are to be reported on the trac\n";
+	std::cout << "or directly to " << SPDLIB_PACKAGE_BUGREPORT << std::endl;
 	
 	try 
 	{
-        cout << "\n\n*******************************************************************\n";
-        cout << "WARNING!!! DO NOT USE, ALL THE BUGS HAVE NOT YET BEEN WORKED OUT!!\n";
-        cout << "*******************************************************************\n\n\n";
+        std::cout << "\n\n*******************************************************************\n";
+        std::cout << "WARNING!!! DO NOT USE, ALL THE BUGS HAVE NOT YET BEEN WORKED OUT!!\n";
+        std::cout << "*******************************************************************\n\n\n";
         
-		CmdLine cmd("Classifies the ground returns using a parameter-free filtering algorithm: spdpffgrd", ' ', "1.0.0");
+        TCLAP::CmdLine cmd("Classifies the ground returns using a parameter-free filtering algorithm: spdpffgrd", ' ', "1.0.0");
 		
-        ValueArg<boost::uint_fast32_t> numOfRowsBlockArg("r","blockrows","Number of rows within a block (Default 100)",false,100,"unsigned int");
+        TCLAP::ValueArg<boost::uint_fast32_t> numOfRowsBlockArg("r","blockrows","Number of rows within a block (Default 100)",false,100,"unsigned int");
 		cmd.add( numOfRowsBlockArg );
         
-        ValueArg<boost::uint_fast32_t> numOfColsBlockArg("c","blockcols","Number of columns within a block (Default 0) - Note values greater than 1 result in a non-sequencial SPD file.",false,0,"unsigned int");
+        TCLAP::ValueArg<boost::uint_fast32_t> numOfColsBlockArg("c","blockcols","Number of columns within a block (Default 0) - Note values greater than 1 result in a non-sequencial SPD file.",false,0,"unsigned int");
 		cmd.add( numOfColsBlockArg );
         
-        ValueArg<float> binSizeArg("b","binsize","Bin size for processing and output image (Default 0) - Note 0 will use the native SPD file bin size.",false,0,"float");
+        TCLAP::ValueArg<float> binSizeArg("b","binsize","Bin size for processing and output image (Default 0) - Note 0 will use the native SPD file bin size.",false,0,"float");
 		cmd.add( binSizeArg );
         
-        ValueArg<uint_fast16_t> overlapArg("","overlap","Size (in bins) of the overlap between processing blocks (Default 10)",false,10,"uint_fast16_t");
+        TCLAP::ValueArg<uint_fast16_t> overlapArg("","overlap","Size (in bins) of the overlap between processing blocks (Default 10)",false,10,"uint_fast16_t");
 		cmd.add( overlapArg );
 		
-		ValueArg<float> grdPtDevThresArg("","grd","Threshold for deviation from identified ground surface for classifying the ground returns (Default 0.3)",false,0.3,"float");
+		TCLAP::ValueArg<float> grdPtDevThresArg("","grd","Threshold for deviation from identified ground surface for classifying the ground returns (Default 0.3)",false,0.3,"float");
 		cmd.add( grdPtDevThresArg );
 		
-		SwitchArg imageSwitch("","image","If set an image of the output surface will be generated rather than classifying the points (useful for debugging and parameter selection)", false);
+		TCLAP::SwitchArg imageSwitch("","image","If set an image of the output surface will be generated rather than classifying the points (useful for debugging and parameter selection)", false);
 		cmd.add( imageSwitch );
         
-        SwitchArg morphMinSwitch("","morphmin","Apply morphological opening and closing to remove multiple path returns (note this can remove really ground returns).", false);
+        TCLAP::SwitchArg morphMinSwitch("","morphmin","Apply morphological opening and closing to remove multiple path returns (note this can remove really ground returns).", false);
 		cmd.add( morphMinSwitch );
         
-        ValueArg<uint_fast16_t> usePointsofClassArg("","class","Only use points of particular class",false,SPD_ALL_CLASSES,"uint_fast16_t");
+        TCLAP::ValueArg<uint_fast16_t> usePointsofClassArg("","class","Only use points of particular class",false,spdlib::SPD_ALL_CLASSES,"uint_fast16_t");
         cmd.add( usePointsofClassArg );
         
-        ValueArg<string> gdalDriverArg("","gdal","Provide the GDAL driver format (Default ENVI), Erdas Imagine is HFA",false,"ENVI","string");
+        TCLAP::ValueArg<std::string> gdalDriverArg("","gdal","Provide the GDAL driver format (Default ENVI), Erdas Imagine is HFA, KEA is KEA",false,"ENVI","string");
 		cmd.add( gdalDriverArg );
         
-		UnlabeledMultiArg<string> multiFileNames("File", "File names for the input files", false, "string");
-		cmd.add( multiFileNames );
+		TCLAP::ValueArg<std::string> inputFileArg("i","input","The input SPD file.",true,"","String");
+		cmd.add( inputFileArg );
+        
+        TCLAP::ValueArg<std::string> outputFileArg("o","output","The output file.",true,"","String");
+		cmd.add( outputFileArg );
+        
 		cmd.parse( argc, argv );
 		
-		vector<string> fileNames = multiFileNames.getValue();		
-		if(fileNames.size() == 2)
-		{
-            string inSPDFilePath = fileNames.at(0);
-            string outFilePath = fileNames.at(1);
-            
-            SPDFile *spdInFile = new SPDFile(inSPDFilePath);
-            
-            SPDParameterFreeGroundFilter *blockProcessor = new SPDParameterFreeGroundFilter(grdPtDevThresArg.getValue(), usePointsofClassArg.getValue(), morphMinSwitch.getValue());
-            SPDProcessDataBlocks processBlocks = SPDProcessDataBlocks(blockProcessor, overlapArg.getValue(), numOfColsBlockArg.getValue(), numOfRowsBlockArg.getValue(), true);
-            
-            if(imageSwitch.getValue())
-            {
-                processBlocks.processDataBlocksGridPulsesOutputImage(spdInFile, outFilePath, binSizeArg.getValue(), 1, gdalDriverArg.getValue());
-            }
-            else
-            {
-                processBlocks.processDataBlocksGridPulsesOutputSPD(spdInFile, outFilePath, binSizeArg.getValue());
-            }
-            
-            delete blockProcessor;
-            delete spdInFile;            
-		}
+		std::string inSPDFilePath = inputFileArg.getValue();
+        std::string outFilePath = outputFileArg.getValue();
+        
+        spdlib::SPDFile *spdInFile = new spdlib::SPDFile(inSPDFilePath);
+        
+        spdlib::SPDParameterFreeGroundFilter *blockProcessor = new spdlib::SPDParameterFreeGroundFilter(grdPtDevThresArg.getValue(), usePointsofClassArg.getValue(), morphMinSwitch.getValue());
+        spdlib::SPDProcessDataBlocks processBlocks = spdlib::SPDProcessDataBlocks(blockProcessor, overlapArg.getValue(), numOfColsBlockArg.getValue(), numOfRowsBlockArg.getValue(), true);
+        
+        if(imageSwitch.getValue())
+        {
+            processBlocks.processDataBlocksGridPulsesOutputImage(spdInFile, outFilePath, binSizeArg.getValue(), 1, gdalDriverArg.getValue());
+        }
         else
         {
-            cout << "ERROR: Only 2 files can be provided\n";
-            for(unsigned int i = 0; i < fileNames.size(); ++i)
-			{
-                cout << i << ":\t" << fileNames.at(i) << endl;
-            }
+            processBlocks.processDataBlocksGridPulsesOutputSPD(spdInFile, outFilePath, binSizeArg.getValue());
         }
+        
+        delete blockProcessor;
+        delete spdInFile;
 		
 	}
-	catch (ArgException &e) 
+	catch (TCLAP::ArgException &e)
 	{
-		cerr << "Parse Error: " << e.what() << endl;
+		std::cerr << "Parse Error: " << e.what() << std::endl;
 	}
-	catch(SPDException &e)
+	catch(spdlib::SPDException &e)
 	{
-		cerr << "Error: " << e.what() << endl;
+		std::cerr << "Error: " << e.what() << std::endl;
 	}
     
     std::cout << "spdpffgrd - end\n";

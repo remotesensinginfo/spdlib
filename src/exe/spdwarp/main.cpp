@@ -36,6 +36,8 @@
 
 int main (int argc, char * const argv[])
 {
+    std::cout.precision(12);
+    
 	std::cout << "spdwarp " << SPDLIB_PACKAGE_STRING << ", Copyright (C) " << SPDLIB_COPYRIGHT_YEAR << " Sorted Pulse Library (SPD)\n";
 	std::cout << "This program comes with ABSOLUTELY NO WARRANTY. This is free software,\n";
 	std::cout << "and you are welcome to redistribute it under certain conditions; See\n";
@@ -92,108 +94,98 @@ int main (int argc, char * const argv[])
         TCLAP::ValueArg<boost::uint_fast32_t> numOfColsBlockArg("c","blockcols","Number of columns within a block (Default 0) - Note values greater than 1 result in a non-sequencial SPD file.",false,0,"unsigned int");
 		cmd.add( numOfColsBlockArg );
         
+        TCLAP::ValueArg<std::string> inputFileArg("i","input","The input SPD file.",true,"","String");
+		cmd.add( inputFileArg );
         
-		TCLAP::UnlabeledMultiArg<std::string> multiFileNames("File", "File names for the input files", false, "std::string");
-		cmd.add( multiFileNames );
+        TCLAP::ValueArg<std::string> outputFileArg("o","output","The output SPD file.",true,"","String");
+		cmd.add( outputFileArg );
+        
 		cmd.parse( argc, argv );
 		
-		std::vector<std::string> fileNames = multiFileNames.getValue();
-		if(fileNames.size() == 2)
-		{
-            std::cout.precision(12);
-            std::string inSPDFilePath = fileNames.at(0);
-            std::string outFilePath = fileNames.at(1);
+        std::string inSPDFilePath = inputFileArg.getValue();
+        std::string outFilePath = outputFileArg.getValue();
+        
+        boost::uint_fast32_t blockXSize = numOfColsBlockArg.getValue();
+        boost::uint_fast32_t blockYSize = numOfRowsBlockArg.getValue();
+        
+        if(shiftSwitch.getValue())
+        {
+            float xShift = xShiftArg.getValue();
+            float yShift = yShiftArg.getValue();
             
-            boost::uint_fast32_t blockXSize = numOfColsBlockArg.getValue();
-            boost::uint_fast32_t blockYSize = numOfRowsBlockArg.getValue();
+            spdlib::SPDFile *spdInFile = new spdlib::SPDFile(inSPDFilePath);
             
-            if(shiftSwitch.getValue())
+            spdlib::SPDShiftData *shiftData = new spdlib::SPDShiftData(xShift, yShift);
+            spdlib::SPDProcessDataBlocks processBlocks = spdlib::SPDProcessDataBlocks(shiftData, 0, blockXSize, blockYSize, true);
+            processBlocks.processDataBlocksGridPulsesOutputSPD(spdInFile, outFilePath, 0);
+            
+            delete spdInFile;
+            delete shiftData;
+        }
+        else if(warpSwitch.getValue())
+        {
+            std::string warpLocStr = pulseWarpArg.getValue();
+            spdlib::SPDWarpLocation warpLoc = spdlib::spdwarppulseidx;
+            
+            if(warpLocStr == "ALL_RETURNS")
             {
-                float xShift = xShiftArg.getValue();
-                float yShift = yShiftArg.getValue();
-                
-                spdlib::SPDFile *spdInFile = new spdlib::SPDFile(inSPDFilePath);
-                
-                spdlib::SPDShiftData *shiftData = new spdlib::SPDShiftData(xShift, yShift);
-                spdlib::SPDProcessDataBlocks processBlocks = spdlib::SPDProcessDataBlocks(shiftData, 0, blockXSize, blockYSize, true);
-                processBlocks.processDataBlocksGridPulsesOutputSPD(spdInFile, outFilePath, 0);
-                                
-                delete spdInFile;
-                delete shiftData;
+                warpLoc = spdlib::spdwarpfromall;
             }
-            else if(warpSwitch.getValue())
+            else if (warpLocStr == "PULSE_IDX")
             {
-                std::string warpLocStr = pulseWarpArg.getValue();
-                spdlib::SPDWarpLocation warpLoc = spdlib::spdwarppulseidx;
-                
-                if(warpLocStr == "ALL_RETURNS")
-                {
-                    warpLoc = spdlib::spdwarpfromall;
-                }
-                else if (warpLocStr == "PULSE_IDX")
-                {
-                    warpLoc = spdlib::spdwarppulseidx;
-                }
-                else if (warpLocStr == "PULSE_ORIGIN")
-                {
-                    warpLoc = spdlib::spdwarppulseorigin;
-                }
-                else
-                {
-                    throw spdlib::SPDException("The warp location has not been recognised.");
-                }
-                
-                std::string transformationStr = transformationsArg.getValue();
-                spdlib::SPDWarpPointData *warpData = NULL;
-                
-                if(transformationStr == "POLYNOMIAL")
-                {
-                    float polyOrder = polyOrderArg.getValue();
-                    warpData = new spdlib::SPDPolynomialWarp(polyOrder);
-                }
-                else if (transformationStr == "NEAREST_NEIGHBOR")
-                {
-                    warpData = new spdlib::SPDNearestNeighbourWarp();
-                }
-                else if (transformationStr == "TRIANGULATION")
-                {
-                    warpData = new spdlib::SPDTriangulationPlaneFittingWarp();
-                }
-                else
-                {
-                    throw spdlib::SPDException("The transformation has not been recognised.");
-                }
-                
-                std::string gcpsFile = gcpsFileArg.getValue();
-                warpData->initWarp(gcpsFile);
-                
-                spdlib::SPDFile *inSPDFile = new spdlib::SPDFile(inSPDFilePath);
-                spdlib::SPDFile *spdFileOut = new spdlib::SPDFile(outFilePath);
-                spdlib::SPDDataExporter *exporter = new spdlib::SPDNoIdxFileWriter();
-
-                spdlib::SPDNonLinearWarp *warpProcessor = new spdlib::SPDNonLinearWarp(exporter, spdFileOut, warpData, warpLoc);
-                
-                spdlib::SPDFileReader spdReader;
-                spdReader.readAndProcessAllData(inSPDFilePath, inSPDFile, warpProcessor);
-                warpProcessor->completeFileAndClose(inSPDFile);
-                
-                delete exporter;
-                delete warpProcessor;
-                delete spdFileOut;
-                delete inSPDFile;
+                warpLoc = spdlib::spdwarppulseidx;
+            }
+            else if (warpLocStr == "PULSE_ORIGIN")
+            {
+                warpLoc = spdlib::spdwarppulseorigin;
             }
             else
             {
-                throw spdlib::SPDException("Either the Shift or Warp option needs to be specified.");
+                throw spdlib::SPDException("The warp location has not been recognised.");
             }
-		}
+            
+            std::string transformationStr = transformationsArg.getValue();
+            spdlib::SPDWarpPointData *warpData = NULL;
+            
+            if(transformationStr == "POLYNOMIAL")
+            {
+                float polyOrder = polyOrderArg.getValue();
+                warpData = new spdlib::SPDPolynomialWarp(polyOrder);
+            }
+            else if (transformationStr == "NEAREST_NEIGHBOR")
+            {
+                warpData = new spdlib::SPDNearestNeighbourWarp();
+            }
+            else if (transformationStr == "TRIANGULATION")
+            {
+                warpData = new spdlib::SPDTriangulationPlaneFittingWarp();
+            }
+            else
+            {
+                throw spdlib::SPDException("The transformation has not been recognised.");
+            }
+            
+            std::string gcpsFile = gcpsFileArg.getValue();
+            warpData->initWarp(gcpsFile);
+            
+            spdlib::SPDFile *inSPDFile = new spdlib::SPDFile(inSPDFilePath);
+            spdlib::SPDFile *spdFileOut = new spdlib::SPDFile(outFilePath);
+            spdlib::SPDDataExporter *exporter = new spdlib::SPDNoIdxFileWriter();
+            
+            spdlib::SPDNonLinearWarp *warpProcessor = new spdlib::SPDNonLinearWarp(exporter, spdFileOut, warpData, warpLoc);
+            
+            spdlib::SPDFileReader spdReader;
+            spdReader.readAndProcessAllData(inSPDFilePath, inSPDFile, warpProcessor);
+            warpProcessor->completeFileAndClose(inSPDFile);
+            
+            delete exporter;
+            delete warpProcessor;
+            delete spdFileOut;
+            delete inSPDFile;
+        }
         else
         {
-            for(unsigned int i = 0; i < fileNames.size(); ++i)
-			{
-                std::cout << i << ":\t" << fileNames.at(i) << std::endl;
-            }
-            throw spdlib::SPDException("Only 2 files can be provided");
+            throw spdlib::SPDException("Either the Shift or Warp option needs to be specified.");
         }
 		
 	}

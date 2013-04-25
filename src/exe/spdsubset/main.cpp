@@ -37,117 +37,110 @@
 
 #include "spd/spd-config.h"
 
-using namespace std;
-using namespace spdlib;
-using namespace TCLAP;
-
 int main (int argc, char * const argv[]) 
 {
-	cout << "spdsubset " << SPDLIB_PACKAGE_STRING << ", Copyright (C) " << SPDLIB_COPYRIGHT_YEAR << " Sorted Pulse Library (SPD)\n";
-	cout << "This program comes with ABSOLUTELY NO WARRANTY. This is free software,\n";
-	cout << "and you are welcome to redistribute it under certain conditions; See\n";
-	cout << "website (http://www.spdlib.org). Bugs are to be reported on the trac\n";
-	cout << "or directly to " << SPDLIB_PACKAGE_BUGREPORT << endl;
+    std::cout.precision(12);
+    
+    std::cout << "spdsubset " << SPDLIB_PACKAGE_STRING << ", Copyright (C) " << SPDLIB_COPYRIGHT_YEAR << " Sorted Pulse Library (SPD)\n";
+	std::cout << "This program comes with ABSOLUTELY NO WARRANTY. This is free software,\n";
+	std::cout << "and you are welcome to redistribute it under certain conditions; See\n";
+	std::cout << "website (http://www.spdlib.org). Bugs are to be reported on the trac\n";
+	std::cout << "or directly to " << SPDLIB_PACKAGE_BUGREPORT << std::endl;
 	
 	try 
 	{
-		CmdLine cmd("Subset point cloud data: spdsubset", ' ', "1.0.0");
+        TCLAP::CmdLine cmd("Subset point cloud data: spdsubset", ' ', "1.0.0");
 
-		ValueArg<double> xMinArg("","xmin","Minimum X threshold",false,NAN,"double");
+		TCLAP::ValueArg<double> xMinArg("","xmin","Minimum X threshold",false,NAN,"double");
 		cmd.add( xMinArg );
 		
-		ValueArg<double> xMaxArg("","xmax","Maximum X threshold",false,NAN,"double");
+		TCLAP::ValueArg<double> xMaxArg("","xmax","Maximum X threshold",false,NAN,"double");
 		cmd.add( xMaxArg );
 		
-		ValueArg<double> yMinArg("","ymin","Minimum Y threshold",false,NAN,"double");
+		TCLAP::ValueArg<double> yMinArg("","ymin","Minimum Y threshold",false,NAN,"double");
 		cmd.add( yMinArg );
 		
-		ValueArg<double> yMaxArg("","ymax","Maximum Y threshold",false,NAN,"double");
+		TCLAP::ValueArg<double> yMaxArg("","ymax","Maximum Y threshold",false,NAN,"double");
 		cmd.add( yMaxArg );
 		
-		ValueArg<double> zMinArg("","zmin","Minimum Z threshold",false,NAN,"double");
+		TCLAP::ValueArg<double> zMinArg("","zmin","Minimum Z threshold",false,NAN,"double");
 		cmd.add( zMinArg );
 		
-		ValueArg<double> zMaxArg("","zmax","Maximum Z threshold",false,NAN,"double");
+		TCLAP::ValueArg<double> zMaxArg("","zmax","Maximum Z threshold",false,NAN,"double");
 		cmd.add( zMaxArg );
         
-        ValueArg<double> hMinArg("","hmin","Minimum Height threshold",false,NAN,"double");
+        TCLAP::ValueArg<double> hMinArg("","hmin","Minimum Height threshold",false,NAN,"double");
 		cmd.add( hMinArg );
 		
-		ValueArg<double> hMaxArg("","hmax","Maximum Height threshold",false,NAN,"double");
+		TCLAP::ValueArg<double> hMaxArg("","hmax","Maximum Height threshold",false,NAN,"double");
 		cmd.add( hMaxArg );
         
-        ValueArg<double> azMinArg("","azmin","Minimum azimuth threshold",false,NAN,"double");
+        TCLAP::ValueArg<double> azMinArg("","azmin","Minimum azimuth threshold",false,NAN,"double");
 		cmd.add( azMinArg );
 		
-		ValueArg<double> azMaxArg("","azmax","Maximum azmuth threshold",false,NAN,"double");
+		TCLAP::ValueArg<double> azMaxArg("","azmax","Maximum azmuth threshold",false,NAN,"double");
 		cmd.add( azMaxArg );
 		
-		ValueArg<double> zenMinArg("","zenmin","Minimum zenith threshold",false,NAN,"double");
+		TCLAP::ValueArg<double> zenMinArg("","zenmin","Minimum zenith threshold",false,NAN,"double");
 		cmd.add( zenMinArg );
 		
-		ValueArg<double> zenMaxArg("","zenmax","Maximum zenith threshold",false,NAN,"double");
+		TCLAP::ValueArg<double> zenMaxArg("","zenmax","Maximum zenith threshold",false,NAN,"double");
 		cmd.add( zenMaxArg );
 		
-		ValueArg<double> ranMinArg("","ranmin","Minimum range threshold",false,NAN,"double");
+		TCLAP::ValueArg<double> ranMinArg("","ranmin","Minimum range threshold",false,NAN,"double");
 		cmd.add( ranMinArg );
 		
-		ValueArg<double> ranMaxArg("","ranmax","Maximum range threshold",false,NAN,"double");
+		TCLAP::ValueArg<double> ranMaxArg("","ranmax","Maximum range threshold",false,NAN,"double");
 		cmd.add( ranMaxArg );
         
-        SwitchArg heightSwitch("","height","Threshold the height of each pulse (currently only valid with SPD to SPD subsetting)", false);
+        TCLAP::SwitchArg heightSwitch("","height","Threshold the height of each pulse (currently only valid with SPD to SPD subsetting)", false);
 		cmd.add( heightSwitch );
         
-        SwitchArg sphericalSwitch("","spherical","Subset a spherically indexed SPD file.", false);
+        TCLAP::SwitchArg sphericalSwitch("","spherical","Subset a spherically indexed SPD file.", false);
         cmd.add( sphericalSwitch );
 
-        ValueArg<string> textfileArg("","txtfile","A text containing the extent to which the file should be cut to.",false,"","string");
+        TCLAP::ValueArg<std::string> textfileArg("","txtfile","A text containing the extent to which the file should be cut to.",false,"","string");
 		cmd.add( textfileArg );
         
-        SwitchArg ignoreRangeSwitch("","ignorerange","Defining that range should be ignored when subsetting using a text file.", false);
+        TCLAP::SwitchArg ignoreRangeSwitch("","ignorerange","Defining that range should be ignored when subsetting using a text file.", false);
 		cmd.add( ignoreRangeSwitch );
         
-        SwitchArg ignoreZSwitch("","ignorez","Defining that Z should be ignored when subsetting using a text file.", false);
+        TCLAP::SwitchArg ignoreZSwitch("","ignorez","Defining that Z should be ignored when subsetting using a text file.", false);
 		cmd.add( ignoreZSwitch );
         
-        ValueArg<string> shapefileArg("","shpfile","A shapefile to which the dataset should be subsetted to",false,"","string");
+        TCLAP::ValueArg<std::string> shapefileArg("","shpfile","A shapefile to which the dataset should be subsetted to",false,"","string");
 		cmd.add( shapefileArg );
         
-        ValueArg<uint_fast32_t> startArg("","start","First pulse in the block",false,0,"uint_fast32_t");
+        TCLAP::ValueArg<uint_fast32_t> startArg("","start","First pulse in the block",false,0,"uint_fast32_t");
 		cmd.add( startArg );
 		
-		ValueArg<uint_fast32_t> numArg("","num","Number of pulses to be exported",false,0,"uint_fast32_t");
+		TCLAP::ValueArg<uint_fast32_t> numArg("","num","Number of pulses to be exported",false,0,"uint_fast32_t");
 		cmd.add( numArg );
 		
-		UnlabeledMultiArg<string> multiFileNames("Files", "File names for the input and output files", true, "string");
-		cmd.add( multiFileNames );
+		TCLAP::ValueArg<std::string> inputFileArg("i","input","The input SPD file.",true,"","String");
+		cmd.add( inputFileArg );
+        
+        TCLAP::ValueArg<std::string> outputFileArg("o","output","The output SPD file.",true,"","String");
+		cmd.add( outputFileArg );
+        
 		cmd.parse( argc, argv );
 		
-		vector<string> fileNames = multiFileNames.getValue();		
-		if(fileNames.size() != 2)
-		{
-			SPDTextFileUtilities textUtils;
-			string message = string("Two file paths should have been specified (e.g., Input and Output). ") + textUtils.uInt32bittostring(fileNames.size()) + string(" were provided.");
-			throw SPDException(message);
-		}
-		
+        std::string inputFile = inputFileArg.getValue();
+        std::string outputFile = outputFileArg.getValue();
         
-        string inputFile = fileNames.at(0);
-        string outputFile = fileNames.at(1);
-        
-        SPDFile *inSPDFile = new SPDFile(inputFile);
-        SPDFileReader spdReader = SPDFileReader();
+        spdlib::SPDFile *inSPDFile = new spdlib::SPDFile(inputFile);
+        spdlib::SPDFileReader spdReader = spdlib::SPDFileReader();
         spdReader.readHeaderInfo(inputFile, inSPDFile);
         
         bool indexedSPDFile = true;
-        if(inSPDFile->getFileType() == SPD_UPD_TYPE)
+        if(inSPDFile->getFileType() == spdlib::SPD_UPD_TYPE)
         {
             indexedSPDFile = false;
         }
         
         if(startArg.isSet() & !indexedSPDFile)
         {
-            SPDUPDPulseSubset updSubset;
+            spdlib::SPDUPDPulseSubset updSubset;
             updSubset.subsetUPD(inputFile, outputFile, startArg.getValue(), numArg.getValue());
         }
         else
@@ -159,12 +152,12 @@ int main (int argc, char * const argv[])
             bool sphericalCoords = sphericalSwitch.getValue();
             if(textfileArg.isSet())
             {
-                SPDTextFileLineReader lineReader;
-                SPDTextFileUtilities textFileUtils;
+                spdlib::SPDTextFileLineReader lineReader;
+                spdlib::SPDTextFileUtilities textFileUtils;
                 lineReader.openFile(textfileArg.getValue());
                 bool first = true;
                 uint_fast16_t dataLineCount = 0;
-                string line = "";
+                std::string line = "";
                 while(!lineReader.endOfFile())
                 {
                     line = lineReader.readLine();
@@ -187,7 +180,7 @@ int main (int argc, char * const argv[])
                         {
                             if(dataLineCount > 5)
                             {
-                                throw SPDException("The number of data lines should be either 4 or 6. Gone over.");
+                                throw spdlib::SPDException("The number of data lines should be either 4 or 6. Gone over.");
                             }
                             bbox[dataLineCount++] = textFileUtils.strtodouble(line);
                             //cout << "dataLineCount = " << dataLineCount << endl;
@@ -210,8 +203,8 @@ int main (int argc, char * const argv[])
                 }
                 else if(dataLineCount != 6)
                 {
-                    cout << "dataLineCount = " << dataLineCount << endl;
-                    throw SPDException("The number of data lines should be either 4 or 6.");
+                    std::cout << "dataLineCount = " << dataLineCount << std::endl;
+                    throw spdlib::SPDException("The number of data lines should be either 4 or 6.");
                 }
             }
             else
@@ -299,33 +292,33 @@ int main (int argc, char * const argv[])
             
             if(sphericalCoords)
             {
-                cout << "Azimuth Min:" << bbox[0] << endl;
-                cout << "Azimuth Max:" << bbox[1] << endl;
-                cout << "Zenith Min:" << bbox[2] << endl;
-                cout << "Zenith Max:" << bbox[3] << endl;
-                cout << "Range Min:" << bbox[4] << endl;
-                cout << "Range Max:" << bbox[5] << endl;
+                std::cout << "Azimuth Min:" << bbox[0] << std::endl;
+                std::cout << "Azimuth Max:" << bbox[1] << std::endl;
+                std::cout << "Zenith Min:" << bbox[2] << std::endl;
+                std::cout << "Zenith Max:" << bbox[3] << std::endl;
+                std::cout << "Range Min:" << bbox[4] << std::endl;
+                std::cout << "Range Max:" << bbox[5] << std::endl;
             }
             else
             {
-                cout << "X Min:" << bbox[0] << endl;
-                cout << "X Max:" << bbox[1] << endl;
-                cout << "Y Min:" << bbox[2] << endl;
-                cout << "Y Max:" << bbox[3] << endl;
-                cout << "Z Min:" << bbox[4] << endl;
-                cout << "Z Max:" << bbox[5] << endl;
+                std::cout << "X Min:" << bbox[0] << std::endl;
+                std::cout << "X Max:" << bbox[1] << std::endl;
+                std::cout << "Y Min:" << bbox[2] << std::endl;
+                std::cout << "Y Max:" << bbox[3] << std::endl;
+                std::cout << "Z Min:" << bbox[4] << std::endl;
+                std::cout << "Z Max:" << bbox[5] << std::endl;
             }
             
             if(sphericalCoords)
             {
                 if(indexedSPDFile)
                 {
-                    SPDSubsetSPDFile subset;
+                    spdlib::SPDSubsetSPDFile subset;
                     subset.subsetSphericalSPDFile(inputFile, outputFile, bbox, bboxDefined);
                 }
                 else
                 {
-                    SPDSubsetNonGriddedFile subset;
+                    spdlib::SPDSubsetNonGriddedFile subset;
                     subset.subsetSpherical(inputFile, outputFile, bbox, bboxDefined);
                 }
             }
@@ -333,34 +326,34 @@ int main (int argc, char * const argv[])
             {
                 if(indexedSPDFile & (shapefileArg.isSet()))
                 {
-                    SPDSubsetSPDFile subset;
+                    spdlib::SPDSubsetSPDFile subset;
                     subset.subsetSPDFile(inputFile, outputFile, shapefileArg.getValue());
                 }
                 else if(indexedSPDFile & (heightSwitch.getValue()))
                 {
-                    SPDSubsetSPDFile subset;
+                    spdlib::SPDSubsetSPDFile subset;
                     subset.subsetSPDFileHeightOnly(inputFile, outputFile, hMinArg.getValue(), hMaxArg.getValue());
                 }
                 else if(indexedSPDFile)
                 {
-                    SPDSubsetSPDFile subset;
+                    spdlib::SPDSubsetSPDFile subset;
                     subset.subsetSPDFile(inputFile, outputFile, bbox, bboxDefined);
                 }
                 else
                 {
-                    SPDSubsetNonGriddedFile subset;
+                    spdlib::SPDSubsetNonGriddedFile subset;
                     subset.subsetCartesian(inputFile, outputFile, bbox, bboxDefined);
                 }
             }
         }
 	}
-	catch (ArgException &e) 
+	catch (TCLAP::ArgException &e) 
 	{
-		cerr << "Parse Error: " << e.what() << endl;
+		std::cerr << "Parse Error: " << e.what() << std::endl;
 	}
-	catch(SPDException &e)
+	catch(spdlib::SPDException &e)
 	{
-		cerr << "Error: " << e.what() << endl;
+		std::cerr << "Error: " << e.what() << std::endl;
 	}
 	std::cout << "spdsubset - end\n";
 }
