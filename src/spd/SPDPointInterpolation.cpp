@@ -433,21 +433,24 @@ namespace spdlib
             std::vector<SPDPoint*>::iterator iterPts;
             for(iterPts = points->begin(); iterPts != points->end(); ++iterPts)
             {
-                K::Point_2 cgalPt((*iterPts)->x,(*iterPts)->y);
-                dt->insert(cgalPt);
-                if(elevVal == SPD_USE_Z)
+                if((*iterPts) != NULL)
                 {
-                    CGALCoordType value = (*iterPts)->z;
-                    values->insert(std::make_pair(cgalPt, value));
-                }
-                else if(elevVal == SPD_USE_HEIGHT)
-                {
-                    CGALCoordType value = (*iterPts)->height;
-                    values->insert(std::make_pair(cgalPt, value));
-                }
-                else
-                {
-                    throw SPDProcessingException("Elevation type not recognised.");
+                    K::Point_2 cgalPt((*iterPts)->x,(*iterPts)->y);
+                    dt->insert(cgalPt);
+                    if(elevVal == SPD_USE_Z)
+                    {
+                        CGALCoordType value = (*iterPts)->z;
+                        values->insert(std::make_pair(cgalPt, value));
+                    }
+                    else if(elevVal == SPD_USE_HEIGHT)
+                    {
+                        CGALCoordType value = (*iterPts)->height;
+                        values->insert(std::make_pair(cgalPt, value));
+                    }
+                    else
+                    {
+                        throw SPDProcessingException("Elevation type not recognised.");
+                    }
                 }
             }
             delete points;
@@ -480,21 +483,24 @@ namespace spdlib
             std::vector<SPDPoint*>::iterator iterPts;
             for(iterPts = points->begin(); iterPts != points->end(); ++iterPts)
             {
-                K::Point_2 cgalPt((*iterPts)->x,(*iterPts)->y);
-                dt->insert(cgalPt);
-                if(elevVal == SPD_USE_Z)
+                if((*iterPts) != NULL)
                 {
-                    CGALCoordType value = (*iterPts)->z;
-                    values->insert(std::make_pair(cgalPt, value));
-                }
-                else if(elevVal == SPD_USE_HEIGHT)
-                {
-                    CGALCoordType value = (*iterPts)->height;
-                    values->insert(std::make_pair(cgalPt, value));
-                }
-                else
-                {
-                    throw SPDProcessingException("Elevation type not recognised.");
+                    K::Point_2 cgalPt((*iterPts)->x,(*iterPts)->y);
+                    dt->insert(cgalPt);
+                    if(elevVal == SPD_USE_Z)
+                    {
+                        CGALCoordType value = (*iterPts)->z;
+                        values->insert(std::make_pair(cgalPt, value));
+                    }
+                    else if(elevVal == SPD_USE_HEIGHT)
+                    {
+                        CGALCoordType value = (*iterPts)->height;
+                        values->insert(std::make_pair(cgalPt, value));
+                    }
+                    else
+                    {
+                        throw SPDProcessingException("Elevation type not recognised.");
+                    }
                 }
             }
             delete points;
@@ -527,21 +533,24 @@ namespace spdlib
             std::vector<SPDPoint*>::iterator iterPts;
             for(iterPts = points->begin(); iterPts != points->end(); ++iterPts)
             {
-                K::Point_2 cgalPt((*iterPts)->x,(*iterPts)->y);
-                dt->insert(cgalPt);
-                if(elevVal == SPD_USE_Z)
+                if((*iterPts) != NULL)
                 {
-                    CGALCoordType value = (*iterPts)->z;
-                    values->insert(std::make_pair(cgalPt, value));
-                }
-                else if(elevVal == SPD_USE_HEIGHT)
-                {
-                    CGALCoordType value = (*iterPts)->height;
-                    values->insert(std::make_pair(cgalPt, value));
-                }
-                else
-                {
-                    throw SPDProcessingException("Elevation type not recognised.");
+                    K::Point_2 cgalPt((*iterPts)->x,(*iterPts)->y);
+                    dt->insert(cgalPt);
+                    if(elevVal == SPD_USE_Z)
+                    {
+                        CGALCoordType value = (*iterPts)->z;
+                        values->insert(std::make_pair(cgalPt, value));
+                    }
+                    else if(elevVal == SPD_USE_HEIGHT)
+                    {
+                        CGALCoordType value = (*iterPts)->height;
+                        values->insert(std::make_pair(cgalPt, value));
+                    }
+                    else
+                    {
+                        throw SPDProcessingException("Elevation type not recognised.");
+                    }
                 }
             }
             delete points;
@@ -574,21 +583,24 @@ namespace spdlib
             std::vector<SPDPoint*>::iterator iterPts;
             for(iterPts = points->begin(); iterPts != points->end(); ++iterPts)
             {
-                K::Point_2 cgalPt((*iterPts)->x,(*iterPts)->y);
-                dt->insert(cgalPt);
-                if(elevVal == SPD_USE_Z)
+                if((*iterPts) != NULL)
                 {
-                    CGALCoordType value = (*iterPts)->z;
-                    values->insert(std::make_pair(cgalPt, value));
-                }
-                else if(elevVal == SPD_USE_HEIGHT)
-                {
-                    CGALCoordType value = (*iterPts)->height;
-                    values->insert(std::make_pair(cgalPt, value));
-                }
-                else
-                {
-                    throw SPDProcessingException("Elevation type not recognised.");
+                    K::Point_2 cgalPt((*iterPts)->x,(*iterPts)->y);
+                    dt->insert(cgalPt);
+                    if(elevVal == SPD_USE_Z)
+                    {
+                        CGALCoordType value = (*iterPts)->z;
+                        values->insert(std::make_pair(cgalPt, value));
+                    }
+                    else if(elevVal == SPD_USE_HEIGHT)
+                    {
+                        CGALCoordType value = (*iterPts)->height;
+                        values->insert(std::make_pair(cgalPt, value));
+                    }
+                    else
+                    {
+                        throw SPDProcessingException("Elevation type not recognised.");
+                    }
                 }
             }
             delete points;
