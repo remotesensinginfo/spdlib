@@ -42,6 +42,11 @@
 #include "spd/tps/linalg3d.h"
 #include "spd/tps/ludecomposition.h"
 
+#define MIN_POINT_DENSITY 50
+#define CLOSING_WINDOW_SIZE 9
+#define OPENING_WINDOW_SIZE 11
+#define MORPH_MIN_THRESHOLD 1.0f
+
 namespace spdlib
 {
     
@@ -89,11 +94,16 @@ namespace spdlib
         void performClosing(float **elev, float **elevClose, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast16_t filterHSize, boost::uint_fast16_t **element);
         void performWhiteTopHat(float **elev, float **elevTH, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast16_t filterHSize, boost::uint_fast16_t **element);
         void createStructuringElement(boost::uint_fast16_t **element, boost::uint_fast16_t filterHSize);
-        float getThreshold(boost::uint_fast32_t x, boost::uint_fast32_t y, float **data, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast16_t filterHSize, boost::uint_fast16_t **element);
+        float getThreshold(float mean, float stdDev);
         std::vector<SPDPFFProcessLevel*>* generateHierarchy(float **initElev, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, float pxlRes);
         void freeHierarchy(std::vector<SPDPFFProcessLevel*> *levels);
         void freeLevel(SPDPFFProcessLevel *level);
         SPDPFFProcessLevel* interpLevel(SPDPFFProcessLevel *cLevel, SPDPFFProcessLevel *pLevel, double tlY, double tlX);
+        SPDPFFProcessLevel* runSurfaceEstimation(SPDFile *inSPDFile, std::vector<SPDPulse*> ***pulses, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, float binSize, float **thresholds = NULL) throw(SPDProcessingException);
+        float getClassificationThreshold(float mean, float stdDev);
+        float getSingleCellThreshold(std::vector<SPDPulse*> *pulses, float dtmHeight);
+        std::vector<float>* filterPoints(std::vector<float> *allPoints, float threshold);
+        void getMeanAndStdDev(boost::uint_fast32_t x, boost::uint_fast32_t y, float **data, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast16_t filterHSize, boost::uint_fast16_t **element, float* results);
         float grdPtDev;
         boost::uint_fast16_t classParameters;
         bool checkForFalseMinma;
