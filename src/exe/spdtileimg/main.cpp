@@ -124,6 +124,12 @@ int main (int argc, char * const argv[])
             
             std::cout << "Tile Size: [" << xTileSize << "," << yTileSize << "] Overlap: " << overlap << std::endl;
             
+            double totalSizeX = cols * xTileSize;
+            double totalSizeY = rows * yTileSize;
+            
+            xMax = xMin + totalSizeX;
+            yMax = yMin + totalSizeY;
+            
             std::cout << "Full Area: [" << xMin << "," << xMax << "][" << yMin << "," << yMax << "]\n";
             
             spdlib::SPDTextFileUtilities txtUtils;
@@ -199,6 +205,12 @@ int main (int argc, char * const argv[])
             std::cout << "Number of cols: " << cols << std::endl;
             
             std::cout << "Tile Size: [" << xTileSize << "," << yTileSize << "] Overlap: " << overlap << std::endl;
+            
+            double totalSizeX = cols * xTileSize;
+            double totalSizeY = rows * yTileSize;
+
+            xMax = xMin + totalSizeX;
+            yMax = yMin + totalSizeY;
             
             std::cout << "Full Area: [" << xMin << "," << xMax << "][" << yMin << "," << yMax << "]\n";
             
