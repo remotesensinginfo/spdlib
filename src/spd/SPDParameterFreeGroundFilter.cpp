@@ -65,7 +65,7 @@ namespace spdlib
     /**
      * Run the Paramater Free Ground Filter routine to iteratively interpolate a surface of minimum control points towards the true ground surface
      */
-    SPDPFFProcessLevel* SPDParameterFreeGroundFilter::runSurfaceEstimation(SPDFile *inSPDFile, std::vector<SPDPulse*> ***pulses, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, float binSize, float **thresholds) throw(SPDProcessingException)
+    SPDPFFProcessLevel* SPDParameterFreeGroundFilter::runSurfaceEstimation(SPDFile *inSPDFile, std::vector<SPDPulse*> ***pulses, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, float binSize) throw(SPDProcessingException)
     {
         // Allocate Memory...
         float **elev = new float*[ySize];
