@@ -2087,7 +2087,7 @@ namespace spdlib
                     
 					if(pulse->numberOfReturns > 0)
 					{
-						pulse->pts = new std::vector<SPDPoint*>();
+						//pulse->pts = new std::vector<SPDPoint*>();
                         
                         for(boost::uint_fast16_t n = 0; n < pulse->numberOfReturns; ++n)
                         {

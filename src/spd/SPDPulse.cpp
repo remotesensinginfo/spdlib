@@ -409,21 +409,30 @@ namespace spdlib
 		pl_out->gpsTime = pl->gpsTime;
 		pl_out->numberOfReturns = pl->numberOfReturns;
 		pl_out->pts = new std::vector<SPDPoint*>();
-		pl_out->pts->reserve(pl->numberOfReturns);
-		for(boost::uint_fast16_t i = 0; i < pl->numberOfReturns; ++i)
-		{
-			pl_out->pts->at(i) = ptUtils.createSPDPointCopy(pl->pts->at(i));
-		}
-		pl_out->transmitted = new boost::uint_fast32_t[pl->numOfTransmittedBins];
-		for(boost::uint_fast16_t i = 0; i < pl->numOfTransmittedBins; ++i)
-		{
-			pl_out->transmitted[i] = pl->transmitted[i];
-		}
-		pl_out->received = new boost::uint_fast32_t[pl->numOfReceivedBins];
-		for(boost::uint_fast16_t i = 0; i < pl->numOfReceivedBins; ++i)
-		{
-			pl_out->received[i] = pl->received[i];
-		}
+        if(pl->numberOfReturns > 0)
+        {
+            pl_out->pts->reserve(pl->numberOfReturns);
+            for(std::vector<SPDPoint*>::iterator iterPts = pl->pts->begin(); iterPts != pl->pts->end(); ++iterPts)
+            {
+                pl_out->pts->push_back(ptUtils.createSPDPointCopy(*iterPts));
+            }
+        }
+        if(pl->numOfTransmittedBins > 0)
+        {
+            pl_out->transmitted = new boost::uint_fast32_t[pl->numOfTransmittedBins];
+            for(boost::uint_fast16_t i = 0; i < pl->numOfTransmittedBins; ++i)
+            {
+                pl_out->transmitted[i] = pl->transmitted[i];
+            }
+        }
+        if(pl->numOfReceivedBins > 0)
+        {
+            pl_out->received = new boost::uint_fast32_t[pl->numOfReceivedBins];
+            for(boost::uint_fast16_t i = 0; i < pl->numOfReceivedBins; ++i)
+            {
+                pl_out->received[i] = pl->received[i];
+            }
+        }
 		pl_out->numOfTransmittedBins = pl->numOfTransmittedBins;
 		pl_out->numOfReceivedBins = pl->numOfReceivedBins;
 		pl_out->rangeToWaveformStart = pl->rangeToWaveformStart;
@@ -462,21 +471,30 @@ namespace spdlib
 		pl_out->gpsTime = pl->gpsTime;
 		pl_out->numberOfReturns = pl->numberOfReturns;
 		pl_out->pts = new std::vector<SPDPoint*>();
-		pl_out->pts->reserve(pl->numberOfReturns);
-		for(boost::uint_fast16_t i = 0; i < pl->numberOfReturns; ++i)
-		{
-			pl_out->pts->at(i) = ptUtils.createSPDPointCopy(pl->pts->at(i));
-		}
-		pl_out->transmitted = new boost::uint_fast32_t[pl->numOfTransmittedBins];
-		for(boost::uint_fast16_t i = 0; i < pl->numOfTransmittedBins; ++i)
-		{
-			pl_out->transmitted[i] = pl->transmitted[i];
-		}
-		pl_out->received = new boost::uint_fast32_t[pl->numOfReceivedBins];
-		for(boost::uint_fast16_t i = 0; i < pl->numOfReceivedBins; ++i)
-		{
-			pl_out->received[i] = pl->received[i];
-		}
+		if(pl->numberOfReturns > 0)
+        {
+            pl_out->pts->reserve(pl->numberOfReturns);
+            for(boost::uint_fast16_t i = 0; i < pl->numberOfReturns; ++i)
+            {
+                pl_out->pts->at(i) = ptUtils.createSPDPointCopy(pl->pts->at(i));
+            }
+        }
+		if(pl->numOfTransmittedBins > 0)
+        {
+            pl_out->transmitted = new boost::uint_fast32_t[pl->numOfTransmittedBins];
+            for(boost::uint_fast16_t i = 0; i < pl->numOfTransmittedBins; ++i)
+            {
+                pl_out->transmitted[i] = pl->transmitted[i];
+            }
+        }
+        if(pl->numOfReceivedBins > 0)
+        {
+            pl_out->received = new boost::uint_fast32_t[pl->numOfReceivedBins];
+            for(boost::uint_fast16_t i = 0; i < pl->numOfReceivedBins; ++i)
+            {
+                pl_out->received[i] = pl->received[i];
+            }
+        }
 		pl_out->numOfTransmittedBins = pl->numOfTransmittedBins;
 		pl_out->numOfReceivedBins = pl->numOfReceivedBins;
 		pl_out->rangeToWaveformStart = pl->rangeToWaveformStart;
@@ -589,6 +607,7 @@ namespace spdlib
         pl_out->receiveWaveOffset = pl->receiveWaveOffset;
         pl_out->transWaveGain = pl->transWaveGain;
         pl_out->transWaveOffset = pl->transWaveOffset;
+        pl_out->pts = new std::vector<SPDPoint*>();
 		return pl_out;
 	}
 	
@@ -620,6 +639,7 @@ namespace spdlib
         pl_out->receiveWaveOffset = pl->receiveWaveOffset;
         pl_out->transWaveGain = pl->transWaveGain;
         pl_out->transWaveOffset = pl->transWaveOffset;
+        pl_out->pts = new std::vector<SPDPoint*>();
 	}
     
     SPDPulseH5V2* SPDPulseUtils::createSPDPulseH5V2Copy(SPDPulse *pl)
@@ -716,6 +736,7 @@ namespace spdlib
         pl_out->receiveWaveOffset = pl->receiveWaveOffset;
         pl_out->transWaveGain = pl->transWaveGain;
         pl_out->transWaveOffset = pl->transWaveOffset;
+        pl_out->pts = new std::vector<SPDPoint*>();
 		return pl_out;
 	}
 	
@@ -748,6 +769,7 @@ namespace spdlib
         pl_out->receiveWaveOffset = pl->receiveWaveOffset;
         pl_out->transWaveGain = pl->transWaveGain;
         pl_out->transWaveOffset = pl->transWaveOffset;
+        pl_out->pts = new std::vector<SPDPoint*>();
 	}
 	
 	SPDPulseUtils::~SPDPulseUtils()

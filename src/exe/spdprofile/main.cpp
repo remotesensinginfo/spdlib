@@ -36,6 +36,8 @@
 
 int main (int argc, char * const argv[])
 {
+    std::cout.precision(12);
+    
 	std::cout << "spdprofile " << SPDLIB_PACKAGE_STRING << ", Copyright (C) " << SPDLIB_COPYRIGHT_YEAR << " Sorted Pulse Library (SPD)\n";
 	std::cout << "This program comes with ABSOLUTELY NO WARRANTY. This is free software,\n";
 	std::cout << "and you are welcome to redistribute it under certain conditions; See\n";
@@ -49,7 +51,7 @@ int main (int argc, char * const argv[])
         TCLAP::SwitchArg smoothSwitch("","smooth","Apply a Savitzky Golay smoothing to the profiles.", false);
 		cmd.add( smoothSwitch );
         
-		TCLAP::ValueArg<boost::uint_fast32_t> smoothPolyOrderArg("o","order","The order of the polynomial used to smooth the profile (Default: 3).",false,3,"unsigned int");
+		TCLAP::ValueArg<boost::uint_fast32_t> smoothPolyOrderArg("","order","The order of the polynomial used to smooth the profile (Default: 3).",false,3,"unsigned int");
 		cmd.add( smoothPolyOrderArg );
 		
 		TCLAP::ValueArg<boost::uint_fast32_t> smoothWindowArg("w","window","The window size ((w*2)+1) used for the smoothing filter (Default: 3).",false,3,"unsigned int");
@@ -76,55 +78,46 @@ int main (int argc, char * const argv[])
         TCLAP::ValueArg<std::string> imgFormatArg("f","format","Image format (GDAL driver string), Default is ENVI.",false,"ENVI","std::string");
 		cmd.add( imgFormatArg );
         
-		TCLAP::UnlabeledMultiArg<std::string> multiFileNames("File", "File names for the files (input, output)", false, "std::string");
-		cmd.add( multiFileNames );
+		TCLAP::ValueArg<std::string> inputFileArg("i","input","The input SPD file.",true,"","String");
+		cmd.add( inputFileArg );
+        
+        TCLAP::ValueArg<std::string> outputFileArg("o","output","The output file.",true,"","String");
+		cmd.add( outputFileArg );
+        
 		cmd.parse( argc, argv );
 		
-		std::vector<std::string> fileNames = multiFileNames.getValue();
-		if(fileNames.size() == 2)
-		{
-            std::cout.precision(12);
-            std::string inSPDFilePath = fileNames.at(0);
-            std::string outFilePath = fileNames.at(1);
-            
-            bool useSmoothing = false;
-            boost::uint_fast32_t smoothWindowSize = 0;
-            boost::uint_fast32_t smoothPolyOrder = 0;
-            
-            boost::uint_fast32_t maxProfileHeight = maxHeightArg.getValue();
-            boost::uint_fast32_t numOfBins = numOfBinsArg.getValue();
-            float minPtHeight = minHeightArg.getValue();
-            
-            if(smoothSwitch.getValue())
-            {
-                useSmoothing = true;
-                smoothWindowSize = smoothWindowArg.getValue();
-                smoothPolyOrder = smoothPolyOrderArg.getValue();
-                
-                if(smoothPolyOrder > smoothWindowSize)
-                {
-                    throw spdlib::SPDException("The smoothing window size must be larger or equal to the polynomial order.");
-                }
-            }
-            
-            spdlib::SPDFile *spdInFile = new spdlib::SPDFile(inSPDFilePath);
-            
-            spdlib::SPDCreateVerticalProfiles *createProfiles = new spdlib::SPDCreateVerticalProfiles(useSmoothing, smoothWindowSize, smoothPolyOrder, maxProfileHeight, numOfBins, minPtHeight);
-            spdlib::SPDSetupProcessPulses processPulses = spdlib::SPDSetupProcessPulses(numOfColsBlockArg.getValue(), numOfRowsBlockArg.getValue(), true);
-            processPulses.processPulsesWithOutputImage(createProfiles, spdInFile, outFilePath, numOfBins, binSizeArg.getValue(), imgFormatArg.getValue());
-            
-            delete spdInFile;
-            delete createProfiles;
-            
-		}
-        else
+		std::cout.precision(12);
+        std::string inSPDFilePath = inputFileArg.getValue();
+        std::string outFilePath = outputFileArg.getValue();
+        
+        bool useSmoothing = false;
+        boost::uint_fast32_t smoothWindowSize = 0;
+        boost::uint_fast32_t smoothPolyOrder = 0;
+        
+        boost::uint_fast32_t maxProfileHeight = maxHeightArg.getValue();
+        boost::uint_fast32_t numOfBins = numOfBinsArg.getValue();
+        float minPtHeight = minHeightArg.getValue();
+        
+        if(smoothSwitch.getValue())
         {
-            for(unsigned int i = 0; i < fileNames.size(); ++i)
-			{
-                std::cout << i << ":\t" << fileNames.at(i) << std::endl;
+            useSmoothing = true;
+            smoothWindowSize = smoothWindowArg.getValue();
+            smoothPolyOrder = smoothPolyOrderArg.getValue();
+            
+            if(smoothPolyOrder > smoothWindowSize)
+            {
+                throw spdlib::SPDException("The smoothing window size must be larger or equal to the polynomial order.");
             }
-            throw spdlib::SPDException("Only 2 files can be provided");
         }
+        
+        spdlib::SPDFile *spdInFile = new spdlib::SPDFile(inSPDFilePath);
+        
+        spdlib::SPDCreateVerticalProfiles *createProfiles = new spdlib::SPDCreateVerticalProfiles(useSmoothing, smoothWindowSize, smoothPolyOrder, maxProfileHeight, numOfBins, minPtHeight);
+        spdlib::SPDSetupProcessPulses processPulses = spdlib::SPDSetupProcessPulses(numOfColsBlockArg.getValue(), numOfRowsBlockArg.getValue(), true);
+        processPulses.processPulsesWithOutputImage(createProfiles, spdInFile, outFilePath, numOfBins, binSizeArg.getValue(), imgFormatArg.getValue());
+        
+        delete spdInFile;
+        delete createProfiles;
 		
 	}
 	catch (TCLAP::ArgException &e)
@@ -135,5 +128,6 @@ int main (int argc, char * const argv[])
 	{
 		std::cerr << "Error: " << e.what() << std::endl;
 	}
+    std::cout << "spdprofile - end\n";
 }
 

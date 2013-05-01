@@ -37,74 +37,55 @@
 
 #include "spd/spd-config.h"
 
-using namespace std;
-using namespace spdlib;
-using namespace TCLAP;
-
 int main (int argc, char * const argv[]) 
-{    
-    cout << "spdoverlap " << SPDLIB_PACKAGE_STRING << ", Copyright (C) " << SPDLIB_COPYRIGHT_YEAR << " Sorted Pulse Library (SPD)\n";
-	cout << "This program comes with ABSOLUTELY NO WARRANTY. This is free software,\n";
-	cout << "and you are welcome to redistribute it under certain conditions; See\n";
-	cout << "website (http://www.spdlib.org). Bugs are to be reported on the trac\n";
-	cout << "or directly to " << SPDLIB_PACKAGE_BUGREPORT << endl;
+{
+    std::cout.precision(12);
+    
+    std::cout << "spdoverlap " << SPDLIB_PACKAGE_STRING << ", Copyright (C) " << SPDLIB_COPYRIGHT_YEAR << " Sorted Pulse Library (SPD)\n";
+	std::cout << "This program comes with ABSOLUTELY NO WARRANTY. This is free software,\n";
+	std::cout << "and you are welcome to redistribute it under certain conditions; See\n";
+	std::cout << "website (http://www.spdlib.org). Bugs are to be reported on the trac\n";
+	std::cout << "or directly to " << SPDLIB_PACKAGE_BUGREPORT << std::endl;
 	
 	try 
 	{
-		CmdLine cmd("Calculate the overlap between UPD and SPD files: spdoverlap", ' ', "1.0.0");
+        TCLAP::CmdLine cmd("Calculate the overlap between UPD and SPD files: spdoverlap", ' ', "1.0.0");
 		
-        SwitchArg cartesianSwitch("c","cartesian","Find cartesian overlap.", false);
-        SwitchArg sphericalSwitch("s","spherical","Find spherical overlap.", false);
-        vector<Arg*> arguments;
+        TCLAP::SwitchArg cartesianSwitch("c","cartesian","Find cartesian overlap.", false);
+        TCLAP::SwitchArg sphericalSwitch("s","spherical","Find spherical overlap.", false);
+        std::vector<TCLAP::Arg*> arguments;
         arguments.push_back(&cartesianSwitch);
         arguments.push_back(&sphericalSwitch);
         cmd.xorAdd(arguments);
         
-        SwitchArg print2ConsoleSwitch("p","print","Print overlapping information to console.", false);
-        cmd.add( print2ConsoleSwitch );
+        TCLAP::ValueArg<std::string> outputFileArg("o","output","The output file.",false,"","String");
+		cmd.add( outputFileArg );
         
-		UnlabeledMultiArg<string> multiFileNames("Files", "File names for the output (if required) and input files", true, "string");
+		TCLAP::UnlabeledMultiArg<std::string> multiFileNames("Files", "File names for the output (if required) and input files", true, "string");
 		cmd.add( multiFileNames );
 		cmd.parse( argc, argv );
 		
-		vector<string> fileNames = multiFileNames.getValue();		
-		if(fileNames.size() < 2)
-		{
-            for(unsigned int i = 0; i < fileNames.size(); ++i)
-            {
-                cout << i << ": " << fileNames.at(i) << endl;
-            }
-            
-			SPDTextFileUtilities textUtils;
-			string message = string("At least two file paths should have been specified. ") + textUtils.uInt32bittostring(fileNames.size()) + string(" were provided.");
-			throw SPDException(message);
-		}
-		
-        bool outToConsole = print2ConsoleSwitch.getValue();
-        string outputTextFile = "";
-        uint_fast16_t numOfFiles = fileNames.size();
-        uint_fast16_t startIdx = 0;
-        if(!outToConsole)
+        bool outToConsole = false;
+        if(outputFileArg.getValue() == "")
         {
-            outputTextFile = fileNames.at(0);
-            ++startIdx;
-            --numOfFiles;
+            outToConsole = true;
         }
+        std::string outputTextFile = outputFileArg.getValue();
+        std::vector<std::string> fileNames = multiFileNames.getValue();
+        boost::uint_fast16_t numOfFiles = fileNames.size();
         
-        SPDFileReader spdReader;
+        spdlib::SPDFileReader spdReader;
         
-        SPDFile **spdFiles = new SPDFile*[numOfFiles];
-        uint_fast16_t outIdx = 0;
-        for(boost::uint_fast16_t i = startIdx; i < fileNames.size(); ++i)
+        spdlib::SPDFile **spdFiles = new spdlib::SPDFile*[numOfFiles];
+        for(boost::uint_fast16_t i = 0; i < fileNames.size(); ++i)
         {
-            spdFiles[outIdx] = new SPDFile(fileNames.at(i));
-            spdReader.readHeaderInfo(fileNames.at(i), spdFiles[outIdx]);
-            ++outIdx;
+            spdFiles[i] = new spdlib::SPDFile(fileNames.at(i));
+            spdReader.readHeaderInfo(fileNames.at(i), spdFiles[i]);
         }
         
         double *overlap = NULL;
         
-        SPDFileProcessingUtilities spdUtils;
+        spdlib::SPDFileProcessingUtilities spdUtils;
         if(cartesianSwitch.getValue())
         {
             overlap = spdUtils.calcCartesainOverlap(spdFiles, numOfFiles);
@@ -115,7 +96,7 @@ int main (int argc, char * const argv[])
         }
         else
         {
-            throw SPDProcessingException("Option was not recognised, need to seleted either spherical or cartesian.");
+            throw spdlib::SPDProcessingException("Option was not recognised, need to seleted either spherical or cartesian.");
         }
         
         for(boost::uint_fast16_t i = 0; i < numOfFiles; ++i)
@@ -146,56 +127,56 @@ int main (int argc, char * const argv[])
         {
             if(cartesianSwitch.getValue())
             {
-                cout << "X: [" << overlap[0] << "," << overlap[1] << "]\n";
-                cout << "Y: [" << overlap[2] << "," << overlap[3] << "]\n";
-                cout << "Z: [" << overlap[4] << "," << overlap[5] << "]\n";
+                std::cout << "X: [" << overlap[0] << "," << overlap[1] << "]\n";
+                std::cout << "Y: [" << overlap[2] << "," << overlap[3] << "]\n";
+                std::cout << "Z: [" << overlap[4] << "," << overlap[5] << "]\n";
             }
             else if(sphericalSwitch.getValue())
             {
-                cout << "Azimuth: [" << overlap[0] << "," << overlap[1] << "]\n";
-                cout << "Zenith: [" << overlap[2] << "," << overlap[3] << "]\n";
-                cout << "Range: [" << overlap[4] << "," << overlap[5] << "]\n";
+                std::cout << "Azimuth: [" << overlap[0] << "," << overlap[1] << "]\n";
+                std::cout << "Zenith: [" << overlap[2] << "," << overlap[3] << "]\n";
+                std::cout << "Range: [" << overlap[4] << "," << overlap[5] << "]\n";
             }
         }
         else
         {
-            ofstream outASCIIFile;
-            outASCIIFile.open(outputTextFile.c_str(), ios::out | ios::trunc);
+            std::ofstream outASCIIFile;
+            outASCIIFile.open(outputTextFile.c_str(), std::ios::out | std::ios::trunc);
             
             if(!outASCIIFile.is_open())
             {               
-                string message = string("Could not open file ") + outputTextFile;
-                throw SPDException(message);
+                std::string message = std::string("Could not open file ") + outputTextFile;
+                throw spdlib::SPDException(message);
             }            
             outASCIIFile.precision(12);
             
             if(cartesianSwitch.getValue())
             {
-                outASCIIFile << "#Cartesian" << endl;
+                outASCIIFile << "#Cartesian" << std::endl;
             }
             else if(sphericalSwitch.getValue())
             {
-                outASCIIFile << "#Spherical" << endl;
+                outASCIIFile << "#Spherical" << std::endl;
             }
-            outASCIIFile << overlap[0] << endl;
-            outASCIIFile << overlap[1] << endl;
-            outASCIIFile << overlap[2] << endl;
-            outASCIIFile << overlap[3] << endl;
-            outASCIIFile << overlap[4] << endl;
-            outASCIIFile << overlap[5] << endl;
+            outASCIIFile << overlap[0] << std::endl;
+            outASCIIFile << overlap[1] << std::endl;
+            outASCIIFile << overlap[2] << std::endl;
+            outASCIIFile << overlap[3] << std::endl;
+            outASCIIFile << overlap[4] << std::endl;
+            outASCIIFile << overlap[5] << std::endl;
             outASCIIFile.flush();
             outASCIIFile.close();
         }
         delete[] overlap;
 	}
-	catch (ArgException &e) 
+	catch (TCLAP::ArgException &e) 
 	{
-		cerr << "Parse Error: " << e.what() << endl;
+		std::cerr << "Parse Error: " << e.what() << std::endl;
 	}
-	catch(SPDException &e)
+	catch(spdlib::SPDException &e)
 	{
-		cerr << "Error: " << e.what() << endl;
+		std::cerr << "Error: " << e.what() << std::endl;
 	}
-	
+	std::cout << "spdoverlap - end\n";
 }
 

@@ -96,6 +96,10 @@ namespace spdlib
 					pulse = new SPDPulse();
 					pulseUtils.initSPDPulse(pulse);
 					pulse->numberOfReturns = textFileUtils.strto16bitUInt(lineTokens->at(9));
+                    if(pulse->numberOfReturns > 0)
+                    {
+                        pulse->pts->reserve(pulse->numberOfReturns);
+                    }
 					gpsTime = (textFileUtils.strtodouble(lineTokens->at(1))*1000000000);
 					rangeTime = (textFileUtils.strtodouble(lineTokens->at(20))/SPD_SPEED_OF_LIGHT_NS)*2;
                     pulse->gpsTime = gpsTime - rangeTime;
@@ -412,6 +416,10 @@ namespace spdlib
 					pulse = new SPDPulse();
 					pulseUtils.initSPDPulse(pulse);
 					pulse->numberOfReturns = textFileUtils.strto16bitUInt(lineTokens->at(9));
+                    if(pulse->numberOfReturns > 0)
+                    {
+                        pulse->pts->reserve(pulse->numberOfReturns);
+                    }
 					gpsTime = (textFileUtils.strtodouble(lineTokens->at(1))*1000000000);
 					rangeTime = (textFileUtils.strtodouble(lineTokens->at(20))/SPD_SPEED_OF_LIGHT_NS)*2;
                     pulse->gpsTime = gpsTime - rangeTime;
@@ -727,6 +735,10 @@ namespace spdlib
 					pulse = new SPDPulse();
 					pulseUtils.initSPDPulse(pulse);
 					pulse->numberOfReturns = textFileUtils.strto16bitUInt(lineTokens->at(9));
+                    if(pulse->numberOfReturns > 0)
+                    {
+                        pulse->pts->reserve(pulse->numberOfReturns);
+                    }
 					gpsTime = (textFileUtils.strtodouble(lineTokens->at(1))*1000000000);
 					rangeTime = (textFileUtils.strtodouble(lineTokens->at(20))/SPD_SPEED_OF_LIGHT_NS)*2;
                     pulse->gpsTime = gpsTime - rangeTime;

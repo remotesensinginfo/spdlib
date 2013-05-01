@@ -111,6 +111,10 @@ namespace spdlib
         /// decomposeSingleGaussian is a function which fits a Gaussian to the inputted data values using 
         /// the maximum peak as the starting point.
         void decomposeSingleGaussian(boost::uint_fast32_t *waveform,boost::uint_fast16_t waveformLength,boost::uint_fast16_t waveFitWindow, float waveformTimeInterval, float *transAmp, float *transWidth, float *peakTime) throw(SPDProcessingException);
+        /// Do two rectangles intersect with one another.
+        bool rectangleIntersection(double xMin1, double xMax1, double yMin1, double yMax1, double xMin2, double xMax2, double yMin2, double yMax2);
+        bool rectangle1Contains2(double xMin1, double xMax1, double yMin1, double yMax1, double xMin2, double xMax2, double yMin2, double yMax2);
+        double calcRectangleIntersection(double xMin1, double xMax1, double yMin1, double yMax1, double xMin2, double xMax2, double yMin2, double yMax2);
         ~SPDMathsUtils();
     };
     

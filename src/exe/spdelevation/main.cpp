@@ -36,56 +36,45 @@
 
 #include "spd/spd-config.h"
 
-using namespace std;
-using namespace spdlib;
-using namespace TCLAP;
-
 int main (int argc, char * const argv[]) 
 {
-	cout << "spdelevation " << SPDLIB_PACKAGE_STRING << ", Copyright (C) " << SPDLIB_COPYRIGHT_YEAR << " Sorted Pulse Library (SPD)\n";
-	cout << "This program comes with ABSOLUTELY NO WARRANTY. This is free software,\n";
-	cout << "and you are welcome to redistribute it under certain conditions; See\n";
-	cout << "website (http://www.spdlib.org). Bugs are to be reported on the trac\n";
-	cout << "or directly to " << SPDLIB_PACKAGE_BUGREPORT << endl;
+    std::cout.precision(12);
+    
+    std::cout << "spdelevation " << SPDLIB_PACKAGE_STRING << ", Copyright (C) " << SPDLIB_COPYRIGHT_YEAR << " Sorted Pulse Library (SPD)\n";
+	std::cout << "This program comes with ABSOLUTELY NO WARRANTY. This is free software,\n";
+	std::cout << "and you are welcome to redistribute it under certain conditions; See\n";
+	std::cout << "website (http://www.spdlib.org). Bugs are to be reported on the trac\n";
+	std::cout << "or directly to " << SPDLIB_PACKAGE_BUGREPORT << std::endl;
 	
 	try 
 	{
-		CmdLine cmd("Alter the elevation of the pulses: spdelevation", ' ', "1.0.0");
+        TCLAP::CmdLine cmd("Alter the elevation of the pulses: spdelevation", ' ', "1.0.0");
 		
-		ValueArg<double> constantArg("","constant","Alter pulse elevation by a constant amount",false,0,"double");
-		ValueArg<string> variableArg("","variable","Alter pulse elevation by a variable amount defined using an image",false,"","string");
+		TCLAP::ValueArg<double> constantArg("","constant","Alter pulse elevation by a constant amount",false,0,"double");
+		TCLAP::ValueArg<std::string> variableArg("","variable","Alter pulse elevation by a variable amount defined using an image",false,"","string");
 		cmd.xorAdd(constantArg, variableArg);
         
-		SwitchArg addSwitch("","add","Add offset", false);		
-		SwitchArg minusSwitch("","minus","Remove offset", false);		
+		TCLAP::SwitchArg addSwitch("","add","Add offset", false);		
+		TCLAP::SwitchArg minusSwitch("","minus","Remove offset", false);		
 		cmd.xorAdd(addSwitch, minusSwitch);
         
-        ValueArg<boost::uint_fast32_t> numOfRowsBlockArg("r","blockrows","Number of rows within a block (Default 100)",false,100,"unsigned int");
+        TCLAP::ValueArg<boost::uint_fast32_t> numOfRowsBlockArg("r","blockrows","Number of rows within a block (Default 100)",false,100,"unsigned int");
 		cmd.add( numOfRowsBlockArg );
         
-        ValueArg<boost::uint_fast32_t> numOfColsBlockArg("c","blockcols","Number of columns within a block (Default 0) - Note values greater than 1 result in a non-sequencial SPD file.",false,0,"unsigned int");
+        TCLAP::ValueArg<boost::uint_fast32_t> numOfColsBlockArg("c","blockcols","Number of columns within a block (Default 0) - Note values greater than 1 result in a non-sequencial SPD file.",false,0,"unsigned int");
 		cmd.add( numOfColsBlockArg );
 		
-		UnlabeledMultiArg<string> multiFileNames("Files", "File names for the input and output files", true, "string");
-		cmd.add( multiFileNames );
+		TCLAP::ValueArg<std::string> inputFileArg("i","input","The input SPD file.",true,"","String");
+		cmd.add( inputFileArg );
+        
+        TCLAP::ValueArg<std::string> outputFileArg("o","output","The output SPD file.",true,"","String");
+		cmd.add( outputFileArg );
+        
 		cmd.parse( argc, argv );
-		
-		vector<string> fileNames = multiFileNames.getValue();		
-		if(fileNames.size() != 2)
-		{
-			for(unsigned int i = 0; i < fileNames.size(); ++i)
-			{
-				cout << i << ": " << fileNames.at(i) << endl;
-			}
-			
-			SPDTextFileUtilities textUtils;
-			string message = string("Two file paths should have been specified (e.g., Input and Output). ") + textUtils.uInt32bittostring(fileNames.size()) + string(" were provided.");
-			throw SPDException(message);
-		}
 		
 		bool constantElevationChange = false;
 		double elevConstant = 0;
-		string elevImagePath = "";
+		std::string elevImagePath = "";
 		if(constantArg.isSet())
 		{
 			constantElevationChange = true;
@@ -98,7 +87,7 @@ int main (int argc, char * const argv[])
 		}
 		else 
 		{
-			throw SPDException("Either a constant needs to be defined or an image with the values provided.");
+			throw spdlib::SPDException("Either a constant needs to be defined or an image with the values provided.");
 		}
 		
 		bool addOffset = true;
@@ -112,23 +101,23 @@ int main (int argc, char * const argv[])
 		}
 		else
 		{
-			throw SPDException("You need to specify whether the offset is to be added or removed.");
+			throw spdlib::SPDException("You need to specify whether the offset is to be added or removed.");
 		}
 		
-		string inputFile = fileNames.at(0);
-        string outputFile = fileNames.at(1);
+		std::string inputFile = inputFileArg.getValue();
+        std::string outputFile = outputFileArg.getValue();
         
-        SPDFile *inSPDFile = new SPDFile(inputFile);
-        SPDFileReader spdReader = SPDFileReader();
+        spdlib::SPDFile *inSPDFile = new spdlib::SPDFile(inputFile);
+        spdlib::SPDFileReader spdReader = spdlib::SPDFileReader();
         spdReader.readHeaderInfo(inputFile, inSPDFile);
         
         bool indexedSPDFile = true;
-        if(inSPDFile->getFileType() == SPD_UPD_TYPE)
+        if(inSPDFile->getFileType() == spdlib::SPD_UPD_TYPE)
         {
             indexedSPDFile = false;
         }
 		
-		SPDApplyElevationChange applyElevChange;
+		spdlib::SPDApplyElevationChange applyElevChange;
 		if(indexedSPDFile)
 		{
 			if(constantElevationChange)
@@ -152,14 +141,14 @@ int main (int argc, char * const argv[])
 			}
 		}
 	}
-	catch (ArgException &e) 
+	catch(TCLAP::ArgException &e) 
 	{
-		cerr << "Parse Error: " << e.what() << endl;
+		std::cerr << "Parse Error: " << e.what() << std::endl;
 	}
-	catch(SPDException &e)
+	catch(spdlib::SPDException &e)
 	{
-		cerr << "Error: " << e.what() << endl;
+		std::cerr << "Error: " << e.what() << std::endl;
 	}
-	
+	std::cout << "spdelevation - end\n";
 }
 
