@@ -191,6 +191,7 @@ namespace spdlib
         {return std::vector<std::string>();};
         void setHeaderValues(SPDFile *spdFile) throw(SPDProcessingException)
         {};
+        uint_fast16_t scalePixelValue(uint_fast16_t value);
         
         ~SPDLinearStretchRGBValues();
     protected:
@@ -203,6 +204,10 @@ namespace spdlib
         float redRange;
         float greenRange;
         float blueRange;
+        
+        float maxRange;
+        float totalMin;
+        float totalMax;
 	};
     
 }
