@@ -54,6 +54,8 @@ namespace spdlib
     protected:
         virtual void writeHeaderInfo(H5::H5File *spdOutH5File, SPDFile *spdFile)throw(SPDIOException);
         virtual void updateHeaderInfo(H5::H5File *spdOutH5File, SPDFile *spdFile)throw(SPDIOException);
+        virtual void updateHeaderInfo(SPDFile *spdFile)throw(SPDIOException);
+        virtual void readHeaderInfo(H5::H5File *spdH5File, SPDFile *spdFile) throw(SPDIOException);
     };
     
     
@@ -65,6 +67,7 @@ namespace spdlib
 		SPDSeqFileWriter(const SPDSeqFileWriter &dataExporter) throw(SPDException);
         SPDDataExporter* getInstance();
 		bool open(SPDFile *spdFile, std::string outputFile) throw(SPDIOException);
+        bool reopen(SPDFile *spdFile, std::string outputFile) throw(SPDIOException);
 		void writeDataColumn(std::list<SPDPulse*> *pls, boost::uint_fast32_t col, boost::uint_fast32_t row)throw(SPDIOException);
 		void writeDataColumn(std::vector<SPDPulse*> *pls, boost::uint_fast32_t col, boost::uint_fast32_t row)throw(SPDIOException);
 		void finaliseClose() throw(SPDIOException);
@@ -123,6 +126,7 @@ namespace spdlib
 		SPDNonSeqFileWriter(const SPDSeqFileWriter &dataExporter) throw(SPDException);
         SPDDataExporter* getInstance();
 		bool open(SPDFile *spdFile, std::string outputFile) throw(SPDIOException);
+        bool reopen(SPDFile *spdFile, std::string outputFile) throw(SPDIOException);
 		void writeDataColumn(std::list<SPDPulse*> *pls, boost::uint_fast32_t col, boost::uint_fast32_t row)throw(SPDIOException);
 		void writeDataColumn(std::vector<SPDPulse*> *pls, boost::uint_fast32_t col, boost::uint_fast32_t row)throw(SPDIOException);
 		void finaliseClose() throw(SPDIOException);
@@ -174,6 +178,7 @@ namespace spdlib
 		SPDNoIdxFileWriter(const SPDNoIdxFileWriter &dataExporter) throw(SPDException);
         SPDDataExporter* getInstance();
 		bool open(SPDFile *spdFile, std::string outputFile) throw(SPDIOException);
+        bool reopen(SPDFile *spdFile, std::string outputFile) throw(SPDIOException);
 		void writeDataColumn(std::list<SPDPulse*> *pls, boost::uint_fast32_t col, boost::uint_fast32_t row)throw(SPDIOException);
 		void writeDataColumn(std::vector<SPDPulse*> *pls, boost::uint_fast32_t col, boost::uint_fast32_t row)throw(SPDIOException);
 		void finaliseClose() throw(SPDIOException);
@@ -209,6 +214,7 @@ namespace spdlib
         bool firstReturn;
         bool firstPulse;
         bool firstWaveform;
+        bool reOpenedFile;
 	};
 }
 

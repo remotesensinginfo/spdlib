@@ -422,6 +422,44 @@ namespace spdlib
                 delete points;
                 throw SPDProcessingException("Not enough points, need at least 3.");
             }
+            else if(points->size() < 100)
+            {
+                double meanX = 0;
+                double meanY = 0;
+                
+                double varX = 0;
+                double varY = 0;
+                
+                for(std::vector<SPDPoint*>::iterator iterPts = points->begin(); iterPts != points->end(); ++iterPts)
+                {
+                    meanX += (*iterPts)->x;
+                    meanY += (*iterPts)->y;
+                }
+                
+                meanX = meanX / points->size();
+                meanY = meanY / points->size();
+                
+                //std::cout << "meanX = " << meanX << std::endl;
+                //std::cout << "meanY = " << meanY << std::endl;
+                
+                for(std::vector<SPDPoint*>::iterator iterPts = points->begin(); iterPts != points->end(); ++iterPts)
+                {
+                    varX += (*iterPts)->x - meanX;
+                    varY += (*iterPts)->y - meanY;
+                }
+                
+                varX = fabs(varX / points->size());
+                varY = fabs(varY / points->size());
+                
+                //std::cout << "varX = " << varX << std::endl;
+                //std::cout << "varY = " << varX << std::endl;
+                
+                if((varX < 4) | (varY < 4))
+                {
+                    delete points;
+                    throw SPDProcessingException("Points are all within a line.");
+                }
+            }
             if(thinData)
             {
                 this->thinPoints(points);
@@ -433,21 +471,24 @@ namespace spdlib
             std::vector<SPDPoint*>::iterator iterPts;
             for(iterPts = points->begin(); iterPts != points->end(); ++iterPts)
             {
-                K::Point_2 cgalPt((*iterPts)->x,(*iterPts)->y);
-                dt->insert(cgalPt);
-                if(elevVal == SPD_USE_Z)
+                if((*iterPts) != NULL)
                 {
-                    CGALCoordType value = (*iterPts)->z;
-                    values->insert(std::make_pair(cgalPt, value));
-                }
-                else if(elevVal == SPD_USE_HEIGHT)
-                {
-                    CGALCoordType value = (*iterPts)->height;
-                    values->insert(std::make_pair(cgalPt, value));
-                }
-                else
-                {
-                    throw SPDProcessingException("Elevation type not recognised.");
+                    K::Point_2 cgalPt((*iterPts)->x,(*iterPts)->y);
+                    dt->insert(cgalPt);
+                    if(elevVal == SPD_USE_Z)
+                    {
+                        CGALCoordType value = (*iterPts)->z;
+                        values->insert(std::make_pair(cgalPt, value));
+                    }
+                    else if(elevVal == SPD_USE_HEIGHT)
+                    {
+                        CGALCoordType value = (*iterPts)->height;
+                        values->insert(std::make_pair(cgalPt, value));
+                    }
+                    else
+                    {
+                        throw SPDProcessingException("Elevation type not recognised.");
+                    }
                 }
             }
             delete points;
@@ -469,6 +510,44 @@ namespace spdlib
                 delete points;
                 throw SPDProcessingException("Not enough points, need at least 3.");
             }
+            else if(points->size() < 100)
+            {
+                double meanX = 0;
+                double meanY = 0;
+                
+                double varX = 0;
+                double varY = 0;
+                
+                for(std::vector<SPDPoint*>::iterator iterPts = points->begin(); iterPts != points->end(); ++iterPts)
+                {
+                    meanX += (*iterPts)->x;
+                    meanY += (*iterPts)->y;
+                }
+                
+                meanX = meanX / points->size();
+                meanY = meanY / points->size();
+                
+                //std::cout << "meanX = " << meanX << std::endl;
+                //std::cout << "meanY = " << meanY << std::endl;
+                
+                for(std::vector<SPDPoint*>::iterator iterPts = points->begin(); iterPts != points->end(); ++iterPts)
+                {
+                    varX += (*iterPts)->x - meanX;
+                    varY += (*iterPts)->y - meanY;
+                }
+                
+                varX = fabs(varX / points->size());
+                varY = fabs(varY / points->size());
+                
+                //std::cout << "varX = " << varX << std::endl;
+                //std::cout << "varY = " << varX << std::endl;
+                
+                if((varX < 4) | (varY < 4))
+                {
+                    delete points;
+                    throw SPDProcessingException("Points are all within a line.");
+                }
+            }
             if(thinData)
             {
                 this->thinPoints(points);
@@ -480,21 +559,24 @@ namespace spdlib
             std::vector<SPDPoint*>::iterator iterPts;
             for(iterPts = points->begin(); iterPts != points->end(); ++iterPts)
             {
-                K::Point_2 cgalPt((*iterPts)->x,(*iterPts)->y);
-                dt->insert(cgalPt);
-                if(elevVal == SPD_USE_Z)
+                if((*iterPts) != NULL)
                 {
-                    CGALCoordType value = (*iterPts)->z;
-                    values->insert(std::make_pair(cgalPt, value));
-                }
-                else if(elevVal == SPD_USE_HEIGHT)
-                {
-                    CGALCoordType value = (*iterPts)->height;
-                    values->insert(std::make_pair(cgalPt, value));
-                }
-                else
-                {
-                    throw SPDProcessingException("Elevation type not recognised.");
+                    K::Point_2 cgalPt((*iterPts)->x,(*iterPts)->y);
+                    dt->insert(cgalPt);
+                    if(elevVal == SPD_USE_Z)
+                    {
+                        CGALCoordType value = (*iterPts)->z;
+                        values->insert(std::make_pair(cgalPt, value));
+                    }
+                    else if(elevVal == SPD_USE_HEIGHT)
+                    {
+                        CGALCoordType value = (*iterPts)->height;
+                        values->insert(std::make_pair(cgalPt, value));
+                    }
+                    else
+                    {
+                        throw SPDProcessingException("Elevation type not recognised.");
+                    }
                 }
             }
             delete points;
@@ -516,6 +598,44 @@ namespace spdlib
                 delete points;
                 throw SPDProcessingException("Not enough points, need at least 3.");
             }
+            else if(points->size() < 100)
+            {
+                double meanX = 0;
+                double meanY = 0;
+                
+                double varX = 0;
+                double varY = 0;
+                
+                for(std::vector<SPDPoint*>::iterator iterPts = points->begin(); iterPts != points->end(); ++iterPts)
+                {
+                    meanX += (*iterPts)->x;
+                    meanY += (*iterPts)->y;
+                }
+                
+                meanX = meanX / points->size();
+                meanY = meanY / points->size();
+                
+                //std::cout << "meanX = " << meanX << std::endl;
+                //std::cout << "meanY = " << meanY << std::endl;
+                
+                for(std::vector<SPDPoint*>::iterator iterPts = points->begin(); iterPts != points->end(); ++iterPts)
+                {
+                    varX += (*iterPts)->x - meanX;
+                    varY += (*iterPts)->y - meanY;
+                }
+                
+                varX = fabs(varX / points->size());
+                varY = fabs(varY / points->size());
+                
+                //std::cout << "varX = " << varX << std::endl;
+                //std::cout << "varY = " << varX << std::endl;
+                
+                if((varX < 4) | (varY < 4))
+                {
+                    delete points;
+                    throw SPDProcessingException("Points are all within a line.");
+                }
+            }
             if(thinData)
             {
                 this->thinPoints(points);
@@ -527,21 +647,24 @@ namespace spdlib
             std::vector<SPDPoint*>::iterator iterPts;
             for(iterPts = points->begin(); iterPts != points->end(); ++iterPts)
             {
-                K::Point_2 cgalPt((*iterPts)->x,(*iterPts)->y);
-                dt->insert(cgalPt);
-                if(elevVal == SPD_USE_Z)
+                if((*iterPts) != NULL)
                 {
-                    CGALCoordType value = (*iterPts)->z;
-                    values->insert(std::make_pair(cgalPt, value));
-                }
-                else if(elevVal == SPD_USE_HEIGHT)
-                {
-                    CGALCoordType value = (*iterPts)->height;
-                    values->insert(std::make_pair(cgalPt, value));
-                }
-                else
-                {
-                    throw SPDProcessingException("Elevation type not recognised.");
+                    K::Point_2 cgalPt((*iterPts)->x,(*iterPts)->y);
+                    dt->insert(cgalPt);
+                    if(elevVal == SPD_USE_Z)
+                    {
+                        CGALCoordType value = (*iterPts)->z;
+                        values->insert(std::make_pair(cgalPt, value));
+                    }
+                    else if(elevVal == SPD_USE_HEIGHT)
+                    {
+                        CGALCoordType value = (*iterPts)->height;
+                        values->insert(std::make_pair(cgalPt, value));
+                    }
+                    else
+                    {
+                        throw SPDProcessingException("Elevation type not recognised.");
+                    }
                 }
             }
             delete points;
@@ -563,6 +686,44 @@ namespace spdlib
                 delete points;
                 throw SPDProcessingException("Not enough points, need at least 3.");
             }
+            else if(points->size() < 100)
+            {
+                double meanX = 0;
+                double meanY = 0;
+                
+                double varX = 0;
+                double varY = 0;
+                
+                for(std::vector<SPDPoint*>::iterator iterPts = points->begin(); iterPts != points->end(); ++iterPts)
+                {
+                    meanX += (*iterPts)->x;
+                    meanY += (*iterPts)->y;
+                }
+                
+                meanX = meanX / points->size();
+                meanY = meanY / points->size();
+                
+                //std::cout << "meanX = " << meanX << std::endl;
+                //std::cout << "meanY = " << meanY << std::endl;
+                
+                for(std::vector<SPDPoint*>::iterator iterPts = points->begin(); iterPts != points->end(); ++iterPts)
+                {
+                    varX += (*iterPts)->x - meanX;
+                    varY += (*iterPts)->y - meanY;
+                }
+                
+                varX = fabs(varX / points->size());
+                varY = fabs(varY / points->size());
+                
+                //std::cout << "varX = " << varX << std::endl;
+                //std::cout << "varY = " << varX << std::endl;
+                
+                if((varX < 4) | (varY < 4))
+                {
+                    delete points;
+                    throw SPDProcessingException("Points are all within a line.");
+                }
+            }
             if(thinData)
             {
                 this->thinPoints(points);
@@ -574,21 +735,24 @@ namespace spdlib
             std::vector<SPDPoint*>::iterator iterPts;
             for(iterPts = points->begin(); iterPts != points->end(); ++iterPts)
             {
-                K::Point_2 cgalPt((*iterPts)->x,(*iterPts)->y);
-                dt->insert(cgalPt);
-                if(elevVal == SPD_USE_Z)
+                if((*iterPts) != NULL)
                 {
-                    CGALCoordType value = (*iterPts)->z;
-                    values->insert(std::make_pair(cgalPt, value));
-                }
-                else if(elevVal == SPD_USE_HEIGHT)
-                {
-                    CGALCoordType value = (*iterPts)->height;
-                    values->insert(std::make_pair(cgalPt, value));
-                }
-                else
-                {
-                    throw SPDProcessingException("Elevation type not recognised.");
+                    K::Point_2 cgalPt((*iterPts)->x,(*iterPts)->y);
+                    dt->insert(cgalPt);
+                    if(elevVal == SPD_USE_Z)
+                    {
+                        CGALCoordType value = (*iterPts)->z;
+                        values->insert(std::make_pair(cgalPt, value));
+                    }
+                    else if(elevVal == SPD_USE_HEIGHT)
+                    {
+                        CGALCoordType value = (*iterPts)->height;
+                        values->insert(std::make_pair(cgalPt, value));
+                    }
+                    else
+                    {
+                        throw SPDProcessingException("Elevation type not recognised.");
+                    }
                 }
             }
             delete points;

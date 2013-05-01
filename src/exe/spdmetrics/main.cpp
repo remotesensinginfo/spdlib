@@ -33,100 +33,100 @@
 
 #include "spd/spd-config.h"
 
-using namespace std;
-using namespace spdlib;
-using namespace TCLAP;
-
 int main (int argc, char * const argv[]) 
 {
-	cout << "spdmetrics " << SPDLIB_PACKAGE_STRING << ", Copyright (C) " << SPDLIB_COPYRIGHT_YEAR << " Sorted Pulse Library (SPD)\n";
-	cout << "This program comes with ABSOLUTELY NO WARRANTY. This is free software,\n";
-	cout << "and you are welcome to redistribute it under certain conditions; See\n";
-	cout << "website (http://www.spdlib.org). Bugs are to be reported on the trac\n";
-	cout << "or directly to " << SPDLIB_PACKAGE_BUGREPORT << endl;
+    std::cout.precision(12);
+    
+    std::cout << "spdmetrics " << SPDLIB_PACKAGE_STRING << ", Copyright (C) " << SPDLIB_COPYRIGHT_YEAR << " Sorted Pulse Library (SPD)\n";
+	std::cout << "This program comes with ABSOLUTELY NO WARRANTY. This is free software,\n";
+	std::cout << "and you are welcome to redistribute it under certain conditions; See\n";
+	std::cout << "website (http://www.spdlib.org). Bugs are to be reported on the trac\n";
+	std::cout << "or directly to " << SPDLIB_PACKAGE_BUGREPORT << std::endl;
 	
 	try 
 	{
-		CmdLine cmd("Calculate metrics : spdmetrics", ' ', "1.0.0");
+        TCLAP::CmdLine cmd("Calculate metrics : spdmetrics", ' ', "1.0.0");
 		
-        SwitchArg imageStatsSwitch("i","image","Run metrics with image output", false);		
-		SwitchArg vectorStatsSwitch("v","vector","Run metrics with vector output", false);
-        SwitchArg asciiStatsSwitch("a","ascii","Run metrics with ASCII output", false);
+        TCLAP::SwitchArg imageStatsSwitch("","image","Run metrics with image output", false);
+		TCLAP::SwitchArg vectorStatsSwitch("","vector","Run metrics with vector output", false);
+        TCLAP::SwitchArg asciiStatsSwitch("","ascii","Run metrics with ASCII output", false);
         
-        vector<Arg*> arguments;
+        std::vector<TCLAP::Arg*> arguments;
         arguments.push_back(&imageStatsSwitch);
         arguments.push_back(&vectorStatsSwitch);
         arguments.push_back(&asciiStatsSwitch);
         
         cmd.xorAdd(arguments);
         
-        ValueArg<boost::uint_fast32_t> numOfRowsBlockArg("r","blockrows","Number of rows within a block (Default 100)",false,100,"unsigned int");
+        TCLAP::ValueArg<boost::uint_fast32_t> numOfRowsBlockArg("r","blockrows","Number of rows within a block (Default 100)",false,100,"unsigned int");
 		cmd.add( numOfRowsBlockArg );
         
-        ValueArg<boost::uint_fast32_t> numOfColsBlockArg("c","blockcols","Number of columns within a block (Default 0) - Note values greater than 1 result in a non-sequencial SPD file.",false,0,"unsigned int");
+        TCLAP::ValueArg<boost::uint_fast32_t> numOfColsBlockArg("c","blockcols","Number of columns within a block (Default 0) - Note values greater than 1 result in a non-sequencial SPD file.",false,0,"unsigned int");
 		cmd.add( numOfColsBlockArg );
         
-        ValueArg<float> binSizeArg("b","binsize","Bin size for processing and output image (Default 0) - Note 0 will use the native SPD file bin size.",false,0,"float");
+        TCLAP::ValueArg<float> binSizeArg("b","binsize","Bin size for processing and output image (Default 0) - Note 0 will use the native SPD file bin size.",false,0,"float");
 		cmd.add( binSizeArg );
         
-        ValueArg<string> imgFormatArg("f","format","Image format (GDAL driver string), Default is ENVI.",false,"ENVI","string");
+        TCLAP::ValueArg<std::string> imgFormatArg("f","format","Image format (GDAL driver string), Default is ENVI.",false,"ENVI","string");
 		cmd.add( imgFormatArg );
         
-		UnlabeledMultiArg<string> multiFileNames("File", "File names for the input files", false, "string");
-		cmd.add( multiFileNames );
-		cmd.parse( argc, argv );
+        TCLAP::ValueArg<std::string> inputFileArg("i","input","The input SPD file.",true,"","String");
+		cmd.add( inputFileArg );
+        
+        TCLAP::ValueArg<std::string> outputFileArg("o","output","The output file.",true,"","String");
+		cmd.add( outputFileArg );
+        
+		TCLAP::ValueArg<std::string> xmlFileArg("m","metricsxml","The output SPD file.",true,"","String");
+		cmd.add( xmlFileArg );
+        
+        TCLAP::ValueArg<std::string> vectorFileArg("v","vectorfile","The input vector file.",false,"","String");
+		cmd.add( vectorFileArg );
 		
-		vector<string> fileNames = multiFileNames.getValue();		
-		if((fileNames.size() == 3) & imageStatsSwitch.getValue())
+        cmd.parse( argc, argv );
+		
+		if(imageStatsSwitch.getValue())
 		{
-            string inXMLFilePath = fileNames.at(0);
-            string inSPDFilePath = fileNames.at(1);
-            string outFilePath = fileNames.at(2);
+            std::string inXMLFilePath = xmlFileArg.getValue();
+            std::string inSPDFilePath = inputFileArg.getValue();
+            std::string outFilePath = outputFileArg.getValue();
             
-            SPDCalcMetrics calcMetrics;
+            spdlib::SPDCalcMetrics calcMetrics;
             calcMetrics.calcMetricToImage(inXMLFilePath, inSPDFilePath, outFilePath, numOfColsBlockArg.getValue(), numOfRowsBlockArg.getValue(), binSizeArg.getValue(), imgFormatArg.getValue()); 
 		}
-        else if(fileNames.size() == 4)
+        else if(vectorStatsSwitch.getValue())
 		{
-            string inXMLFilePath = fileNames.at(0);
-            string inSPDFilePath = fileNames.at(1);
-            string inVectorFile = fileNames.at(2);
-            string outFilePath = fileNames.at(3);
+            std::string inXMLFilePath = xmlFileArg.getValue();
+            std::string inSPDFilePath = inputFileArg.getValue();
+            std::string inVectorFile = vectorFileArg.getValue();
+            std::string outFilePath = outputFileArg.getValue();
             
-            if(vectorStatsSwitch.getValue())
-            {
-                SPDCalcMetrics calcMetrics;
-                calcMetrics.calcMetricToVectorShp(inXMLFilePath, inSPDFilePath, inVectorFile, outFilePath, true, true);
-            }
-            else if(asciiStatsSwitch.getValue())
-            {
-                SPDCalcMetrics calcMetrics;
-                calcMetrics.calcMetricForVector2ASCII(inXMLFilePath, inSPDFilePath, inVectorFile, outFilePath);
-            }
-            else
-            {
-                throw SPDException("Option not recognised. Must select image, vector or ASCII noting that image only accepts 3 input files.");
-            }
+            spdlib::SPDCalcMetrics calcMetrics;
+            calcMetrics.calcMetricToVectorShp(inXMLFilePath, inSPDFilePath, inVectorFile, outFilePath, true, true);
+        }
+        else if(asciiStatsSwitch.getValue())
+        {
+            std::string inXMLFilePath = xmlFileArg.getValue();
+            std::string inSPDFilePath = inputFileArg.getValue();
+            std::string inVectorFile = vectorFileArg.getValue();
+            std::string outFilePath = outputFileArg.getValue();
             
-		}
+            spdlib::SPDCalcMetrics calcMetrics;
+            calcMetrics.calcMetricForVector2ASCII(inXMLFilePath, inSPDFilePath, inVectorFile, outFilePath);
+        }
         else
         {
-            cout << "ERROR: Only 3 files can be provided for image output while 4 files are required for vector or ASCII output\n";
-            for(unsigned int i = 0; i < fileNames.size(); ++i)
-			{
-                cout << i << ":\t" << fileNames.at(i) << endl;
-            }
+            throw spdlib::SPDException("Option not recognised. Must select image, vector or ASCII.");
         }
 		
 	}
-	catch (ArgException &e) 
+	catch (TCLAP::ArgException &e) 
 	{
-		cerr << "Parse Error: " << e.what() << endl;
+		std::cerr << "Parse Error: " << e.what() << std::endl;
 	}
-	catch(SPDException &e)
+	catch(spdlib::SPDException &e)
 	{
-		cerr << "Error: " << e.what() << endl;
+		std::cerr << "Error: " << e.what() << std::endl;
 	}
-	
+	std::cout << "spdmetrics - end\n";
 }
 

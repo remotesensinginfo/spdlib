@@ -174,6 +174,10 @@ namespace spdlib
                         pulse->scanAngleRank = textFileUtils.strtofloat(lineTokens->at(7));
                         pulse->pts->push_back(point);
                         pulse->numberOfReturns = 1;
+                        if(pulse->numberOfReturns > 0)
+                        {
+                            pulse->pts->reserve(pulse->numberOfReturns);
+                        }
                     }
                     else
                     {
@@ -396,6 +400,10 @@ namespace spdlib
                         pulse->scanAngleRank = textFileUtils.strtofloat(lineTokens->at(7));
                         pulse->pts->push_back(point);
                         pulse->numberOfReturns = 1;
+                        if(pulse->numberOfReturns > 0)
+                        {
+                            pulse->pts->reserve(pulse->numberOfReturns);
+                        }
                     }
                     else
                     {
@@ -618,6 +626,10 @@ namespace spdlib
                         pulse->scanAngleRank = textFileUtils.strtofloat(lineTokens->at(7));
                         pulse->pts->push_back(point);
                         pulse->numberOfReturns = 1;
+                        if(pulse->numberOfReturns > 0)
+                        {
+                            pulse->pts->reserve(pulse->numberOfReturns);
+                        }
                     }
                     else
                     {

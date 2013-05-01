@@ -52,27 +52,51 @@ namespace spdlib
                 ptsAvail = false;
             }
             
+            int feedback = ySize/10.0;
+            int feedbackCounter = 0;
+            std::cout << "Started" << std::flush;
             if(ptsAvail)
-            {
+            {                
                 for(boost::uint_fast32_t i = 0; i < ySize; ++i)
                 {
+                    if(ySize < 10)
+                    {
+                        std::cout << "." << i << "." << std::flush;
+                    }
+                    else if((feedback != 0) && ((i % feedback) == 0))
+                    {
+                        std::cout << "." << feedbackCounter << "." << std::flush;
+                        feedbackCounter = feedbackCounter + 10;
+                    }
+                    
                     for(boost::uint_fast32_t j = 0; j < xSize; ++j)
                     {
                         imageDataBlock[i][j][0] = interpolator->getValue(cenPts[i][j]->x, cenPts[i][j]->y);
                     }
                 }
+                
             }
             else
             {
                 for(boost::uint_fast32_t i = 0; i < ySize; ++i)
                 {
+                    if(ySize < 10)
+                    {
+                        std::cout << "." << i << "." << std::flush;
+                    }
+                    else if((feedback != 0) && ((i % feedback) == 0))
+                    {
+                        std::cout << "." << feedbackCounter << "." << std::flush;
+                        feedbackCounter = feedbackCounter + 10;
+                    }
+                    
                     for(boost::uint_fast32_t j = 0; j < xSize; ++j)
                     {
                         imageDataBlock[i][j][0] = std::numeric_limits<float>::signaling_NaN();
                     }
                 }
             }
-			
+			std::cout << " Complete.\n";
 			interpolator->resetInterpolator();
             
 		}
@@ -115,18 +139,28 @@ namespace spdlib
                 ptsAvail = false;
             }
 			
+            int feedback = ySize/10.0;
+            int feedbackCounter = 0;
+            std::cout << "Started" << std::flush;
+            
             if(ptsAvail)
             {
-                unsigned int totalNumPoints = ySize * xSize;
-                unsigned int numProcessed = 0;
+                
                 for(boost::uint_fast32_t i = 0; i < ySize; ++i)
                 {
+                    if(ySize < 10)
+                    {
+                        std::cout << "." << i << "." << std::flush;
+                    }
+                    else if((feedback != 0) && ((i % feedback) == 0))
+                    {
+                        std::cout << "." << feedbackCounter << "." << std::flush;
+                        feedbackCounter = feedbackCounter + 10;
+                    }
+                    
                     for(boost::uint_fast32_t j = 0; j < xSize; ++j)
                     {
                         imageDataBlock[i][j][0] = interpolator->getValue(cenPts[i][j]->x, cenPts[i][j]->y);
-                        numProcessed = (i*xSize) + j;
-                        std::cout << floor((((float)numProcessed)/((float)totalNumPoints))*100) << "% Complete.\r";
-                        //std::cout << " [" << i << "][" << j << "] = " << imageDataBlock[i][j][0] << std::endl;
                     }
                 }
             }
@@ -134,12 +168,23 @@ namespace spdlib
             {
                 for(boost::uint_fast32_t i = 0; i < ySize; ++i)
                 {
+                    if(ySize < 10)
+                    {
+                        std::cout << "." << i << "." << std::flush;
+                    }
+                    else if((feedback != 0) && ((i % feedback) == 0))
+                    {
+                        std::cout << "." << feedbackCounter << "." << std::flush;
+                        feedbackCounter = feedbackCounter + 10;
+                    }
+                    
                     for(boost::uint_fast32_t j = 0; j < xSize; ++j)
                     {
                         imageDataBlock[i][j][0] = std::numeric_limits<float>::signaling_NaN();
                     }
                 }
             }
+            std::cout << " Complete.\n";
 			
 			interpolator->resetInterpolator();
 		}
@@ -182,10 +227,23 @@ namespace spdlib
                 ptsAvail = false;
             }
 			
+            int feedback = ySize/10.0;
+            int feedbackCounter = 0;
+            std::cout << "Started" << std::flush;
             if(ptsAvail)
             {
                 for(boost::uint_fast32_t i = 0; i < ySize; ++i)
                 {
+                    if(ySize < 10)
+                    {
+                        std::cout << "." << i << "." << std::flush;
+                    }
+                    else if((feedback != 0) && ((i % feedback) == 0))
+                    {
+                        std::cout << "." << feedbackCounter << "." << std::flush;
+                        feedbackCounter = feedbackCounter + 10;
+                    }
+                    
                     for(boost::uint_fast32_t j = 0; j < xSize; ++j)
                     {
                         imageDataBlock[i][j][0] = interpolator->getValue(cenPts[i][j]->x, cenPts[i][j]->y);
@@ -196,12 +254,23 @@ namespace spdlib
             {
                 for(boost::uint_fast32_t i = 0; i < ySize; ++i)
                 {
+                    if(ySize < 10)
+                    {
+                        std::cout << "." << i << "." << std::flush;
+                    }
+                    else if((feedback != 0) && ((i % feedback) == 0))
+                    {
+                        std::cout << "." << feedbackCounter << "." << std::flush;
+                        feedbackCounter = feedbackCounter + 10;
+                    }
+                    
                     for(boost::uint_fast32_t j = 0; j < xSize; ++j)
                     {
                         imageDataBlock[i][j][0] = std::numeric_limits<float>::signaling_NaN();
                     }
                 }
             }
+            std::cout << " Complete.\n";
 			
 			interpolator->resetInterpolator();
 		}
@@ -241,10 +310,23 @@ namespace spdlib
                 ptsAvail = false;
             }
 			
+            int feedback = ySize/10.0;
+            int feedbackCounter = 0;
+            std::cout << "Started" << std::flush;
             if(ptsAvail)
             {
                 for(boost::uint_fast32_t i = 0; i < ySize; ++i)
                 {
+                    if(ySize < 10)
+                    {
+                        std::cout << "." << i << "." << std::flush;
+                    }
+                    else if((feedback != 0) && ((i % feedback) == 0))
+                    {
+                        std::cout << "." << feedbackCounter << "." << std::flush;
+                        feedbackCounter = feedbackCounter + 10;
+                    }
+                    
                     for(boost::uint_fast32_t j = 0; j < xSize; ++j)
                     {
                         imageDataBlock[i][j][0] = interpolator->getValue(cenPts[i][j]->x, cenPts[i][j]->y);
@@ -255,13 +337,24 @@ namespace spdlib
             {
                 for(boost::uint_fast32_t i = 0; i < ySize; ++i)
                 {
+                    if(ySize < 10)
+                    {
+                        std::cout << "." << i << "." << std::flush;
+                    }
+                    else if((feedback != 0) && ((i % feedback) == 0))
+                    {
+                        std::cout << "." << feedbackCounter << "." << std::flush;
+                        feedbackCounter = feedbackCounter + 10;
+                    }
+                    
                     for(boost::uint_fast32_t j = 0; j < xSize; ++j)
                     {
                         imageDataBlock[i][j][0] = std::numeric_limits<float>::signaling_NaN();
                     }
                 }
             }
-			
+			std::cout << " Complete.\n";
+            
 			interpolator->resetInterpolator();
 		}
 		catch (SPDProcessingException &e) 

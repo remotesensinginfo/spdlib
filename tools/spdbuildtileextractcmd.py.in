@@ -1,0 +1,67 @@
+#!/usr/bin/env python
+
+import argparse
+import xml.etree.ElementTree as ET
+import sys
+
+def createExtractTilesCommands(outputFile, tileXMLFile, spdFilesLst, outBase, delTiles):
+    tree = ET.parse(tileXMLFile)
+    root = tree.getroot()
+    
+    numRows = int(root.attrib['rows'])
+    numCols = int(root.attrib['columns'])
+    
+    print("Rows: " + str(numRows))
+    print("Cols: " + str(numCols))
+    
+    outFile = open(outputFile, 'w')
+    
+    for r in range(numRows):
+        for c in range(numCols):
+            cmd = "spdtiling --extract --input " + spdFilesLst + " --output " + outBase + " --tiles " + tileXMLFile
+            if delTiles:
+                cmd += " --deltiles"
+            cmd += " --row " + str(r+1)
+            cmd += " --col " + str(c+1)
+            cmd += "\n"
+            outFile.write(cmd)
+    
+    outFile.close()
+    print('Complete.')
+
+
+if __name__ == '__main__':
+    print('spdbuildtileextractcmd.py builds extract tiled commands ')
+    print('for the @SPDLIB_PACKAGE@ library.')
+    print('\nThis script was distributed with version @SPDLIB_PACKAGE_VERSION@ of the @SPDLIB_PACKAGE@ library.')
+    print('For maintenance email @SPDLIB_PACKAGE_BUGREPORT@')
+
+    # Create the command line options parser.
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-f", "--filelist", type=str, help="A text file with a list of input files, one per line.")
+    parser.add_argument("-t", "--tiles", type=str, help="Tiles XML file.")
+    parser.add_argument("-b", "--outputbase", type=str, help="The base path for the tiles.")    
+    parser.add_argument("-o", "--output", type=str, help="Output file listing the commands for extracting the tiles.")
+    parser.add_argument("-d", "--deltile", action="store_true", help="Set to include option to delete tiles with no data.")
+    # Call the parser to parse the arguments.
+    args = parser.parse_args()
+    
+    if args.filelist == None:
+        # Print an error message if not and exit.
+        print("Error: No filelist option provided.")
+        sys.exit()
+    if args.tiles == None:
+        # Print an error message if not and exit.
+        print("Error: No tiles option provided.")
+        sys.exit()
+    if args.outputbase == None:
+        # Print an error message if not and exit.
+        print("Error: No outputbase option provided.")
+        sys.exit()
+    if args.output == None:
+        # Print an error message if not and exit.
+        print("Error: No output option provided.")
+        sys.exit()
+        
+    createExtractTilesCommands(args.output, args.tiles, args.filelist, args.outputbase, args.deltile)
+        

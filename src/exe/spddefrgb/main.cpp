@@ -37,6 +37,8 @@
 
 int main (int argc, char * const argv[]) 
 {
+    std::cout.precision(12);
+    
     std::cout << "spddefrgb " << SPDLIB_PACKAGE_STRING << ", Copyright (C) " << SPDLIB_COPYRIGHT_YEAR << " Sorted Pulse Library (SPD)\n";
 	std::cout << "This program comes with ABSOLUTELY NO WARRANTY. This is free software,\n";
 	std::cout << "and you are welcome to redistribute it under certain conditions; See\n";
@@ -75,29 +77,24 @@ int main (int argc, char * const argv[])
 		TCLAP::ValueArg<uint_fast16_t> blueBandArg("","blue","Image band for blue channel",false,3,"uint_fast16_t");
 		cmd.add( blueBandArg );
 		
-		TCLAP::UnlabeledMultiArg<std::string> multiFileNames("Files", "File names for the input and output files. (Define RGB: Input SPD, Input Image, Output SPD) (Stretch: Input SPD, Output SPD)", true, "string");
-		cmd.add( multiFileNames );
+		TCLAP::ValueArg<std::string> inputFileArg("i","input","The input SPD file.",true,"","String");
+		cmd.add( inputFileArg );
+        
+        TCLAP::ValueArg<std::string> imageFileArg("","image","The input image file.",true,"","String");
+		cmd.add( imageFileArg );
+        
+        TCLAP::ValueArg<std::string> outputFileArg("o","output","The output SPD file.",true,"","String");
+		cmd.add( outputFileArg );
+        
 		cmd.parse( argc, argv );
 		        
         if(defRGBSwitch.getValue())
         {
             std::cout << "Defining the RGB values from an input image.\n";
-            std::vector<std::string> fileNames = multiFileNames.getValue();
-            if(fileNames.size() != 3)
-            {
-                for(unsigned int i = 0; i < fileNames.size(); ++i)
-                {
-                    std::cout << i << ": " << fileNames.at(i) << std::endl;
-                }
-                
-                spdlib::SPDTextFileUtilities textUtils;
-                std::string message = std::string("Three file paths should have been specified (i.e., Input SPD, Input Image and Output SPD). ") + textUtils.uInt32bittostring(fileNames.size()) + std::string(" were provided.");
-                throw spdlib::SPDException(message);
-            }
             
-            std::string inputSPDFile = fileNames.at(0);
-            std::string inputImageFile = fileNames.at(1);
-            std::string outputSPDFile = fileNames.at(2);
+            std::string inputSPDFile = inputFileArg.getValue();
+            std::string inputImageFile = imageFileArg.getValue();
+            std::string outputSPDFile = outputFileArg.getValue();
 
             uint_fast16_t redBand = redBandArg.getValue()-1;	
             uint_fast16_t greenBand = greenBandArg.getValue()-1;	
@@ -114,21 +111,9 @@ int main (int argc, char * const argv[])
         else if(stretchRGBSwitch.getValue())
         {
             std::cout << "Scaling the RGB values within an SPD file.\n";
-            std::vector<std::string> fileNames = multiFileNames.getValue();
-            if(fileNames.size() != 2)
-            {
-                for(unsigned int i = 0; i < fileNames.size(); ++i)
-                {
-                    std::cout << i << ": " << fileNames.at(i) << std::endl;
-                }
-                
-                spdlib::SPDTextFileUtilities textUtils;
-                std::string message = std::string("Two file paths should have been specified (i.e., Input SPD and Output SPD). ") + textUtils.uInt32bittostring(fileNames.size()) + std::string(" were provided.");
-                throw spdlib::SPDException(message);
-            }
             
-            std::string inputSPDFile = fileNames.at(0);
-            std::string outputSPDFile = fileNames.at(1);
+            std::string inputSPDFile = inputFileArg.getValue();
+            std::string outputSPDFile = outputFileArg.getValue();
             
             spdlib::SPDFile *spdInFile = new spdlib::SPDFile(inputSPDFile);
             spdlib::SPDFindRGBValuesStats *pulseProcessorStats = new spdlib::SPDFindRGBValuesStats();
@@ -243,5 +228,6 @@ int main (int argc, char * const argv[])
 	{
 		std::cerr << "Error: " << e.what() << std::endl;
 	}
+    std::cout << "spddefrgb - end\n";
 }
 

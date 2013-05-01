@@ -48,7 +48,7 @@ class SPDPopSingleTemplate (object):
 
     def constructOutFile(self, files, shOutline, outputfile, path, baseNames):
         outputXMLFile = open(outputfile, 'w')
-        print "Replacing: $PATH with ", path
+        print("Replacing: $PATH with ", path)
         shOutlinereplacepath = shOutline.replace('$PATH', path, shOutline.count('$PATH'))
 
         shOutlinereplacebase = shOutlinereplacepath
@@ -56,7 +56,7 @@ class SPDPopSingleTemplate (object):
         for baseName in baseNames:
             baseName = baseName.strip()
             symbolReplace = str("$FILENAME") + str(count)
-            print "Replacing: ", symbolReplace, " with ", baseName
+            print("Replacing: ", symbolReplace, " with ", baseName)
             shOutlinereplacebase = shOutlinereplacebase.replace(symbolReplace, baseName, shOutlinereplacebase.count(symbolReplace))
             count = count + 1
 
@@ -65,7 +65,7 @@ class SPDPopSingleTemplate (object):
         for file in files:
             file = file.strip()
             symbolReplace = str("$FILEPATH") + str(count)
-            print "Replacing: ", symbolReplace, " with ", file
+            print("Replacing: ", symbolReplace, " with ", file)
             shOutlinereplaceFiles = shOutlinereplaceFiles.replace(symbolReplace, file, shOutlinereplaceFiles.count(symbolReplace))
             count = count + 1
 
@@ -74,14 +74,14 @@ class SPDPopSingleTemplate (object):
         outputXMLFile.close()
 
     def run(self, cmdargs):
-        print 'spdcmdgen.py script populates shell scripts @SPDLIB_PACKAGE@'
-        print 'library from a user defined template.'
-        print '\nThis script was distributed with version @SPDLIB_PACKAGE_VERSION@ of the @SPDLIB_PACKAGE@ library.'
-        print 'For maintenance email @SPDLIB_PACKAGE_BUGREPORT@'
+        print('spdcmdgen.py script populates shell scripts @SPDLIB_PACKAGE@')
+        print('library from a user defined template.')
+        print('\nThis script was distributed with version @SPDLIB_PACKAGE_VERSION@ of the @SPDLIB_PACKAGE@ library.')
+        print('For maintenance email @SPDLIB_PACKAGE_BUGREPORT@')
 
         inTemplateStr = self.readInputTemplate(cmdargs.inputFile)
         self.constructOutFile(cmdargs.files, inTemplateStr, cmdargs.outputFile.strip(), cmdargs.outFilePath.strip(), cmdargs.baseNames)
-        print 'File has been generated ' + cmdargs.outputFile.strip()
+        print('File has been generated ' + cmdargs.outputFile.strip())
 
 
 # Command arguments
@@ -99,12 +99,12 @@ class CmdArgs:
 
     if self.inputFile is None:
         p.print_help()
-        print "The input file must be provided."
+        print("The input file must be provided.")
         sys.exit()
 
     if self.outputFile is None:
         p.print_help()
-        print "The output filename must be provided."
+        print("The output filename must be provided.")
         sys.exit()
 
 if __name__ == '__main__':

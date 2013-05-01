@@ -33,99 +33,86 @@
 
 #include "spd/spd-config.h"
 
-using namespace std;
-using namespace spdlib;
-using namespace TCLAP;
-
 int main (int argc, char * const argv[])
 {
-	cout << "spddecomp " << SPDLIB_PACKAGE_STRING << ", Copyright (C) " << SPDLIB_COPYRIGHT_YEAR << " Sorted Pulse Library (SPD)\n";
-	cout << "This program comes with ABSOLUTELY NO WARRANTY. This is free software,\n";
-	cout << "and you are welcome to redistribute it under certain conditions; See\n";
-	cout << "website (http://www.spdlib.org). Bugs are to be reported on the trac\n";
-	cout << "or directly to " << SPDLIB_PACKAGE_BUGREPORT << endl;
+    std::cout.precision(12);
+    
+    std::cout << "spddecomp " << SPDLIB_PACKAGE_STRING << ", Copyright (C) " << SPDLIB_COPYRIGHT_YEAR << " Sorted Pulse Library (SPD)\n";
+	std::cout << "This program comes with ABSOLUTELY NO WARRANTY. This is free software,\n";
+	std::cout << "and you are welcome to redistribute it under certain conditions; See\n";
+	std::cout << "website (http://www.spdlib.org). Bugs are to be reported on the trac\n";
+	std::cout << "or directly to " << SPDLIB_PACKAGE_BUGREPORT << std::endl;
 
 	try
 	{
-		CmdLine cmd("Decompose full waveform data to create discrete points: spddecomp", ' ', "1.0.0");
+        TCLAP::CmdLine cmd("Decompose full waveform data to create discrete points: spddecomp", ' ', "1.0.0");
 
-        ValueArg<boost::uint_fast32_t> numOfRowsBlockArg("r","blockrows","Number of rows within a block (Default 100)",false,100,"unsigned int");
+        TCLAP::ValueArg<boost::uint_fast32_t> numOfRowsBlockArg("r","blockrows","Number of rows within a block (Default 100)",false,100,"unsigned int");
 		cmd.add( numOfRowsBlockArg );
 
-        ValueArg<boost::uint_fast32_t> numOfColsBlockArg("c","blockcols","Number of columns within a block (Default 0) - Note values greater than 1 result in a non-sequencial SPD file.",false,0,"unsigned int");
+        TCLAP::ValueArg<boost::uint_fast32_t> numOfColsBlockArg("c","blockcols","Number of columns within a block (Default 0) - Note values greater than 1 result in a non-sequencial SPD file.",false,0,"unsigned int");
 		cmd.add( numOfColsBlockArg );
 
-
-        ValueArg<uint_fast32_t> intThresholdArg("t","threshold","Noise threshold below which peaks are ignored (Default: Value in pulse->waveNoiseThreshold)",false,0, "uint_fast32_t");
+        TCLAP::ValueArg<uint_fast32_t> intThresholdArg("t","threshold","Noise threshold below which peaks are ignored (Default: Value in pulse->waveNoiseThreshold)",false,0, "uint_fast32_t");
 		cmd.add( intThresholdArg );
 
-		SwitchArg noiseSetSwitch("n","noise","Estimate noise. Only applicable when --all is set. Note an initial estimate is required for peak detection (see -t)", false);
+		TCLAP::SwitchArg noiseSetSwitch("n","noise","Estimate noise. Only applicable when --all is set. Note an initial estimate is required for peak detection (see -t)", false);
 		cmd.add( noiseSetSwitch );
 
-        ValueArg<uint_fast32_t> intDecayThresholdArg("e","decaythres","Intensity threshold above which a decay function is used (Default 100)",false,100, "uint_fast32_t");
+        TCLAP::ValueArg<uint_fast32_t> intDecayThresholdArg("e","decaythres","Intensity threshold above which a decay function is used (Default 100)",false,100, "uint_fast32_t");
 		cmd.add( intDecayThresholdArg );
 
-		ValueArg<uint_fast32_t> windowThresholdArg("w","window","Window for the values taken either side of the peak for fitting (Default 5)",false,5, "uint_fast32_t");
+		TCLAP::ValueArg<uint_fast32_t> windowThresholdArg("w","window","Window for the values taken either side of the peak for fitting (Default 5)",false,5, "uint_fast32_t");
 		cmd.add( windowThresholdArg );
 
-		ValueArg<float> decayArg("d","decay","Decay value for ignoring ringing artifacts (Default 5)",false,5, "float");
+		TCLAP::ValueArg<float> decayArg("d","decay","Decay value for ignoring ringing artifacts (Default 5)",false,5, "float");
 		cmd.add( decayArg );
 
-		SwitchArg allGausSwitch("a","all","Fit all Gaussian at once", false);
+		TCLAP::SwitchArg allGausSwitch("a","all","Fit all Gaussian at once", false);
 		cmd.add( allGausSwitch );
+        
+        TCLAP::ValueArg<std::string> inputFileArg("i","input","The input file.",true,"","String");
+		cmd.add( inputFileArg );
+        
+        TCLAP::ValueArg<std::string> outputFileArg("o","output","The output file.",true,"","String");
+		cmd.add( outputFileArg );
 
-		UnlabeledMultiArg<string> multiFileNames("File", "File names for the input files", false, "string");
-		cmd.add( multiFileNames );
 		cmd.parse( argc, argv );
 
-		vector<string> fileNames = multiFileNames.getValue();
-        cout << "fileNames.size() = " << fileNames.size() << endl;
-		if(fileNames.size() == 2)
-		{
-            string inSPDFilePath = fileNames.at(0);
-            string outFilePath = fileNames.at(1);
-
-            uint_fast32_t intThreshold = intThresholdArg.getValue();
-            bool noiseSet = noiseSetSwitch.getValue();
-            uint_fast32_t decayThres = intDecayThresholdArg.getValue();
-            uint_fast32_t window = windowThresholdArg.getValue();
-            float decayVal = decayArg.getValue();
-
-            SPDDecompOption decompOption = spd_decomp_indvid;
-            if(allGausSwitch.getValue())
-            {
-                decompOption = spd_decomp_all;
-            }
-
-            bool thresholdSet = false;
-            if(intThresholdArg.isSet())
-            {
-                thresholdSet = true;
-            }
-
-
-            //string inFilePath, string outFilePath, boost::uint_fast32_t intThreshold, bool thresholdSet, bool noiseSet
-            SPDDecomposeWaveforms decompSPDFile;
-            decompSPDFile.decomposeWaveforms(inSPDFilePath, outFilePath, numOfColsBlockArg.getValue(), numOfRowsBlockArg.getValue(), decompOption, intThreshold, thresholdSet, noiseSet, window, decayThres, decayVal);
-
-        }
-        else
+		std::string inSPDFilePath = inputFileArg.getValue();
+        std::string outFilePath = outputFileArg.getValue();
+        
+        uint_fast32_t intThreshold = intThresholdArg.getValue();
+        bool noiseSet = noiseSetSwitch.getValue();
+        uint_fast32_t decayThres = intDecayThresholdArg.getValue();
+        uint_fast32_t window = windowThresholdArg.getValue();
+        float decayVal = decayArg.getValue();
+        
+        spdlib::SPDDecompOption decompOption = spdlib::spd_decomp_indvid;
+        if(allGausSwitch.getValue())
         {
-            cout << "ERROR: only 2 files can be inputted.\n";
-            for(unsigned int i = 0; i < fileNames.size(); ++i)
-			{
-                cout << i << ":\t" << fileNames.at(i) << endl;
-            }
+            decompOption = spdlib::spd_decomp_all;
         }
+        
+        bool thresholdSet = false;
+        if(intThresholdArg.isSet())
+        {
+            thresholdSet = true;
+        }
+                
+        spdlib::SPDDecomposeWaveforms decompSPDFile;
+        decompSPDFile.decomposeWaveforms(inSPDFilePath, outFilePath, numOfColsBlockArg.getValue(), numOfRowsBlockArg.getValue(), decompOption, intThreshold, thresholdSet, noiseSet, window, decayThres, decayVal);
 
 	}
-	catch (ArgException &e)
+	catch (TCLAP::ArgException &e)
 	{
-		cerr << "Parse Error: " << e.what() << endl;
+		std::cerr << "Parse Error: " << e.what() << std::endl;
 	}
-	catch(SPDException &e)
+	catch(spdlib::SPDException &e)
 	{
-		cerr << "Error: " << e.what() << endl;
+		std::cerr << "Error: " << e.what() << std::endl;
 	}
+    
+    std::cout << "spddecomp - end\n";
 }
 

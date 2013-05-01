@@ -35,11 +35,10 @@
 
 #include "spd/spd-config.h"
 
-using namespace spdlib;
-using namespace TCLAP;
-
 int main (int argc, char * const argv[])
 {
+    std::cout.precision(12);
+    
 	std::cout << "spdmerge " << SPDLIB_PACKAGE_STRING << ", Copyright (C) " << SPDLIB_COPYRIGHT_YEAR << " Sorted Pulse Library (SPD)\n";
 	std::cout << "This program comes with ABSOLUTELY NO WARRANTY. This is free software,\n";
 	std::cout << "and you are welcome to redistribute it under certain conditions; See\n";
@@ -48,7 +47,7 @@ int main (int argc, char * const argv[])
 
 	try
 	{
-		CmdLine cmd("Merge compatable files into a single non-indexed SPD file: spdmerge", ' ', "1.0.0");
+        TCLAP::CmdLine cmd("Merge compatable files into a single non-indexed SPD file: spdmerge", ' ', "1.0.0");
 
 		std::vector<std::string> allowedInFormats;
 		allowedInFormats.push_back("SPD");
@@ -58,9 +57,9 @@ int main (int argc, char * const argv[])
 		allowedInFormats.push_back("DECOMPOSED_DAT");
 		allowedInFormats.push_back("LAS");
         allowedInFormats.push_back("ASCIIMULTILINE");
-		ValuesConstraint<std::string> allowedInFormatsVals( allowedInFormats );
+		TCLAP::ValuesConstraint<std::string> allowedInFormatsVals( allowedInFormats );
 
-		ValueArg<std::string> inFormatArg("i","inputformat","Format of the input file",true,"SPD", &allowedInFormatsVals);
+		TCLAP::ValueArg<std::string> inFormatArg("f","inputformat","Format of the input file",true,"SPD", &allowedInFormatsVals);
 		cmd.add( inFormatArg );
 
 		std::vector<std::string> allowedIndexTypes;
@@ -69,87 +68,90 @@ int main (int argc, char * const argv[])
 		allowedIndexTypes.push_back("START_WAVEFORM");
 		allowedIndexTypes.push_back("END_WAVEFORM");
 		allowedIndexTypes.push_back("ORIGIN");
-		ValuesConstraint<std::string> allowedIndexTypeVals( allowedIndexTypes );
+		TCLAP::ValuesConstraint<std::string> allowedIndexTypeVals( allowedIndexTypes );
 
-		ValueArg<std::string> indexTypeArg("x","indexfield","The location used to index the pulses",false,"FIRST_RETURN", &allowedIndexTypeVals);
+		TCLAP::ValueArg<std::string> indexTypeArg("x","indexfield","The location used to index the pulses",false,"FIRST_RETURN", &allowedIndexTypeVals);
 		cmd.add( indexTypeArg );
 
         std::vector<std::string> allowedWaveformBitResTypes;
 		allowedWaveformBitResTypes.push_back("8BIT");
 		allowedWaveformBitResTypes.push_back("16BIT");
 		allowedWaveformBitResTypes.push_back("32BIT");
-		ValuesConstraint<std::string> allowedWaveformBitResTypesVals( allowedWaveformBitResTypes );
+		TCLAP::ValuesConstraint<std::string> allowedWaveformBitResTypesVals( allowedWaveformBitResTypes );
 
-		ValueArg<std::string> waveBitResArg("","wavebitres","The bit resolution used for storing the waveform data (Default: 32BIT)",false,"32BIT", &allowedWaveformBitResTypesVals);
+		TCLAP::ValueArg<std::string> waveBitResArg("","wavebitres","The bit resolution used for storing the waveform data (Default: 32BIT)",false,"32BIT", &allowedWaveformBitResTypesVals);
 		cmd.add( waveBitResArg );
 
-		ValueArg<std::string> spatialInArg("p","input_proj","WKT std::string representing the projection of the input file",false,"","std::string");
+		TCLAP::ValueArg<std::string> spatialInArg("p","input_proj","WKT std::string representing the projection of the input file",false,"","std::string");
 		cmd.add( spatialInArg );
 
-		ValueArg<std::string> spatialOutArg("r","output_proj","WKT std::string representing the projection of the output file",false,"","std::string");
+		TCLAP::ValueArg<std::string> spatialOutArg("r","output_proj","WKT std::string representing the projection of the output file",false,"","std::string");
 		cmd.add( spatialOutArg );
 
-		SwitchArg convertProjSwitch("c","convert_proj","Convert file buffering to disk", false);
+		TCLAP::SwitchArg convertProjSwitch("c","convert_proj","Convert file buffering to disk", false);
 		cmd.add( convertProjSwitch );
 
-        SwitchArg ignoreChecksSwitch("","ignorechecks","Ignore checks between input files to ensure compatibility", false);
+        TCLAP::SwitchArg ignoreChecksSwitch("","ignorechecks","Ignore checks between input files to ensure compatibility", false);
 		cmd.add( ignoreChecksSwitch );
 
-        SwitchArg sourceIDSwitch("","source","Set source ID for each input file", false);
+        TCLAP::SwitchArg sourceIDSwitch("","source","Set source ID for each input file", false);
 		cmd.add( sourceIDSwitch );
 
-        MultiArg<boost::uint_fast16_t> returnIDsArg("","returnIDs", "Lists the return IDs for the files listed.", false, "uint_fast16_t");
+        TCLAP::MultiArg<boost::uint_fast16_t> returnIDsArg("","returnIDs", "Lists the return IDs for the files listed.", false, "uint_fast16_t");
         cmd.add(returnIDsArg);
 
-        MultiArg<boost::uint_fast16_t> classesArg("","classes", "Lists the classes for the files listed.", false, "uint_fast16_t");
+        TCLAP::MultiArg<boost::uint_fast16_t> classesArg("","classes", "Lists the classes for the files listed.", false, "uint_fast16_t");
         cmd.add(classesArg);
 
-        ValueArg<std::string> schemaArg("s","schema","A schema for the format of the file being imported (Note, most importers do not require a schema)",false,"", "std::string");
+        TCLAP::ValueArg<std::string> schemaArg("s","schema","A schema for the format of the file being imported (Note, most importers do not require a schema)",false,"", "std::string");
 		cmd.add( schemaArg );
+        
+        TCLAP::ValueArg<std::string> outputFileArg("o","output","The output SPD file.",true,"","String");
+		cmd.add( outputFileArg );
 
-		UnlabeledMultiArg<std::string> multiFileNames("Files", "File names for the output file and input files", true, "std::string");
+		TCLAP::UnlabeledMultiArg<std::string> multiFileNames("Files", "The list of input files", true, "std::string");
 		cmd.add( multiFileNames );
 		cmd.parse( argc, argv );
 
 		std::vector<std::string> fileNames = multiFileNames.getValue();
 		if(fileNames.size() < 2)
 		{
-			SPDTextFileUtilities textUtils;
-			std::string message = std::string("Two file paths should have been specified (e.g., Input and Output). ") + textUtils.uInt32bittostring(fileNames.size()) + std::string(" were provided.");
-			throw SPDException(message);
+            spdlib::SPDTextFileUtilities textUtils;
+			std::string message = std::string("At least 2 files should be specified for a merge. ") + textUtils.uInt32bittostring(fileNames.size()) + std::string(" were provided.");
+			throw spdlib::SPDException(message);
 		}
 
-        boost::uint_fast16_t indexType = SPD_FIRST_RETURN;
+        boost::uint_fast16_t indexType = spdlib::SPD_FIRST_RETURN;
 		if(indexTypeArg.getValue() == "FIRST_RETURN")
 		{
-			indexType = SPD_FIRST_RETURN;
+			indexType = spdlib::SPD_FIRST_RETURN;
 		}
 		else if(indexTypeArg.getValue() == "LAST_RETURN")
 		{
-			indexType = SPD_LAST_RETURN;
+			indexType = spdlib::SPD_LAST_RETURN;
 		}
 		else if(indexTypeArg.getValue() == "START_WAVEFORM")
 		{
-			indexType = SPD_START_OF_RECEIVED_WAVEFORM;
+			indexType = spdlib::SPD_START_OF_RECEIVED_WAVEFORM;
 		}
 		else if(indexTypeArg.getValue() == "END_WAVEFORM")
 		{
-			indexType = SPD_END_OF_RECEIVED_WAVEFORM;
+			indexType = spdlib::SPD_END_OF_RECEIVED_WAVEFORM;
 		}
 		else if(indexTypeArg.getValue() == "ORIGIN")
 		{
-			indexType = SPD_ORIGIN;
+			indexType = spdlib::SPD_ORIGIN;
 		}
 		else
 		{
-			throw SPDException("Index type from not recognised.");
+			throw spdlib::SPDException("Index type from not recognised.");
 		}
 
-		std::string outputFile = fileNames.at(0);
+		std::string outputFile = outputFileArg.getValue();
 		std::cout << "Output File: " << outputFile << std::endl;
 		std::cout << "Merging:\n";
 		std::vector<std::string> inputFiles;
-		for(unsigned int i = 1; i < fileNames.size(); ++i)
+		for(unsigned int i = 0; i < fileNames.size(); ++i)
 		{
 			inputFiles.push_back(fileNames.at(i));
 			std::cout << fileNames.at(i) << std::endl;
@@ -162,7 +164,7 @@ int main (int argc, char * const argv[])
         std::string inProjWKT = "";
 		std::string outProjWKT = "";
 
-		SPDTextFileUtilities textFileUtils;
+		spdlib::SPDTextFileUtilities textFileUtils;
 		if(inProjFile != "")
 		{
 			inProjWKT = textFileUtils.readFileToString(inProjFile);
@@ -182,7 +184,7 @@ int main (int argc, char * const argv[])
             returnIds = returnIDsArg.getValue();
             if(returnIds.size() != (fileNames.size()-1))
             {
-                throw SPDException("The number of inputted return IDs needs to equal the number of input files.");
+                throw spdlib::SPDException("The number of inputted return IDs needs to equal the number of input files.");
             }
         }
 
@@ -194,42 +196,42 @@ int main (int argc, char * const argv[])
             classesValues = classesArg.getValue();
             if(classesValues.size() != (fileNames.size()-1))
             {
-                throw SPDException("The number of inputted classes needs to equal the number of input files.");
+                throw spdlib::SPDException("The number of inputted classes needs to equal the number of input files.");
             }
         }
 
-        boost::uint_fast16_t waveBitRes = SPD_32_BIT_WAVE;
+        boost::uint_fast16_t waveBitRes = spdlib::SPD_32_BIT_WAVE;
 		if(waveBitResArg.isSet())
 		{
 			if(waveBitResArg.getValue() == "8BIT")
 			{
-				waveBitRes = SPD_8_BIT_WAVE;
+				waveBitRes = spdlib::SPD_8_BIT_WAVE;
 			}
 			else if(waveBitResArg.getValue() == "16BIT")
 			{
-				waveBitRes = SPD_16_BIT_WAVE;
+				waveBitRes = spdlib::SPD_16_BIT_WAVE;
 			}
 			else if(waveBitResArg.getValue() == "32BIT")
 			{
-				waveBitRes = SPD_32_BIT_WAVE;
+				waveBitRes = spdlib::SPD_32_BIT_WAVE;
 			}
 			else
 			{
-				throw SPDException("Waveform bit resolution option was not recognised.");
+				throw spdlib::SPDException("Waveform bit resolution option was not recognised.");
 			}
 		}
 
-        SPDMergeFiles merge;
+        spdlib::SPDMergeFiles merge;
         merge.mergeToUPD(inputFiles, outputFile, inputFormat, schemaArg.getValue(), inProjWKT, convertCoords, outProjWKT, indexType, sourceIDSwitch.getValue(), returnIDsSet, returnIds, classesSet, classesValues, ignoreChecksSwitch.getValue(), waveBitRes);
 	}
-	catch (ArgException &e)
+	catch (TCLAP::ArgException &e)
 	{
         std::cerr << "Parse Error: " << e.what() << std::endl;
 	}
-	catch(SPDException &e)
+	catch(spdlib::SPDException &e)
 	{
         std::cerr << "Error: " << e.what() << std::endl;
 	}
-
+    std::cout << "spdmerge - end\n";
 }
 
