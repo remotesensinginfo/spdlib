@@ -35,7 +35,37 @@ namespace spdlib
         this->k = 3;
     }
     
+    /**
+     * Process one of the blocks to form an image
+     */
     void SPDParameterFreeGroundFilter::processDataBlockImage(SPDFile *inSPDFile, std::vector<SPDPulse*> ***pulses, float ***imageDataBlock, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast32_t numImgBands, float binSize) throw(SPDProcessingException)
+    {
+        // get surface
+        SPDPFFProcessLevel *surfaceGrid = this->runSurfaceEstimation(inSPDFile, pulses, cenPts, xSize, ySize, binSize);
+        
+        // output it as image
+        for(boost::uint_fast32_t i = 0; i < ySize; ++i)
+        {
+            for(boost::uint_fast32_t j = 0; j < xSize; ++j)
+            {
+                if((i < surfaceGrid->ySize) & (j < surfaceGrid->xSize))
+                {
+                    imageDataBlock[i][j][0] = surfaceGrid->data[i][j];
+                }
+                else 
+                {
+                    imageDataBlock[i][j][0] = std::numeric_limits<float>::signaling_NaN();
+                }
+            }
+        }
+        // free memory
+        this->freeLevel(surfaceGrid);
+    }
+    
+    /**
+     * Run the Paramater Free Ground Filter routine to iteratively interpolate a surface of minimum control points towards the true ground surface
+     */
+    SPDPFFProcessLevel* SPDParameterFreeGroundFilter::runSurfaceEstimation(SPDFile *inSPDFile, std::vector<SPDPulse*> ***pulses, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, float binSize, float **thresholds) throw(SPDProcessingException)
     {
         // Allocate Memory...
         float **elev = new float*[ySize];
@@ -46,13 +76,14 @@ namespace spdlib
 			{
 				elev[i][j] = std::numeric_limits<float>::signaling_NaN();
 			}
-		}		
+		}
 		
 		// Define the inital minimum surface grid
 		this->findMinSurface(pulses, elev, xSize, ySize);
         
         if(checkForFalseMinma)
         {
+            // apply morphological opening and closing to remove low outliers
             float **elevOpen = new float*[ySize];
             float **elevClose = new float*[ySize];
             for(boost::uint_fast32_t i = 0; i < ySize; ++i)
@@ -66,46 +97,30 @@ namespace spdlib
                 }
             }
             
+            boost::uint_fast16_t structElemSize = OPENING_WINDOW_SIZE;
+            boost::uint_fast16_t **openElement = generateHoldingElement(structElemSize);
+            this->createStructuringElement(openElement, structElemSize);
+            this->performOpenning(elev, elevOpen, xSize, ySize, structElemSize, openElement);
+            deleteHoldingElement(openElement, structElemSize);
             
-            boost::uint_fast16_t **openElement11 = new boost::uint_fast16_t*[11];
-            for(boost::uint_fast32_t i = 0; i < 11; ++i)
-            {
-                openElement11[i] = new boost::uint_fast16_t[11];
-            }
-            boost::uint_fast16_t structElemSize = 5;
-            this->createStructuringElement(openElement11, structElemSize);
-            this->performOpenning(elev, elevOpen, xSize, ySize, structElemSize, openElement11);
-            for(boost::uint_fast32_t i = 0; i < 11; ++i)
-            {
-                delete[] openElement11[i];
-            }
-            delete[] openElement11;
-            
-            boost::uint_fast16_t **closeElement9 = new boost::uint_fast16_t*[9];
-            for(boost::uint_fast32_t i = 0; i < 9; ++i)
-            {
-                closeElement9[i] = new boost::uint_fast16_t[9];
-            }
-            structElemSize = 4;
-            this->createStructuringElement(closeElement9, structElemSize);
-            this->performClosing(elevOpen, elevClose, xSize, ySize, structElemSize, closeElement9);
-            for(boost::uint_fast32_t i = 0; i < 9; ++i)
-            {
-                delete[] closeElement9[i];
-            }
-            delete[] closeElement9;
+            structElemSize = CLOSING_WINDOW_SIZE;
+            boost::uint_fast16_t **closeElement = generateHoldingElement(structElemSize);
+            this->createStructuringElement(closeElement, structElemSize);
+            this->performClosing(elevOpen, elevClose, xSize, ySize, structElemSize, closeElement);
+            deleteHoldingElement(closeElement, structElemSize);
             
             for(boost::uint_fast32_t i = 0; i < ySize; ++i)
             {
                 for(boost::uint_fast32_t j = 0; j < xSize; ++j)
                 {
-                    if((elevClose[i][j] - elev[i][j]) >= 1)
+                    if((elevClose[i][j] - elev[i][j]) >= MORPH_MIN_THRESHOLD)
                     {
                         elev[i][j] = elevClose[i][j];
                     }
                 }
             }
             
+            // clean up memory
             for(boost::uint_fast32_t i = 0; i < ySize; ++i)
             {
                 delete[] elevOpen[i];
@@ -117,30 +132,6 @@ namespace spdlib
         
         // Generate resolution hierarchy...
         std::vector<SPDPFFProcessLevel*> *elevLevels = this->generateHierarchy(elev, xSize, ySize, binSize);
-        
- 
-        /*
-        for(boost::int_fast16_t i = elevLevels->size()-1; i >= 0; --i)
-        {
-            SPDPFFProcessLevel *level = elevLevels->at(i);
-            std::cout << "\n\nLevel  " << i << std::endl;
-            for(boost::uint_fast32_t i = 0; i < level->ySize; ++i)
-            {
-                for(boost::uint_fast32_t j = 0; j < level->xSize; ++j)
-                {
-                    if(j == 0)
-                    {
-                        std::cout << level->data[i][j];
-                    }
-                    else 
-                    {
-                        std::cout << "," << level->data[i][j];
-                    }
-                }
-                std::cout << std::endl;
-            }
-        }*/
-        
         
         // Prepare first level
         SPDPFFProcessLevel *cLevel = NULL;
@@ -156,6 +147,7 @@ namespace spdlib
         interpdLevel = this->interpLevel(prevLevel, cLevel, tlY, tlX);
         
         // Decide on values which are to be taken forward...
+        // Set up residual and topHat arrays
         float **elevRes = new float*[cLevel->ySize];
         float **elevTH = new float*[cLevel->ySize];
         for(boost::uint_fast32_t i = 0; i < cLevel->ySize; ++i)
@@ -168,72 +160,33 @@ namespace spdlib
                 elevTH[i][j] = std::numeric_limits<float>::signaling_NaN();
             }
         }
-        boost::uint_fast16_t **wTHElem = new boost::uint_fast16_t*[3];
-        for(boost::uint_fast32_t i = 0; i < 3; ++i)
-        {
-            wTHElem[i] = new boost::uint_fast16_t[3];
-        }
-        boost::uint_fast16_t structElemSize = 1;
-        this->createStructuringElement(wTHElem, structElemSize);
         
+        // create window element for the tophat transformation and perform
+        boost::uint_fast16_t structElemSize = 1;
+        boost::uint_fast16_t **wTHElem = this->generateHoldingElement(structElemSize);
+        this->createStructuringElement(wTHElem, structElemSize);
         this->performWhiteTopHat(elevRes, elevTH, cLevel->xSize, cLevel->ySize, structElemSize, wTHElem);
-                
-        /*for(boost::uint_fast32_t i = 0; i < cLevel->ySize; ++i)
-        {
-            for(boost::uint_fast32_t j = 0; j < cLevel->xSize; ++j)
-            {
-                if(j == 0)
-                {
-                    std::cout << "[" << cLevel->data[i][j] << "," << interpdLevel->data[i][j] << "]";
-                }
-                else 
-                {
-                    std::cout << "," << "[" << cLevel->data[i][j] << "," << interpdLevel->data[i][j] << "]";
-                }
-            }
-            std::cout << std::endl;
-        }
-        for(boost::uint_fast32_t i = 0; i < cLevel->ySize; ++i)
-        {
-            for(boost::uint_fast32_t j = 0; j < cLevel->xSize; ++j)
-            {
-                if(j == 0)
-                {
-                    std::cout << "[" << elevRes[i][j] << "," << elevTH[i][j] << "]";
-                }
-                else 
-                {
-                    std::cout << "," << "[" << elevRes[i][j] << "," << elevTH[i][j] << "]";
-                }
-            }
-            std::cout << std::endl;
-        }*/
+        
+        // use auto threshold to replace interpd values with actual values, unless they are non ground
         float threshold = 0;
+        // create allocate memory to hold mean and stdDev
+        float *meanAndStdDev = new float[2];
         for(boost::uint_fast32_t i = 0; i < cLevel->ySize; ++i)
         {
             for(boost::uint_fast32_t j = 0; j < cLevel->xSize; ++j)
             {
-                threshold = this->getThreshold(j, i, elevTH, cLevel->xSize, cLevel->ySize, 1, wTHElem);
+                this->getMedianAndStdDev(j, i, elevTH, cLevel->xSize, cLevel->ySize, structElemSize, wTHElem, meanAndStdDev);
+                threshold = this->getThreshold(meanAndStdDev[0], meanAndStdDev[1]);
                 if((boost::math::isnan(cLevel->data[i][j]) | boost::math::isnan(threshold)) | (elevTH[i][j] < threshold))
                 {
                     interpdLevel->data[i][j] = cLevel->data[i][j];
                 }
-                /*if(j == 0)
-                {
-                    std::cout << threshold;
-                }
-                else 
-                {
-                    std::cout << "," << threshold;
-                }*/
+                
             }
-            //std::cout << std::endl;
         }
-        for(boost::uint_fast32_t i = 0; i < 3; ++i)
-        {
-            delete[] wTHElem[i];
-        }
-        delete[] wTHElem;
+        
+        // cleanup
+        this->deleteHoldingElement(wTHElem, structElemSize);
         for(boost::uint_fast32_t i = 0; i < cLevel->ySize; ++i)
 		{
 			delete[] elevRes[i];
@@ -244,10 +197,11 @@ namespace spdlib
         
         // Copy to previous level variable for next level
         prevLevel = interpdLevel;
-        
+        int topHatFactor = 2;
         if(elevLevels->size() > 2)
         {
             // Iterate through remaining levels
+            // TODO: Refactor to remove duplicated code
             boost::int_fast16_t numLevels = elevLevels->size();
             for(boost::int_fast16_t i = numLevels-3; i >= 0; --i)
             {
@@ -265,75 +219,41 @@ namespace spdlib
                     elevTH[i] = new float[cLevel->xSize];
                     for(boost::uint_fast32_t j = 0; j < cLevel->xSize; ++j)
                     {
-                        elevRes[i][j] = cLevel->data[i][j] - interpdLevel->data[i][j];
+                        elevRes[i][j] = cLevel->data[i][j] - interpdLevel->data[i][j]; // should residuals be fabs?
                         elevTH[i][j] = std::numeric_limits<float>::signaling_NaN();
                     }
                 }
-                boost::uint_fast16_t **wTHElem = new boost::uint_fast16_t*[7];
-                for(boost::uint_fast32_t i = 0; i < 7; ++i)
-                {
-                    wTHElem[i] = new boost::uint_fast16_t[7];
-                }
-                boost::uint_fast16_t structElemSize = 3;
-                this->createStructuringElement(wTHElem, structElemSize);
                 
-                this->performWhiteTopHat(elevRes, elevTH, cLevel->xSize, cLevel->ySize, structElemSize, wTHElem);
-                /*
-                for(boost::uint_fast32_t i = 0; i < cLevel->ySize; ++i)
+                // Lets have dynamic changing window sizes for the white tophat transformation
+                // Should these increase or decrease going down the levels? decrease down the levels
+                topHatFactor += 2;
+                if(cLevel->ySize < cLevel->xSize)
                 {
-                    for(boost::uint_fast32_t j = 0; j < cLevel->xSize; ++j)
-                    {
-                        if(j == 0)
-                        {
-                            std::cout << "[" << cLevel->data[i][j] << "," << interpdLevel->data[i][j] << "]";
-                        }
-                        else 
-                        {
-                            std::cout << "," << "[" << cLevel->data[i][j] << "," << interpdLevel->data[i][j] << "]";
-                        }
-                    }
-                    std::cout << std::endl;
+                    structElemSize = cLevel->ySize/topHatFactor;
                 }
+                else
+                {
+                    structElemSize = cLevel->xSize/topHatFactor;
+                }
+                
+                boost::uint_fast16_t **wTHElem = this->generateHoldingElement(structElemSize);
+                this->createStructuringElement(wTHElem, structElemSize);
+                this->performWhiteTopHat(elevRes, elevTH, cLevel->xSize, cLevel->ySize, structElemSize, wTHElem);
+
                 for(boost::uint_fast32_t i = 0; i < cLevel->ySize; ++i)
                 {
                     for(boost::uint_fast32_t j = 0; j < cLevel->xSize; ++j)
                     {
-                        if(j == 0)
-                        {
-                            std::cout << "[" << elevRes[i][j] << "," << elevTH[i][j] << "]";
-                        }
-                        else 
-                        {
-                            std::cout << "," << "[" << elevRes[i][j] << "," << elevTH[i][j] << "]";
-                        }
-                    }
-                    std::cout << std::endl;
-                }*/
-                for(boost::uint_fast32_t i = 0; i < cLevel->ySize; ++i)
-                {
-                    for(boost::uint_fast32_t j = 0; j < cLevel->xSize; ++j)
-                    {
-                        threshold = this->getThreshold(j, i, elevTH, cLevel->xSize, cLevel->ySize, 3, wTHElem);
+                        this->getMedianAndStdDev(j, i, elevTH, cLevel->xSize, cLevel->ySize, structElemSize, wTHElem, meanAndStdDev);
+                        threshold = this->getThreshold(meanAndStdDev[0], meanAndStdDev[1]);
                         if((boost::math::isnan(cLevel->data[i][j]) | boost::math::isnan(threshold)) | (elevTH[i][j] < threshold))
                         {
                             interpdLevel->data[i][j] = cLevel->data[i][j];
                         }
-                        /*if(j == 0)
-                        {
-                            std::cout << threshold;
-                        }
-                        else 
-                        {
-                            std::cout << "," << threshold;
-                        }*/
                     }
-                    //std::cout << std::endl;
                 }
-                for(boost::uint_fast32_t i = 0; i < 7; ++i)
-                {
-                    delete[] wTHElem[i];
-                }
-                delete[] wTHElem;
+                
+                this->deleteHoldingElement(wTHElem, structElemSize);
                 for(boost::uint_fast32_t i = 0; i < cLevel->ySize; ++i)
                 {
                     delete[] elevRes[i];
@@ -347,23 +267,7 @@ namespace spdlib
                 prevLevel = interpdLevel;
             }
         }
-        
-        for(boost::uint_fast32_t i = 0; i < ySize; ++i)
-        {
-            for(boost::uint_fast32_t j = 0; j < xSize; ++j)
-            {
-                if((i < prevLevel->ySize) & (j < prevLevel->xSize))
-                {
-                    imageDataBlock[i][j][0] = prevLevel->data[i][j];
-                }
-                else 
-                {
-                    imageDataBlock[i][j][0] = std::numeric_limits<float>::signaling_NaN();
-                }
-            }
-        }
-        this->freeLevel(prevLevel);
-        
+    
         // Clean up memory
         this->freeHierarchy(elevLevels);
 		for(boost::uint_fast32_t i = 0; i < ySize; ++i)
@@ -371,14 +275,85 @@ namespace spdlib
 			delete[] elev[i];
 		}
 		delete[] elev;
+        delete[] meanAndStdDev;
+        
+        // this will need to be freed by calling function
+        return prevLevel;
     }
+    
 		
     void SPDParameterFreeGroundFilter::processDataBlock(SPDFile *inSPDFile, std::vector<SPDPulse*> ***pulses, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, float binSize) throw(SPDProcessingException)
     {
+        // Allocate memory, actually none required
+        SPDPFFProcessLevel *surfaceGrid = NULL;
+        std::vector<SPDPulse*>::iterator iterPulses;
+		std::vector<SPDPoint*>::iterator iterPoints;
+        float res, median, stdDev;
         
+        // run main algo to return "prevLevel"
+        surfaceGrid = this->runSurfaceEstimation(inSPDFile, pulses, cenPts, xSize, ySize, binSize);
+        
+        // for each cell in the grid, classify the points in it
+        for(boost::uint_fast32_t i = 0; i < ySize; ++i)
+        {
+            for(boost::uint_fast32_t j = 0; j < xSize; ++j)
+            {
+                if(boost::math::isnan(surfaceGrid->data[i][j]))
+                {
+                    continue;
+                }
+                
+                // calculate classification thresholds based on single grid cell robust statistical analysis, store in median and stdDev
+                getSingleCellThreshold(pulses[i][j], surfaceGrid->data[i][j], &median, &stdDev);
+                
+                // for each pulse in this square
+                for(iterPulses = pulses[i][j]->begin(); iterPulses != pulses[i][j]->end(); ++iterPulses)
+                {
+                    // for each point in the pulse
+                    for(iterPoints = (*iterPulses)->pts->begin(); iterPoints != (*iterPulses)->pts->end(); ++iterPoints)
+                    {
+                        // if residual is within threshold then classify it as ground
+                        res = (*iterPoints)->z - surfaceGrid->data[i][j];
+                        if(fabs(res) < 0.3 && !boost::math::isnan(median) && !boost::math::isnan(stdDev) && res < median+(3*stdDev) && res > median-(3*stdDev))
+                        {
+                            (*iterPoints)->classification = SPD_GROUND;
+                        }
+                    }         
+                }
+            }
+        }
+        
+        // CLEAN UP MEMORY!!!
+        // free prevLevel
+        this->freeLevel(surfaceGrid);
     }
     
+    /**
+     * Support the creation of structural elements for topHat and opening/closing transformations
+     */
+    boost::uint_fast16_t** SPDParameterFreeGroundFilter::generateHoldingElement(boost::uint_fast16_t elSize)
+    {
+        boost::uint_fast16_t elArraySize = (elSize*2)+1;
+        boost::uint_fast16_t **wTHElem = new boost::uint_fast16_t*[elArraySize];
+        for(boost::uint_fast32_t i = 0; i < elArraySize; ++i)
+        {
+            wTHElem[i] = new boost::uint_fast16_t[elArraySize];
+        }
+        return wTHElem;
+    }
     
+    void SPDParameterFreeGroundFilter::deleteHoldingElement(boost::uint_fast16_t** toDelete, boost::uint_fast16_t elSize)
+    {
+        uint_fast32_t elArraySize = (elSize*2)+1;
+        for(boost::uint_fast32_t i = 0; i < elArraySize; ++i) {
+            delete[] toDelete[i];
+        }
+        delete[] toDelete;
+    }
+    
+    /**
+     * Called at the beginning of the process to find a minimum surface grid from all the points
+     */
     void SPDParameterFreeGroundFilter::findMinSurface(std::vector<SPDPulse*> ***pulses, float **elev, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize)
 	{
 		std::vector<SPDPulse*>::iterator iterPulses;
@@ -386,15 +361,16 @@ namespace spdlib
 		SPDPoint *pt = NULL;
 		bool firstPls = true;
 		bool firstPts = true;
+        boost::uint_fast32_t pointCounter = 0;
 		
 		for(boost::uint_fast32_t i = 0; i < ySize; ++i)
 		{
 			for(boost::uint_fast32_t j = 0; j < xSize; ++j)
 			{
 				firstPls = true;
+                pointCounter = 0;
 				if(pulses[i][j]->size() > 0)
 				{
-					//std::cout << "\nBlock [" << i << "," << j << "] has " << pulses[i][j]->size() << " pulses\n";
 					for(iterPulses = pulses[i][j]->begin(); iterPulses != pulses[i][j]->end(); ++iterPulses)
 					{
 						if((*iterPulses)->numberOfReturns > 0)
@@ -403,7 +379,7 @@ namespace spdlib
 							pt = NULL;
 							for(iterPoints = (*iterPulses)->pts->begin(); iterPoints != (*iterPulses)->pts->end(); ++iterPoints)
 							{
-								//std::cout << (*iterPoints)->z << std::endl;
+                                ++pointCounter;
                                 if(classParameters == SPD_ALL_CLASSES)
                                 {
                                     if(firstPts)
@@ -445,17 +421,23 @@ namespace spdlib
                                 }
                             }
 						}
-					}
-					//std::cout << "Min = " << elev[i][j] << std::endl;
+                    }
+
 				}
 				else
 				{
 					elev[i][j] = std::numeric_limits<float>::signaling_NaN();
 				}
+                if(pointCounter < MIN_POINT_DENSITY) {
+                    elev[i][j] = std::numeric_limits<float>::signaling_NaN();
+                }
 			}
 		}
 	}
     
+    /**
+     *  Morphological erosion operation
+     */
     void SPDParameterFreeGroundFilter::performErosion(float **elev, float **elevErode, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast16_t filterHSize, boost::uint_fast16_t **element)
 	{
 		boost::uint_fast32_t filterPxlStartX = 0;
@@ -579,7 +561,10 @@ namespace spdlib
 		}
 		delete elevValues;
 	}
-	
+    
+    /**
+     *  Morphological dilation operation
+     */
 	void SPDParameterFreeGroundFilter::performDialation(float **elev, float **elevDialate, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast16_t filterHSize, boost::uint_fast16_t **element)
 	{
 		boost::uint_fast32_t filterPxlStartX = 0;
@@ -701,7 +686,11 @@ namespace spdlib
 		}
 		delete elevValues;
 	}
+
     
+    /**
+     *  Morphological opening operation
+     */
     void SPDParameterFreeGroundFilter::performOpenning(float **elev, float **elevOpen, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast16_t filterHSize, boost::uint_fast16_t **element)
     {
 		// Allocate Memory...
@@ -726,6 +715,9 @@ namespace spdlib
 		delete[] tmpElev;
     }
     
+    /**
+     *  Morphological dilation operation
+     */
     void SPDParameterFreeGroundFilter::performClosing(float **elev, float **elevClose, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast16_t filterHSize, boost::uint_fast16_t **element)
     {		
 		// Allocate Memory...
@@ -750,6 +742,9 @@ namespace spdlib
 		delete[] tmpElev;
     }
     
+    /**
+     *  Morphological white tophat operation
+     */
     void SPDParameterFreeGroundFilter::performWhiteTopHat(float **elev, float **elevTH, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast16_t filterHSize, boost::uint_fast16_t **element)
     {
         float **tmpElev = new float*[ySize];
@@ -786,6 +781,9 @@ namespace spdlib
         delete[] tmpOpenElev;
     }
     
+    /**
+     * Creates a circular structuring element in the supplied 2d array, with radius = filterHSize
+     */
     void SPDParameterFreeGroundFilter::createStructuringElement(boost::uint_fast16_t **element, boost::uint_fast16_t filterHSize)
 	{
         boost::int_fast32_t filterSize = (filterHSize * 2)+1;
@@ -812,9 +810,11 @@ namespace spdlib
 		}
 	}
     
-    float SPDParameterFreeGroundFilter::getThreshold(boost::uint_fast32_t x, boost::uint_fast32_t y, float **data, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast16_t filterHSize, boost::uint_fast16_t **element)
+    /**
+     * Using a circular structural element, get the median and stdDev, store in results
+     */
+    void SPDParameterFreeGroundFilter::getMedianAndStdDev(boost::uint_fast32_t x, boost::uint_fast32_t y, float **data, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast16_t filterHSize, boost::uint_fast16_t **element, float* results)
     {
-        float threVal = 0;
         
         boost::uint_fast32_t filterPxlStartX = 0;
 		boost::uint_fast32_t filterPxlEndX = 0;
@@ -826,7 +826,7 @@ namespace spdlib
 		boost::uint_fast32_t elementStartY = 0;
 		boost::uint_fast32_t elementEndY = 0;
         
-        boost::int_fast32_t filterSize = (filterHSize * 2)+1;        
+        boost::int_fast32_t filterSize = (filterHSize * 2)+1;
         
         if((((int_fast64_t)y) - ((int_fast64_t)filterHSize)) < 0)
         {
@@ -876,6 +876,8 @@ namespace spdlib
         boost::uint_fast32_t valCount = 0;
         double sum = 0;
         
+        std::vector<double> vals;
+        
         for(boost::uint_fast32_t n = filterPxlStartY, eY = elementStartY; n <= filterPxlEndY; ++n, ++eY)
         {
             for(boost::uint_fast32_t m = filterPxlStartX, eX = elementStartX; m <= filterPxlEndX; ++m, ++eX)
@@ -884,13 +886,17 @@ namespace spdlib
                 {
                     sum += data[n][m];
                     ++valCount;
+                    vals.push_back(data[n][m]);
                 }
             }
         }
         
         if(valCount > 0)
         {
-            float mean = sum/valCount;
+            size_t middle = vals.size()/2;
+            std::nth_element(vals.begin(), vals.begin() + middle, vals.end());
+            double mean = vals[middle];
+            sum = 0; // I do believe we want to reset this at this point...
             
             for(boost::uint_fast32_t n = filterPxlStartY, eY = elementStartY; n <= filterPxlEndY; ++n, ++eY)
             {
@@ -905,19 +911,134 @@ namespace spdlib
             
             float stdDev = sqrt(sum/valCount);
             
-            
-            threVal = mean + (k * stdDev);
+            results[0] = mean;
+            results[1] = stdDev;
         }
         else
         {
+            results[0] = results[1] = std::numeric_limits<float>::signaling_NaN();
+        }
+    }
+
+    
+    /**
+     * Uses calculated mean and stdDev to return threshold for control point filtering
+     */
+    float SPDParameterFreeGroundFilter::getThreshold(float mean, float stdDev)
+    {
+        float threVal;
+        if(!boost::math::isnan(mean) && !boost::math::isnan(stdDev)) {
+            threVal = mean + (k * stdDev);
+        } else{
             threVal = std::numeric_limits<float>::signaling_NaN();
         }
-        
-
-        
         return threVal;
     }
 
+    /**
+     * Calculate and store the median and stdDev for the passed in residuals
+     */
+    void SPDParameterFreeGroundFilter::calcResidualMedianStdDev(std::vector<float> *residuals, float *outMed, float *outStdDev) {
+        size_t middle = residuals->size()/2;
+        std::nth_element(residuals->begin(), residuals->begin() + middle, residuals->end());
+        float median = (*residuals)[middle];
+        
+        std::vector<float>::iterator iterResiduals;
+        
+        float sum = 0;
+        for(iterResiduals = residuals->begin(); iterResiduals != residuals->end(); ++ iterResiduals) {
+            sum += pow(median - (*iterResiduals), 2);
+        }
+        float stdDev = sqrt(sum/residuals->size());
+        *outMed = median;
+        *outStdDev = stdDev;
+    }
+    
+    
+    /**
+     * Used to perform robust statistical analysis on grid cells, performing iterative filtering
+     * to remove outliers. Optionally used in point classification thresholds (the other option is
+     * to use a threshold from the mean and stddev of the tophat windows)
+     *
+     * HMMM new idea - filter or restrict to points most likely part of surface before performing stats? Yeah that works well!
+     */
+    void SPDParameterFreeGroundFilter::getSingleCellThreshold(std::vector<SPDPulse*> *pulses, float dtmHeight, float * outMedian, float * outStdDev)
+    {
+        // work out single cell point variance from median
+        std::vector<SPDPulse*>::iterator iterPulses;
+		std::vector<SPDPoint*>::iterator iterPoints;
+        std::vector<float>::iterator iterResiduals;
+        // memory to store residuals and filtered set
+        std::vector<float> gridPointResiduals;
+        std::vector<float> filteredPoints;
+        
+        // lets try with the median rather than the mean, and no absoulute values
+        boost::uint_fast32_t pointCount = 0;
+        // first count the points
+        for(iterPulses = pulses->begin(); iterPulses != pulses->end(); ++iterPulses)
+        {
+            pointCount+= (*iterPulses)->pts->size();
+        }
+        
+        if(pointCount > 0)
+        {
+            // reserve size for residual vector
+            gridPointResiduals.reserve(pointCount);
+            filteredPoints.reserve(pointCount);
+            
+            // put point residuals in vector
+            for(iterPulses = pulses->begin(); iterPulses != pulses->end(); ++iterPulses)
+            {
+                for(iterPoints = (*iterPulses)->pts->begin(); iterPoints != (*iterPulses)->pts->end(); ++iterPoints)
+                {
+                    if(fabs((*iterPoints)->z - dtmHeight) < 0.3f) {
+                        gridPointResiduals.push_back((*iterPoints)->z - dtmHeight);
+                    }
+                }
+            }
+            
+            // filter the residuals
+            this->filterPoints(&gridPointResiduals, &filteredPoints);
+            
+            // done filtering, use cleaner median and stddev
+            this->calcResidualMedianStdDev(&filteredPoints, outMedian, outStdDev);
+            
+        }
+        else
+        {
+            *outMedian = std::numeric_limits<float>::signaling_NaN();
+            *outStdDev = std::numeric_limits<float>::signaling_NaN();
+        }
+    }
+    
+    /**
+     * Recursive function to filter outliers until there are no points beyond median+(stdDev*3)
+     */
+    void SPDParameterFreeGroundFilter::filterPoints(std::vector<float> *allPoints, std::vector<float> *filteredPoints)
+    {
+        // calc median and stdDev
+        float median, stdDev;
+        this->calcResidualMedianStdDev(allPoints, &median, &stdDev);
+        
+        // filter points to new vector
+        filteredPoints->clear();
+        std::vector<float>::iterator iterPoints;
+        for(iterPoints = allPoints->begin(); iterPoints != allPoints->end(); ++iterPoints)
+        {
+            if((*iterPoints) > median-(3*stdDev) && (*iterPoints) < median+(3*stdDev)) {
+                filteredPoints->push_back(*iterPoints);
+            }
+        }
+        
+        // if they are the same size, we are done, otherwise keep filtering
+        if(filteredPoints->size() != allPoints->size()) {
+            filterPoints(filteredPoints, allPoints);
+        }
+    }
+
+    /**
+     *  Generates the original resolution hierarchy from the minimum surface grid, later used for interpolation
+     */
     std::vector<SPDPFFProcessLevel*>* SPDParameterFreeGroundFilter::generateHierarchy(float **initElev, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, float pxlRes)
     {
         std::vector<SPDPFFProcessLevel*> *processingLevels = new std::vector<SPDPFFProcessLevel*>();
@@ -1068,17 +1189,21 @@ namespace spdlib
         delete level;
     }
     
+    /**
+     * Interpolate a level of better resolution from the hierarchy, return the interpolated level for comparison with hierarchy
+     */
     SPDPFFProcessLevel* SPDParameterFreeGroundFilter::interpLevel(SPDPFFProcessLevel *cLevel, SPDPFFProcessLevel *processLevel, double tlY, double tlX)
     {
         // Generate interpolator...
         double eastings = tlX + (cLevel->pxlRes/2);
-        double northings = tlY - (cLevel->pxlRes/2);        
-
+        double northings = tlY - (cLevel->pxlRes/2);
+      
         SPDTPSPFFGrdFilteringInterpolator interpolator = SPDTPSPFFGrdFilteringInterpolator(cLevel->pxlRes*4);
         interpolator.initInterpolator(cLevel->data, cLevel->xSize, cLevel->ySize, eastings, northings, cLevel->pxlRes);
         
         eastings = tlX + (processLevel->pxlRes/2);
         northings = tlY - (processLevel->pxlRes/2);
+        
         SPDPFFProcessLevel *interpdLevel = new SPDPFFProcessLevel();
         interpdLevel->xSize = processLevel->xSize;
         interpdLevel->ySize = processLevel->ySize;
@@ -1098,9 +1223,9 @@ namespace spdlib
                 {
                     interpdLevel->data[i][j] = std::numeric_limits<float>::signaling_NaN();
                 }
-                eastings += (processLevel->pxlRes/2);
+                eastings += (processLevel->pxlRes); // seb replaced pxlRes/2
             }
-            northings -= (processLevel->pxlRes/2);
+            northings -= (processLevel->pxlRes); // seb replaced pxlRes/2
         }
         interpolator.resetInterpolator();
         
@@ -1111,11 +1236,7 @@ namespace spdlib
     {
         
     }
-    
-    
-    
-    
-    
+
     
     SPDTPSPFFGrdFilteringInterpolator::SPDTPSPFFGrdFilteringInterpolator(float radius)
 	{
@@ -1155,8 +1276,7 @@ namespace spdlib
                 //std::cout << "Size: [" << xSize << "," << ySize << "]\n";
                 //std::cout << "Radius: " << radius << std::endl;
                 //std::cout << "Bin Size: " << binSize << std::endl;
-                
-                
+      
                 std::vector<spdlib::tps::Vec> cntrlPts = std::vector<spdlib::tps::Vec>();
                 boost::int_fast32_t radiusInPxl = boost::numeric_cast<boost::uint_fast32_t>(radius/binSize)+1;
                 boost::uint_fast16_t elemSize = (radiusInPxl*2)+1;
@@ -1281,7 +1401,7 @@ namespace spdlib
                                 }
                             }
                             cEast += this->binSize;
-                            cEast += this->binSize;
+                            //cEast += this->binSize;
                         }
                         cNorth -= this->binSize;
                     }
