@@ -81,7 +81,8 @@ namespace spdlib
 			{
                 Ncoeffs=((degree+1)*(2*degree))/2;
 			}
-			else {
+			else
+            {
 				Ncoeffs=3; // plane fit (Const+Ax+By) hardcoded because above equation only works for orders of 2 or more
 			}
             
