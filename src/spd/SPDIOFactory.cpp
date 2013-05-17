@@ -120,6 +120,8 @@ namespace spdlib
 		this->importers->push_back(new SPDFullWaveformDatFileImporter());
 		this->importers->push_back(new SPDDecomposedDatFileImporter());
 		this->importers->push_back(new SPDLASFileImporter());
+        this->importers->push_back(new SPDLASFileNoPulsesImporter());
+        this->importers->push_back(new SPDLASFileImporterStrictPulses());
 		this->importers->push_back(new SPDDecomposedCOOFileImporter());
         this->importers->push_back(new SPDASCIIMultiLineReader());
 				
