@@ -55,6 +55,8 @@ int main (int argc, char * const argv[])
 		allowedInFormats.push_back("FWF_DAT");
 		allowedInFormats.push_back("DECOMPOSED_DAT");
 		allowedInFormats.push_back("LAS");
+        allowedInFormats.push_back("LASNP");
+        allowedInFormats.push_back("LASSTRICT");
 		allowedInFormats.push_back("DECOMPOSED_COO");
         allowedInFormats.push_back("ASCIIMULTILINE");
 		TCLAP::ValuesConstraint<std::string> allowedInFormatsVals( allowedInFormats );
