@@ -35,7 +35,7 @@ namespace spdlib
         this->greenBand = greenBand;
         this->blueBand = blueBand;
     }
-        
+    
     void SPDDefineRGBValues::processDataColumnImage(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses, float *imageData, SPDXYPoint *cenPts, boost::uint_fast32_t numImgBands, float binSize) throw(SPDProcessingException)
     {
         if((inSPDFile->getDecomposedPtDefined() == SPD_TRUE) | (inSPDFile->getDiscretePtDefined() == SPD_TRUE))
@@ -204,6 +204,38 @@ namespace spdlib
         this->redRange = redMax - redMin;
         this->greenRange = greenMax - greenMin;
         this->blueRange = blueMax - blueMin;
+        
+        // seb modifications to support stretching all bands bythe same amount
+        this->maxRange = redRange;
+        if(greenRange > maxRange)
+        {
+            maxRange = greenRange;
+        }
+        if(blueRange > maxRange)
+        {
+            maxRange = blueRange;
+        }
+        
+        this->totalMin = redMin;
+        if(greenMin < totalMin)
+        {
+            totalMin = greenMin;
+        }
+        if(blueMin < totalMin)
+        {
+            totalMin = blueMin;
+        }
+        
+        this->totalMax = redMax;
+        if(greenMax > totalMax)
+        {
+            totalMax = greenMax;
+        }
+        if(blueMax > totalMax)
+        {
+            totalMax = blueMax;
+        }
+        
     }
     
     void SPDLinearStretchRGBValues::processDataColumn(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses, SPDXYPoint *cenPts) throw(SPDProcessingException)
@@ -214,6 +246,11 @@ namespace spdlib
             {
                 for(std::vector<SPDPoint*>::iterator iterPts = (*iterPulses)->pts->begin(); iterPts != (*iterPulses)->pts->end(); ++iterPts)
                 {
+                    (*iterPts)->red = this->scalePixelValue((*iterPts)->red);
+                    (*iterPts)->green = this->scalePixelValue((*iterPts)->green);
+                    (*iterPts)->blue = this->scalePixelValue((*iterPts)->blue);
+                    
+                    /* Original stretching code, stretches each band inidividually - I think we should stretch them all the same...
                     if((*iterPts)->red < redMin)
                     {
                         (*iterPts)->red = 0;
@@ -251,11 +288,27 @@ namespace spdlib
                     else
                     {
                         (*iterPts)->blue = (((*iterPts)->blue-blueMin)/blueRange)*255;
-                    }                    
+                    }  */
                 }
             }
             
             
+        }
+    }
+    
+    uint_fast16_t SPDLinearStretchRGBValues::scalePixelValue(uint_fast16_t value)
+    {
+        if(value < totalMin)
+        {
+            return 0;
+        }
+        else if(value > totalMax)
+        {
+            return 255;
+        }
+        else
+        {
+            return ((value-totalMin)/maxRange)*255;
         }
     }
     
