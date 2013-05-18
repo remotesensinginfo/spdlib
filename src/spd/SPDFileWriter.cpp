@@ -2997,7 +2997,15 @@ namespace spdlib
 			H5::Exception::dontPrint() ;
 			
 			// Create File..
-			spdOutH5File = new H5::H5File( spdFilePath, H5F_ACC_TRUNC  );
+            try
+			{
+				spdOutH5File = new H5::H5File( spdFilePath, H5F_ACC_TRUNC  );
+			}
+			catch (H5::FileIException &e)
+			{
+				std::string message  = std::string("Could not create SPD file: ") + spdFilePath;
+				throw SPDIOException(message);
+			}
 			
 			// Create Groups..
 			spdOutH5File->createGroup( GROUPNAME_HEADER );
@@ -4657,7 +4665,15 @@ namespace spdlib
 			H5::Exception::dontPrint() ;
 			
 			// Create File..
-			spdOutH5File = new H5::H5File( spdFilePath, H5F_ACC_TRUNC  );
+            try
+			{
+				spdOutH5File = new H5::H5File( spdFilePath, H5F_ACC_TRUNC  );
+			}
+			catch (H5::FileIException &e)
+			{
+				std::string message  = std::string("Could not create SPD file: ") + spdFilePath;
+				throw SPDIOException(message);
+			}
 			
 			// Create Groups..
 			spdOutH5File->createGroup( GROUPNAME_HEADER );
@@ -6238,7 +6254,15 @@ namespace spdlib
 			H5::Exception::dontPrint() ;
 			
 			// Create File..
-			spdOutH5File = new H5::H5File( spdFilePath, H5F_ACC_TRUNC  );
+            try
+			{
+				spdOutH5File = new H5::H5File( spdFilePath, H5F_ACC_TRUNC  );
+			}
+			catch (H5::FileIException &e)
+			{
+				std::string message  = std::string("Could not create SPD file: ") + spdFilePath;
+				throw SPDIOException(message);
+			}
 			
 			// Create Groups..
 			spdOutH5File->createGroup( GROUPNAME_HEADER );
@@ -6463,7 +6487,15 @@ namespace spdlib
 			H5::Exception::dontPrint();
 			
 			// Open File..
-			spdOutH5File = new H5::H5File( spdFilePath, H5F_ACC_RDWR,  H5::FileCreatPropList::DEFAULT );
+            try
+			{
+				spdOutH5File = new H5::H5File( spdFilePath, H5F_ACC_RDWR,  H5::FileCreatPropList::DEFAULT );
+			}
+			catch (H5::FileIException &e)
+			{
+				std::string message  = std::string("Could not open SPD file: ") + spdFilePath;
+				throw SPDIOException(message);
+			}
             
             this->readHeaderInfo(spdOutH5File, spdFile);
             

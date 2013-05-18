@@ -2697,7 +2697,16 @@ namespace spdlib
 			H5::Exception::dontPrint();
 			
 			// Create File..
-			H5::H5File *spdH5File = new H5::H5File( spdFilePath, H5F_ACC_RDONLY );
+            H5::H5File *spdH5File = NULL;
+            try
+			{
+				spdH5File = new H5::H5File( spdFilePath, H5F_ACC_RDONLY );
+			}
+			catch (H5::FileIException &e)
+			{
+				std::string message  = std::string("Could not open SPD file: ") + spdFilePath;
+				throw SPDIOException(message);
+			}
 			
 			if((H5T_STRING!=H5Tget_class(strTypeAll.getId())) || (!H5Tis_variable_str(strTypeAll.getId())))
 			{
