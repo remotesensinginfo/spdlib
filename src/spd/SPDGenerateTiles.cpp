@@ -1470,6 +1470,70 @@ namespace spdlib
             throw e;
         }
     }
+    
+    void SPDTilesUtils::extractTileCore(std::string inputSPDFile, std::string outputSPDFile, boost::uint_fast32_t row, boost::uint_fast32_t col, std::vector<SPDTile*> *tiles) throw(SPDProcessingException)
+    {
+        try
+        {            
+            SPDTile *tile = NULL;
+            bool foundTile = false;
+            for(std::vector<SPDTile*>::iterator iterTiles = tiles->begin(); iterTiles != tiles->end(); ++iterTiles)
+            {
+                if(((*iterTiles)->row == row) & ((*iterTiles)->col == col))
+                {
+                    foundTile = true;
+                    tile = *iterTiles;
+                    break;
+                }
+            }
+            
+            SPDFile *inSPDFile = new SPDFile(inputSPDFile);
+            SPDFileReader reader;
+            reader.readHeaderInfo(inputSPDFile, inSPDFile);
+            
+            if(tile->spdFile != NULL)
+            {
+                delete tile->spdFile;
+            }
+            tile->writer = new SPDNoIdxFileWriter();
+            tile->spdFile = new SPDFile(outputSPDFile);
+            tile->spdFile->copyAttributesFrom(inSPDFile);
+            tile->spdFile->setNumberBinsX(0);
+            tile->spdFile->setNumberBinsY(0);
+            tile->spdFile->setNumberOfPoints(0);
+            tile->spdFile->setNumberOfPulses(0);
+            tile->spdFile->setBoundingVolume(tile->xMinCore, tile->xMaxCore, tile->yMinCore, tile->yMaxCore, 0.0, 0.0);
+            
+            tile->outFileName = outputSPDFile;
+            tile->writer->reopen(tile->spdFile, tile->outFileName);
+            tile->writerOpen = true;
+            std::vector<SPDTile*> *openTiles = new std::vector<SPDTile*>();
+            openTiles->push_back(tile);
+            
+            SPDWrite2TilesCore *write2Tiles = new SPDWrite2TilesCore(openTiles);
+            
+            
+            reader.readAndProcessAllData(inputSPDFile, inSPDFile, write2Tiles);
+            
+            delete inSPDFile;
+            write2Tiles->completeFileAndClose();
+            delete write2Tiles;
+            openTiles->clear();
+            delete openTiles;
+        }
+        catch (SPDProcessingException &e)
+        {
+            throw e;
+        }
+        catch (SPDException &e)
+        {
+            throw SPDProcessingException(e.what());
+        }
+        catch (std::exception &e)
+        {
+            throw SPDProcessingException(e.what());
+        }
+    }
 		
     SPDTilesUtils::~SPDTilesUtils()
     {
@@ -1559,6 +1623,90 @@ namespace spdlib
         delete this->pls;
     }
 
+    
+    
+    
+    
+    SPDWrite2TilesCore::SPDWrite2TilesCore(std::vector<SPDTile*> *tiles) throw(SPDException):SPDImporterProcessor()
+    {
+        this->tiles = tiles;
+        this->pls = new std::vector<SPDPulse*>();
+        this->pls->reserve(1);
+    }
+    
+    void SPDWrite2TilesCore::processImportedPulse(SPDFile *spdFile, SPDPulse *pulse) throw(SPDIOException)
+    {
+        SPDPulseUtils plsUtils;
+        
+        try
+        {
+            //std::cout << "Pulse = " << pulse->pulseID << std::endl;
+            for(std::vector<SPDTile*>::iterator iterTiles = tiles->begin(); iterTiles != tiles->end(); ++iterTiles)
+            {
+                if(this->ptWithinTile(pulse->xIdx, pulse->yIdx, (*iterTiles)->xMinCore, (*iterTiles)->xMaxCore, (*iterTiles)->yMinCore, (*iterTiles)->yMaxCore))
+                {
+                    //std::cout << "Copying Pulse...\n";
+                    SPDPulse *tmpPl = plsUtils.createSPDPulseDeepCopy(pulse);
+                    //std::cout << "\tPulse (tmp) = " << tmpPl->pulseID << std::endl;
+                    this->pls->push_back(tmpPl);
+                    (*iterTiles)->writer->writeDataColumn(this->pls, 0, 0);
+                }
+            }
+            SPDPulseUtils::deleteSPDPulse(pulse);
+        }
+        catch(SPDIOException &e)
+        {
+            throw e;
+        }
+        catch(std::exception &e)
+        {
+            throw SPDIOException(e.what());
+        }
+    }
+    
+    void SPDWrite2TilesCore::completeFileAndClose()throw(SPDIOException)
+    {
+        for(std::vector<SPDTile*>::iterator iterTiles = tiles->begin(); iterTiles != tiles->end(); ++iterTiles)
+        {
+            (*iterTiles)->writer->finaliseClose();
+            delete (*iterTiles)->writer;
+            (*iterTiles)->writerOpen = false;
+        }
+    }
+    
+    void SPDWrite2TilesCore::setTiles(std::vector<SPDTile*> *tiles)
+    {
+        this->tiles = tiles;
+    }
+    
+    bool SPDWrite2TilesCore::ptWithinTile(double x, double y, double xMin, double xMax, double yMin, double yMax)
+    {
+        bool withinTile = true;
+        if(x < xMin)
+        {
+            withinTile = false;
+        }
+        else if(x > xMax)
+        {
+            withinTile = false;
+        }
+        
+        if(y < yMin)
+        {
+            withinTile = false;
+        }
+        else if(y > yMax)
+        {
+            withinTile = false;
+        }
+        
+        return withinTile;
+    }
+    
+    SPDWrite2TilesCore::~SPDWrite2TilesCore()
+    {
+        delete this->pls;
+    }
     
     
     
