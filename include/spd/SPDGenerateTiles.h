@@ -92,6 +92,7 @@ namespace spdlib
         void addImageTilesParseFileName(GDALDataset *image, std::vector<SPDTile*> *tiles, std::vector<std::string> inputImageFiles) throw(SPDProcessingException);
         void addTiles2ClumpImage(GDALDataset *image, std::vector<SPDTile*> *tiles) throw(SPDProcessingException);
         void extractRowColFromFileName(std::string filePathStr, boost::uint_fast32_t *row, boost::uint_fast32_t *col) throw(SPDProcessingException);
+        void extractTileCore(std::string inputSPDFile, std::string outputSPDFile, boost::uint_fast32_t row, boost::uint_fast32_t col, std::vector<SPDTile*> *tiles) throw(SPDProcessingException);
         ~SPDTilesUtils();
 	};
     
@@ -105,6 +106,21 @@ namespace spdlib
 		void completeFileAndClose()throw(SPDIOException);
 		void setTiles(std::vector<SPDTile*> *tiles);
         ~SPDWrite2OverlapTiles();
+	private:
+        inline bool ptWithinTile(double x, double y, double xMin, double xMax, double yMin, double yMax);
+        std::vector<SPDTile*> *tiles;
+        std::vector<SPDPulse*> *pls;
+	};
+    
+    
+    class SPDWrite2TilesCore : public SPDImporterProcessor
+	{
+	public:
+		SPDWrite2TilesCore(std::vector<SPDTile*> *tiles) throw(SPDException);
+		void processImportedPulse(SPDFile *spdFile, SPDPulse *pulse) throw(SPDIOException);
+		void completeFileAndClose()throw(SPDIOException);
+		void setTiles(std::vector<SPDTile*> *tiles);
+        ~SPDWrite2TilesCore();
 	private:
         inline bool ptWithinTile(double x, double y, double xMin, double xMax, double yMin, double yMax);
         std::vector<SPDTile*> *tiles;

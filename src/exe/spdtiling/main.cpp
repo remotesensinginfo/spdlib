@@ -49,21 +49,23 @@ int main (int argc, char * const argv[])
 	{
         TCLAP::CmdLine cmd("Tools for tiling a set of SPD files using predefined tile areas: spdtiling", ' ', "1.0.0");
         
-        TCLAP::SwitchArg createAllSwitch("a","all","Create all tiles.", false);
-		TCLAP::SwitchArg extractIndividualSwitch("e","extract","Calculate the extent of a set of files.", false);
+        TCLAP::SwitchArg createAllSwitch("","all","Create all tiles.", false);
+		TCLAP::SwitchArg extractIndividualSwitch("","extract","Extract an individual tile as specified in the XML file.", false);
+        TCLAP::SwitchArg extractCoreSwitch("","extractcore","Extract the core of a tile as specified in the XML file.", false);
         
         std::vector<TCLAP::Arg*> arguments;
         arguments.push_back(&createAllSwitch);
         arguments.push_back(&extractIndividualSwitch);
+        arguments.push_back(&extractCoreSwitch);
         cmd.xorAdd(arguments);
         
         TCLAP::ValueArg<std::string> tilesFileArg("t","tiles","XML file defining the tile regions",true,"","String");
 		cmd.add( tilesFileArg );
         
-        TCLAP::ValueArg<std::string> outputBaseArg("o","output","The base path for the tiles.",true,"","String");
+        TCLAP::ValueArg<std::string> outputBaseArg("o","output","The base path for the tiles. (--extractcore expects a single output SPD file)",true,"","String");
 		cmd.add( outputBaseArg );
         
-        TCLAP::ValueArg<std::string> inputFilesArg("i","input","A text file with a list of input files, one per line.",true,"","String");
+        TCLAP::ValueArg<std::string> inputFilesArg("i","input","A text file with a list of input files, one per line. (--extractcore expects a single input SPD file)",true,"","String");
 		cmd.add( inputFilesArg );
         
         TCLAP::ValueArg<unsigned int> extractRowArg("r","row","The row of the tile to be extracted (--extract).",false,0,"Unsigned int");
@@ -275,9 +277,49 @@ int main (int argc, char * const argv[])
                 throw TCLAP::ArgException("The tile specified is not with the list of tiles.");
             }            
         }
+        else if(extractCoreSwitch.getValue())
+        {
+            std::cout << "Tiles XML file: " << tilesFileArg.getValue() << std::endl;
+            std::cout << "Input SPD file: " << inputFilesArg.getValue() << std::endl;
+            std::cout << "Output SPD file: " << outputBaseArg.getValue() << std::endl;
+            
+            try
+            {
+                double xSize = 0;
+                double ySize = 0;
+                double overlap = 0;
+                
+                double xMin = 0;
+                double xMax = 0;
+                double yMin = 0;
+                double yMax = 0;
+                
+                boost::uint_fast32_t numRows = 0;
+                boost::uint_fast32_t numCols = 0;
+                
+                std::cout << "Reading tile XML\n";
+                spdlib::SPDTilesUtils tileUtils;
+                std::vector<spdlib::SPDTile*> *tiles = tileUtils.importTilesFromXML(tilesFileArg.getValue(), &numRows, &numCols, &xSize, &ySize, &overlap, &xMin, &xMax, &yMin, &yMax);
+                
+                boost::uint_fast32_t row;
+                boost::uint_fast32_t col;
+                
+                tileUtils.extractRowColFromFileName(inputFilesArg.getValue(), &row, &col);
+                
+                std::cout << "Extracting Tile: [" << row << ", " << col << "]\n";
+                
+                tileUtils.extractTileCore(inputFilesArg.getValue(), outputBaseArg.getValue(), row, col, tiles);
+                
+                tileUtils.deleteTiles(tiles);
+            }
+            catch (spdlib::SPDProcessingException &e)
+            {
+                throw spdlib::SPDException(e.what());
+            }
+        }
         else
         {
-            throw TCLAP::ArgException("Only the --all and --extract options are known and one must be specified.");
+            throw TCLAP::ArgException("Only the --all, --extract and --extractcore options are known and one must be specified.");
         }
         
 	}
