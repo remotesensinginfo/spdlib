@@ -74,7 +74,17 @@ namespace spdlib
 			
 			this->spdFile = spdFile;
 			spdFileReader.readHeaderInfo(spdFile->getFilePath(), spdFile);
-			spdInFile = new H5::H5File( spdFile->getFilePath(), H5F_ACC_RDONLY );
+            
+            try
+			{
+				spdInFile = new H5::H5File( spdFile->getFilePath(), H5F_ACC_RDONLY );
+			}
+			catch (H5::FileIException &e)
+			{
+				std::string message  = std::string("Could not open SPD file: ") + spdFile->getFilePath();
+				throw SPDIOException(message);
+			}
+			
 			fileOpened = true;
 			if(spdFile->getPulseVersion() == 1)
             {
