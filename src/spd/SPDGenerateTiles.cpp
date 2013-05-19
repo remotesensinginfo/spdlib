@@ -1505,7 +1505,7 @@ namespace spdlib
             tile->spdFile->setBoundingVolume(tile->xMinCore, tile->xMaxCore, tile->yMinCore, tile->yMaxCore, 0.0, 0.0);
             
             tile->outFileName = outputSPDFile;
-            tile->writer->reopen(tile->spdFile, tile->outFileName);
+            tile->writer->open(tile->spdFile, tile->outFileName);
             tile->writerOpen = true;
             std::vector<SPDTile*> *openTiles = new std::vector<SPDTile*>();
             openTiles->push_back(tile);
