@@ -130,6 +130,7 @@ namespace spdlib
         this->exporters->push_back(new SPDNoIdxFileWriter());
 		this->exporters->push_back(new SPDGeneralASCIIFileWriter());
 		this->exporters->push_back(new SPDLASFileExporter());
+        this->exporters->push_back(new SPDLAZFileExporter());
 	}
 
 	SPDIOFactory::~SPDIOFactory()

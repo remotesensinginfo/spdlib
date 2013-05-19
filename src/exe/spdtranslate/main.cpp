@@ -69,6 +69,7 @@ int main (int argc, char * const argv[])
 		allowedOutFormats.push_back("UPD");
 		allowedOutFormats.push_back("ASCII");
 		allowedOutFormats.push_back("LAS");
+        allowedOutFormats.push_back("LAZ");
 		TCLAP::ValuesConstraint<std::string> allowedOutFormatsVals( allowedOutFormats );
 		
 		TCLAP::ValueArg<std::string> outFormatArg("","of","Format of the output file (Default SPD)",true,"SPD", &allowedOutFormatsVals);
