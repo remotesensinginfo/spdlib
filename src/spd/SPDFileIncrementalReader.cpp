@@ -74,7 +74,17 @@ namespace spdlib
 			
 			this->spdFile = spdFile;
 			spdFileReader.readHeaderInfo(spdFile->getFilePath(), spdFile);
-			spdInFile = new H5::H5File( spdFile->getFilePath(), H5F_ACC_RDONLY );
+            
+            try
+			{
+				spdInFile = new H5::H5File( spdFile->getFilePath(), H5F_ACC_RDONLY );
+			}
+			catch (H5::FileIException &e)
+			{
+				std::string message  = std::string("Could not open SPD file: ") + spdFile->getFilePath();
+				throw SPDIOException(message);
+			}
+			
 			fileOpened = true;
 			if(spdFile->getPulseVersion() == 1)
             {
@@ -359,7 +369,7 @@ namespace spdlib
                     
                     if(pulse->numberOfReturns > 0)
                     {
-                        pulse->pts = new std::vector<SPDPoint*>();
+                        //pulse->pts = new std::vector<SPDPoint*>();
                         pulse->pts->reserve(pulse->numberOfReturns);
                         for(boost::uint_fast16_t n = 0; n < pulse->numberOfReturns; ++n)
                         {
@@ -683,7 +693,7 @@ namespace spdlib
                     
                     if(pulse->numberOfReturns > 0)
                     {
-                        pulse->pts = new std::vector<SPDPoint*>();
+                        //pulse->pts = new std::vector<SPDPoint*>();
                         pulse->pts->reserve(pulse->numberOfReturns);
                         for(boost::uint_fast16_t n = 0; n < pulse->numberOfReturns; ++n)
                         {
@@ -1101,7 +1111,7 @@ namespace spdlib
                             
                             if(pulse->numberOfReturns > 0)
                             {
-                                pulse->pts = new std::vector<SPDPoint*>();
+                                //pulse->pts = new std::vector<SPDPoint*>();
                                 pulse->pts->reserve(pulse->numberOfReturns);
                                 for(boost::uint_fast16_t n = 0; n < pulse->numberOfReturns; ++n)
                                 {
@@ -1488,7 +1498,7 @@ namespace spdlib
                             
                             if(pulse->numberOfReturns > 0)
                             {
-                                pulse->pts = new std::vector<SPDPoint*>();
+                                //pulse->pts = new std::vector<SPDPoint*>();
                                 pulse->pts->reserve(pulse->numberOfReturns);
                                 for(boost::uint_fast16_t n = 0; n < pulse->numberOfReturns; ++n)
                                 {
@@ -2054,7 +2064,7 @@ namespace spdlib
                                 
                                 if(pulse->numberOfReturns > 0)
                                 {
-                                    pulse->pts = new std::vector<SPDPoint*>();
+                                    //pulse->pts = new std::vector<SPDPoint*>();
                                     pulse->pts->reserve(pulse->numberOfReturns);
                                     for(boost::uint_fast16_t n = 0; n < pulse->numberOfReturns; ++n)
                                     {
@@ -2456,7 +2466,7 @@ namespace spdlib
                                 
                                 if(pulse->numberOfReturns > 0)
                                 {
-                                    pulse->pts = new std::vector<SPDPoint*>();
+                                    //pulse->pts = new std::vector<SPDPoint*>();
                                     pulse->pts->reserve(pulse->numberOfReturns);
                                     for(boost::uint_fast16_t n = 0; n < pulse->numberOfReturns; ++n)
                                     {
@@ -2858,7 +2868,7 @@ namespace spdlib
                                 
                                 if(pulse->numberOfReturns > 0)
                                 {
-                                    pulse->pts = new std::vector<SPDPoint*>();
+                                    //pulse->pts = new std::vector<SPDPoint*>();
                                     pulse->pts->reserve(pulse->numberOfReturns);
                                     for(boost::uint_fast16_t n = 0; n < pulse->numberOfReturns; ++n)
                                     {
@@ -3263,7 +3273,7 @@ namespace spdlib
                                 
                                 if(pulse->numberOfReturns > 0)
                                 {
-                                    pulse->pts = new std::vector<SPDPoint*>();
+                                    //pulse->pts = new std::vector<SPDPoint*>();
                                     pulse->pts->reserve(pulse->numberOfReturns);
                                     for(boost::uint_fast16_t n = 0; n < pulse->numberOfReturns; ++n)
                                     {
@@ -3664,7 +3674,7 @@ namespace spdlib
                             
                             if(pulse->numberOfReturns > 0)
                             {
-                                pulse->pts = new std::vector<SPDPoint*>();
+                                //pulse->pts = new std::vector<SPDPoint*>();
                                 pulse->pts->reserve(pulse->numberOfReturns);
                                 for(boost::uint_fast16_t n = 0; n < pulse->numberOfReturns; ++n)
                                 {
@@ -4058,7 +4068,7 @@ namespace spdlib
                             
                             if(pulse->numberOfReturns > 0)
                             {
-                                pulse->pts = new std::vector<SPDPoint*>();
+                                //pulse->pts = new std::vector<SPDPoint*>();
                                 pulse->pts->reserve(pulse->numberOfReturns);
                                 for(boost::uint_fast16_t n = 0; n < pulse->numberOfReturns; ++n)
                                 {

@@ -263,6 +263,54 @@ namespace spdlib
         this->pulseEnergy = spdFile->pulseEnergy;
         this->fieldOfView = spdFile->fieldOfView;
 	}
+    
+    void SPDFile::copyAttributesFromTemplate(SPDFile *spdFile)
+	{
+		this->spatialreference = spdFile->spatialreference;
+		this->discretePtDefined = spdFile->discretePtDefined;
+		this->decomposedPtDefined = spdFile->decomposedPtDefined;
+		this->transWaveformDefined = spdFile->transWaveformDefined;
+        this->receiveWaveformDefined = spdFile->receiveWaveformDefined;
+        this->yearOfCapture = spdFile->yearOfCapture;
+		this->monthOfCapture =  spdFile->monthOfCapture;
+		this->dayOfCapture = spdFile->dayOfCapture;
+		this->hourOfCapture = spdFile->hourOfCapture;
+		this->minuteOfCapture = spdFile->minuteOfCapture;
+		this->secondOfCapture = spdFile->secondOfCapture;
+		this->numPts = 0;
+		this->numPulses = 0;
+		this->userMetaField = spdFile->userMetaField;
+		this->wavelengths = spdFile->wavelengths;
+        this->bandwidths = spdFile->bandwidths;
+        this->numOfWavelengths = spdFile->numOfWavelengths;
+		this->pulseRepetitionFreq = spdFile->pulseRepetitionFreq;
+		this->beamDivergence = spdFile->beamDivergence;
+		this->sensorHeight = spdFile->sensorHeight;
+		this->footprint = spdFile->footprint;
+		this->maxScanAngle = spdFile->maxScanAngle;
+		this->rgbDefined = spdFile->rgbDefined;
+		this->pulseBlockSize = spdFile->pulseBlockSize;
+		this->pointBlockSize = spdFile->pointBlockSize;
+		this->receivedBlockSize = spdFile->receivedBlockSize;
+		this->transmittedBlockSize = spdFile->transmittedBlockSize;
+        this->waveformBitRes = spdFile->waveformBitRes;
+		this->temporalBinSpacing = spdFile->temporalBinSpacing;
+		this->returnNumsSynGen = spdFile->returnNumsSynGen;
+		this->heightDefined = spdFile->heightDefined;
+		this->sensorSpeed = spdFile->sensorSpeed;
+		this->sensorScanRate = spdFile->sensorScanRate;
+		this->pointDensity = spdFile->pointDensity;
+		this->pulseDensity = spdFile->pulseDensity;
+		this->pulseCrossTrackSpacing = spdFile->pulseCrossTrackSpacing;
+		this->pulseAlongTrackSpacing = spdFile->pulseAlongTrackSpacing;
+		this->originDefined = spdFile->originDefined;
+		this->pulseAngularSpacingAzimuth = spdFile->pulseAngularSpacingAzimuth;
+		this->pulseAngularSpacingZenith = spdFile->pulseAngularSpacingZenith;
+		this->pulseIdxMethod = spdFile->pulseIdxMethod;
+        this->sensorApertureSize = spdFile->sensorApertureSize;
+        this->pulseEnergy = spdFile->pulseEnergy;
+        this->fieldOfView = spdFile->fieldOfView;
+	}
 	
 	bool SPDFile::checkCompatibility(SPDFile *spdFile)
 	{

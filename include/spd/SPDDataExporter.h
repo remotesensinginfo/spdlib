@@ -53,6 +53,7 @@ namespace spdlib
 		SPDDataExporter(const SPDDataExporter &dataExporter) throw(SPDException);
         virtual SPDDataExporter* getInstance()=0;
 		virtual bool open(SPDFile *spdFile, std::string outputFile) throw(SPDIOException) = 0;
+        virtual bool reopen(SPDFile *spdFile, std::string outputFile) throw(SPDIOException) = 0;
 		virtual void writeDataColumn(std::list<SPDPulse*> *pls, boost::uint_fast32_t col, boost::uint_fast32_t row)throw(SPDIOException) = 0;
 		virtual void writeDataColumn(std::vector<SPDPulse*> *pls, boost::uint_fast32_t col, boost::uint_fast32_t row)throw(SPDIOException) = 0;
 		virtual void writeData(std::list<SPDPulse*> ***griddedPls, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize)throw(SPDIOException);

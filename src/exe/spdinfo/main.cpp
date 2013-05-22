@@ -34,57 +34,55 @@
 
 #include "spd/spd-config.h"
 
-using namespace std;
-using namespace spdlib;
-using namespace TCLAP;
-
 int main (int argc, char * const argv[]) 
 {
-	cout << "spdinfo " << SPDLIB_PACKAGE_STRING << ", Copyright (C) " << SPDLIB_COPYRIGHT_YEAR << " Sorted Pulse Library (SPD)\n";
-	cout << "This program comes with ABSOLUTELY NO WARRANTY. This is free software,\n";
-	cout << "and you are welcome to redistribute it under certain conditions; See\n";
-	cout << "website (http://www.spdlib.org). Bugs are to be reported on the trac\n";
-	cout << "or directly to " << SPDLIB_PACKAGE_BUGREPORT << endl;
+    std::cout.precision(12);
+    
+    std::cout << "spdinfo " << SPDLIB_PACKAGE_STRING << ", Copyright (C) " << SPDLIB_COPYRIGHT_YEAR << " Sorted Pulse Library (SPD)\n";
+	std::cout << "This program comes with ABSOLUTELY NO WARRANTY. This is free software,\n";
+	std::cout << "and you are welcome to redistribute it under certain conditions; See\n";
+	std::cout << "website (http://www.spdlib.org). Bugs are to be reported on the trac\n";
+	std::cout << "or directly to " << SPDLIB_PACKAGE_BUGREPORT << std::endl;
 	
 	try 
 	{
-		CmdLine cmd("Print header info for an SPD File: spdinfo", ' ', "1.0.0");
+        TCLAP::CmdLine cmd("Print header info for an SPD File: spdinfo", ' ', "1.0.0");
 		       
         
-		UnlabeledMultiArg<string> multiFileNames("File", "Input file", false, "string");
+		TCLAP::UnlabeledMultiArg<std::string> multiFileNames("File", "Input file", false, "string");
 		cmd.add( multiFileNames );
 		cmd.parse( argc, argv );
 		
-		vector<string> fileNames = multiFileNames.getValue();		
+		std::vector<std::string> fileNames = multiFileNames.getValue();		
 		if(fileNames.size() > 0)
 		{
-            cout.precision(15);
-            SPDFileReader reader;
-            SPDFile *spdInFile = NULL;
+            std::cout.precision(12);
+            spdlib::SPDFileReader reader;
+            spdlib::SPDFile *spdInFile = NULL;
             for(unsigned int i = 0; i < fileNames.size(); ++i)
 			{
-                spdInFile = new SPDFile(fileNames.at(i));
+                spdInFile = new spdlib::SPDFile(fileNames.at(i));
                 reader.readHeaderInfo(fileNames.at(i), spdInFile);
                 
-                cout << spdInFile << endl;
+                std::cout << spdInFile << std::endl;
                 
                 delete spdInFile;
             }           
 		}
         else
         {
-            cout << "ERROR: At least 1 file names is required.\n";
+            std::cout << "ERROR: At least 1 file names is required.\n";
         }
 		
 	}
-	catch (ArgException &e) 
+	catch (TCLAP::ArgException &e) 
 	{
-		cerr << "Parse Error: " << e.what() << endl;
+		std::cerr << "Parse Error: " << e.what() << std::endl;
 	}
-	catch(SPDException &e)
+	catch(spdlib::SPDException &e)
 	{
-		cerr << "Error: " << e.what() << endl;
+		std::cerr << "Error: " << e.what() << std::endl;
 	}
-	
+	std::cout << "spdinfo - end\n";
 }
 

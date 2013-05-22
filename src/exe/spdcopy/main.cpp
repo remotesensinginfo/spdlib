@@ -36,66 +36,56 @@
 
 #include "spd/spd-config.h"
 
-using namespace std;
-using namespace spdlib;
-using namespace TCLAP;
-
 int main (int argc, char * const argv[]) 
 {
-	cout << "spdcopy " << SPDLIB_PACKAGE_STRING << ", Copyright (C) " << SPDLIB_COPYRIGHT_YEAR << " Sorted Pulse Library (SPD)\n";
-	cout << "This program comes with ABSOLUTELY NO WARRANTY. This is free software,\n";
-	cout << "and you are welcome to redistribute it under certain conditions; See\n";
-	cout << "website (http://www.spdlib.org). Bugs are to be reported on the trac\n";
-	cout << "or directly to " << SPDLIB_PACKAGE_BUGREPORT << endl;
+    std::cout.precision(12);
+    
+    std::cout << "spdcopy " << SPDLIB_PACKAGE_STRING << ", Copyright (C) " << SPDLIB_COPYRIGHT_YEAR << " Sorted Pulse Library (SPD)\n";
+	std::cout << "This program comes with ABSOLUTELY NO WARRANTY. This is free software,\n";
+	std::cout << "and you are welcome to redistribute it under certain conditions; See\n";
+	std::cout << "website (http://www.spdlib.org). Bugs are to be reported on the trac\n";
+	std::cout << "or directly to " << SPDLIB_PACKAGE_BUGREPORT << std::endl;
 	
 	try 
 	{
-		CmdLine cmd("Makes a copy of an indexed SPD file: spdcopy", ' ', "1.0.0");
+        TCLAP::CmdLine cmd("Makes a copy of an indexed SPD file: spdcopy", ' ', "1.0.0");
 		
-        ValueArg<boost::uint_fast32_t> numOfRowsBlockArg("r","blockrows","Number of rows within a block (Default 100)",false,25,"unsigned int");
+        TCLAP::ValueArg<boost::uint_fast32_t> numOfRowsBlockArg("r","blockrows","Number of rows within a block (Default 100)",false,25,"unsigned int");
 		cmd.add( numOfRowsBlockArg );
         
-        ValueArg<boost::uint_fast32_t> numOfColsBlockArg("c","blockcols","Number of columns within a block (Default 0) - Note values greater than 1 result in a non-sequencial SPD file.",false,0,"unsigned int");
+        TCLAP::ValueArg<boost::uint_fast32_t> numOfColsBlockArg("c","blockcols","Number of columns within a block (Default 0) - Note values greater than 1 result in a non-sequencial SPD file.",false,0,"unsigned int");
 		cmd.add( numOfColsBlockArg );        
         
-		UnlabeledMultiArg<string> multiFileNames("File", "File names for the input files", false, "string");
-		cmd.add( multiFileNames );
+		TCLAP::ValueArg<std::string> inputFileArg("i","input","The input file.",true,"","String");
+		cmd.add( inputFileArg );
+        
+        TCLAP::ValueArg<std::string> outputFileArg("o","output","The output file.",true,"","String");
+		cmd.add( outputFileArg );
+        
 		cmd.parse( argc, argv );
 		
-		vector<string> fileNames = multiFileNames.getValue();		
-        cout << "fileNames.size() = " << fileNames.size() << endl;
-		if(fileNames.size() == 2)
-		{
-            string inSPDFilePath = fileNames.at(0);
-            string outSPDFilePath = fileNames.at(1);
-            
-            SPDFile *spdInFile = new SPDFile(inSPDFilePath);
-            
-            SPDDataBlockProcessorBlank *blockProcessor = new SPDDataBlockProcessorBlank();
-            SPDProcessDataBlocks processBlocks = SPDProcessDataBlocks(blockProcessor, 0, numOfColsBlockArg.getValue(), numOfRowsBlockArg.getValue(), true);
-            processBlocks.processDataBlocksGridPulsesOutputSPD(spdInFile, outSPDFilePath, 0);
-            
-            delete blockProcessor;
-            delete spdInFile;            
-		}
-        else
-        {
-            cout << "ERROR: Only 2 files can be provided\n";
-            for(unsigned int i = 0; i < fileNames.size(); ++i)
-			{
-                cout << i << ":\t" << fileNames.at(i) << endl;
-            }
-        }
+        
+		std::string inSPDFilePath = inputFileArg.getValue();
+        std::string outSPDFilePath = outputFileArg.getValue();
+        
+        spdlib::SPDFile *spdInFile = new spdlib::SPDFile(inSPDFilePath);
+        
+        spdlib::SPDDataBlockProcessorBlank *blockProcessor = new spdlib::SPDDataBlockProcessorBlank();
+        spdlib::SPDProcessDataBlocks processBlocks = spdlib::SPDProcessDataBlocks(blockProcessor, 0, numOfColsBlockArg.getValue(), numOfRowsBlockArg.getValue(), true);
+        processBlocks.processDataBlocksGridPulsesOutputSPD(spdInFile, outSPDFilePath, 0);
+        
+        delete blockProcessor;
+        delete spdInFile;
 		
 	}
-	catch (ArgException &e) 
+	catch (TCLAP::ArgException &e)
 	{
-		cerr << "Parse Error: " << e.what() << endl;
+		std::cerr << "Parse Error: " << e.what() << std::endl;
 	}
-	catch(SPDException &e)
+	catch(spdlib::SPDException &e)
 	{
-		cerr << "Error: " << e.what() << endl;
+		std::cerr << "Error: " << e.what() << std::endl;
 	}
-	
+	std::cout << "spdcopy - end\n";
 }
 

@@ -40,25 +40,23 @@
 #include "spd/SPDProcessDataBlocks.h"
 #include "spd/SPDDataBlockProcessor.h"
 
-using namespace std;
-using namespace spdlib;
-
 int main (int argc, char * const argv[]) 
 {
-    cout.precision(12);
+    std::cout.precision(12);
+    
     try
     {
-        SPDFile *spdInFile = new SPDFile("/Users/pete/Temp/MfE_LiDAR/LI080228_RAW4_1m.spd");
+        spdlib::SPDFile *spdInFile = new spdlib::SPDFile("/Users/pete/Temp/MfE_LiDAR/LI080228_RAW4_1m.spd");
         
-        SPDDataBlockProcessorBlank *blockProcessor = new SPDDataBlockProcessorBlank();
-        SPDProcessDataBlocks processBlocks = SPDProcessDataBlocks(blockProcessor);
+        spdlib::SPDDataBlockProcessorBlank *blockProcessor = new spdlib::SPDDataBlockProcessorBlank();
+        spdlib::SPDProcessDataBlocks processBlocks = spdlib::SPDProcessDataBlocks(blockProcessor);
         processBlocks.processDataBlocksGridPulsesOutputSPD(spdInFile, "/Users/pete/Temp/MfE_LiDAR/LI080228_RAW4_1m_out.spd", 2);
         
         delete blockProcessor;
     }
-    catch(SPDException &e)
+    catch(spdlib::SPDException &e)
     {
-        cerr << "ERROR: " << e.what() << endl;
+        std::cerr << "ERROR: " << e.what() << std::endl;
     }
-    
+    std::cout << "spdtest - end\n";
 }

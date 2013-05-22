@@ -700,7 +700,160 @@ namespace spdlib {
         {
             throw e;
         }
-    };
+    }
+    
+    bool SPDMathsUtils::rectangleIntersection(double xMin1, double xMax1, double yMin1, double yMax1, double xMin2, double xMax2, double yMin2, double yMax2)
+    {
+        //std::cout << "1 = [" << xMin1 << ", " << xMax1 << "][" << yMin1 << ", " << yMax1 << "]" << std::endl;
+        //std::cout << "2 = [" << xMin2 << ", " << xMax2 << "][" << yMin2 << ", " << yMax2 << "]" << std::endl;
+        
+        double xMin = 0;
+        double xMax = 0;
+        double yMin = 0;
+        double yMax = 0;
+        
+        if(xMin1 > xMin2)
+        {
+            xMin = xMin1;
+        }
+        else
+        {
+            xMin = xMin2;
+        }
+        
+        if(yMin1 > yMin2)
+        {
+            yMin = yMin1;
+        }
+        else
+        {
+            yMin = yMin2;
+        }
+        
+        if(xMax1 < xMax2)
+        {
+            xMax = xMax1;
+        }
+        else
+        {
+            xMax = xMax2;
+        }
+        
+        if(yMax1 < yMax2)
+        {
+            yMax = yMax1;
+        }
+        else
+        {
+            yMax = yMax2;
+        }
+        
+        //std::cout << "X = " << xMin << ", " << xMax << ":\t" << xMax - xMin << std::endl;
+        //std::cout << "Y = " << yMin << ", " << yMax << ":\t" << yMax - yMin << std::endl << std::endl;
+        
+        bool intersect = true;
+        if(xMax - xMin <= 0)
+        {
+            intersect = false;
+        }
+        
+        if(yMax - yMin <= 0)
+        {
+            intersect = false;
+        }
+        
+        return intersect;
+    }
+    
+    bool SPDMathsUtils::rectangle1Contains2(double xMin1, double xMax1, double yMin1, double yMax1, double xMin2, double xMax2, double yMin2, double yMax2)
+    {
+        bool contained = true;
+        
+        if(xMin2 < xMin1)
+        {
+            contained = false;
+        }
+        else if(xMax2 > xMax1)
+        {
+            contained = false;
+        }
+        else if(yMin2 < yMin1)
+        {
+            contained = false;
+        }
+        else if(yMax2 > yMax1)
+        {
+            contained = false;
+        }
+        
+        return contained;
+    }
+    
+    double SPDMathsUtils::calcRectangleIntersection(double xMin1, double xMax1, double yMin1, double yMax1, double xMin2, double xMax2, double yMin2, double yMax2)
+    {
+        double xMin = 0;
+        double xMax = 0;
+        double yMin = 0;
+        double yMax = 0;
+        
+        if(xMin1 > xMin2)
+        {
+            xMin = xMin1;
+        }
+        else
+        {
+            xMin = xMin2;
+        }
+        
+        if(yMin1 > yMin2)
+        {
+            yMin = yMin1;
+        }
+        else
+        {
+            yMin = yMin2;
+        }
+        
+        if(xMax1 < xMax2)
+        {
+            xMax = xMax1;
+        }
+        else
+        {
+            xMax = xMax2;
+        }
+        
+        if(yMax1 < yMax2)
+        {
+            yMax = yMax1;
+        }
+        else
+        {
+            yMax = yMax2;
+        }
+        
+        //std::cout << "X = " << xMin << ", " << xMax << ":\t" << xMax - xMin << std::endl;
+        //std::cout << "Y = " << yMin << ", " << yMax << ":\t" << yMax - yMin << std::endl << std::endl;
+        
+        bool isIntersected = true;
+        if(xMax - xMin <= 0)
+        {
+            isIntersected = false;
+        }
+        
+        if(yMax - yMin <= 0)
+        {
+            isIntersected = false;
+        }
+        
+        double intersection = 0;
+        if(isIntersected)
+        {
+            intersection = (xMax - xMin)*(yMax - yMin);
+        }
+        
+        return intersection;
+    }
     
     SPDMathsUtils::~SPDMathsUtils()
     {
