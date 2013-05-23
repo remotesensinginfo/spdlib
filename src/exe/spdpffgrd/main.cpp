@@ -49,9 +49,6 @@ int main (int argc, char * const argv[])
 	
 	try 
 	{
-        std::cout << "\n\n*******************************************************************\n";
-        std::cout << "WARNING!!! DO NOT USE, ALL THE BUGS HAVE NOT YET BEEN WORKED OUT!!\n";
-        std::cout << "*******************************************************************\n\n\n";
         
         TCLAP::CmdLine cmd("Classifies the ground returns using a parameter-free filtering algorithm: spdpffgrd", ' ', "1.0.0");
 		
@@ -67,8 +64,27 @@ int main (int argc, char * const argv[])
         TCLAP::ValueArg<uint_fast16_t> overlapArg("","overlap","Size (in bins) of the overlap between processing blocks (Default 10)",false,10,"uint_fast16_t");
 		cmd.add( overlapArg );
 		
+        // add below to constructor
+        
 		TCLAP::ValueArg<float> grdPtDevThresArg("","grd","Threshold for deviation from identified ground surface for classifying the ground returns (Default 0.3)",false,0.3,"float");
 		cmd.add( grdPtDevThresArg );
+        
+        TCLAP::ValueArg<boost::uint_fast32_t> kValue("k","kvalue","Number of stddevs used for control point filtering - default 3",false,3,"uint_fast32_t");
+		cmd.add( kValue );
+        
+        TCLAP::ValueArg<boost::uint_fast32_t> classifyDevThresh("s","stddev","Number of standard deviations used in classification threshold - default 3",false,3,"uint_fast32_t");
+		cmd.add( classifyDevThresh );
+        
+        TCLAP::ValueArg<boost::uint_fast32_t> topHatStart("t","tophatstart","Starting window size (actually second, first is always 1) for tophat transforms, must be >= 2, setting this too big can cause segfault! - default 4",false,4,"uint_fast32_t");
+		cmd.add( topHatStart );
+        
+        TCLAP::ValueArg<bool> topHatScales("","tophatscales","Whether the tophat window size decreases through the resolutions - default true",false,true,"bool");
+		cmd.add( topHatScales );
+        
+        TCLAP::ValueArg<boost::uint_fast32_t> topHatFactor("f","tophatfactor","How quickly the tophat window reduces through the resolution, higher numbers reduce size quicker - default 2",false,2,"uint_fast32_t");
+		cmd.add( topHatFactor );
+        
+        // stop adding to constructor
 		
 		TCLAP::SwitchArg imageSwitch("","image","If set an image of the output surface will be generated rather than classifying the points (useful for debugging and parameter selection)", false);
 		cmd.add( imageSwitch );
@@ -87,7 +103,7 @@ int main (int argc, char * const argv[])
         
         TCLAP::ValueArg<std::string> outputFileArg("o","output","The output file.",true,"","String");
 		cmd.add( outputFileArg );
-        
+                
 		cmd.parse( argc, argv );
 		
 		std::string inSPDFilePath = inputFileArg.getValue();
@@ -95,7 +111,10 @@ int main (int argc, char * const argv[])
         
         spdlib::SPDFile *spdInFile = new spdlib::SPDFile(inSPDFilePath);
         
-        spdlib::SPDParameterFreeGroundFilter *blockProcessor = new spdlib::SPDParameterFreeGroundFilter(grdPtDevThresArg.getValue(), usePointsofClassArg.getValue(), morphMinSwitch.getValue());
+        spdlib::SPDParameterFreeGroundFilter *blockProcessor = new spdlib::SPDParameterFreeGroundFilter(grdPtDevThresArg.getValue(), usePointsofClassArg.getValue(), morphMinSwitch.getValue(),
+                                                                                                        kValue.getValue(), classifyDevThresh.getValue(), topHatStart.getValue(),
+                                                                                                        topHatScales.getValue(), topHatFactor.getValue());
+        
         spdlib::SPDProcessDataBlocks processBlocks = spdlib::SPDProcessDataBlocks(blockProcessor, overlapArg.getValue(), numOfColsBlockArg.getValue(), numOfRowsBlockArg.getValue(), true);
         
         if(imageSwitch.getValue())

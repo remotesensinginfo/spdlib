@@ -27,12 +27,16 @@
 namespace spdlib
 {
 
-    SPDParameterFreeGroundFilter::SPDParameterFreeGroundFilter(float grdPtDev, boost::uint_fast16_t classParameters, bool checkForFalseMinma)
+    SPDParameterFreeGroundFilter::SPDParameterFreeGroundFilter(float grdPtDev, boost::uint_fast16_t classParameters, bool checkForFalseMinma, boost::uint_fast32_t kValue, boost::uint_fast32_t classifyDevThresh, boost::uint_fast32_t topHatStart, bool topHatScales, boost::uint_fast32_t topHatFactor)
     {
         this->grdPtDev = grdPtDev;
         this->classParameters = classParameters;
         this->checkForFalseMinma = checkForFalseMinma;
-        this->k = 3;
+        this->k = kValue;
+        this->classDevThresh = classifyDevThresh;
+        this->thSize = topHatStart;
+        this->thScales = topHatScales;
+        this->thFac = topHatFactor;
     }
     
     /**
@@ -197,7 +201,7 @@ namespace spdlib
         
         // Copy to previous level variable for next level
         prevLevel = interpdLevel;
-        int topHatFactor = 2;
+        int topHatFactor = this->thSize-2;
         if(elevLevels->size() > 2)
         {
             // Iterate through remaining levels
@@ -226,13 +230,10 @@ namespace spdlib
                 
                 // Lets have dynamic changing window sizes for the white tophat transformation
                 // Should these increase or decrease going down the levels? decrease down the levels
-                topHatFactor += 2;
-                if(cLevel->ySize < cLevel->xSize)
-                {
+                if(this->thScales) { topHatFactor += this->thFac; }
+                if(cLevel->ySize < cLevel->xSize) {
                     structElemSize = cLevel->ySize/topHatFactor;
-                }
-                else
-                {
+                } else {
                     structElemSize = cLevel->xSize/topHatFactor;
                 }
                 
@@ -314,7 +315,7 @@ namespace spdlib
                     {
                         // if residual is within threshold then classify it as ground
                         res = (*iterPoints)->z - surfaceGrid->data[i][j];
-                        if(fabs(res) < 0.3 && !boost::math::isnan(median) && !boost::math::isnan(stdDev) && res < median+(3*stdDev) && res > median-(3*stdDev))
+                        if(fabs(res) < grdPtDev && !boost::math::isnan(median) && !boost::math::isnan(stdDev) && res < median+(classDevThresh*stdDev) && res > median-(classDevThresh*stdDev))
                         {
                             (*iterPoints)->classification = SPD_GROUND;
                         }
