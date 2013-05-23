@@ -61,13 +61,14 @@ namespace spdlib
     class SPDParameterFreeGroundFilter : public SPDDataBlockProcessor
 	{
 	public:
-        SPDParameterFreeGroundFilter(float grdPtDev, boost::uint_fast16_t classParameters, bool checkForFalseMinma);
+        // constructor
+        SPDParameterFreeGroundFilter(float grdPtDev, boost::uint_fast16_t classParameters, bool checkForFalseMinma, boost::uint_fast32_t kValue, boost::uint_fast32_t classifyDevThresh, boost::uint_fast32_t topHatStart, bool topHatScales, boost::uint_fast32_t topHatFactor);
+        
+        // public functions
         void processDataBlockImage(SPDFile *inSPDFile, std::vector<SPDPulse*> ***pulses, float ***imageDataBlock, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast32_t numImgBands, float binSize) throw(SPDProcessingException);
 		void processDataBlock(SPDFile *inSPDFile, std::vector<SPDPulse*> ***pulses, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, float binSize) throw(SPDProcessingException);
-        
         void processDataBlockImage(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses, float ***imageDataBlock, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast32_t numImgBands) throw(SPDProcessingException)
 		{throw SPDProcessingException("SPDProgressiveMophologicalGrdFilter requires processing with a grid.");};
-        
         void processDataBlock(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses) throw(SPDProcessingException)
         {throw SPDProcessingException("SPDProgressiveMophologicalGrdFilter requires processing with a grid.");};
         
@@ -87,6 +88,16 @@ namespace spdlib
         
         ~SPDParameterFreeGroundFilter();
     protected:
+        // members
+        float grdPtDev;
+        boost::uint_fast16_t classParameters;
+        bool checkForFalseMinma;
+        float k;
+        boost::uint_fast32_t classDevThresh;
+        boost::uint_fast32_t thSize;
+        bool thScales;
+        boost::uint_fast32_t thFac;
+        // functions
         void findMinSurface(std::vector<SPDPulse*> ***pulses, float **elev, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize);
         void performErosion(float **elev, float **elevErode, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast16_t filterHSize, boost::uint_fast16_t **element);
 		void performDialation(float **elev, float **elevDialate, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast16_t filterHSize, boost::uint_fast16_t **element);
@@ -94,21 +105,19 @@ namespace spdlib
         void performClosing(float **elev, float **elevClose, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast16_t filterHSize, boost::uint_fast16_t **element);
         void performWhiteTopHat(float **elev, float **elevTH, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast16_t filterHSize, boost::uint_fast16_t **element);
         void createStructuringElement(boost::uint_fast16_t **element, boost::uint_fast16_t filterHSize);
-        float getThreshold(float mean, float stdDev);
-        std::vector<SPDPFFProcessLevel*>* generateHierarchy(float **initElev, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, float pxlRes);
         void freeHierarchy(std::vector<SPDPFFProcessLevel*> *levels);
         void freeLevel(SPDPFFProcessLevel *level);
-        SPDPFFProcessLevel* interpLevel(SPDPFFProcessLevel *cLevel, SPDPFFProcessLevel *pLevel, double tlY, double tlX);
-        SPDPFFProcessLevel* runSurfaceEstimation(SPDFile *inSPDFile, std::vector<SPDPulse*> ***pulses, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, float binSize) throw(SPDProcessingException);
-        float getClassificationThreshold(float mean, float stdDev);
         void getSingleCellThreshold(std::vector<SPDPulse*> *pulses, float dtmHeight, float *outMedian, float *outStdDev);
         void filterPoints(std::vector<float> *allPoints, std::vector<float> *filteredPoints);
         void getMedianAndStdDev(boost::uint_fast32_t x, boost::uint_fast32_t y, float **data, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast16_t filterHSize, boost::uint_fast16_t **element, float* results);
         void calcResidualMedianStdDev(std::vector<float> *residuals, float *outMed, float *outStdDev);
-        float grdPtDev;
-        boost::uint_fast16_t classParameters;
-        bool checkForFalseMinma;
-        float k;
+
+        float getThreshold(float mean, float stdDev);
+        float getClassificationThreshold(float mean, float stdDev);
+        std::vector<SPDPFFProcessLevel*>* generateHierarchy(float **initElev, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, float pxlRes);
+        SPDPFFProcessLevel* interpLevel(SPDPFFProcessLevel *cLevel, SPDPFFProcessLevel *pLevel, double tlY, double tlX);
+        SPDPFFProcessLevel* runSurfaceEstimation(SPDFile *inSPDFile, std::vector<SPDPulse*> ***pulses, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, float binSize) throw(SPDProcessingException);
+
 	};
     
     
