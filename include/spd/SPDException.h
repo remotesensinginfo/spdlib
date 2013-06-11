@@ -33,10 +33,11 @@
 #include <exception>
 #include <iostream>
 #include <string>
+#include "spd/SPDCommon.h"
 
 namespace spdlib
 {
-	class SPDException : public std::exception
+	class DllExport SPDException : public std::exception
 	{
 	public:
 		SPDException();

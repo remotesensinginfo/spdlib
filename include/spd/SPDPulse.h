@@ -80,7 +80,7 @@ namespace spdlib
 	static const std::string PULSEMEMBERNAME_RECEIVED_START_IDX( "RECEIVED_START_IDX" );
 	static const std::string PULSEMEMBERNAME_TRANSMITTED_START_IDX( "TRANSMITTED_START_IDX" );
 	
-	struct SPDPulse
+	struct DllExport SPDPulse
 	{
 		/**
 		 * The pulse ID - A unique ID for each pulse
@@ -344,7 +344,7 @@ namespace spdlib
 		};
 	};
 	
-	struct SPDPulseH5V1
+	struct DllExport SPDPulseH5V1
 	{
         /**
 		 * GPS time is the time at which the point was aquired.
@@ -533,7 +533,7 @@ namespace spdlib
 		};
 	};
     
-    struct SPDPulseH5V2
+    struct DllExport SPDPulseH5V2
 	{
         /**
 		 * GPS time is the time at which the point was aquired.
@@ -720,7 +720,7 @@ namespace spdlib
 	/**
 	 * Provides useful utilities for manipulating an SPDPulse.
 	 */
-	class SPDPulseUtils
+	class DllExport SPDPulseUtils
 	{
 	public:
 		SPDPulseUtils();

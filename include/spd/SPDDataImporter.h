@@ -47,7 +47,7 @@
 
 namespace spdlib
 {
-	class SPDImporterProcessor
+	class DllExport SPDImporterProcessor
 	{
 	public:
 		SPDImporterProcessor() throw(SPDException){};

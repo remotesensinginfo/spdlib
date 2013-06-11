@@ -68,7 +68,7 @@ namespace spdlib
 	static const std::string POINTMEMBERNAME_WAVE_PACKET_DESC_IDX( "WAVE_PACKET_DESC_IDX" );
 	static const std::string POINTMEMBERNAME_WAVEFORM_OFFSET( "WAVEFORM_OFFSET" );
 
-	struct SPDPoint
+	struct DllExport SPDPoint
 	{
 		/**
 		 * The return ID - A unique ID for each point within a pulse. 
@@ -185,7 +185,7 @@ namespace spdlib
 		};
 	};
 	
-	struct SPDPointH5V1
+	struct DllExport SPDPointH5V1
 	{
 		unsigned int returnID;
 		/**
@@ -298,7 +298,7 @@ namespace spdlib
 		};
 	};
 	
-    struct SPDPointH5V2
+    struct DllExport SPDPointH5V2
 	{
 		unsigned int returnID;
 		/**
@@ -402,7 +402,7 @@ namespace spdlib
 	/**
 	 * Provides useful utilities for manipulating an SPDPoint.
 	 */
-	class SPDPointUtils
+	class DllExport SPDPointUtils
 	{
 	public:
 		SPDPointUtils();

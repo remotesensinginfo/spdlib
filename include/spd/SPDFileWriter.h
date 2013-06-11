@@ -46,7 +46,7 @@
 
 namespace spdlib
 {
-    class SPDFileWriter
+    class DllExport SPDFileWriter
     {
     public:
         SPDFileWriter(){};
@@ -59,7 +59,7 @@ namespace spdlib
     };
     
     
-	class SPDSeqFileWriter : public SPDDataExporter, SPDFileWriter
+	class DllExport SPDSeqFileWriter : public SPDDataExporter, SPDFileWriter
 	{
 	public:
 		SPDSeqFileWriter();
@@ -118,7 +118,7 @@ namespace spdlib
         bool firstReturn;
 	};
     
-    class SPDNonSeqFileWriter : public SPDDataExporter, SPDFileWriter
+    class DllExport SPDNonSeqFileWriter : public SPDDataExporter, SPDFileWriter
 	{
 	public:
 		SPDNonSeqFileWriter();
@@ -170,7 +170,7 @@ namespace spdlib
         bool firstReturn;
 	};
     
-    class SPDNoIdxFileWriter : public SPDDataExporter, SPDFileWriter
+    class DllExport SPDNoIdxFileWriter : public SPDDataExporter, SPDFileWriter
 	{
 	public:
 		SPDNoIdxFileWriter();
