@@ -37,7 +37,7 @@
 
 namespace spdlib
 {
-	class SPDIOException : public SPDException
+	class DllExport SPDIOException : public SPDException
 	{
 	public:
 		SPDIOException();

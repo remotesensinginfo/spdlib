@@ -35,7 +35,7 @@
 
 namespace spdlib
 {
-	class SPDProcessingException : public SPDException
+	class DllExport SPDProcessingException : public SPDException
 	{
 	public:
 		SPDProcessingException();

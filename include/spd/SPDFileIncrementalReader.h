@@ -50,7 +50,7 @@
 
 namespace spdlib
 {
-	class SPDFileIncrementalReader
+	class DllExport SPDFileIncrementalReader
 	{
 	public:
 		SPDFileIncrementalReader();

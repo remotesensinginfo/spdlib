@@ -146,7 +146,7 @@ namespace spdlib
 	static const std::string ATTRIBUTENAME_CLASS( "CLASS" );
 	static const std::string ATTRIBUTENAME_IMAGE_VERSION( "IMAGE_VERSION" );
     
-	class SPDFile
+	class DllExport SPDFile
 	{		
 	public:
 		SPDFile(std::string filepath);
@@ -767,7 +767,7 @@ namespace spdlib
 	};
     
     
-    class SPDFileProcessingUtilities
+    class DllExport SPDFileProcessingUtilities
     {
     public:
         SPDFileProcessingUtilities(){};

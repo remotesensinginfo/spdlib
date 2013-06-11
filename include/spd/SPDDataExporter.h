@@ -46,7 +46,7 @@
 
 namespace spdlib
 {
-	class SPDDataExporter
+	class DllExport SPDDataExporter
 	{
 	public:
 		SPDDataExporter(std::string filetype);

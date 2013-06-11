@@ -55,6 +55,7 @@ else()
 endif()
 
 option (BUILD_SHARED_LIBS "Build with shared library" ON)
+option (BUILD_SPDIO_ONLY "Only build the SPDIO library" OFF)
 set(SPDLIB_WITH_UTILITIES TRUE CACHE BOOL "Choose if SPDLib utilities should be built")
 
 set(BOOST_INCLUDE_DIR /usr/local/include CACHE PATH "Include PATH for Boost")
@@ -148,10 +149,12 @@ if(WIN32)
         set(VCPROJ_USER_ENVIRONMENT_PATH_DEBUG "${ENVIRONMENT_PATH}")
         mark_as_advanced(VCPROJ_USER_ENVIRONMENT_PATH_DEBUG)
 
+        # MSVC can't compile the whole of SPDLib - yet. Seems to do ok on spdio
+        set(BUILD_SPDIO_ONLY ON)
+        message(STATUS "MSVC detected. BUILD_SPDIO_ONLY set to ON.")
+        
     endif()
 
-	set(CMAKE_INCLUDE_PATH c:/osgeo4w/include;$ENV{CMAKE_INCLUDE_PATH})
-    set(CMAKE_LIBRARY_PATH c:/osgeo4w/lib;$ENV{CMAKE_LIBRARY_PATH})
 else()
   # Recommended C++ compilation flags
   # -Weffc++
@@ -184,33 +187,76 @@ endif(APPLE)
 ###############################################################################
 # Check the required libraries are present
 
-include_directories(${BOOST_INCLUDE_DIR})
-set(BOOST_LIBRARIES -L${BOOST_LIB_PATH} -lboost_filesystem -lboost_system)
-
 include_directories(${GDAL_INCLUDE_DIR})
-set(GDAL_LIBRARIES -L${GDAL_LIB_PATH} -lgdal)
+if (MSVC)
+    set(GDAL_LIBRARIES -LIBPATH:${GDAL_LIB_PATH} gdal_i.lib)
+else()
+    set(GDAL_LIBRARIES -L${GDAL_LIB_PATH} -lgdal)
+endif(MSVC)
 
 include_directories(${HDF5_INCLUDE_DIR})
-set(HDF5_LIBRARIES -L${HDF5_LIB_PATH} -lhdf5 -lhdf5_hl -lhdf5_cpp)
+if (MSVC)
+    set(HDF5_LIBRARIES -LIBPATH:${HDF5_LIB_PATH} hdf5dll.lib hdf5_cppdll.lib)
+else()
+    set(HDF5_LIBRARIES -L${HDF5_LIB_PATH} -lhdf5 -lhdf5_hl -lhdf5_cpp)
+endif(MSVC)
 
-include_directories(${GSL_INCLUDE_DIR})
-set(GSL_LIBRARIES -L${GSL_LIB_PATH} -lgsl -lgslcblas)
+include_directories(${BOOST_INCLUDE_DIR})
 
-include_directories(${LIBLAS_INCLUDE_DIR})
-set(LIBLAS_LIBRARIES -L${LIBLAS_LIB_PATH} -llas -llas_c)
+# the following not needed if just doing SPDIO
+if( NOT BUILD_SPDIO_ONLY )
 
-include_directories(${CGAL_INCLUDE_DIR})
-set(CGAL_LIBRARIES -L${CGAL_LIB_PATH} -lCGAL)
+    if (MSVC)
+        # NOTE: Should really use find_package( Boost ) to get the right libs for Windows.
+        # not using at the moment (spdio doesn't need boost libs) so ignore
+        set(BOOST_LIBRARIES -LIBPATH:${BOOST_LIB_PATH} libboost_filesystem-vc100-mt-1_53.lib libboost_system-vc100-mt-1_53.lib)
+    else()
+        set(BOOST_LIBRARIES -L${BOOST_LIB_PATH} -lboost_filesystem -lboost_system)
+    endif(MSVC)
 
-include_directories(${XERCESC_INCLUDE_DIR})
-set(XERCESC_LIBRARIES -L${XERCESC_LIB_PATH} -lxerces-c)
-
-include_directories(${GMP_INCLUDE_DIR})
-set(GMP_LIBRARIES -L${GMP_LIB_PATH} -lgmp)
-
-include_directories(${MPFR_INCLUDE_DIR})
-set(MPFR_LIBRARIES -L${MPFR_LIB_PATH} -lmpfr)
-
+    include_directories(${GSL_INCLUDE_DIR})
+    if (MSVC)
+        set(GSL_LIBRARIES -LIBPATH:${GSL_LIB_PATH} libgsl.lib libcblas.lib)
+    else()
+        set(GSL_LIBRARIES -L${GSL_LIB_PATH} -lgsl -lgslcblas)
+    endif(MSVC)
+    
+    include_directories(${LIBLAS_INCLUDE_DIR})
+    if (MSVC)
+        set(LIBLAS_LIBRARIES -LIBPATH:${LIBLAS_LIB_PATH} liblas.lib liblas_c.lib)
+    else()
+        set(LIBLAS_LIBRARIES -L${LIBLAS_LIB_PATH} -llas -llas_c)
+    endif(MSVC)
+    
+    include_directories(${CGAL_INCLUDE_DIR})
+    if (MSVC)
+        set(CGAL_LIBRARIES -LIBPATH:${CGAL_LIB_PATH} CGAL-vc100-mt-4.1.lib)
+    else()
+        set(CGAL_LIBRARIES -L${CGAL_LIB_PATH} -lCGAL)
+    endif(MSVC)
+    
+    include_directories(${XERCESC_INCLUDE_DIR})
+    if (MSVC)
+        set(XERCESC_LIBRARIES -LIBPATH:${XERCESC_LIB_PATH} xerces-c_static_3.lib)
+    else()
+        set(XERCESC_LIBRARIES -L${XERCESC_LIB_PATH} -lxerces-c)
+    endif(MSVC)
+    
+    include_directories(${GMP_INCLUDE_DIR})
+    if (MSVC)
+        set(GMP_LIBRARIES -LIBPATH:${GMP_LIB_PATH} mpir.lib)
+    else()
+        set(GMP_LIBRARIES -L${GMP_LIB_PATH} -lgmp)
+    endif(MSVC)
+    
+    include_directories(${MPFR_INCLUDE_DIR})
+    if (MSVC)
+        set(MPFR_LIBRARIES -LIBPATH:${MPFR_LIB_PATH} mpfr.lib)
+    else()
+        set(MPFR_LIBRARIES -L${MPFR_LIB_PATH} -lmpfr)
+    endif(MSVC)
+    
+endif(NOT BUILD_SPDIO_ONLY )
 ###############################################################################
 
 ###############################################################################
@@ -222,6 +268,11 @@ add_subdirectory ("${PROJECT_SOURCE_DIR}")
 
 ###############################################################################
 # Build executables
+if (BUILD_SPDIO_ONLY)
+    set(SPDLIB_WITH_UTILITIES OFF)
+    message(STATUS "BUILD_SPDIO_ONLY is ON. SPDLIB_WITH_UTILITIES set to OFF")
+endif (BUILD_SPDIO_ONLY)
+
 if (SPDLIB_WITH_UTILITIES)
 	add_executable(spdtest ${PROJECT_SOURCE_DIR}/exe/test/main.cpp)
 	target_link_libraries (spdtest ${SPDLIB_MITLIB_NAME} ${SPDLIB_LIB_NAME} )
