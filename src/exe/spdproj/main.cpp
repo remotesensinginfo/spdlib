@@ -59,6 +59,9 @@ int main (int argc, char * const argv[])
         TCLAP::ValueArg<std::string> imagePrettyArg("","imagepretty", "Print the WKT (to print Pretty WKT) string associated with the input image.",false,"", "string");
         TCLAP::ValueArg<std::string> spdArg("","spd","Print the WKT string associated with the input spd file.",false,"", "string");
         TCLAP::ValueArg<std::string> spdPrettyArg("","spdpretty", "Print the WKT (to print Pretty WKT) string associated with the input spd file.",false,"", "string");
+        TCLAP::ValueArg<int> epsgArg("","epsg","Print the WKT string associated with the EPSG code provided.",false,0, "int");
+        TCLAP::ValueArg<int> epsgPrettyArg("","epsgpretty", "Print the WKT (to print Pretty WKT) string associated with the EPSG code provided.",false,0, "int");
+
         
         std::vector<TCLAP::Arg*> arguments;
         arguments.push_back(&proj4Arg);
@@ -67,6 +70,8 @@ int main (int argc, char * const argv[])
         arguments.push_back(&imagePrettyArg);
         arguments.push_back(&spdArg);
         arguments.push_back(&spdPrettyArg);
+        arguments.push_back(&epsgArg);
+        arguments.push_back(&epsgPrettyArg);
         
         cmd.xorAdd(arguments);
          
@@ -151,6 +156,24 @@ int main (int argc, char * const argv[])
             OGRFree(wktPrettySpatialRef);
             
             delete spdFile;
+        }
+        else if(epsgPrettyArg.isSet())
+        {
+            OGRSpatialReference oSRS;
+            oSRS.importFromEPSG(epsgPrettyArg.getValue());
+            char **wktspatialref = new char*[1];
+            oSRS.exportToPrettyWkt(wktspatialref);
+            std::cout << wktspatialref[0] << std::endl;
+            OGRFree(wktspatialref);
+        }
+        else if(epsgArg.isSet())
+        {
+            OGRSpatialReference oSRS;
+            oSRS.importFromEPSG(epsgArg.getValue());
+            char **wktspatialref = new char*[1];
+            oSRS.exportToWkt(wktspatialref);
+            std::cout << wktspatialref[0] << std::endl;
+            OGRFree(wktspatialref);
         }
         else
         {
