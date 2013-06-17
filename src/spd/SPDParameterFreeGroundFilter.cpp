@@ -27,7 +27,7 @@
 namespace spdlib
 {
 
-    SPDParameterFreeGroundFilter::SPDParameterFreeGroundFilter(float grdPtDev, boost::uint_fast16_t classParameters, bool checkForFalseMinma, boost::uint_fast32_t kValue, boost::uint_fast32_t classifyDevThresh, boost::uint_fast32_t topHatStart, bool topHatScales, boost::uint_fast32_t topHatFactor)
+    SPDParameterFreeGroundFilter::SPDParameterFreeGroundFilter(float grdPtDev, boost::uint_fast16_t classParameters, bool checkForFalseMinma, boost::uint_fast32_t kValue, boost::uint_fast32_t classifyDevThresh, boost::uint_fast32_t topHatStart, bool topHatScales, boost::uint_fast32_t topHatFactor, boost::uint_fast16_t minPointDensity)
     {
         this->grdPtDev = grdPtDev;
         this->classParameters = classParameters;
@@ -37,6 +37,7 @@ namespace spdlib
         this->thSize = topHatStart;
         this->thScales = topHatScales;
         this->thFac = topHatFactor;
+        this->mpd = minPointDensity;
     }
     
     /**
@@ -429,7 +430,7 @@ namespace spdlib
 				{
 					elev[i][j] = std::numeric_limits<float>::signaling_NaN();
 				}
-                if(pointCounter < MIN_POINT_DENSITY) {
+                if(pointCounter < mpd) {
                     elev[i][j] = std::numeric_limits<float>::signaling_NaN();
                 }
 			}

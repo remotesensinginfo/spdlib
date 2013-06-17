@@ -84,6 +84,10 @@ int main (int argc, char * const argv[])
         TCLAP::ValueArg<boost::uint_fast32_t> topHatFactor("f","tophatfactor","How quickly the tophat window reduces through the resolution, higher numbers reduce size quicker - default 2",false,2,"uint_fast32_t");
 		cmd.add( topHatFactor );
         
+        TCLAP::ValueArg<uint_fast16_t> minPointDensity("m","mpd","Minimum point density in block to use for surface estimation - default 40",false,40,"uint_fast16_t");
+        cmd.add( minPointDensity );
+
+        
         // stop adding to constructor
 		
 		TCLAP::SwitchArg imageSwitch("","image","If set an image of the output surface will be generated rather than classifying the points (useful for debugging and parameter selection)", false);
@@ -113,7 +117,7 @@ int main (int argc, char * const argv[])
         
         spdlib::SPDParameterFreeGroundFilter *blockProcessor = new spdlib::SPDParameterFreeGroundFilter(grdPtDevThresArg.getValue(), usePointsofClassArg.getValue(), morphMinSwitch.getValue(),
                                                                                                         kValue.getValue(), classifyDevThresh.getValue(), topHatStart.getValue(),
-                                                                                                        topHatScales.getValue(), topHatFactor.getValue());
+                                                                                                        topHatScales.getValue(), topHatFactor.getValue(), minPointDensity.getValue());
         
         spdlib::SPDProcessDataBlocks processBlocks = spdlib::SPDProcessDataBlocks(blockProcessor, overlapArg.getValue(), numOfColsBlockArg.getValue(), numOfRowsBlockArg.getValue(), true);
         
