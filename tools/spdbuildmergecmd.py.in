@@ -85,19 +85,21 @@ class BuildSPDMerge (object):
             print(directory + ' does not exist!')
 
     def buildCmd(self, fileList, outClass, classProvided, spdInput, outputSPD, ignoreChecks):
-        print("spdmerge -i ", spdInput,)
+        outStr = "spdmerge -f " + spdInput
         
         if ignoreChecks:
-            print("--ignorechecks ",)
+            outStr = outStr + " --ignorechecks"
         
         if classProvided:
             for file in fileList:
-                print("--classes ", outClass,)
+                outStr = outStr + " --classes " + outClass
 
-        print(outputSPD, " ",)
+        outStr = outStr + " -o " + outputSPD
 
         for file in fileList:
-            print(file, " ",)
+           outStr = outStr + " " + file
+            
+        print(outStr)
 
 
     def run(self, cmdargs):
