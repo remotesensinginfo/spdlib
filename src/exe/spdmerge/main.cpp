@@ -194,7 +194,7 @@ int main (int argc, char * const argv[])
         {
             classesSet = true;
             classesValues = classesArg.getValue();
-            if(classesValues.size() != (fileNames.size()-1))
+            if(classesValues.size() != fileNames.size())
             {
                 throw spdlib::SPDException("The number of inputted classes needs to equal the number of input files.");
             }
