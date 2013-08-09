@@ -42,7 +42,6 @@
 #include "spd/tps/linalg3d.h"
 #include "spd/tps/ludecomposition.h"
 
-#define MIN_POINT_DENSITY 1
 #define CLOSING_WINDOW_SIZE 9
 #define OPENING_WINDOW_SIZE 11
 #define MORPH_MIN_THRESHOLD 1.0f
@@ -62,7 +61,7 @@ namespace spdlib
 	{
 	public:
         // constructor
-        SPDParameterFreeGroundFilter(float grdPtDev, boost::uint_fast16_t classParameters, bool checkForFalseMinma, boost::uint_fast32_t kValue, boost::uint_fast32_t classifyDevThresh, boost::uint_fast32_t topHatStart, bool topHatScales, boost::uint_fast32_t topHatFactor);
+        SPDParameterFreeGroundFilter(float grdPtDev, boost::uint_fast16_t classParameters, bool checkForFalseMinma, boost::uint_fast32_t kValue, boost::uint_fast32_t classifyDevThresh, boost::uint_fast32_t topHatStart, bool topHatScales, boost::uint_fast32_t topHatFactor, boost::uint_fast16_t minPointDensity);
         
         // public functions
         void processDataBlockImage(SPDFile *inSPDFile, std::vector<SPDPulse*> ***pulses, float ***imageDataBlock, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast32_t numImgBands, float binSize) throw(SPDProcessingException);
@@ -97,6 +96,7 @@ namespace spdlib
         boost::uint_fast32_t thSize;
         bool thScales;
         boost::uint_fast32_t thFac;
+        boost::uint_fast16_t mpd;
         // functions
         void findMinSurface(std::vector<SPDPulse*> ***pulses, float **elev, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize);
         void performErosion(float **elev, float **elevErode, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast16_t filterHSize, boost::uint_fast16_t **element);
