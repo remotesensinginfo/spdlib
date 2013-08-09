@@ -1932,6 +1932,7 @@ namespace spdlib
             geom->addRingDirectly(polyRing);
 
             boost::uint_fast32_t idx = 0;
+            //std::cout << "Number of Pulses = " << pulses->size() << std::endl;
             for(std::vector<SPDMetric*>::iterator iterMetrics = metrics->begin(); iterMetrics != metrics->end(); ++iterMetrics)
             {
                 imageData[idx++] = (*iterMetrics)->calcValue(pulses, inSPDFile, geom);

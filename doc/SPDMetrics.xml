@@ -160,7 +160,7 @@
 	
 	<spdlib:metric metric="skewnessheight" field="Out_Name" return="int | All | NotFirst | First | Last | FirstLast" class="int | All | NotGrd | Veg | Grd" minNumReturns="int" upthreshold="double" lowthreshold="double" />
 	
-	<spdlib:metric metric="personmodeheight" field="Out_Name" return="int | All | NotFirst | First | Last | FirstLast" class="int | All | NotGrd | Veg | Grd" minNumReturns="int" upthreshold="double" lowthreshold="double" />
+	<spdlib:metric metric="personmodeheight" resolution="float" field="Out_Name" return="int | All | NotFirst | First | Last | FirstLast" class="int | All | NotGrd | Veg | Grd" minNumReturns="int" upthreshold="double" lowthreshold="double" />
 	
 	<spdlib:metric metric="personmedianheight" field="Out_Name" return="int | All | NotFirst | First | Last | FirstLast" class="int | All | NotGrd | Veg | Grd" minNumReturns="int" upthreshold="double" lowthreshold="double" />
 	
@@ -224,7 +224,7 @@
 	
 	<spdlib:metric metric="skewnessz" field="Out_Name" return="int | All | NotFirst | First | Last | FirstLast" class="int | All | NotGrd | Veg | Grd" minNumReturns="int" upthreshold="double" lowthreshold="double" />
 	
-	<spdlib:metric metric="personmodez" field="Out_Name" return="int | All | NotFirst | First | Last | FirstLast" class="int | All | NotGrd | Veg | Grd" minNumReturns="int" upthreshold="double" lowthreshold="double" />
+	<spdlib:metric metric="personmodez" resolution="float" field="Out_Name" return="int | All | NotFirst | First | Last | FirstLast" class="int | All | NotGrd | Veg | Grd" minNumReturns="int" upthreshold="double" lowthreshold="double" />
 	
 	<spdlib:metric metric="personmedianz" field="Out_Name" return="int | All | NotFirst | First | Last | FirstLast" class="int | All | NotGrd | Veg | Grd" minNumReturns="int" upthreshold="double" lowthreshold="double" />
 	
@@ -290,7 +290,7 @@
 	
 	<spdlib:metric metric="skewnessamplitude" field="Out_Name" return="int | All | NotFirst | First | Last | FirstLast" class="int | All | NotGrd | Veg | Grd" minNumReturns="int" upthreshold="double" lowthreshold="double" heightup="double" heightlow="double" />
 	
-	<spdlib:metric metric="personmodeamplitude" field="Out_Name" return="int | All | NotFirst | First | Last | FirstLast" class="int | All | NotGrd | Veg | Grd" minNumReturns="int" upthreshold="double" lowthreshold="double" heightup="double" heightlow="double" />
+	<spdlib:metric metric="personmodeamplitude" resolution="float" field="Out_Name" return="int | All | NotFirst | First | Last | FirstLast" class="int | All | NotGrd | Veg | Grd" minNumReturns="int" upthreshold="double" lowthreshold="double" heightup="double" heightlow="double" />
 	
 	<spdlib:metric metric="personmedianamplitude" field="Out_Name" return="int | All | NotFirst | First | Last | FirstLast" class="int | All | NotGrd | Veg | Grd" minNumReturns="int" upthreshold="double" lowthreshold="double" heightup="double" heightlow="double" />
 	
@@ -345,7 +345,7 @@
 	
 	<spdlib:metric metric="skewnessrange" field="Out_Name" return="int | All | NotFirst | First | Last | FirstLast" class="int | All | NotGrd | Veg | Grd" minNumReturns="int" upthreshold="double" lowthreshold="double" />
 	
-	<spdlib:metric metric="personmoderange" field="Out_Name" return="int | All | NotFirst | First | Last | FirstLast" class="int | All | NotGrd | Veg | Grd" minNumReturns="int" upthreshold="double" lowthreshold="double" />
+	<spdlib:metric metric="personmoderange" resolution="float" field="Out_Name" return="int | All | NotFirst | First | Last | FirstLast" class="int | All | NotGrd | Veg | Grd" minNumReturns="int" upthreshold="double" lowthreshold="double" />
 	
 	<spdlib:metric metric="personmedianrange" field="Out_Name" return="int | All | NotFirst | First | Last | FirstLast" class="int | All | NotGrd | Veg | Grd" minNumReturns="int" upthreshold="double" lowthreshold="double" />
 	
@@ -407,7 +407,7 @@
 	
 	<spdlib:metric metric="skewnesswidth" field="Out_Name" return="int | All | NotFirst | First | Last | FirstLast" class="int | All | NotGrd | Veg | Grd" minNumReturns="int" upthreshold="double" lowthreshold="double" heightup="double" heightlow="double" />
 	
-	<spdlib:metric metric="personmodewidth" field="Out_Name" return="int | All | NotFirst | First | Last | FirstLast" class="int | All | NotGrd | Veg | Grd" minNumReturns="int" upthreshold="double" lowthreshold="double" heightup="double" heightlow="double" />
+	<spdlib:metric metric="personmodewidth" resolution="float" field="Out_Name" return="int | All | NotFirst | First | Last | FirstLast" class="int | All | NotGrd | Veg | Grd" minNumReturns="int" upthreshold="double" lowthreshold="double" heightup="double" heightlow="double" />
 	
 	<spdlib:metric metric="personmedianwidth" field="Out_Name" return="int | All | NotFirst | First | Last | FirstLast" class="int | All | NotGrd | Veg | Grd" minNumReturns="int" upthreshold="double" lowthreshold="double" heightup="double" heightlow="double" />
 	
