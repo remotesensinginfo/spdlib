@@ -32,10 +32,13 @@
 #include "ogrsf_frmts.h"
 #include "ogr_spatialref.h"
 
+#include <boost/filesystem.hpp>
+
 #include "spd/SPDTextFileUtilities.h"
 #include "spd/SPDException.h"
 #include "spd/SPDFile.h"
 #include "spd/SPDFileReader.h"
+#include "spd/SPDVectorUtils.h"
 
 #include "spd/spd-config.h"
 
@@ -61,7 +64,8 @@ int main (int argc, char * const argv[])
         TCLAP::ValueArg<std::string> spdPrettyArg("","spdpretty", "Print the WKT (to print Pretty WKT) string associated with the input spd file.",false,"", "string");
         TCLAP::ValueArg<int> epsgArg("","epsg","Print the WKT string associated with the EPSG code provided.",false,0, "int");
         TCLAP::ValueArg<int> epsgPrettyArg("","epsgpretty", "Print the WKT (to print Pretty WKT) string associated with the EPSG code provided.",false,0, "int");
-
+        TCLAP::ValueArg<std::string> shapefileArg("","shp","Print the WKT string associated with the input ESRI shapefile.",false,"", "string");
+        TCLAP::ValueArg<std::string> shapefilePrettyArg("","shppretty", "Print the WKT (to print Pretty WKT) string associated with the input ESRI shapefile.",false,"", "string");
         
         std::vector<TCLAP::Arg*> arguments;
         arguments.push_back(&proj4Arg);
@@ -72,6 +76,8 @@ int main (int argc, char * const argv[])
         arguments.push_back(&spdPrettyArg);
         arguments.push_back(&epsgArg);
         arguments.push_back(&epsgPrettyArg);
+        arguments.push_back(&shapefileArg);
+        arguments.push_back(&shapefilePrettyArg);
         
         cmd.xorAdd(arguments);
          
@@ -174,6 +180,84 @@ int main (int argc, char * const argv[])
             oSRS.exportToWkt(wktspatialref);
             std::cout << wktspatialref[0] << std::endl;
             OGRFree(wktspatialref);
+        }
+        else if(shapefileArg.isSet())
+        {
+            // Convert to absolute path
+            std::string inputVector = boost::filesystem::absolute(shapefileArg.getValue()).c_str();
+            
+            OGRRegisterAll();
+            
+            OGRDataSource *inputSHPDS = NULL;
+            OGRLayer *inputSHPLayer = NULL;
+            
+            spdlib::SPDVectorUtils vecUtils;
+            std::string SHPFileInLayer = vecUtils.getLayerName(inputVector);
+            
+            /////////////////////////////////////
+            //
+            // Open Input Shapfile.
+            //
+            /////////////////////////////////////
+            inputSHPDS = OGRSFDriverRegistrar::Open(inputVector.c_str(), FALSE);
+            if(inputSHPDS == NULL)
+            {
+                std::string message = std::string("Could not open vector file ") + inputVector;
+                throw spdlib::SPDException(message.c_str());
+            }
+            inputSHPLayer = inputSHPDS->GetLayerByName(SHPFileInLayer.c_str());
+            if(inputSHPLayer == NULL)
+            {
+                std::string message = std::string("Could not open vector layer ") + SHPFileInLayer;
+                throw spdlib::SPDException(message.c_str());
+            }
+            OGRSpatialReference *spatialRef = inputSHPLayer->GetSpatialRef();
+            
+            char **wktPrettySpatialRef = new char*[1];
+            spatialRef->exportToWkt(wktPrettySpatialRef);
+            std::cout << wktPrettySpatialRef[0] << std::endl;
+            OGRFree(wktPrettySpatialRef);
+            
+            OGRDataSource::DestroyDataSource(inputSHPDS);
+        }
+        else if(shapefilePrettyArg.isSet())
+        {
+            // Convert to absolute path
+            std::string inputVector = boost::filesystem::absolute(shapefileArg.getValue()).c_str();
+            
+            OGRRegisterAll();
+            
+            OGRDataSource *inputSHPDS = NULL;
+            OGRLayer *inputSHPLayer = NULL;
+            
+            spdlib::SPDVectorUtils vecUtils;
+            std::string SHPFileInLayer = vecUtils.getLayerName(inputVector);
+            
+            /////////////////////////////////////
+            //
+            // Open Input Shapfile.
+            //
+            /////////////////////////////////////
+            inputSHPDS = OGRSFDriverRegistrar::Open(inputVector.c_str(), FALSE);
+            if(inputSHPDS == NULL)
+            {
+                std::string message = std::string("Could not open vector file ") + inputVector;
+                throw spdlib::SPDException(message.c_str());
+            }
+            inputSHPLayer = inputSHPDS->GetLayerByName(SHPFileInLayer.c_str());
+            if(inputSHPLayer == NULL)
+            {
+                std::string message = std::string("Could not open vector layer ") + SHPFileInLayer;
+                throw spdlib::SPDException(message.c_str());
+            }
+            OGRSpatialReference *spatialRef = inputSHPLayer->GetSpatialRef();
+            
+            char **wktPrettySpatialRef = new char*[1];
+            spatialRef->exportToPrettyWkt(wktPrettySpatialRef);
+            std::cout << wktPrettySpatialRef[0] << std::endl;
+            OGRFree(wktPrettySpatialRef);
+            
+            OGRDataSource::DestroyDataSource(inputSHPDS);
         }
         else
         {
