@@ -280,7 +280,7 @@ int main (int argc, char * const argv[])
 		{
             if(outputFormat != "SPD")
 			{
-				throw spdlib::SPDException("This converter only supports conversion to the SPD format.");
+				throw spdlib::SPDException("The temporary outputs options (i.e., --usetmp and --temppath) are only required when converting to an indexed format (i.e., SPD). Either select SPD as your output format or remove these options.");
 			}
 			
 			if(tempdir == "")
