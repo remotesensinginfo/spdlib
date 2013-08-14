@@ -161,8 +161,8 @@ int main (int argc, char * const argv[])
         TCLAP::ValueArg<boost::uint_fast16_t> pulseVersionArg("","pulseversion","Specify the pulse version to be used within the SPD file (Default: 2)",false ,2 ,"unsigned int");
 		cmd.add( pulseVersionArg );
 		
-		TCLAP::SwitchArg diskTempFilesSwitch("f","usetmp","Convert file buffering to disk using temporary files", false);
-		cmd.add( diskTempFilesSwitch );
+		//TCLAP::SwitchArg diskTempFilesSwitch("f","usetmp","Convert file buffering to disk using temporary files", false);
+		//cmd.add( diskTempFilesSwitch );
 		
 		TCLAP::ValueArg<std::string> inputFileArg("i","input","The input file.",true,"","String");
 		cmd.add( inputFileArg );
@@ -276,11 +276,11 @@ int main (int argc, char * const argv[])
 		std::cout << "outProjWKT = " << outProjWKT << std::endl;
 		*/
 		spdlib::SPDConvertFormats convert;
-		if(diskTempFilesSwitch.getValue())
+		if(tempDirPathArg.isSet())
 		{
             if(outputFormat != "SPD")
 			{
-				throw spdlib::SPDException("The temporary outputs options (i.e., --usetmp and --temppath) are only required when converting to an indexed format (i.e., SPD). Either select SPD as your output format or remove these options.");
+				throw spdlib::SPDException("The temporary outputs option (i.e., --temppath) is only required when converting to an indexed format (i.e., SPD). Either select SPD as your output format or remove these options.");
 			}
 			
 			if(tempdir == "")
