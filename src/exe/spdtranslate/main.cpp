@@ -46,7 +46,7 @@ int main (int argc, char * const argv[])
 	
 	try 
 	{
-        TCLAP::CmdLine cmd("Convert between file formats: spdtranslate", ' ', "1.0.0");
+        TCLAP::CmdLine cmd("Convert between file formats: spdtranslate", ' ', "1.1.0");
 		
 		std::vector<std::string> allowedInFormats;
 		allowedInFormats.push_back("SPD");
