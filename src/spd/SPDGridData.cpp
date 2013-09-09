@@ -635,8 +635,139 @@ namespace spdlib
     
     std::list<SPDPulse*>*** SPDGridData::gridDataScan(std::list<SPDPulse*>* pls, SPDFile *spdFile) throw(SPDProcessingException)
 	{
-	    throw SPDProcessingException("Scan line gridding not implemented yet... gridDataScan");      
-    }
+		boost::uint_fast32_t xSize = 0;
+		boost::uint_fast32_t ySize = 0;
+		boost::uint_fast32_t roundingAddition = 1;	
+		
+		try
+		{			
+			xSize = boost::numeric_cast<boost::uint_fast32_t>(((spdFile->getScanlineIdxMax()-spdFile->getScanlineIdxMin())/spdFile->getBinSize())+roundingAddition);
+			ySize = boost::numeric_cast<boost::uint_fast32_t>(((spdFile->getScanlineMax()-spdFile->getScanlineMin())/spdFile->getBinSize())+roundingAddition);
+			
+			spdFile->setNumberBinsX(xSize);
+			spdFile->setNumberBinsY(ySize);
+		}
+		catch(boost::numeric::negative_overflow& e) 
+		{
+			throw SPDProcessingException(e.what());
+		}
+		catch(boost::numeric::positive_overflow& e) 
+		{
+			throw SPDProcessingException(e.what());
+		}
+		catch(boost::numeric::bad_numeric_cast& e) 
+		{
+			throw SPDProcessingException(e.what());
+		}
+				
+		if((xSize < 1) | (ySize < 1))
+		{
+			throw SPDProcessingException("There insufficent number of bins for binning (try reducing resolution).");
+		}
+		
+		std::list<SPDPulse*> ***griddedPls = new std::list<SPDPulse*>**[ySize];
+		for(boost::uint_fast32_t i = 0; i < ySize; ++i)
+		{
+			griddedPls[i] = new std::list<SPDPulse*>*[xSize];
+			for(boost::uint_fast32_t j = 0; j < xSize; ++j)
+			{
+				griddedPls[i][j] = new std::list<SPDPulse*>();
+			}
+		}
+		
+		try 
+		{	
+			double xDiff = 0;
+			double yDiff = 0;
+			boost::uint_fast32_t xIdx = 0;
+			boost::uint_fast32_t yIdx = 0;
+			
+			boost::uint_fast32_t feedback = pls->size()/10;
+			boost::uint_fast32_t feedbackCounter = 0;
+			
+			std::cout << "Started (Grid " << pls->size() << " Pulses) ." << std::flush;
+			
+			SPDPulse *pl = NULL;
+			boost::uint_fast64_t iend = pls->size();
+			for(boost::uint_fast64_t i = 0; i < iend; ++i)
+			{
+				if((pls->size() > 10) && (i % feedback == 0))
+				{
+					std::cout << "." << feedbackCounter << "." << std::flush;
+					feedbackCounter += 10;
+				}
+				
+				pl = pls->back();
+				pls->pop_back();
+				
+				xDiff = (pl->scanlineIdx - spdFile->getScanlineIdxMin())/spdFile->getBinSize();		
+				yDiff = (pl->scanline - spdFile->getScanlineMin())/spdFile->getBinSize();		
+				
+				try 
+				{
+					xIdx = boost::numeric_cast<boost::uint_fast32_t>(xDiff);
+					yIdx = boost::numeric_cast<boost::uint_fast32_t>(yDiff);
+				}
+				catch(boost::numeric::negative_overflow& e) 
+				{
+					throw SPDProcessingException(e.what());
+				}
+				catch(boost::numeric::positive_overflow& e) 
+				{
+					throw SPDProcessingException(e.what());
+				}
+				catch(boost::numeric::bad_numeric_cast& e) 
+				{
+					throw SPDProcessingException(e.what());
+				}
+				
+				if(xIdx > ((xSize)-1))
+				{
+					std::cout << "Point: [" << pl->scanlineIdx << "," << pl->scanline << "]\n";
+					std::cout << "Diff [" << xDiff << "," << yDiff << "]\n";
+					std::cout << "Index [" << xIdx << "," << yIdx << "]\n";
+					std::cout << "Size [" << xSize << "," << ySize << "]\n";
+					throw SPDProcessingException("Did not find ScanlineIdx (x) index within range.");
+				}
+				
+				if(yIdx > ((ySize)-1))
+				{
+					std::cout << "Point: [" << pl->scanlineIdx << "," << pl->scanline << "]\n";
+					std::cout << "Diff [" << xDiff << "," << yDiff << "]\n";
+					std::cout << "Index [" << xIdx << "," << yIdx << "]\n";
+					std::cout << "Size [" << xSize << "," << ySize << "]\n";
+					throw SPDProcessingException("Did not find Scanline (y) index within range.");
+				}
+				
+				griddedPls[yIdx][xIdx]->push_back(pl);
+			}
+			
+			std::cout << " Complete.\n";
+		}
+		catch (SPDProcessingException &e) 
+		{
+			std::list<SPDPulse*>::iterator iterPls;
+			for(boost::uint_fast32_t i = 0; i < ySize; ++i)
+			{
+				for(boost::uint_fast32_t j = 0; j < xSize; ++j)
+				{
+					for(iterPls = griddedPls[i][j]->begin(); iterPls != griddedPls[i][j]->end(); )
+					{
+						delete *iterPls;
+						griddedPls[i][j]->erase(iterPls++);
+					}
+					delete griddedPls[i][j];
+				}
+				delete[] griddedPls[i];
+			}
+			delete[] griddedPls;
+			
+			throw e;
+		}
+		
+		return griddedPls;
+	}
+    
     
 	std::list<SPDPulse*>*** SPDGridData::gridDataCartesian(std::vector<SPDPulse*>* pls, SPDFile *spdFile) throw(SPDProcessingException)
 	{
@@ -1049,11 +1180,141 @@ namespace spdlib
         
         return griddedPls;
 	}
-    
+
     std::list<SPDPulse*>*** SPDGridData::gridDataScan(std::vector<SPDPulse*>* pls, SPDFile *spdFile) throw(SPDProcessingException)
 	{
-	    throw SPDProcessingException("Scan line gridding not implemented yet... gridDataScan");    
-    }
+		boost::uint_fast32_t xSize = 0;
+		boost::uint_fast32_t ySize = 0;
+		boost::uint_fast32_t roundingAddition = 1;
+		
+		try
+		{			
+			xSize = boost::numeric_cast<boost::uint_fast32_t>(((spdFile->getScanlineIdxMax()-spdFile->getScanlineIdxMin())/spdFile->getBinSize())+roundingAddition);
+			ySize = boost::numeric_cast<boost::uint_fast32_t>(((spdFile->getScanlineMax()-spdFile->getScanlineMin())/spdFile->getBinSize())+roundingAddition);
+			
+			spdFile->setNumberBinsX(xSize);
+			spdFile->setNumberBinsY(ySize);
+		}
+		catch(boost::numeric::negative_overflow& e) 
+		{
+			throw SPDProcessingException(e.what());
+		}
+		catch(boost::numeric::positive_overflow& e) 
+		{
+			throw SPDProcessingException(e.what());
+		}
+		catch(boost::numeric::bad_numeric_cast& e) 
+		{
+			throw SPDProcessingException(e.what());
+		}
+				
+		if((xSize < 1) | (ySize < 1))
+		{
+			throw SPDProcessingException("There insufficent number of bins for binning (try reducing resolution).");
+		}
+		
+		std::list<SPDPulse*> ***griddedPls = new std::list<SPDPulse*>**[ySize];
+		for(boost::uint_fast32_t i = 0; i < ySize; ++i)
+		{
+			griddedPls[i] = new std::list<SPDPulse*>*[xSize];
+			for(boost::uint_fast32_t j = 0; j < xSize; ++j)
+			{
+				griddedPls[i][j] = new std::list<SPDPulse*>();
+			}
+		}
+		
+		try 
+		{	
+			double xDiff = 0;
+			double yDiff = 0;
+			boost::uint_fast32_t xIdx = 0;
+			boost::uint_fast32_t yIdx = 0;
+			
+			boost::uint_fast32_t feedback = pls->size()/10;
+			boost::uint_fast32_t feedbackCounter = 0;
+			
+			std::cout << "Started (Grid " << pls->size() << " Pulses) ." << std::flush;
+			
+			SPDPulse *pl = NULL;
+			boost::uint_fast64_t iend = pls->size();
+			for(boost::uint_fast64_t i = 0; i < iend; ++i)
+			{
+				if((pls->size() > 10) && (i % feedback == 0))
+				{
+					std::cout << "." << feedbackCounter << "." << std::flush;
+					feedbackCounter += 10;
+				}
+				
+				pl = pls->back();
+				pls->pop_back();
+				
+				xDiff = (pl->scanlineIdx - spdFile->getScanlineIdxMin())/spdFile->getBinSize();	
+				yDiff = (pl->scanline - spdFile->getScanlineMin())/spdFile->getBinSize();			
+				
+				try 
+				{
+					xIdx = boost::numeric_cast<boost::uint_fast32_t>(xDiff);
+					yIdx = boost::numeric_cast<boost::uint_fast32_t>(yDiff);
+				}
+				catch(boost::numeric::negative_overflow& e) 
+				{
+					throw SPDProcessingException(e.what());
+				}
+				catch(boost::numeric::positive_overflow& e) 
+				{
+					throw SPDProcessingException(e.what());
+				}
+				catch(boost::numeric::bad_numeric_cast& e) 
+				{
+					throw SPDProcessingException(e.what());
+				}
+				
+				if(xIdx > ((xSize)-1))
+				{
+					std::cout << "Point: [" << pl->scanlineIdx << "," << pl->scanline << "]\n";
+					std::cout << "Diff [" << xDiff << "," << yDiff << "]\n";
+					std::cout << "Index [" << xIdx << "," << yIdx << "]\n";
+					std::cout << "Size [" << xSize << "," << ySize << "]\n";
+					throw SPDProcessingException("Did not find ScanlineIdx (x) index within range.");
+				}
+				
+				if(yIdx > ((ySize)-1))
+				{
+					std::cout << "Point: [" << pl->scanlineIdx << "," << pl->scanline << "]\n";
+					std::cout << "Diff [" << xDiff << "," << yDiff << "]\n";
+					std::cout << "Index [" << xIdx << "," << yIdx << "]\n";
+					std::cout << "Size [" << xSize << "," << ySize << "]\n";
+					throw SPDProcessingException("Did not find Scanline (y) index within range.");
+				}
+				
+				griddedPls[yIdx][xIdx]->push_back(pl);
+			}
+			
+			std::cout << " Complete.\n";
+		}
+		catch (SPDProcessingException &e) 
+		{
+			std::list<SPDPulse*>::iterator iterPls;
+			for(boost::uint_fast32_t i = 0; i < ySize; ++i)
+			{
+				for(boost::uint_fast32_t j = 0; j < xSize; ++j)
+				{
+					for(iterPls = griddedPls[i][j]->begin(); iterPls != griddedPls[i][j]->end(); )
+					{
+						delete *iterPls;
+						griddedPls[i][j]->erase(iterPls++);
+					}
+					delete griddedPls[i][j];
+				}
+				delete[] griddedPls[i];
+			}
+			delete[] griddedPls;
+			
+			throw e;
+		}
+		
+		return griddedPls;
+	}
     
     void SPDGridData::gridDataCartesian(std::list<SPDPulse*>* pls, std::list<SPDPulse*>*** grid, OGREnvelope *env, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, float binsize) throw(SPDProcessingException)
     {
@@ -1236,7 +1497,86 @@ namespace spdlib
     
     void SPDGridData::gridDataScan(std::list<SPDPulse*>* pls, std::list<SPDPulse*>*** grid, OGREnvelope *env, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, float binsize) throw(SPDProcessingException)
     {
-        throw SPDProcessingException("Scan line gridding not implemented yet... gridDataScan");
+        if((xSize < 1) | (ySize < 1))
+		{
+			throw SPDProcessingException("There insufficent number of bins for binning (try reducing resolution).");
+		}
+        
+        try 
+		{	
+			double xDiff = 0;
+			double yDiff = 0;
+			boost::uint_fast32_t xIdx = 0;
+			boost::uint_fast32_t yIdx = 0;
+			
+			boost::uint_fast32_t feedback = pls->size()/10;
+			boost::uint_fast32_t feedbackCounter = 0;
+			
+			std::cout << "Started (Grid " << pls->size() << " Pulses) ." << std::flush;
+			SPDPulse *pl = NULL;
+			boost::uint_fast64_t iend = pls->size();
+			for(boost::uint_fast64_t i = 0; i < iend; ++i)
+			{
+				if((pls->size() > 10) && (i % feedback == 0))
+				{
+					std::cout << "." << feedbackCounter << "." << std::flush;
+					feedbackCounter += 10;
+				}
+				
+				pl = pls->back();
+				pls->pop_back();
+				
+				xDiff = (pl->scanlineIdx - env->MinX)/binsize;
+				yDiff = (pl->scanline - env->MinY)/binsize;
+				
+				try 
+				{
+					xIdx = boost::numeric_cast<boost::uint_fast32_t>(xDiff);
+					yIdx = boost::numeric_cast<boost::uint_fast32_t>(yDiff);
+				}
+				catch(boost::numeric::negative_overflow& e) 
+				{
+                    std::cout << "Diff [" << xDiff << "," << yDiff << "]\n";
+					throw SPDProcessingException(e.what());
+				}
+				catch(boost::numeric::positive_overflow& e) 
+				{
+                    std::cout << "Diff [" << xDiff << "," << yDiff << "]\n";
+					throw SPDProcessingException(e.what());
+				}
+				catch(boost::numeric::bad_numeric_cast& e) 
+				{
+                    std::cout << "Diff [" << xDiff << "," << yDiff << "]\n";
+					throw SPDProcessingException(e.what());
+				}
+				
+				if(xIdx > ((xSize)-1))
+				{
+					std::cout << "Point: [" << pl->scanlineIdx << "," << pl->scanline << "]\n";
+					std::cout << "Diff [" << xDiff << "," << yDiff << "]\n";
+					std::cout << "Index [" << xIdx << "," << yIdx << "]\n";
+					std::cout << "Size [" << xSize << "," << ySize << "]\n";
+					throw SPDProcessingException("Did not find scanlineIdx (x) index within range.");
+				}
+				
+				if(yIdx > ((ySize)-1))
+				{
+					std::cout << "Point: [" << pl->scanlineIdx << "," << pl->scanline << "]\n";
+					std::cout << "Diff [" << xDiff << "," << yDiff << "]\n";
+					std::cout << "Index [" << xIdx << "," << yIdx << "]\n";
+					std::cout << "Size [" << xSize << "," << ySize << "]\n";
+					throw SPDProcessingException("Did not find scanline (y) index within range.");
+				}
+				
+				grid[yIdx][xIdx]->push_back(pl);
+			}
+			
+			std::cout << " Complete.\n";
+		}
+		catch (SPDProcessingException &e) 
+		{			
+			throw e;
+		}
     }
     
     void SPDGridData::gridDataCartesian(std::vector<SPDPulse*>* pls, std::list<SPDPulse*>*** grid, OGREnvelope *env, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, float binsize) throw(SPDProcessingException)
@@ -1427,10 +1767,87 @@ namespace spdlib
     
     void SPDGridData::gridDataScan(std::vector<SPDPulse*>* pls, std::list<SPDPulse*>*** grid, OGREnvelope *env, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, float binsize) throw(SPDProcessingException)
     {
-        throw SPDProcessingException("Scan line gridding not implemented yet... gridDataScan");
-    }
-    
-    
+        if((xSize < 1) | (ySize < 1))
+		{
+			throw SPDProcessingException("There insufficent number of bins for binning (try reducing resolution).");
+		}
+        
+        try 
+		{	
+			double xDiff = 0;
+			double yDiff = 0;
+			boost::uint_fast32_t xIdx = 0;
+			boost::uint_fast32_t yIdx = 0;
+			
+			boost::uint_fast32_t feedback = pls->size()/10;
+			boost::uint_fast32_t feedbackCounter = 0;
+			
+			std::cout << "Started (Grid " << pls->size() << " Pulses) ." << std::flush;
+			SPDPulse *pl = NULL;
+			boost::uint_fast64_t iend = pls->size();
+			for(boost::uint_fast64_t i = 0; i < iend; ++i)
+			{
+				if((pls->size() > 10) && (i % feedback == 0))
+				{
+					std::cout << "." << feedbackCounter << "." << std::flush;
+					feedbackCounter += 10;
+				}
+				
+				pl = pls->back();
+				pls->pop_back();
+				
+				xDiff = (pl->scanlineIdx - env->MinX)/binsize;
+				yDiff = (pl->scanline - env->MinY)/binsize;				
+				
+				try 
+				{
+					xIdx = boost::numeric_cast<boost::uint_fast32_t>(xDiff);
+					yIdx = boost::numeric_cast<boost::uint_fast32_t>(yDiff);
+				}
+				catch(boost::numeric::negative_overflow& e) 
+				{
+                    std::cout << "Diff [" << xDiff << "," << yDiff << "]\n";
+					throw SPDProcessingException(e.what());
+				}
+				catch(boost::numeric::positive_overflow& e) 
+				{
+                    std::cout << "Diff [" << xDiff << "," << yDiff << "]\n";
+					throw SPDProcessingException(e.what());
+				}
+				catch(boost::numeric::bad_numeric_cast& e) 
+				{
+                    std::cout << "Diff [" << xDiff << "," << yDiff << "]\n";
+					throw SPDProcessingException(e.what());
+				}
+				
+				if(xIdx > ((xSize)-1))
+				{
+					std::cout << "Point: [" << pl->scanlineIdx << "," << pl->scanline << "]\n";
+					std::cout << "Diff [" << xDiff << "," << yDiff << "]\n";
+					std::cout << "Index [" << xIdx << "," << yIdx << "]\n";
+					std::cout << "Size [" << xSize << "," << ySize << "]\n";
+					throw SPDProcessingException("Did not find scanlineIdx (x) index within range.");
+				}
+				
+				if(yIdx > ((ySize)-1))
+				{
+					std::cout << "Point: [" << pl->scanlineIdx << "," << pl->scanline << "]\n";
+					std::cout << "Diff [" << xDiff << "," << yDiff << "]\n";
+					std::cout << "Index [" << xIdx << "," << yIdx << "]\n";
+					std::cout << "Size [" << xSize << "," << ySize << "]\n";
+					throw SPDProcessingException("Did not find scanline (y) index within range.");
+				}
+				
+				grid[yIdx][xIdx]->push_back(pl);
+			}
+			
+			std::cout << " Complete.\n";
+		}
+		catch (SPDProcessingException &e) 
+		{			
+			throw e;
+		}
+    }    
     
     
     
@@ -1604,11 +2021,87 @@ namespace spdlib
     {
         throw SPDProcessingException("Polar gridding not implemented yet... reGridDataPolar");
     }
-    
+        
     void SPDGridData::reGridDataScan(std::vector<SPDPulse*> ***inGridPls, boost::uint_fast32_t inXSize, boost::uint_fast32_t inYSize, std::vector<SPDPulse*> ***outGridPls, boost::uint_fast32_t outXSize, boost::uint_fast32_t outYSize, double originX, double originY, float outBinSize) throw(SPDProcessingException)
     {
-        throw SPDProcessingException("Scan line gridding not implemented yet... reGridDataScan");
+        if((outXSize < 1) | (outYSize < 1))
+		{
+			throw SPDProcessingException("There insufficent number of bins for binning (try reducing resolution).");
+		}
+        
+        try 
+		{	
+			double xDiff = 0;
+			double yDiff = 0;
+			boost::uint_fast32_t xIdx = 0;
+			boost::uint_fast32_t yIdx = 0;
+			
+			
+			SPDPulse *pl = NULL;
+			for(boost::uint_fast64_t i = 0; i < inYSize; ++i)
+			{
+                for(boost::uint_fast64_t j = 0; j < inXSize; ++j)
+                {
+                    for(std::vector<SPDPulse*>::iterator iterPls = inGridPls[i][j]->begin(); iterPls != inGridPls[i][j]->end(); ++iterPls)
+                    {
+                        pl = (*iterPls);
+				
+                        xDiff = (pl->scanlineIdx - originX)/outBinSize;
+                        yDiff = (pl->scanline - originY)/outBinSize;
+                        
+                        try 
+                        {
+                            xIdx = boost::numeric_cast<boost::uint_fast32_t>(xDiff);
+                            yIdx = boost::numeric_cast<boost::uint_fast32_t>(yDiff);
+                        }
+                        catch(boost::numeric::negative_overflow& e) 
+                        {
+                            std::cout << "Diff [" << xDiff << "," << yDiff << "]\n";
+                            throw SPDProcessingException(e.what());
+                        }
+                        catch(boost::numeric::positive_overflow& e) 
+                        {
+                            std::cout << "Diff [" << xDiff << "," << yDiff << "]\n";
+                            throw SPDProcessingException(e.what());
+                        }
+                        catch(boost::numeric::bad_numeric_cast& e) 
+                        {
+                            std::cout << "Diff [" << xDiff << "," << yDiff << "]\n";
+                            throw SPDProcessingException(e.what());
+                        }
+                        
+                        //std::cout << "Index [" << xIdx << "," << yIdx << "]\n";
+                        
+                        if(xIdx > ((outXSize)-1))
+                        {
+                            std::cout << "Point: [" << pl->scanlineIdx << "," << pl->scanline << "]\n";
+                            std::cout << "Diff [" << xDiff << "," << yDiff << "]\n";
+                            std::cout << "Index [" << xIdx << "," << yIdx << "]\n";
+                            std::cout << "Size [" << outXSize << "," << outYSize << "]\n";
+                            throw SPDProcessingException("Did not find scanlineIdx (x) index within range.");
+                        }
+                        
+                        if(yIdx > ((outYSize)-1))
+                        {
+                            std::cout << "Point: [" << pl->scanlineIdx << "," << pl->scanline << "]\n";
+                            std::cout << "Diff [" << xDiff << "," << yDiff << "]\n";
+                            std::cout << "Index [" << xIdx << "," << yIdx << "]\n";
+                            std::cout << "Size [" << outXSize << "," << outYSize << "]\n";
+                            throw SPDProcessingException("Did not find scanlineIdx (y) index within range.");
+                        }
+                        
+                        outGridPls[yIdx][xIdx]->push_back(pl);
+                    }
+                }
+			}			
+		}
+		catch (SPDProcessingException &e) 
+		{			
+            std::cout << e.what() << std::endl;
+			throw e;
+		}
     }
+    
     
 	SPDGridData::~SPDGridData()
 	{
