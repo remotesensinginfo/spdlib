@@ -123,7 +123,11 @@ namespace spdlib
                 geoWidth = spdInFile->getAzimuthMax() - spdInFile->getAzimuthMin();
                 geoHeight = spdInFile->getZenithMax() - spdInFile->getZenithMin();
             }
-
+            else if(spdInFile->getIndexType() == SPD_SCAN_IDX)
+            {
+                geoWidth = spdInFile->getScanlineIdxMax() - spdInFile->getScanlineIdxMin();
+                geoHeight = spdInFile->getScanlineMax() - spdInFile->getScanlineMin();
+            }
             //std::cout << "Geo: [" << geoWidth << "," << geoHeight << "]\n";
 
             bool usingNativeRes = false;
@@ -342,12 +346,17 @@ namespace spdlib
                 blockXOrigin = spdInFile->getXMin() - (overlap * spdInFile->getBinSize());
                 blockYOrigin = spdInFile->getYMax() + (overlap * spdInFile->getBinSize());
             }
-            else if(spdInFile->getIndexType() == SPD_CARTESIAN_IDX)
+            else if(spdInFile->getIndexType() == SPD_SPHERICAL_IDX)
             {
                 blockXOrigin = spdInFile->getAzimuthMin() - (overlap * spdInFile->getBinSize());
                 blockYOrigin = spdInFile->getZenithMin() - (overlap * spdInFile->getBinSize());
             }
-
+            else if(spdInFile->getIndexType() == SPD_SCAN_IDX)
+            {
+                blockXOrigin = spdInFile->getScanlineIdxMin() - (overlap * spdInFile->getBinSize());
+                blockYOrigin = spdInFile->getScanlineMin() - (overlap * spdInFile->getBinSize());
+            }
+            
             for(boost::uint_fast32_t i = 0; i < numYFullBlocks; ++i)
             {
                 blockMinX = 0;
@@ -357,9 +366,13 @@ namespace spdlib
                 {
                     blockXOrigin = spdInFile->getXMin() - (overlap * spdInFile->getBinSize());
                 }
-                else if(spdInFile->getIndexType() == SPD_CARTESIAN_IDX)
+                else if(spdInFile->getIndexType() == SPD_SPHERICAL_IDX)
                 {
                     blockXOrigin = spdInFile->getAzimuthMin() - (overlap * spdInFile->getBinSize());
+                }
+                else if(spdInFile->getIndexType() == SPD_SCAN_IDX)
+                {
+                    blockXOrigin = spdInFile->getScanlineIdxMin() - (overlap * spdInFile->getBinSize());
                 }
 
                 for(boost::uint_fast32_t j = 0; j < numXFullBlocks; ++j)
@@ -538,11 +551,15 @@ namespace spdlib
                 {
                     blockYOrigin -= blockHeight;
                 }
-                else if(spdInFile->getIndexType() == SPD_CARTESIAN_IDX)
+                else if(spdInFile->getIndexType() == SPD_SPHERICAL_IDX)
                 {
                     blockYOrigin += blockHeight;
                 }
-
+                else if(spdInFile->getIndexType() == SPD_SCAN_IDX)
+                {
+                    blockYOrigin += blockHeight;
+                }
+                
                 blockMinY += blockYSize;
                 blockMaxY += blockYSize;
             }
@@ -558,11 +575,15 @@ namespace spdlib
                 {
                     blockXOrigin = spdInFile->getXMin() - (overlap * spdInFile->getBinSize());
                 }
-                else if(spdInFile->getIndexType() == SPD_CARTESIAN_IDX)
+                else if(spdInFile->getIndexType() == SPD_SPHERICAL_IDX)
                 {
                     blockXOrigin = spdInFile->getAzimuthMin() - (overlap * spdInFile->getBinSize());
                 }
-
+                else if(spdInFile->getIndexType() == SPD_SCAN_IDX)
+                {
+                    blockXOrigin = spdInFile->getScanlineIdxMin() - (overlap * spdInFile->getBinSize());
+                }
+                
                 for(boost::uint_fast32_t j = 0; j < numXFullBlocks; ++j)
                 {
                     if(this->printProgress)
@@ -858,7 +879,12 @@ namespace spdlib
                 geoWidth = spdInFile->getAzimuthMax() - spdInFile->getAzimuthMin();
                 geoHeight = spdInFile->getZenithMax() - spdInFile->getZenithMin();
             }
-            
+            else if(spdInFile->getIndexType() == SPD_SCAN_IDX)
+            {
+                geoWidth = spdInFile->getScanlineIdxMax() - spdInFile->getScanlineIdxMin();
+                geoHeight = spdInFile->getScanlineMax() - spdInFile->getScanlineMin();
+            }
+                      
             //std::cout << "Geo: [" << geoWidth << "," << geoHeight << "]\n";
             
             bool usingNativeRes = false;
@@ -1142,10 +1168,15 @@ namespace spdlib
                 blockXOrigin = spdInFile->getXMin() - (overlap * spdInFile->getBinSize());
                 blockYOrigin = spdInFile->getYMax() + (overlap * spdInFile->getBinSize());
             }
-            else if(spdInFile->getIndexType() == SPD_CARTESIAN_IDX)
+            else if(spdInFile->getIndexType() == SPD_SPHERICAL_IDX)
             {
                 blockXOrigin = spdInFile->getAzimuthMin() - (overlap * spdInFile->getBinSize());
                 blockYOrigin = spdInFile->getZenithMin() - (overlap * spdInFile->getBinSize());
+            }
+            else if(spdInFile->getIndexType() == SPD_SCAN_IDX)
+            {
+                blockXOrigin = spdInFile->getScanlineIdxMin() - (overlap * spdInFile->getBinSize());
+                blockYOrigin = spdInFile->getScanlineMin() - (overlap * spdInFile->getBinSize());
             }
             
             for(boost::uint_fast32_t i = 0; i < numYFullBlocks; ++i)
@@ -1157,11 +1188,15 @@ namespace spdlib
                 {
                     blockXOrigin = spdInFile->getXMin() - (overlap * spdInFile->getBinSize());
                 }
-                else if(spdInFile->getIndexType() == SPD_CARTESIAN_IDX)
+                else if(spdInFile->getIndexType() == SPD_SPHERICAL_IDX)
                 {
                     blockXOrigin = spdInFile->getAzimuthMin() - (overlap * spdInFile->getBinSize());
                 }
-                
+                else if(spdInFile->getIndexType() == SPD_SCAN_IDX)
+                {
+                    blockXOrigin = spdInFile->getScanlineIdxMin() - (overlap * spdInFile->getBinSize());
+                }
+              
                 for(boost::uint_fast32_t j = 0; j < numXFullBlocks; ++j)
                 {
                     if(this->printProgress)
@@ -1345,11 +1380,15 @@ namespace spdlib
                 {
                     blockYOrigin -= blockHeight;
                 }
-                else if(spdInFile->getIndexType() == SPD_CARTESIAN_IDX)
+                else if(spdInFile->getIndexType() == SPD_SPHERICAL_IDX)
                 {
                     blockYOrigin += blockHeight;
                 }
-                
+                else if(spdInFile->getIndexType() == SPD_SCAN_IDX)
+                {
+                    blockYOrigin += blockHeight;
+                }    
+                            
                 blockMinY += blockYSize;
                 blockMaxY += blockYSize;
             }
@@ -1365,11 +1404,15 @@ namespace spdlib
                 {
                     blockXOrigin = spdInFile->getXMin() - (overlap * spdInFile->getBinSize());
                 }
-                else if(spdInFile->getIndexType() == SPD_CARTESIAN_IDX)
+                else if(spdInFile->getIndexType() == SPD_SPHERICAL_IDX)
                 {
                     blockXOrigin = spdInFile->getAzimuthMin() - (overlap * spdInFile->getBinSize());
                 }
-                
+                else if(spdInFile->getIndexType() == SPD_SCAN_IDX)
+                {
+                    blockXOrigin = spdInFile->getScanlineIdxMin() - (overlap * spdInFile->getBinSize());
+                }
+               
                 for(boost::uint_fast32_t j = 0; j < numXFullBlocks; ++j)
                 {
                     if(this->printProgress)
@@ -1669,6 +1712,11 @@ namespace spdlib
                 geoWidth = spdInFile->getAzimuthMax() - spdInFile->getAzimuthMin();
                 geoHeight = spdInFile->getZenithMax() - spdInFile->getZenithMin();
             }
+            else if(spdInFile->getIndexType() == SPD_SCAN_IDX)
+            {
+                geoWidth = spdInFile->getScanlineIdxMax() - spdInFile->getScanlineIdxMin();
+                geoHeight = spdInFile->getScanlineMax() - spdInFile->getScanlineMin();
+            }
 
             //std::cout << "Geo: [" << geoWidth << "," << geoHeight << "]\n";
 
@@ -1883,10 +1931,15 @@ namespace spdlib
                 blockXOrigin = spdInFile->getXMin() - (overlap * spdInFile->getBinSize());
                 blockYOrigin = spdInFile->getYMax() + (overlap * spdInFile->getBinSize());
             }
-            else if(spdInFile->getIndexType() == SPD_CARTESIAN_IDX)
+            else if(spdInFile->getIndexType() == SPD_SPHERICAL_IDX)
             {
                 blockXOrigin = spdInFile->getAzimuthMin() - (overlap * spdInFile->getBinSize());
                 blockYOrigin = spdInFile->getZenithMin() - (overlap * spdInFile->getBinSize());
+            }
+            else if(spdInFile->getIndexType() == SPD_SCAN_IDX)
+            {
+                blockXOrigin = spdInFile->getScanlineIdxMin() - (overlap * spdInFile->getBinSize());
+                blockYOrigin = spdInFile->getScanlineMin() - (overlap * spdInFile->getBinSize());
             }
 
             for(boost::uint_fast32_t i = 0; i < numYFullBlocks; ++i)
@@ -1898,11 +1951,15 @@ namespace spdlib
                 {
                     blockXOrigin = spdInFile->getXMin() - (overlap * spdInFile->getBinSize());
                 }
-                else if(spdInFile->getIndexType() == SPD_CARTESIAN_IDX)
+                else if(spdInFile->getIndexType() == SPD_SPHERICAL_IDX)
                 {
                     blockXOrigin = spdInFile->getAzimuthMin() - (overlap * spdInFile->getBinSize());
                 }
-
+                else if(spdInFile->getIndexType() == SPD_SCAN_IDX)
+                {
+                    blockXOrigin = spdInFile->getScanlineIdxMin() - (overlap * spdInFile->getBinSize());
+                }
+                
                 for(boost::uint_fast32_t j = 0; j < numXFullBlocks; ++j)
                 {
                     if(this->printProgress)
@@ -2076,11 +2133,15 @@ namespace spdlib
                 {
                     blockYOrigin -= blockHeight;
                 }
-                else if(spdInFile->getIndexType() == SPD_CARTESIAN_IDX)
+                else if(spdInFile->getIndexType() == SPD_SPHERICAL_IDX)
                 {
                     blockYOrigin += blockHeight;
                 }
-
+                else if(spdInFile->getIndexType() == SPD_SCAN_IDX)
+                {
+                    blockYOrigin += blockHeight;
+                }
+                
                 blockMinY += blockYSize;
                 blockMaxY += blockYSize;
             }
@@ -2096,9 +2157,13 @@ namespace spdlib
                 {
                     blockXOrigin = spdInFile->getXMin() - (overlap * spdInFile->getBinSize());
                 }
-                else if(spdInFile->getIndexType() == SPD_CARTESIAN_IDX)
+                else if(spdInFile->getIndexType() == SPD_SPHERICAL_IDX)
                 {
                     blockXOrigin = spdInFile->getAzimuthMin() - (overlap * spdInFile->getBinSize());
+                }
+                else if(spdInFile->getIndexType() == SPD_SCAN_IDX)
+                {
+                    blockXOrigin = spdInFile->getScanlineIdxMin() - (overlap * spdInFile->getBinSize());
                 }
 
                 for(boost::uint_fast32_t j = 0; j < numXFullBlocks; ++j)
@@ -2383,7 +2448,12 @@ namespace spdlib
                 geoWidth = spdInFile->getAzimuthMax() - spdInFile->getAzimuthMin();
                 geoHeight = spdInFile->getZenithMax() - spdInFile->getZenithMin();
             }
-
+            else if(spdInFile->getIndexType() == SPD_SCAN_IDX)
+            {
+                geoWidth = spdInFile->getScanlineIdxMax() - spdInFile->getScanlineIdxMin();
+                geoHeight = spdInFile->getScanlineMax() - spdInFile->getScanlineMin();
+            }
+            
             bool usingNativeRes = false;
             bool scaleDown = true;
             boost::uint_fast32_t binScaling = 0;
@@ -2569,12 +2639,17 @@ namespace spdlib
                 blockXOrigin = spdInFile->getXMin() - (overlap * spdInFile->getBinSize());
                 blockYOrigin = spdInFile->getYMax() + (overlap * spdInFile->getBinSize());
             }
-            else if(spdInFile->getIndexType() == SPD_CARTESIAN_IDX)
+            else if(spdInFile->getIndexType() == SPD_SPHERICAL_IDX)
             {
                 blockXOrigin = spdInFile->getAzimuthMin() - (overlap * spdInFile->getBinSize());
                 blockYOrigin = spdInFile->getZenithMin() - (overlap * spdInFile->getBinSize());
             }
-
+            else if(spdInFile->getIndexType() == SPD_SCAN_IDX)
+            {
+                blockXOrigin = spdInFile->getScanlineIdxMin() - (overlap * spdInFile->getBinSize());
+                blockYOrigin = spdInFile->getScanlineMin() - (overlap * spdInFile->getBinSize());
+            }
+            
             for(boost::uint_fast32_t i = 0; i < numYFullBlocks; ++i)
             {
                 blockMinX = 0;
@@ -2584,11 +2659,15 @@ namespace spdlib
                 {
                     blockXOrigin = spdInFile->getXMin() - (overlap * spdInFile->getBinSize());
                 }
-                else if(spdInFile->getIndexType() == SPD_CARTESIAN_IDX)
+                else if(spdInFile->getIndexType() == SPD_SPHERICAL_IDX)
                 {
                     blockXOrigin = spdInFile->getAzimuthMin() - (overlap * spdInFile->getBinSize());
                 }
-
+                else if(spdInFile->getIndexType() == SPD_SCAN_IDX)
+                {
+                    blockXOrigin = spdInFile->getScanlineIdxMin() - (overlap * spdInFile->getBinSize());
+                }
+                
                 for(boost::uint_fast32_t j = 0; j < numXFullBlocks; ++j)
                 {
                     if(this->printProgress)
@@ -2742,11 +2821,15 @@ namespace spdlib
                 {
                     blockYOrigin -= blockHeight;
                 }
-                else if(spdInFile->getIndexType() == SPD_CARTESIAN_IDX)
+                else if(spdInFile->getIndexType() == SPD_SPHERICAL_IDX)
                 {
                     blockYOrigin += blockHeight;
                 }
-
+                else if(spdInFile->getIndexType() == SPD_SCAN_IDX)
+                {
+                    blockYOrigin += blockHeight;
+                }
+                
                 blockMinY += blockYSize;
                 blockMaxY += blockYSize;
             }
@@ -2762,11 +2845,15 @@ namespace spdlib
                 {
                     blockXOrigin = spdInFile->getXMin() - (overlap * spdInFile->getBinSize());
                 }
-                else if(spdInFile->getIndexType() == SPD_CARTESIAN_IDX)
+                else if(spdInFile->getIndexType() == SPD_SPHERICAL_IDX)
                 {
                     blockXOrigin = spdInFile->getAzimuthMin() - (overlap * spdInFile->getBinSize());
                 }
-
+                else if(spdInFile->getIndexType() == SPD_SCAN_IDX)
+                {
+                    blockXOrigin = spdInFile->getScanlineIdxMin() - (overlap * spdInFile->getBinSize());
+                }
+                
                 for(boost::uint_fast32_t j = 0; j < numXFullBlocks; ++j)
                 {
                     if(this->printProgress)
@@ -3026,7 +3113,12 @@ namespace spdlib
                 geoWidth = spdInFile->getAzimuthMax() - spdInFile->getAzimuthMin();
                 geoHeight = spdInFile->getZenithMax() - spdInFile->getZenithMin();
             }
-
+            else if(spdInFile->getIndexType() == SPD_SCAN_IDX)
+            {
+                geoWidth = spdInFile->getScanlineIdxMax() - spdInFile->getScanlineIdxMin();
+                geoHeight = spdInFile->getScanlineMax() - spdInFile->getScanlineMin();
+            }
+            
             procResXBins = spdInFile->getNumberBinsX();
             procResYBins = spdInFile->getNumberBinsY();
 
@@ -3081,12 +3173,17 @@ namespace spdlib
                 blockXOrigin = spdInFile->getXMin() - (overlap * spdInFile->getBinSize());
                 blockYOrigin = spdInFile->getYMax() + (overlap * spdInFile->getBinSize());
             }
-            else if(spdInFile->getIndexType() == SPD_CARTESIAN_IDX)
+            else if(spdInFile->getIndexType() == SPD_SPHERICAL_IDX)
             {
                 blockXOrigin = spdInFile->getAzimuthMin() - (overlap * spdInFile->getBinSize());
                 blockYOrigin = spdInFile->getZenithMin() - (overlap * spdInFile->getBinSize());
             }
-
+            else if(spdInFile->getIndexType() == SPD_SCAN_IDX)
+            {
+                blockXOrigin = spdInFile->getScanlineIdxMin() - (overlap * spdInFile->getBinSize());
+                blockYOrigin = spdInFile->getScanlineMin() - (overlap * spdInFile->getBinSize());
+            }
+            
             for(boost::uint_fast32_t i = 0; i < numYFullBlocks; ++i)
             {
                 blockMinX = 0;
@@ -3096,11 +3193,15 @@ namespace spdlib
                 {
                     blockXOrigin = spdInFile->getXMin() - (overlap * spdInFile->getBinSize());
                 }
-                else if(spdInFile->getIndexType() == SPD_CARTESIAN_IDX)
+                else if(spdInFile->getIndexType() == SPD_SPHERICAL_IDX)
                 {
                     blockXOrigin = spdInFile->getAzimuthMin() - (overlap * spdInFile->getBinSize());
                 }
-
+                else if(spdInFile->getIndexType() == SPD_SCAN_IDX)
+                {
+                    blockXOrigin = spdInFile->getScanlineIdxMin() - (overlap * spdInFile->getBinSize());
+                }
+                
                 for(boost::uint_fast32_t j = 0; j < numXFullBlocks; ++j)
                 {
                     if(this->printProgress)
@@ -3230,11 +3331,15 @@ namespace spdlib
                 {
                     blockYOrigin -= blockHeight;
                 }
-                else if(spdInFile->getIndexType() == SPD_CARTESIAN_IDX)
+                else if(spdInFile->getIndexType() == SPD_SPHERICAL_IDX)
                 {
                     blockYOrigin += blockHeight;
                 }
-
+                else if(spdInFile->getIndexType() == SPD_SCAN_IDX)
+                {
+                    blockYOrigin += blockHeight;
+                }
+                
                 blockMinY += blockYSize;
                 blockMaxY += blockYSize;
             }
@@ -3250,11 +3355,15 @@ namespace spdlib
                 {
                     blockXOrigin = spdInFile->getXMin() - (overlap * spdInFile->getBinSize());
                 }
-                else if(spdInFile->getIndexType() == SPD_CARTESIAN_IDX)
+                else if(spdInFile->getIndexType() == SPD_SPHERICAL_IDX)
                 {
                     blockXOrigin = spdInFile->getAzimuthMin() - (overlap * spdInFile->getBinSize());
                 }
-
+                else if(spdInFile->getIndexType() == SPD_SCAN_IDX)
+                {
+                    blockXOrigin = spdInFile->getScanlineIdxMin() - (overlap * spdInFile->getBinSize());
+                }
+                
                 for(boost::uint_fast32_t j = 0; j < numXFullBlocks; ++j)
                 {
                     if(this->printProgress)

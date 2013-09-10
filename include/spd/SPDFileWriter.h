@@ -115,6 +115,10 @@ namespace spdlib
         double azMaxWritten;
         double zenMaxWritten;
         double ranMaxWritten;
+        double scanlineMinWritten;
+        double scanlineMaxWritten;
+        double scanlineIdxMinWritten;
+        double scanlineIdxMaxWritten;
         bool firstReturn;
 	};
     
@@ -167,6 +171,10 @@ namespace spdlib
         double azMaxWritten;
         double zenMaxWritten;
         double ranMaxWritten;
+        double scanlineMinWritten;
+        double scanlineMaxWritten;
+        double scanlineIdxMinWritten;
+        double scanlineIdxMaxWritten;
         bool firstReturn;
 	};
     
@@ -215,6 +223,10 @@ namespace spdlib
         bool firstPulse;
         bool firstWaveform;
         bool reOpenedFile;
+        double scanlineMinWritten;
+        double scanlineMaxWritten;
+        double scanlineIdxMinWritten;
+        double scanlineIdxMaxWritten;
 	};
 }
 

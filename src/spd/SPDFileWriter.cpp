@@ -3247,7 +3247,12 @@ namespace spdlib
             ranMinWritten = 0;
             azMaxWritten = 0;
             zenMaxWritten = 0;
-            ranMaxWritten = 0;
+            ranMaxWritten = 0;           
+            scanlineMinWritten = 0;
+            scanlineMaxWritten = 0;
+            scanlineIdxMinWritten = 0;
+            scanlineIdxMaxWritten = 0; 
+            
 			firstReturn = true;
             firstPulse = true;
             
@@ -3469,7 +3474,10 @@ namespace spdlib
                             zenMinWritten = (*iterPulses)->zenith;
                             azMaxWritten = (*iterPulses)->azimuth;
                             zenMaxWritten = (*iterPulses)->zenith;
-                            
+                            scanlineMinWritten = (*iterPulses)->scanline;
+                            scanlineMaxWritten = (*iterPulses)->scanline;
+                            scanlineIdxMinWritten = (*iterPulses)->scanlineIdx;
+                            scanlineIdxMaxWritten = (*iterPulses)->scanlineIdx;                      
                             firstPulse = false;
                         }
                         else
@@ -3491,6 +3499,26 @@ namespace spdlib
                             {
                                 zenMaxWritten = (*iterPulses)->zenith;
                             }
+                            
+                            if((*iterPulses)->scanline < scanlineMinWritten)
+                            {
+                                scanlineMinWritten = (*iterPulses)->scanline;
+                            }
+                            else if((*iterPulses)->scanline > scanlineMaxWritten) 
+                            {
+                                scanlineMaxWritten = (*iterPulses)->scanline;
+                            }
+                            
+                            if((*iterPulses)->scanlineIdx < scanlineIdxMinWritten)
+                            {
+                                scanlineIdxMinWritten = (*iterPulses)->scanlineIdx;
+                            }
+                            else if((*iterPulses)->scanlineIdx > scanlineIdxMaxWritten)  
+                            {
+                                scanlineIdxMaxWritten = (*iterPulses)->scanlineIdx;                            
+                            }
+                            
+                            
                         }
                         
 						for(boost::uint_fast16_t n = 0; n < (*iterPulses)->numberOfReturns; ++n)
@@ -3919,6 +3947,10 @@ namespace spdlib
                             zenMinWritten = (*iterPulses)->zenith;
                             azMaxWritten = (*iterPulses)->azimuth;
                             zenMaxWritten = (*iterPulses)->zenith;
+                            scanlineMinWritten = (*iterPulses)->scanline;
+                            scanlineMaxWritten = (*iterPulses)->scanline;
+                            scanlineIdxMinWritten = (*iterPulses)->scanlineIdx;
+                            scanlineIdxMaxWritten = (*iterPulses)->scanlineIdx; 
                             
                             firstPulse = false;
                         }
@@ -3941,6 +3973,26 @@ namespace spdlib
                             {
                                 zenMaxWritten = (*iterPulses)->zenith;
                             }
+                            
+                            if((*iterPulses)->scanline < scanlineMinWritten)
+                            {
+                                scanlineMinWritten = (*iterPulses)->scanline;
+                            }
+                            else if((*iterPulses)->scanline > scanlineMaxWritten) 
+                            {
+                                scanlineMaxWritten = (*iterPulses)->scanline;
+                            }
+                            
+                            if((*iterPulses)->scanlineIdx < scanlineIdxMinWritten)
+                            {
+                                scanlineIdxMinWritten = (*iterPulses)->scanlineIdx;
+                            }
+                            else if((*iterPulses)->scanlineIdx > scanlineIdxMaxWritten)  
+                            {
+                                scanlineIdxMaxWritten = (*iterPulses)->scanlineIdx;                            
+                            }
+                            
+                            
                         }
                         
 						for(boost::uint_fast16_t n = 0; n < (*iterPulses)->numberOfReturns; ++n)
@@ -4272,7 +4324,10 @@ namespace spdlib
                         zenMinWritten = (*iterPulses)->zenith;
                         azMaxWritten = (*iterPulses)->azimuth;
                         zenMaxWritten = (*iterPulses)->zenith;
-                        
+                        scanlineMinWritten = (*iterPulses)->scanline;
+                        scanlineMaxWritten = (*iterPulses)->scanline;
+                        scanlineIdxMinWritten = (*iterPulses)->scanlineIdx;
+                        scanlineIdxMaxWritten = (*iterPulses)->scanlineIdx;                          
                         firstPulse = false;
                     }
                     else
@@ -4294,6 +4349,25 @@ namespace spdlib
                         {
                             zenMaxWritten = (*iterPulses)->zenith;
                         }
+                        
+                        if((*iterPulses)->scanline < scanlineMinWritten)
+                        {
+                            scanlineMinWritten = (*iterPulses)->scanline;
+                        }
+                        else if((*iterPulses)->scanline > scanlineMaxWritten) 
+                        {
+                            scanlineMaxWritten = (*iterPulses)->scanline;
+                        }
+                            
+                        if((*iterPulses)->scanlineIdx < scanlineIdxMinWritten)
+                        {
+                            scanlineIdxMinWritten = (*iterPulses)->scanlineIdx;
+                        }
+                        else if((*iterPulses)->scanlineIdx > scanlineIdxMaxWritten)  
+                        {
+                            scanlineIdxMaxWritten = (*iterPulses)->scanlineIdx;                            
+                        }
+                        
                     }
                     
 					for(boost::uint_fast16_t n = 0; n < (*iterPulses)->numberOfReturns; ++n)
@@ -4508,11 +4582,17 @@ namespace spdlib
                 {
                     spdFile->setZMin(zMinWritten);
                     spdFile->setZMax(zMaxWritten);
-                    spdFile->setBoundingVolumeSpherical(zenMinWritten, zenMaxWritten, azMinWritten, azMaxWritten, ranMinWritten, ranMaxWritten);
+                    spdFile->setBoundingVolume(xMinWritten, xMaxWritten, yMinWritten, yMaxWritten, zMinWritten, zMaxWritten);
                 }
                 else if(spdFile->getIndexType() == SPD_SPHERICAL_IDX)
                 {
-                    spdFile->setBoundingVolume(xMinWritten, xMaxWritten, yMinWritten, yMaxWritten, zMinWritten, zMaxWritten);
+                    spdFile->setBoundingVolumeSpherical(zenMinWritten, zenMaxWritten, azMinWritten, azMaxWritten, ranMinWritten, ranMaxWritten);
+                    spdFile->setRangeMin(ranMinWritten);
+                    spdFile->setRangeMax(ranMaxWritten);
+                }
+                else if(spdFile->getIndexType() == SPD_SCAN_IDX)
+                {
+                    spdFile->setBoundingBoxScanline(scanlineMinWritten, scanlineMaxWritten, scanlineIdxMinWritten, scanlineIdxMaxWritten);
                     spdFile->setRangeMin(ranMinWritten);
                     spdFile->setRangeMax(ranMaxWritten);
                 }
@@ -4915,6 +4995,12 @@ namespace spdlib
             azMaxWritten = 0;
             zenMaxWritten = 0;
             ranMaxWritten = 0;
+            scanlineMinWritten = 0;
+            scanlineMaxWritten = 0;
+            scanlineIdxMinWritten = 0;
+            scanlineIdxMaxWritten = 0;  
+            
+            
 			firstReturn = true;
             firstPulse = true;
             
@@ -5135,6 +5221,11 @@ namespace spdlib
                             zenMinWritten = (*iterPulses)->zenith;
                             azMaxWritten = (*iterPulses)->azimuth;
                             zenMaxWritten = (*iterPulses)->zenith;
+                            
+                            scanlineMinWritten = (*iterPulses)->scanline;
+                            scanlineMaxWritten = (*iterPulses)->scanline;
+                            scanlineIdxMinWritten = (*iterPulses)->scanlineIdx;
+                            scanlineIdxMaxWritten = (*iterPulses)->scanlineIdx;  
                             
                             firstPulse = false;
                         }
@@ -5553,6 +5644,11 @@ namespace spdlib
                             azMaxWritten = (*iterPulses)->azimuth;
                             zenMaxWritten = (*iterPulses)->zenith;
                             
+                            scanlineMinWritten = (*iterPulses)->scanline;
+                            scanlineMaxWritten = (*iterPulses)->scanline;
+                            scanlineIdxMinWritten = (*iterPulses)->scanlineIdx;
+                            scanlineIdxMaxWritten = (*iterPulses)->scanlineIdx;                          
+                            
                             firstPulse = false;
                         }
                         else
@@ -5574,6 +5670,26 @@ namespace spdlib
                             {
                                 zenMaxWritten = (*iterPulses)->zenith;
                             }
+                            
+                            if((*iterPulses)->scanline < scanlineMinWritten)
+                            {
+                                scanlineMinWritten = (*iterPulses)->scanline;
+                            }
+                            else if((*iterPulses)->scanline > scanlineMaxWritten) 
+                            {
+                                scanlineMaxWritten = (*iterPulses)->scanline;
+                            }
+                            
+                            if((*iterPulses)->scanlineIdx < scanlineIdxMinWritten)
+                            {
+                                scanlineIdxMinWritten = (*iterPulses)->scanlineIdx;
+                            }
+                            else if((*iterPulses)->scanlineIdx > scanlineIdxMaxWritten)  
+                            {
+                                scanlineIdxMaxWritten = (*iterPulses)->scanlineIdx;                            
+                            }
+                            
+                            
                         }
                         
 						for(boost::uint_fast16_t n = 0; n < (*iterPulses)->numberOfReturns; ++n)
@@ -5865,6 +5981,11 @@ namespace spdlib
                         azMaxWritten = (*iterPulses)->azimuth;
                         zenMaxWritten = (*iterPulses)->zenith;
                         
+                        scanlineMinWritten = (*iterPulses)->scanline;
+                        scanlineMaxWritten = (*iterPulses)->scanline;
+                        scanlineIdxMinWritten = (*iterPulses)->scanlineIdx;
+                        scanlineIdxMaxWritten = (*iterPulses)->scanlineIdx;  
+                        
                         firstPulse = false;
                     }
                     else
@@ -6100,11 +6221,17 @@ namespace spdlib
                 {
                     spdFile->setZMin(zMinWritten);
                     spdFile->setZMax(zMaxWritten);
-                    spdFile->setBoundingVolumeSpherical(zenMinWritten, zenMaxWritten, azMinWritten, azMaxWritten, ranMinWritten, ranMaxWritten);
+                    spdFile->setBoundingVolume(xMinWritten, xMaxWritten, yMinWritten, yMaxWritten, zMinWritten, zMaxWritten);
                 }
                 else if(spdFile->getIndexType() == SPD_SPHERICAL_IDX)
                 {
-                    spdFile->setBoundingVolume(xMinWritten, xMaxWritten, yMinWritten, yMaxWritten, zMinWritten, zMaxWritten);
+                    spdFile->setBoundingVolumeSpherical(zenMinWritten, zenMaxWritten, azMinWritten, azMaxWritten, ranMinWritten, ranMaxWritten);
+                    spdFile->setRangeMin(ranMinWritten);
+                    spdFile->setRangeMax(ranMaxWritten);
+                }
+                else if(spdFile->getIndexType() == SPD_SCAN_IDX)
+                {
+                    spdFile->setBoundingBoxScanline(scanlineMinWritten, scanlineMaxWritten, scanlineIdxMinWritten, scanlineIdxMaxWritten);
                     spdFile->setRangeMin(ranMinWritten);
                     spdFile->setRangeMax(ranMaxWritten);
                 }
@@ -6463,7 +6590,12 @@ namespace spdlib
         ranMinWritten = 0;
         azMaxWritten = 0;
         zenMaxWritten = 0;
-        ranMaxWritten = 0;
+        ranMaxWritten = 0;       
+        scanlineMinWritten = 0;
+        scanlineMaxWritten = 0;
+        scanlineIdxMinWritten = 0;
+        scanlineIdxMaxWritten = 0;       
+        
         firstReturn = true;
         firstPulse = true;
         firstWaveform = true;
@@ -6824,7 +6956,11 @@ namespace spdlib
             ranMinWritten = spdFile->getRangeMin();
             azMaxWritten = spdFile->getRangeMax();
             zenMaxWritten = spdFile->getZenithMin();
-            ranMaxWritten = spdFile->getZenithMax();
+            ranMaxWritten = spdFile->getZenithMax();            
+            scanlineMinWritten = spdFile->getScanlineMin();
+            scanlineMaxWritten = spdFile->getScanlineMax();
+            scanlineIdxMinWritten = spdFile->getScanlineIdxMin();
+            scanlineIdxMaxWritten = spdFile->getScanlineIdxMax();           
             			
 			fileOpened = true;
 			
@@ -6953,6 +7089,11 @@ namespace spdlib
                             azMaxWritten = (*iterPulses)->azimuth;
                             zenMaxWritten = (*iterPulses)->zenith;
                             
+                            scanlineMinWritten = (*iterPulses)->scanline;
+                            scanlineMaxWritten = (*iterPulses)->scanline;
+                            scanlineIdxMinWritten = (*iterPulses)->scanlineIdx;
+                            scanlineIdxMaxWritten = (*iterPulses)->scanlineIdx;  
+                            
                             firstPulse = false;
                         }
                         else
@@ -6974,6 +7115,25 @@ namespace spdlib
                             {
                                 zenMaxWritten = (*iterPulses)->zenith;
                             }
+                            
+                            if((*iterPulses)->scanline < scanlineMinWritten)
+                            {
+                                scanlineMinWritten = (*iterPulses)->scanline;
+                            }
+                            else if((*iterPulses)->scanline > scanlineMaxWritten) 
+                            {
+                                scanlineMaxWritten = (*iterPulses)->scanline;
+                            }
+                            
+                            if((*iterPulses)->scanlineIdx < scanlineIdxMinWritten)
+                            {
+                                scanlineIdxMinWritten = (*iterPulses)->scanlineIdx;
+                            }
+                            else if((*iterPulses)->scanlineIdx > scanlineIdxMaxWritten)  
+                            {
+                                scanlineIdxMaxWritten = (*iterPulses)->scanlineIdx;                            
+                            }                         
+                            
                         }
                         
 						for(boost::uint_fast16_t n = 0; n < (*iterPulses)->numberOfReturns; ++n)
@@ -7272,6 +7432,11 @@ namespace spdlib
                             azMaxWritten = (*iterPulses)->azimuth;
                             zenMaxWritten = (*iterPulses)->zenith;
                             
+                            scanlineMinWritten = (*iterPulses)->scanline;
+                            scanlineMaxWritten = (*iterPulses)->scanline;
+                            scanlineIdxMinWritten = (*iterPulses)->scanlineIdx;
+                            scanlineIdxMaxWritten = (*iterPulses)->scanlineIdx;  
+                            
                             firstPulse = false;
                         }
                         else
@@ -7293,6 +7458,25 @@ namespace spdlib
                             {
                                 zenMaxWritten = (*iterPulses)->zenith;
                             }
+                            
+                            if((*iterPulses)->scanline < scanlineMinWritten)
+                            {
+                                scanlineMinWritten = (*iterPulses)->scanline;
+                            }
+                            else if((*iterPulses)->scanline > scanlineMaxWritten) 
+                            {
+                                scanlineMaxWritten = (*iterPulses)->scanline;
+                            }
+                            
+                            if((*iterPulses)->scanlineIdx < scanlineIdxMinWritten)
+                            {
+                                scanlineIdxMinWritten = (*iterPulses)->scanlineIdx;
+                            }
+                            else if((*iterPulses)->scanlineIdx > scanlineIdxMaxWritten)  
+                            {
+                                scanlineIdxMaxWritten = (*iterPulses)->scanlineIdx;                            
+                            }
+                            
                         }
                         
 						for(boost::uint_fast16_t n = 0; n < (*iterPulses)->numberOfReturns; ++n)
@@ -7596,6 +7780,11 @@ namespace spdlib
                         azMaxWritten = (*iterPulses)->azimuth;
                         zenMaxWritten = (*iterPulses)->zenith;
                         
+                        scanlineMinWritten = (*iterPulses)->scanline;
+                        scanlineMaxWritten = (*iterPulses)->scanline;
+                        scanlineIdxMinWritten = (*iterPulses)->scanlineIdx;
+                        scanlineIdxMaxWritten = (*iterPulses)->scanlineIdx;  
+                        
                         firstPulse = false;
                     }
                     else
@@ -7617,6 +7806,25 @@ namespace spdlib
                         {
                             zenMaxWritten = (*iterPulses)->zenith;
                         }
+                        
+                        if((*iterPulses)->scanline < scanlineMinWritten)
+                        {
+                            scanlineMinWritten = (*iterPulses)->scanline;
+                        }
+                        else if((*iterPulses)->scanline > scanlineMaxWritten) 
+                        {
+                            scanlineMaxWritten = (*iterPulses)->scanline;
+                        }
+                            
+                        if((*iterPulses)->scanlineIdx < scanlineIdxMinWritten)
+                        {
+                            scanlineIdxMinWritten = (*iterPulses)->scanlineIdx;
+                        }
+                        else if((*iterPulses)->scanlineIdx > scanlineIdxMaxWritten)  
+                        {
+                            scanlineIdxMaxWritten = (*iterPulses)->scanlineIdx;                            
+                        }
+                        
                     }
                     
 					for(boost::uint_fast16_t n = 0; n < (*iterPulses)->numberOfReturns; ++n)
@@ -7829,12 +8037,19 @@ namespace spdlib
                 spdFile->setAzimuthMin(azMinWritten);
                 spdFile->setZenithMax(zenMaxWritten);
                 spdFile->setZenithMin(zenMinWritten);
+                
+                spdFile->setScanlineMin(scanlineMinWritten);
+                spdFile->setScanlineMax(scanlineMaxWritten);
+                spdFile->setScanlineIdxMin(scanlineIdxMinWritten);
+                spdFile->setScanlineIdxMax(scanlineIdxMaxWritten);  
+                
             }
             
             if(!firstReturn)
             {
                 spdFile->setBoundingVolume(xMinWritten, xMaxWritten, yMinWritten, yMaxWritten, zMinWritten, zMaxWritten);
                 spdFile->setBoundingVolumeSpherical(zenMinWritten, zenMaxWritten, azMinWritten, azMaxWritten, ranMinWritten, ranMaxWritten);
+                spdFile->setBoundingBoxScanline(scanlineMinWritten, scanlineMaxWritten, scanlineIdxMinWritten, scanlineIdxMaxWritten);
             }
             
             spdFile->setNumberOfPoints(numPts);
