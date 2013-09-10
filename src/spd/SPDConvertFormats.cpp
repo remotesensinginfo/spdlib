@@ -637,16 +637,9 @@ namespace spdlib
 			}
  			else if(spdFileFinalOut->getIndexType() == spdlib::SPD_SCAN_IDX)
             {
-				if(spdFileFinalOut->getBinSize() < 1)
-			    {
-				    roundingAddition = 2;//boost::numeric_cast<boost::uint_fast32_t>(1/spdFile->getBinSize());
-			    }
-			    else 
-			    {
-				    roundingAddition = 1;
-			    }
-                xSize = boost::numeric_cast<boost::uint_fast32_t>((((spdFileFinalOut->getScanlineIdxMax()-spdFileFinalOut->getScanlineIdxMin())/spdFileFinalOut->getBinSize())+roundingAddition)+0.5);
-			    ySize = boost::numeric_cast<boost::uint_fast32_t>((((spdFileFinalOut->getScanlineMax()-spdFileFinalOut->getScanlineMin())/spdFileFinalOut->getBinSize())+roundingAddition)+0.5);                
+				roundingAddition = 1;
+                xSize = boost::numeric_cast<boost::uint_fast32_t>(((spdFileFinalOut->getScanlineIdxMax()-spdFileFinalOut->getScanlineIdxMin())/spdFileFinalOut->getBinSize())+roundingAddition);
+			    ySize = boost::numeric_cast<boost::uint_fast32_t>(((spdFileFinalOut->getScanlineMax()-spdFileFinalOut->getScanlineMin())/spdFileFinalOut->getBinSize())+roundingAddition);                
             }
             else
             {
@@ -1204,16 +1197,9 @@ namespace spdlib
 			}
 			else if(spdFileFinalOut->getIndexType() == spdlib::SPD_SCAN_IDX)
             {
-				if(spdFileFinalOut->getBinSize() < 1)
-			    {
-				    roundingAddition = 2;//boost::numeric_cast<boost::uint_fast32_t>(1/spdFile->getBinSize());
-			    }
-			    else 
-			    {
-				    roundingAddition = 1;
-			    }
-                xSize = boost::numeric_cast<boost::uint_fast32_t>((((spdFileFinalOut->getScanlineIdxMax()-spdFileFinalOut->getScanlineIdxMin())/spdFileFinalOut->getBinSize())+roundingAddition)+0.5)+1;
-			    ySize = boost::numeric_cast<boost::uint_fast32_t>((((spdFileFinalOut->getScanlineMax()-spdFileFinalOut->getScanlineMin())/spdFileFinalOut->getBinSize())+roundingAddition)+0.5)+1;                
+				roundingAddition = 1;
+                xSize = boost::numeric_cast<boost::uint_fast32_t>(((spdFileFinalOut->getScanlineIdxMax()-spdFileFinalOut->getScanlineIdxMin())/spdFileFinalOut->getBinSize())+roundingAddition);
+			    ySize = boost::numeric_cast<boost::uint_fast32_t>(((spdFileFinalOut->getScanlineMax()-spdFileFinalOut->getScanlineMin())/spdFileFinalOut->getBinSize())+roundingAddition);                
 			}
             else
             {

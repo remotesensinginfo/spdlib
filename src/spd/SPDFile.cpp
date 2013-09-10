@@ -785,6 +785,27 @@ namespace spdlib
 		{
 			this->rangeMax = spdFile->rangeMax;
 		}
+		
+		if(spdFile->scanlineMin < this->scanlineMin)
+		{
+			this->scanlineMin = spdFile->scanlineMin;
+		}
+		
+		if(spdFile->scanlineMax > this->scanlineMax)
+		{
+			this->scanlineMax = spdFile->scanlineMax;
+		}
+		
+		if(spdFile->scanlineIdxMin < this->scanlineIdxMin)
+		{
+			this->scanlineIdxMin = spdFile->scanlineIdxMin;
+		}
+		
+		if(spdFile->scanlineIdxMax > this->scanlineIdxMax)
+		{
+			this->scanlineIdxMax = spdFile->scanlineIdxMax;
+		}
+		
 		return true;
 	}
     
@@ -1059,6 +1080,27 @@ namespace spdlib
 		{
 			this->rangeMax = spdFile->rangeMax;
 		}
+		
+		if(spdFile->scanlineMin < this->scanlineMin)
+		{
+			this->scanlineMin = spdFile->scanlineMin;
+		}
+		
+		if(spdFile->scanlineMax > this->scanlineMax)
+		{
+			this->scanlineMax = spdFile->scanlineMax;
+		}
+		
+		if(spdFile->scanlineIdxMin < this->scanlineIdxMin)
+		{
+			this->scanlineIdxMin = spdFile->scanlineIdxMin;
+		}
+		
+		if(spdFile->scanlineIdxMax > this->scanlineIdxMax)
+		{
+			this->scanlineIdxMax = spdFile->scanlineIdxMax;
+		}		
+		
 		return true;
 	}
     
@@ -1123,6 +1165,27 @@ namespace spdlib
 		{
 			this->rangeMax = spdFile->rangeMax;
 		}
+		
+		if(spdFile->scanlineMin < this->scanlineMin)
+		{
+			this->scanlineMin = spdFile->scanlineMin;
+		}
+		
+		if(spdFile->scanlineMax > this->scanlineMax)
+		{
+			this->scanlineMax = spdFile->scanlineMax;
+		}
+		
+		if(spdFile->scanlineIdxMin < this->scanlineIdxMin)
+		{
+			this->scanlineIdxMin = spdFile->scanlineIdxMin;
+		}
+		
+		if(spdFile->scanlineIdxMax > this->scanlineIdxMax)
+		{
+			this->scanlineIdxMax = spdFile->scanlineIdxMax;
+		}
+		
     }
 	
 	std::ostream& operator<<(std::ostream& stream, SPDFile &obj)
