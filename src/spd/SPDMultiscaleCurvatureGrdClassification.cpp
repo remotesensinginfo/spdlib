@@ -84,17 +84,20 @@ namespace spdlib
                     raster = this->createElevationRaster(bbox, scale, &xSizeRaster, &ySizeRaster, pulses, xSize, ySize);
                     try
                     {
-                        if(this->filterType == meanFilter)
+                        if((xSizeRaster > ((this->smoothFilterHSize * 2)+1)) & (ySizeRaster > ((this->smoothFilterHSize * 2)+1)))
                         {
-                            this->smoothMeanRaster(raster, xSizeRaster, ySizeRaster, this->smoothFilterHSize);
-                        }
-                        else if(this->filterType == medianFilter)
-                        {
-                            this->smoothMedianRaster(raster, xSizeRaster, ySizeRaster, this->smoothFilterHSize);
-                        }
-                        else
-                        {
-                            throw SPDProcessingException("Filter type is not recognised.");
+                            if(this->filterType == meanFilter)
+                            {
+                                this->smoothMeanRaster(raster, xSizeRaster, ySizeRaster, this->smoothFilterHSize);
+                            }
+                            else if(this->filterType == medianFilter)
+                            {
+                                this->smoothMedianRaster(raster, xSizeRaster, ySizeRaster, this->smoothFilterHSize);
+                            }
+                            else
+                            {
+                                throw SPDProcessingException("Filter type is not recognised.");
+                            }
                         }
                         
                         proportionOfChange = this->classifyNonGrdPoints(curveTolerance, bbox, scale, raster, xSizeRaster, ySizeRaster, pulses, xSize, ySize);
