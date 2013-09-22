@@ -3093,17 +3093,17 @@ namespace spdlib
                 spdFile->setScanlineMax(inDoubleDataValue[0]);
                 
                 datasetScanlineIdxMin.read(inDoubleDataValue, H5::PredType::NATIVE_DOUBLE, singleValueDataSpace);
-                spdFile->setScanlineIdxMax(inDoubleDataValue[0]);
+                spdFile->setScanlineIdxMin(inDoubleDataValue[0]);
                 
                 datasetScanlineIdxMax.read(inDoubleDataValue, H5::PredType::NATIVE_DOUBLE, singleValueDataSpace);
-                spdFile->setScanlineIdxMin(inDoubleDataValue[0]);
+                spdFile->setScanlineIdxMax(inDoubleDataValue[0]);
             } 
             catch (H5::Exception &e) 
             {
                 spdFile->setScanlineMin(0);
                 spdFile->setScanlineMax(0);
-                spdFile->setScanlineIdxMax(0);
                 spdFile->setScanlineIdxMin(0);
+                spdFile->setScanlineIdxMax(0);
             }
             
             if(spdFile->getFileType() != SPD_UPD_TYPE)
