@@ -25,6 +25,7 @@
 #include <string>
 #include <iostream>
 #include <algorithm>
+#include <math.h>
 
 
 #include "spd/SPDException.h"
@@ -33,12 +34,7 @@
 #include "spd/SPDPoint.h"
 #include "spd/SPDFileReader.h"
 #include "spd/SPDFileWriter.h"
-#include "spd/SPDFileIncrementalReader.h"
 #include "spd/SPDIOUtils.h"
-#include "spd/SPDLASFileImporter.h"
-
-#include "spd/SPDProcessDataBlocks.h"
-#include "spd/SPDDataBlockProcessor.h"
 
 int main (int argc, char * const argv[]) 
 {
@@ -46,13 +42,64 @@ int main (int argc, char * const argv[])
     
     try
     {
-        spdlib::SPDFile *spdInFile = new spdlib::SPDFile("/Users/pete/Temp/MfE_LiDAR/LI080228_RAW4_1m.spd");
+        srand(20);
+        unsigned int numBlocks = 100;
+        unsigned int numPulsesInBlock = 1000;
+        unsigned int waveformLength = 45;
+        std::string outputFile = "/Users/pete/Desktop/testspd.spd";
+        spdlib::SPDFile *spdFile = new spdlib::SPDFile(outputFile);
+        spdlib::SPDNoIdxFileWriter *writer = new spdlib::SPDNoIdxFileWriter();
+        spdlib::SPDPulse *pulse = NULL;
+        spdlib::SPDPoint *point = NULL;
+        spdlib::SPDPulseUtils plsUtils;
+        spdlib::SPDPointUtils ptUtils;
+        std::vector<spdlib::SPDPulse*> *pulses = new std::vector<spdlib::SPDPulse*>();
+        unsigned int plsID = 0;
+        if(writer->open(spdFile, outputFile))
+        {
+            for(unsigned int i = 0; i < numBlocks; ++i)
+            {
+                for(unsigned int n = 0; n < numPulsesInBlock; ++n)
+                {
+                    pulse = new spdlib::SPDPulse();
+                    plsUtils.initSPDPulse(pulse);
+                    pulse->pulseID = plsID++;
+                    pulse->numberOfReturns = 1 + (rand() % (int)(5 + 1));
+                    for(unsigned j = 0; j < pulse->numberOfReturns; ++j)
+                    {
+                        point = new spdlib::SPDPoint();
+                        ptUtils.initSPDPoint(point);
+                        point->returnID = j+1;
+                        point->x = 1000 + (rand() % (int)(1000 + 1));
+                        point->y = 20000 + (rand() % (int)(1000 + 1));
+                        if(j == 0)
+                        {
+                            pulse->xIdx = point->x;
+                            pulse->yIdx = point->y;
+                        }
+                        point->z = 10 + (rand() % (int)(100 + 1));
+                        point->amplitudeReturn = ((float)rand()/(float)RAND_MAX)*100;
+                        pulse->pts->push_back(point);
+                    }
+                    
+                    pulse->receiveWaveGain = 1;
+                    pulse->receiveWaveOffset = 0;
+                    pulse->numOfReceivedBins = waveformLength;
+                    pulse->received = new boost::uint_fast32_t[pulse->numOfReceivedBins];
+                    for(unsigned int j = 0; j < waveformLength; ++j)
+                    {
+                        pulse->received[j] = 3 + (rand() % (boost::uint_fast32_t)(100 + 1));
+                    }
+                    pulses->push_back(pulse);
+                }
+                writer->writeDataColumn(pulses, 0, 0);
+            }
+            spdFile->setDiscretePtDefined(spdlib::SPD_TRUE);
+            spdFile->setReceiveWaveformDefined(spdlib::SPD_TRUE);
+            writer->finaliseClose();
+        }
         
-        spdlib::SPDDataBlockProcessorBlank *blockProcessor = new spdlib::SPDDataBlockProcessorBlank();
-        spdlib::SPDProcessDataBlocks processBlocks = spdlib::SPDProcessDataBlocks(blockProcessor);
-        processBlocks.processDataBlocksGridPulsesOutputSPD(spdInFile, "/Users/pete/Temp/MfE_LiDAR/LI080228_RAW4_1m_out.spd", 2);
         
-        delete blockProcessor;
     }
     catch(spdlib::SPDException &e)
     {
