@@ -135,6 +135,7 @@ namespace spdlib
      */
     static const boost::uint_fast16_t SPD_USE_Z( 1 );
 	static const boost::uint_fast16_t SPD_USE_HEIGHT( 2 );
+    static const boost::uint_fast16_t SPD_USE_AMP( 3 );
     
     /**
      * Define values to differiciate between selecting the lowest or highest point

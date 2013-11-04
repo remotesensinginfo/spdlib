@@ -485,6 +485,11 @@ namespace spdlib
                         CGALCoordType value = (*iterPts)->height;
                         values->insert(std::make_pair(cgalPt, value));
                     }
+                    else if(elevVal == SPD_USE_AMP)
+                    {
+                        CGALCoordType value = (*iterPts)->amplitudeReturn;
+                        values->insert(std::make_pair(cgalPt, value));
+                    }
                     else
                     {
                         throw SPDProcessingException("Elevation type not recognised.");
@@ -571,6 +576,11 @@ namespace spdlib
                     else if(elevVal == SPD_USE_HEIGHT)
                     {
                         CGALCoordType value = (*iterPts)->height;
+                        values->insert(std::make_pair(cgalPt, value));
+                    }
+                    else if(elevVal == SPD_USE_AMP)
+                    {
+                        CGALCoordType value = (*iterPts)->amplitudeReturn;
                         values->insert(std::make_pair(cgalPt, value));
                     }
                     else
@@ -661,6 +671,11 @@ namespace spdlib
                         CGALCoordType value = (*iterPts)->height;
                         values->insert(std::make_pair(cgalPt, value));
                     }
+                    else if(elevVal == SPD_USE_AMP)
+                    {
+                        CGALCoordType value = (*iterPts)->amplitudeReturn;
+                        values->insert(std::make_pair(cgalPt, value));
+                    }
                     else
                     {
                         throw SPDProcessingException("Elevation type not recognised.");
@@ -749,6 +764,11 @@ namespace spdlib
                         CGALCoordType value = (*iterPts)->height;
                         values->insert(std::make_pair(cgalPt, value));
                     }
+                    else if(elevVal == SPD_USE_AMP)
+                    {
+                        CGALCoordType value = (*iterPts)->amplitudeReturn;
+                        values->insert(std::make_pair(cgalPt, value));
+                    }
                     else
                     {
                         throw SPDProcessingException("Elevation type not recognised.");
@@ -784,6 +804,10 @@ namespace spdlib
         }
 		initialised = false;
 	}
+    
+    
+    
+    
 	
 	
 
@@ -1422,9 +1446,6 @@ namespace spdlib
     {
         
     }
-    
-    
-    
     
     
     
