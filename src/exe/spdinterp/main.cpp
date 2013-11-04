@@ -70,19 +70,23 @@ int main (int argc, char * const argv[])
         TCLAP::SwitchArg dtmSwitch("","dtm","Interpolate a DTM image", false);		
 		TCLAP::SwitchArg chmSwitch("","chm","Interpolate a CHM image.", false);
         TCLAP::SwitchArg dsmSwitch("","dsm","Interpolate a DSM image.", false);
+        TCLAP::SwitchArg ampSwitch("","amp","Interpolate an amplitude image.", false);
         
         std::vector<TCLAP::Arg*> arguments;
         arguments.push_back(&dtmSwitch);
         arguments.push_back(&chmSwitch);
         arguments.push_back(&dsmSwitch);
+        arguments.push_back(&ampSwitch);
         cmd.xorAdd(arguments);
         
         TCLAP::SwitchArg zSwitch("","topo","Use topographic elevation", false);		
 		TCLAP::SwitchArg hSwitch("","height","Use height above ground elevation.", false);
+        TCLAP::SwitchArg otherSwitch("","other","Interpolator is not using height.", false);
         
         std::vector<TCLAP::Arg*> argumentsElev;
         argumentsElev.push_back(&zSwitch);
         argumentsElev.push_back(&hSwitch);
+        argumentsElev.push_back(&otherSwitch);
         cmd.xorAdd(argumentsElev);
         
 		std::vector<std::string> interpolators;
@@ -124,7 +128,7 @@ int main (int argc, char * const argv[])
         TCLAP::ValueArg<float> thinGridResArg("","thinres","Resolution of the grid used to thin the point cloud",false,0.5,"float");
 		cmd.add( thinGridResArg );
         
-        TCLAP::ValueArg<float> gridIdxResolutionArg("","idxres","Resolution of the grid index used for some interpolates",false,0.5,"float");
+        TCLAP::ValueArg<float> gridIdxResolutionArg("","idxres","Resolution of the grid index used for some interpolaters",false,0.5,"float");
 		cmd.add( gridIdxResolutionArg );
         
 		TCLAP::ValueArg<std::string> inputFileArg("i","input","The input SPD file.",true,"","String");
@@ -147,7 +151,11 @@ int main (int argc, char * const argv[])
         
         uint_fast16_t elevVal = spdlib::SPD_USE_Z;
         
-        if(zSwitch.getValue())
+        if(ampSwitch.getValue())
+        {
+            elevVal = spdlib::SPD_USE_AMP;
+        }
+        else if(zSwitch.getValue())
         {
             elevVal = spdlib::SPD_USE_Z;
         }
@@ -170,6 +178,10 @@ int main (int argc, char * const argv[])
             thinPtSelectLowHigh = spdlib::SPD_SELECT_HIGHEST;
         }
         else if(dsmSwitch.getValue())
+        {
+            thinPtSelectLowHigh = spdlib::SPD_SELECT_HIGHEST;
+        }
+        else if(ampSwitch.getValue())
         {
             thinPtSelectLowHigh = spdlib::SPD_SELECT_HIGHEST;
         }
@@ -221,9 +233,13 @@ int main (int argc, char * const argv[])
         {
             blockProcessor = new spdlib::SPDDSMInterpolation(interpolator);
         }
+        else if(ampSwitch.getValue())
+        {
+            blockProcessor = new spdlib::SPDAmplitudeInterpolation(interpolator);
+        }
         else
         {
-            throw spdlib::SPDException("Error do not know whether to generate a CHM or DTM.");
+            throw spdlib::SPDException("Error do not know whether to generate a CHM, DSM or DTM or amplitude image.");
         }
         
         spdlib::SPDFile *spdInFile = new spdlib::SPDFile(inSPDFilePath);

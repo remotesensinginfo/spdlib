@@ -783,6 +783,10 @@ namespace spdlib
                             throw SPDProcessingException("Do not recognise point selection type (needs to be either highest or lowest).");
                         }
                     }
+                    else if (elevVal == SPD_USE_AMP)
+                    {
+                        std::sort(ptGrid[i][j]->begin(), ptGrid[i][j]->end(), compareFuncSortByZLargestFirst);
+                    }
                     else
                     {
                         throw SPDProcessingException("Do not recognise elevation type (needs to be height or Z).");

@@ -1254,7 +1254,6 @@ namespace spdlib
                     //std::cout << "xOffset = " << xOffset << std::endl;
                     //std::cout << "yOffset = " << yOffset << std::endl;
                     incReader.readPulseDataBlock(pulses, bbox, xOffset, yOffset);
-                    
                     if(binScaling == 0)
                     {
                         this->resetImageBlock2Zeros(imageBlockVals, pulsesBlockSizeX, pulsesBlockSizeY, numImgBands);

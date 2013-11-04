@@ -286,6 +286,89 @@ namespace spdlib
     }
     
     
+    SPDAmplitudeInterpolation::SPDAmplitudeInterpolation(SPDPointInterpolator *interpolator)
+    {
+        this->interpolator = interpolator;
+    }
+    
+    void SPDAmplitudeInterpolation::processDataBlockImage(SPDFile *inSPDFile, std::vector<SPDPulse*> ***pulses, float ***imageDataBlock, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast32_t numImgBands, float binSize) throw(SPDProcessingException)
+    {
+        try
+		{
+			if(numImgBands <= 0)
+			{
+				throw SPDProcessingException("The output image needs to have at least 1 image band.");
+			}
+			
+            bool ptsAvail = true;
+            try
+            {
+                interpolator->initInterpolator(pulses, xSize, ySize, SPD_ALL_CLASSES);
+			}
+            catch (SPDException &e)
+            {
+                ptsAvail = false;
+            }
+			
+            int feedback = ySize/10.0;
+            int feedbackCounter = 0;
+            std::cout << "Started" << std::flush;
+            if(ptsAvail)
+            {
+                for(boost::uint_fast32_t i = 0; i < ySize; ++i)
+                {
+                    if(ySize < 10)
+                    {
+                        std::cout << "." << i << "." << std::flush;
+                    }
+                    else if((feedback != 0) && ((i % feedback) == 0))
+                    {
+                        std::cout << "." << feedbackCounter << "." << std::flush;
+                        feedbackCounter = feedbackCounter + 10;
+                    }
+                    
+                    for(boost::uint_fast32_t j = 0; j < xSize; ++j)
+                    {
+                        imageDataBlock[i][j][0] = interpolator->getValue(cenPts[i][j]->x, cenPts[i][j]->y);
+                    }
+                }
+            }
+            else
+            {
+                for(boost::uint_fast32_t i = 0; i < ySize; ++i)
+                {
+                    if(ySize < 10)
+                    {
+                        std::cout << "." << i << "." << std::flush;
+                    }
+                    else if((feedback != 0) && ((i % feedback) == 0))
+                    {
+                        std::cout << "." << feedbackCounter << "." << std::flush;
+                        feedbackCounter = feedbackCounter + 10;
+                    }
+                    
+                    for(boost::uint_fast32_t j = 0; j < xSize; ++j)
+                    {
+                        imageDataBlock[i][j][0] = std::numeric_limits<float>::signaling_NaN();
+                    }
+                }
+            }
+            std::cout << " Complete.\n";
+			
+			interpolator->resetInterpolator();
+		}
+		catch (SPDProcessingException &e)
+		{
+			throw e;
+		}
+    }
+    
+    SPDAmplitudeInterpolation::~SPDAmplitudeInterpolation()
+    {
+        
+    }
+    
+    
     SPDRangeInterpolation::SPDRangeInterpolation(SPDPointInterpolator *interpolator)
     {
         
