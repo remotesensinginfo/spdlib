@@ -26,7 +26,6 @@ http://www.fsf.org/licensing/licenses
 #pragma warning(disable:4702)
 #pragma warning(disable:4996)
 #endif
-using namespace std;
 
 /////////////////////////////////////////////////////////////////////////
 //

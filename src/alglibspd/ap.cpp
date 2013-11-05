@@ -20,7 +20,6 @@ http://www.fsf.org/licensing/licenses
 #include "spd/alglibspd/ap.h"
 #include <limits>
 #include <locale.h>
-using namespace std;
 
 #if defined(AE_CPU)
 #if (AE_CPU==AE_INTEL)
