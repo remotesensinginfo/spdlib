@@ -37,7 +37,6 @@
 
 #include "spd/spd-config.h"
 
-using namespace std;
 using namespace spdlib;
 using namespace TCLAP;
 
@@ -45,11 +44,11 @@ int main (int argc, char * const argv[])
 {
     std::cout.precision(12);
     
-	cout << "spdpolygrd " << SPDLIB_PACKAGE_STRING << ", Copyright (C) " << SPDLIB_COPYRIGHT_YEAR << " Sorted Pulse Library (SPD)\n";
-	cout << "This program comes with ABSOLUTELY NO WARRANTY. This is free software,\n";
-	cout << "and you are welcome to redistribute it under certain conditions; See\n";
-	cout << "website (http://www.spdlib.org). Bugs are to be reported on the trac\n";
-	cout << "or directly to " << SPDLIB_PACKAGE_BUGREPORT << endl;
+	std::cout << "spdpolygrd " << SPDLIB_PACKAGE_STRING << ", Copyright (C) " << SPDLIB_COPYRIGHT_YEAR << " Sorted Pulse Library (SPD)\n";
+	std::cout << "This program comes with ABSOLUTELY NO WARRANTY. This is free software,\n";
+	std::cout << "and you are welcome to redistribute it under certain conditions; See\n";
+	std::cout << "website (http://www.spdlib.org). Bugs are to be reported on the trac\n";
+	std::cout << "or directly to " << SPDLIB_PACKAGE_BUGREPORT << std::endl;
 	
 	try 
 	{
@@ -76,37 +75,37 @@ int main (int argc, char * const argv[])
         //ValueArg<uint_fast16_t> usePointsofClassArg("","class","Only use points of particular class",false,SPD_ALL_CLASSES,"uint_fast16_t");
         //cmd.add( usePointsofClassArg );
         
-		UnlabeledMultiArg<string> multiFileNames("File", "File names for the input files", false, "string");
+		UnlabeledMultiArg<std::string> multiFileNames("File", "File names for the input files", false, "string");
 		cmd.add( multiFileNames );
 		cmd.parse( argc, argv );
 		
-		vector<string> fileNames = multiFileNames.getValue();		
-        cout << "fileNames.size() = " << fileNames.size() << endl;
+		std::vector<std::string> fileNames = multiFileNames.getValue();
+        std::cout << "fileNames.size() = " << fileNames.size() << std::endl;
 		if(fileNames.size() == 2)
 		{
-            string inSPDFilePath = fileNames.at(0);
-            string outFilePath = fileNames.at(1);
+            std::string inSPDFilePath = fileNames.at(0);
+            std::string outFilePath = fileNames.at(1);
                         
             SPDPolyFitGroundFilter grdFilter;
             grdFilter.applyPolyFitGroundFilter(inSPDFilePath, outFilePath, grdClassThresArg.getValue(), degreeArg.getValue(), numItersArg.getValue(), numOfColsBlockArg.getValue(), numOfRowsBlockArg.getValue(), binSizeArg.getValue());
 		}
         else
         {
-            cout << "ERROR: Only 2 files can be provided\n";
+            std::cout << "ERROR: Only 2 files can be provided\n";
             for(unsigned int i = 0; i < fileNames.size(); ++i)
 			{
-                cout << i << ":\t" << fileNames.at(i) << endl;
+                std::cout << i << ":\t" << fileNames.at(i) << std::endl;
             }
         }
 		
 	}
 	catch (ArgException &e) 
 	{
-		cerr << "Parse Error: " << e.what() << endl;
+		std::cerr << "Parse Error: " << e.what() << std::endl;
 	}
 	catch(SPDException &e)
 	{
-		cerr << "Error: " << e.what() << endl;
+		std::cerr << "Error: " << e.what() << std::endl;
 	}
     std::cout << "spdpolygrd - end\n";
 }
