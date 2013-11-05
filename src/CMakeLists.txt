@@ -8,6 +8,8 @@ set(CMPFIT_HEADER_DIR ../include/spd/cmpfit)
 set(TCLAP_HEADERS_DIR ../include/spd/tclap)
 set(TPS_SRC_DIR tps)
 set(TPS_HEADERS_DIR ../include/spd/tps)
+set(ALGLIB_SRC_DIR alglibspd)
+set(ALGLIB_HEADERS_DIR ../include/spd/alglibspd)
 
 set(CMPFIT_H
 	${CMPFIT_HEADER_DIR}/mpfit.h)
@@ -42,6 +44,18 @@ set(TPS_H
 	${TPS_HEADERS_DIR}/linalg3d.h 
 	${TPS_HEADERS_DIR}/ludecomposition.h
 	${TPS_HEADERS_DIR}/spline.h )
+	
+set(ALGLIB_H
+	${ALGLIB_HEADERS_DIR}/alglibinternal.h 
+	${ALGLIB_HEADERS_DIR}/alglibmisc.h
+	${ALGLIB_HEADERS_DIR}/ap.h
+	${ALGLIB_HEADERS_DIR}/integration.h
+	${ALGLIB_HEADERS_DIR}/interpolation.h
+	${ALGLIB_HEADERS_DIR}/linalg.h
+	${ALGLIB_HEADERS_DIR}/optimization.h
+	${ALGLIB_HEADERS_DIR}/solvers.h
+	${ALGLIB_HEADERS_DIR}/specialfunctions.h
+	${ALGLIB_HEADERS_DIR}/stdafx.h )
 
 set(SPDLIB_MIT_H
 	${SPDLIB_HEADERS_DIR}/SPDCommon.h
@@ -103,7 +117,8 @@ set(SPDLIB_H_Processing_Algorithms
 	${SPDLIB_HEADERS_DIR}/SPDRemoveVerticalNoise.h
 	${SPDLIB_HEADERS_DIR}/SPDSampleInTime.h
 	${SPDLIB_HEADERS_DIR}/SPDThinPulses.h
-	${SPDLIB_HEADERS_DIR}/SPDWarpData.h )
+	${SPDLIB_HEADERS_DIR}/SPDWarpData.h
+	${SPDLIB_HEADERS_DIR}/SPDTidyGroundReturn.h )
 
 set(SPDLIB_H_Utils
 	${SPDLIB_HEADERS_DIR}/SPDFileUtilities.h
@@ -131,6 +146,17 @@ set(CMPFIT_C
 	
 set(TPS_CPP
 	${TPS_SRC_DIR}/spline.cpp)
+	
+set(ALGLIB_CPP
+	${ALGLIB_SRC_DIR}/alglibinternal.cpp 
+	${ALGLIB_SRC_DIR}/alglibmisc.cpp
+	${ALGLIB_SRC_DIR}/ap.cpp
+	${ALGLIB_SRC_DIR}/integration.cpp
+	${ALGLIB_SRC_DIR}/interpolation.cpp
+	${ALGLIB_SRC_DIR}/linalg.cpp
+	${ALGLIB_SRC_DIR}/optimization.cpp
+	${ALGLIB_SRC_DIR}/solvers.cpp
+	${ALGLIB_SRC_DIR}/specialfunctions.cpp )
 
 set(SPDLIB_CPP_MIT_IO
 	${SPDLIB_SRC_DIR}/SPDDataExporter.cpp
@@ -189,7 +215,8 @@ set(SPDLIB_CPP_Processing_Algorithms
 	${SPDLIB_SRC_DIR}/SPDRemoveVerticalNoise.cpp
 	${SPDLIB_SRC_DIR}/SPDSampleInTime.cpp
 	${SPDLIB_SRC_DIR}/SPDThinPulses.cpp
-	${SPDLIB_SRC_DIR}/SPDWarpData.cpp )
+	${SPDLIB_SRC_DIR}/SPDWarpData.cpp
+	${SPDLIB_SRC_DIR}/SPDTidyGroundReturn.cpp )
 		
 set(SPDLIB_CPP_Utils
 	${SPDLIB_SRC_DIR}/SPDFileUtilities.cpp
@@ -221,7 +248,8 @@ source_group("src_spd_algorithms" FILES ${SPDLIB_CPP_Processing_Algorithms})
 source_group("src_spd_utils" FILES ${SPDLIB_CPP_Utils})
 source_group("src_spd_frameworks" FILES ${SPDLIB_CPP_Frameworks})
 source_group("src_cmpfit" FILES ${CMPFIT_C})
-source_group("src_tps" FILES ${TPS_CPP}) 
+source_group("src_tps" FILES ${TPS_CPP})
+source_group("src_alglib" FILES ${ALGLIB_CPP}) 
 source_group("include_spd_MIT" FILES ${SPDLIB_MIT_H})
 source_group("include_spd_io" FILES ${SPDLIB_H_IO})
 source_group("include_spd_interface" FILES ${SPDLIB_H_Processing_Interfaces})
@@ -231,6 +259,7 @@ source_group("include_spd_frameworks" FILES ${SPDLIB_H_Frameworks})
 source_group("include_cmpfit" FILES ${CMPFIT_H})
 source_group("include_tclap" FILES ${TCLAP_H})
 source_group("include_tps" FILES ${TPS_H}) 
+source_group("include_alglib" FILES ${ALGLIB_H}) 
 ###############################################################################
 
 ###############################################################################
@@ -240,8 +269,10 @@ add_library( ${SPDLIB_MITLIB_NAME} ${SPDLIB_CPP_MIT_IO} ${SPDLIB_MIT_H} )
 target_link_libraries(${SPDLIB_MITLIB_NAME} ${GDAL_LIBRARIES} ${HDF5_LIBRARIES} )
 
 if (NOT BUILD_SPDIO_ONLY )
+    add_library( ${SPDLIB_ALGLIB_NAME} ${ALGLIB_CPP} ${ALGLIB_H} )
+
     add_library(${SPDLIB_LIB_NAME} ${SPDLIB_CPP_IO} ${SPDLIB_H_IO} ${SPDLIB_CPP_Processing_Interfaces} ${SPDLIB_H_Processing_Interfaces} ${SPDLIB_CPP_Processing_Algorithms} ${SPDLIB_H_Processing_Algorithms} ${SPDLIB_CPP_Utils} ${SPDLIB_H_Utils} ${SPDLIB_CPP_Frameworks} ${SPDLIB_H_Frameworks} ${CMPFIT_C} ${CMPFIT_H} ${TCLAP_H} ${TPS_CPP} ${TPS_H} )
-    target_link_libraries(${SPDLIB_LIB_NAME} ${SPDLIB_MITLIB_NAME} ${BOOST_LIBRARIES} ${GDAL_LIBRARIES} ${HDF5_LIBRARIES} ${LIBLAS_LIBRARIES} ${GSL_LIBRARIES} ${CGAL_LIBRARIES} ${XERCESC_LIBRARIES} ${GMP_LIBRARIES} ${MPFR_LIBRARIES} )
+    target_link_libraries(${SPDLIB_LIB_NAME} ${SPDLIB_MITLIB_NAME} ${BOOST_LIBRARIES} ${GDAL_LIBRARIES} ${HDF5_LIBRARIES} ${LIBLAS_LIBRARIES} ${GSL_LIBRARIES} ${CGAL_LIBRARIES} ${XERCESC_LIBRARIES} ${GMP_LIBRARIES} ${MPFR_LIBRARIES} ${SPDLIB_ALGLIB_NAME} )
 endif(NOT BUILD_SPDIO_ONLY )
 ###############################################################################
 
@@ -254,6 +285,11 @@ PROPERTIES
 )
 
 if (NOT BUILD_SPDIO_ONLY )
+    SET_TARGET_PROPERTIES(${SPDLIB_ALGLIB_NAME}
+    PROPERTIES
+        SOVERSION ${SPDLIB_ALG_VERSION}
+        VERSION ${SPDLIB_ALG_VERSION}
+    )
     SET_TARGET_PROPERTIES(${SPDLIB_LIB_NAME}
     PROPERTIES
         SOVERSION ${SPDLIB_VERSION}
@@ -266,7 +302,7 @@ endif(NOT BUILD_SPDIO_ONLY )
 # Installation 
 install (TARGETS ${SPDLIB_MITLIB_NAME} DESTINATION lib)
 if (NOT BUILD_SPDIO_ONLY )
-    install (TARGETS ${SPDLIB_LIB_NAME} DESTINATION lib)
+    install (TARGETS ${SPDLIB_LIB_NAME} ${SPDLIB_ALGLIB_NAME} DESTINATION lib)
 endif(NOT BUILD_SPDIO_ONLY )
 install (FILES ${SPDLIB_MIT_H} DESTINATION include/spd)
 install (FILES ${SPDLIB_H_IO} DESTINATION include/spd)
@@ -276,4 +312,5 @@ install (FILES ${SPDLIB_H_Utils} DESTINATION include/spd)
 install (FILES ${SPDLIB_H_Frameworks} DESTINATION include/spd)
 install (FILES ${CMPFIT_H} DESTINATION include/spd/cmpfit)
 install (FILES ${TPS_H} DESTINATION include/spd/tps)
+install (FILES ${ALGLIB_H} DESTINATION include/spd/alglibspd)
 ###############################################################################

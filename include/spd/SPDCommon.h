@@ -83,6 +83,7 @@ namespace spdlib
     static const boost::uint_fast16_t SPD_VEGETATION_TOP( 102 );
     static const boost::uint_fast16_t SPD_VEGETATION( 103 );
     static const boost::uint_fast16_t SPD_NOT_GROUND( 104 );
+    static const boost::uint_fast16_t SPD_KEYGRD_POINTS( 105 );
 
     /**
 	 * Define the returnID values.
