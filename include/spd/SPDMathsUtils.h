@@ -43,9 +43,16 @@
 #include "spd/SPDCommon.h"
 #include "spd/SPDException.h"
 #include "spd/SPDProcessingException.h"
+#include "spd/SPDMatrixUtils.h"
 
 namespace spdlib
 {
+    struct SPD3DDataPt
+    {
+        double x;
+        double y;
+        double z;
+    };
     
     struct GaussianDecompReturnType
     {
@@ -115,6 +122,7 @@ namespace spdlib
         bool rectangleIntersection(double xMin1, double xMax1, double yMin1, double yMax1, double xMin2, double xMax2, double yMin2, double yMax2);
         bool rectangle1Contains2(double xMin1, double xMax1, double yMin1, double yMax1, double xMin2, double xMax2, double yMin2, double yMax2);
         double calcRectangleIntersection(double xMin1, double xMax1, double yMin1, double yMax1, double xMin2, double xMax2, double yMin2, double yMax2);
+        double calcValueViaPlaneFitting(SPD3DDataPt *a, SPD3DDataPt *b, SPD3DDataPt *c, double x, double y) throw(SPDProcessingException);
         ~SPDMathsUtils();
     };
     

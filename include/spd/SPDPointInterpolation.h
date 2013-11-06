@@ -38,6 +38,8 @@
 #include "spd/SPDMatrixUtils.h"
 #include "spd/SPDException.h"
 #include "spd/SPDPointGridIndex.h"
+#include "spd/SPDTextFileUtilities.h"
+#include "spd/SPDMathsUtils.h"
 
 #include "spd/tps/spline.h"
 #include "spd/tps/linalg3d.h"
@@ -53,6 +55,9 @@
 #include <CGAL/Origin.h>
 #include <CGAL/squared_distance_2.h>
 
+#include "spd/alglibspd/interpolation.h"
+#include "spd/alglibspd/stdafx.h"
+
 typedef CGAL::Exact_predicates_inexact_constructions_kernel K;
 typedef K::FT                                         CGALCoordType;
 typedef K::Vector_2                                   CGALVector;
@@ -61,6 +66,7 @@ typedef K::Point_2                                    CGALPoint;
 typedef CGAL::Delaunay_triangulation_2<K>             DelaunayTriangulation;
 typedef CGAL::Interpolation_traits_2<K>               InterpTraits;
 typedef CGAL::Delaunay_triangulation_2<K>::Vertex_handle    Vertex_handle;
+typedef CGAL::Delaunay_triangulation_2<K>::Face_handle    Face_handle;
 
 typedef std::vector< std::pair<CGALPoint, CGALCoordType> >   CoordinateVector;
 typedef std::map<CGALPoint, CGALCoordType, K::Less_xy_2>     PointValueMap;
@@ -122,6 +128,8 @@ namespace spdlib
         DelaunayTriangulation *dt;
         PointValueMap *values;
 	};
+    
+    
 	
 	/**
 	 * SPDGridIndexPointInterpolator is an abstract interface for the interpolation 
@@ -146,6 +154,33 @@ namespace spdlib
 	protected:
 		SPDPointGridIndex *idx;
 		double gridResolution;
+	};
+    
+    
+    /**
+	 * SPDRFBPointInterpolator is an abstract interface for the interpolation
+	 * of SPDPoint/SPDPulse data using a spatial index (index is in the form of a
+	 * regular grid).
+	 *
+	 * The 'init' functions initialise the index and the desctructor
+	 * cleans up the index.
+	 *
+	 */
+	class SPDRFBPointInterpolator : public SPDPointInterpolator
+	{
+	public:
+		SPDRFBPointInterpolator(boost::uint_fast16_t elevVal, float thinGridRes, bool thinData, boost::uint_fast16_t selectHighOrLow, boost::uint_fast16_t maxNumPtsPerBin);
+		virtual void initInterpolator(std::list<SPDPulse*> ***pulses, boost::uint_fast32_t numXBins, boost::uint_fast32_t numYBins, boost::uint_fast16_t ptClass) throw(SPDProcessingException);
+		virtual void initInterpolator(std::vector<SPDPulse*> ***pulses, boost::uint_fast32_t numXBins, boost::uint_fast32_t numYBins, boost::uint_fast16_t ptClass) throw(SPDProcessingException);
+		virtual void initInterpolator(std::list<SPDPulse*> *pulses, boost::uint_fast16_t ptClass) throw(SPDProcessingException);
+		virtual void initInterpolator(std::vector<SPDPulse*> *pulses, boost::uint_fast16_t ptClass) throw(SPDProcessingException);
+		virtual float getValue(double eastings, double northings) throw(SPDProcessingException);
+		virtual void resetInterpolator() throw(SPDProcessingException);
+		virtual ~SPDRFBPointInterpolator();
+    protected:
+        spd_alglib::rbfmodel rbfModel;
+        double midX;
+        double midY;
 	};
 	
 	
@@ -176,6 +211,10 @@ namespace spdlib
 		float getValue(double eastings, double northings) throw(SPDProcessingException);
 		~SPDTINPlaneFitInterpolator();
 	private:
+        SPDMathsUtils *mathUtils;
+        SPD3DDataPt *aPt;
+        SPD3DDataPt *bPt;
+        SPD3DDataPt *cPt;
 	};
 	
 	/**
@@ -225,6 +264,26 @@ namespace spdlib
 		float getValue(double eastings, double northings) throw(SPDProcessingException);
 		~SPDNaturalNeighborPointInterpolator();
 	};
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     
     
     /**
