@@ -96,6 +96,7 @@ int main (int argc, char * const argv[])
 		interpolators.push_back("STDEV_MULTISCALE");
 		interpolators.push_back("TPS_RAD");
         interpolators.push_back("TPS_PTNO");
+        interpolators.push_back("RBF");
 		TCLAP::ValuesConstraint<std::string> allowedInterpolatorVals( interpolators );
 		
 		TCLAP::ValueArg<std::string> interpolatorsArg("","in","The interpolator to be used.",false,"NATURAL_NEIGHBOR", &allowedInterpolatorVals);
@@ -214,6 +215,10 @@ int main (int argc, char * const argv[])
         else if(interpolatorStr == "TPS_PTNO")
         {
             interpolator = new spdlib::SPDTPSNumPtsInterpolator( tpsRadiusArg.getValue(), tpsNoPtsArg.getValue(), gridIdxResolutionArg.getValue(), elevVal, thinGridResArg.getValue(), thinSwitch.getValue(), thinPtSelectLowHigh, noPtsPerBinArg.getValue());
+        }
+        else if(interpolatorStr == "RBF")
+        {
+            interpolator = new spdlib::SPDRFBPointInterpolator( elevVal, thinGridResArg.getValue(), thinSwitch.getValue(), thinPtSelectLowHigh, noPtsPerBinArg.getValue());
         }
         else
         {

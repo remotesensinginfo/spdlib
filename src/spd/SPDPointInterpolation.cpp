@@ -923,6 +923,234 @@ namespace spdlib
 	
 	
 	
+    
+    SPDRFBPointInterpolator::SPDRFBPointInterpolator(boost::uint_fast16_t elevVal, float thinGridRes, bool thinData, boost::uint_fast16_t selectHighOrLow, boost::uint_fast16_t maxNumPtsPerBin):SPDPointInterpolator(elevVal, thinGridRes, thinData, selectHighOrLow, maxNumPtsPerBin)
+    {
+        
+    }
+		
+    void SPDRFBPointInterpolator::initInterpolator(std::list<SPDPulse*> ***pulses, boost::uint_fast32_t numXBins, boost::uint_fast32_t numYBins, boost::uint_fast16_t ptClass) throw(SPDProcessingException)
+    {
+        try
+        {
+            std::vector<SPDPoint*> *points = this->findPoints(pulses, numXBins, numYBins, ptClass);
+            if(thinData)
+            {
+                this->thinPoints(points);
+            }
+            
+            throw SPDProcessingException("RFB Interpolator has not been initialised - list grid.");
+            
+            delete points;
+        }
+        catch(SPDProcessingException &e)
+        {
+            throw e;
+        }
+        initialised = true;
+    }
+    
+    void SPDRFBPointInterpolator::initInterpolator(std::vector<SPDPulse*> ***pulses, boost::uint_fast32_t numXBins, boost::uint_fast32_t numYBins, boost::uint_fast16_t ptClass) throw(SPDProcessingException)
+    {
+        try
+        {
+            SPDTextFileUtilities txtUtils;
+            std::vector<SPDPoint*> *points = this->findPoints(pulses, numXBins, numYBins, ptClass);
+            if(thinData)
+            {
+                this->thinPoints(points);
+            }
+            
+            std::cout << "Creating model\n";
+            rbfModel = spd_alglib::rbfmodel();
+            spd_alglib::rbfcreate(2, 1, rbfModel);
+            
+            size_t numPts = points->size();
+            std::cout << "Num of Pts: " << numPts << std::endl;
+            
+            double minX = 0;
+            double minY = 0;
+            double maxX = 0;
+            double maxY = 0;
+            bool first = true;
+            for(std::vector<SPDPoint*>::iterator iterPts = points->begin(); iterPts != points->end(); ++iterPts)
+            {
+                if(first)
+                {
+                    minX = (*iterPts)->x;
+                    maxX = (*iterPts)->x;
+                    minY = (*iterPts)->y;
+                    maxY = (*iterPts)->y;
+                    first = false;
+                }
+                else
+                {
+                    if((*iterPts)->x < minX)
+                    {
+                        minX = (*iterPts)->x;
+                    }
+                    if((*iterPts)->x > maxX)
+                    {
+                        maxX = (*iterPts)->x;
+                    }
+                    if((*iterPts)->y < minY)
+                    {
+                        minY = (*iterPts)->y;
+                    }
+                    if((*iterPts)->y > maxY)
+                    {
+                        maxY = (*iterPts)->y;
+                    }
+                }
+            }
+            this->midX = minX + ((maxX-minX)/2);
+            this->midY = minY + ((maxY-minY)/2);
+            
+            double xVal = 0;
+            double yVal = 0;
+            double zVal = 0;
+            spd_alglib::ae_int_t row = 0;
+            
+            spd_alglib::real_2d_array dataPts;
+            dataPts.setlength(numPts, 3);
+            
+            for(std::vector<SPDPoint*>::iterator iterPts = points->begin(); iterPts != points->end(); ++iterPts)
+            {
+                xVal = round(((*iterPts)->x - midX)*100);
+                dataPts(row,0) = xVal;
+                yVal = round(((*iterPts)->y - midY)*100);
+                dataPts(row,1) = yVal;
+                
+                if(elevVal == SPD_USE_Z)
+                {
+                    zVal = (*iterPts)->z;
+                }
+                else if(elevVal == SPD_USE_HEIGHT)
+                {
+                    zVal = (*iterPts)->height;
+                }
+                else if(elevVal == SPD_USE_AMP)
+                {
+                    zVal = (*iterPts)->amplitudeReturn;
+                }
+                else
+                {
+                    throw SPDProcessingException("Elevation type not recognised.");
+                }
+                dataPts(row,2) = zVal;
+                
+                ++row;
+            }
+            
+            //std::cout << "Data:\n" << dataPts.tostring(3) << std::endl;
+            std::cout << "Set Points\n";
+            spd_alglib::rbfsetpoints(rbfModel, dataPts);
+            std::cout << "set multi layer\n";
+            spd_alglib::rbfsetalgomultilayer(rbfModel, 50.0, 10, 1.0e-3);
+            std::cout << "Build Model\n";
+            spd_alglib::rbfreport rep;
+            spd_alglib::rbfbuildmodel(rbfModel, rep);
+            
+            printf("%d\n", int(rep.terminationtype));
+            
+            double v = spd_alglib::rbfcalc2(rbfModel, 0.0, 0.0);
+            printf("%.2f\n", double(v));
+            
+            std::cout << "Init'ed\n";
+            delete points;
+        }
+        catch(SPDProcessingException &e)
+        {
+            throw e;
+        }
+        catch(std::exception &e)
+        {
+            std::cout << "Error: " << e.what() << std::endl;
+            throw SPDProcessingException(e.what());
+        }
+        initialised = true;
+    }
+    
+	void SPDRFBPointInterpolator::initInterpolator(std::list<SPDPulse*> *pulses, boost::uint_fast16_t ptClass) throw(SPDProcessingException)
+    {
+        try
+        {
+            std::vector<SPDPoint*> *points = this->findPoints(pulses, ptClass);
+            if(thinData)
+            {
+                this->thinPoints(points);
+            }
+            
+            
+            
+            
+            throw SPDProcessingException("RFB Interpolator has not been initialised - list.");
+            
+            delete points;
+        }
+        catch(SPDProcessingException &e)
+        {
+            throw e;
+        }
+        initialised = true;
+    }
+    
+	void SPDRFBPointInterpolator::initInterpolator(std::vector<SPDPulse*> *pulses, boost::uint_fast16_t ptClass) throw(SPDProcessingException)
+    {
+        try
+        {
+            std::vector<SPDPoint*> *points = this->findPoints(pulses, ptClass);
+            if(thinData)
+            {
+                this->thinPoints(points);
+            }
+            
+            throw SPDProcessingException("RFB Interpolator has not been initialised - vector.");
+            
+            delete points;
+        }
+        catch(SPDProcessingException &e)
+        {
+            throw e;
+        }
+        initialised = true;
+    }
+    
+	float SPDRFBPointInterpolator::getValue(double eastings, double northings) throw(SPDProcessingException)
+    {
+        float val = 0.0;
+        if(initialised)
+		{
+            val = spd_alglib::rbfcalc2(rbfModel, round((eastings - midX)*100), round((northings - midY)*100));
+        }
+        else
+        {
+            throw SPDProcessingException("RFB Interpolator has not been initialised.");
+        }
+        return val;
+    }
+    
+	void SPDRFBPointInterpolator::resetInterpolator() throw(SPDProcessingException)
+    {
+        if(initialised)
+		{
+            
+            initialised = false;
+		}
+    }
+    
+    SPDRFBPointInterpolator::~SPDRFBPointInterpolator()
+    {
+        if(initialised)
+		{
+            
+            initialised = false;
+		}
+    }
+    
+    
+    
+    
 	
 	
 	
@@ -963,81 +1191,89 @@ namespace spdlib
 	
 	SPDTINPlaneFitInterpolator::SPDTINPlaneFitInterpolator(boost::uint_fast16_t elevVal, float thinGridRes, bool thinData, boost::uint_fast16_t selectHighOrLow, boost::uint_fast16_t maxNumPtsPerBin):SPDTriangulationPointInterpolator(elevVal, thinGridRes, thinData, selectHighOrLow, maxNumPtsPerBin)
 	{
-		
+		mathUtils = new SPDMathsUtils();
+        aPt = new SPD3DDataPt();
+        bPt = new SPD3DDataPt();
+        cPt = new SPD3DDataPt();
 	}
 	
 	float SPDTINPlaneFitInterpolator::getValue(double eastings, double northings) throw(SPDProcessingException)
 	{
-        throw SPDProcessingException("SPDTINPlaneFitInterpolator is currently not available.");
-        
-		//double outElevation = 0;
-		/*if(initialised)
+		double outElevation = 0;
+		if(initialised)
 		{
-			if(triNodes->size() > 0)
-			{
-				SPDInterTriNode *ptNode = new SPDInterTriNode(eastings, northings, 0);
-				
-				// Locate a triangle in the triangulation containing the given point.
-				// The given dart will be repositioned to that triangle while maintaining
-				// its orientation (CCW or CW).
-				// If the given point is outside the triangulation, the dart will be
-				// positioned at a boundary edge.
-				hed::Dart dart = triangulation->createDart();
-				bool found = ttl::locateTriangle<hed::TTLtraits>(*ptNode, dart);
-				if(!found) 
-				{
-					return std::numeric_limits<float>::signaling_NaN();
-				}
-				
-				// Found Triangle...
-				const SPDInterTriNode *nodeA = (const SPDInterTriNode*)dart.getNode();
-				dart = dart.alpha0(); // Next Node
-				const SPDInterTriNode *nodeB = (const SPDInterTriNode*)dart.getNode();
-				dart = dart.alpha1(); // Next Edge
-				dart = dart.alpha0(); // Next Node
-				const SPDInterTriNode *nodeC = (const SPDInterTriNode*)dart.getNode();
-				
-				//std::cout << "PT 1: [" << nodeA->eastings() << "," << nodeA->northings() << "]\n";
-				//std::cout << "PT 2: [" << nodeB->eastings() << "," << nodeB->northings() << "]\n";
-				//std::cout << "PT 3: [" << nodeC->eastings() << "," << nodeC->northings() << "]\n\n";
-				
-				
-				std::vector<const SPDInterTriNode*> *triPts = new std::vector<const SPDInterTriNode*>();
-				triPts->push_back(nodeA);
-				triPts->push_back(nodeB);
-				triPts->push_back(nodeC);
-				
-				std::vector<SPDInterTriNode*> *normTriPts = normaliseNodes(triPts, eastings, northings);
-				
-				double planeA = 0;
-				double planeB = 0;
-				double planeC = 0;
-				
-				this->fitPlane2Points(normTriPts, &planeA, &planeB, &planeC);
-				
-				outElevation = planeC;
-				
-				delete triPts;
-				delete normTriPts;
-				delete ptNode;
-			}
-			else 
-			{
-				outElevation = std::numeric_limits<float>::signaling_NaN();
-			}
-			
+            //std::cout << "[" << eastings << "," << northings << "]\n";
+            CGALPoint p(eastings, northings);
+            Vertex_handle vh = dt->nearest_vertex(p);
+            CGALPoint nearestPt = vh->point();
+            PointValueMap::iterator iterVal;
+            Face_handle fh = dt->locate(nearestPt);
+            Vertex_handle pt1Vh = fh->vertex(0);
+            iterVal = values->find(pt1Vh->point());
+            aPt->x = (*iterVal).first.x();
+            aPt->y = (*iterVal).first.y();
+            aPt->z = (*iterVal).second;
+            //std::cout << "A [" << aPt->x << ", " << aPt->y << "] = " << aPt->z << std::endl;
+            Vertex_handle pt2Vh = fh->vertex(1);
+            iterVal = values->find(pt2Vh->point());
+            bPt->x = (*iterVal).first.x();
+            bPt->y = (*iterVal).first.y();
+            bPt->z = (*iterVal).second;
+            //std::cout << "B [" << bPt->x << ", " << bPt->y << "] = " << bPt->z << std::endl;
+            Vertex_handle pt3Vh = fh->vertex(2);
+            iterVal = values->find(pt3Vh->point());
+            cPt->x = (*iterVal).first.x();
+            cPt->y = (*iterVal).first.y();
+            cPt->z = (*iterVal).second;
+            //std::cout << "C [" << cPt->x << ", " << cPt->y << "] = " << cPt->z << std::endl;
+            
+            try
+            {
+                if((eastings > aPt->x) & (eastings > bPt->x) & (eastings > cPt->x))
+                {
+                    outElevation = std::numeric_limits<float>::signaling_NaN();
+                }
+                else if((eastings < aPt->x) & (eastings < bPt->x) & (eastings < cPt->x))
+                {
+                    outElevation = std::numeric_limits<float>::signaling_NaN();
+                }
+                else if((northings > aPt->y) & (northings > bPt->y) & (northings > cPt->y))
+                {
+                    outElevation = std::numeric_limits<float>::signaling_NaN();
+                }
+                else if((northings < aPt->y) & (northings < bPt->y) & (northings < cPt->y))
+                {
+                    outElevation = std::numeric_limits<float>::signaling_NaN();
+                }
+                else
+                {
+                    //std::cout << "[" << eastings << "," << northings << "]\n";
+                    //std::cout << "A [" << aPt->x << ", " << aPt->y << "] = " << aPt->z << std::endl;
+                    //std::cout << "B [" << bPt->x << ", " << bPt->y << "] = " << bPt->z << std::endl;
+                    //std::cout << "C [" << cPt->x << ", " << cPt->y << "] = " << cPt->z << std::endl;
+                    outElevation = mathUtils->calcValueViaPlaneFitting(aPt, bPt, cPt, eastings, northings);
+                    //std::cout << "Z = " << outElevation << std::endl << std::endl;
+                }
+            }
+            catch (SPDProcessingException &e)
+            {
+                outElevation = std::numeric_limits<float>::signaling_NaN();
+            }
 		}
 		else 
 		{
 			throw SPDProcessingException("Interpolated needs to be initialised before values can be retrieved.");
-		}*/
-		return 0;//outElevation;
+		}
+		return outElevation;
 	}
 
 	
 	SPDTINPlaneFitInterpolator::~SPDTINPlaneFitInterpolator()
 	{
-		
+		delete mathUtils;
+        delete aPt;
+        delete bPt;
+        delete cPt;
 	}
 	
 	

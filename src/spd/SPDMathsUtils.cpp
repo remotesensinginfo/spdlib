@@ -855,6 +855,109 @@ namespace spdlib {
         return intersection;
     }
     
+    double SPDMathsUtils::calcValueViaPlaneFitting(SPD3DDataPt *a, SPD3DDataPt *b, SPD3DDataPt *c, double x, double y) throw(SPDProcessingException)
+    {
+        double outVal = 0.0;
+        try
+        {
+            // Normalise X,Y values.
+            a->x = a->x - x;
+            b->x = b->x - x;
+            c->x = c->x - x;
+            a->y = a->y - y;
+            b->y = b->y - y;
+            c->y = c->y - y;
+            /*
+            std::cout << "Normalised A [" << a->x << "," << a->y << "]\n";
+            std::cout << "Normalised B [" << b->x << "," << b->y << "]\n";
+            std::cout << "Normalised C [" << c->x << "," << c->y << "]\n";
+            */
+            SPDMatrixUtils matrices;
+
+            double sXY = 0;
+            double sX = 0;
+            double sXSqu = 0;
+            double sY = 0;
+            double sYSqu = 0;
+            double sXZ = 0;
+            double sYZ = 0;
+            double sZ = 0;
+            
+            // A
+            sXY = a->x * a->y;
+            sX = a->x;
+            sXSqu = (a->x * a->x);
+            sY = a->y;
+            sYSqu = (a->y * a->y);
+            sXZ = (a->x * a->z);
+            sYZ = (a->y * a->z);
+            sZ = a->z;
+            
+            // B
+            sXY += b->x * b->y;
+            sX += b->x;
+            sXSqu += (b->x * b->x);
+            sY += b->y;
+            sYSqu += (b->y * b->y);
+            sXZ += (b->x * b->z);
+            sYZ += (b->y * b->z);
+            sZ += b->z;
+            
+            // C
+            sXY += c->x * c->y;
+            sX += c->x;
+            sXSqu += (c->x * c->x);
+            sY += c->y;
+            sYSqu += (c->y * c->y);
+            sXZ += (c->x * c->z);
+            sYZ += (c->y * c->z);
+            sZ += c->z;
+            
+            spdlib::Matrix *matrixA = matrices.createMatrix(3, 3);
+            matrixA->matrix[0] = sXSqu;
+            matrixA->matrix[1] = sXY;
+            matrixA->matrix[2] = sX;
+            matrixA->matrix[3] = sXY;
+            matrixA->matrix[4] = sYSqu;
+            matrixA->matrix[5] = sY;
+            matrixA->matrix[6] = sX;
+            matrixA->matrix[7] = sY;
+            matrixA->matrix[8] = 3;
+            spdlib::Matrix *matrixB = matrices.createMatrix(1, 3);
+            matrixB->matrix[0] = sXZ;
+            matrixB->matrix[1] = sYZ;
+            matrixB->matrix[2] = sZ;
+            
+            double determinantA = matrices.determinant(matrixA);
+            spdlib::Matrix *matrixCoFactors = matrices.cofactors(matrixA);
+            spdlib::Matrix *matrixCoFactorsT = matrices.transpose(matrixCoFactors);
+            double multiplier = 1/determinantA;
+            matrices.multipleSingle(matrixCoFactorsT, multiplier);
+            spdlib::Matrix *outputs = matrices.multiplication(matrixCoFactorsT, matrixB);
+            
+            //double aCoeff = outputs->matrix[0];
+            //double bCoeff = outputs->matrix[1];
+            //double cCoeff = outputs->matrix[2];
+            outVal = outputs->matrix[2];
+            
+            matrices.freeMatrix(matrixA);
+            matrices.freeMatrix(matrixB);
+            matrices.freeMatrix(matrixCoFactors);
+            matrices.freeMatrix(matrixCoFactorsT);
+            matrices.freeMatrix(outputs);
+        }
+        catch (SPDProcessingException &e)
+        {
+            throw e;
+        }
+        catch (std::exception &e)
+        {
+            throw SPDProcessingException(e.what());
+        }
+        
+        return outVal;
+    }
+    
     SPDMathsUtils::~SPDMathsUtils()
     {
         

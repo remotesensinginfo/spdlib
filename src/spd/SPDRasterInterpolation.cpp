@@ -45,6 +45,7 @@ namespace spdlib
             bool ptsAvail = true;
             try 
             {
+                std::cout << "Init interpolator\n";
                 interpolator->initInterpolator(pulses, xSize, ySize, SPD_GROUND);
             }
             catch (SPDException &e) 
