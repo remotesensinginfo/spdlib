@@ -1229,7 +1229,7 @@ namespace spdlib
             
             try
             {
-                if((eastings > aPt->x) & (eastings > bPt->x) & (eastings > cPt->x))
+                /*if((eastings > aPt->x) & (eastings > bPt->x) & (eastings > cPt->x))
                 {
                     outElevation = std::numeric_limits<float>::signaling_NaN();
                 }
@@ -1244,6 +1244,10 @@ namespace spdlib
                 else if((northings < aPt->y) & (northings < bPt->y) & (northings < cPt->y))
                 {
                     outElevation = std::numeric_limits<float>::signaling_NaN();
+                */
+                if(false)
+                {
+                    
                 }
                 else
                 {
