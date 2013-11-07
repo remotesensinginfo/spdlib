@@ -632,6 +632,93 @@ namespace spdlib
         return tiles;
     }
     
+    void SPDTilesUtils::findNumRowsColsFromXML(std::string inputFile, boost::uint_fast32_t *rows, boost::uint_fast32_t *cols)throw(SPDProcessingException)
+    {
+        SPDTextFileUtilities txtUtils;
+        
+        try
+        {
+            xercesc::XMLPlatformUtils::Initialize();
+            
+            XMLCh *domImplTypeLS = xercesc::XMLString::transcode("LS");
+            XMLCh *tilesElementName = xercesc::XMLString::transcode("tiles");
+            
+			xercesc::DOMImplementation *domImpl = xercesc::DOMImplementationRegistry::getDOMImplementation(domImplTypeLS);
+			if(domImpl == NULL)
+			{
+				throw SPDProcessingException("DOMImplementation is NULL");
+			}
+			
+			// Create Parser
+			xercesc::DOMLSParser* domParser = ((xercesc::DOMImplementationLS*)domImpl)->createLSParser(xercesc::DOMImplementationLS::MODE_SYNCHRONOUS, 0);
+			xercesc::ErrorHandler *errHandler = (xercesc::ErrorHandler*) new xercesc::HandlerBase();
+			domParser->getDomConfig()->setParameter(xercesc::XMLUni::fgDOMErrorHandler, errHandler);
+			
+			// Open Document
+			xercesc::DOMDocument *doc = domParser->parseURI(inputFile.c_str());
+			
+			// Get the Root element
+			xercesc::DOMElement *rootElement = doc->getDocumentElement();
+            //std::cout << "Root Element: " << xercesc::XMLString::transcode(rootElement->getTagName()) << std::endl;
+			if(!xercesc::XMLString::equals(rootElement->getTagName(), tilesElementName))
+			{
+				throw SPDProcessingException("Incorrect root element; Root element should be \"tiles\"");
+			}
+            
+            XMLCh *columnsXMLStr = xercesc::XMLString::transcode("columns");
+            if(rootElement->hasAttribute(columnsXMLStr))
+            {
+                char *charValue = xercesc::XMLString::transcode(rootElement->getAttribute(columnsXMLStr));
+                *cols = txtUtils.strto32bitUInt(std::string(charValue));
+                xercesc::XMLString::release(&charValue);
+            }
+            else
+            {
+                throw SPDProcessingException("No \'columns\' attribute was provided.");
+            }
+            xercesc::XMLString::release(&columnsXMLStr);
+            
+            XMLCh *rowsXMLStr = xercesc::XMLString::transcode("rows");
+            if(rootElement->hasAttribute(rowsXMLStr))
+            {
+                char *charValue = xercesc::XMLString::transcode(rootElement->getAttribute(rowsXMLStr));
+                *rows = txtUtils.strto32bitUInt(std::string(charValue));
+                xercesc::XMLString::release(&charValue);
+            }
+            else
+            {
+                throw SPDProcessingException("No \'rows\' attribute was provided.");
+            }
+            xercesc::XMLString::release(&rowsXMLStr);
+            
+            xercesc::XMLString::release(&domImplTypeLS);
+            xercesc::XMLString::release(&tilesElementName);
+            
+            xercesc::XMLPlatformUtils::Terminate();
+        }
+        catch (const xercesc::OutOfMemoryException &e)
+        {
+            throw SPDProcessingException(xercesc::XMLString::transcode(e.getMessage()));
+        }
+        catch (const xercesc::DOMException &e)
+        {
+            throw SPDProcessingException(xercesc::XMLString::transcode(e.getMessage()));
+        }
+        catch(xercesc::XMLException &e)
+        {
+            throw SPDProcessingException(xercesc::XMLString::transcode(e.getMessage()));
+        }
+        catch (SPDProcessingException &e)
+        {
+            throw e;
+        }
+        catch(std::exception &e)
+        {
+            throw SPDProcessingException(e.what());
+        }
+        
+    }
+    
     void SPDTilesUtils::deleteTiles(std::vector<SPDTile*> *tiles)
     {
         for(std::vector<SPDTile*>::iterator iterTiles = tiles->begin(); iterTiles != tiles->end(); ++iterTiles)
@@ -650,63 +737,168 @@ namespace spdlib
         }        
     }
     
-    void SPDTilesUtils::createTileSPDFiles(std::vector<SPDTile*> *tiles, SPDFile *templateSPDFile, std::string outputBase, double xSize, double ySize, double overlap, double xMin, double xMax, double yMin, double yMax, boost::uint_fast32_t rows, boost::uint_fast32_t cols) throw(SPDProcessingException)
+    void SPDTilesUtils::createTileSPDFiles(std::vector<SPDTile*> *tiles, SPDFile *templateSPDFile, std::string outputBase, double xSize, double ySize, double overlap, double xMin, double xMax, double yMin, double yMax, boost::uint_fast32_t rows, boost::uint_fast32_t cols, bool checkTemplateSPDExtent) throw(SPDProcessingException)
     {
         SPDTextFileUtilities txtUtils;
+        SPDMathsUtils mathUtils;
         try
         {
             for(std::vector<SPDTile*>::iterator iterTiles = tiles->begin(); iterTiles != tiles->end(); ++iterTiles)
             {
-                //std::cout << "[" << (*iterTiles)->col << " " << (*iterTiles)->row << "] ALL: [" << (*iterTiles)->xMin << "," << (*iterTiles)->xMax << "][" << (*iterTiles)->yMin << "," << (*iterTiles)->yMax << "] CORE: [" << (*iterTiles)->xMinCore << "," << (*iterTiles)->xMaxCore << "][" << (*iterTiles)->yMinCore << "," << (*iterTiles)->yMaxCore << "]" << std::endl;
-                if((*iterTiles)->outFileName == "")
+                if((!checkTemplateSPDExtent) | mathUtils.rectangleIntersection((*iterTiles)->xMin, (*iterTiles)->xMax, (*iterTiles)->yMin, (*iterTiles)->yMax, templateSPDFile->getXMin(), templateSPDFile->getXMax(), templateSPDFile->getYMin(), templateSPDFile->getYMax()))
                 {
-                    (*iterTiles)->outFileName = outputBase + std::string("_row") + txtUtils.uInt32bittostring((*iterTiles)->row) + std::string("col") + txtUtils.uInt32bittostring((*iterTiles)->col) + std::string(".spd");
-                    std::cout << "Creating File: " << (*iterTiles)->outFileName << std::endl;
-                    (*iterTiles)->spdFile = new SPDFile((*iterTiles)->outFileName);
-                    (*iterTiles)->spdFile->copyAttributesFromTemplate(templateSPDFile);
-                    (*iterTiles)->spdFile->setBoundingBox((*iterTiles)->xMin, (*iterTiles)->xMax, (*iterTiles)->yMin, (*iterTiles)->yMax);
-                    (*iterTiles)->writer = new SPDNoIdxFileWriter();
-                    (*iterTiles)->writer->open((*iterTiles)->spdFile, (*iterTiles)->outFileName);
-                    (*iterTiles)->writer->finaliseClose();
-                    delete (*iterTiles)->writer;
-                    (*iterTiles)->writerOpen = false;
+                    //std::cout << "[" << (*iterTiles)->col << " " << (*iterTiles)->row << "] ALL: [" << (*iterTiles)->xMin << "," << (*iterTiles)->xMax << "][" << (*iterTiles)->yMin << "," << (*iterTiles)->yMax << "] CORE: [" << (*iterTiles)->xMinCore << "," << (*iterTiles)->xMaxCore << "][" << (*iterTiles)->yMinCore << "," << (*iterTiles)->yMaxCore << "]" << std::endl;
+                    if((*iterTiles)->outFileName == "")
+                    {
+                        (*iterTiles)->outFileName = outputBase + std::string("_row") + txtUtils.uInt32bittostring((*iterTiles)->row) + std::string("col") + txtUtils.uInt32bittostring((*iterTiles)->col) + std::string(".spd");
+                        std::cout << "Creating File: " << (*iterTiles)->outFileName << std::endl;
+                        (*iterTiles)->spdFile = new SPDFile((*iterTiles)->outFileName);
+                        (*iterTiles)->spdFile->copyAttributesFromTemplate(templateSPDFile);
+                        (*iterTiles)->spdFile->setBoundingBox((*iterTiles)->xMin, (*iterTiles)->xMax, (*iterTiles)->yMin, (*iterTiles)->yMax);
+                        (*iterTiles)->writer = new SPDNoIdxFileWriter();
+                        (*iterTiles)->writer->open((*iterTiles)->spdFile, (*iterTiles)->outFileName);
+                        (*iterTiles)->writer->finaliseClose();
+                        delete (*iterTiles)->writer;
+                        (*iterTiles)->writerOpen = false;
+                    }
+                    else
+                    {
+                        std::cout << "Opening File: " << (*iterTiles)->outFileName << std::endl;
+                        (*iterTiles)->spdFile = new SPDFile((*iterTiles)->outFileName);
+                        
+                        (*iterTiles)->writer = new SPDNoIdxFileWriter();
+                        (*iterTiles)->writer->reopen((*iterTiles)->spdFile, (*iterTiles)->outFileName);
+                        /*
+                        if((*iterTiles)->spdFile->getXMin() != (*iterTiles)->xMin)
+                        {
+                            std::cout << "Tile xMin = " << (*iterTiles)->xMin << std::endl;
+                            std::cout << "SPD File xMin = " << (*iterTiles)->spdFile->getXMin() << std::endl;
+                            throw SPDProcessingException("Warning: x Min in SPDFile and tile do not match.");
+                        }
+                        else if((*iterTiles)->spdFile->getXMax() != (*iterTiles)->xMax)
+                        {
+                            std::cout << "Tile xMax = " << (*iterTiles)->xMax << std::endl;
+                            std::cout << "SPD File xMax = " << (*iterTiles)->spdFile->getXMax() << std::endl;
+                            throw SPDProcessingException("Warning: x Max in SPDFile and tile do not match.");
+                        }
+                        else if((*iterTiles)->spdFile->getYMin() != (*iterTiles)->yMin)
+                        {
+                            std::cout << "Tile yMin = " << (*iterTiles)->yMin << std::endl;
+                            std::cout << "SPD File yMin = " << (*iterTiles)->spdFile->getYMin() << std::endl;
+                            throw SPDProcessingException("Warning: y Min in SPDFile and tile do not match.");
+                        }
+                        else if((*iterTiles)->spdFile->getYMax() != (*iterTiles)->yMax)
+                        {
+                            std::cout << "Tile yMax = " << (*iterTiles)->yMax << std::endl;
+                            std::cout << "SPD File yMax = " << (*iterTiles)->spdFile->getYMax() << std::endl;
+                            throw SPDProcessingException("Warning: y Max in SPDFile and tile do not match.");
+                        }
+                        */
+                        (*iterTiles)->writer->finaliseClose();
+                        delete (*iterTiles)->writer;
+                        (*iterTiles)->writerOpen = false;
+                    }
                 }
-                else
+            }
+        }
+        catch (SPDProcessingException &e)
+        {
+            throw e;
+        }
+        catch(SPDException &e)
+        {
+            throw SPDProcessingException(e.what());
+        }
+        catch(std::exception &e)
+        {
+            throw SPDProcessingException(e.what());
+        }
+        
+    }
+    
+    void SPDTilesUtils::createTileSPDFilesDirStruct(std::vector<SPDTile*> *tiles, SPDFile *templateSPDFile, std::string outputBase, bool usePrefix, std::string prefix, double xSize, double ySize, double overlap, double xMin, double xMax, double yMin, double yMax, boost::uint_fast32_t rows, boost::uint_fast32_t cols, bool checkTemplateSPDExtent) throw(SPDProcessingException)
+    {
+        SPDTextFileUtilities txtUtils;
+        SPDMathsUtils mathUtils;
+        try
+        {
+            for(std::vector<SPDTile*>::iterator iterTiles = tiles->begin(); iterTiles != tiles->end(); ++iterTiles)
+            {
+                if((!checkTemplateSPDExtent) | mathUtils.rectangleIntersection((*iterTiles)->xMin, (*iterTiles)->xMax, (*iterTiles)->yMin, (*iterTiles)->yMax, templateSPDFile->getXMin(), templateSPDFile->getXMax(), templateSPDFile->getYMin(), templateSPDFile->getYMax()))
                 {
-                    std::cout << "Opening File: " << (*iterTiles)->outFileName << std::endl;
-                    (*iterTiles)->spdFile = new SPDFile((*iterTiles)->outFileName);
-                    
-                    (*iterTiles)->writer = new SPDNoIdxFileWriter();
-                    (*iterTiles)->writer->reopen((*iterTiles)->spdFile, (*iterTiles)->outFileName);
-                    /*
-                    if((*iterTiles)->spdFile->getXMin() != (*iterTiles)->xMin)
+                    //std::cout << "[" << (*iterTiles)->col << " " << (*iterTiles)->row << "] ALL: [" << (*iterTiles)->xMin << "," << (*iterTiles)->xMax << "][" << (*iterTiles)->yMin << "," << (*iterTiles)->yMax << "] CORE: [" << (*iterTiles)->xMinCore << "," << (*iterTiles)->xMaxCore << "][" << (*iterTiles)->yMinCore << "," << (*iterTiles)->yMaxCore << "]" << std::endl;
+                    if((*iterTiles)->outFileName == "")
                     {
-                        std::cout << "Tile xMin = " << (*iterTiles)->xMin << std::endl;
-                        std::cout << "SPD File xMin = " << (*iterTiles)->spdFile->getXMin() << std::endl;
-                        throw SPDProcessingException("Warning: x Min in SPDFile and tile do not match.");
+                        boost::filesystem::path outDir = boost::filesystem::path(outputBase);
+                        outDir /= boost::filesystem::path("Rows" + txtUtils.int32bittostring((*iterTiles)->row));
+                        outDir /= boost::filesystem::path("Cols" + txtUtils.int32bittostring((*iterTiles)->col));
+                        outDir /= boost::filesystem::path("Tiles");
+                        
+                        if(boost::filesystem::exists(outDir.native()) && boost::filesystem::is_directory(outDir.native()))
+                        {
+                            if(usePrefix)
+                            {
+                                outDir /= boost::filesystem::path(prefix + std::string("_row") + txtUtils.uInt32bittostring((*iterTiles)->row) + std::string("col") + txtUtils.uInt32bittostring((*iterTiles)->col) + std::string(".spd"));
+                            }
+                            else
+                            {
+                                outDir /= boost::filesystem::path(std::string("_row") + txtUtils.uInt32bittostring((*iterTiles)->row) + std::string("col") + txtUtils.uInt32bittostring((*iterTiles)->col) + std::string(".spd"));
+
+                            }
+                            (*iterTiles)->outFileName = outDir.native();
+                            std::cout << "Creating File: " << (*iterTiles)->outFileName << std::endl;
+                            (*iterTiles)->spdFile = new SPDFile((*iterTiles)->outFileName);
+                            (*iterTiles)->spdFile->copyAttributesFromTemplate(templateSPDFile);
+                            (*iterTiles)->spdFile->setBoundingBox((*iterTiles)->xMin, (*iterTiles)->xMax, (*iterTiles)->yMin, (*iterTiles)->yMax);
+                            (*iterTiles)->writer = new SPDNoIdxFileWriter();
+                            (*iterTiles)->writer->open((*iterTiles)->spdFile, (*iterTiles)->outFileName);
+                            (*iterTiles)->writer->finaliseClose();
+                            delete (*iterTiles)->writer;
+                            (*iterTiles)->writerOpen = false;
+                        }
+                        else
+                        {
+                            std::string outMess = std::string("Directory \'") + outDir.native() + std::string("\' was not present. Did you build the directory structure?");
+                            throw SPDProcessingException(outMess);
+                        }
                     }
-                    else if((*iterTiles)->spdFile->getXMax() != (*iterTiles)->xMax)
+                    else
                     {
-                        std::cout << "Tile xMax = " << (*iterTiles)->xMax << std::endl;
-                        std::cout << "SPD File xMax = " << (*iterTiles)->spdFile->getXMax() << std::endl;
-                        throw SPDProcessingException("Warning: x Max in SPDFile and tile do not match.");
+                        std::cout << "Opening File: " << (*iterTiles)->outFileName << std::endl;
+                        (*iterTiles)->spdFile = new SPDFile((*iterTiles)->outFileName);
+                        
+                        (*iterTiles)->writer = new SPDNoIdxFileWriter();
+                        (*iterTiles)->writer->reopen((*iterTiles)->spdFile, (*iterTiles)->outFileName);
+                        /*
+                         if((*iterTiles)->spdFile->getXMin() != (*iterTiles)->xMin)
+                         {
+                         std::cout << "Tile xMin = " << (*iterTiles)->xMin << std::endl;
+                         std::cout << "SPD File xMin = " << (*iterTiles)->spdFile->getXMin() << std::endl;
+                         throw SPDProcessingException("Warning: x Min in SPDFile and tile do not match.");
+                         }
+                         else if((*iterTiles)->spdFile->getXMax() != (*iterTiles)->xMax)
+                         {
+                         std::cout << "Tile xMax = " << (*iterTiles)->xMax << std::endl;
+                         std::cout << "SPD File xMax = " << (*iterTiles)->spdFile->getXMax() << std::endl;
+                         throw SPDProcessingException("Warning: x Max in SPDFile and tile do not match.");
+                         }
+                         else if((*iterTiles)->spdFile->getYMin() != (*iterTiles)->yMin)
+                         {
+                         std::cout << "Tile yMin = " << (*iterTiles)->yMin << std::endl;
+                         std::cout << "SPD File yMin = " << (*iterTiles)->spdFile->getYMin() << std::endl;
+                         throw SPDProcessingException("Warning: y Min in SPDFile and tile do not match.");
+                         }
+                         else if((*iterTiles)->spdFile->getYMax() != (*iterTiles)->yMax)
+                         {
+                         std::cout << "Tile yMax = " << (*iterTiles)->yMax << std::endl;
+                         std::cout << "SPD File yMax = " << (*iterTiles)->spdFile->getYMax() << std::endl;
+                         throw SPDProcessingException("Warning: y Max in SPDFile and tile do not match.");
+                         }
+                         */
+                        (*iterTiles)->writer->finaliseClose();
+                        delete (*iterTiles)->writer;
+                        (*iterTiles)->writerOpen = false;
                     }
-                    else if((*iterTiles)->spdFile->getYMin() != (*iterTiles)->yMin)
-                    {
-                        std::cout << "Tile yMin = " << (*iterTiles)->yMin << std::endl;
-                        std::cout << "SPD File yMin = " << (*iterTiles)->spdFile->getYMin() << std::endl;
-                        throw SPDProcessingException("Warning: y Min in SPDFile and tile do not match.");
-                    }
-                    else if((*iterTiles)->spdFile->getYMax() != (*iterTiles)->yMax)
-                    {
-                        std::cout << "Tile yMax = " << (*iterTiles)->yMax << std::endl;
-                        std::cout << "SPD File yMax = " << (*iterTiles)->spdFile->getYMax() << std::endl;
-                        throw SPDProcessingException("Warning: y Max in SPDFile and tile do not match.");
-                    }
-                    */
-                    (*iterTiles)->writer->finaliseClose();
-                    delete (*iterTiles)->writer;
-                    (*iterTiles)->writerOpen = false;
                 }
                 
             }
@@ -724,6 +916,72 @@ namespace spdlib
             throw SPDProcessingException(e.what());
         }
         
+    }
+    
+    
+    void SPDTilesUtils::populateTilesWithData(std::vector<SPDTile*> *tiles, std::string inputSPDFile) throw(SPDProcessingException)
+    {
+        try
+        {
+            SPDFileReader reader;
+            SPDMathsUtils mathUtils;
+            SPDFile *inSPDFile = NULL;
+            std::vector<SPDTile*> *openTiles = new std::vector<SPDTile*>();
+            SPDWrite2OverlapTiles *write2Tiles = NULL;
+            
+            if(inputSPDFile != "")
+            {
+                std::cout << "Processing: \'" << inputSPDFile << "\'" << std::endl;
+                
+                // STEP 1: Read file header - Need file extent.
+                inSPDFile = new SPDFile(inputSPDFile);
+                reader.readHeaderInfo(inputSPDFile, inSPDFile);
+                
+                // STEP 2: Find the tiles intersecting with the file extent
+                for(std::vector<SPDTile*>::iterator iterTiles = tiles->begin(); iterTiles != tiles->end(); ++iterTiles)
+                {
+                    // If intersect open the writer (reopen) and add to list of tiles for processing...
+                    if(mathUtils.rectangleIntersection(inSPDFile->getXMin(), inSPDFile->getXMax(), inSPDFile->getYMin(), inSPDFile->getYMax(), (*iterTiles)->xMin, (*iterTiles)->xMax, (*iterTiles)->yMin, (*iterTiles)->yMax))
+                    {
+                        //std::cout << "Opening tile [" << (*iterTiles)->col << ", " << (*iterTiles)->row << "]\n";
+                        (*iterTiles)->writer = new SPDNoIdxFileWriter();
+                        (*iterTiles)->writer->reopen((*iterTiles)->spdFile, (*iterTiles)->outFileName);
+                        (*iterTiles)->writerOpen = true;
+                        openTiles->push_back((*iterTiles));
+                    }
+                }
+                
+                // STEP 3: Copy data into the tiles.
+                std::cout << "There are " << openTiles->size() << " open\n";
+                if(openTiles->size() == 0)
+                {
+                    throw SPDProcessingException("No intersecting tiles were found.");
+                }
+                
+                write2Tiles = new SPDWrite2OverlapTiles(openTiles);
+                reader.readAndProcessAllData(inputSPDFile, inSPDFile, write2Tiles);
+                
+                // STEP 4: Close open tiles
+                write2Tiles->completeFileAndClose();
+                delete write2Tiles;
+                delete inSPDFile;
+                openTiles->clear();
+            }
+            
+            delete openTiles;
+        }
+        catch (SPDProcessingException &e)
+        {
+            throw e;
+        }
+        catch (SPDException &e)
+        {
+            throw SPDProcessingException(e.what());
+        }
+        catch (std::exception &e)
+        {
+            throw SPDProcessingException(e.what());
+        }
     }
     
     void SPDTilesUtils::populateTilesWithData(std::vector<SPDTile*> *tiles, std::vector<std::string> inputFiles) throw(SPDProcessingException)
@@ -854,21 +1112,28 @@ namespace spdlib
         {
             for(std::vector<SPDTile*>::iterator iterTiles = tiles->begin(); iterTiles != tiles->end(); )
             {
-                if((*iterTiles)->spdFile->getNumberOfPulses() == 0)
+                if((*iterTiles)->outFileName != "")
                 {
-                    if((*iterTiles)->spdFile != NULL)
+                    if((*iterTiles)->spdFile->getNumberOfPulses() == 0)
                     {
-                        delete (*iterTiles)->spdFile;
+                        if((*iterTiles)->spdFile != NULL)
+                        {
+                            delete (*iterTiles)->spdFile;
+                        }
+                        /*if((*iterTiles)->writer != NULL)
+                        {
+                            (*iterTiles)->writer->finaliseClose();
+                            delete (*iterTiles)->writer;
+                        }*/
+                        boost::filesystem::path rFilePath((*iterTiles)->outFileName);
+                        boost::filesystem::remove(rFilePath);
+                        delete *iterTiles;
+                        tiles->erase(iterTiles);
                     }
-                    /*if((*iterTiles)->writer != NULL)
+                    else
                     {
-                        (*iterTiles)->writer->finaliseClose();
-                        delete (*iterTiles)->writer;
-                    }*/
-                    boost::filesystem::path rFilePath((*iterTiles)->outFileName);
-                    boost::filesystem::remove(rFilePath);
-                    delete *iterTiles;
-                    tiles->erase(iterTiles);
+                        ++iterTiles;
+                    }
                 }
                 else
                 {
@@ -1520,6 +1785,103 @@ namespace spdlib
             delete write2Tiles;
             openTiles->clear();
             delete openTiles;
+        }
+        catch (SPDProcessingException &e)
+        {
+            throw e;
+        }
+        catch (SPDException &e)
+        {
+            throw SPDProcessingException(e.what());
+        }
+        catch (std::exception &e)
+        {
+            throw SPDProcessingException(e.what());
+        }
+    }
+    
+    void SPDTilesUtils::buildDirectoryStruct(std::string outputBase, boost::uint_fast32_t rows, boost::uint_fast32_t cols) throw(SPDProcessingException)
+    {
+        try
+        {
+            SPDTextFileUtilities txtUtils;
+            boost::filesystem::path outDirs;
+            // Check the output base exsits.
+            if(boost::filesystem::exists(outputBase) && boost::filesystem::is_directory(outputBase))
+            {
+                // Build the directory structure.
+                for(boost::uint_fast32_t i = 0; i < rows; ++i)
+                {
+                    for(boost::uint_fast32_t j = 0; j < cols; ++j)
+                    {
+                        outDirs = boost::filesystem::path(outputBase);
+                        outDirs /= boost::filesystem::path("Rows" + txtUtils.int32bittostring(i+1));
+                        outDirs /= boost::filesystem::path("Cols" + txtUtils.int32bittostring(j+1));
+                        outDirs /= boost::filesystem::path("Tiles");
+                        if(!boost::filesystem::create_directories(outDirs.native()))
+                        {
+                            std::string outMess = std::string("Could not create directory \'") + outDirs.native() + std::string("\'");
+                            throw SPDProcessingException(outMess);
+                        }
+                    }
+                }
+            }
+            else
+            {
+                throw SPDProcessingException("The output base path does not exist or is not a directory.");
+            }
+        }
+        catch (SPDProcessingException &e)
+        {
+            throw e;
+        }
+        catch (SPDException &e)
+        {
+            throw SPDProcessingException(e.what());
+        }
+        catch (std::exception &e)
+        {
+            throw SPDProcessingException(e.what());
+        }
+    }
+    
+    
+    void SPDTilesUtils::removeDirectoriesWithNoTiles(std::vector<SPDTile*> *tiles, std::string outputBase, boost::uint_fast32_t rows, boost::uint_fast32_t cols) throw(SPDProcessingException)
+    {
+        try
+        {
+            SPDTextFileUtilities txtUtils;
+            boost::filesystem::path outDirs;
+            // Check the output base exsits.
+            if(boost::filesystem::exists(outputBase) && boost::filesystem::is_directory(outputBase))
+            {
+                // Build the directory structure.
+                for(boost::uint_fast32_t i = 0; i < rows; ++i)
+                {
+                    for(boost::uint_fast32_t j = 0; j < cols; ++j)
+                    {
+                        outDirs = boost::filesystem::path(outputBase);
+                        outDirs /= boost::filesystem::path("Rows" + txtUtils.int32bittostring(i+1));
+                        outDirs /= boost::filesystem::path("Cols" + txtUtils.int32bittostring(j+1));
+                        outDirs /= boost::filesystem::path("Tiles");
+                        if(boost::filesystem::is_directory(outDirs.native()))
+                        {
+                            if(SPDFileUtilities::getDIRCount(outDirs.native()) == 0)
+                            {
+                                std::cout << "Remove: " << outDirs.native() << std::endl;
+                                outDirs = boost::filesystem::path(outputBase);
+                                outDirs /= boost::filesystem::path("Rows" + txtUtils.int32bittostring(i+1));
+                                outDirs /= boost::filesystem::path("Cols" + txtUtils.int32bittostring(j+1));
+                                boost::filesystem::remove_all(outDirs.native());
+                            }
+                        }
+                    }
+                }
+            }
+            else
+            {
+                throw SPDProcessingException("The output base path does not exist or is not a directory.");
+            }
         }
         catch (SPDProcessingException &e)
         {

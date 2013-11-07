@@ -104,7 +104,7 @@ int main (int argc, char * const argv[])
 		
 		TCLAP::ValueArg<float> stddevThresholdArg("","stddevThreshold","STDEV_MULTISCALE: Standard Deviation threshold",false,3,"float");
 		cmd.add( stddevThresholdArg );
-		
+        
 		TCLAP::ValueArg<float> smallRadiusArg("","smallRadius","STDEV_MULTISCALE: Smaller radius to be used when standard deviation is high",false,1,"float");
 		cmd.add( smallRadiusArg );
 		
@@ -131,6 +131,13 @@ int main (int argc, char * const argv[])
         
         TCLAP::ValueArg<float> gridIdxResolutionArg("","idxres","Resolution of the grid index used for some interpolaters",false,0.5,"float");
 		cmd.add( gridIdxResolutionArg );
+        
+        
+        TCLAP::ValueArg<double> rbfRadiusArg("","rbfradius","The radius used within the RBF interpolator",false,5,"double");
+		cmd.add( rbfRadiusArg );
+        
+        TCLAP::ValueArg<unsigned int> rbfLayersArg("","rbflayers","The number of layers used within the RBF interpolator",false,3,"unsigned int");
+		cmd.add( rbfLayersArg );
         
 		TCLAP::ValueArg<std::string> inputFileArg("i","input","The input SPD file.",true,"","String");
 		cmd.add( inputFileArg );
@@ -218,7 +225,9 @@ int main (int argc, char * const argv[])
         }
         else if(interpolatorStr == "RBF")
         {
-            interpolator = new spdlib::SPDRFBPointInterpolator( elevVal, thinGridResArg.getValue(), thinSwitch.getValue(), thinPtSelectLowHigh, noPtsPerBinArg.getValue());
+            std::cout << "Using a radius of " << rbfRadiusArg.getValue() << std::endl;
+            std::cout << "Generate " << rbfLayersArg.getValue() << " layers\n";
+            interpolator = new spdlib::SPDRFBPointInterpolator( (rbfRadiusArg.getValue()), rbfLayersArg.getValue(), elevVal, thinGridResArg.getValue(), thinSwitch.getValue(), thinPtSelectLowHigh, noPtsPerBinArg.getValue());
         }
         else
         {

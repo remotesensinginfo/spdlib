@@ -30,6 +30,28 @@ namespace spdlib
         
     }
     
+    boost::uint_fast16_t SPDFileUtilities::getDIRCount(std::string dir) throw(SPDException)
+	{
+		DIR *dp;
+		struct dirent *dirp;
+		if((dp  = opendir(dir.c_str())) == NULL)
+		{
+			std::string message = std::string("Could not open ") + dir;
+			throw SPDException(message);
+		}
+		
+        std::vector<std::string> files;
+		while ((dirp = readdir(dp)) != NULL)
+		{
+            if((std::string(dirp->d_name) != std::string(".")) & (std::string(dirp->d_name) != std::string("..")))
+            {
+                files.push_back(std::string(dirp->d_name));
+            }
+		}
+		closedir(dp);
+        return files.size();
+	}
+    
 	void SPDFileUtilities::getDIRList(std::string dir, std::list<std::string> *files) throw(SPDException)
 	{
 		DIR *dp;
