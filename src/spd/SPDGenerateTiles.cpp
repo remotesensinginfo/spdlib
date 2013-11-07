@@ -1855,9 +1855,11 @@ namespace spdlib
             // Check the output base exsits.
             if(boost::filesystem::exists(outputBase) && boost::filesystem::is_directory(outputBase))
             {
+                bool notRemoved = false;
                 // Build the directory structure.
                 for(boost::uint_fast32_t i = 0; i < rows; ++i)
                 {
+                    notRemoved = false;
                     for(boost::uint_fast32_t j = 0; j < cols; ++j)
                     {
                         outDirs = boost::filesystem::path(outputBase);
@@ -1868,13 +1870,25 @@ namespace spdlib
                         {
                             if(SPDFileUtilities::getDIRCount(outDirs.native()) == 0)
                             {
-                                std::cout << "Remove: " << outDirs.native() << std::endl;
                                 outDirs = boost::filesystem::path(outputBase);
                                 outDirs /= boost::filesystem::path("Rows" + txtUtils.int32bittostring(i+1));
                                 outDirs /= boost::filesystem::path("Cols" + txtUtils.int32bittostring(j+1));
+                                std::cout << "Remove: " << outDirs.native() << std::endl;
                                 boost::filesystem::remove_all(outDirs.native());
                             }
+                            else
+                            {
+                                std::cout << "NOT DELETING: " << outDirs.native() << std::endl;
+                                notRemoved = true;
+                            }
                         }
+                    }
+                    
+                    if(!notRemoved)
+                    {
+                        outDirs = boost::filesystem::path(outputBase);
+                        outDirs /= boost::filesystem::path("Rows" + txtUtils.int32bittostring(i+1));
+                        boost::filesystem::remove_all(outDirs.native());
                     }
                 }
             }
