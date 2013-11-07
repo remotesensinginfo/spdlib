@@ -35,6 +35,7 @@
 #include <stdio.h>
 
 #include <boost/cstdint.hpp>
+#include "boost/filesystem.hpp"
 
 #include "spd/SPDException.h"
 
@@ -44,6 +45,7 @@ namespace spdlib
     {
     public: 
         SPDFileUtilities();
+        static boost::uint_fast16_t getDIRCount(std::string dir) throw(SPDException);
         static void getDIRList(std::string dir, std::list<std::string> *files) throw(SPDException);
         static void getDIRList(std::string dir, std::vector<std::string> *files) throw(SPDException);
         static void getDIRList(std::string dir, std::string ext, std::list<std::string> *files, bool withpath) throw(SPDException);

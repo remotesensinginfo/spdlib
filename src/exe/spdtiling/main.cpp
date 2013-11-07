@@ -26,6 +26,8 @@
 #include <iostream>
 #include <algorithm>
 
+#include "boost/filesystem.hpp"
+
 #include <spd/tclap/CmdLine.h>
 
 #include "spd/SPDTextFileUtilities.h"
@@ -52,11 +54,17 @@ int main (int argc, char * const argv[])
         TCLAP::SwitchArg createAllSwitch("","all","Create all tiles.", false);
 		TCLAP::SwitchArg extractIndividualSwitch("","extract","Extract an individual tile as specified in the XML file.", false);
         TCLAP::SwitchArg extractCoreSwitch("","extractcore","Extract the core of a tile as specified in the XML file.", false);
+        TCLAP::SwitchArg tileSPDFileSwitch("","tilespdfile","Tile an input SPD file the core of a tile as specified in the XML file.", false);
+        TCLAP::SwitchArg buildDIRStructSwitch("","builddirs","Creates a directory structure (rowXX/colXX/tiles) for tiles specified in the XML file.", false);
+        TCLAP::SwitchArg rmEmptyDIRStructSwitch("","rmdirs","Removes the directories within the structure (rowXX/colXX/tiles) which do not have any tiles.", false);
         
         std::vector<TCLAP::Arg*> arguments;
         arguments.push_back(&createAllSwitch);
         arguments.push_back(&extractIndividualSwitch);
         arguments.push_back(&extractCoreSwitch);
+        arguments.push_back(&tileSPDFileSwitch);
+        arguments.push_back(&buildDIRStructSwitch);
+        arguments.push_back(&rmEmptyDIRStructSwitch);
         cmd.xorAdd(arguments);
         
         TCLAP::ValueArg<std::string> tilesFileArg("t","tiles","XML file defining the tile regions",true,"","String");
@@ -65,7 +73,7 @@ int main (int argc, char * const argv[])
         TCLAP::ValueArg<std::string> outputBaseArg("o","output","The base path for the tiles. (--extractcore expects a single output SPD file)",true,"","String");
 		cmd.add( outputBaseArg );
         
-        TCLAP::ValueArg<std::string> inputFilesArg("i","input","A text file with a list of input files, one per line. (--extractcore expects a single input SPD file)",true,"","String");
+        TCLAP::ValueArg<std::string> inputFilesArg("i","input","A text file with a list of input files, one per line. (--extractcore and --tilespdfile expects a single input SPD file)",false,"","String");
 		cmd.add( inputFilesArg );
         
         TCLAP::ValueArg<unsigned int> extractRowArg("r","row","The row of the tile to be extracted (--extract).",false,0,"Unsigned int");
@@ -73,6 +81,12 @@ int main (int argc, char * const argv[])
         
         TCLAP::ValueArg<unsigned int> extractColArg("c","col","The column of the tile to be extracted (--extract).",false,0,"Unsigned int");
 		cmd.add( extractColArg );
+        
+        TCLAP::SwitchArg useDirStruct("","usedirstruct","Use the prebuild directory structure in the output base path for outputs (Only available for --tilespdfile).", false);
+        cmd.add( useDirStruct );
+        
+        TCLAP::SwitchArg usePrefix("","useprefix","Use a prefix of the input file name within the output tile name (Only available for --tilespdfile).", false);
+		cmd.add( usePrefix );
         
         TCLAP::SwitchArg rmEmptyTilesSwitch("d","deltiles","Remove tiles which have no data.", false);
         cmd.add( rmEmptyTilesSwitch );
@@ -87,18 +101,17 @@ int main (int argc, char * const argv[])
             throw TCLAP::ArgException("Tiles file path should not be blank.");
         }
         
-        if(inputFilesArg.getValue() == "")
-        {
-            throw TCLAP::ArgException("Input file path should not be blank.");
-        }
-        
         if(outputBaseArg.getValue() == "")
         {
             throw TCLAP::ArgException("Output files path should not be blank.");
         }
         
-        std::cout.precision(12);
+        if((!buildDIRStructSwitch.getValue()) & (!rmEmptyDIRStructSwitch.getValue()) & (inputFilesArg.getValue() == ""))
+        {
+            throw TCLAP::ArgException("Input file path should not be blank.");
+        }
         
+        std::cout.precision(12);
         
         if(createAllSwitch.getValue())
         {
@@ -317,9 +330,117 @@ int main (int argc, char * const argv[])
                 throw spdlib::SPDException(e.what());
             }
         }
+        else if(tileSPDFileSwitch.getValue())
+        {
+            std::cout << "Tiles XML file: " << tilesFileArg.getValue() << std::endl;
+            std::cout << "Input SPD file: " << inputFilesArg.getValue() << std::endl;
+            std::cout << "Output Tiles base: " << outputBaseArg.getValue() << std::endl;
+            
+            double xSize = 0;
+            double ySize = 0;
+            double overlap = 0;
+            
+            double xMin = 0;
+            double xMax = 0;
+            double yMin = 0;
+            double yMax = 0;
+            
+            boost::uint_fast32_t rows = 0;
+            boost::uint_fast32_t cols = 0;
+            
+            std::cout << "Reading tile XML\n";
+            spdlib::SPDTilesUtils tileUtils;
+            std::vector<spdlib::SPDTile*> *tiles = tileUtils.importTilesFromXML(tilesFileArg.getValue(), &rows, &cols, &xSize, &ySize, &overlap, &xMin, &xMax, &yMin, &yMax);
+            
+            std::cout << "Number of rows: " << rows << std::endl;
+            std::cout << "Number of cols: " << cols << std::endl;
+            
+            std::cout << "Tile Size: [" << xSize << "," << ySize << "] Overlap: " << overlap << std::endl;
+            
+            std::cout << "Full Area: [" << xMin << "," << xMax << "][" << yMin << "," << yMax << "]\n";
+            
+            spdlib::SPDFile *inSPDFile = new spdlib::SPDFile(inputFilesArg.getValue());
+            
+            spdlib::SPDFileReader reader;
+            reader.readHeaderInfo(inputFilesArg.getValue(), inSPDFile);
+            
+            std::string prefix = "";
+            if(usePrefix.getValue())
+            {
+                prefix = boost::filesystem::path(inputFilesArg.getValue()).stem().native();
+            }
+            
+            std::cout << "Opening and creating output files.\n";
+            if(useDirStruct.getValue())
+            {
+                tileUtils.createTileSPDFilesDirStruct(tiles, inSPDFile, outputBaseArg.getValue(), usePrefix.getValue(), prefix, xSize, ySize, overlap, xMin, xMax, yMin, yMax, rows, cols, true);
+            }
+            else
+            {
+                tileUtils.createTileSPDFiles(tiles, inSPDFile, outputBaseArg.getValue(), xSize, ySize, overlap, xMin, xMax, yMin, yMax, rows, cols, true);
+            }
+            
+            std::cout << "Populate the tiles with data\n.";
+            tileUtils.populateTilesWithData(tiles, inputFilesArg.getValue());
+            
+            if(rmEmptyTilesSwitch.getValue())
+            {
+                std::cout << "Remove empty tiles\n";
+                tileUtils.deleteTilesWithNoPulses(tiles);
+            }
+            tileUtils.deleteTiles(tiles);
+        }
+        else if(buildDIRStructSwitch.getValue())
+        {
+            std::cout << "Tiles XML file: " << tilesFileArg.getValue() << std::endl;
+            std::cout << "Output Tiles base: " << outputBaseArg.getValue() << std::endl;
+            
+            boost::uint_fast32_t rows = 0;
+            boost::uint_fast32_t cols = 0;
+            
+            std::cout << "Reading tile XML\n";
+            spdlib::SPDTilesUtils tileUtils;
+            tileUtils.findNumRowsColsFromXML(tilesFileArg.getValue(), &rows, &cols);
+            
+            std::cout << "Number of rows: " << rows << std::endl;
+            std::cout << "Number of cols: " << cols << std::endl;
+            
+            tileUtils.buildDirectoryStruct(outputBaseArg.getValue(), rows, cols);
+            
+        }
+        else if(rmEmptyDIRStructSwitch.getValue())
+        {
+            std::cout << "Tiles XML file: " << tilesFileArg.getValue() << std::endl;
+            std::cout << "Output Tiles base: " << outputBaseArg.getValue() << std::endl;
+            
+            double xSize = 0;
+            double ySize = 0;
+            double overlap = 0;
+            
+            double xMin = 0;
+            double xMax = 0;
+            double yMin = 0;
+            double yMax = 0;
+            
+            boost::uint_fast32_t rows = 0;
+            boost::uint_fast32_t cols = 0;
+            
+            std::cout << "Reading tile XML\n";
+            spdlib::SPDTilesUtils tileUtils;
+            std::vector<spdlib::SPDTile*> *tiles = tileUtils.importTilesFromXML(tilesFileArg.getValue(), &rows, &cols, &xSize, &ySize, &overlap, &xMin, &xMax, &yMin, &yMax);
+            
+            tileUtils.removeDirectoriesWithNoTiles(tiles, outputBaseArg.getValue(), rows, cols);
+            
+            if(updateXMLSwitch.getValue())
+            {
+                std::cout << "Export updated tiles XML.";
+                tileUtils.exportTiles2XML(tilesFileArg.getValue(), tiles, xSize, ySize, overlap, xMin, xMax, yMin, yMax, rows, cols);
+            }
+            tileUtils.deleteTiles(tiles);
+        }
         else
         {
-            throw TCLAP::ArgException("Only the --all, --extract and --extractcore options are known and one must be specified.");
+            throw TCLAP::ArgException("Only the --all, --extract, --extractcore, --builddirs and --tilespdfile options are known and one must be specified.");
         }
         
 	}

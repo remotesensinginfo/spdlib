@@ -169,7 +169,7 @@ namespace spdlib
 	class SPDRFBPointInterpolator : public SPDPointInterpolator
 	{
 	public:
-		SPDRFBPointInterpolator(boost::uint_fast16_t elevVal, float thinGridRes, bool thinData, boost::uint_fast16_t selectHighOrLow, boost::uint_fast16_t maxNumPtsPerBin);
+		SPDRFBPointInterpolator(double radius, boost::uint_fast16_t numLayers, boost::uint_fast16_t elevVal, float thinGridRes, bool thinData, boost::uint_fast16_t selectHighOrLow, boost::uint_fast16_t maxNumPtsPerBin);
 		virtual void initInterpolator(std::list<SPDPulse*> ***pulses, boost::uint_fast32_t numXBins, boost::uint_fast32_t numYBins, boost::uint_fast16_t ptClass) throw(SPDProcessingException);
 		virtual void initInterpolator(std::vector<SPDPulse*> ***pulses, boost::uint_fast32_t numXBins, boost::uint_fast32_t numYBins, boost::uint_fast16_t ptClass) throw(SPDProcessingException);
 		virtual void initInterpolator(std::list<SPDPulse*> *pulses, boost::uint_fast16_t ptClass) throw(SPDProcessingException);
@@ -178,6 +178,8 @@ namespace spdlib
 		virtual void resetInterpolator() throw(SPDProcessingException);
 		virtual ~SPDRFBPointInterpolator();
     protected:
+        double radius;
+        boost::uint_fast16_t numLayers;
         spd_alglib::rbfmodel rbfModel;
         double midX;
         double midY;

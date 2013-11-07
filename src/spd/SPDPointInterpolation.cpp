@@ -924,9 +924,10 @@ namespace spdlib
 	
 	
     
-    SPDRFBPointInterpolator::SPDRFBPointInterpolator(boost::uint_fast16_t elevVal, float thinGridRes, bool thinData, boost::uint_fast16_t selectHighOrLow, boost::uint_fast16_t maxNumPtsPerBin):SPDPointInterpolator(elevVal, thinGridRes, thinData, selectHighOrLow, maxNumPtsPerBin)
+    SPDRFBPointInterpolator::SPDRFBPointInterpolator(double radius, boost::uint_fast16_t numLayers, boost::uint_fast16_t elevVal, float thinGridRes, bool thinData, boost::uint_fast16_t selectHighOrLow, boost::uint_fast16_t maxNumPtsPerBin):SPDPointInterpolator(elevVal, thinGridRes, thinData, selectHighOrLow, maxNumPtsPerBin)
     {
-        
+        this->radius = radius;
+        this->numLayers = numLayers;
     }
 		
     void SPDRFBPointInterpolator::initInterpolator(std::list<SPDPulse*> ***pulses, boost::uint_fast32_t numXBins, boost::uint_fast32_t numYBins, boost::uint_fast16_t ptClass) throw(SPDProcessingException)
@@ -958,15 +959,15 @@ namespace spdlib
             std::vector<SPDPoint*> *points = this->findPoints(pulses, numXBins, numYBins, ptClass);
             if(thinData)
             {
+                std::cout << "thinning that data\n";
                 this->thinPoints(points);
             }
             
-            std::cout << "Creating model\n";
             rbfModel = spd_alglib::rbfmodel();
             spd_alglib::rbfcreate(2, 1, rbfModel);
             
             size_t numPts = points->size();
-            std::cout << "Num of Pts: " << numPts << std::endl;
+            std::cout << numPts << " are being used for the interpolation." << std::endl;
             
             double minX = 0;
             double minY = 0;
@@ -1016,9 +1017,9 @@ namespace spdlib
             
             for(std::vector<SPDPoint*>::iterator iterPts = points->begin(); iterPts != points->end(); ++iterPts)
             {
-                xVal = round(((*iterPts)->x - midX)*100);
+                xVal = round(((*iterPts)->x - midX));
                 dataPts(row,0) = xVal;
-                yVal = round(((*iterPts)->y - midY)*100);
+                yVal = round(((*iterPts)->y - midY));
                 dataPts(row,1) = yVal;
                 
                 if(elevVal == SPD_USE_Z)
@@ -1043,20 +1044,13 @@ namespace spdlib
             }
             
             //std::cout << "Data:\n" << dataPts.tostring(3) << std::endl;
-            std::cout << "Set Points\n";
             spd_alglib::rbfsetpoints(rbfModel, dataPts);
-            std::cout << "set multi layer\n";
-            spd_alglib::rbfsetalgomultilayer(rbfModel, 50.0, 10, 1.0e-3);
-            std::cout << "Build Model\n";
+            spd_alglib::rbfsetalgomultilayer(rbfModel, radius, numLayers);
+            std::cout << "Building Model\n";
             spd_alglib::rbfreport rep;
             spd_alglib::rbfbuildmodel(rbfModel, rep);
             
-            printf("%d\n", int(rep.terminationtype));
-            
-            double v = spd_alglib::rbfcalc2(rbfModel, 0.0, 0.0);
-            printf("%.2f\n", double(v));
-            
-            std::cout << "Init'ed\n";
+            std::cout << "Initialised...\n";
             delete points;
         }
         catch(SPDProcessingException &e)
@@ -1121,7 +1115,7 @@ namespace spdlib
         float val = 0.0;
         if(initialised)
 		{
-            val = spd_alglib::rbfcalc2(rbfModel, round((eastings - midX)*100), round((northings - midY)*100));
+            val = spd_alglib::rbfcalc2(rbfModel, round((eastings - midX)), round((northings - midY)));
         }
         else
         {
