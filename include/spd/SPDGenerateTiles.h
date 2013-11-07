@@ -116,6 +116,7 @@ namespace spdlib
         inline bool ptWithinTile(double x, double y, double xMin, double xMax, double yMin, double yMax);
         std::vector<SPDTile*> *tiles;
         std::vector<SPDPulse*> *pls;
+        boost::uint_fast16_t numOpenFiles;
 	};
     
     

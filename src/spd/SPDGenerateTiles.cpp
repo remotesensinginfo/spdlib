@@ -944,15 +944,16 @@ namespace spdlib
                     if(mathUtils.rectangleIntersection(inSPDFile->getXMin(), inSPDFile->getXMax(), inSPDFile->getYMin(), inSPDFile->getYMax(), (*iterTiles)->xMin, (*iterTiles)->xMax, (*iterTiles)->yMin, (*iterTiles)->yMax))
                     {
                         //std::cout << "Opening tile [" << (*iterTiles)->col << ", " << (*iterTiles)->row << "]\n";
+                        //std::cout << "openTiles->size() = " << openTiles->size() << std::endl;
                         (*iterTiles)->writer = new SPDNoIdxFileWriter();
-                        (*iterTiles)->writer->reopen((*iterTiles)->spdFile, (*iterTiles)->outFileName);
-                        (*iterTiles)->writerOpen = true;
+                        //(*iterTiles)->writer->reopen((*iterTiles)->spdFile, (*iterTiles)->outFileName);
+                        (*iterTiles)->writerOpen = false;
                         openTiles->push_back((*iterTiles));
                     }
                 }
                 
                 // STEP 3: Copy data into the tiles.
-                std::cout << "There are " << openTiles->size() << " open\n";
+                std::cout << "There are " << openTiles->size() << " tiles in active use.\n";
                 if(openTiles->size() == 0)
                 {
                     throw SPDProcessingException("No intersecting tiles were found.");
@@ -1923,6 +1924,7 @@ namespace spdlib
         this->tiles = tiles;
         this->pls = new std::vector<SPDPulse*>();
         this->pls->reserve(1);
+        this->numOpenFiles = 0;
     }
     
     void SPDWrite2OverlapTiles::processImportedPulse(SPDFile *spdFile, SPDPulse *pulse) throw(SPDIOException)
@@ -1940,7 +1942,27 @@ namespace spdlib
                     SPDPulse *tmpPl = plsUtils.createSPDPulseDeepCopy(pulse);
                     //std::cout << "\tPulse (tmp) = " << tmpPl->pulseID << std::endl;
                     this->pls->push_back(tmpPl);
+                    if(!(*iterTiles)->writerOpen)
+                    {
+                        //std::cout << "Open tile writer\n";
+                        (*iterTiles)->writer->reopen((*iterTiles)->spdFile, (*iterTiles)->outFileName);
+                        (*iterTiles)->writerOpen = true;
+                        ++this->numOpenFiles;
+                    }
                     (*iterTiles)->writer->writeDataColumn(this->pls, 0, 0);
+                    if(this->numOpenFiles > 200)
+                    {
+                        std::cout << ".Flushing writers." << std::flush;
+                        for(std::vector<SPDTile*>::iterator iterTiles = tiles->begin(); iterTiles != tiles->end(); ++iterTiles)
+                        {
+                            if((*iterTiles)->writerOpen)
+                            {
+                                (*iterTiles)->writer->finaliseClose();
+                                (*iterTiles)->writerOpen = false;
+                            }
+                        }
+                        this->numOpenFiles = 0;
+                    }
                 }
             }
             SPDPulseUtils::deleteSPDPulse(pulse);
@@ -1959,9 +1981,12 @@ namespace spdlib
     {
         for(std::vector<SPDTile*>::iterator iterTiles = tiles->begin(); iterTiles != tiles->end(); ++iterTiles)
         {
-            (*iterTiles)->writer->finaliseClose();
+            if((*iterTiles)->writerOpen)
+            {
+                (*iterTiles)->writer->finaliseClose();
+                (*iterTiles)->writerOpen = false;
+            }
             delete (*iterTiles)->writer;
-            (*iterTiles)->writerOpen = false;
         }
     }
     
