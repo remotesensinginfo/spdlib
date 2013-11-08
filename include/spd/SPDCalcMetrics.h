@@ -29,6 +29,9 @@
 #include <list>
 #include <vector>
 
+#include <gsl/gsl_sort.h>
+#include <gsl/gsl_statistics.h>
+
 #include <xercesc/dom/DOM.hpp>
 #include <xercesc/parsers/XercesDOMParser.hpp>
 #include <xercesc/sax/HandlerBase.hpp>
@@ -104,6 +107,33 @@ namespace spdlib
     private:
         std::vector<SPDMetric*> *metrics;
         std::vector<std::string> *fieldNames;
+	};
+    
+    
+    
+    class SPDCalcZMedianVal : public SPDPulseProcessor
+	{
+	public:
+        SPDCalcZMedianVal();
+        
+        void processDataColumnImage(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses, float *imageData, SPDXYPoint *cenPts, boost::uint_fast32_t numImgBands, float binSize) throw(SPDProcessingException)
+        {throw SPDProcessingException("Processing is not implemented for processDataColumn().");};
+        
+		void processDataColumn(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses, SPDXYPoint *cenPts) throw(SPDProcessingException);
+        
+        void processDataWindowImage(SPDFile *inSPDFile, std::vector<SPDPulse*> ***pulses, float ***imageData, SPDXYPoint ***cenPts, boost::uint_fast32_t numImgBands, boost::uint_fast16_t winSize) throw(SPDProcessingException)
+        {throw SPDProcessingException("Processing using a window is not implemented.");};
+		void processDataWindow(SPDFile *inSPDFile, std::vector<SPDPulse*> ***pulses, SPDXYPoint ***cenPts, boost::uint_fast16_t winSize) throw(SPDProcessingException)
+        {throw SPDProcessingException("Processing using a window is not implemented.");};
+        
+        std::vector<std::string> getImageBandDescriptions() throw(SPDProcessingException){return std::vector<std::string>();};
+        void setHeaderValues(SPDFile *spdFile) throw(SPDProcessingException){};
+        
+        double getMedianMedianVal();
+        
+        ~SPDCalcZMedianVal();
+    protected:
+        std::vector<double> *colMedianVals;
 	};
 }
 

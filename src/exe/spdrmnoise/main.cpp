@@ -33,6 +33,7 @@
 #include "spd/SPDException.h"
 #include "spd/SPDProcessPulses.h"
 #include "spd/SPDProcessingException.h"
+#include "spd/SPDCalcMetrics.h"
 
 #include "spd/spd-config.h"
 
@@ -55,10 +56,7 @@ int main (int argc, char * const argv[])
         
         TCLAP::ValueArg<boost::uint_fast32_t> numOfColsBlockArg("c","blockcols","Number of columns within a block (Default 0) - Note values greater than 1 result in a non-sequencial SPD file.",false,0,"unsigned int");
 		cmd.add( numOfColsBlockArg );
-        /*
-        ValueArg<float> binSizeArg("b","binsize","Bin size for processing and output image (Default 0) - Note 0 will use the native SPD file bin size.",false,0,"float");
-		cmd.add( binSizeArg );
-        */
+
         TCLAP::ValueArg<float> absUpperArg("","absup","Absolute upper threshold for returns which are to be removed.",false,0,"float");
         cmd.add( absUpperArg );
         
@@ -70,6 +68,12 @@ int main (int argc, char * const argv[])
         
         TCLAP::ValueArg<float> relLowerArg("","rellow","Relative (to median) lower threshold for returns which are to be removed.",false,0,"float");
         cmd.add( relLowerArg );
+        
+        TCLAP::ValueArg<float> gRelUpperArg("","grelup","Global relative (to median) upper threshold for returns which are to be removed.",false,0,"float");
+        cmd.add( gRelUpperArg );
+        
+        TCLAP::ValueArg<float> gRelLowerArg("","grellow","Global relative (to median) lower threshold for returns which are to be removed.",false,0,"float");
+        cmd.add( gRelLowerArg );
         
 		TCLAP::ValueArg<std::string> inputFileArg("i","input","The input SPD file.",true,"","String");
 		cmd.add( inputFileArg );
@@ -86,11 +90,52 @@ int main (int argc, char * const argv[])
         bool absLowSet = absLowerArg.isSet();
         bool relUpSet = relUpperArg.isSet();
         bool relLowSet = relLowerArg.isSet();
+        bool gRelUpSet = gRelUpperArg.isSet();
+        bool gRelLowSet = gRelLowerArg.isSet();
+        
+        if( (absUpSet | absLowSet) & (gRelUpSet | gRelLowSet))
+        {
+            throw spdlib::SPDException("Either global relative or absolute thresholding can be used.");
+        }
         
         spdlib::SPDFile *spdInFile = new spdlib::SPDFile(inputFile);
-        spdlib::SPDPulseProcessor *pulseProcessor = new spdlib::SPDRemoveVerticalNoise(absUpSet, absLowSet, relUpSet, relLowSet, absUpperArg.getValue(), absLowerArg.getValue(), relUpperArg.getValue(), relLowerArg.getValue());            
         spdlib::SPDSetupProcessPulses processPulses = spdlib::SPDSetupProcessPulses(numOfColsBlockArg.getValue(), numOfRowsBlockArg.getValue(), true);
+        
+        double gMedianZ = 0;
+        if(gRelUpSet | gRelLowSet)
+        {
+            std::cout << "Calculating Global Median\n";
+            spdlib::SPDCalcZMedianVal *pulseProcessorCalcMedian = new spdlib::SPDCalcZMedianVal();
+            processPulses.processPulses(pulseProcessorCalcMedian, spdInFile);
+            gMedianZ = pulseProcessorCalcMedian->getMedianMedianVal();
+            std::cout << "Global Median = " << gMedianZ << std::endl;
+        }
+        
+        float absUpThres = 0;
+        if(absUpSet)
+        {
+            absUpThres = absUpperArg.getValue();
+        }
+        else if(gRelUpSet)
+        {
+            absUpThres = gMedianZ + gRelUpperArg.getValue();
+            absUpSet = true;
+        }
+        
+        float absLowThres = 0;
+        if(absLowSet)
+        {
+            absLowThres = absLowerArg.getValue();
+        }
+        else if(gRelLowSet)
+        {
+            absLowThres = gMedianZ - gRelLowerArg.getValue();
+            absLowSet = true;
+        }
+        
+        spdlib::SPDPulseProcessor *pulseProcessor = new spdlib::SPDRemoveVerticalNoise(absUpSet, absLowSet, relUpSet, relLowSet, absUpThres, absLowerArg.getValue(), relUpperArg.getValue(), relLowerArg.getValue());
         processPulses.processPulsesWithOutputSPD(pulseProcessor, spdInFile, outputFile);
+        
         delete pulseProcessor;
         delete spdInFile;
 	}

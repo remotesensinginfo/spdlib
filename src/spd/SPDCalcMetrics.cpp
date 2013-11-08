@@ -2054,6 +2054,65 @@ namespace spdlib
 
     }
 
+    
+    
+    
+    
+    
+    SPDCalcZMedianVal::SPDCalcZMedianVal()
+    {
+        this->colMedianVals = new std::vector<double>();
+    }
+    
+    void SPDCalcZMedianVal::processDataColumn(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses, SPDXYPoint *cenPts) throw(SPDProcessingException)
+    {
+        if(pulses->size() > 0)
+        {
+            std::vector<double> ptVals;
+            
+            for(std::vector<SPDPulse*>::iterator iterPulses = pulses->begin(); iterPulses != pulses->end(); ++iterPulses)
+            {
+                if((*iterPulses)->numberOfReturns > 0)
+                {
+                    for(std::vector<SPDPoint*>::iterator iterPoints = (*iterPulses)->pts->begin(); iterPoints != (*iterPulses)->pts->end(); ++iterPoints)
+                    {
+                        ptVals.push_back((*iterPoints)->z);
+                    }
+                }
+            }
+            
+            if(ptVals.size() > 0)
+            {
+                gsl_sort(&ptVals[0], 1, ptVals.size());
+                double median = gsl_stats_median_from_sorted_data(&ptVals[0], 1, ptVals.size());
+                colMedianVals->push_back(median);
+
+            }
+        }
+    }
+    
+    double SPDCalcZMedianVal::getMedianMedianVal()
+    {
+        gsl_sort(&(*colMedianVals)[0], 1, colMedianVals->size());
+        double median = gsl_stats_median_from_sorted_data(&(*colMedianVals)[0], 1, colMedianVals->size());
+        return median;
+    }
+    
+    SPDCalcZMedianVal::~SPDCalcZMedianVal()
+    {
+        delete this->colMedianVals;
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
 
 }
 
