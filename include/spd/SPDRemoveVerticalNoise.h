@@ -30,7 +30,8 @@
 #include <list>
 #include "math.h"
 
-#include "gsl/gsl_statistics_double.h"
+#include <gsl/gsl_sort.h>
+#include <gsl/gsl_statistics.h>
 
 #include <boost/math/special_functions/fpclassify.hpp>
 

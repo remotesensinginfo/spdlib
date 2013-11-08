@@ -98,12 +98,14 @@ namespace spdlib
             {
                 if(relUpSet | relLowSet)
                 {
-                    double min, max = 0;
-                    gsl_stats_minmax(&min, &max, &ptVals[0], 1, ptVals.size());
-                    double upThres = min + relUpThres;
-                    double lowThres = max - relLowThres;
+                    //double min, max = 0;
+                    //gsl_stats_minmax(&min, &max, &ptVals[0], 1, ptVals.size());
+                    gsl_sort(&ptVals[0], 1, ptVals.size());
+                    double median = gsl_stats_median_from_sorted_data(&ptVals[0], 1, ptVals.size());
+                    double upThres = median + relUpThres;
+                    double lowThres = median - relLowThres;
                     
-                    //cout << "Thresholds: " << lowThres << ", " << upThres << endl;
+                    //std::cout << "Thresholds: " << lowThres << ", " << upThres << std::endl;
                     
                     for(iterPulses = pulses->begin(); iterPulses != pulses->end(); ++iterPulses)
                     {
