@@ -537,6 +537,9 @@ namespace spdlib
 			gdalTransform[4] = rotateY;
 			gdalTransform[5] = pixelYRes;
 			
+            //std::cout << "(maxX - minX)/pixelXRes = " << (maxX - minX)/pixelXRes << std::endl;
+            //std::cout << "(maxY - minY)/pixelYResPos = " << (maxY - minY)/pixelYResPos << std::endl;
+            
 			*width = floor(((maxX - minX)/pixelXRes)+0.5);
 			*height = floor(((maxY - minY)/pixelYResPos)+0.5);
 			
@@ -548,18 +551,18 @@ namespace spdlib
 				diffX = minX - transformations[i][0];
 				diffY = transformations[i][3] - maxY;
 				
-				if(diffX != 0)
+				if(!((diffX > -0.0001) & (diffX < 0.0001)))
 				{
-					dsOffsets[i][0] = ceil(diffX/pixelXRes);
+					dsOffsets[i][0] = floor((diffX/pixelXRes));
 				}
 				else
 				{
 					dsOffsets[i][0] = 0;
 				}
 				
-				if(diffY != 0)
+				if(!((diffY > -0.0001) & (diffY < 0.0001)))
 				{
-					dsOffsets[i][1] = ceil(diffY/pixelYResPos);
+					dsOffsets[i][1] = floor((diffY/pixelYResPos));
 				}
 				else
 				{
@@ -667,6 +670,9 @@ namespace spdlib
 			// Find image overlap
 			this->getImageOverlapCut2Env(tmpDatasets, 2,  dsOffsets, &width, &height, gdalTranslation, env, &xBlockSize, &yBlockSize);
             
+            //std::cout << "Overlap Image Width = " << width << std::endl;
+            //std::cout << "Overlap Image Height = " << height << std::endl;
+            
             delete[] tmpDatasets;
             
 			if(width < 1)
@@ -686,6 +692,7 @@ namespace spdlib
 			inImgOffset = new int[2];
             inImgOffset[0] = dsOffsets[0][0];
             inImgOffset[1] = dsOffsets[0][1];
+            //std::cout << "In Image Off: [" << inImgOffset[0] << ", " << inImgOffset[1] << "]\n";
 			inputRasterBands = new GDALRasterBand*[numOfBands];
 			for(int j = 0; j < numOfBands; j++)
             {
@@ -696,6 +703,7 @@ namespace spdlib
             outImgOffset = new int[2];
             outImgOffset[0] = dsOffsets[1][0];
             outImgOffset[1] = dsOffsets[1][1];
+            //std::cout << "Out Image Off: [" << outImgOffset[0] << ", " << outImgOffset[1] << "]\n";
 			outputRasterBands = new GDALRasterBand*[numOfBands];
 			for(int i = 0; i < numOfBands; i++)
 			{
