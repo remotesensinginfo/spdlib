@@ -33,6 +33,7 @@
 #include "spd/SPDProcessPulses.h"
 #include "spd/SPDProcessingException.h"
 #include "spd/SPDExtractReturns.h"
+#include "spd/SPDFileReader.h"
 #include "spd/SPDCommon.h"
 
 #include "spd/spd-config.h"
@@ -124,10 +125,24 @@ int main (int argc, char * const argv[])
         }
         
         spdlib::SPDFile *spdInFile = new spdlib::SPDFile(inputFile);
-        spdlib::SPDPulseProcessor *pulseProcessor = new spdlib::SPDExtractReturnsBlockProcess(classValSet, classVal, returnValSet, returnVal);
-        spdlib::SPDSetupProcessPulses processPulses = spdlib::SPDSetupProcessPulses(numOfColsBlockArg.getValue(), numOfRowsBlockArg.getValue(), true);
-        processPulses.processPulsesWithOutputSPD(pulseProcessor, spdInFile, outputFile);
-        delete pulseProcessor;
+        spdlib::SPDFileReader reader;
+        reader.readHeaderInfo(spdInFile->getFilePath(), spdInFile);
+        
+        if(spdInFile->getFileType() == spdlib::SPD_UPD_TYPE)
+        {
+            spdlib::SPDExtractReturnsImportProcess *importProcessor = new spdlib::SPDExtractReturnsImportProcess(outputFile, classValSet, classVal, returnValSet, returnVal);
+            
+            reader.readAndProcessAllData(spdInFile->getFilePath(), spdInFile, importProcessor);
+            importProcessor->completeFileAndClose();
+            delete importProcessor;
+        }
+        else
+        {
+            spdlib::SPDPulseProcessor *pulseProcessor = new spdlib::SPDExtractReturnsBlockProcess(classValSet, classVal, returnValSet, returnVal);
+            spdlib::SPDSetupProcessPulses processPulses = spdlib::SPDSetupProcessPulses(numOfColsBlockArg.getValue(), numOfRowsBlockArg.getValue(), true);
+            processPulses.processPulsesWithOutputSPD(pulseProcessor, spdInFile, outputFile);
+            delete pulseProcessor;
+        }
         delete spdInFile;
 	}
 	catch (TCLAP::ArgException &e)
