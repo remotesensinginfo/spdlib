@@ -1856,6 +1856,7 @@ namespace spdlib
                 fileWriter = new SPDNonSeqFileWriter();
             }
             fileWriter->open(spdOutFile, outFile);
+            fileWriter->setKeepMinExtent(true);
 
             boost::uint_fast32_t pulsesBlockSizeX = this->blockXSize + (2 * this->overlap);
             boost::uint_fast32_t pulsesBlockSizeY = this->blockYSize + (2 * this->overlap);
