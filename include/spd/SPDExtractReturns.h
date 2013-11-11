@@ -45,7 +45,7 @@ namespace spdlib
 	public:
 		SPDExtractReturnsImportProcess(std::string outputFilePath, bool classValSet, boost::uint_fast16_t classID, bool returnValSet, boost::uint_fast16_t returnVal) throw(SPDException);
 		void processImportedPulse(SPDFile *spdFile, SPDPulse *pulse) throw(SPDIOException);
-		void completeFileAndClose()throw(SPDIOException);
+		void completeFileAndClose(SPDFile *spdFile)throw(SPDIOException);
 		~SPDExtractReturnsImportProcess();
 	private:
         SPDDataExporter *exporter;

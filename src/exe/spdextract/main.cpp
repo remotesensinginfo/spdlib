@@ -133,7 +133,7 @@ int main (int argc, char * const argv[])
             spdlib::SPDExtractReturnsImportProcess *importProcessor = new spdlib::SPDExtractReturnsImportProcess(outputFile, classValSet, classVal, returnValSet, returnVal);
             
             reader.readAndProcessAllData(spdInFile->getFilePath(), spdInFile, importProcessor);
-            importProcessor->completeFileAndClose();
+            importProcessor->completeFileAndClose(spdInFile);
             delete importProcessor;
         }
         else

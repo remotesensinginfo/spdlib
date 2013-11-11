@@ -2955,7 +2955,7 @@ namespace spdlib
     
 	SPDSeqFileWriter::SPDSeqFileWriter() : SPDDataExporter("SPD-SEQ"), spdOutH5File(NULL), pulsesDataset(NULL), spdPulseDataType(NULL), pointsDataset(NULL), spdPointDataType(NULL), datasetPlsPerBin(NULL), datasetBinsOffset(NULL), receivedDataset(NULL), transmittedDataset(NULL), datasetQuicklook(NULL), numPulses(0), numPts(0), numTransVals(0), numReceiveVals(0), firstColumn(true), nextCol(0), nextRow(0), numCols(0), numRows(0)
 	{
-		
+		this->keepMinExtent = false;
 	}
 	
 	SPDSeqFileWriter::SPDSeqFileWriter(const SPDDataExporter &dataExporter) throw(SPDException) : SPDDataExporter(dataExporter), spdOutH5File(NULL), pulsesDataset(NULL), spdPulseDataType(NULL), pointsDataset(NULL), spdPointDataType(NULL), datasetPlsPerBin(NULL), datasetBinsOffset(NULL), receivedDataset(NULL), transmittedDataset(NULL), datasetQuicklook(NULL), numPulses(0), numPts(0), numTransVals(0), numReceiveVals(0), firstColumn(true), nextCol(0), nextRow(0), numCols(0), numRows(0)
@@ -4733,7 +4733,7 @@ namespace spdlib
     
     SPDNonSeqFileWriter::SPDNonSeqFileWriter() : SPDDataExporter("SPD-NSQ"), spdOutH5File(NULL), pulsesDataset(NULL), spdPulseDataType(NULL), pointsDataset(NULL), spdPointDataType(NULL), datasetPlsPerBin(NULL), datasetBinsOffset(NULL), receivedDataset(NULL), transmittedDataset(NULL), datasetQuicklook(NULL), numPulses(0), numPts(0), numTransVals(0), numReceiveVals(0), firstColumn(true), numCols(0), numRows(0)
 	{
-		
+		this->keepMinExtent = false;
 	}
 	
 	SPDNonSeqFileWriter::SPDNonSeqFileWriter(const SPDDataExporter &dataExporter) throw(SPDException) : SPDDataExporter(dataExporter), spdOutH5File(NULL), pulsesDataset(NULL), spdPulseDataType(NULL), pointsDataset(NULL), spdPointDataType(NULL), datasetPlsPerBin(NULL), datasetBinsOffset(NULL), receivedDataset(NULL), transmittedDataset(NULL), datasetQuicklook(NULL), numPulses(0), numPts(0), numTransVals(0), numReceiveVals(0), firstColumn(true), numCols(0), numRows(0)
@@ -6401,6 +6401,7 @@ namespace spdlib
     SPDNoIdxFileWriter::SPDNoIdxFileWriter() : SPDDataExporter("UPD"), spdOutH5File(NULL), pulsesDataset(NULL), spdPulseDataType(NULL), pointsDataset(NULL), spdPointDataType(NULL), receivedDataset(NULL), transmittedDataset(NULL), numPulses(0), numPts(0), numTransVals(0), numReceiveVals(0)
 	{
 		reOpenedFile = false;
+        this->keepMinExtent = false;
 	}
     
 	SPDNoIdxFileWriter::SPDNoIdxFileWriter(const SPDDataExporter &dataExporter) throw(SPDException) : SPDDataExporter(dataExporter), spdOutH5File(NULL), pulsesDataset(NULL), spdPulseDataType(NULL), pointsDataset(NULL), spdPointDataType(NULL), receivedDataset(NULL), transmittedDataset(NULL), numPulses(0), numPts(0), numTransVals(0), numReceiveVals(0)
