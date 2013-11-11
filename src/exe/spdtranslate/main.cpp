@@ -161,8 +161,8 @@ int main (int argc, char * const argv[])
         TCLAP::ValueArg<boost::uint_fast16_t> pulseVersionArg("","pulseversion","Specify the pulse version to be used within the SPD file (Default: 2)",false ,2 ,"unsigned int");
 		cmd.add( pulseVersionArg );
 		
-		//TCLAP::SwitchArg diskTempFilesSwitch("f","usetmp","Convert file buffering to disk using temporary files", false);
-		//cmd.add( diskTempFilesSwitch );
+		TCLAP::SwitchArg keepExtentSwitch("","keepextent","When indexing the file use the extent of the input file as the minimum extent of the output file.", false);
+		cmd.add( keepExtentSwitch );
 		
 		TCLAP::ValueArg<std::string> inputFileArg("i","input","The input file.",true,"","String");
 		cmd.add( inputFileArg );
@@ -245,6 +245,7 @@ int main (int argc, char * const argv[])
 		bool keepTempFiles = keepTmpFilesSwitch.getValue();
         boost::uint_fast16_t pointVersion = pointVersionArg.getValue();
         boost::uint_fast16_t pulseVersion = pulseVersionArg.getValue();
+        bool useInputFileAsMinimumExtent = keepExtentSwitch.getValue();
         
         if((pointVersion == 0) | (pointVersion > 2))
         {
@@ -295,11 +296,11 @@ int main (int argc, char * const argv[])
             
             if(numOfCols > 0)
             {
-                convert.convertToSPDUsingBlockTiles(inputFile, outputFile, inputFormat, schema, binSize, inProjWKT, convertCoords, outProjWKT, indexType, tempdir, numOfRows, numOfCols, defineTLSwitch.getValue(), tlXArg.getValue(), tlYArg.getValue(), defineOriginSwitch.getValue(), originXArg.getValue(), originYArg.getValue(), originZArg.getValue(), defineSphericalSwitch.getValue(), definePolarSwitch.getValue(), defineScanSwitch.getValue(), waveNoiseThresholdArg.getValue(), waveBitRes, keepTempFiles, pointVersion, pulseVersion);
+                convert.convertToSPDUsingBlockTiles(inputFile, outputFile, inputFormat, schema, binSize, inProjWKT, convertCoords, outProjWKT, indexType, tempdir, numOfRows, numOfCols, defineTLSwitch.getValue(), tlXArg.getValue(), tlYArg.getValue(), defineOriginSwitch.getValue(), originXArg.getValue(), originYArg.getValue(), originZArg.getValue(), defineSphericalSwitch.getValue(), definePolarSwitch.getValue(), defineScanSwitch.getValue(), waveNoiseThresholdArg.getValue(), waveBitRes, keepTempFiles, pointVersion, pulseVersion, useInputFileAsMinimumExtent);
             }
             else
             {
-                convert.convertToSPDUsingRowTiles(inputFile, outputFile, inputFormat, schema, binSize, inProjWKT, convertCoords, outProjWKT, indexType, tempdir, numOfRows, defineTLSwitch.getValue(), tlXArg.getValue(), tlYArg.getValue(), defineOriginSwitch.getValue(), originXArg.getValue(), originYArg.getValue(), originZArg.getValue(), defineSphericalSwitch.getValue(), definePolarSwitch.getValue(), defineScanSwitch.getValue(), waveNoiseThresholdArg.getValue(), waveBitRes, keepTempFiles, pointVersion, pulseVersion);
+                convert.convertToSPDUsingRowTiles(inputFile, outputFile, inputFormat, schema, binSize, inProjWKT, convertCoords, outProjWKT, indexType, tempdir, numOfRows, defineTLSwitch.getValue(), tlXArg.getValue(), tlYArg.getValue(), defineOriginSwitch.getValue(), originXArg.getValue(), originYArg.getValue(), originZArg.getValue(), defineSphericalSwitch.getValue(), definePolarSwitch.getValue(), defineScanSwitch.getValue(), waveNoiseThresholdArg.getValue(), waveBitRes, keepTempFiles, pointVersion, pulseVersion, useInputFileAsMinimumExtent);
             }
 
 		}
@@ -309,7 +310,7 @@ int main (int argc, char * const argv[])
             {
                 outputFormat = "SPD-SEQ";
             }
-			convert.convertInMemory(inputFile, outputFile, inputFormat, schema, outputFormat, binSize, inProjWKT, convertCoords, outProjWKT, indexType, defineTLSwitch.getValue(), tlXArg.getValue(), tlYArg.getValue(), defineOriginSwitch.getValue(), originXArg.getValue(), originYArg.getValue(), originZArg.getValue(), defineSphericalSwitch.getValue(), definePolarSwitch.getValue(), defineScanSwitch.getValue(), waveNoiseThresholdArg.getValue(), waveBitRes, pointVersion, pulseVersion);
+			convert.convertInMemory(inputFile, outputFile, inputFormat, schema, outputFormat, binSize, inProjWKT, convertCoords, outProjWKT, indexType, defineTLSwitch.getValue(), tlXArg.getValue(), tlYArg.getValue(), defineOriginSwitch.getValue(), originXArg.getValue(), originYArg.getValue(), originZArg.getValue(), defineSphericalSwitch.getValue(), definePolarSwitch.getValue(), defineScanSwitch.getValue(), waveNoiseThresholdArg.getValue(), waveBitRes, pointVersion, pulseVersion, useInputFileAsMinimumExtent);
 		}
 	}
 	catch (TCLAP::ArgException &e) 
