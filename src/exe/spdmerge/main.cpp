@@ -106,6 +106,9 @@ int main (int argc, char * const argv[])
         TCLAP::ValueArg<std::string> schemaArg("s","schema","A schema for the format of the file being imported (Note, most importers do not require a schema)",false,"", "std::string");
 		cmd.add( schemaArg );
         
+        TCLAP::SwitchArg keepExtentSwitch("","keepextent","When indexing the file use the extent of the input file as the minimum extent of the output file.", false);
+		cmd.add( keepExtentSwitch );
+        
         TCLAP::ValueArg<std::string> outputFileArg("o","output","The output SPD file.",true,"","String");
 		cmd.add( outputFileArg );
 
@@ -160,6 +163,7 @@ int main (int argc, char * const argv[])
 		std::string inProjFile = spatialInArg.getValue();
 		bool convertCoords = convertProjSwitch.getValue();
 		std::string outProjFile  = spatialOutArg.getValue();
+        bool useInputFileAsMinimumExtent = keepExtentSwitch.getValue();
 
         std::string inProjWKT = "";
 		std::string outProjWKT = "";
@@ -222,7 +226,7 @@ int main (int argc, char * const argv[])
 		}
 
         spdlib::SPDMergeFiles merge;
-        merge.mergeToUPD(inputFiles, outputFile, inputFormat, schemaArg.getValue(), inProjWKT, convertCoords, outProjWKT, indexType, sourceIDSwitch.getValue(), returnIDsSet, returnIds, classesSet, classesValues, ignoreChecksSwitch.getValue(), waveBitRes);
+        merge.mergeToUPD(inputFiles, outputFile, inputFormat, schemaArg.getValue(), inProjWKT, convertCoords, outProjWKT, indexType, sourceIDSwitch.getValue(), returnIDsSet, returnIds, classesSet, classesValues, ignoreChecksSwitch.getValue(), waveBitRes, useInputFileAsMinimumExtent);
 	}
 	catch (TCLAP::ArgException &e)
 	{
