@@ -51,7 +51,8 @@ namespace spdlib
 			throw e;
 		}
 		this->fileOpen = true;
-		this->pulses = new std::list<SPDPulse*>();
+		this->pulses = new std::vector<SPDPulse*>();
+        this->pulses->reserve(1000);
 		
 	}
 		

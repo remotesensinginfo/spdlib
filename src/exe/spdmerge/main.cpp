@@ -52,10 +52,13 @@ int main (int argc, char * const argv[])
 		std::vector<std::string> allowedInFormats;
 		allowedInFormats.push_back("SPD");
 		allowedInFormats.push_back("ASCIIPULSEROW");
-		allowedInFormats.push_back("ASCII");
+        allowedInFormats.push_back("ASCII");
 		allowedInFormats.push_back("FWF_DAT");
 		allowedInFormats.push_back("DECOMPOSED_DAT");
 		allowedInFormats.push_back("LAS");
+        allowedInFormats.push_back("LASNP");
+        allowedInFormats.push_back("LASSTRICT");
+		allowedInFormats.push_back("DECOMPOSED_COO");
         allowedInFormats.push_back("ASCIIMULTILINE");
 		TCLAP::ValuesConstraint<std::string> allowedInFormatsVals( allowedInFormats );
 
@@ -68,9 +71,11 @@ int main (int argc, char * const argv[])
 		allowedIndexTypes.push_back("START_WAVEFORM");
 		allowedIndexTypes.push_back("END_WAVEFORM");
 		allowedIndexTypes.push_back("ORIGIN");
+		allowedIndexTypes.push_back("MAX_INTENSITY");
+		allowedIndexTypes.push_back("UNCHANGED");
 		TCLAP::ValuesConstraint<std::string> allowedIndexTypeVals( allowedIndexTypes );
 
-		TCLAP::ValueArg<std::string> indexTypeArg("x","indexfield","The location used to index the pulses",false,"FIRST_RETURN", &allowedIndexTypeVals);
+		TCLAP::ValueArg<std::string> indexTypeArg("x","indexfield","The location used to index the pulses",false,"UNCHANGED", &allowedIndexTypeVals);
 		cmd.add( indexTypeArg );
 
         std::vector<std::string> allowedWaveformBitResTypes;
@@ -124,31 +129,46 @@ int main (int argc, char * const argv[])
 			throw spdlib::SPDException(message);
 		}
 
-        boost::uint_fast16_t indexType = spdlib::SPD_FIRST_RETURN;
-		if(indexTypeArg.getValue() == "FIRST_RETURN")
+        boost::uint_fast16_t indexType = spdlib::SPD_IDX_UNCHANGED;
+		if(indexTypeArg.isSet())
 		{
-			indexType = spdlib::SPD_FIRST_RETURN;
+			if(indexTypeArg.getValue() == "FIRST_RETURN")
+			{
+				indexType = spdlib::SPD_FIRST_RETURN;
+			}
+			else if(indexTypeArg.getValue() == "LAST_RETURN")
+			{
+				indexType = spdlib::SPD_LAST_RETURN;
+			}
+			else if(indexTypeArg.getValue() == "START_WAVEFORM")
+			{
+				indexType = spdlib::SPD_START_OF_RECEIVED_WAVEFORM;
+			}
+			else if(indexTypeArg.getValue() == "END_WAVEFORM")
+			{
+				indexType = spdlib::SPD_END_OF_RECEIVED_WAVEFORM;
+			}
+			else if(indexTypeArg.getValue() == "ORIGIN")
+			{
+				indexType = spdlib::SPD_ORIGIN;
+			}
+			else if(indexTypeArg.getValue() == "MAX_INTENSITY")
+			{
+				indexType = spdlib::SPD_MAX_INTENSITY;
+			}
+			else if(indexTypeArg.getValue() == "UNCHANGED")
+			{
+				indexType = spdlib::SPD_IDX_UNCHANGED;
+			}
+			else
+			{
+				throw spdlib::SPDException("Index type from not recognised.");
+			}
 		}
-		else if(indexTypeArg.getValue() == "LAST_RETURN")
-		{
-			indexType = spdlib::SPD_LAST_RETURN;
-		}
-		else if(indexTypeArg.getValue() == "START_WAVEFORM")
-		{
-			indexType = spdlib::SPD_START_OF_RECEIVED_WAVEFORM;
-		}
-		else if(indexTypeArg.getValue() == "END_WAVEFORM")
-		{
-			indexType = spdlib::SPD_END_OF_RECEIVED_WAVEFORM;
-		}
-		else if(indexTypeArg.getValue() == "ORIGIN")
-		{
-			indexType = spdlib::SPD_ORIGIN;
-		}
-		else
-		{
-			throw spdlib::SPDException("Index type from not recognised.");
-		}
+        else
+        {
+            indexType = spdlib::SPD_IDX_UNCHANGED;
+        }
 
 		std::string outputFile = outputFileArg.getValue();
 		std::cout << "Output File: " << outputFile << std::endl;
