@@ -54,7 +54,12 @@ namespace spdlib
 			for(std::vector<std::string>::iterator iterInFiles = inputFiles.begin(); iterInFiles != inputFiles.end(); ++iterInFiles)
 			{
 				SPDFile *spdFile = new SPDFile(*iterInFiles);
-				spdFile->setSpatialReference(inSpatialRef);
+                importer->readHeaderInfo(*iterInFiles, spdFile);
+                if(inSpatialRef != "")
+                {
+                    spdFile->setSpatialReference(inSpatialRef);
+                }
+                
                 if(setSourceID)
                 {
                     exportAsRead->setSourceID(sourceID++);
@@ -68,7 +73,10 @@ namespace spdlib
                     exportAsRead->setClassValue(classValues.at(fileCount));
                 }
 				importer->readAndProcessAllData(*iterInFiles, spdFile, exportAsRead);
-				if(first)
+                
+                //std::cout << "SPDFile Input [" << spdFile->getXMin() << ", " << spdFile->getXMax() << "][" << spdFile->getYMin() << ", " << spdFile->getYMax() << "]\n";
+                
+                if(first)
 				{
 					spdFileMerged->copyAttributesFrom(spdFile);
 					first = false;
@@ -85,6 +93,7 @@ namespace spdlib
 						throw SPDException(message);
 					}
 				}
+                //std::cout << "SPDFile Merged [" << spdFileMerged->getXMin() << ", " << spdFileMerged->getXMax() << "][" << spdFileMerged->getYMin() << ", " << spdFileMerged->getYMax() << "]\n";
 				delete spdFile;
                 ++fileCount;
 			}

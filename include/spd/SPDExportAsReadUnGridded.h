@@ -58,7 +58,7 @@ namespace spdlib
         bool defineClasses;
         boost::uint_fast16_t classValue;
 		bool fileOpen;
-		std::list<SPDPulse*> *pulses;
+		std::vector<SPDPulse*> *pulses;
 	};
 }
 
