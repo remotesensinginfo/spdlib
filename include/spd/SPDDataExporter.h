@@ -62,6 +62,7 @@ namespace spdlib
 		virtual void writeData(std::vector<SPDPulse*> ***griddedPls, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast32_t startBinX, boost::uint_fast32_t startBinY, boost::uint_fast32_t startIdxX, boost::uint_fast32_t startIdxY)throw(SPDIOException);
 		virtual void finaliseClose() throw(SPDIOException) = 0;
 		virtual bool needNumOutPts()=0;
+        virtual void setKeepMinExtent(bool keepMinExtent){this->keepMinExtent = keepMinExtent;};
 		virtual void setNumOutPts(boost::uint_fast64_t numOutPts);
 		virtual bool isFileType(std::string filetype);
 		virtual bool requireGrid()=0;
@@ -73,8 +74,9 @@ namespace spdlib
 		std::string outputFile;
 		bool fileOpened;
 		std::string filetype;
-	boost::uint_fast64_t numOutPts;
+        boost::uint_fast64_t numOutPts;
 		bool numOutPtsDefined;
+        bool keepMinExtent;
 	};
 }
 

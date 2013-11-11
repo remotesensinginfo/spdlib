@@ -31,7 +31,7 @@ namespace spdlib
 		
 	}
 	
-	void SPDConvertFormats::convertInMemory(std::string input, std::string output, std::string inFormat, std::string schema, std::string outFormat, float binsize, std::string inSpatialRef, bool convertCoords, std::string outputProjWKT, boost::uint_fast16_t indexCoords, bool defineTL, double tlX, double tlY, bool defineOrigin, double originX, double originY, float originZ, bool useSphericIdx, bool usePolarIdx, bool useScanIdx, float waveNoiseThreshold, boost::uint_fast16_t waveformBitRes, boost::uint_fast16_t pointVersion, boost::uint_fast16_t pulseVersion) throw(SPDException)
+	void SPDConvertFormats::convertInMemory(std::string input, std::string output, std::string inFormat, std::string schema, std::string outFormat, float binsize, std::string inSpatialRef, bool convertCoords, std::string outputProjWKT, boost::uint_fast16_t indexCoords, bool defineTL, double tlX, double tlY, bool defineOrigin, double originX, double originY, float originZ, bool useSphericIdx, bool usePolarIdx, bool useScanIdx, float waveNoiseThreshold, boost::uint_fast16_t waveformBitRes, boost::uint_fast16_t pointVersion, boost::uint_fast16_t pulseVersion, bool keepInMinExtent) throw(SPDException)
 	{        
 		try 
 		{
@@ -41,6 +41,7 @@ namespace spdlib
 			
 			SPDDataImporter *importer = ioFactory.getImporter(inFormat, convertCoords, outputProjWKT, schema, indexCoords, defineOrigin, originX, originY, originZ, waveNoiseThreshold);
 			SPDDataExporter *exporter = ioFactory.getExporter(outFormat);
+            exporter->setKeepMinExtent(keepInMinExtent);
 			
 			SPDFile *spdFile = new SPDFile(input);
 			spdFile->setSpatialReference(inSpatialRef);
@@ -176,6 +177,7 @@ namespace spdlib
                         spdFile->setScanlineMin(tlY);
 
                     }
+                    
                     SPDIOUtils ioUtils;
                     ioUtils.gridAndWriteData(exporter, pulses, spdFile, output);
                     
@@ -224,7 +226,7 @@ namespace spdlib
 		}
 	}
 	
-	void SPDConvertFormats::convertToSPDUsingRowTiles(std::string input, std::string output, std::string inFormat, std::string schema, float binsize, std::string inSpatialRef, bool convertCoords, std::string outputProjWKT, boost::uint_fast16_t indexCoords, std::string tempdir, boost::uint_fast16_t numRowsInTile, bool defineTL, double tlX, double tlY,  bool defineOrigin, double originX, double originY, float originZ, bool useSphericIdx, bool usePolarIdx, bool useScanIdx, float waveNoiseThreshold, boost::uint_fast16_t waveformBitRes, bool keepTmpFiles, boost::uint_fast16_t pointVersion, boost::uint_fast16_t pulseVersion) throw(SPDException)
+	void SPDConvertFormats::convertToSPDUsingRowTiles(std::string input, std::string output, std::string inFormat, std::string schema, float binsize, std::string inSpatialRef, bool convertCoords, std::string outputProjWKT, boost::uint_fast16_t indexCoords, std::string tempdir, boost::uint_fast16_t numRowsInTile, bool defineTL, double tlX, double tlY,  bool defineOrigin, double originX, double originY, float originZ, bool useSphericIdx, bool usePolarIdx, bool useScanIdx, float waveNoiseThreshold, boost::uint_fast16_t waveformBitRes, bool keepTmpFiles, boost::uint_fast16_t pointVersion, boost::uint_fast16_t pulseVersion, bool keepInMinExtent) throw(SPDException)
 	{
         std::cout.precision(12);
         if(usePolarIdx)
@@ -270,6 +272,7 @@ namespace spdlib
                 spdFileIn->setPointVersion(pointVersion);
 				
 				exporterUPD = ioFactory.getExporter("UPD");
+                exporterUPD->setKeepMinExtent(keepInMinExtent);
 				filePathAllData = tempdir + "alldata.spd";
 				spdFileAllIn = new SPDFile(filePathAllData);
                 spdFileAllIn->setWaveformBitRes(waveformBitRes);
@@ -677,6 +680,7 @@ namespace spdlib
 		{
 			exporterSPD = new SPDSeqFileWriter();
 			exporterSPD->open(spdFileFinalOut, spdFileFinalOut->getFilePath());
+            exporterSPD->setKeepMinExtent(keepInMinExtent);
 			dataImporter = new SPDFileReader(false, "", "", indexCoords);
 			std::vector<SPDPulse*> *tilePulses = NULL;
 			boost::uint_fast32_t totalNumRows = 0;
@@ -778,7 +782,7 @@ namespace spdlib
 
 	}
 	
-    void SPDConvertFormats::convertToSPDUsingBlockTiles(std::string input, std::string output, std::string inFormat, std::string schema, float binsize, std::string inSpatialRef, bool convertCoords, std::string outputProjWKT, boost::uint_fast16_t indexCoords, std::string tempdir,boost::uint_fast16_t numRowsInTile, boost::uint_fast16_t numColsInTile, bool defineTL, double tlX, double tlY, bool defineOrigin, double originX, double originY, float originZ, bool useSphericIdx, bool usePolarIdx, bool useScanIdx, float waveNoiseThreshold,boost::uint_fast16_t waveformBitRes, bool keepTmpFiles, boost::uint_fast16_t pointVersion, boost::uint_fast16_t pulseVersion) throw(SPDException)
+    void SPDConvertFormats::convertToSPDUsingBlockTiles(std::string input, std::string output, std::string inFormat, std::string schema, float binsize, std::string inSpatialRef, bool convertCoords, std::string outputProjWKT, boost::uint_fast16_t indexCoords, std::string tempdir,boost::uint_fast16_t numRowsInTile, boost::uint_fast16_t numColsInTile, bool defineTL, double tlX, double tlY, bool defineOrigin, double originX, double originY, float originZ, bool useSphericIdx, bool usePolarIdx, bool useScanIdx, float waveNoiseThreshold,boost::uint_fast16_t waveformBitRes, bool keepTmpFiles, boost::uint_fast16_t pointVersion, boost::uint_fast16_t pulseVersion, bool keepInMinExtent) throw(SPDException)
     {
         //std::cout.precision(10);
         if(usePolarIdx)
@@ -835,6 +839,7 @@ namespace spdlib
                 spdFileIn->setPointVersion(pointVersion);
 				
 				exporterUPD = ioFactory.getExporter("UPD");
+                exporterUPD->setKeepMinExtent(keepInMinExtent);
 				filePathAllData = tempdir + "alldata.spd";
 				spdFileAllIn = new SPDFile(filePathAllData);
                 spdFileAllIn->setWaveformBitRes(waveformBitRes);
@@ -1239,6 +1244,7 @@ namespace spdlib
 		{
 			exporterSPD = new SPDNonSeqFileWriter();
 			exporterSPD->open(spdFileFinalOut, spdFileFinalOut->getFilePath());
+            exporterSPD->setKeepMinExtent(keepInMinExtent);
 			dataImporter = new SPDFileReader(false, "", "", indexCoords);
 			std::vector<SPDPulse*> *tilePulses = NULL;
 			boost::uint_fast32_t totalNumRows = 0;

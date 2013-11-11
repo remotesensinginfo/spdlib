@@ -4580,9 +4580,39 @@ namespace spdlib
             {
                 if(spdFile->getIndexType() == SPD_CARTESIAN_IDX)
                 {
-                    spdFile->setZMin(zMinWritten);
-                    spdFile->setZMax(zMaxWritten);
-                    spdFile->setBoundingVolume(xMinWritten, xMaxWritten, yMinWritten, yMaxWritten, zMinWritten, zMaxWritten);
+                    if(!this->keepMinExtent)
+                    {
+                        spdFile->setZMin(zMinWritten);
+                        spdFile->setZMax(zMaxWritten);
+                        spdFile->setBoundingVolume(xMinWritten, xMaxWritten, yMinWritten, yMaxWritten, zMinWritten, zMaxWritten);
+                    }
+                    else
+                    {
+                        if(xMinWritten < spdFile->getXMin())
+                        {
+                            spdFile->setXMin(xMinWritten);
+                        }
+                        if(xMaxWritten > spdFile->getXMax())
+                        {
+                            spdFile->setXMax(xMaxWritten);
+                        }
+                        if(yMinWritten < spdFile->getYMin())
+                        {
+                            spdFile->setYMin(yMinWritten);
+                        }
+                        if(yMaxWritten > spdFile->getYMax())
+                        {
+                            spdFile->setYMax(yMaxWritten);
+                        }
+                        if(zMinWritten < spdFile->getZMin())
+                        {
+                            spdFile->setZMin(zMinWritten);
+                        }
+                        if(zMaxWritten > spdFile->getZMax())
+                        {
+                            spdFile->setZMax(zMaxWritten);
+                        }                        
+                    }
                 }
                 else if(spdFile->getIndexType() == SPD_SPHERICAL_IDX)
                 {
@@ -6219,9 +6249,40 @@ namespace spdlib
             {
                 if(spdFile->getIndexType() == SPD_CARTESIAN_IDX)
                 {
-                    spdFile->setZMin(zMinWritten);
-                    spdFile->setZMax(zMaxWritten);
-                    spdFile->setBoundingVolume(xMinWritten, xMaxWritten, yMinWritten, yMaxWritten, zMinWritten, zMaxWritten);
+                    if(!this->keepMinExtent)
+                    {
+                        spdFile->setZMin(zMinWritten);
+                        spdFile->setZMax(zMaxWritten);
+                        spdFile->setBoundingVolume(xMinWritten, xMaxWritten, yMinWritten, yMaxWritten, zMinWritten, zMaxWritten);
+                    }
+                    else
+                    {
+                        if(xMinWritten < spdFile->getXMin())
+                        {
+                            spdFile->setXMin(xMinWritten);
+                        }
+                        if(xMaxWritten > spdFile->getXMax())
+                        {
+                            spdFile->setXMax(xMaxWritten);
+                        }
+                        if(yMinWritten < spdFile->getYMin())
+                        {
+                            spdFile->setYMin(yMinWritten);
+                        }
+                        if(yMaxWritten > spdFile->getYMax())
+                        {
+                            spdFile->setYMax(yMaxWritten);
+                        }
+                        if(zMinWritten < spdFile->getZMin())
+                        {
+                            spdFile->setZMin(zMinWritten);
+                        }
+                        if(zMaxWritten > spdFile->getZMax())
+                        {
+                            spdFile->setZMax(zMaxWritten);
+                        }
+                        
+                    }
                 }
                 else if(spdFile->getIndexType() == SPD_SPHERICAL_IDX)
                 {
@@ -8047,7 +8108,39 @@ namespace spdlib
             
             if(!firstReturn)
             {
-                spdFile->setBoundingVolume(xMinWritten, xMaxWritten, yMinWritten, yMaxWritten, zMinWritten, zMaxWritten);
+                //spdFile->setBoundingVolume(xMinWritten, xMaxWritten, yMinWritten, yMaxWritten, zMinWritten, zMaxWritten);
+                if(!this->keepMinExtent)
+                {
+                    spdFile->setBoundingVolume(xMinWritten, xMaxWritten, yMinWritten, yMaxWritten, zMinWritten, zMaxWritten);
+                }
+                else
+                {
+                    if(xMinWritten < spdFile->getXMin())
+                    {
+                        spdFile->setXMin(xMinWritten);
+                    }
+                    if(xMaxWritten > spdFile->getXMax())
+                    {
+                        spdFile->setXMax(xMaxWritten);
+                    }
+                    if(yMinWritten < spdFile->getYMin())
+                    {
+                        spdFile->setYMin(yMinWritten);
+                    }
+                    if(yMaxWritten > spdFile->getYMax())
+                    {
+                        spdFile->setYMax(yMaxWritten);
+                    }
+                    if(zMinWritten < spdFile->getZMin())
+                    {
+                        spdFile->setZMin(zMinWritten);
+                    }
+                    if(zMaxWritten > spdFile->getZMax())
+                    {
+                        spdFile->setZMax(zMaxWritten);
+                    }
+                    
+                }
                 spdFile->setBoundingVolumeSpherical(zenMinWritten, zenMaxWritten, azMinWritten, azMaxWritten, ranMinWritten, ranMaxWritten);
                 spdFile->setBoundingBoxScanline(scanlineMinWritten, scanlineMaxWritten, scanlineIdxMinWritten, scanlineIdxMaxWritten);
             }
