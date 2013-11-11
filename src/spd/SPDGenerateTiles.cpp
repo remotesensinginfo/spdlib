@@ -1415,6 +1415,7 @@ namespace spdlib
                     std::cout << "Processing \'" << (*iterFiles) << "\'\n";
                     
                     this->extractRowColFromFileName((*iterFiles), &tileRow, &tileCol);
+                    //std::cout << "Row " << tileRow << " Col " << tileCol << std::endl;
                     
                     /*
                      * OPEN IMAGE FILE TILE.
@@ -1431,16 +1432,17 @@ namespace spdlib
                     xTileSize = tileDataset->GetRasterXSize();
                     yTileSize = tileDataset->GetRasterYSize();
                     
+                    //std::cout << "image size = [" << xTileSize << ", " << yTileSize << "]\n";
+                    
                     xMin = geoTrans[0];
                     yMax = geoTrans[3];
                     xMax = xMin + (xTileSize * geoTrans[1]);
                     yMin = yMax + (yTileSize * geoTrans[5]);
+                    //std::cout << "Image: [" << xMin << ", " << xMax << "][" << yMin << ", " << yMax << "]\n";
                     
                     /*
                      * FIND TILE ASSOCIATED WITH FILE.
                      */
-                    
-                    //std::cout << "Image: [" << xMin << ", " << xMax << "][" << yMin << ", " << yMax << "]\n";
                     tileFound = false;
                     for(std::vector<SPDTile*>::iterator iterTiles = tiles->begin(); iterTiles != tiles->end(); ++iterTiles)
                     {
