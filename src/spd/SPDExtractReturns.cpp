@@ -231,10 +231,11 @@ namespace spdlib
         pulses->clear();
     }
     
-    void SPDExtractReturnsImportProcess::completeFileAndClose()throw(SPDIOException)
+    void SPDExtractReturnsImportProcess::completeFileAndClose(SPDFile *spdFile)throw(SPDIOException)
     {
         try
 		{
+            this->outSPDFile->copyAttributesFrom(spdFile);
 			this->exporter->finaliseClose();
             delete pulses;
 		}
