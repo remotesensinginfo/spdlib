@@ -2085,8 +2085,8 @@ namespace spdlib
                 //std::cout << "Col: " << (*iterTiles)->col << std::endl;
                 
                 featureOutput = OGRFeature::CreateFeature(outputDefn);
-                featureOutput->SetField(outputDefn->GetFieldIndex("Row"), (*iterTiles)->row);
-                featureOutput->SetField(outputDefn->GetFieldIndex("Col"), (*iterTiles)->col);
+                featureOutput->SetField(outputDefn->GetFieldIndex("Row"), ((int)(*iterTiles)->row));
+                featureOutput->SetField(outputDefn->GetFieldIndex("Col"), ((int)(*iterTiles)->col));
                 featureOutput->SetGeometryDirectly(vecUtils.createPolygon((*iterTiles)->xMinCore, (*iterTiles)->xMaxCore, (*iterTiles)->yMinCore, (*iterTiles)->yMaxCore));
                 
                 if( outputSHPLayer->CreateFeature(featureOutput) != OGRERR_NONE )
