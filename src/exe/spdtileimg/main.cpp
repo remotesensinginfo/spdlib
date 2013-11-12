@@ -63,6 +63,9 @@ int main (int argc, char * const argv[])
         TCLAP::ValueArg<double> resolutionArg("r","resolution","The output image pixel size (--clump only).",false,10,"double");
 		cmd.add( resolutionArg );
         
+        TCLAP::ValueArg<double> backgrdValArg("b","background","The output image background value (--mosaic only).",false,0,"double");
+		cmd.add( backgrdValArg );
+        
         TCLAP::ValueArg<std::string> wktFileArg("w","wkt","A file containing the WKT string representing the projection (--clump only).",false,"","String");
 		cmd.add( wktFileArg );
         
@@ -166,7 +169,7 @@ int main (int argc, char * const argv[])
             GDALClose(tmpDataset);
             
             std::cout << "Create blank image\n";
-            GDALDataset *outDataset = tileUtils.createNewImageFile(outputFileArg.getValue(), formatArg.getValue(), dataType, wktStr, xRes, yRes, xMin, yMax, xImgSize, yImgSize, numOfImgBands);
+            GDALDataset *outDataset = tileUtils.createNewImageFile(outputFileArg.getValue(), formatArg.getValue(), dataType, wktStr, xRes, yRes, xMin, yMax, xImgSize, yImgSize, numOfImgBands, backgrdValArg.getValue());
             
             std::cout << "Add tiles to output image\n";
             tileUtils.addImageTilesParseFileName(outDataset, tiles, inputFiles);
@@ -223,7 +226,7 @@ int main (int argc, char * const argv[])
             std::cout << "Output Image Size = [" << xImgSize << ", " << yImgSize << "]\n";
             
             std::cout << "Create blank image\n";
-            GDALDataset *outDataset = tileUtils.createNewImageFile(outputFileArg.getValue(), formatArg.getValue(), GDT_UInt32, wktStr, xRes, yRes, xMin, yMax, xImgSize, yImgSize, 1);
+            GDALDataset *outDataset = tileUtils.createNewImageFile(outputFileArg.getValue(), formatArg.getValue(), GDT_UInt32, wktStr, xRes, yRes, xMin, yMax, xImgSize, yImgSize, 1, 0.0);
             outDataset->GetRasterBand(1)->SetMetadataItem("LAYER_TYPE", "thematic");
             
             std::cout << "Populate Clumps Image File\n";
