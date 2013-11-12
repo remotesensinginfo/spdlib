@@ -1201,7 +1201,7 @@ namespace spdlib
         }
     }
     
-    GDALDataset* SPDTilesUtils::createNewImageFile(std::string imageFile, std::string format, GDALDataType dataType, std::string wktFile, double xRes, double yRes, double tlX, double tlY, boost::uint_fast32_t xImgSize, boost::uint_fast32_t yImgSize, boost::uint_fast32_t numBands) throw(SPDProcessingException)
+    GDALDataset* SPDTilesUtils::createNewImageFile(std::string imageFile, std::string format, GDALDataType dataType, std::string wktFile, double xRes, double yRes, double tlX, double tlY, boost::uint_fast32_t xImgSize, boost::uint_fast32_t yImgSize, boost::uint_fast32_t numBands, double backgroundVal) throw(SPDProcessingException)
     {
         // Process dataset in memory
         GDALDriver *gdalDriver = GetGDALDriverManager()->GetDriverByName(format.c_str());
@@ -1241,7 +1241,7 @@ namespace spdlib
             outData[i] = (float *) CPLMalloc(sizeof(float)*xImgSize*yBlockSize);
             for(unsigned int j = 0; j < (xImgSize*yBlockSize); ++j)
             {
-                outData[i][j] = 0.0;
+                outData[i][j] = backgroundVal;
             }
             rasterBands[i] = dataset->GetRasterBand(i+1);
         }
@@ -1672,7 +1672,7 @@ namespace spdlib
             {
                 if(filename.at(i) == 'r')
                 {
-                    if(i+8 < lineLength)
+                    if(i+7 < lineLength)
                     {
                         if((filename.at(i+1) == 'o') & (filename.at(i+2) == 'w'))
                         {
@@ -1694,7 +1694,7 @@ namespace spdlib
                 
                 if(filename.at(i) == 'c')
                 {
-                    if(i+8 < lineLength)
+                    if(i+3 < lineLength)
                     {
                         if((filename.at(i+1) == 'o') & (filename.at(i+2) == 'l'))
                         {
@@ -1715,8 +1715,8 @@ namespace spdlib
                 }
             }
             
-            //std::cout << "ROW = " << rowStr << std::endl;
-            //std::cout << "COL = " << colStr << std::endl;
+            //std::cout << "ROW = \'" << rowStr << "\'" << std::endl;
+            //std::cout << "COL = \'" << colStr << "\'" << std::endl;
             
             if(!foundRow | (rowStr == ""))
             {
@@ -1736,6 +1736,10 @@ namespace spdlib
         catch(SPDProcessingException &e)
         {
             throw e;
+        }
+        catch(std::exception &e)
+        {
+            throw SPDProcessingException(e.what());
         }
     }
     
@@ -1899,6 +1903,203 @@ namespace spdlib
             {
                 throw SPDProcessingException("The output base path does not exist or is not a directory.");
             }
+        }
+        catch (SPDProcessingException &e)
+        {
+            throw e;
+        }
+        catch (SPDException &e)
+        {
+            throw SPDProcessingException(e.what());
+        }
+        catch (std::exception &e)
+        {
+            throw SPDProcessingException(e.what());
+        }
+    }
+    
+    void SPDTilesUtils::removeTilesNotInFilesList(std::vector<SPDTile*> *tiles, std::vector<std::string> inputFiles) throw(SPDProcessingException)
+    {
+        try
+        {
+            boost::uint_fast32_t row = 0;
+            boost::uint_fast32_t col = 0;
+            bool foundTile = false;
+            
+            for(std::vector<SPDTile*>::iterator iterTiles = tiles->begin(); iterTiles != tiles->end(); )
+            {
+                //std::cout << "Tile [" << (*iterTiles)->row << ", " << (*iterTiles)->col << "]\n";
+                foundTile = false;
+                for(std::vector<std::string>::iterator iterTileFiles = inputFiles.begin(); iterTileFiles != inputFiles.end(); ++iterTileFiles)
+                {
+                    if((*iterTileFiles) != "")
+                    {
+                        this->extractRowColFromFileName((*iterTileFiles), &row, &col);
+                    
+                        if(((*iterTiles)->row == row) && ((*iterTiles)->col == col))
+                        {
+                            //std::cout << "Found ( Row = " << row << " Col = " << col << ")\n";
+                            foundTile = true;
+                            break;
+                        }
+                    }
+                }
+            
+                if(foundTile)
+                {
+                    ++iterTiles;
+                }
+                else
+                {
+                    //std::cout << "deleting ( Row = " << (*iterTiles)->row << " Col = " << (*iterTiles)->col << ")\n";
+                    delete *iterTiles;
+                    tiles->erase(iterTiles);
+                }
+                
+            }
+        }
+        catch (SPDProcessingException &e)
+        {
+            throw e;
+        }
+        catch (SPDException &e)
+        {
+            throw SPDProcessingException(e.what());
+        }
+        catch (std::exception &e)
+        {
+            throw SPDProcessingException(e.what());
+        }
+    }
+    
+    void SPDTilesUtils::generateTileCoresShpFile(std::vector<SPDTile*> *tiles, std::string shpFile, std::string projWKTStr, bool deleteShp) throw(SPDProcessingException)
+    {
+        try
+        {
+            OGRRegisterAll();
+            SPDVectorUtils vecUtils;
+            
+            std::string shpLayerName = vecUtils.getLayerName(shpFile);
+            
+            if(boost::filesystem::exists(shpFile))
+            {
+                // Shapefile Exists - delete it!
+                if(deleteShp)
+                {
+                    std::cout << "Deleting shapefile\n";
+                    boost::filesystem::path dirPath = boost::filesystem::path(shpFile).parent_path();
+                    boost::filesystem::path file;
+                    
+                    file = dirPath;
+                    file /= boost::filesystem::path(shpLayerName);
+                    std::string fileStr = file.string()+".shp";
+                    if(boost::filesystem::exists(fileStr))
+                    {
+                        boost::filesystem::remove(fileStr);
+                    }
+                    
+                    fileStr = file.string()+".shx";
+                    if(boost::filesystem::exists(fileStr))
+                    {
+                        boost::filesystem::remove(fileStr);
+                    }
+                    
+                    fileStr = file.string()+".sbx";
+                    if(boost::filesystem::exists(fileStr))
+                    {
+                        boost::filesystem::remove(fileStr);
+                    }
+                    
+                    fileStr = file.string()+".sbn";
+                    if(boost::filesystem::exists(fileStr))
+                    {
+                        boost::filesystem::remove(fileStr);
+                    }
+                    
+                    fileStr = file.string()+".dbf";
+                    if(boost::filesystem::exists(fileStr))
+                    {
+                        boost::filesystem::remove(fileStr);
+                    }
+                    
+                    fileStr = file.string()+".prj";
+                    if(boost::filesystem::exists(fileStr))
+                    {
+                        boost::filesystem::remove(fileStr);
+                    }
+                }
+                else
+                {
+                    throw SPDProcessingException("The shapefile already exists delete it and then rerun.");
+                }
+            }
+            
+            
+            /////////////////////////////////////
+            //
+            // Create Output Shapfile.
+            //
+            /////////////////////////////////////
+            const char *pszDriverName = "ESRI Shapefile";
+            OGRSFDriver *shpFiledriver = OGRSFDriverRegistrar::GetRegistrar()->GetDriverByName(pszDriverName );
+            if( shpFiledriver == NULL )
+            {
+                throw SPDProcessingException("SHP driver not available.");
+            }
+            OGRDataSource *outputSHPDS = shpFiledriver->CreateDataSource(shpFile.c_str(), NULL);
+            if( outputSHPDS == NULL )
+            {
+                std::string message = std::string("Could not create vector file ") + shpFile;
+                throw SPDProcessingException(message.c_str());
+            }
+            
+            OGRSpatialReference* spatialRef = new OGRSpatialReference(projWKTStr.c_str());
+
+            OGRLayer *outputSHPLayer = outputSHPDS->CreateLayer(shpLayerName.c_str(), spatialRef, wkbPolygon, NULL );
+            if( outputSHPLayer == NULL )
+            {
+                std::string message = std::string("Could not create vector layer ") + shpLayerName;
+                throw SPDProcessingException(message.c_str());
+            }
+            
+            OGRFieldDefn shpRowField("Row", OFTInteger);
+			if(outputSHPLayer->CreateField( &shpRowField ) != OGRERR_NONE )
+			{
+				throw SPDProcessingException("Creating shapefile \'Row\' field cluster has failed");
+			}
+            
+            OGRFieldDefn shpColField("Col", OFTInteger);
+			if(outputSHPLayer->CreateField( &shpColField ) != OGRERR_NONE )
+			{
+				throw SPDProcessingException("Creating shapefile \'Col\' field cluster has failed");
+			}
+            
+            
+            OGRFeatureDefn *outputDefn = outputSHPLayer->GetLayerDefn();
+			OGRFeature *featureOutput = NULL;
+            
+            std::cout << "Adding Polygons to shapefile\n";
+            for(std::vector<SPDTile*>::iterator iterTiles = tiles->begin(); iterTiles != tiles->end(); ++iterTiles)
+            {
+                //std::cout << "Row: " << (*iterTiles)->row << std::endl;
+                //std::cout << "Col: " << (*iterTiles)->col << std::endl;
+                
+                featureOutput = OGRFeature::CreateFeature(outputDefn);
+                featureOutput->SetField(outputDefn->GetFieldIndex("Row"), (*iterTiles)->row);
+                featureOutput->SetField(outputDefn->GetFieldIndex("Col"), (*iterTiles)->col);
+                featureOutput->SetGeometryDirectly(vecUtils.createPolygon((*iterTiles)->xMinCore, (*iterTiles)->xMaxCore, (*iterTiles)->yMinCore, (*iterTiles)->yMaxCore));
+                
+                if( outputSHPLayer->CreateFeature(featureOutput) != OGRERR_NONE )
+                {
+                    throw SPDProcessingException("Failed to write feature to the output shapefile.");
+                }
+                OGRFeature::DestroyFeature(featureOutput);
+                
+                //std::cout << std::endl;
+            }
+            std::cout << "Complete\n";
+            
+            OGRDataSource::DestroyDataSource(outputSHPDS);
         }
         catch (SPDProcessingException &e)
         {

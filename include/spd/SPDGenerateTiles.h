@@ -51,6 +51,7 @@
 #include "spd/SPDMathsUtils.h"
 #include "spd/SPDImageUtils.h"
 #include "spd/SPDFileUtilities.h"
+#include "spd/SPDVectorUtils.h"
 
 namespace spdlib
 {
@@ -91,7 +92,7 @@ namespace spdlib
         void populateTileWithData(SPDTile *tile, std::vector<std::string> inputFiles) throw(SPDProcessingException);
         void deleteTilesWithNoPulses(std::vector<SPDTile*> *tiles) throw(SPDProcessingException);
         void deleteTileIfNoPulses(std::vector<SPDTile*> *tiles, boost::uint_fast32_t row, boost::uint_fast32_t col) throw(SPDProcessingException);
-        GDALDataset* createNewImageFile(std::string imageFile, std::string format, GDALDataType dataType, std::string wktFile, double xRes, double yRes, double tlX, double tlY, boost::uint_fast32_t xImgSize, boost::uint_fast32_t yImgSize, boost::uint_fast32_t numBands) throw(SPDProcessingException);
+        GDALDataset* createNewImageFile(std::string imageFile, std::string format, GDALDataType dataType, std::string wktFile, double xRes, double yRes, double tlX, double tlY, boost::uint_fast32_t xImgSize, boost::uint_fast32_t yImgSize, boost::uint_fast32_t numBands, double backgroundVal) throw(SPDProcessingException);
         void addImageTiles(GDALDataset *image, std::vector<SPDTile*> *tiles, std::vector<std::string> inputImageFiles) throw(SPDProcessingException);
         void addImageTilesParseFileName(GDALDataset *image, std::vector<SPDTile*> *tiles, std::vector<std::string> inputImageFiles) throw(SPDProcessingException);
         void addTiles2ClumpImage(GDALDataset *image, std::vector<SPDTile*> *tiles) throw(SPDProcessingException);
@@ -99,6 +100,8 @@ namespace spdlib
         void extractTileCore(std::string inputSPDFile, std::string outputSPDFile, boost::uint_fast32_t row, boost::uint_fast32_t col, std::vector<SPDTile*> *tiles) throw(SPDProcessingException);
         void buildDirectoryStruct(std::string outputBase, boost::uint_fast32_t rows, boost::uint_fast32_t cols) throw(SPDProcessingException);
         void removeDirectoriesWithNoTiles(std::vector<SPDTile*> *tiles, std::string outputBase, boost::uint_fast32_t rows, boost::uint_fast32_t cols) throw(SPDProcessingException);
+        void removeTilesNotInFilesList(std::vector<SPDTile*> *tiles, std::vector<std::string> inputFiles) throw(SPDProcessingException);
+        void generateTileCoresShpFile(std::vector<SPDTile*> *tiles, std::string shpFile, std::string projWKTStr, bool deleteShp) throw(SPDProcessingException);
         ~SPDTilesUtils();
 	};
     

@@ -32,6 +32,34 @@ namespace spdlib
         
     }
     
+    std::string SPDVectorUtils::getLayerName(std::string filepath)
+	{
+        return boost::filesystem::path(filepath).stem().string();
+		/*int strSize = filepath.size();
+         int lastSlash = 0;
+         for(int i = 0; i < strSize; i++)
+         {
+         if(filepath.at(i) == '/')
+         {
+         lastSlash = i;
+         }
+         }
+         std::string filename = filepath.substr(lastSlash+1);
+         
+         strSize = filename.size();
+         int lastpt = 0;
+         for(int i = 0; i < strSize; i++)
+         {
+         if(filename.at(i) == '.')
+         {
+         lastpt = i;
+         }
+         }
+         
+         std::string layerName = filename.substr(0, lastpt);
+         return layerName;*/
+	}
+    
 	OGRGeometryCollection* SPDVectorUtils::getGeometryCollection(std::string inputVector) throw(SPDIOException)
     {
         OGRRegisterAll();
@@ -87,32 +115,22 @@ namespace spdlib
         return geomCollection;
     }
     
-    std::string SPDVectorUtils::getLayerName(std::string filepath)
-	{
-		int strSize = filepath.size();
-		int lastSlash = 0;
-		for(int i = 0; i < strSize; i++)
-		{
-			if(filepath.at(i) == '/')
-			{
-				lastSlash = i;
-			}
-		}
-		std::string filename = filepath.substr(lastSlash+1);
+    OGRPolygon* SPDVectorUtils::createPolygon(double xMin, double xMax, double yMin, double yMax) throw(SPDIOException)
+    {
+        OGRPolygon *ogrPoly = new OGRPolygon();
 		
-		strSize = filename.size();
-		int lastpt = 0;
-		for(int i = 0; i < strSize; i++)
-		{
-			if(filename.at(i) == '.')
-			{
-				lastpt = i;
-			}
-		}
-		
-		std::string layerName = filename.substr(0, lastpt);
-		return layerName;		
-	}
+		// Add outer ring!
+		OGRLinearRing *ogrRing = new OGRLinearRing();
+        ogrRing->addPoint(xMin, yMin, 0);
+        ogrRing->addPoint(xMin, yMax, 0);
+        ogrRing->addPoint(xMax, yMax, 0);
+        ogrRing->addPoint(xMax, yMin, 0);
+        ogrRing->addPoint(xMin, yMin, 0);
+		ogrPoly->addRing(ogrRing);
+        delete ogrRing;
+        
+        return ogrPoly;
+    }
     
     
     SPDVectorUtils::~SPDVectorUtils()

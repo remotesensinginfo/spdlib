@@ -36,6 +36,7 @@
 
 #include <boost/cstdint.hpp>
 #include <boost/numeric/conversion/cast.hpp>
+#include "boost/filesystem.hpp"
 
 #include "spd/SPDFile.h"
 #include "spd/SPDPoint.h"
@@ -49,6 +50,7 @@ namespace spdlib
 	public:
 		SPDVectorUtils();
 		OGRGeometryCollection* getGeometryCollection(std::string inputVector) throw(SPDIOException);
+        OGRPolygon* createPolygon(double xMin, double xMax, double yMin, double yMax) throw(SPDIOException);
         std::string getLayerName(std::string filepath);
 		~SPDVectorUtils();
 	};
