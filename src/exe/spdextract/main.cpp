@@ -58,6 +58,9 @@ int main (int argc, char * const argv[])
         TCLAP::ValueArg<boost::uint_fast32_t> numOfColsBlockArg("c","blockcols","Number of columns within a block (Default 0) - Note values greater than 1 result in a non-sequencial SPD file.",false,0,"unsigned int");
 		cmd.add( numOfColsBlockArg );
         
+        TCLAP::ValueArg<float> binSizeArg("b","binsize","Bin size for processing and output image (Default 0) - Note 0 will use the native SPD file bin size.",false,0,"float");
+		cmd.add( binSizeArg );
+        
         TCLAP::ValueArg<boost::uint_fast16_t> classOfInterestArg("", "class", "Class of interest (Ground == 3; Not Ground == 104)", false, spdlib::SPD_ALL_CLASSES, "unsigned int");
 		cmd.add( classOfInterestArg );
         
@@ -71,6 +74,15 @@ int main (int argc, char * const argv[])
 		
 		TCLAP::ValueArg<std::string> returnOfInterestArg("", "return", "The return(s) of interest", false, "ALL", &allowedReturnVals);
 		cmd.add( returnOfInterestArg );
+        
+        TCLAP::SwitchArg minSwitch("","min","Extract only the minimum returns (within the bin and therefore only available for SPD file, not UPD).", false);
+        TCLAP::SwitchArg maxSwitch("","max","Extract only the maximum returns (within the bin and therefore only available for SPD file, not UPD).", false);
+        
+        std::vector<TCLAP::Arg*> arguments;
+        arguments.push_back(&minSwitch);
+        arguments.push_back(&maxSwitch);
+        cmd.xorAdd(arguments);
+        
         
 		TCLAP::ValueArg<std::string> inputFileArg("i","input","The input SPD file.",true,"","String");
 		cmd.add( inputFileArg );
@@ -124,6 +136,20 @@ int main (int argc, char * const argv[])
             }
         }
         
+        bool minMaxSet = false;
+        boost::uint_fast16_t highOrLow = spdlib::SPD_SELECT_LOWEST;
+        if(minSwitch.getValue())
+        {
+            minMaxSet = true;
+            highOrLow = spdlib::SPD_SELECT_LOWEST;
+        }
+        else if(maxSwitch.getValue())
+        {
+            minMaxSet = true;
+            highOrLow = spdlib::SPD_SELECT_HIGHEST;
+        }
+        
+        
         spdlib::SPDFile *spdInFile = new spdlib::SPDFile(inputFile);
         spdlib::SPDFileReader reader;
         reader.readHeaderInfo(spdInFile->getFilePath(), spdInFile);
@@ -138,9 +164,9 @@ int main (int argc, char * const argv[])
         }
         else
         {
-            spdlib::SPDPulseProcessor *pulseProcessor = new spdlib::SPDExtractReturnsBlockProcess(classValSet, classVal, returnValSet, returnVal);
+            spdlib::SPDPulseProcessor *pulseProcessor = new spdlib::SPDExtractReturnsBlockProcess(classValSet, classVal, returnValSet, returnVal, minMaxSet, highOrLow);
             spdlib::SPDSetupProcessPulses processPulses = spdlib::SPDSetupProcessPulses(numOfColsBlockArg.getValue(), numOfRowsBlockArg.getValue(), true);
-            processPulses.processPulsesWithOutputSPD(pulseProcessor, spdInFile, outputFile);
+            processPulses.processPulsesWithOutputSPD(pulseProcessor, spdInFile, outputFile, binSizeArg.getValue());
             delete pulseProcessor;
         }
         delete spdInFile;

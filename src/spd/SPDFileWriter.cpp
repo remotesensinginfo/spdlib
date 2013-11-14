@@ -3804,7 +3804,7 @@ namespace spdlib
         
 		try 
 		{
-			H5::Exception::dontPrint() ;
+			H5::Exception::dontPrint();
 			
             std::vector<SPDPulse*>::iterator iterInPls;
             float qkVal = 0;

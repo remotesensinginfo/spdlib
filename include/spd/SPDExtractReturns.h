@@ -61,7 +61,7 @@ namespace spdlib
     class SPDExtractReturnsBlockProcess : public SPDPulseProcessor
 	{
 	public:
-        SPDExtractReturnsBlockProcess(bool classValSet, boost::uint_fast16_t classID, bool returnValSet, boost::uint_fast16_t returnVal);
+        SPDExtractReturnsBlockProcess(bool classValSet, boost::uint_fast16_t classID, bool returnValSet, boost::uint_fast16_t returnVal, bool minMaxSet, boost::uint_fast16_t highOrLow);
         
         void processDataColumnImage(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses, float *imageData, SPDXYPoint *cenPts, boost::uint_fast32_t numImgBands, float binSize) throw(SPDProcessingException)
         {throw SPDProcessingException("Processing is not implemented for processDataColumn().");};
@@ -82,6 +82,8 @@ namespace spdlib
         boost::uint_fast16_t classID;
         bool returnValSet;
         boost::uint_fast16_t returnVal;
+        bool minMaxSet;
+        boost::uint_fast16_t highOrLow;
 	};
     
 }

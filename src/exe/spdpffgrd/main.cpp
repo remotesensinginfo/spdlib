@@ -93,7 +93,7 @@ int main (int argc, char * const argv[])
 		TCLAP::SwitchArg imageSwitch("","image","If set an image of the output surface will be generated rather than classifying the points (useful for debugging and parameter selection)", false);
 		cmd.add( imageSwitch );
         
-        TCLAP::SwitchArg morphMinSwitch("","morphmin","Apply morphological opening and closing to remove multiple path returns (note this can remove really ground returns).", false);
+        TCLAP::SwitchArg morphMinSwitch("","morphmin","Apply morphological opening and closing to remove multiple path returns (note this can remove real ground returns).", false);
 		cmd.add( morphMinSwitch );
         
         TCLAP::ValueArg<uint_fast16_t> usePointsofClassArg("","class","Only use points of particular class",false,spdlib::SPD_ALL_CLASSES,"uint_fast16_t");
