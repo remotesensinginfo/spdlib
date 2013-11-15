@@ -51,9 +51,10 @@ namespace spdlib
 	class SPDFindMinReturnsProcessor : public SPDPulseProcessor
 	{
 	public:
-        SPDFindMinReturnsProcessor(std::vector<SPDPoint*> *minPts)
+        SPDFindMinReturnsProcessor(std::vector<SPDPoint*> *minPts, boost::uint_fast16_t ptSelectClass)
         {
             this->minPts = minPts;
+            this->ptSelectClass = ptSelectClass;
         };
         
         void processDataColumnImage(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses, float *imageData, SPDXYPoint *cenPts, boost::uint_fast32_t numImgBands, float binSize) throw(SPDProcessingException)
@@ -71,16 +72,33 @@ namespace spdlib
                 {
                     for(std::vector<SPDPoint*>::iterator iterPoints = (*iterPulses)->pts->begin(); iterPoints != (*iterPulses)->pts->end(); ++iterPoints)
                     {
-                        if(first)
+                        if(ptSelectClass == SPD_ALL_CLASSES)
                         {
-                            minPt = *iterPoints;
-                            minZ = (*iterPoints)->z;
-                            first = false;
+                            if(first)
+                            {
+                                minPt = *iterPoints;
+                                minZ = (*iterPoints)->z;
+                                first = false;
+                            }
+                            else if((*iterPoints)->z < minZ)
+                            {
+                                minPt = *iterPoints;
+                                minZ = (*iterPoints)->z;
+                            }
                         }
-                        else if((*iterPoints)->z < minZ)
+                        else if((*iterPoints)->classification == ptSelectClass)
                         {
-                            minPt = *iterPoints;
-                            minZ = (*iterPoints)->z;
+                            if(first)
+                            {
+                                minPt = *iterPoints;
+                                minZ = (*iterPoints)->z;
+                                first = false;
+                            }
+                            else if((*iterPoints)->z < minZ)
+                            {
+                                minPt = *iterPoints;
+                                minZ = (*iterPoints)->z;
+                            }
                         }
                     }
                 }
@@ -112,18 +130,20 @@ namespace spdlib
         ~SPDFindMinReturnsProcessor(){};
     protected:
         std::vector<SPDPoint*> *minPts;
+        boost::uint_fast16_t ptSelectClass;
 	};
 
     
     class SPDClassifyGrdReturnsFromSurfaceCoefficientsProcessor : public SPDPulseProcessor
 	{
 	public:
-        SPDClassifyGrdReturnsFromSurfaceCoefficientsProcessor(float grdThres, boost::uint_fast16_t degree, boost::uint_fast16_t iters, gsl_vector *coefficients)
+        SPDClassifyGrdReturnsFromSurfaceCoefficientsProcessor(float grdThres, boost::uint_fast16_t degree, boost::uint_fast16_t iters, gsl_vector *coefficients, boost::uint_fast16_t ptSelectClass)
         {
             this->grdThres = grdThres;
             this->degree = degree;
             this->iters = iters;
             this->coefficients = coefficients;
+            this->ptSelectClass = ptSelectClass;
         };
         
         void processDataColumnImage(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses, float *imageData, SPDXYPoint *cenPts, boost::uint_fast32_t numImgBands, float binSize) throw(SPDProcessingException)
@@ -137,42 +157,82 @@ namespace spdlib
                 {
                     for(std::vector<SPDPoint*>::iterator iterPoints = (*iterPulses)->pts->begin(); iterPoints != (*iterPulses)->pts->end(); ++iterPoints)
                     {
-                        // Remove any existing ground return classification.
-                        if((*iterPoints)->classification == SPD_GROUND)
+                        if(ptSelectClass == SPD_ALL_CLASSES)
                         {
-                            (*iterPoints)->classification = SPD_UNCLASSIFIED;
-                        }
-                        
-                        // Calc surface height for return
-                        double xcoord= (*iterPoints)->x;
-                        double ycoord= (*iterPoints)->y;
-                        double zcoord= (*iterPoints)->z;
-                        double surfaceValue=0; // reset z value from surface coefficients
-                        boost::uint_fast32_t l=0;
-                        
-                        for (boost::uint_fast32_t m = 0; m < coefficients->size ; m++)
-                        {
-                            for (boost::uint_fast32_t n=0; n < coefficients->size ; n++)
+                            // Remove any existing ground return classification.
+                            if((*iterPoints)->classification == SPD_GROUND)
                             {
-                                if (n+m <= degree)
+                                (*iterPoints)->classification = SPD_UNCLASSIFIED;
+                            }
+                            
+                            // Calc surface height for return
+                            double xcoord= (*iterPoints)->x;
+                            double ycoord= (*iterPoints)->y;
+                            double zcoord= (*iterPoints)->z;
+                            double surfaceValue=0; // reset z value from surface coefficients
+                            boost::uint_fast32_t l=0;
+                            
+                            for (boost::uint_fast32_t m = 0; m < coefficients->size ; m++)
+                            {
+                                for (boost::uint_fast32_t n=0; n < coefficients->size ; n++)
                                 {
-                                    double xelementtPow = pow(xcoord, ((int)(m)));
-                                    double yelementtPow = pow(ycoord, ((int)(n)));
-                                    double outm = gsl_vector_get(coefficients, l);
-                                    
-                                    surfaceValue=surfaceValue+(outm*xelementtPow*yelementtPow);
-                                    ++l;
+                                    if (n+m <= degree)
+                                    {
+                                        double xelementtPow = pow(xcoord, ((int)(m)));
+                                        double yelementtPow = pow(ycoord, ((int)(n)));
+                                        double outm = gsl_vector_get(coefficients, l);
+                                        
+                                        surfaceValue=surfaceValue+(outm*xelementtPow*yelementtPow);
+                                        ++l;
+                                    }
                                 }
                             }
+                            
+                            // Is return height less than surface height + grdThres
+                            // sqrt((zcoord-surfaceValue)*(zcoord-surfaceValue)) <= grdThres
+                            
+                            if ((zcoord-surfaceValue) <= grdThres) {
+                                (*iterPoints)->classification = SPD_GROUND;
+                            }
                         }
-                        
-                        // Is return height less than surface height + grdThres
-                        // sqrt((zcoord-surfaceValue)*(zcoord-surfaceValue)) <= grdThres
-                        
-                        if ((zcoord-surfaceValue) <= grdThres) {
-                            (*iterPoints)->classification = SPD_GROUND;
+                        else if(ptSelectClass == (*iterPoints)->classification)
+                        {
+                            // Remove any existing ground return classification.
+                            if((*iterPoints)->classification == ptSelectClass)
+                            {
+                                (*iterPoints)->classification = SPD_UNCLASSIFIED;
+                            }
+                            
+                            // Calc surface height for return
+                            double xcoord= (*iterPoints)->x;
+                            double ycoord= (*iterPoints)->y;
+                            double zcoord= (*iterPoints)->z;
+                            double surfaceValue=0; // reset z value from surface coefficients
+                            boost::uint_fast32_t l=0;
+                            
+                            for (boost::uint_fast32_t m = 0; m < coefficients->size ; m++)
+                            {
+                                for (boost::uint_fast32_t n=0; n < coefficients->size ; n++)
+                                {
+                                    if (n+m <= degree)
+                                    {
+                                        double xelementtPow = pow(xcoord, ((int)(m)));
+                                        double yelementtPow = pow(ycoord, ((int)(n)));
+                                        double outm = gsl_vector_get(coefficients, l);
+                                        
+                                        surfaceValue=surfaceValue+(outm*xelementtPow*yelementtPow);
+                                        ++l;
+                                    }
+                                }
+                            }
+                            
+                            // Is return height less than surface height + grdThres
+                            // sqrt((zcoord-surfaceValue)*(zcoord-surfaceValue)) <= grdThres
+                            
+                            if ((zcoord-surfaceValue) <= grdThres) {
+                                (*iterPoints)->classification = SPD_GROUND;
+                            }
                         }
-                        
                         
                     }
                 }
@@ -199,14 +259,52 @@ namespace spdlib
         boost::uint_fast16_t degree;
         boost::uint_fast16_t iters;
         gsl_vector *coefficients;
+        boost::uint_fast16_t ptSelectClass;
 	};
+    
+    
+    class SPDPolyFitGroundLocalFilter : public SPDDataBlockProcessor
+	{
+	public:
+        // constructor
+        SPDPolyFitGroundLocalFilter(float grdThres, boost::uint_fast16_t degree, boost::uint_fast16_t iters, boost::uint_fast16_t ptSelectClass, float binWidth);
+        
+        // public functions
+        void processDataBlockImage(SPDFile *inSPDFile, std::vector<SPDPulse*> ***pulses, float ***imageDataBlock, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast32_t numImgBands, float binSize) throw(SPDProcessingException)
+		{throw SPDProcessingException("SPDPolyFitGroundLocalFilter processDataBlockImage not implemented.");};
+        void processDataBlock(SPDFile *inSPDFile, std::vector<SPDPulse*> ***pulses, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, float binSize) throw(SPDProcessingException);
+        void processDataBlockImage(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses, float ***imageDataBlock, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast32_t numImgBands) throw(SPDProcessingException)
+		{throw SPDProcessingException("SPDPolyFitGroundLocalFilter requires processing with a grid.");};
+        void processDataBlock(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses) throw(SPDProcessingException)
+        {throw SPDProcessingException("SPDPolyFitGroundLocalFilter requires processing with a grid.");};
+        
+        std::vector<std::string> getImageBandDescriptions() throw(SPDProcessingException)
+        {
+            std::vector<std::string> bandNames;
+            return bandNames;
+        }
+        void setHeaderValues(SPDFile *spdFile) throw(SPDProcessingException)
+        {
+            // Nothing to do...
+        }
+        
+        ~SPDPolyFitGroundLocalFilter();
+    protected:
+        float grdThres;
+        boost::uint_fast16_t degree;
+        boost::uint_fast16_t iters;
+        boost::uint_fast16_t ptSelectClass;
+        float binWidth;
+	};
+
 
     
     class SPDPolyFitGroundFilter
 	{
 	public:
 		SPDPolyFitGroundFilter();
-        void applyPolyFitGroundFilter(std::string inputFile, std::string outputFile, float grdThres,boost::uint_fast16_t degree,boost::uint_fast16_t iters, boost::uint_fast32_t blockXSize=250, boost::uint_fast32_t blockYSize=250, float processingResolution=0)throw(SPDProcessingException);
+        void applyGlobalPolyFitGroundFilter(std::string inputFile, std::string outputFile, float grdThres, boost::uint_fast16_t degree, boost::uint_fast16_t iters, boost::uint_fast32_t blockXSize, boost::uint_fast32_t blockYSize, float processingResolution, boost::uint_fast16_t ptSelectClass)throw(SPDProcessingException);
+        void applyLocalPolyFitGroundFilter(std::string inputFile, std::string outputFile, float grdThres, boost::uint_fast16_t degree, boost::uint_fast16_t iters, boost::uint_fast32_t blockXSize, boost::uint_fast32_t blockYSize, boost::uint_fast32_t overlap, float processingResolution, boost::uint_fast16_t ptSelectClass)throw(SPDProcessingException);
 		~SPDPolyFitGroundFilter();
     private:
         void buildMinGrid(SPDFile *spdFile, std::vector<SPDPoint*> *minPts, std::vector<SPDPoint*> ***minPtGrid)throw(SPDProcessingException);

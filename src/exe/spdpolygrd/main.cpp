@@ -37,9 +37,6 @@
 
 #include "spd/spd-config.h"
 
-using namespace spdlib;
-using namespace TCLAP;
-
 int main (int argc, char * const argv[]) 
 {
     std::cout.precision(12);
@@ -52,58 +49,68 @@ int main (int argc, char * const argv[])
 	
 	try 
 	{
-		CmdLine cmd("Classify ground returns using a surface fitting algorithm: spdpolygrd", ' ', "1.0.0");
+        TCLAP::CmdLine cmd("Classify ground returns using a surface fitting algorithm: spdpolygrd", ' ', "1.0.0");
 		
-        ValueArg<boost::uint_fast32_t> numOfRowsBlockArg("r","blockrows","Number of rows within a block (Default 100)",false,100,"unsigned int");
+        TCLAP::SwitchArg globalSwitch("","global","Classify negative height as ground", false);
+        TCLAP::SwitchArg localSwitch("","local","Remove falsely classified ground returns using plane fitting", false);
+        
+        std::vector<TCLAP::Arg*> arguments;
+        arguments.push_back(&globalSwitch);
+        arguments.push_back(&localSwitch);
+        cmd.xorAdd(arguments);
+        
+        TCLAP::ValueArg<boost::uint_fast32_t> numOfRowsBlockArg("r","blockrows","Number of rows within a block (Default 100)",false,100,"unsigned int");
 		cmd.add( numOfRowsBlockArg );
         
-        ValueArg<boost::uint_fast32_t> numOfColsBlockArg("c","blockcols","Number of columns within a block (Default 0) - Note values greater than 1 result in a non-sequencial SPD file.",false,0,"unsigned int");
+        TCLAP::ValueArg<boost::uint_fast32_t> numOfColsBlockArg("c","blockcols","Number of columns within a block (Default 0) - Note values greater than 1 result in a non-sequencial SPD file.",false,0,"unsigned int");
 		cmd.add( numOfColsBlockArg );
         
-        ValueArg<float> binSizeArg("b","binsize","Bin size for processing and output image (Default 0) - Note 0 will use the native SPD file bin size.",false,0,"float");
+        TCLAP::ValueArg<uint_fast16_t> overlapArg("","overlap","Size (in bins) of the overlap between processing blocks (Default 10)",false,10,"uint_fast16_t");
+		cmd.add( overlapArg );
+        
+        TCLAP::ValueArg<float> binSizeArg("b","binsize","Bin size for processing and output image (Default 0) - Note 0 will use the native SPD file bin size.",false,0,"float");
 		cmd.add( binSizeArg );
         
-        ValueArg<float> grdClassThresArg("","grdthres","Threshold for how far above the interpolated ground surface a return can be and be reclassified as ground (Default = 0.25).",false,0.25,"float");
+        TCLAP::ValueArg<float> grdClassThresArg("","grdthres","Threshold for how far above the interpolated ground surface a return can be and be reclassified as ground (Default = 0.25).",false,0.25,"float");
 		cmd.add( grdClassThresArg );
 		
-		ValueArg<unsigned int> degreeArg("","degree","Order of polynomial surface (Default = 1).",false,1,"int");
+		TCLAP::ValueArg<unsigned int> degreeArg("","degree","Order of polynomial surface (Default = 1).",false,1,"int");
 		cmd.add( degreeArg );
 		
-		ValueArg<unsigned int> numItersArg("","iters","Number of iterations for polynomial surface to converge on ground (Default = 2).",false,2,"int");
+		TCLAP::ValueArg<unsigned int> numItersArg("","iters","Number of iterations for polynomial surface to converge on ground (Default = 2).",false,2,"int");
 		cmd.add( numItersArg );
         
-        //ValueArg<uint_fast16_t> usePointsofClassArg("","class","Only use points of particular class",false,SPD_ALL_CLASSES,"uint_fast16_t");
-        //cmd.add( usePointsofClassArg );
+        TCLAP::ValueArg<uint_fast16_t> usePointsofClassArg("","class","Only use points of particular class (Ground is class == 3, Default is All classes)",false,spdlib::SPD_ALL_CLASSES,"uint_fast16_t");
+        cmd.add( usePointsofClassArg );
         
-		UnlabeledMultiArg<std::string> multiFileNames("File", "File names for the input files", false, "string");
-		cmd.add( multiFileNames );
+		TCLAP::ValueArg<std::string> inputFileArg("i","input","The input SPD file.",true,"","String");
+		cmd.add( inputFileArg );
+        
+        TCLAP::ValueArg<std::string> outputFileArg("o","output","The output file.",true,"","String");
+		cmd.add( outputFileArg );
+        
 		cmd.parse( argc, argv );
-		
-		std::vector<std::string> fileNames = multiFileNames.getValue();
-        std::cout << "fileNames.size() = " << fileNames.size() << std::endl;
-		if(fileNames.size() == 2)
-		{
-            std::string inSPDFilePath = fileNames.at(0);
-            std::string outFilePath = fileNames.at(1);
-                        
-            SPDPolyFitGroundFilter grdFilter;
-            grdFilter.applyPolyFitGroundFilter(inSPDFilePath, outFilePath, grdClassThresArg.getValue(), degreeArg.getValue(), numItersArg.getValue(), numOfColsBlockArg.getValue(), numOfRowsBlockArg.getValue(), binSizeArg.getValue());
-		}
+        
+        spdlib::SPDPolyFitGroundFilter grdFilter;
+        if(globalSwitch.getValue())
+        {
+            grdFilter.applyGlobalPolyFitGroundFilter(inputFileArg.getValue(), outputFileArg.getValue(), grdClassThresArg.getValue(), degreeArg.getValue(), numItersArg.getValue(), numOfColsBlockArg.getValue(), numOfRowsBlockArg.getValue(), binSizeArg.getValue(), usePointsofClassArg.getValue());
+        }
+        else if(localSwitch.getValue())
+        {
+            grdFilter.applyLocalPolyFitGroundFilter(inputFileArg.getValue(), outputFileArg.getValue(), grdClassThresArg.getValue(), degreeArg.getValue(), numItersArg.getValue(), numOfColsBlockArg.getValue(), numOfRowsBlockArg.getValue(), overlapArg.getValue(), binSizeArg.getValue(), usePointsofClassArg.getValue());
+        }
         else
         {
-            std::cout << "ERROR: Only 2 files can be provided\n";
-            for(unsigned int i = 0; i < fileNames.size(); ++i)
-			{
-                std::cout << i << ":\t" << fileNames.at(i) << std::endl;
-            }
+            throw spdlib::SPDException("Need to define whether you require a local (--local) or global (--global) filter.");
         }
 		
 	}
-	catch (ArgException &e) 
+	catch (TCLAP::ArgException &e)
 	{
 		std::cerr << "Parse Error: " << e.what() << std::endl;
 	}
-	catch(SPDException &e)
+	catch(spdlib::SPDException &e)
 	{
 		std::cerr << "Error: " << e.what() << std::endl;
 	}
