@@ -177,7 +177,7 @@ namespace spdlib
     class SPDLinearStretchRGBValues : public SPDPulseProcessor
 	{
 	public:
-        SPDLinearStretchRGBValues(float redMin, float redMax, float greenMin, float greenMax, float blueMin, float blueMax);
+        SPDLinearStretchRGBValues(float redMin, float redMax, float greenMin, float greenMax, float blueMin, float blueMax, bool stretchIndepend);
         
         void processDataColumnImage(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses, float *imageData, SPDXYPoint *cenPts, boost::uint_fast32_t numImgBands, float binSize) throw(SPDProcessingException)
         {throw SPDProcessingException("Processing is not implemented for processDataColumnImage().");};
@@ -195,6 +195,8 @@ namespace spdlib
         
         ~SPDLinearStretchRGBValues();
     protected:
+        bool stretchIndepend;
+        
         float redMin;
         float redMax;
         float greenMin;

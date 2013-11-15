@@ -192,7 +192,7 @@ namespace spdlib
     
     
     
-    SPDLinearStretchRGBValues::SPDLinearStretchRGBValues(float redMin, float redMax, float greenMin, float greenMax, float blueMin, float blueMax)
+    SPDLinearStretchRGBValues::SPDLinearStretchRGBValues(float redMin, float redMax, float greenMin, float greenMax, float blueMin, float blueMax, bool stretchIndepend)
     {
         this->redMin = redMin;
         this->redMax = redMax;
@@ -204,6 +204,8 @@ namespace spdlib
         this->redRange = redMax - redMin;
         this->greenRange = greenMax - greenMin;
         this->blueRange = blueMax - blueMin;
+        
+        this->stretchIndepend = stretchIndepend;
         
         // seb modifications to support stretching all bands bythe same amount
         this->maxRange = redRange;
@@ -246,49 +248,54 @@ namespace spdlib
             {
                 for(std::vector<SPDPoint*>::iterator iterPts = (*iterPulses)->pts->begin(); iterPts != (*iterPulses)->pts->end(); ++iterPts)
                 {
-                    (*iterPts)->red = this->scalePixelValue((*iterPts)->red);
-                    (*iterPts)->green = this->scalePixelValue((*iterPts)->green);
-                    (*iterPts)->blue = this->scalePixelValue((*iterPts)->blue);
-                    
-                    /* Original stretching code, stretches each band inidividually - I think we should stretch them all the same...
-                    if((*iterPts)->red < redMin)
+                    if(this->stretchIndepend)
                     {
-                        (*iterPts)->red = 0;
-                    }
-                    else if((*iterPts)->red > redMax)
-                    {
-                        (*iterPts)->red = 255;
+                        // Original stretching code, stretches each band inidividually - I think we should stretch them all the same...
+                        if((*iterPts)->red < redMin)
+                        {
+                            (*iterPts)->red = 0;
+                        }
+                        else if((*iterPts)->red > redMax)
+                        {
+                            (*iterPts)->red = 255;
+                        }
+                        else
+                        {
+                            (*iterPts)->red = (((*iterPts)->red-redMin)/redRange)*255;
+                        }
+                        
+                        if((*iterPts)->green < greenMin)
+                        {
+                            (*iterPts)->green = 0;
+                        }
+                        else if((*iterPts)->green > greenMax)
+                        {
+                            (*iterPts)->green = 255;
+                        }
+                        else
+                        {
+                            (*iterPts)->green = (((*iterPts)->green-greenMin)/greenRange)*255;
+                        }
+                        
+                        if((*iterPts)->blue < blueMin)
+                        {
+                            (*iterPts)->blue = 0;
+                        }
+                        else if((*iterPts)->blue > blueMax)
+                        {
+                            (*iterPts)->blue = 255;
+                        }
+                        else
+                        {
+                            (*iterPts)->blue = (((*iterPts)->blue-blueMin)/blueRange)*255;
+                        }
                     }
                     else
                     {
-                        (*iterPts)->red = (((*iterPts)->red-redMin)/redRange)*255;
+                        (*iterPts)->red = this->scalePixelValue((*iterPts)->red);
+                        (*iterPts)->green = this->scalePixelValue((*iterPts)->green);
+                        (*iterPts)->blue = this->scalePixelValue((*iterPts)->blue);
                     }
-                    
-                    if((*iterPts)->green < greenMin)
-                    {
-                        (*iterPts)->green = 0;
-                    }
-                    else if((*iterPts)->green > greenMax)
-                    {
-                        (*iterPts)->green = 255;
-                    }
-                    else
-                    {
-                        (*iterPts)->green = (((*iterPts)->green-greenMin)/greenRange)*255;
-                    }
-                    
-                    if((*iterPts)->blue < blueMin)
-                    {
-                        (*iterPts)->blue = 0;
-                    }
-                    else if((*iterPts)->blue > blueMax)
-                    {
-                        (*iterPts)->blue = 255;
-                    }
-                    else
-                    {
-                        (*iterPts)->blue = (((*iterPts)->blue-blueMin)/blueRange)*255;
-                    }  */
                 }
             }
             

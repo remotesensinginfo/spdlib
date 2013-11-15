@@ -76,11 +76,17 @@ int main (int argc, char * const argv[])
 		
 		TCLAP::ValueArg<uint_fast16_t> blueBandArg("","blue","Image band for blue channel",false,3,"uint_fast16_t");
 		cmd.add( blueBandArg );
-		
+        
+        TCLAP::ValueArg<float> stretchCoeffrg("","coef","The coefficient for the standard deviation stretch (Default is 2)",false,2,"float");
+		cmd.add( stretchCoeffrg );
+        
+        TCLAP::SwitchArg stretchIndependSwitch("","independ","Stretch the RGB values independently.", false);
+		cmd.add( stretchIndependSwitch );
+        
 		TCLAP::ValueArg<std::string> inputFileArg("i","input","The input SPD file.",true,"","String");
 		cmd.add( inputFileArg );
         
-        TCLAP::ValueArg<std::string> imageFileArg("","image","The input image file.",true,"","String");
+        TCLAP::ValueArg<std::string> imageFileArg("","image","The input image file.",false,"","String");
 		cmd.add( imageFileArg );
         
         TCLAP::ValueArg<std::string> outputFileArg("o","output","The output SPD file.",true,"","String");
@@ -165,8 +171,8 @@ int main (int argc, char * const argv[])
                 std::cout << "Green Standard Deviation = " << greenStdDev << std::endl;
                 std::cout << "Blue Standard Deviation = " << blueStdDev << std::endl;
 
-                redStretchMin = redMean - (redStdDev*2);
-                redStretchMax = redMean + (redStdDev*2);
+                redStretchMin = redMean - (redStdDev*stretchCoeffrg.getValue());
+                redStretchMax = redMean + (redStdDev*stretchCoeffrg.getValue());
                 if(redStretchMin < redMin)
                 {
                     redStretchMin = redMin;
@@ -176,8 +182,8 @@ int main (int argc, char * const argv[])
                     redStretchMax = redMax;
                 }
                 
-                greenStretchMin = greenMean - (greenStdDev*2);
-                greenStretchMax = greenMean + (greenStdDev*2);
+                greenStretchMin = greenMean - (greenStdDev*stretchCoeffrg.getValue());
+                greenStretchMax = greenMean + (greenStdDev*stretchCoeffrg.getValue());
                 if(greenStretchMin < greenMin)
                 {
                     greenStretchMin = greenMin;
@@ -187,8 +193,8 @@ int main (int argc, char * const argv[])
                     greenStretchMax = greenMax;
                 }
                 
-                blueStretchMin = blueMean - (blueStdDev*2);
-                blueStretchMax = blueMean + (blueStdDev*2);
+                blueStretchMin = blueMean - (blueStdDev*stretchCoeffrg.getValue());
+                blueStretchMax = blueMean + (blueStdDev*stretchCoeffrg.getValue());
                 if(blueStretchMin < blueMin)
                 {
                     blueStretchMin = blueMin;
@@ -208,7 +214,7 @@ int main (int argc, char * const argv[])
             std::cout << "Linear stretch blue between " << blueStretchMin << " and " << blueStretchMax << std::endl;
             
             std::cout << "\nStretching RGB values and creating new output file.\n";
-            spdlib::SPDLinearStretchRGBValues *pulseProcessorStretch = new spdlib::SPDLinearStretchRGBValues(redStretchMin, redStretchMax, greenStretchMin, greenStretchMax, blueStretchMin, blueStretchMax);
+            spdlib::SPDLinearStretchRGBValues *pulseProcessorStretch = new spdlib::SPDLinearStretchRGBValues(redStretchMin, redStretchMax, greenStretchMin, greenStretchMax, blueStretchMin, blueStretchMax, stretchIndependSwitch.getValue());
             processPulses.processPulsesWithOutputSPD(pulseProcessorStretch, spdInFile, outputSPDFile);
             
             delete spdInFile;
