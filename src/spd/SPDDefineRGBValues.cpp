@@ -305,18 +305,30 @@ namespace spdlib
     
     uint_fast16_t SPDLinearStretchRGBValues::scalePixelValue(uint_fast16_t value)
     {
+        uint_fast16_t val = 0;
         if(value < totalMin)
         {
-            return 0;
+            val = 0;
         }
         else if(value > totalMax)
         {
-            return 255;
+            val = 255;
         }
         else
         {
-            return ((value-totalMin)/maxRange)*255;
+            val = ((value-totalMin)/maxRange)*255;
         }
+        
+        if(val > 255)
+        {
+            val = 255;
+        }
+        else if(val < 0)
+        {
+            val = 0;
+        }
+        
+        return val;
     }
     
         
