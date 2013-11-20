@@ -76,13 +76,10 @@ int main (int argc, char * const argv[])
 		cmd.add( returnOfInterestArg );
         
         TCLAP::SwitchArg minSwitch("","min","Extract only the minimum returns (within the bin and therefore only available for SPD file, not UPD).", false);
+        cmd.add( minSwitch );
+        
         TCLAP::SwitchArg maxSwitch("","max","Extract only the maximum returns (within the bin and therefore only available for SPD file, not UPD).", false);
-        
-        std::vector<TCLAP::Arg*> arguments;
-        arguments.push_back(&minSwitch);
-        arguments.push_back(&maxSwitch);
-        cmd.xorAdd(arguments);
-        
+        cmd.add( maxSwitch );
         
 		TCLAP::ValueArg<std::string> inputFileArg("i","input","The input SPD file.",true,"","String");
 		cmd.add( inputFileArg );
@@ -134,6 +131,11 @@ int main (int argc, char * const argv[])
                 std::cout << "WARNING: Did not recognise return type so defaulting to ALL.\n";
                 returnVal = spdlib::SPD_ALL_RETURNS;
             }
+        }
+        
+        if(minSwitch.getValue() & maxSwitch.getValue())
+        {
+            throw spdlib::SPDException("The --min and --max option cannot both be selected.");
         }
         
         bool minMaxSet = false;
