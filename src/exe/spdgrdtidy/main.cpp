@@ -52,9 +52,11 @@ int main (int argc, char * const argv[])
         TCLAP::CmdLine cmd("Attempt to tidy up the ground return classification: spdgrdtidy", ' ', "1.0.0");
 		
         TCLAP::SwitchArg negHeightSwitch("","negheights","Classify negative height as ground", false);
+        TCLAP::SwitchArg planeFitSwitch("","planefit","Remove falsely classified ground returns using plane fitting", false);
         
         std::vector<TCLAP::Arg*> arguments;
         arguments.push_back(&negHeightSwitch);
+        arguments.push_back(&planeFitSwitch);
         cmd.xorAdd(arguments);
         
         TCLAP::ValueArg<boost::uint_fast32_t> numOfRowsBlockArg("r","blockrows","Number of rows within a block (Default 100)",false,100,"unsigned int");
@@ -94,6 +96,10 @@ int main (int argc, char * const argv[])
             {
                 throw spdlib::SPDException("The height field must be defined; use spddefheight.");
             }
+        }
+        else if(planeFitSwitch.getValue())
+        {
+            
         }
         else
         {

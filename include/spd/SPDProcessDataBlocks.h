@@ -52,7 +52,7 @@ namespace spdlib
 	class SPDProcessDataBlocks
 	{
 	public:		
-		SPDProcessDataBlocks(SPDDataBlockProcessor *dataBlockProcessor, boost::uint_fast32_t overlap=25, boost::uint_fast32_t blockXSize=250, boost::uint_fast32_t blockYSize=250, bool printProgress=true);
+		SPDProcessDataBlocks(SPDDataBlockProcessor *dataBlockProcessor, boost::uint_fast32_t overlap=25, boost::uint_fast32_t blockXSize=250, boost::uint_fast32_t blockYSize=250, bool printProgress=true, bool keepMinExtent=true);
 		SPDProcessDataBlocks(const SPDProcessDataBlocks &processDataBlock);
 		
         void processDataBlocksGridPulsesInputImage(SPDFile *spdInFile, std::string outFile, std::string imageFilePath) throw(SPDProcessingException);
@@ -81,6 +81,7 @@ namespace spdlib
         boost::uint_fast32_t blockXSize;
         boost::uint_fast32_t blockYSize;
 		bool printProgress;
+        bool keepMinExtent;
 	};
 }
 

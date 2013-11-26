@@ -27,7 +27,7 @@
 namespace spdlib
 {
 
-    SPDProcessDataBlocks::SPDProcessDataBlocks(SPDDataBlockProcessor *dataBlockProcessor, boost::uint_fast32_t overlap, boost::uint_fast32_t blockXSize, boost::uint_fast32_t blockYSize, bool printProgress): dataBlockProcessor(NULL), overlap(0), blockXSize(0), blockYSize(0), printProgress(true)
+    SPDProcessDataBlocks::SPDProcessDataBlocks(SPDDataBlockProcessor *dataBlockProcessor, boost::uint_fast32_t overlap, boost::uint_fast32_t blockXSize, boost::uint_fast32_t blockYSize, bool printProgress, bool keepMinExtent): dataBlockProcessor(NULL), overlap(0), blockXSize(0), blockYSize(0), printProgress(true)
 
     {
         this->dataBlockProcessor = dataBlockProcessor;
@@ -35,6 +35,7 @@ namespace spdlib
         this->blockXSize = blockXSize;
         this->blockYSize = blockYSize;
         this->printProgress = printProgress;
+        this->keepMinExtent = keepMinExtent;
     }
 
     SPDProcessDataBlocks::SPDProcessDataBlocks(const SPDProcessDataBlocks &processDataBlock): dataBlockProcessor(NULL), overlap(0), blockXSize(0), blockYSize(0), printProgress(true)
@@ -265,7 +266,8 @@ namespace spdlib
                 fileWriter = new SPDNonSeqFileWriter();
             }
             fileWriter->open(spdOutFile, outFile);
-
+            fileWriter->setKeepMinExtent(keepMinExtent);
+            
             boost::uint_fast32_t pulsesBlockSizeX = this->blockXSize + (2 * this->overlap);
             boost::uint_fast32_t pulsesBlockSizeY = this->blockYSize + (2 * this->overlap);
 
@@ -1856,7 +1858,7 @@ namespace spdlib
                 fileWriter = new SPDNonSeqFileWriter();
             }
             fileWriter->open(spdOutFile, outFile);
-            fileWriter->setKeepMinExtent(true);
+            fileWriter->setKeepMinExtent(keepMinExtent);
 
             boost::uint_fast32_t pulsesBlockSizeX = this->blockXSize + (2 * this->overlap);
             boost::uint_fast32_t pulsesBlockSizeY = this->blockYSize + (2 * this->overlap);
