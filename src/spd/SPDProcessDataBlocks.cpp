@@ -1968,7 +1968,7 @@ namespace spdlib
                     {
                         std::cout << "Processing block " << cBlocksIdx++ << " of " << numBlocks << " blocks\n";
                     }
-
+                    
                     //std::cout << "Block [" << blockMinX << "," << blockMaxX << "][" << blockMinY << "," << blockMaxY << "]\n";
 
                     //std::cout << "Block Origin [" << blockXOrigin << "," << blockYOrigin <<"]\n";
