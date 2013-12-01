@@ -296,33 +296,62 @@ namespace spdlib
             //std::cout << "Size Raster [" << *xSizeRaster << "," << *ySizeRaster << "]\n";
             
             SPDTPSNumPtsUseAvThinInterpolator *interpolator = new SPDTPSNumPtsUseAvThinInterpolator((interpMaxRadius*rasterScale), interpNumPoints, SPD_USE_Z, rasterScale, true);
-            interpolator->initInterpolator(pulses, xSizePulses, ySizePulses, SPD_GROUND);
             
-            double currentX = bbox[0] + (rasterScale/2);
-            double currentY = bbox[1] - (rasterScale/2);
+            
             raster = new float*[(*ySizeRaster)];
             
-            boost::uint_fast32_t feedback = (*ySizeRaster)/10;
-			boost::uint_fast32_t feedbackCounter = 0;
-			std::cout << "Started " << std::flush;
-            for(boost::uint_fast32_t i = 0; i < (*ySizeRaster); ++i)
+            try
             {
-                if(((*ySizeRaster) >= 10) && ((i % feedback) == 0))
-				{
-					std::cout << "." << feedbackCounter << "." << std::flush;
-					feedbackCounter = feedbackCounter + 10;
-				}
-                currentX = bbox[0] + (rasterScale/2);
-                raster[i] = new float[(*xSizeRaster)];
-                for(boost::uint_fast32_t j = 0; j < (*xSizeRaster); ++j)
+                interpolator->initInterpolator(pulses, xSizePulses, ySizePulses, SPD_GROUND);
+                
+                double currentX = bbox[0] + (rasterScale/2);
+                double currentY = bbox[1] - (rasterScale/2);
+                
+                boost::uint_fast32_t feedback = (*ySizeRaster)/10;
+                boost::uint_fast32_t feedbackCounter = 0;
+                std::cout << "Started " << std::flush;
+                for(boost::uint_fast32_t i = 0; i < (*ySizeRaster); ++i)
                 {
-                    //std::cout << "pxl [" << currentX << "," << currentY << "]\n";
-                    raster[i][j] = interpolator->getValue(currentX, currentY);
-                    currentX = currentX + rasterScale;
+                    if(((*ySizeRaster) >= 10) && ((i % feedback) == 0))
+                    {
+                        std::cout << "." << feedbackCounter << "." << std::flush;
+                        feedbackCounter = feedbackCounter + 10;
+                    }
+                    currentX = bbox[0] + (rasterScale/2);
+                    raster[i] = new float[(*xSizeRaster)];
+                    for(boost::uint_fast32_t j = 0; j < (*xSizeRaster); ++j)
+                    {
+                        //std::cout << "pxl [" << currentX << "," << currentY << "]\n";
+                        raster[i][j] = interpolator->getValue(currentX, currentY);
+                        currentX = currentX + rasterScale;
+                    }
+                    currentY = currentY - rasterScale;
                 }
-                currentY = currentY - rasterScale;
+                std::cout << " Complete.\n";
             }
-            std::cout << " Complete.\n";
+            catch(SPDProcessingException &e)
+            {
+                boost::uint_fast32_t feedback = (*ySizeRaster)/10;
+                boost::uint_fast32_t feedbackCounter = 0;
+                std::cerr << "WARNING: An error occured when initialising the interpolated - increasing the block size can help fix this under some circumstances.\n";
+                std::cerr << "ERROR (has been ignored): " << e.what() << std::endl;
+                std::cout << "Started " << std::flush;
+                for(boost::uint_fast32_t i = 0; i < (*ySizeRaster); ++i)
+                {
+                    if(((*ySizeRaster) >= 10) && ((i % feedback) == 0))
+                    {
+                        std::cout << "." << feedbackCounter << "." << std::flush;
+                        feedbackCounter = feedbackCounter + 10;
+                    }
+
+                    raster[i] = new float[(*xSizeRaster)];
+                    for(boost::uint_fast32_t j = 0; j < (*xSizeRaster); ++j)
+                    {
+                        raster[i][j] = -1;
+                    }
+                }
+                std::cout << " Complete.\n";
+            }
             
             delete interpolator;
         } 
@@ -718,13 +747,20 @@ namespace spdlib
 			
 			idx = new SPDPointGridIndex();
             std::cout << "Building Index with " << pts->size() << " points\n";
-			idx->buildIndex(pts, this->gridResolution);
-            
-            if(thinGrid)
+            if(pts->size() > 10)
             {
-                idx->thinPtsWithAvZ(this->elevVal);
+                idx->buildIndex(pts, this->gridResolution);
+                
+                if(thinGrid)
+                {
+                    idx->thinPtsWithAvZ(this->elevVal);
+                }
             }
-            
+            else
+            {
+                throw SPDProcessingException("There are too few points to build the interpolator");
+            }
+        
             initialised = true;
 		}
 		catch (SPDProcessingException &e) 
@@ -784,11 +820,18 @@ namespace spdlib
 			
 			idx = new SPDPointGridIndex();
             std::cout << "Building Index with " << pts->size() << " points\n";
-			idx->buildIndex(pts, this->gridResolution);
-            
-            if(thinGrid)
+            if(pts->size() > 10)
             {
-                idx->thinPtsWithAvZ(this->elevVal);
+                idx->buildIndex(pts, this->gridResolution);
+                
+                if(thinGrid)
+                {
+                    idx->thinPtsWithAvZ(this->elevVal);
+                }
+            }
+            else
+            {
+                throw SPDProcessingException("There are too few points to build the interpolator");
             }
             
             initialised = true;
@@ -845,11 +888,18 @@ namespace spdlib
             
             idx = new SPDPointGridIndex();
             std::cout << "Building Index with " << pts->size() << " points\n";
-            idx->buildIndex(pts, this->gridResolution);
-            
-            if(thinGrid)
+            if(pts->size() > 10)
             {
-                idx->thinPtsWithAvZ(this->elevVal);
+                idx->buildIndex(pts, this->gridResolution);
+                
+                if(thinGrid)
+                {
+                    idx->thinPtsWithAvZ(this->elevVal);
+                }
+            }
+            else
+            {
+                throw SPDProcessingException("There are too few points to build the interpolator");
             }
             
             initialised = true;
@@ -906,11 +956,18 @@ namespace spdlib
             
             idx = new SPDPointGridIndex();
             std::cout << "Building Index with " << pts->size() << " points\n";
-            idx->buildIndex(pts, this->gridResolution);
-            
-            if(thinGrid)
+            if(pts->size() > 10)
             {
-                idx->thinPtsWithAvZ(this->elevVal);
+                idx->buildIndex(pts, this->gridResolution);
+                
+                if(thinGrid)
+                {
+                    idx->thinPtsWithAvZ(this->elevVal);
+                }
+            }
+            else
+            {
+                throw SPDProcessingException("There are too few points to build the interpolator");
             }
             
             initialised = true;
