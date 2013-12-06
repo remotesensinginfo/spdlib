@@ -327,6 +327,21 @@ namespace spdlib{
         
         return num;
     }
+    
+    bool SPDTextFileUtilities::lineStartWithHash(std::string line) throw(SPDIOException)
+    {
+        bool hashPresent = false;
+        
+        std::string tmpLine = line;
+        boost::algorithm::trim(tmpLine);
+        
+        if(tmpLine.at(0) == '#')
+        {
+            hashPresent = true;
+        }
+        
+        return hashPresent;
+    }
 	
 	double SPDTextFileUtilities::strtodouble(std::string inValue) throw(SPDTextFileException)
 	{

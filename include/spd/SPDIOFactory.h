@@ -42,6 +42,7 @@
 #include "spd/SPDLASFileImporter.h"
 #include "spd/SPDDecomposedCOOFileImporter.h"
 #include "spd/SPDASCIIMultiLineReader.h"
+#include "spd/SPDImportSALCAData2SPD.h"
 
 #include "spd/SPDFileWriter.h"
 #include "spd/SPDGeneralASCIIFileWriter.h"

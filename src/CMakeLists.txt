@@ -86,7 +86,8 @@ set(SPDLIB_H_IO
 	${SPDLIB_HEADERS_DIR}/SPDLASFileImporter.h
 	${SPDLIB_HEADERS_DIR}/SPDLineParserASCII.h
 	${SPDLIB_HEADERS_DIR}/SPDLineParserASCIIPulsePerRow.h
-	${SPDLIB_HEADERS_DIR}/SPDTextFileImporter.h)
+	${SPDLIB_HEADERS_DIR}/SPDTextFileImporter.h
+	${SPDLIB_HEADERS_DIR}/SPDImportSALCAData2SPD.h)
 
 set(SPDLIB_H_Processing_Interfaces
 	${SPDLIB_HEADERS_DIR}/SPDConvertFormats.h
@@ -184,7 +185,8 @@ set(SPDLIB_CPP_IO
 	${SPDLIB_SRC_DIR}/SPDLASFileImporter.cpp
 	${SPDLIB_SRC_DIR}/SPDLineParserASCII.cpp
 	${SPDLIB_SRC_DIR}/SPDLineParserASCIIPulsePerRow.cpp
-	${SPDLIB_SRC_DIR}/SPDTextFileImporter.cpp )
+	${SPDLIB_SRC_DIR}/SPDTextFileImporter.cpp
+	${SPDLIB_SRC_DIR}/SPDImportSALCAData2SPD.cpp )
 	
 set(SPDLIB_CPP_Processing_Interfaces
 	${SPDLIB_SRC_DIR}/SPDConvertFormats.cpp
