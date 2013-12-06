@@ -198,12 +198,13 @@ namespace spdlib
                                 pulse->z0 = 0;
                             }
                             
-                            pulse->azimuth = (*iterFiles).first;
-                            pulse->zenith = (zen / M_PI) * 180;
+                            pulse->azimuth = ((*iterFiles).first/180.0)*M_PI;
+                            pulse->zenith = zen;
                             //std::cout << "pulse->zenith = " << pulse->zenith << std::endl;
                             pulse->scanline = scanline;
                             pulse->scanlineIdx = scanlineIdx;
                             pulse->receiveWaveNoiseThreshold = 30;
+                            pulse->rangeToWaveformStart = 10;
                             
                             processor->processImportedPulse(spdFile, pulse);
                         }
