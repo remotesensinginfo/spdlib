@@ -422,7 +422,7 @@ namespace spdlib
 					pt->x = tmpX;
 					pt->y = tmpY;
 					pt->z = tmpZ;
-					pt->range = SPD_SPEED_OF_LIGHT_NS * peakTime;
+					pt->range = SPD_SPEED_OF_LIGHT_NS * (peakTime/2);
 					pt->amplitudeReturn = parameters[idx];
 					pt->widthReturn = ((parameters[idx+2] * spdFile->getTemporalBinSpacing()) * 10.0) * (2.0*sqrt(2.0*log(2.0)));
 					pt->classification = SPD_UNCLASSIFIED;
@@ -830,11 +830,32 @@ namespace spdlib
 					ptUtils.initSPDPoint(pt);
 					pt->returnID = peakCount++;
 					pt->gpsTime = pulse->gpsTime + peakTime;
+                    
+                    if(debug_info)
+                    {
+                        std::cout << "pulse->zenith = " << pulse->zenith << std::endl;
+                        std::cout << "pulse->azimuth = " << pulse->azimuth << std::endl;
+                        
+                        std::cout << "pulse->rangeToWaveformStart = " << pulse->rangeToWaveformStart << std::endl;
+                        std::cout << "peakTime = " << peakTime << std::endl;
+                        std::cout << "pulse->x0 = " << pulse->x0 << std::endl;
+                        std::cout << "pulse->y0 = " << pulse->y0 << std::endl;
+                        std::cout << "pulse->z0 = " << pulse->z0 << std::endl;
+                    }
+                    
 					SPDConvertToCartesian(pulse->zenith, pulse->azimuth, (pulse->rangeToWaveformStart + (SPD_SPEED_OF_LIGHT_NS * (peakTime/2.0))), pulse->x0, pulse->y0, pulse->z0, &tmpX, &tmpY, &tmpZ);
-					pt->x = tmpX;
+					if(debug_info)
+                    {
+                        std::cout << "Pt Location [" << tmpX << ", " << tmpY << ", " << tmpZ << "]\n";
+                    }
+                    pt->x = tmpX;
 					pt->y = tmpY;
 					pt->z = tmpZ;
-					pt->range = SPD_SPEED_OF_LIGHT_NS * peakTime;
+					pt->range = SPD_SPEED_OF_LIGHT_NS * (peakTime/2);
+                    if(debug_info)
+                    {
+                        std::cout << "pt->range = " << pt->range << std::endl;
+                    }
                     pt->classification = SPD_UNCLASSIFIED;
 					
 					if((parameters[1] < 0) | (waveform[maxPeakIdx] < 0))

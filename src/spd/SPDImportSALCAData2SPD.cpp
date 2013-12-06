@@ -93,18 +93,18 @@ namespace spdlib
             spdFile->setTemporalBinSpacing(0.5);
             
             
-            int z = 0, band = 0;    /*loop control*/
-            int numb = 0;           /* number of zenith steps */
-            int nBins = 0;          /* range bins per file (one file per azimuth)*/
-            int sOffset = 0;        /*bounds to avoid outgoing pulse*/
-            int start[2];           /*array start */
-            int end[2];             /*array end bounds*/
-            int length = 0;         /*total file length*/
-            int waveStart = 0;      /*waveform start in data array*/
-            float zen = 0;          /*true zenith*/
-            float az = 0;           /*true azimuth*/
-            char *data = NULL;      /*waveform data. Holds whole file.*/
-            char ringTest = 0;      /*ringing and saturation indicator*/
+            int z = 0, band = 0;    /* Loop control */
+            int numb = 0;           /* Number of zenith steps */
+            int nBins = 0;          /* Range bins per file (one file per azimuth) */
+            int sOffset = 0;        /* Bounds to avoid outgoing pulse */
+            int start[2];           /* Array start */
+            int end[2];             /* Array end bounds */
+            int length = 0;         /* Total file length */
+            int waveStart = 0;      /* Waveform start in data array */
+            float zen = 0;          /* True zenith */
+            float az = 0;           /* True azimuth */
+            char *data = NULL;      /* Waveform data. Holds whole file. */
+            char ringTest = 0;      /* Ringing and saturation indicator */
             int val = 0;
             SPDPulse *pulse = NULL;
             SPDPulseUtils plsUtils;
@@ -112,33 +112,36 @@ namespace spdlib
             boost::uint_fast32_t scanline = 0;
             boost::uint_fast16_t scanlineIdx = 0;
             
-            sOffset=7;   /*1.05 m*/
+            sOffset=7;   /* 1.05 m */
             
-            numb=(int)(inParams->maxZen/0.059375); /*number of zenith steps. Zenith res is hard wired for SALCA*/
+            numb=(int)(inParams->maxZen/0.059375); /* Number of zenith steps. Zenith res is hard wired for SALCA */
             nBins=(int)((150.0+inParams->maxR)/0.15);
             
-            /*band start and end bins for sampling*/
-            start[0]=sOffset;   /*1.05 m to avoid the outgoing pulse*/
+            /* Band start and end bins for sampling */
+            start[0]=sOffset;   /* 1.05 m to avoid the outgoing pulse */
             end[0]=(int)(inParams->maxR/0.15);
-            start[1]=1000+sOffset;   /*7 to avoid outgoing pulses*/
+            start[1]=1000+sOffset;   /* 7 to avoid outgoing pulses */
             end[1]=nBins;
             
-            /*set up squint angles*/
+            /* Set up squint angles */
             this->translateSquint(inParams);
             this->setSquint(inParams, numb);
             
             for(std::vector<std::pair<float, std::string> >::iterator iterFiles = inputBinFiles->begin(); iterFiles != inputBinFiles->end(); ++iterFiles)
             {
                 std::cout << (*iterFiles).second << " with azimuth = " << (*iterFiles).first << std::endl;
-                /* read binary data into an array */
+                /* Read binary data into an array */
                 data=this->readData((*iterFiles).second, (*iterFiles).first, &numb, &nBins, &length, inParams);
                 
                 if(data)
                 {
+                    zen = 0;
                     for(z = 0; z < numb; ++z)
                     {
                         /* zenith loop */
-                        zen=inParams->zen[z];
+                        //zen=inParams->zen[z]; /* This is the 'really' zenith calculated value as provided by Steven */
+                        zen += 0.059375; /* TESTING: trying to simiplify with regular zenith intervals to see if get something closer to what I expect */
+                        
                         az=inParams->azOff[z]+(float)(*iterFiles).first*inParams->azStep+inParams->azStart;
                         
                         for(band = 0; band < 2; ++band)
@@ -164,16 +167,7 @@ namespace spdlib
                                 val = data[n];
                                 val += 128;
                                 pulse->received[i] = val;
-                                /*if(i == 0)
-                                {
-                                    std::cout << val;
-                                }
-                                else
-                                {
-                                    std::cout << ", " << val;
-                                }*/
                             }
-                            //std::cout << std::endl;
                             
                             pulse->sourceID = band;
                             if(band == 0)
@@ -199,12 +193,13 @@ namespace spdlib
                             }
                             
                             pulse->azimuth = ((*iterFiles).first/180.0)*M_PI;
-                            pulse->zenith = zen;
-                            //std::cout << "pulse->zenith = " << pulse->zenith << std::endl;
-                            pulse->scanline = scanline;
-                            pulse->scanlineIdx = scanlineIdx;
+                            pulse->zenith = ((zen/180.0)*M_PI)+(M_PI/2);
+                            //std::cout << z << "\t zen = " << zen << "\tpulse->zenith = " << pulse->zenith << std::endl;
+                            //std::cout << z << "," << zen << std::endl;
+                            pulse->scanline = scanlineIdx;
+                            pulse->scanlineIdx = scanline;
                             pulse->receiveWaveNoiseThreshold = 30;
-                            pulse->rangeToWaveformStart = 10;
+                            pulse->rangeToWaveformStart = 0;
                             
                             processor->processImportedPulse(spdFile, pulse);
                         }
@@ -454,15 +449,15 @@ namespace spdlib
     /** Caluclate squint angle */
     void SPDSALCADataBinaryImporter::squint(float *cZen,float *cAz,float zM,float aM,float zE,float aE,float omega)
     {
-        float inc = 0;  /*angle of incidence*/
+        float inc = 0;  /* Angle of incidence */
         float *vect = NULL;
-        /*working variables*/
-        float mX=0,mY=0,mZ=0; /*mirror vector*/
-        float lX=0,lY=0,lZ=0; /*incoming laser vector*/
-        float rX=0,rY=0,rZ=0; /*vector orthogonal to m and l*/
-        float thetaZ=0;       /*angle to rotate to mirror surface about z axis*/
-        float thetaX=0;       /*angle to rotate about x axis*/
-        float slope=0;        /*rotation vector slope angle, for rounding issues*/
+        /* Working variables */
+        float mX=0,mY=0,mZ=0; /* Mirror vector */
+        float lX=0,lY=0,lZ=0; /* Incoming laser vector */
+        float rX=0,rY=0,rZ=0; /* Vector orthogonal to m and l */
+        float thetaZ=0;       /* Angle to rotate to mirror surface about z axis */
+        float thetaX=0;       /* Angle to rotate about x axis */
+        float slope=0;        /* Rotation vector slope angle, for rounding issues */
         /*trig*/
         float coszE=0,sinzE=0;
         float cosaE=0,sinaE=0;
@@ -478,17 +473,17 @@ namespace spdlib
         coszM=cos(zM);
         sinzM=sin(zM);
         
-        mX=cosW;        /*mirror normal vector*/
+        mX=cosW;        /* Mirror normal vector */
         mY=sinW*sinzM;
         mZ=sinW*coszM;
-        lX=-1.0*coszE;  /*laser Pointing vector*/
+        lX=-1.0*coszE;  /* Laser Pointing vector */
         lY=sinaE*sinzE;
         lZ=cosaE*sinzE;
-        rX=lY*mZ-lZ*mY; /*cross product of mirror and laser*/
-        rY=lZ*mX-lX*mZ; /*ie the vector to rotate about*/
+        rX=lY*mZ-lZ*mY; /* Cross product of mirror and laser */
+        rY=lZ*mX-lX*mZ; /* ie The vector to rotate about */
         rZ=lX*mY-lY*mX;
         
-        inc=acos(-1.0*mX*lX+mY*lY+mZ*lZ);   /*angle of incidence. Reverse x to get acute angle*/
+        inc=acos(-1.0*mX*lX+mY*lY+mZ*lZ);   /* Angle of incidence. Reverse x to get acute angle */
         thetaZ=-1.0*atan2(rX,rY);
         thetaX=atan2(rZ,sqrt(rX*rX+rY*rY));
         
@@ -497,11 +492,11 @@ namespace spdlib
         vect[1]=lY;
         vect[2]=lZ;
         
-        /*to avoid rounding rotate to z or y axis as appropriate*/
+        /* To avoid rounding rotate to z or y axis as appropriate */
         slope=atan2(sqrt(rX*rX+rY*rY),fabs(rZ));
         if(fabs(slope)<(M_PI/4.0))
         {
-            /*rotate about z axis*/
+            /* Rotate about z axis */
             thetaX=-1.0*atan2(sqrt(rX*rX+rY*rY),rZ);
             thetaZ=-1.0*atan2(rX,rY);
             this->rotateZ(vect,thetaZ);
@@ -512,7 +507,7 @@ namespace spdlib
         }
         else
         {
-            /*rotate about y axis*/
+            /* Rotate about y axis */
             thetaZ=-1.0*atan2(rX,rY);
             thetaX=atan2(rZ,sqrt(rX*rX+rY*rY));
             this->rotateZ(vect,thetaZ);
