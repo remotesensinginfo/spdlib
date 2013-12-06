@@ -43,61 +43,62 @@ import math
 class SPDPrintPulses (object):
 
     def printPulse(self, pulse):
-        print "Pulse ID: ", pulse.pulseID
-        print "Pulse GPS Time: ", pulse.gpsTime
-        print "Pulse Index [x,y]: [", pulse.xIdx, ",", pulse.yIdx, "]"
-        print "Pulse Origin [x,y,z,h]: [", pulse.x0, ",", pulse.y0, ",", pulse.z0, ",", pulse.h0, "]"
-        print "Pulse Azimuth: ", math.degrees(pulse.azimuth)
-        print "Pulse Zenith: ", math.degrees(pulse.zenith)
-        print "Pulse Noise Thres: ", pulse.waveNoiseThreshold
-        print "Pulse Num. Transmitted Bins: ", pulse.numOfTransmittedBins
-        print "Transmitted Offset: ", pulse.transWaveOffset
-        print "Transmitted Gain: ", pulse.transWaveGain
-        print "Pulse Num. Received Bins: ", pulse.numOfReceivedBins
-        print "Received Offset: ", pulse.receiveWaveOffset
-        print "Received Gain: ", pulse.receiveWaveGain
+        print("Pulse ID: " + str(pulse.pulseID))
+        print("Pulse GPS Time: " + str(pulse.gpsTime))
+        print("Pulse Index [x,y]: [" + str(pulse.xIdx) + "," + str(pulse.yIdx) + "]")
+        print("Pulse Origin [x,y,z,h]: [" + str(pulse.x0) + "," + str(pulse.y0) + "," + str(pulse.z0) + "," + str(pulse.h0) + "]")
+        print("Pulse Azimuth: " + str(math.degrees(pulse.azimuth)))
+        print("Pulse Zenith: " + str(math.degrees(pulse.zenith)))
+        print("Pulse Noise Transmitted Thres: " + str(pulse.transWaveNoiseThres))
+        print("Pulse Noise Received Thres: " + str(pulse.receiveWaveNoiseThreshold))
+        print("Pulse Num. Transmitted Bins: " + str(pulse.numOfTransmittedBins))
+        print("Transmitted Offset: " + str(pulse.transWaveOffset))
+        print("Transmitted Gain: " + str(pulse.transWaveGain))
+        print("Pulse Num. Received Bins: " + str(pulse.numOfReceivedBins))
+        print("Received Offset: " + str(pulse.receiveWaveOffset))
+        print("Received Gain: " + str(pulse.receiveWaveGain))
         if pulse.numOfTransmittedBins > 0:
-            print "Transmitted bins: "
+            print("Transmitted bins: ")
             for val in pulse.transmitted:
-                print (val*pulse.transWaveGain)+pulse.transWaveOffset, ",",
-            #print "\n",
+                print(str((val*pulse.transWaveGain)+pulse.transWaveOffset) + ",", end="")
+            print("")
         if pulse.numOfReceivedBins > 0:
-            print "Received bins: "
+            print("Received bins: ")
             for val in pulse.received:
-                print (val*pulse.receiveWaveGain)+pulse.receiveWaveOffset, ",",
-            #print "\n",
-        print "Pulse Num Points: ", pulse.numberOfReturns
+                print(str((val*pulse.receiveWaveGain)+pulse.receiveWaveOffset) + ",", end="")
+            print("")
+        print("Pulse Num Points: " + str(pulse.numberOfReturns))
         if pulse.numberOfReturns > 0:
             for pt in pulse.pts:
-                print "Return ID: ", pt.returnID
-                print "[x,y,z,h]: [", pt.x, ",", pt.y, ",", pt.z, ",", pt.height, "]"
-                print "Amplitude: ", pt.amplitudeReturn
-                print "Width: ", pt.widthReturn
-                print "Range: ", pt.range
-                print "Class: ", pt.classification
-                print "Wave Index: ", pt.wavePacketDescIdx
-                print "Wave Offset: ", pt.waveformOffset
-        print ""
+                print("Return ID: ", str(pt.returnID))
+                print("[x,y,z,h]: [" + str(pt.x) + "," + str(pt.y) + "," + str(pt.z) + "," + str(pt.height) + "]")
+                print("Amplitude: " + str(pt.amplitudeReturn))
+                print("Width: " + str(pt.widthReturn))
+                print("Range: " + str(pt.range))
+                print("Class: " + str(pt.classification))
+                print("Wave Index: " + str(pt.wavePacketDescIdx))
+                print("Wave Offset: " + str(pt.waveformOffset))
+        print("\n")
 
     def printSPDFilePulses(self, inputFile, row, startCol, endCol):
-        print "SPD File: ", inputFile
+        print("SPD File: " + inputFile)
         spdFile = spdpy.openSPDFileHeader(inputFile)
-        print "Number of SPD Pulse: ", spdFile.numPulses
-        print "Number of SPD Point: ", spdFile.numPts
-        print "Index Size: ", spdFile.numBinsX, " x ", spdFile.numBinsY
+        print("Number of SPD Pulse: " + str(spdFile.numPulses))
+        print("Number of SPD Point: " + str(spdFile.numPts))
+        print("Index Size: " + str(spdFile.numBinsX) + " x " + str(spdFile.numBinsY))
         pulses = spdpy.readSPDPulsesRowCols(spdFile, row, startCol, endCol)
-        print "Extracted ", len(pulses), " pulses."
+        print("Extracted " + str(len(pulses)) + " pulses.")
         for pulse in pulses:
             self.printPulse(pulse)
 
 
     def printUPDFilePulses(self, inputFile, startPulse, numPulses):
-        print "UPD File: ", inputFile
-        spdFile = spdpy.openUPDFileHeader(inputFile)
-        print "Number of SPD Pulse: ", spdFile.numPulses
-        print "Number of SPD Point: ", spdFile.numPts
-        pulses = spdpy.readUPD(spdFile, startPulse, numPulses)
-        print "Extracted ", len(pulses), " pulses."
+        print("UPD File: " + inputFile)
+        spdFile = spdpy.openSPDFileHeader(inputFile)
+        print("Number of SPD Pulse: " + str(spdFile.numPulses))
+        print("Number of SPD Point: " + str(spdFile.numPts))
+        pulses = spdpy.readSPDPulsesOffset(spdFile, startPulse, numPulses)
+        print("Extracted " + str(len(pulses)) + " pulses.")
         for pulse in pulses:
             self.printPulse(pulse)
 
@@ -128,16 +129,16 @@ class SPDPrintPulses (object):
             self.help()
 
     def help(self):
-        print 'spdPrintPulses.py script prints the pulses from SPD/UPD files '
-        print ''
-        print 'Usage: python spdPlotPulses.py <SPD/UPD> <INPUT>'
-        print '       [IF UPD <START PULSE> <NUM PULSES>]'
-        print '       [IF SPD <ROW> <START COL> <END COL>]'
-        print '\t<UPD/SPD> - Select whether input file is either UPD or SPD'
-        print '\t<INPUT> - input SPD or UPD file'
-        print '\nThis script was distributed with version 1.0.0 of SPDLib\'s'
-        print 'python bindings.'
-        print 'For maintainance email pete.bunting@aber.ac.uk'
+        print('spdPrintPulses.py script prints the pulses from SPD/UPD files ')
+        print('')
+        print('Usage: python spdPlotPulses.py <SPD/UPD> <INPUT>')
+        print('       [IF UPD <START PULSE> <NUM PULSES>]')
+        print('       [IF SPD <ROW> <START COL> <END COL>]')
+        print('\t<UPD/SPD> - Select whether input file is either UPD or SPD')
+        print('\t<INPUT> - input SPD or UPD file')
+        print('\nThis script was distributed with version 1.0.0 of SPDLib\'s')
+        print('python bindings.')
+        print('For maintainance email petebunting@mac.com')
 
 if __name__ == '__main__':
     obj = SPDPrintPulses()

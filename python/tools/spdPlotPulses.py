@@ -112,47 +112,47 @@ class SPDPlotPulses (object):
         show()
     
     def plotSPDFilePulses(self, inputFile, ampAxis, row, startCol, endCol):
-        print "SPD File: ", inputFile
+        print("SPD File: " + inputFile)
         spdFile = spdpy.openSPDFileHeader(inputFile)
-        print "Number of SPD Pulse: ", spdFile.numPulses
-        print "Number of SPD Point: ", spdFile.numPts
-        print "Index Size: ", spdFile.numBinsX, " x ", spdFile.numBinsY
+        print("Number of SPD Pulse: " + str(spdFile.numPulses))
+        print("Number of SPD Point: ", + str(spdFile.numPts))
+        print("Index Size: " + str(spdFile.numBinsX) + " x " + str(spdFile.numBinsY))
         pulses = spdpy.readSPDPulsesRowCols(spdFile, row, startCol, endCol)
-        print "Extracted ", len(pulses), " pulses."
+        print("Extracted " + str(len(pulses)) + " pulses.")
         for pulse in pulses:
             if pulse.numOfReceivedBins > 0 and pulse.numberOfReturns >= 0:
                 self.plotReceivedPulse(pulse, ampAxis, spdFile.temporalBinSpacing)
 
     def plotUPDFilePulses(self, inputFile, ampAxis, startPulse, numPulses):
-        print "UPD File: ", inputFile
-        spdFile = spdpy.openUPDFileHeader(inputFile)
-        print "Number of SPD Pulse: ", spdFile.numPulses
-        print "Number of SPD Point: ", spdFile.numPts
-        pulses = spdpy.readUPD(spdFile, startPulse, numPulses)
-        print "Extracted ", len(pulses), " pulses."
+        print("UPD File: " + inputFile)
+        spdFile = spdpy.openSPDFileHeader(inputFile)
+        print("Number of SPD Pulse: " + str(spdFile.numPulses))
+        print("Number of SPD Point: " + str(spdFile.numPts))
+        pulses = spdpy.readSPDPulsesOffset(spdFile, startPulse, numPulses)
+        print("Extracted " + str(len(pulses)) + " pulses.")
         for pulse in pulses:
             if pulse.numOfReceivedBins > 0 and pulse.numberOfReturns >= 0:
                 self.plotReceivedPulse(pulse, ampAxis, spdFile.temporalBinSpacing)
                 
     def plotSPDFileTransPulses(self, inputFile, ampAxis, row, startCol, endCol):
-        print "SPD File: ", inputFile
+        print("SPD File: " + inputFile)
         spdFile = spdpy.openSPDFileHeader(inputFile)
-        print "Number of SPD Pulse: ", spdFile.numPulses
-        print "Number of SPD Point: ", spdFile.numPts
-        print "Index Size: ", spdFile.numBinsX, " x ", spdFile.numBinsY
+        print("Number of SPD Pulse: " + str(spdFile.numPulses))
+        print("Number of SPD Point: " + str(spdFile.numPts))
+        print("Index Size: " + str(spdFile.numBinsX) + " x " + str(spdFile.numBinsY))
         pulses = spdpy.readSPDPulsesRowCols(spdFile, row, startCol, endCol)
-        print "Extracted ", len(pulses), " pulses."
+        print("Extracted " + str(len(pulses)) + " pulses.")
         for pulse in pulses:
             if pulse.numOfTransmittedBins > 0:
                 self.plotTransmittedPulse(pulse, ampAxis, spdFile.temporalBinSpacing)
 
     def plotUPDFileTransPulses(self, inputFile, ampAxis, startPulse, numPulses):
-        print "UPD File: ", inputFile
-        spdFile = spdpy.openUPDFileHeader(inputFile)
-        print "Number of SPD Pulse: ", spdFile.numPulses
-        print "Number of SPD Point: ", spdFile.numPts
-        pulses = spdpy.readUPD(spdFile, startPulse, numPulses)
-        print "Extracted ", len(pulses), " pulses."
+        print("UPD File: " + inputFile)
+        spdFile = spdpy.openSPDFileHeader(inputFile)
+        print("Number of SPD Pulse: " + str(spdFile.numPulses))
+        print("Number of SPD Point: " + str(spdFile.numPts))
+        pulses = spdpy.readSPDPulsesOffset(spdFile, startPulse, numPulses)
+        print("Extracted " + str(len(pulses)) + " pulses.")
         for pulse in pulses:
             if pulse.numOfTransmittedBins > 0:
                 self.plotTransmittedPulse(pulse, ampAxis, spdFile.temporalBinSpacing)
@@ -197,19 +197,19 @@ class SPDPlotPulses (object):
             self.help()
     
     def help(self):
-        print 'spdPlotPulses.py script generates plots from SPD/UPD files '
-        print ''
-        print 'Usage: python spdPlotPulses.py <SPD/UPD> <INPUT> <AMPLITUDE AXIS MAX=MAX()>'
-        print '       [IF UPD <START PULSE> <NUM PULSES>] [--trans]'
-        print '       [IF SPD <ROW> <START COL> <END COL>] [--trans]'
-        print '\t<UPD/SPD> - Select whether input file is either UPD or SPD'
-        print '\t<INPUT> - input SPD or UPD file'
-        print '\t<THRESHOLD> - noise threshold for the waveform (plotted as a line)'
-        print '\t --trans - plot the transmitted pulse'
-        print '\t<AMP AXIS MAX> - The maximum value of the amplitude axis. Default is maximum value.'
-        print '\nThis script was distributed with version 1.0.0 of SPDLib\'s'
-        print 'python bindings.'
-        print 'For maintainance email pete.bunting@aber.ac.uk'
+        print('spdPlotPulses.py script generates plots from SPD/UPD files ')
+        print('')
+        print('Usage: python spdPlotPulses.py <SPD/UPD> <INPUT> <AMPLITUDE AXIS MAX=MAX()>')
+        print('       [IF UPD <START PULSE> <NUM PULSES>] [--trans]')
+        print('       [IF SPD <ROW> <START COL> <END COL>] [--trans]')
+        print('\t<UPD/SPD> - Select whether input file is either UPD or SPD')
+        print('\t<INPUT> - input SPD or UPD file')
+        print('\t<THRESHOLD> - noise threshold for the waveform (plotted as a line)')
+        print('\t --trans - plot the transmitted pulse')
+        print('\t<AMP AXIS MAX> - The maximum value of the amplitude axis. Default is maximum value.')
+        print('\nThis script was distributed with version 1.0.0 of SPDLib\'s')
+        print('python bindings.')
+        print('For maintainance email petebunting@mac.com')
 
 if __name__ == '__main__':
     obj = SPDPlotPulses()
