@@ -77,7 +77,10 @@ int main (int argc, char * const argv[])
         
         TCLAP::ValueArg<std::string> inputFilesArg("i","input","The text file with a list of input files.",false,"","String");
 		cmd.add( inputFilesArg );
-		        
+        
+        TCLAP::SwitchArg ignoreRowColSwitch("", "ignore-row-col", "During mosaicing, ignores the row and column count and tile size for output extents, uses those read from tile XML instead", false);
+        cmd.add( ignoreRowColSwitch );
+		      
 		cmd.parse( argc, argv );
         
         if(tilesFileArg.getValue() == "")
@@ -127,11 +130,14 @@ int main (int argc, char * const argv[])
             
             std::cout << "Tile Size: [" << xTileSize << "," << yTileSize << "] Overlap: " << overlap << std::endl;
             
-            double totalSizeX = cols * xTileSize;
-            double totalSizeY = rows * yTileSize;
-            
-            xMax = xMin + totalSizeX;
-            yMax = yMin + totalSizeY;
+            if (!ignoreRowColSwitch.getValue()) {
+                double totalSizeX = cols * xTileSize;
+                double totalSizeY = rows * yTileSize;
+                
+                xMax = xMin + totalSizeX;
+                yMax = yMin + totalSizeY;
+            }
+
             
             std::cout << "Full Area: [" << xMin << "," << xMax << "][" << yMin << "," << yMax << "]\n";
             
