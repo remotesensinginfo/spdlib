@@ -113,7 +113,7 @@ namespace spdlib
     class SPDCHMInterpolation : public SPDDataBlockProcessor
 	{
 	public:
-        SPDCHMInterpolation(SPDPointInterpolator *interpolator);
+        SPDCHMInterpolation(SPDPointInterpolator *interpolator, bool useVegClassifiedPts);
         
         void processDataBlockImage(SPDFile *inSPDFile, std::vector<SPDPulse*> ***pulses, float ***imageDataBlock, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast32_t numImgBands, float binSize) throw(SPDProcessingException);
 		
@@ -141,6 +141,7 @@ namespace spdlib
         
     protected:
         SPDPointInterpolator *interpolator;
+        bool useVegClassifiedPts;
 	};
     
     class SPDAmplitudeInterpolation : public SPDDataBlockProcessor
