@@ -105,10 +105,12 @@ namespace spdlib
                                     }
                                     else if((elevVal == SPD_USE_Z) && ((*iterPts)->z > maxZ))
                                     {
+                                        maxPt = (*iterPts);
                                         maxZ = (*iterPts)->z;
                                     }
                                     else if((elevVal == SPD_USE_HEIGHT) && ((*iterPts)->height > maxZ))
                                     {
+                                        maxPt = (*iterPts);
                                         maxZ = (*iterPts)->height;
                                     }
                                 }
@@ -166,12 +168,12 @@ namespace spdlib
         std::vector<SPDPulse*>::iterator iterPulses;
         std::vector<SPDPoint*>::iterator iterPts;
         
-        bool firstPt = true;
-        double maxZ = 0;
-        SPDPoint *maxPt = NULL;
-        
         if((ptClass == SPD_VEGETATION_TOP) || (ptClass == SPD_ALL_CLASSES_TOP))
         {
+            bool firstPt = true;
+            double maxZ = 0;
+            SPDPoint *maxPt = NULL;
+            
             for(boost::uint_fast32_t i = 0; i < numYBins; ++i)
             {
                 for(boost::uint_fast32_t j = 0; j < numXBins; ++j)
@@ -230,10 +232,12 @@ namespace spdlib
                                     }
                                     else if((elevVal == SPD_USE_Z) && ((*iterPts)->z > maxZ))
                                     {
+                                        maxPt = (*iterPts);
                                         maxZ = (*iterPts)->z;
                                     }
                                     else if((elevVal == SPD_USE_HEIGHT) && ((*iterPts)->height > maxZ))
                                     {
+                                        maxPt = (*iterPts);
                                         maxZ = (*iterPts)->height;
                                     }
                                 }
