@@ -139,6 +139,9 @@ int main (int argc, char * const argv[])
         TCLAP::ValueArg<unsigned int> rbfLayersArg("","rbflayers","The number of layers used within the RBF interpolator",false,3,"unsigned int");
 		cmd.add( rbfLayersArg );
         
+        TCLAP::SwitchArg useOnlyVegReturnsSwitch("","usevegreturns","An option when the CHM interpolation is being applied, where only returns classified as vegetation will be used for the interpolation.", false);
+        cmd.add( useOnlyVegReturnsSwitch );
+        
 		TCLAP::ValueArg<std::string> inputFileArg("i","input","The input SPD file.",true,"","String");
 		cmd.add( inputFileArg );
         
@@ -241,7 +244,7 @@ int main (int argc, char * const argv[])
         }
         else if(chmSwitch.getValue())
         {
-            blockProcessor = new spdlib::SPDCHMInterpolation(interpolator);
+            blockProcessor = new spdlib::SPDCHMInterpolation(interpolator, useOnlyVegReturnsSwitch.getValue());
         }
         else if(dsmSwitch.getValue())
         {

@@ -204,9 +204,10 @@ namespace spdlib
     
     
     
-    SPDCHMInterpolation::SPDCHMInterpolation(SPDPointInterpolator *interpolator)
+    SPDCHMInterpolation::SPDCHMInterpolation(SPDPointInterpolator *interpolator, bool useVegClassifiedPts)
     {
         this->interpolator = interpolator;
+        this->useVegClassifiedPts = useVegClassifiedPts;
     }
     
     void SPDCHMInterpolation::processDataBlockImage(SPDFile *inSPDFile, std::vector<SPDPulse*> ***pulses, float ***imageDataBlock, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast32_t numImgBands, float binSize) throw(SPDProcessingException)
@@ -221,13 +222,23 @@ namespace spdlib
             bool ptsAvail = true;
             try
             {
-                interpolator->initInterpolator(pulses, xSize, ySize, SPD_VEGETATION_TOP);
+                if(useVegClassifiedPts)
+                {
+                    interpolator->initInterpolator(pulses, xSize, ySize, SPD_VEGETATION_TOP);
+                }
+                else
+                {
+                    interpolator->initInterpolator(pulses, xSize, ySize, SPD_ALL_CLASSES_TOP);
+                }
 			}
             catch (SPDException &e) 
             {
                 ptsAvail = false;
             }
 			
+            bool first = true;
+            SPDPoint *maxPt = NULL;
+            double maxHeight = 0.0;
             int feedback = ySize/10.0;
             int feedbackCounter = 0;
             std::cout << "Started" << std::flush;
@@ -247,7 +258,48 @@ namespace spdlib
                     
                     for(boost::uint_fast32_t j = 0; j < xSize; ++j)
                     {
-                        imageDataBlock[i][j][0] = interpolator->getValue(cenPts[i][j]->x, cenPts[i][j]->y);
+                        if(pulses[i][j]->size() > 0)
+                        {
+                            std::vector<SPDPulse*>::iterator iterPulses;
+                            std::vector<SPDPoint*>::iterator iterPts;
+                            first = true;
+                            for(iterPulses = pulses[i][j]->begin(); iterPulses != pulses[i][j]->end(); ++iterPulses)
+                            {
+                                if((*iterPulses)->numberOfReturns > 0)
+                                {
+                                    for(iterPts = (*iterPulses)->pts->begin(); iterPts != (*iterPulses)->pts->end(); ++iterPts)
+                                    {
+                                        if(((*iterPts)->classification != SPD_GROUND) & ((*iterPts)->height > 0.1) & ((*iterPts)->returnID == 1))
+                                        {
+                                            if(first)
+                                            {
+                                                maxPt = (*iterPts);
+                                                maxHeight = (*iterPts)->height;
+                                                first = false;
+                                            }
+                                            else if((*iterPts)->height > maxHeight)
+                                            {
+                                                maxPt = (*iterPts);
+                                                maxHeight = (*iterPts)->height;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            
+                            if(!first)
+                            {
+                                imageDataBlock[i][j][0] = maxHeight;
+                            }
+                            else
+                            {
+                                imageDataBlock[i][j][0] = interpolator->getValue(cenPts[i][j]->x, cenPts[i][j]->y);
+                            }
+                        }
+                        else
+                        {
+                            imageDataBlock[i][j][0] = interpolator->getValue(cenPts[i][j]->x, cenPts[i][j]->y);
+                        }
                     }
                 }
             }
