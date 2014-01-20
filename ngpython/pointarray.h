@@ -35,6 +35,7 @@ public:
 void addPointFields(RecArrayCreator *pCreator);
 PointArrayIndices getPointIndices(PyObject *pArray);
 void copyPointToRecord(void *pRecord, spdlib::SPDPoint *point, PointArrayIndices &indices);
+void copyRecordToPoint(spdlib::SPDPoint *point, void *pRecord, PointArrayIndices &indices);
 
 PyMODINIT_FUNC pointarray_init();
 

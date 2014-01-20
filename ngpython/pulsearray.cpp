@@ -1,5 +1,6 @@
 
 #include "pulsearray.h"
+#include "pointarray.h"
 
 PulseArrayIndices::PulseArrayIndices()
 {
@@ -43,6 +44,11 @@ void addPulseFields(RecArrayCreator *pCreator)
     pCreator->addField("receiveWaveOffset", NPY_FLOAT);
     pCreator->addField("transWaveGain", NPY_FLOAT);
     pCreator->addField("transWaveOffset", NPY_FLOAT);
+    // 'fake' fields
+    pCreator->addField("startPtsIdx", NPY_UINT);
+    pCreator->addField("endPtsIdx", NPY_UINT);
+    pCreator->addField("blockX", NPY_UINT);
+    pCreator->addField("blockY", NPY_UINT);
 }
 
 PulseArrayIndices getPulseIndices(PyObject *pArray)
@@ -78,41 +84,80 @@ PulseArrayIndices getPulseIndices(PyObject *pArray)
     indices.receiveWaveOffset.setField(pArray, "receiveWaveOffset");
     indices.transWaveGain.setField(pArray, "transWaveGain");
     indices.transWaveOffset.setField(pArray, "transWaveOffset");
+
+    indices.startPtsIdx.setField(pArray, "startPtsIdx");
+    indices.endPtsIdx.setField(pArray, "endPtsIdx");
+    indices.blockX.setField(pArray, "blockX");
+    indices.blockY.setField(pArray, "blockY");
     return indices;
 }
 
-void copyPulseToRecord(void *pRecord, spdlib::SPDPulse *pulse, PulseArrayIndices &indices)
+void convertCPPPulseArrayToRecArrays(std::vector<spdlib::SPDPulse*> ***pulses, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize,
+        PyObject **pPulseArray, PyObject **pPointArray)
 {
-    indices.pulseID.setValue(pRecord, pulse->pulseID);
-    indices.gpsTime.setValue(pRecord, pulse->gpsTime);
-    indices.x0.setValue(pRecord, pulse->x0);
-    indices.y0.setValue(pRecord, pulse->y0);
-    indices.z0.setValue(pRecord, pulse->z0);
-    indices.h0.setValue(pRecord, pulse->h0);
-    indices.xIdx.setValue(pRecord, pulse->xIdx);
-    indices.yIdx.setValue(pRecord, pulse->yIdx);
-    indices.azimuth.setValue(pRecord, pulse->azimuth);
-    indices.zenith.setValue(pRecord, pulse->zenith);
-    indices.numberOfReturns.setValue(pRecord, pulse->numberOfReturns);
-    indices.numOfTransmittedBins.setValue(pRecord, pulse->numOfTransmittedBins);
-    indices.numOfReceivedBins.setValue(pRecord, pulse->numOfReceivedBins);
-    indices.rangeToWaveformStart.setValue(pRecord, pulse->rangeToWaveformStart);
-    indices.amplitudePulse.setValue(pRecord, pulse->amplitudePulse);
-    indices.widthPulse.setValue(pRecord, pulse->widthPulse);
-    indices.user.setValue(pRecord, pulse->user);
-    indices.sourceID.setValue(pRecord, pulse->sourceID);
-    indices.edgeFlightLineFlag.setValue(pRecord, pulse->edgeFlightLineFlag);
-    indices.scanDirectionFlag.setValue(pRecord, pulse->scanDirectionFlag);
-    indices.scanAngleRank.setValue(pRecord, pulse->scanAngleRank);
-    indices.scanline.setValue(pRecord, pulse->scanline);
-    indices.scanlineIdx.setValue(pRecord, pulse->scanlineIdx);
-    indices.receiveWaveNoiseThreshold.setValue(pRecord, pulse->receiveWaveNoiseThreshold);
-    indices.transWaveNoiseThres.setValue(pRecord, pulse->transWaveNoiseThres);
-    indices.wavelength.setValue(pRecord, pulse->wavelength);
-    indices.receiveWaveGain.setValue(pRecord, pulse->receiveWaveGain);
-    indices.receiveWaveOffset.setValue(pRecord, pulse->receiveWaveOffset);
-    indices.transWaveGain.setValue(pRecord, pulse->transWaveGain);
-    indices.transWaveOffset.setValue(pRecord, pulse->transWaveOffset);
+    // first need to scan through and get total size of arrays to be created
+    npy_intp nPulses = 0, nPoints = 0;
+    for(boost::uint_fast32_t i = 0; i < ySize; ++i)
+    {
+        for(boost::uint_fast32_t j = 0; j < xSize; ++j)
+        {
+            for(std::vector<spdlib::SPDPulse*>::iterator iterPls = pulses[i][j]->begin(); iterPls != pulses[i][j]->end(); ++iterPls)
+            {
+                nPulses++;
+                nPoints += (*iterPls)->pts->size();
+            }
+        }
+    }
+    
+    // create the arrays
+    RecArrayCreator pulseCreator;
+    addPulseFields(&pulseCreator);
+    RecArrayCreator pointCreator;
+    addPointFields(&pointCreator);
+
+    *pPulseArray = pulseCreator.createArray(nPulses);
+    *pPointArray = pointCreator.createArray(nPoints);
+
+     // get the indices of our fields
+    PulseArrayIndices pulseIndices = getPulseIndices(*pPulseArray);
+    PointArrayIndices pointIndices = getPointIndices(*pPointArray);
+
+    npy_intp nPulseCount = 0, nPointCount = 0;
+    void *pRecord;
+    for(boost::uint_fast32_t i = 0; i < ySize; ++i)
+    {
+        for(boost::uint_fast32_t j = 0; j < xSize; ++j)
+        {
+            for(std::vector<spdlib::SPDPulse*>::iterator iterPls = pulses[i][j]->begin(); iterPls != pulses[i][j]->end(); ++iterPls)
+            {
+                // add all the points first
+                npy_intp nStartPoint = nPointCount;
+                for(std::vector<spdlib::SPDPoint*>::iterator iterPts = (*iterPls)->pts->begin(); iterPts != (*iterPls)->pts->end(); ++iterPts)
+                {
+                    pRecord = PyArray_GETPTR1(*pPointArray, nPointCount);
+                    copyPointToRecord(pRecord, (*iterPts), pointIndices);
+                    nPointCount++;
+                }
+                // now we know the start and end indices of the points we can add the pulse
+                pRecord = PyArray_GETPTR1(*pPulseArray, nPulseCount);
+                if( nPointCount > nStartPoint )
+                {
+                    copyPulseToRecord(pRecord, (*iterPls), pulseIndices, nStartPoint, nPointCount - 1, j, i);
+                }
+                else
+                {
+                    copyPulseToRecord(pRecord, (*iterPls), pulseIndices, 0, 0, i, i);
+                }
+                nPulseCount++;
+            }
+            
+        }
+    }
+}
+
+void convertRecArraysToCPPPulseArray(PyObject *pPulseArray, PyObject *pPointArray, std::vector<spdlib::SPDPulse*> ***pulses)
+{
+
 }
 
 #if PY_MAJOR_VERSION >= 3
