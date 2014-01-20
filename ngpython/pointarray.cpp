@@ -85,6 +85,30 @@ void copyPointToRecord(void *pRecord, spdlib::SPDPoint *point, PointArrayIndices
     indices.waveformOffset.setValue(pRecord, point->waveformOffset);
 }
 
+void copyRecordToPoint(spdlib::SPDPoint *point, void *pRecord, PointArrayIndices &indices)
+{
+    point->returnID = indices.returnID.getValue(pRecord);
+    point->gpsTime = indices.gpsTime.getValue(pRecord);
+    point->x = indices.x.getValue(pRecord);
+    point->y = indices.y.getValue(pRecord);
+    point->z = indices.z.getValue(pRecord);
+    point->height = indices.height.getValue(pRecord);
+    point->range = indices.range.getValue(pRecord);
+    point->amplitudeReturn = indices.amplitudeReturn.getValue(pRecord);
+    point->widthReturn = indices.widthReturn.getValue(pRecord);
+    point->red = indices.red.getValue(pRecord);
+    point->green = indices.green.getValue(pRecord);
+    point->blue = indices.blue.getValue(pRecord);
+    point->classification = indices.classification.getValue(pRecord);
+    point->user = indices.user.getValue(pRecord);
+    point->modelKeyPoint = indices.modelKeyPoint.getValue(pRecord);
+    point->lowPoint = indices.lowPoint.getValue(pRecord);
+    point->overlap = indices.overlap.getValue(pRecord);
+    point->ignore = indices.ignore.getValue(pRecord);
+    point->wavePacketDescIdx = indices.wavePacketDescIdx.getValue(pRecord);
+    point->waveformOffset = indices.waveformOffset.getValue(pRecord);
+}
+
 PyMODINIT_FUNC pointarray_init()
 {
     import_array();

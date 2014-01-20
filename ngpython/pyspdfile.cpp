@@ -466,100 +466,7 @@ PySPDFile_readHeader(PySPDFile *self, PyObject *args)
 }
 
 static PyObject*
-PySPDFile_readPulsesIntoBlock1d(PySPDFile *self, PyObject *args)
-{
-    PyObject *pSeq;
-    if( !PyArg_ParseTuple(args, "O", &pSeq ) )
-        return NULL;
-
-    if( !PySequence_Check(pSeq) )
-    {
-        PyErr_SetString(PySPDError, "Must pass a sequnce" );
-        return NULL;
-    }
-
-    if( PySequence_Size(pSeq) != 4 )
-    {
-        PyErr_SetString(PySPDError, "Expected a 4 element sequence" );
-        return NULL;
-    }
-
-    boost::uint_fast32_t bboxArr[4];
-    for( int n = 0; n < 4; n++ )
-    {
-        PyObject *o = PySequence_GetItem(pSeq, n); 
-#if PY_MAJOR_VERSION >= 3
-        if( !PyLong_Check(o) ) 
-#else
-        if( !PyInt_Check(o) ) 
-#endif
-        { 
-            PyErr_SetString(PySPDError, "Must be a sequence of ints" ); 
-            Py_DECREF(o); 
-            return NULL;
-        } 
-#if PY_MAJOR_VERSION >= 3
-        bboxArr[n] = PyLong_AsLong(o);
-#else
-        bboxArr[n] = PyInt_AsLong(o); 
-#endif
-        Py_DECREF(o); 
-    }
-
-    PyObject *pArray = NULL;
-    // Create C++ list
-    std::vector<spdlib::SPDPulse*> *pulses = new std::vector<spdlib::SPDPulse*>();
-
-    try
-    {
-        // Create incremental reader
-        spdlib::SPDFileIncrementalReader incReader;
-
-        // Open incremental UPD reader
-        incReader.open(self->pFile);
-
-        // Read SPD Pulse data from SPD file
-        incReader.readPulseDataBlock(pulses, bboxArr);
-
-        // close the incremental reader
-        incReader.close();
-
-        // create array
-        RecArrayCreator creator;
-
-        // add our fields
-        addPulseFields(&creator);
-
-        // create array
-        pArray = creator.createArray(pulses->size());
-
-        // get the indices of our fields
-        PulseArrayIndices indices = getPulseIndices(pArray);
-
-        void *pRecord;
-        for( size_t n = 0; n < pulses->size(); n++ )
-        {
-            pRecord = PyArray_GETPTR1(pArray, n);
-            copyPulseToRecord(pRecord, pulses->at(n), indices);
-        }
-
-        // Delete pulses list.
-        // TODO: do we need to delete individual elements?
-        delete pulses;
-        pulses = NULL;
-    }
-    catch(spdlib::SPDException &e)
-    {
-        PyErr_SetString(PySPDError, e.what());
-        Py_XDECREF(pArray);
-        delete pulses;
-        return NULL;
-    }
-    return pArray;
-}
-
-static PyObject*
-PySPDFile_readPulsesIntoBlock2d(PySPDFile *self, PyObject *args)
+PySPDFile_readBlock(PySPDFile *self, PyObject *args)
 {
     PyObject *pSeq;
     if( !PyArg_ParseTuple(args, "O", &pSeq ) )
@@ -612,10 +519,7 @@ PySPDFile_readPulsesIntoBlock2d(PySPDFile *self, PyObject *args)
             pulses[i][j] = new std::vector<spdlib::SPDPulse*>();
         }
     }
-
-    // create 2d array the whole thing lives in
-    npy_intp dims[] = {xBlockSize, yBlockSize};
-    PyObject *pMainArray = PyArray_SimpleNew(2, dims, PyArray_OBJECT);
+    spdlib::SPDPulseUtils pulseUtils;
 
     try
     {
@@ -631,174 +535,65 @@ PySPDFile_readPulsesIntoBlock2d(PySPDFile *self, PyObject *args)
         // close the incremental reader
         incReader.close();
 
-        // create array
-        RecArrayCreator creator;
-
-        // add our fields
-        addPulseFields(&creator);
-
-        for(boost::uint_fast32_t i = 0; i < yBlockSize; ++i)
-        {
-            for(boost::uint_fast32_t j = 0; j < xBlockSize; ++j)
-            {
-                std::vector<spdlib::SPDPulse*>* sub = pulses[i][j];
-                // create array
-                PyObject *pArray = creator.createArray(sub->size());
-
-                // get the indices of our fields
-                PulseArrayIndices indices = getPulseIndices(pArray);
-
-                void *pRecord;
-                for( size_t n = 0; n < sub->size(); n++ )
-                {
-                    pRecord = PyArray_GETPTR1(pArray, n);
-                    copyPulseToRecord(pRecord, sub->at(n), indices);
-                }
-
-                memcpy(PyArray_GETPTR2(pMainArray, i,j), &pArray, sizeof(PyObject*));
-            }
-        }
-        // Delete pulses list.
-        // TODO: do we need to delete individual elements?
-        delete[] pulses;
-        pulses = NULL;
     }
     catch(spdlib::SPDException &e)
     {
         PyErr_SetString(PySPDError, e.what());
-        Py_XDECREF(pMainArray);
-        delete pulses;
-        return NULL;
-    }
-    return pMainArray;
-}
-
-static PyObject*
-PySPDFile_readPointsIntoBlock2d(PySPDFile *self, PyObject *args)
-{
-    PyObject *pSeq;
-    if( !PyArg_ParseTuple(args, "O", &pSeq ) )
-        return NULL;
-
-    if( !PySequence_Check(pSeq) )
-    {
-        PyErr_SetString(PySPDError, "Must pass a sequnce" );
-        return NULL;
-    }
-
-    if( PySequence_Size(pSeq) != 4 )
-    {
-        PyErr_SetString(PySPDError, "Expected a 4 element sequence" );
-        return NULL;
-    }
-
-    boost::uint_fast32_t bboxArr[4];
-    for( int n = 0; n < 4; n++ )
-    {
-        PyObject *o = PySequence_GetItem(pSeq, n); 
-#if PY_MAJOR_VERSION >= 3
-        if( !PyLong_Check(o) ) 
-#else
-        if( !PyInt_Check(o) ) 
-#endif
-        { 
-            PyErr_SetString(PySPDError, "Must be a sequence of ints" ); 
-            Py_DECREF(o); 
-            return NULL;
-        } 
-#if PY_MAJOR_VERSION >= 3
-        bboxArr[n] = PyLong_AsLong(o);
-#else
-        bboxArr[n] = PyInt_AsLong(o); 
-#endif
-        Py_DECREF(o); 
-    }
-
-    boost::uint_fast32_t xBlockSize = bboxArr[2] - bboxArr[0];
-    boost::uint_fast32_t yBlockSize = bboxArr[3] - bboxArr[1];
-
-    // Create C++ list
-    std::vector<spdlib::SPDPulse*> ***pulses = new std::vector<spdlib::SPDPulse*>**[yBlockSize];
-    for(boost::uint_fast32_t i = 0; i < yBlockSize; ++i)
-    {
-        pulses[i] = new std::vector<spdlib::SPDPulse*>*[xBlockSize];
-        for(boost::uint_fast32_t j = 0; j < xBlockSize; ++j)
-        {
-            pulses[i][j] = new std::vector<spdlib::SPDPulse*>();
-        }
-    }
-
-    // create 2d array the whole thing lives in
-    npy_intp dims[] = {xBlockSize, yBlockSize};
-    PyObject *pMainArray = PyArray_SimpleNew(2, dims, PyArray_OBJECT);
-
-    try
-    {
-        // Create incremental reader
-        spdlib::SPDFileIncrementalReader incReader;
-
-        // Open incremental UPD reader
-        incReader.open(self->pFile);
-
-        // Read SPD Pulse data from SPD file
-        incReader.readPulseDataBlock(pulses, bboxArr);
-
-        // close the incremental reader
-        incReader.close();
-
-        // create array
-        RecArrayCreator creator;
-
-        // add our fields
-        addPointFields(&creator);
-
+        // Delete pulses list.
         for(boost::uint_fast32_t i = 0; i < yBlockSize; ++i)
         {
             for(boost::uint_fast32_t j = 0; j < xBlockSize; ++j)
             {
-                std::vector<spdlib::SPDPulse*>* sub = pulses[i][j];
-                // work out how many points are in all the pulses
-                size_t nPoints = 0;
-                for( size_t n = 0; n < sub->size(); n++ )
+                if(pulses[i][j]->size() > 0)
                 {
-                    nPoints += sub->at(n)->pts->size();
-                }
-
-                // create array
-                PyObject *pArray = creator.createArray(nPoints);
-
-                // get the indices of our fields
-                PointArrayIndices indices = getPointIndices(pArray);
-
-                void *pRecord;
-                size_t nPointIdx = 0;
-                for(size_t nPulseIdx = 0; nPulseIdx < sub->size(); nPulseIdx++ )
-                {
-                    spdlib::SPDPulse* pPulse = sub->at(nPulseIdx);
-                    for( size_t n = 0; n < pPulse->pts->size(); n++ )
+                    for(std::vector<spdlib::SPDPulse*>::iterator iterPulses = pulses[i][j]->begin(); iterPulses != pulses[i][j]->end(); ++iterPulses)
                     {
-                        pRecord = PyArray_GETPTR1(pArray, nPointIdx);
-                        copyPointToRecord(pRecord, pPulse->pts->at(n), indices);
-                        nPointIdx++;
+                        pulseUtils.deleteSPDPulse(*iterPulses);
                     }
+                    pulses[i][j]->clear();
                 }
-                Py_XDECREF((PyObject*)PyArray_GETPTR2(pMainArray, i,j));
-                memcpy(PyArray_GETPTR2(pMainArray, i,j), &pArray, sizeof(PyObject*));
             }
+            delete[] pulses[i];
         }
-        // Delete pulses list.
-        // TODO: do we need to delete individual elements?
         delete[] pulses;
-        pulses = NULL;
-    }
-    catch(spdlib::SPDException &e)
-    {
-        PyErr_SetString(PySPDError, e.what());
-        Py_XDECREF(pMainArray);
-        delete pulses;
         return NULL;
     }
-    return pMainArray;
+
+    // create rec arrays
+    PyObject *pPulseArray, *pPointArray;
+    convertCPPPulseArrayToRecArrays(pulses, xBlockSize, yBlockSize, &pPulseArray, &pPointArray);
+
+    // Delete pulses list.
+    for(boost::uint_fast32_t i = 0; i < yBlockSize; ++i)
+    {
+        for(boost::uint_fast32_t j = 0; j < xBlockSize; ++j)
+        {
+            if(pulses[i][j]->size() > 0)
+            {
+                for(std::vector<spdlib::SPDPulse*>::iterator iterPulses = pulses[i][j]->begin(); iterPulses != pulses[i][j]->end(); ++iterPulses)
+                {
+                    pulseUtils.deleteSPDPulse(*iterPulses);
+                }
+                pulses[i][j]->clear();
+            }
+        }
+        delete[] pulses[i];
+    }
+    delete[] pulses;
+
+    // create a tuple holding the results
+    PyObject *pResults = PyTuple_New(2);
+    if( pResults == NULL )
+    {
+        PyErr_SetString(PySPDError, "Unable to create result tuple");
+        Py_DECREF(pPulseArray);
+        Py_DECREF(pPointArray);
+        return NULL;
+    }
+    PyTuple_SetItem(pResults, 0, pPulseArray);
+    PyTuple_SetItem(pResults, 1, pPointArray);
+
+    return pResults;
 }
 
 // our table of methods
@@ -809,9 +604,7 @@ static PyMethodDef PySPDFile_methods[] = {
     {"setBoundingVolumeSpherical", (PyCFunction)PySPDFile_setBoundingVolumeSpherical, METH_VARARGS, NULL},
     {"setBoundingBoxScanline", (PyCFunction)PySPDFile_setBoundingBoxScanline, METH_VARARGS, NULL},
     {"readHeader", (PyCFunction)PySPDFile_readHeader, METH_NOARGS, NULL},
-    {"readPulsesIntoBlock1d", (PyCFunction)PySPDFile_readPulsesIntoBlock1d, METH_VARARGS, NULL},
-    {"readPulsesIntoBlock2d", (PyCFunction)PySPDFile_readPulsesIntoBlock2d, METH_VARARGS, NULL},
-    {"readPointsIntoBlock2d", (PyCFunction)PySPDFile_readPointsIntoBlock2d, METH_VARARGS, NULL},
+    {"readBlock", (PyCFunction)PySPDFile_readBlock, METH_VARARGS, NULL},
     {NULL}  /* Sentinel */
 };
 
