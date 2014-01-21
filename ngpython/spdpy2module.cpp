@@ -80,9 +80,70 @@ spdpy2_createPulseArray(PyObject *self, PyObject *args)
     return pArray;
 }
 
+static PyObject *
+spdpy2_createPointArray(PyObject *self, PyObject *args)
+{
+    PyObject *pObj;
+    if( !PyArg_ParseTuple(args, "O", &pObj))
+        return NULL;
+
+    RecArrayCreator creator;
+    addPointFields(&creator);
+    PyObject *pArray = NULL;
+#if PY_MAJOR_VERSION >= 3
+    if( PyLong_Check(pObj) )
+#else
+    if( PyInt_Check(pObj) )
+#endif
+    {
+#if PY_MAJOR_VERSION >= 3
+        pArray = creator.createArray(PyLong_AsLong(pObj));
+#else
+        pArray = creator.createArray(PyInt_AsLong(pObj));
+#endif
+    }
+    else if( PySequence_Check(pObj))
+    {
+        int nd = PySequence_Size(pObj);
+        npy_intp *dims = new npy_intp[nd];
+        for( int n = 0; n < nd; n++ )
+        {
+            PyObject *pElement = PySequence_GetItem(pObj, n);
+#if PY_MAJOR_VERSION >= 3
+            if( !PyLong_Check(pElement))
+#else
+            if( !PyInt_Check(pElement))
+#endif
+            {
+                PyErr_SetString(GETSTATE(self)->error, "sequence must be all ints");
+                delete dims;
+                Py_DECREF(pElement);
+                return NULL;
+            }
+#if PY_MAJOR_VERSION >= 3
+            dims[n] = PyLong_AsLong(pElement);
+#else
+            dims[n] = PyInt_AsLong(pElement);
+#endif
+            Py_DECREF(pElement);
+        }
+        pArray = creator.createArray(nd, dims);
+        delete dims;
+    }
+    else
+    {
+        PyErr_SetString(GETSTATE(self)->error, "expected an int or a sequence");
+        return NULL;
+    }
+
+    return pArray;
+}
+
 static PyMethodDef module_methods[] = {
     {"createPulseArray", (PyCFunction)spdpy2_createPulseArray, METH_VARARGS,
         "create a Pulse array. Pass the required shape of the array."},
+    {"createPointArray", (PyCFunction)spdpy2_createPointArray, METH_VARARGS,
+        "create a Point array. Pass the required shape of the array."},
     {NULL}  /* Sentinel */
 };
 
