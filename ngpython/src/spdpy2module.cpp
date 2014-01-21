@@ -1,3 +1,26 @@
+/*
+ *  spdpy2module.cpp
+ *  SPDLIB
+ *
+ *  Created by Sam Gillingham on 22/01/2014.
+ *  Copyright 2013 SPDLib. All rights reserved.
+ *
+ *  This file is part of SPDLib.
+ *
+ *  SPDLib is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  SPDLib is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with SPDLib.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 
 #include <Python.h>
 #include "structmember.h"
@@ -163,7 +186,7 @@ static int spdpy2_clear(PyObject *m)
 
 static struct PyModuleDef moduledef = {
         PyModuleDef_HEAD_INIT,
-        "spdpy2",
+        "_spdpy2",
         NULL,
         sizeof(struct SPDPy2State),
         module_methods,
@@ -176,13 +199,13 @@ static struct PyModuleDef moduledef = {
 #define INITERROR return NULL
 
 PyMODINIT_FUNC 
-PyInit_spdpy2(void)
+PyInit__spdpy2(void)
 
 #else
 #define INITERROR return
 
 PyMODINIT_FUNC
-initspdpy2(void) 
+init_spdpy2(void) 
 #endif
 {
     // initialize the numpy/recaray stuff
@@ -196,7 +219,7 @@ initspdpy2(void)
 #if PY_MAJOR_VERSION >= 3
     m = PyModule_Create(&moduledef);
 #else
-    m = Py_InitModule3("spdpy2", module_methods,
+    m = Py_InitModule3("_spdpy2", module_methods,
                        "New Generation Python Bindings for SPDLib");
 #endif
     if( m == NULL )
@@ -204,7 +227,7 @@ initspdpy2(void)
 
     struct SPDPy2State *state = GETSTATE(m);
 
-    state->error = PyErr_NewException((char*)"spdpy2.error", NULL, NULL);
+    state->error = PyErr_NewException((char*)"_spdpy2.error", NULL, NULL);
     if( state->error == NULL )
     {
         Py_DECREF(m);
