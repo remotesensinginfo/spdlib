@@ -71,12 +71,14 @@ public:
     // index of this pulse in the original 2d array
     RecArrayField<npy_uint> blockX;
     RecArrayField<npy_uint> blockY;
+    // index of this pulse in the vector of pulses for this bin
+    RecArrayField<npy_uint> thisPulseIdx;
 };
 
 void addPulseFields(RecArrayCreator *pCreator);
 PulseArrayIndices getPulseIndices(PyObject *pArray);
 inline void copyPulseToRecord(void *pRecord, spdlib::SPDPulse *pulse, PulseArrayIndices &indices, 
-        npy_uint startPtsIdx, npy_uint endPtsIdx, npy_uint blockX, npy_uint blockY)
+        npy_uint startPtsIdx, npy_uint endPtsIdx, npy_uint blockX, npy_uint blockY, npy_uint thisPulseIdx)
 {
     indices.pulseID.setValue(pRecord, pulse->pulseID);
     indices.gpsTime.setValue(pRecord, pulse->gpsTime);
@@ -114,6 +116,7 @@ inline void copyPulseToRecord(void *pRecord, spdlib::SPDPulse *pulse, PulseArray
     indices.endPtsIdx.setValue(pRecord, endPtsIdx);
     indices.blockX.setValue(pRecord, blockX);
     indices.blockY.setValue(pRecord, blockY);
+    indices.thisPulseIdx.setValue(pRecord, thisPulseIdx);
 }
 
 inline void copyRecordToPulse(spdlib::SPDPulse *pulse, void *pRecord, PulseArrayIndices &indices)
@@ -148,6 +151,17 @@ inline void copyRecordToPulse(spdlib::SPDPulse *pulse, void *pRecord, PulseArray
     pulse->receiveWaveOffset = indices.receiveWaveOffset.getValue(pRecord);
     pulse->transWaveGain = indices.transWaveGain.getValue(pRecord);
     pulse->transWaveOffset = indices.transWaveOffset.getValue(pRecord);
+}
+
+inline void getFakePulseRecordValues(void *pRecord, PulseArrayIndices &indices, npy_uint *pstartPtsIdx, 
+        npy_uint *pendPtsIdx, npy_uint *pthisPulseIdx, 
+        npy_uint *pblockX, npy_uint *pblockY)
+{
+    *pstartPtsIdx = indices.startPtsIdx.getValue(pRecord);
+    *pendPtsIdx = indices.endPtsIdx.getValue(pRecord);
+    *pthisPulseIdx = indices.thisPulseIdx.getValue(pRecord);
+    *pblockX = indices.blockX.getValue(pRecord);
+    *pblockY = indices.blockY.getValue(pRecord);
 }
 
 void convertCPPPulseArrayToRecArrays(std::vector<spdlib::SPDPulse*> ***pulses, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize,
