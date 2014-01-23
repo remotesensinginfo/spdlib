@@ -99,7 +99,7 @@ class OtherInputs(object):
     """
     pass
     
-def applier(applyfn, inputSPDFile, inputImageFile=None, outputSPDFile=None,
+def apply(applyfn, inputSPDFile, inputImageFile=None, outputSPDFile=None,
         outputImageFile=None, controls=None, otherinputs=None):
     """
     Applies the applyfn over the input blocks and writes the outputs

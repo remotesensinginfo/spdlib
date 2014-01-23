@@ -169,10 +169,11 @@ spdpy2_createPointArray(PyObject *self, PyObject *args)
 class SPDDataBlockProcessorPython : public spdlib::SPDDataBlockProcessor
 {
 public:
-    SPDDataBlockProcessorPython(PyObject *pApplyFn, PyObject *pOtherInputs)
+    SPDDataBlockProcessorPython(PyObject *pApplyFn, PyObject *pOtherInputs, bool bHaveOutputSPD)
     {
         m_pApplyFn = pApplyFn;
         m_pOtherInputs = pOtherInputs;
+        m_bHaveOutputSPD = bHaveOutputSPD;
     }
     ~SPDDataBlockProcessorPython()
     {
@@ -191,19 +192,35 @@ public:
         PyObject *pImageData = PyArray_SimpleNewFromData(3, dims, NPY_FLOAT, imageDataBlock);
 
         // call python function 
+        PyObject *pResult;
         if( m_pOtherInputs == Py_None )
         {
             // no other inputs
-            PyObject_CallFunction(m_pApplyFn, "OOO", pPulseArray, pPointArray, pImageData);
+            pResult = PyObject_CallFunctionObjArgs(m_pApplyFn, pPulseArray, 
+                            pPointArray, pImageData, NULL);
         }
         else
         {
-            PyObject_CallFunction(m_pApplyFn, "OOOO", pPulseArray, pPointArray, pImageData, m_pOtherInputs);
+            pResult = PyObject_CallFunctionObjArgs(m_pApplyFn, pPulseArray, 
+                            pPointArray, pImageData, m_pOtherInputs, NULL);
         }
 
-        // copy data back
-        convertRecArraysToCPPPulseArray(pPulseArray, pPointArray, pulses);
+        if( pResult == NULL )
+        {
+            // error
+            Py_DECREF(pPulseArray);
+            Py_DECREF(pPointArray);
+            Py_DECREF(pImageData);
+            PyErr_Print();
+            throw spdlib::SPDProcessingException("Python error");
+        }
+        Py_DECREF(pResult);
 
+        // copy data back
+        if( m_bHaveOutputSPD )
+        {
+            convertRecArraysToCPPPulseArray(pPulseArray, pPointArray, pulses);
+        }
         Py_DECREF(pPulseArray);
         Py_DECREF(pPointArray);
         Py_DECREF(pImageData);
@@ -218,18 +235,34 @@ public:
         convertCPPPulseArrayToRecArrays(pulses, xSize, ySize, &pPulseArray, &pPointArray);
 
         // call python function 
+        PyObject *pResult;
         if( m_pOtherInputs == Py_None )
         {
             // no other inputs
-            PyObject_CallFunction(m_pApplyFn, "OOO", pPulseArray, pPointArray, Py_None);
+            pResult = PyObject_CallFunctionObjArgs(m_pApplyFn, pPulseArray, pPointArray, 
+                        Py_None, NULL);
         }
         else
         {
-            PyObject_CallFunction(m_pApplyFn, "OOOO", pPulseArray, pPointArray, Py_None, m_pOtherInputs);
+            pResult = PyObject_CallFunctionObjArgs(m_pApplyFn, pPulseArray, pPointArray, 
+                        Py_None, m_pOtherInputs, NULL);
         }
 
+        if( pResult == NULL )
+        {
+            // error
+            Py_DECREF(pPulseArray);
+            Py_DECREF(pPointArray);
+            PyErr_Print();
+            throw spdlib::SPDProcessingException("Python error");
+        }
+        Py_DECREF(pResult);
+
         // copy data back
-        convertRecArraysToCPPPulseArray(pPulseArray, pPointArray, pulses);
+        if( m_bHaveOutputSPD )
+        {
+            convertRecArraysToCPPPulseArray(pPulseArray, pPointArray, pulses);
+        }
 
         Py_DECREF(pPulseArray);
         Py_DECREF(pPointArray);
@@ -260,6 +293,7 @@ public:
 private:
     PyObject *m_pApplyFn;
     PyObject *m_pOtherInputs;
+    bool m_bHaveOutputSPD;
 };
 
 static PyObject *
@@ -358,7 +392,6 @@ spdpy2_blockProcessor(PyObject *self, PyObject *args)
         return NULL;
     }
     float processingResolution = PyFloat_AS_DOUBLE(pVal);
-    fprintf(stderr, "processingResolution = %f\n", processingResolution);
     Py_DECREF(pVal);
 
     pVal = PyObject_GetAttrString(pControls, "numImgBands");
@@ -416,7 +449,7 @@ spdpy2_blockProcessor(PyObject *self, PyObject *args)
     try
     {
         spdInFile = new spdlib::SPDFile(pszInputSPDFile);
-        blockProcessor = new SPDDataBlockProcessorPython(pApplyFn, pOtherInputs);
+        blockProcessor = new SPDDataBlockProcessorPython(pApplyFn, pOtherInputs, pszOutputSPDFile != NULL);
 
         spdlib::SPDProcessDataBlocks processBlocks = spdlib::SPDProcessDataBlocks(blockProcessor, 
             overlap, blockXSize, blockYSize, printProgress, keepMinExtent);

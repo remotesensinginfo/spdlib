@@ -156,9 +156,19 @@ void RecArrayCreator::addField(const char *pszName, char cKind, int nBytes, int 
 // create the array with fields as specified by addField()
 PyObject *RecArrayCreator::createArray(int nd, npy_intp *dims)
 {
+    /*for( Py_ssize_t i = 0; i < PyList_Size(m_DTypeList); i++ )
+    {
+        PyObject *pItem = PyList_GetItem(m_DTypeList, i);
+        PyObject_Print(PyTuple_GetItem(pItem, 0), stderr, Py_PRINT_RAW);
+        fprintf(stderr, " ");
+        PyObject_Print(PyTuple_GetItem(pItem, 1), stderr, Py_PRINT_RAW);
+        fprintf(stderr, " ");
+        PyObject_Print(PyTuple_GetItem(pItem, 2), stderr, Py_PRINT_RAW);
+        fprintf(stderr, "\n");
+    }*/
     // Convert to a PyArray_Descr object
     // see http://stackoverflow.com/questions/214549/how-to-create-a-numpy-record-array-from-c
-    PyArray_Descr *pDescr;
+    PyArray_Descr *pDescr = NULL;
     if( !PyArray_DescrConverter(m_DTypeList, &pDescr) )
     {
         throw RecArrayException("Unable to convert array description");

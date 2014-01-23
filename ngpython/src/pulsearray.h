@@ -67,7 +67,7 @@ public:
     RecArrayField<npy_float> transWaveOffset;
     // index into associated points array
     RecArrayField<npy_uint> startPtsIdx;
-    RecArrayField<npy_uint> endPtsIdx;
+    RecArrayField<npy_uint> nPoints; // TODO: is this the same as numberOfReturns?
     // index of this pulse in the original 2d array
     RecArrayField<npy_uint> blockX;
     RecArrayField<npy_uint> blockY;
@@ -78,7 +78,7 @@ public:
 void addPulseFields(RecArrayCreator *pCreator);
 PulseArrayIndices getPulseIndices(PyObject *pArray);
 inline void copyPulseToRecord(void *pRecord, spdlib::SPDPulse *pulse, PulseArrayIndices &indices, 
-        npy_uint startPtsIdx, npy_uint endPtsIdx, npy_uint blockX, npy_uint blockY, npy_uint thisPulseIdx)
+        npy_uint startPtsIdx, npy_uint nPoints, npy_uint blockX, npy_uint blockY, npy_uint thisPulseIdx)
 {
     indices.pulseID.setValue(pRecord, pulse->pulseID);
     indices.gpsTime.setValue(pRecord, pulse->gpsTime);
@@ -113,7 +113,7 @@ inline void copyPulseToRecord(void *pRecord, spdlib::SPDPulse *pulse, PulseArray
 
     // 'fake' fields
     indices.startPtsIdx.setValue(pRecord, startPtsIdx);
-    indices.endPtsIdx.setValue(pRecord, endPtsIdx);
+    indices.nPoints.setValue(pRecord, nPoints);
     indices.blockX.setValue(pRecord, blockX);
     indices.blockY.setValue(pRecord, blockY);
     indices.thisPulseIdx.setValue(pRecord, thisPulseIdx);
@@ -154,11 +154,11 @@ inline void copyRecordToPulse(spdlib::SPDPulse *pulse, void *pRecord, PulseArray
 }
 
 inline void getFakePulseRecordValues(void *pRecord, PulseArrayIndices &indices, npy_uint *pstartPtsIdx, 
-        npy_uint *pendPtsIdx, npy_uint *pthisPulseIdx, 
+        npy_uint *pnPoints, npy_uint *pthisPulseIdx, 
         npy_uint *pblockX, npy_uint *pblockY)
 {
     *pstartPtsIdx = indices.startPtsIdx.getValue(pRecord);
-    *pendPtsIdx = indices.endPtsIdx.getValue(pRecord);
+    *pnPoints = indices.nPoints.getValue(pRecord);
     *pthisPulseIdx = indices.thisPulseIdx.getValue(pRecord);
     *pblockX = indices.blockX.getValue(pRecord);
     *pblockY = indices.blockY.getValue(pRecord);
