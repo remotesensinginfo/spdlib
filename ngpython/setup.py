@@ -37,7 +37,7 @@ spdpy2module = Extension(name="spdpy2._spdpy2",
                 sources=["src/spdpy2module.cpp", "src/pyspdfile.cpp", "src/recarray.cpp", 
                             "src/pulsearray.cpp", "src/pointarray.cpp"],
                 library_dirs=[os.path.join('..', 'src')],
-                libraries=['spdio'],
+                libraries=['spdio', 'spd'],
                 include_dirs=[os.path.join("..","include")] + extraincludes)
 
 setup(name="spdpy2",

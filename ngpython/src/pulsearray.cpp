@@ -69,7 +69,7 @@ void addPulseFields(RecArrayCreator *pCreator)
     pCreator->addField("transWaveOffset", NPY_FLOAT);
     // 'fake' fields
     pCreator->addField("startPtsIdx", NPY_UINT);
-    pCreator->addField("endPtsIdx", NPY_UINT);
+    pCreator->addField("nPoints", NPY_UINT);
     pCreator->addField("blockX", NPY_UINT);
     pCreator->addField("blockY", NPY_UINT);
     pCreator->addField("thisPulseIdx", NPY_UINT);
@@ -110,7 +110,7 @@ PulseArrayIndices getPulseIndices(PyObject *pArray)
     indices.transWaveOffset.setField(pArray, "transWaveOffset");
 
     indices.startPtsIdx.setField(pArray, "startPtsIdx");
-    indices.endPtsIdx.setField(pArray, "endPtsIdx");
+    indices.nPoints.setField(pArray, "nPoints");
     indices.blockX.setField(pArray, "blockX");
     indices.blockY.setField(pArray, "blockY");
     indices.thisPulseIdx.setField(pArray, "thisPulseIdx");
@@ -168,7 +168,7 @@ void convertCPPPulseArrayToRecArrays(std::vector<spdlib::SPDPulse*> ***pulses, b
                 pRecord = PyArray_GETPTR1(*pPulseArray, nPulseCount);
                 if( nPointCount > nStartPoint )
                 {
-                    copyPulseToRecord(pRecord, (*iterPls), pulseIndices, nStartPoint, nPointCount - 1, j, i, thisPulseIdx);
+                    copyPulseToRecord(pRecord, (*iterPls), pulseIndices, nStartPoint, nPointCount - nStartPoint, j, i, thisPulseIdx);
                 }
                 else
                 {
@@ -193,20 +193,20 @@ void convertRecArraysToCPPPulseArray(PyObject *pPulseArray, PyObject *pPointArra
     for( npy_intp nPulseCount = 0; nPulseCount < nNumPulses; nPulseCount++ )
     {
         pRecord = PyArray_GETPTR1(pPulseArray, nPulseCount);
-        npy_uint startPtsIdx, endPtsIdx, thisPulseIdx, blockX, blockY;
-        getFakePulseRecordValues(pRecord, pulseIndices, &startPtsIdx, &endPtsIdx, &thisPulseIdx, 
+        npy_uint startPtsIdx, nPoints, thisPulseIdx, blockX, blockY;
+        getFakePulseRecordValues(pRecord, pulseIndices, &startPtsIdx, &nPoints, &thisPulseIdx, 
                     &blockX, &blockY);
 
         spdlib::SPDPulse* pCurrPulse = pulses[blockY][blockX]->at(thisPulseIdx);
         copyRecordToPulse(pCurrPulse, pRecord, pulseIndices);
 
-        if( endPtsIdx != 0 )
+        if( nPoints != 0 )
         {
             // we have points to copy out
-            for( npy_uint curPtsIdx = startPtsIdx; curPtsIdx <= endPtsIdx; curPtsIdx++ )
+            for( npy_uint curPtsIdx = startPtsIdx; curPtsIdx < (startPtsIdx + nPoints); curPtsIdx++ )
             {
                 pRecord = PyArray_GETPTR1(pPointArray, curPtsIdx);
-                copyRecordToPoint(pCurrPulse->pts->at(curPtsIdx), pRecord, pointIndices);
+                copyRecordToPoint(pCurrPulse->pts->at(curPtsIdx - startPtsIdx), pRecord, pointIndices);
             }
 
             // TODO: shrinking
