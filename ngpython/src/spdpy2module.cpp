@@ -427,8 +427,8 @@ spdpy2_blockProcessor(PyObject *self, PyObject *args)
     PyObject *bytes = PyUnicode_AsEncodedString(pVal, NULL, NULL);
     char *gdalFormat = PyBytes_AsString(bytes);
     Py_DECREF(bytes);
-#else
-    char *gdalFormat = PyString_FromString(pVal);
+#else   
+    char *gdalFormat = PyString_AsString(pVal);
 #endif
     Py_DECREF(pVal);
 
