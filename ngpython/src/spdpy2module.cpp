@@ -185,7 +185,7 @@ public:
     {
         // convert data to numpy array
         PyObject *pPulseArray, *pPointArray;
-        convertCPPPulseArrayToRecArrays(pulses, xSize, ySize, &pPulseArray, &pPointArray);
+        m_pulseConverter.convertCPPPulseArrayToRecArrays(pulses, xSize, ySize, &pPulseArray, &pPointArray);
 
         // grab the image data - wrap with a numpy array
         npy_intp dims[] = {ySize, xSize, numImgBands};
@@ -219,7 +219,7 @@ public:
         // copy data back
         if( m_bHaveOutputSPD )
         {
-            convertRecArraysToCPPPulseArray(pPulseArray, pPointArray, pulses);
+            m_pulseConverter.convertRecArraysToCPPPulseArray(pPulseArray, pPointArray, pulses);
         }
         Py_DECREF(pPulseArray);
         Py_DECREF(pPointArray);
@@ -232,7 +232,7 @@ public:
     {
         // convert data to numpy array
         PyObject *pPulseArray, *pPointArray;
-        convertCPPPulseArrayToRecArrays(pulses, xSize, ySize, &pPulseArray, &pPointArray);
+        m_pulseConverter.convertCPPPulseArrayToRecArrays(pulses, xSize, ySize, &pPulseArray, &pPointArray);
 
         // call python function 
         PyObject *pResult;
@@ -261,7 +261,7 @@ public:
         // copy data back
         if( m_bHaveOutputSPD )
         {
-            convertRecArraysToCPPPulseArray(pPulseArray, pPointArray, pulses);
+            m_pulseConverter.convertRecArraysToCPPPulseArray(pPulseArray, pPointArray, pulses);
         }
 
         Py_DECREF(pPulseArray);
@@ -294,6 +294,7 @@ private:
     PyObject *m_pApplyFn;
     PyObject *m_pOtherInputs;
     bool m_bHaveOutputSPD;
+    PulsePointConverter m_pulseConverter;
 };
 
 static PyObject *

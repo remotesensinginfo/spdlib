@@ -584,7 +584,8 @@ PySPDFile_readBlock(PySPDFile *self, PyObject *args)
 
     // create rec arrays
     PyObject *pPulseArray, *pPointArray;
-    convertCPPPulseArrayToRecArrays(pulses, xBlockSize, yBlockSize, &pPulseArray, &pPointArray);
+    PulsePointConverter converter;
+    converter.convertCPPPulseArrayToRecArrays(pulses, xBlockSize, yBlockSize, &pPulseArray, &pPointArray);
 
     // Delete pulses list.
     for(boost::uint_fast32_t i = 0; i < yBlockSize; ++i)

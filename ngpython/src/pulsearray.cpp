@@ -75,49 +75,66 @@ void addPulseFields(RecArrayCreator *pCreator)
     pCreator->addField("thisPulseIdx", NPY_UINT);
 }
 
-PulseArrayIndices getPulseIndices(PyObject *pArray)
+PulseArrayIndices* getPulseIndices(PyObject *pArray)
 {
-    PulseArrayIndices indices;
-    indices.pulseID.setField(pArray, "pulseID");
-    indices.gpsTime.setField(pArray, "gpsTime");
-    indices.x0.setField(pArray, "x0");
-    indices.y0.setField(pArray, "y0");
-    indices.z0.setField(pArray, "z0");
-    indices.h0.setField(pArray, "h0");
-    indices.xIdx.setField(pArray, "xIdx");
-    indices.yIdx.setField(pArray, "yIdx");
-    indices.azimuth.setField(pArray, "azimuth");
-    indices.zenith.setField(pArray, "zenith");
-    indices.numberOfReturns.setField(pArray, "numberOfReturns");
-    indices.numOfTransmittedBins.setField(pArray, "numOfTransmittedBins");
-    indices.numOfReceivedBins.setField(pArray, "numOfReceivedBins");
-    indices.rangeToWaveformStart.setField(pArray, "rangeToWaveformStart");
-    indices.amplitudePulse.setField(pArray, "amplitudePulse");
-    indices.widthPulse.setField(pArray, "widthPulse");
-    indices.user.setField(pArray, "user");
-    indices.sourceID.setField(pArray, "sourceID");
-    indices.edgeFlightLineFlag.setField(pArray, "edgeFlightLineFlag");
-    indices.scanDirectionFlag.setField(pArray, "scanDirectionFlag");
-    indices.scanAngleRank.setField(pArray, "scanAngleRank");
-    indices.scanline.setField(pArray, "scanline");
-    indices.scanlineIdx.setField(pArray, "scanlineIdx");
-    indices.receiveWaveNoiseThreshold.setField(pArray, "receiveWaveNoiseThreshold");
-    indices.transWaveNoiseThres.setField(pArray, "transWaveNoiseThres");
-    indices.wavelength.setField(pArray, "wavelength");
-    indices.receiveWaveGain.setField(pArray, "receiveWaveGain");
-    indices.receiveWaveOffset.setField(pArray, "receiveWaveOffset");
-    indices.transWaveGain.setField(pArray, "transWaveGain");
-    indices.transWaveOffset.setField(pArray, "transWaveOffset");
+    PulseArrayIndices *indices = new PulseArrayIndices();
+    indices->pulseID.setField(pArray, "pulseID");
+    indices->gpsTime.setField(pArray, "gpsTime");
+    indices->x0.setField(pArray, "x0");
+    indices->y0.setField(pArray, "y0");
+    indices->z0.setField(pArray, "z0");
+    indices->h0.setField(pArray, "h0");
+    indices->xIdx.setField(pArray, "xIdx");
+    indices->yIdx.setField(pArray, "yIdx");
+    indices->azimuth.setField(pArray, "azimuth");
+    indices->zenith.setField(pArray, "zenith");
+    indices->numberOfReturns.setField(pArray, "numberOfReturns");
+    indices->numOfTransmittedBins.setField(pArray, "numOfTransmittedBins");
+    indices->numOfReceivedBins.setField(pArray, "numOfReceivedBins");
+    indices->rangeToWaveformStart.setField(pArray, "rangeToWaveformStart");
+    indices->amplitudePulse.setField(pArray, "amplitudePulse");
+    indices->widthPulse.setField(pArray, "widthPulse");
+    indices->user.setField(pArray, "user");
+    indices->sourceID.setField(pArray, "sourceID");
+    indices->edgeFlightLineFlag.setField(pArray, "edgeFlightLineFlag");
+    indices->scanDirectionFlag.setField(pArray, "scanDirectionFlag");
+    indices->scanAngleRank.setField(pArray, "scanAngleRank");
+    indices->scanline.setField(pArray, "scanline");
+    indices->scanlineIdx.setField(pArray, "scanlineIdx");
+    indices->receiveWaveNoiseThreshold.setField(pArray, "receiveWaveNoiseThreshold");
+    indices->transWaveNoiseThres.setField(pArray, "transWaveNoiseThres");
+    indices->wavelength.setField(pArray, "wavelength");
+    indices->receiveWaveGain.setField(pArray, "receiveWaveGain");
+    indices->receiveWaveOffset.setField(pArray, "receiveWaveOffset");
+    indices->transWaveGain.setField(pArray, "transWaveGain");
+    indices->transWaveOffset.setField(pArray, "transWaveOffset");
 
-    indices.startPtsIdx.setField(pArray, "startPtsIdx");
-    indices.nPoints.setField(pArray, "nPoints");
-    indices.blockX.setField(pArray, "blockX");
-    indices.blockY.setField(pArray, "blockY");
-    indices.thisPulseIdx.setField(pArray, "thisPulseIdx");
+    indices->startPtsIdx.setField(pArray, "startPtsIdx");
+    indices->nPoints.setField(pArray, "nPoints");
+    indices->blockX.setField(pArray, "blockX");
+    indices->blockY.setField(pArray, "blockY");
+    indices->thisPulseIdx.setField(pArray, "thisPulseIdx");
     return indices;
 }
 
-void convertCPPPulseArrayToRecArrays(std::vector<spdlib::SPDPulse*> ***pulses, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize,
+PulsePointConverter::PulsePointConverter()
+{
+    addPulseFields(&m_pulseCreator);
+    addPointFields(&m_pointCreator);
+    m_ppulseIndices = NULL;
+    m_ppointIndices = NULL;
+}
+
+PulsePointConverter::~PulsePointConverter()
+{
+    if( m_ppulseIndices != NULL )
+        delete m_ppulseIndices;
+    if( m_ppointIndices != NULL )
+        delete m_ppointIndices;
+}
+
+void PulsePointConverter::convertCPPPulseArrayToRecArrays(std::vector<spdlib::SPDPulse*> ***pulses, 
+        boost::uint_fast32_t xSize, boost::uint_fast32_t ySize,
         PyObject **pPulseArray, PyObject **pPointArray)
 {
     // first need to scan through and get total size of arrays to be created
@@ -134,18 +151,15 @@ void convertCPPPulseArrayToRecArrays(std::vector<spdlib::SPDPulse*> ***pulses, b
         }
     }
     
-    // create the arrays
-    RecArrayCreator pulseCreator;
-    addPulseFields(&pulseCreator);
-    RecArrayCreator pointCreator;
-    addPointFields(&pointCreator);
+    *pPulseArray = m_pulseCreator.createArray(nPulses);
+    *pPointArray = m_pointCreator.createArray(nPoints);
 
-    *pPulseArray = pulseCreator.createArray(nPulses);
-    *pPointArray = pointCreator.createArray(nPoints);
-
-    // get the indices of our fields
-    PulseArrayIndices pulseIndices = getPulseIndices(*pPulseArray);
-    PointArrayIndices pointIndices = getPointIndices(*pPointArray);
+    // get the indices of our fields - assume these won't
+    // be different for each array created
+    if( m_ppulseIndices == NULL )
+        m_ppulseIndices = getPulseIndices(*pPulseArray);
+    if( m_ppointIndices == NULL )
+        m_ppointIndices = getPointIndices(*pPointArray);
 
     npy_intp nPulseCount = 0, nPointCount = 0;
     void *pRecord;
@@ -161,18 +175,18 @@ void convertCPPPulseArrayToRecArrays(std::vector<spdlib::SPDPulse*> ***pulses, b
                 for(std::vector<spdlib::SPDPoint*>::iterator iterPts = (*iterPls)->pts->begin(); iterPts != (*iterPls)->pts->end(); ++iterPts)
                 {
                     pRecord = PyArray_GETPTR1(*pPointArray, nPointCount);
-                    copyPointToRecord(pRecord, (*iterPts), pointIndices);
+                    copyPointToRecord(pRecord, (*iterPts), m_ppointIndices);
                     nPointCount++;
                 }
                 // now we know the start and end indices of the points we can add the pulse
                 pRecord = PyArray_GETPTR1(*pPulseArray, nPulseCount);
                 if( nPointCount > nStartPoint )
                 {
-                    copyPulseToRecord(pRecord, (*iterPls), pulseIndices, nStartPoint, nPointCount - nStartPoint, j, i, thisPulseIdx);
+                    copyPulseToRecord(pRecord, (*iterPls), m_ppulseIndices, nStartPoint, nPointCount - nStartPoint, j, i, thisPulseIdx);
                 }
                 else
                 {
-                    copyPulseToRecord(pRecord, (*iterPls), pulseIndices, 0, 0, i, i, thisPulseIdx);
+                    copyPulseToRecord(pRecord, (*iterPls), m_ppulseIndices, 0, 0, j, i, thisPulseIdx);
                 }
                 nPulseCount++;
                 thisPulseIdx++;
@@ -182,23 +196,25 @@ void convertCPPPulseArrayToRecArrays(std::vector<spdlib::SPDPulse*> ***pulses, b
     }
 }
 
-void convertRecArraysToCPPPulseArray(PyObject *pPulseArray, PyObject *pPointArray, std::vector<spdlib::SPDPulse*> ***pulses)
+void PulsePointConverter::convertRecArraysToCPPPulseArray(PyObject *pPulseArray, PyObject *pPointArray, std::vector<spdlib::SPDPulse*> ***pulses)
 {
-    // get the indices of our fields
-    PulseArrayIndices pulseIndices = getPulseIndices(pPulseArray);
-    PointArrayIndices pointIndices = getPointIndices(pPointArray);
+    // assume created in convertCPPPulseArrayToRecArrays above
+    assert(m_ppulseIndices != NULL );
+    assert(m_ppointIndices != NULL );
 
     void *pRecord;
     npy_intp nNumPulses = PyArray_DIM(pPulseArray, 0);
     for( npy_intp nPulseCount = 0; nPulseCount < nNumPulses; nPulseCount++ )
     {
         pRecord = PyArray_GETPTR1(pPulseArray, nPulseCount);
-        npy_uint startPtsIdx, nPoints, thisPulseIdx, blockX, blockY;
-        getFakePulseRecordValues(pRecord, pulseIndices, &startPtsIdx, &nPoints, &thisPulseIdx, 
-                    &blockX, &blockY);
+        npy_uint startPtsIdx = GetPulseStartPtsIdx(pRecord);
+        npy_uint nPoints = GetPulseNPoints(pRecord);
+        npy_uint thisPulseIdx = GetPulseThisPulseIdx(pRecord);
+        npy_uint blockX = GetPulseBlockX(pRecord);
+        npy_uint blockY = GetPulseBlockY(pRecord);
 
         spdlib::SPDPulse* pCurrPulse = pulses[blockY][blockX]->at(thisPulseIdx);
-        copyRecordToPulse(pCurrPulse, pRecord, pulseIndices);
+        copyRecordToPulse(pCurrPulse, pRecord, m_ppulseIndices);
 
         if( nPoints != 0 )
         {
@@ -206,7 +222,7 @@ void convertRecArraysToCPPPulseArray(PyObject *pPulseArray, PyObject *pPointArra
             for( npy_uint curPtsIdx = startPtsIdx; curPtsIdx < (startPtsIdx + nPoints); curPtsIdx++ )
             {
                 pRecord = PyArray_GETPTR1(pPointArray, curPtsIdx);
-                copyRecordToPoint(pCurrPulse->pts->at(curPtsIdx - startPtsIdx), pRecord, pointIndices);
+                copyRecordToPoint(pCurrPulse->pts->at(curPtsIdx - startPtsIdx), pRecord, m_ppointIndices);
             }
 
             // TODO: shrinking
