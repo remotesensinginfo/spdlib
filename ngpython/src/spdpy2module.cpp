@@ -165,15 +165,57 @@ spdpy2_createPointArray(PyObject *self, PyObject *args)
     return pArray;
 }
 
+// Convert a float *** to a numpy array to a numpy array
+// Note to Pete: a 3D C array would have made this easier
+// since we could have just wrapped it with PyArray_SimpleNewFromData
+PyObject* ConvertFloatCPPArrayToNumpy(float ***imageDataBlock, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, 
+            boost::uint_fast32_t numImgBands)
+{
+    npy_intp dims[] = {ySize, xSize, numImgBands};
+    PyObject *pImageData = PyArray_SimpleNew(3, dims, NPY_FLOAT);
+
+    for(boost::uint_fast32_t i = 0; i < ySize; ++i)
+    {
+        for(boost::uint_fast32_t j = 0; j < xSize; ++j)
+        {
+            for(boost::uint_fast32_t z = 0; z < numImgBands; ++z)
+            {
+                *((float*)PyArray_GETPTR3(pImageData, i, j, z)) = imageDataBlock[i][j][z];
+            }
+        }
+    }
+
+    return pImageData;
+}
+
+// the other way
+void ConvertNumpyToFloatCPPArray(float ***imageDataBlock, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, 
+            boost::uint_fast32_t numImgBands, PyObject *pImageData)
+{
+    for(boost::uint_fast32_t i = 0; i < ySize; ++i)
+    {
+        for(boost::uint_fast32_t j = 0; j < xSize; ++j)
+        {
+            for(boost::uint_fast32_t z = 0; z < numImgBands; ++z)
+            {
+                 imageDataBlock[i][j][z] = *((float*)PyArray_GETPTR3(pImageData, i, j, z));
+            }
+        }
+    }
+}
+
 // For use in the blockProcessor function
 class SPDDataBlockProcessorPython : public spdlib::SPDDataBlockProcessor
 {
 public:
-    SPDDataBlockProcessorPython(PyObject *pApplyFn, PyObject *pOtherInputs, bool bHaveOutputSPD)
+    SPDDataBlockProcessorPython(PyObject *pApplyFn, PyObject *pOtherInputs, bool bHaveOutputSPD,
+                    bool bHaveInputImage, bool bHaveOutputImage)
     {
         m_pApplyFn = pApplyFn;
         m_pOtherInputs = pOtherInputs;
         m_bHaveOutputSPD = bHaveOutputSPD;
+        m_bHaveInputImage = bHaveInputImage;
+        m_bHaveOutputImage = bHaveOutputImage;
     }
     ~SPDDataBlockProcessorPython()
     {
@@ -188,8 +230,17 @@ public:
         m_pulseConverter.convertCPPPulseArrayToRecArrays(pulses, xSize, ySize, &pPulseArray, &pPointArray);
 
         // grab the image data - wrap with a numpy array
-        npy_intp dims[] = {ySize, xSize, numImgBands};
-        PyObject *pImageData = PyArray_SimpleNewFromData(3, dims, NPY_FLOAT, imageDataBlock);
+        PyObject *pImageData;
+        if( m_bHaveInputImage )
+        {
+            pImageData = ConvertFloatCPPArrayToNumpy(imageDataBlock, xSize, ySize, numImgBands);
+        }
+        else
+        {
+            // blank is fine
+            npy_intp dims[] = {ySize, xSize, numImgBands};
+            pImageData = PyArray_SimpleNew(3, dims, NPY_FLOAT);
+        }
 
         // call python function 
         PyObject *pResult;
@@ -220,6 +271,10 @@ public:
         if( m_bHaveOutputSPD )
         {
             m_pulseConverter.convertRecArraysToCPPPulseArray(pPulseArray, pPointArray, pulses);
+        }
+        if( m_bHaveOutputImage )
+        {
+            ConvertNumpyToFloatCPPArray(imageDataBlock, xSize, ySize, numImgBands, pImageData);
         }
         Py_DECREF(pPulseArray);
         Py_DECREF(pPointArray);
@@ -294,6 +349,8 @@ private:
     PyObject *m_pApplyFn;
     PyObject *m_pOtherInputs;
     bool m_bHaveOutputSPD;
+    bool m_bHaveInputImage;
+    bool m_bHaveOutputImage;
     PulsePointConverter m_pulseConverter;
 };
 
@@ -450,7 +507,8 @@ spdpy2_blockProcessor(PyObject *self, PyObject *args)
     try
     {
         spdInFile = new spdlib::SPDFile(pszInputSPDFile);
-        blockProcessor = new SPDDataBlockProcessorPython(pApplyFn, pOtherInputs, pszOutputSPDFile != NULL);
+        blockProcessor = new SPDDataBlockProcessorPython(pApplyFn, pOtherInputs, pszOutputSPDFile != NULL,
+                            pszInputImageFile != NULL, pszOutputImageFile != NULL);
 
         spdlib::SPDProcessDataBlocks processBlocks = spdlib::SPDProcessDataBlocks(blockProcessor, 
             overlap, blockXSize, blockYSize, printProgress, keepMinExtent);
