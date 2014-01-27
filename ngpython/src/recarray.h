@@ -69,6 +69,7 @@ public:
 
 private:
     PyObject *m_DTypeList;
+    PyArray_Descr *m_pDescr;
 };
 
 // helper method used by RecArrayField to get info about a field

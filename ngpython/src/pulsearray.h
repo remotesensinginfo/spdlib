@@ -25,6 +25,7 @@
 #define __PULSEARRAY_H__
 
 #include "recarray.h"
+#include "pointarray.h"
 #include "spd/SPDPulse.h"
 
 class PulseArrayIndices
@@ -76,98 +77,129 @@ public:
 };
 
 void addPulseFields(RecArrayCreator *pCreator);
-PulseArrayIndices getPulseIndices(PyObject *pArray);
-inline void copyPulseToRecord(void *pRecord, spdlib::SPDPulse *pulse, PulseArrayIndices &indices, 
+PulseArrayIndices* getPulseIndices(PyObject *pArray);
+inline void copyPulseToRecord(void *pRecord, spdlib::SPDPulse *pulse, PulseArrayIndices *indices, 
         npy_uint startPtsIdx, npy_uint nPoints, npy_uint blockX, npy_uint blockY, npy_uint thisPulseIdx)
 {
-    indices.pulseID.setValue(pRecord, pulse->pulseID);
-    indices.gpsTime.setValue(pRecord, pulse->gpsTime);
-    indices.x0.setValue(pRecord, pulse->x0);
-    indices.y0.setValue(pRecord, pulse->y0);
-    indices.z0.setValue(pRecord, pulse->z0);
-    indices.h0.setValue(pRecord, pulse->h0);
-    indices.xIdx.setValue(pRecord, pulse->xIdx);
-    indices.yIdx.setValue(pRecord, pulse->yIdx);
-    indices.azimuth.setValue(pRecord, pulse->azimuth);
-    indices.zenith.setValue(pRecord, pulse->zenith);
-    indices.numberOfReturns.setValue(pRecord, pulse->numberOfReturns);
-    indices.numOfTransmittedBins.setValue(pRecord, pulse->numOfTransmittedBins);
-    indices.numOfReceivedBins.setValue(pRecord, pulse->numOfReceivedBins);
-    indices.rangeToWaveformStart.setValue(pRecord, pulse->rangeToWaveformStart);
-    indices.amplitudePulse.setValue(pRecord, pulse->amplitudePulse);
-    indices.widthPulse.setValue(pRecord, pulse->widthPulse);
-    indices.user.setValue(pRecord, pulse->user);
-    indices.sourceID.setValue(pRecord, pulse->sourceID);
-    indices.edgeFlightLineFlag.setValue(pRecord, pulse->edgeFlightLineFlag);
-    indices.scanDirectionFlag.setValue(pRecord, pulse->scanDirectionFlag);
-    indices.scanAngleRank.setValue(pRecord, pulse->scanAngleRank);
-    indices.scanline.setValue(pRecord, pulse->scanline);
-    indices.scanlineIdx.setValue(pRecord, pulse->scanlineIdx);
-    indices.receiveWaveNoiseThreshold.setValue(pRecord, pulse->receiveWaveNoiseThreshold);
-    indices.transWaveNoiseThres.setValue(pRecord, pulse->transWaveNoiseThres);
-    indices.wavelength.setValue(pRecord, pulse->wavelength);
-    indices.receiveWaveGain.setValue(pRecord, pulse->receiveWaveGain);
-    indices.receiveWaveOffset.setValue(pRecord, pulse->receiveWaveOffset);
-    indices.transWaveGain.setValue(pRecord, pulse->transWaveGain);
-    indices.transWaveOffset.setValue(pRecord, pulse->transWaveOffset);
+    indices->pulseID.setValue(pRecord, pulse->pulseID);
+    indices->gpsTime.setValue(pRecord, pulse->gpsTime);
+    indices->x0.setValue(pRecord, pulse->x0);
+    indices->y0.setValue(pRecord, pulse->y0);
+    indices->z0.setValue(pRecord, pulse->z0);
+    indices->h0.setValue(pRecord, pulse->h0);
+    indices->xIdx.setValue(pRecord, pulse->xIdx);
+    indices->yIdx.setValue(pRecord, pulse->yIdx);
+    indices->azimuth.setValue(pRecord, pulse->azimuth);
+    indices->zenith.setValue(pRecord, pulse->zenith);
+    indices->numberOfReturns.setValue(pRecord, pulse->numberOfReturns);
+    indices->numOfTransmittedBins.setValue(pRecord, pulse->numOfTransmittedBins);
+    indices->numOfReceivedBins.setValue(pRecord, pulse->numOfReceivedBins);
+    indices->rangeToWaveformStart.setValue(pRecord, pulse->rangeToWaveformStart);
+    indices->amplitudePulse.setValue(pRecord, pulse->amplitudePulse);
+    indices->widthPulse.setValue(pRecord, pulse->widthPulse);
+    indices->user.setValue(pRecord, pulse->user);
+    indices->sourceID.setValue(pRecord, pulse->sourceID);
+    indices->edgeFlightLineFlag.setValue(pRecord, pulse->edgeFlightLineFlag);
+    indices->scanDirectionFlag.setValue(pRecord, pulse->scanDirectionFlag);
+    indices->scanAngleRank.setValue(pRecord, pulse->scanAngleRank);
+    indices->scanline.setValue(pRecord, pulse->scanline);
+    indices->scanlineIdx.setValue(pRecord, pulse->scanlineIdx);
+    indices->receiveWaveNoiseThreshold.setValue(pRecord, pulse->receiveWaveNoiseThreshold);
+    indices->transWaveNoiseThres.setValue(pRecord, pulse->transWaveNoiseThres);
+    indices->wavelength.setValue(pRecord, pulse->wavelength);
+    indices->receiveWaveGain.setValue(pRecord, pulse->receiveWaveGain);
+    indices->receiveWaveOffset.setValue(pRecord, pulse->receiveWaveOffset);
+    indices->transWaveGain.setValue(pRecord, pulse->transWaveGain);
+    indices->transWaveOffset.setValue(pRecord, pulse->transWaveOffset);
 
     // 'fake' fields
-    indices.startPtsIdx.setValue(pRecord, startPtsIdx);
-    indices.nPoints.setValue(pRecord, nPoints);
-    indices.blockX.setValue(pRecord, blockX);
-    indices.blockY.setValue(pRecord, blockY);
-    indices.thisPulseIdx.setValue(pRecord, thisPulseIdx);
+    indices->startPtsIdx.setValue(pRecord, startPtsIdx);
+    indices->nPoints.setValue(pRecord, nPoints);
+    indices->blockX.setValue(pRecord, blockX);
+    indices->blockY.setValue(pRecord, blockY);
+    indices->thisPulseIdx.setValue(pRecord, thisPulseIdx);
 }
 
-inline void copyRecordToPulse(spdlib::SPDPulse *pulse, void *pRecord, PulseArrayIndices &indices)
+inline void copyRecordToPulse(spdlib::SPDPulse *pulse, void *pRecord, PulseArrayIndices *indices)
 {
-    pulse->pulseID = indices.pulseID.getValue(pRecord);
-    pulse->gpsTime = indices.gpsTime.getValue(pRecord);
-    pulse->x0 = indices.x0.getValue(pRecord);
-    pulse->y0 = indices.y0.getValue(pRecord);
-    pulse->z0 = indices.z0.getValue(pRecord);
-    pulse->h0 = indices.h0.getValue(pRecord);
-    pulse->xIdx = indices.xIdx.getValue(pRecord);
-    pulse->yIdx = indices.yIdx.getValue(pRecord);
-    pulse->azimuth = indices.azimuth.getValue(pRecord);
-    pulse->zenith = indices.zenith.getValue(pRecord);
-    pulse->numberOfReturns = indices.numberOfReturns.getValue(pRecord);
-    pulse->numOfTransmittedBins = indices.numOfTransmittedBins.getValue(pRecord);
-    pulse->numOfReceivedBins = indices.numOfReceivedBins.getValue(pRecord);
-    pulse->rangeToWaveformStart = indices.rangeToWaveformStart.getValue(pRecord);
-    pulse->amplitudePulse = indices.amplitudePulse.getValue(pRecord);
-    pulse->widthPulse = indices.widthPulse.getValue(pRecord);
-    pulse->user = indices.user.getValue(pRecord);
-    pulse->sourceID = indices.sourceID.getValue(pRecord);
-    pulse->edgeFlightLineFlag = indices.edgeFlightLineFlag.getValue(pRecord);
-    pulse->scanDirectionFlag = indices.scanDirectionFlag.getValue(pRecord);
-    pulse->scanAngleRank = indices.scanAngleRank.getValue(pRecord);
-    pulse->scanline = indices.scanline.getValue(pRecord);
-    pulse->scanlineIdx = indices.scanlineIdx.getValue(pRecord);
-    pulse->receiveWaveNoiseThreshold = indices.receiveWaveNoiseThreshold.getValue(pRecord);
-    pulse->transWaveNoiseThres = indices.transWaveNoiseThres.getValue(pRecord);
-    pulse->wavelength = indices.wavelength.getValue(pRecord);
-    pulse->receiveWaveGain = indices.receiveWaveGain.getValue(pRecord);
-    pulse->receiveWaveOffset = indices.receiveWaveOffset.getValue(pRecord);
-    pulse->transWaveGain = indices.transWaveGain.getValue(pRecord);
-    pulse->transWaveOffset = indices.transWaveOffset.getValue(pRecord);
+    pulse->pulseID = indices->pulseID.getValue(pRecord);
+    pulse->gpsTime = indices->gpsTime.getValue(pRecord);
+    pulse->x0 = indices->x0.getValue(pRecord);
+    pulse->y0 = indices->y0.getValue(pRecord);
+    pulse->z0 = indices->z0.getValue(pRecord);
+    pulse->h0 = indices->h0.getValue(pRecord);
+    pulse->xIdx = indices->xIdx.getValue(pRecord);
+    pulse->yIdx = indices->yIdx.getValue(pRecord);
+    pulse->azimuth = indices->azimuth.getValue(pRecord);
+    pulse->zenith = indices->zenith.getValue(pRecord);
+    pulse->numberOfReturns = indices->numberOfReturns.getValue(pRecord);
+    pulse->numOfTransmittedBins = indices->numOfTransmittedBins.getValue(pRecord);
+    pulse->numOfReceivedBins = indices->numOfReceivedBins.getValue(pRecord);
+    pulse->rangeToWaveformStart = indices->rangeToWaveformStart.getValue(pRecord);
+    pulse->amplitudePulse = indices->amplitudePulse.getValue(pRecord);
+    pulse->widthPulse = indices->widthPulse.getValue(pRecord);
+    pulse->user = indices->user.getValue(pRecord);
+    pulse->sourceID = indices->sourceID.getValue(pRecord);
+    pulse->edgeFlightLineFlag = indices->edgeFlightLineFlag.getValue(pRecord);
+    pulse->scanDirectionFlag = indices->scanDirectionFlag.getValue(pRecord);
+    pulse->scanAngleRank = indices->scanAngleRank.getValue(pRecord);
+    pulse->scanline = indices->scanline.getValue(pRecord);
+    pulse->scanlineIdx = indices->scanlineIdx.getValue(pRecord);
+    pulse->receiveWaveNoiseThreshold = indices->receiveWaveNoiseThreshold.getValue(pRecord);
+    pulse->transWaveNoiseThres = indices->transWaveNoiseThres.getValue(pRecord);
+    pulse->wavelength = indices->wavelength.getValue(pRecord);
+    pulse->receiveWaveGain = indices->receiveWaveGain.getValue(pRecord);
+    pulse->receiveWaveOffset = indices->receiveWaveOffset.getValue(pRecord);
+    pulse->transWaveGain = indices->transWaveGain.getValue(pRecord);
+    pulse->transWaveOffset = indices->transWaveOffset.getValue(pRecord);
 }
 
-inline void getFakePulseRecordValues(void *pRecord, PulseArrayIndices &indices, npy_uint *pstartPtsIdx, 
-        npy_uint *pnPoints, npy_uint *pthisPulseIdx, 
-        npy_uint *pblockX, npy_uint *pblockY)
+// handles the conversion of the pulse C++ stuff
+// into linked numpy pulse and point arrays
+class PulsePointConverter
 {
-    *pstartPtsIdx = indices.startPtsIdx.getValue(pRecord);
-    *pnPoints = indices.nPoints.getValue(pRecord);
-    *pthisPulseIdx = indices.thisPulseIdx.getValue(pRecord);
-    *pblockX = indices.blockX.getValue(pRecord);
-    *pblockY = indices.blockY.getValue(pRecord);
-}
+public:
+    PulsePointConverter();
+    ~PulsePointConverter();
 
-void convertCPPPulseArrayToRecArrays(std::vector<spdlib::SPDPulse*> ***pulses, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize,
+    // methods for getting 'fake' records out of a pulse
+    npy_uint GetPulseStartPtsIdx(void *pRecord)
+    {
+        return m_ppulseIndices->startPtsIdx.getValue(pRecord);
+    }
+
+    npy_uint GetPulseNPoints(void *pRecord)
+    {
+        return m_ppulseIndices->nPoints.getValue(pRecord);
+    }
+
+    npy_uint GetPulseThisPulseIdx(void *pRecord)
+    {
+        return m_ppulseIndices->thisPulseIdx.getValue(pRecord);
+    }
+
+    npy_uint GetPulseBlockX(void *pRecord)
+    {
+        return m_ppulseIndices->blockX.getValue(pRecord);
+    }
+
+    npy_uint GetPulseBlockY(void *pRecord)
+    {
+        return m_ppulseIndices->blockY.getValue(pRecord);
+    }
+
+    // methods to convert to/from C++ arrays    
+    void convertCPPPulseArrayToRecArrays(std::vector<spdlib::SPDPulse*> ***pulses, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize,
         PyObject **pPulseArray, PyObject **pPointArray);
 
-void convertRecArraysToCPPPulseArray(PyObject *pPulseArray, PyObject *pPointArray, std::vector<spdlib::SPDPulse*> ***pulses);
+    void convertRecArraysToCPPPulseArray(PyObject *pPulseArray, PyObject *pPointArray, std::vector<spdlib::SPDPulse*> ***pulses);
+
+private:
+    RecArrayCreator m_pulseCreator;
+    RecArrayCreator m_pointCreator;
+    PulseArrayIndices *m_ppulseIndices;
+    PointArrayIndices *m_ppointIndices;
+};
 
 #if PY_MAJOR_VERSION >= 3
 PyObject* pulsearray_init();

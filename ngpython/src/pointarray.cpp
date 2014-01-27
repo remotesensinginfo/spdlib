@@ -58,78 +58,30 @@ void addPointFields(RecArrayCreator *pCreator)
     pCreator->addField("waveformOffset", NPY_UINT);
 }
 
-PointArrayIndices getPointIndices(PyObject *pArray)
+PointArrayIndices* getPointIndices(PyObject *pArray)
 {
-    PointArrayIndices indices;
-    indices.returnID.setField(pArray, "returnID");
-    indices.gpsTime.setField(pArray, "gpsTime");
-    indices.x.setField(pArray, "x");
-    indices.y.setField(pArray, "y");
-    indices.z.setField(pArray, "z");
-    indices.height.setField(pArray, "height");
-    indices.range.setField(pArray, "range");
-    indices.amplitudeReturn.setField(pArray, "amplitudeReturn");
-    indices.widthReturn.setField(pArray, "widthReturn");
-    indices.red.setField(pArray, "red");
-    indices.green.setField(pArray, "green");
-    indices.blue.setField(pArray, "blue");
-    indices.classification.setField(pArray, "classification");
-    indices.user.setField(pArray, "user");
-    indices.modelKeyPoint.setField(pArray, "modelKeyPoint");
-    indices.lowPoint.setField(pArray, "lowPoint");
-    indices.overlap.setField(pArray, "overlap");
-    indices.ignore.setField(pArray, "ignore");
-    indices.wavePacketDescIdx.setField(pArray, "wavePacketDescIdx");
-    indices.waveformOffset.setField(pArray, "waveformOffset");
+    PointArrayIndices *indices = new PointArrayIndices();
+    indices->returnID.setField(pArray, "returnID");
+    indices->gpsTime.setField(pArray, "gpsTime");
+    indices->x.setField(pArray, "x");
+    indices->y.setField(pArray, "y");
+    indices->z.setField(pArray, "z");
+    indices->height.setField(pArray, "height");
+    indices->range.setField(pArray, "range");
+    indices->amplitudeReturn.setField(pArray, "amplitudeReturn");
+    indices->widthReturn.setField(pArray, "widthReturn");
+    indices->red.setField(pArray, "red");
+    indices->green.setField(pArray, "green");
+    indices->blue.setField(pArray, "blue");
+    indices->classification.setField(pArray, "classification");
+    indices->user.setField(pArray, "user");
+    indices->modelKeyPoint.setField(pArray, "modelKeyPoint");
+    indices->lowPoint.setField(pArray, "lowPoint");
+    indices->overlap.setField(pArray, "overlap");
+    indices->ignore.setField(pArray, "ignore");
+    indices->wavePacketDescIdx.setField(pArray, "wavePacketDescIdx");
+    indices->waveformOffset.setField(pArray, "waveformOffset");
     return indices;
-}
-
-void copyPointToRecord(void *pRecord, spdlib::SPDPoint *point, PointArrayIndices &indices)
-{
-    indices.returnID.setValue(pRecord, point->returnID);
-    indices.gpsTime.setValue(pRecord, point->gpsTime);
-    indices.x.setValue(pRecord, point->x);
-    indices.y.setValue(pRecord, point->y);
-    indices.z.setValue(pRecord, point->z);
-    indices.height.setValue(pRecord, point->height);
-    indices.range.setValue(pRecord, point->range);
-    indices.amplitudeReturn.setValue(pRecord, point->amplitudeReturn);
-    indices.widthReturn.setValue(pRecord, point->widthReturn);
-    indices.red.setValue(pRecord, point->red);
-    indices.green.setValue(pRecord, point->green);
-    indices.blue.setValue(pRecord, point->blue);
-    indices.classification.setValue(pRecord, point->classification);
-    indices.user.setValue(pRecord, point->user);
-    indices.modelKeyPoint.setValue(pRecord, point->modelKeyPoint);
-    indices.lowPoint.setValue(pRecord, point->lowPoint);
-    indices.overlap.setValue(pRecord, point->overlap);
-    indices.ignore.setValue(pRecord, point->ignore);
-    indices.wavePacketDescIdx.setValue(pRecord, point->wavePacketDescIdx);
-    indices.waveformOffset.setValue(pRecord, point->waveformOffset);
-}
-
-void copyRecordToPoint(spdlib::SPDPoint *point, void *pRecord, PointArrayIndices &indices)
-{
-    point->returnID = indices.returnID.getValue(pRecord);
-    point->gpsTime = indices.gpsTime.getValue(pRecord);
-    point->x = indices.x.getValue(pRecord);
-    point->y = indices.y.getValue(pRecord);
-    point->z = indices.z.getValue(pRecord);
-    point->height = indices.height.getValue(pRecord);
-    point->range = indices.range.getValue(pRecord);
-    point->amplitudeReturn = indices.amplitudeReturn.getValue(pRecord);
-    point->widthReturn = indices.widthReturn.getValue(pRecord);
-    point->red = indices.red.getValue(pRecord);
-    point->green = indices.green.getValue(pRecord);
-    point->blue = indices.blue.getValue(pRecord);
-    point->classification = indices.classification.getValue(pRecord);
-    point->user = indices.user.getValue(pRecord);
-    point->modelKeyPoint = indices.modelKeyPoint.getValue(pRecord);
-    point->lowPoint = indices.lowPoint.getValue(pRecord);
-    point->overlap = indices.overlap.getValue(pRecord);
-    point->ignore = indices.ignore.getValue(pRecord);
-    point->wavePacketDescIdx = indices.wavePacketDescIdx.getValue(pRecord);
-    point->waveformOffset = indices.waveformOffset.getValue(pRecord);
 }
 
 PyMODINIT_FUNC pointarray_init()

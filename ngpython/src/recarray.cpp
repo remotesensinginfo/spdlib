@@ -37,12 +37,15 @@ PyMODINIT_FUNC recarray_init()
 RecArrayCreator::RecArrayCreator()
 {
     m_DTypeList = NULL;
+    m_pDescr = NULL;
 }
 
 RecArrayCreator::~RecArrayCreator()
 {
     // destroy our list
     Py_XDECREF(m_DTypeList);
+    // description - this causes a crash. Not sure if it needs to be deallocated...
+    //Py_XDECREF(m_pDescr);
 }
 
 // Adds a field to our list for creation of array
@@ -156,27 +159,20 @@ void RecArrayCreator::addField(const char *pszName, char cKind, int nBytes, int 
 // create the array with fields as specified by addField()
 PyObject *RecArrayCreator::createArray(int nd, npy_intp *dims)
 {
-    /*for( Py_ssize_t i = 0; i < PyList_Size(m_DTypeList); i++ )
-    {
-        PyObject *pItem = PyList_GetItem(m_DTypeList, i);
-        PyObject_Print(PyTuple_GetItem(pItem, 0), stderr, Py_PRINT_RAW);
-        fprintf(stderr, " ");
-        PyObject_Print(PyTuple_GetItem(pItem, 1), stderr, Py_PRINT_RAW);
-        fprintf(stderr, " ");
-        PyObject_Print(PyTuple_GetItem(pItem, 2), stderr, Py_PRINT_RAW);
-        fprintf(stderr, "\n");
-    }*/
     // Convert to a PyArray_Descr object
     // see http://stackoverflow.com/questions/214549/how-to-create-a-numpy-record-array-from-c
-    PyArray_Descr *pDescr = NULL;
-    if( !PyArray_DescrConverter(m_DTypeList, &pDescr) )
+    // this assumes once they call here they have finished adding fields...
+    if( m_pDescr == NULL )
     {
-        throw RecArrayException("Unable to convert array description");
+        if( !PyArray_DescrConverter(m_DTypeList, &m_pDescr) )
+        {
+            throw RecArrayException("Unable to convert array description");
+        }
     }
 
     // create a 1-d array with this descr
     // steals ref to descr
-    PyObject *pArray = PyArray_SimpleNewFromDescr(nd, dims, pDescr);
+    PyObject *pArray = PyArray_SimpleNewFromDescr(nd, dims, m_pDescr);
     if( pArray == NULL )
     {
         throw RecArrayException("Unable to create array");
