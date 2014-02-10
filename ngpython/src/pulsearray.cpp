@@ -69,7 +69,6 @@ void addPulseFields(RecArrayCreator *pCreator)
     pCreator->addField("transWaveOffset", NPY_FLOAT);
     // 'fake' fields
     pCreator->addField("startPtsIdx", NPY_UINT);
-    pCreator->addField("nPoints", NPY_UINT);
     pCreator->addField("blockX", NPY_UINT);
     pCreator->addField("blockY", NPY_UINT);
     pCreator->addField("thisPulseIdx", NPY_UINT);
@@ -110,7 +109,6 @@ PulseArrayIndices* getPulseIndices(PyObject *pArray)
     indices->transWaveOffset.setField(pArray, "transWaveOffset");
 
     indices->startPtsIdx.setField(pArray, "startPtsIdx");
-    indices->nPoints.setField(pArray, "nPoints");
     indices->blockX.setField(pArray, "blockX");
     indices->blockY.setField(pArray, "blockY");
     indices->thisPulseIdx.setField(pArray, "thisPulseIdx");
@@ -208,7 +206,7 @@ void PulsePointConverter::convertRecArraysToCPPPulseArray(PyObject *pPulseArray,
     {
         pRecord = PyArray_GETPTR1(pPulseArray, nPulseCount);
         npy_uint startPtsIdx = GetPulseStartPtsIdx(pRecord);
-        npy_uint nPoints = GetPulseNPoints(pRecord);
+        npy_uint nNumberOfReturns = GetPulseNumberOfReturns(pRecord);
         npy_uint thisPulseIdx = GetPulseThisPulseIdx(pRecord);
         npy_uint blockX = GetPulseBlockX(pRecord);
         npy_uint blockY = GetPulseBlockY(pRecord);
@@ -216,10 +214,10 @@ void PulsePointConverter::convertRecArraysToCPPPulseArray(PyObject *pPulseArray,
         spdlib::SPDPulse* pCurrPulse = pulses[blockY][blockX]->at(thisPulseIdx);
         copyRecordToPulse(pCurrPulse, pRecord, m_ppulseIndices);
 
-        if( nPoints != 0 )
+        if( nNumberOfReturns != 0 )
         {
             // we have points to copy out
-            for( npy_uint curPtsIdx = startPtsIdx; curPtsIdx < (startPtsIdx + nPoints); curPtsIdx++ )
+            for( npy_uint curPtsIdx = startPtsIdx; curPtsIdx < (startPtsIdx + nNumberOfReturns); curPtsIdx++ )
             {
                 pRecord = PyArray_GETPTR1(pPointArray, curPtsIdx);
                 copyRecordToPoint(pCurrPulse->pts->at(curPtsIdx - startPtsIdx), pRecord, m_ppointIndices);

@@ -39,7 +39,7 @@ print(pulses.dtype, pulses.size)
 print(pulses)
 print(points.dtype)
 print(points, points.size)
-print(pulses[pulses['nPoints'] != 0])
+print(pulses[pulses['numberOfReturns'] != 0])
 
 
 

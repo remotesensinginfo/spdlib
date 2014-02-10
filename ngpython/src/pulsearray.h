@@ -68,7 +68,6 @@ public:
     RecArrayField<npy_float> transWaveOffset;
     // index into associated points array
     RecArrayField<npy_uint> startPtsIdx;
-    RecArrayField<npy_uint> nPoints; // TODO: is this the same as numberOfReturns?
     // index of this pulse in the original 2d array
     RecArrayField<npy_uint> blockX;
     RecArrayField<npy_uint> blockY;
@@ -114,7 +113,6 @@ inline void copyPulseToRecord(void *pRecord, spdlib::SPDPulse *pulse, PulseArray
 
     // 'fake' fields
     indices->startPtsIdx.setValue(pRecord, startPtsIdx);
-    indices->nPoints.setValue(pRecord, nPoints);
     indices->blockX.setValue(pRecord, blockX);
     indices->blockY.setValue(pRecord, blockY);
     indices->thisPulseIdx.setValue(pRecord, thisPulseIdx);
@@ -168,9 +166,9 @@ public:
         return m_ppulseIndices->startPtsIdx.getValue(pRecord);
     }
 
-    npy_uint GetPulseNPoints(void *pRecord)
+    npy_uint GetPulseNumberOfReturns(void *pRecord)
     {
-        return m_ppulseIndices->nPoints.getValue(pRecord);
+        return m_ppulseIndices->numberOfReturns.getValue(pRecord);
     }
 
     npy_uint GetPulseThisPulseIdx(void *pRecord)

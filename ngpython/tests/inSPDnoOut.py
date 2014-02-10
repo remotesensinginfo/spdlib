@@ -50,11 +50,9 @@ def findAverageZ(pulses, points, imagedata, otherin):
     if you prefer
     """
     for npulse in range(pulses.shape[0]):
-        # TODO: is numberOfReturns the same as my 'fake' field
-        # 'nPoints' which is the size of the points vector?
         if pulses[npulse]['numberOfReturns'] > 0:
             startPoint = pulses[npulse]['startPtsIdx']
-            for npoint in range(pulses[npulse]['nPoints']):
+            for npoint in range(pulses[npulse]['numberOfReturns']):
                 otherin.arr[0] += points[startPoint+npoint]['z']
                 otherin.arr[1] += 1
 

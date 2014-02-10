@@ -44,13 +44,11 @@ def meanZImg(pulses, points, imagedata):
     sums = numpy.zeros(imagedata.shape)
     counts = numpy.zeros(imagedata.shape, dtype=numpy.int)
     for npulse in range(pulses.shape[0]):
-        # TODO: is numberOfReturns the same as my 'fake' field
-        # 'nPoints' which is the size of the points vector?
         if pulses[npulse]['numberOfReturns'] > 0:
             x = pulses[npulse]['blockX']
             y = pulses[npulse]['blockY']
             startPoint = pulses[npulse]['startPtsIdx']
-            for npoint in range(pulses[npulse]['nPoints']):
+            for npoint in range(pulses[npulse]['numberOfReturns']):
                 # note: imagedata indexing is: y, x, z
                 sums[y, x, 0] += points[startPoint+npoint]['z']
                 counts[y, x, 0] += 1
