@@ -43,13 +43,11 @@ def removeMeanZ(pulses, points, imagedata):
     Removes the image data from the 'z' for each point
     """
     for npulse in range(pulses.shape[0]):
-        # TODO: is numberOfReturns the same as my 'fake' field
-        # 'nPoints' which is the size of the points vector?
         if pulses[npulse]['numberOfReturns'] > 0:
             x = pulses[npulse]['blockX']
             y = pulses[npulse]['blockY']
             startPoint = pulses[npulse]['startPtsIdx']
-            for npoint in range(pulses[npulse]['nPoints']):
+            for npoint in range(pulses[npulse]['numberOfReturns']):
                 # note: imagedata indexing is: y, x, z
                 points[startPoint+npoint]['z'] -= imagedata[y, x, 0]
 

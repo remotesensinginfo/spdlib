@@ -52,11 +52,9 @@ def setRandomColours(pulses, points, imagedata):
     if you prefer
     """
     for npulse in range(pulses.shape[0]):
-        # TODO: is numberOfReturns the same as my 'fake' field
-        # 'nPoints' which is the size of the points vector?
         if pulses[npulse]['numberOfReturns'] > 0:
             startPoint = pulses[npulse]['startPtsIdx']
-            for npoint in range(pulses[npulse]['nPoints']):
+            for npoint in range(pulses[npulse]['numberOfReturns']):
                 points[startPoint+npoint]['red'] = numpy.random.randint(0, 255)
                 points[startPoint+npoint]['blue'] = numpy.random.randint(0, 255)
                 points[startPoint+npoint]['green'] = numpy.random.randint(0, 255)
