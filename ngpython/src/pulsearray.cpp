@@ -217,13 +217,26 @@ void PulsePointConverter::convertRecArraysToCPPPulseArray(PyObject *pPulseArray,
         if( nNumberOfReturns != 0 )
         {
             // we have points to copy out
-            for( npy_uint curPtsIdx = startPtsIdx; curPtsIdx < (startPtsIdx + nNumberOfReturns); curPtsIdx++ )
+            npy_uint nNewNumberOfReturns = 0; // they may have deleted some
+            for( npy_uint i = 0; i < nNumberOfReturns; i++ )
             {
-                pRecord = PyArray_GETPTR1(pPointArray, curPtsIdx);
-                copyRecordToPoint(pCurrPulse->pts->at(curPtsIdx - startPtsIdx), pRecord, m_ppointIndices);
+                pRecord = PyArray_GETPTR1(pPointArray, startPtsIdx + i );
+                if( !getPointRecordDeleteMe(pRecord,  m_ppointIndices) )
+                {
+                    copyRecordToPoint(pCurrPulse->pts->at(nNewNumberOfReturns), pRecord, m_ppointIndices);
+                    nNewNumberOfReturns++;
+                }
             }
 
-            // TODO: shrinking
+            // they have deleted some
+            if( nNewNumberOfReturns < nNumberOfReturns )
+            {
+                // TODO: do we have to do any other sort of deletion?
+                pCurrPulse->pts->resize(nNewNumberOfReturns);
+                pCurrPulse->numberOfReturns = nNewNumberOfReturns;
+            }
+
+            // TOOD: adding points
         }
     }
 }

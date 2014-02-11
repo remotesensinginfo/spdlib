@@ -56,6 +56,8 @@ void addPointFields(RecArrayCreator *pCreator)
     pCreator->addField("ignore", NPY_USHORT);
     pCreator->addField("wavePacketDescIdx", NPY_USHORT);
     pCreator->addField("waveformOffset", NPY_UINT);
+
+    pCreator->addField("deleteMe", NPY_BOOL);
 }
 
 PointArrayIndices* getPointIndices(PyObject *pArray)
@@ -81,6 +83,8 @@ PointArrayIndices* getPointIndices(PyObject *pArray)
     indices->ignore.setField(pArray, "ignore");
     indices->wavePacketDescIdx.setField(pArray, "wavePacketDescIdx");
     indices->waveformOffset.setField(pArray, "waveformOffset");
+
+    indices->deleteMe.setField(pArray, "deleteMe");
     return indices;
 }
 

@@ -53,6 +53,9 @@ public:
     RecArrayField<npy_ushort> ignore;
     RecArrayField<npy_ushort> wavePacketDescIdx;
     RecArrayField<npy_uint> waveformOffset;
+
+    // fake
+    RecArrayField<npy_bool> deleteMe;
 };
 
 void addPointFields(RecArrayCreator *pCreator);
@@ -80,6 +83,13 @@ inline void copyPointToRecord(void *pRecord, spdlib::SPDPoint *point, PointArray
     indices->ignore.setValue(pRecord, point->ignore);
     indices->wavePacketDescIdx.setValue(pRecord, point->wavePacketDescIdx);
     indices->waveformOffset.setValue(pRecord, point->waveformOffset);
+
+    indices->deleteMe.setValue(pRecord, false);
+}
+
+inline bool getPointRecordDeleteMe(void *pRecord, PointArrayIndices *indices)
+{
+    return indices->deleteMe.getValue(pRecord);
 }
 
 inline void copyRecordToPoint(spdlib::SPDPoint *point, void *pRecord, PointArrayIndices *indices)
