@@ -30,8 +30,14 @@ under examples/BlockProcessor.
 
 import sys
 import numpy
-from numba import autojit
 from spdpy2 import spdapplier
+try:
+    from numba import autojit
+except ImportError:
+    def autojit(func):
+        def wrapper(*args, **kwargs):
+            return func(*args, **kwargs)
+        return wrapper
 
 infile = sys.argv[1]
 outfile = sys.argv[2]

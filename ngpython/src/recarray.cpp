@@ -44,8 +44,8 @@ RecArrayCreator::~RecArrayCreator()
 {
     // destroy our list
     Py_XDECREF(m_DTypeList);
-    // description - this causes a crash. Not sure if it needs to be deallocated...
-    //Py_XDECREF(m_pDescr);
+    // description
+    Py_XDECREF(m_pDescr);
 }
 
 // Adds a field to our list for creation of array
@@ -172,6 +172,7 @@ PyObject *RecArrayCreator::createArray(int nd, npy_intp *dims)
 
     // create a 1-d array with this descr
     // steals ref to descr
+    Py_INCREF(m_pDescr); // need to give away ref
     PyObject *pArray = PyArray_SimpleNewFromDescr(nd, dims, m_pDescr);
     if( pArray == NULL )
     {
