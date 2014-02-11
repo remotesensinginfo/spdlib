@@ -100,7 +100,8 @@ class OtherInputs(object):
     pass
     
 def apply(applyfn, inputSPDFile, inputImageFile=None, outputSPDFile=None,
-        outputImageFile=None, controls=None, otherinputs=None):
+        outputImageFile=None, controls=None, passCentrePts=False, 
+        otherinputs=None):
     """
     Applies the applyfn over the input blocks and writes the outputs
         inputSPDFile is the path to the input SPD File. This must be supplied.
@@ -108,14 +109,24 @@ def apply(applyfn, inputSPDFile, inputImageFile=None, outputSPDFile=None,
         outputSPDFile is the path to the output SPD File. This is optional.
         outputImageFile is the path to the output Image File. This is optional.
         controls is an instance of ApplierControls. If not passed, default values are used.
+        passCentrePts controls whether to pass the centre points of the bins to
+                the user function (see below).
         otherinputs is an instance of OtherInputs where additional things can be stored.
         
-    The applyfn signature looks like this when otherinputs is None:
-        applyfn(pulses, points, imagedata)
-    And like this otherwise:
-        applyfn(pulses, points, imagedata, otherinputs)
-    
-    imagedata will be None if both inputImageFile and outputImageFile are None
+    The applyfn signature looks like::
+        applyfn(pulses, points, [imagedata,] [cenPts,] [otherinputs,])
+        
+    pulses is a structured array of pulses
+    points is a structured array of points (first point is given by 
+                pulses[x]['startPtsIdx'], number of points given by 
+                pulses[x]['numberOfReturns'])
+    imagedata is a 2d array passed only if either inputImageFile or outputImageFile 
+                are not None
+    cenPts is a 3d array of centre points for each bin. cenPts[0] is x coords,
+                cenPts[1] is y. Passed when passCentrePts=True
+    otherinputs is a Python object, passed when the otherinput parameter to this 
+                function is not Noe
+        
     """
     if controls is None:
         # use default ones
@@ -125,5 +136,5 @@ def apply(applyfn, inputSPDFile, inputImageFile=None, outputSPDFile=None,
         raise ValueError("inputSPDFile must be not None")
         
     blockProcessor(applyfn, inputSPDFile, inputImageFile, outputSPDFile, 
-            outputImageFile, controls, otherinputs)
+            outputImageFile, controls, passCentrePts, otherinputs)
     

@@ -42,7 +42,7 @@ except ImportError:
 infile = sys.argv[1]
 
 @autojit
-def findAverageZ(pulses, points, imagedata, otherin):
+def findAverageZ(pulses, points, otherin):
     """
     Since this is a bit of a contrived example, the following code works
     well since all the points are now in one array and you don't have to 

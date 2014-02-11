@@ -204,21 +204,90 @@ void ConvertNumpyToFloatCPPArray(float ***imageDataBlock, boost::uint_fast32_t x
     }
 }
 
+// handle the centre points
+PyObject *ConvertCenPtsCPPArrayToNumpy(spdlib::SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize)
+{
+    npy_intp dims[] = {2, ySize, xSize};
+    PyObject *pCenData = PyArray_SimpleNew(3, dims, NPY_DOUBLE);
+
+    for(boost::uint_fast32_t i = 0; i < ySize; ++i)
+    {
+        for(boost::uint_fast32_t j = 0; j < xSize; ++j)
+        {
+            *((double*)PyArray_GETPTR3(pCenData, 0, i, j)) = cenPts[i][j]->x;
+            *((double*)PyArray_GETPTR3(pCenData, 1, i, j)) = cenPts[i][j]->y;
+        }
+    }
+
+    return pCenData;
+}
+
+// to the users function
+const Py_ssize_t PULSES_INDEX = 0;
+const Py_ssize_t POINTS_INDEX = 1;
+
 // For use in the blockProcessor function
 class SPDDataBlockProcessorPython : public spdlib::SPDDataBlockProcessor
 {
 public:
     SPDDataBlockProcessorPython(PyObject *pApplyFn, PyObject *pOtherInputs, bool bHaveOutputSPD,
-                    bool bHaveInputImage, bool bHaveOutputImage)
+                    bool bHaveInputImage, bool bHaveOutputImage, bool passCenPts)
     {
         m_pApplyFn = pApplyFn;
         m_pOtherInputs = pOtherInputs;
         m_bHaveOutputSPD = bHaveOutputSPD;
         m_bHaveInputImage = bHaveInputImage;
         m_bHaveOutputImage = bHaveOutputImage;
+
+        // work out the indices of the optional params
+        Py_ssize_t nLastIndex = POINTS_INDEX;
+        if( m_bHaveInputImage || m_bHaveOutputImage )
+        {
+            nLastIndex++;
+            m_nImageDataIndex = nLastIndex;
+        }
+        else
+        {
+            m_nImageDataIndex = -1;
+        }
+
+        if( passCenPts )
+        {
+            nLastIndex++;
+            m_nCenPtsIndex = nLastIndex;
+        }
+        else
+        {
+            m_nCenPtsIndex = -1;
+        }
+
+        if( m_pOtherInputs != Py_None )
+        {
+            nLastIndex++;
+            m_nOtherInputsIndex = nLastIndex;
+        }
+        else
+        {
+            m_nOtherInputsIndex = -1;
+        }
+
+        // create the tuple to pass to the user function
+        m_pUserParams = PyTuple_New(nLastIndex + 1);
+        if( m_pUserParams == NULL )
+        {
+            throw spdlib::SPDProcessingException("Unable to create parameter tuple");
+        }
+
+        // might as well set the user data since this doesn't change
+        if( m_nOtherInputsIndex != -1 )
+        {
+            Py_INCREF(m_pOtherInputs);
+            PyTuple_SetItem(m_pUserParams, m_nOtherInputsIndex, m_pOtherInputs);
+        }
     }
     ~SPDDataBlockProcessorPython()
     {
+        Py_DECREF(m_pUserParams);
     }
 
     void processDataBlockImage(spdlib::SPDFile *inSPDFile, std::vector<spdlib::SPDPulse*> ***pulses, 
@@ -242,26 +311,25 @@ public:
             pImageData = PyArray_SimpleNew(3, dims, NPY_FLOAT);
         }
 
+        // set the various elements in the tuple
+        // note PyTuple_SetItem steals a reference and 
+        // presumeably decrefs anything already there
+        PyTuple_SetItem(m_pUserParams, PULSES_INDEX, pPulseArray);
+        PyTuple_SetItem(m_pUserParams, POINTS_INDEX, pPointArray);
+        PyTuple_SetItem(m_pUserParams, m_nImageDataIndex, pImageData);
+        if( m_nCenPtsIndex != -1 )
+        {
+            PyObject *pCenPtsData = ConvertCenPtsCPPArrayToNumpy(cenPts, xSize, ySize);
+            PyTuple_SetItem(m_pUserParams, m_nCenPtsIndex, pCenPtsData);
+        }
+        // otherinputs set in constructor
+
         // call python function 
-        PyObject *pResult;
-        if( m_pOtherInputs == Py_None )
-        {
-            // no other inputs
-            pResult = PyObject_CallFunctionObjArgs(m_pApplyFn, pPulseArray, 
-                            pPointArray, pImageData, NULL);
-        }
-        else
-        {
-            pResult = PyObject_CallFunctionObjArgs(m_pApplyFn, pPulseArray, 
-                            pPointArray, pImageData, m_pOtherInputs, NULL);
-        }
+        PyObject *pResult = PyObject_CallObject(m_pApplyFn, m_pUserParams);
 
         if( pResult == NULL )
         {
             // error
-            Py_DECREF(pPulseArray);
-            Py_DECREF(pPointArray);
-            Py_DECREF(pImageData);
             PyErr_Print();
             throw spdlib::SPDProcessingException("Python error");
         }
@@ -276,9 +344,6 @@ public:
         {
             ConvertNumpyToFloatCPPArray(imageDataBlock, xSize, ySize, numImgBands, pImageData);
         }
-        Py_DECREF(pPulseArray);
-        Py_DECREF(pPointArray);
-        Py_DECREF(pImageData);
     }
 
     void processDataBlock(spdlib::SPDFile *inSPDFile, std::vector<spdlib::SPDPulse*> ***pulses, 
@@ -289,25 +354,24 @@ public:
         PyObject *pPulseArray, *pPointArray;
         m_pulseConverter.convertCPPPulseArrayToRecArrays(pulses, xSize, ySize, &pPulseArray, &pPointArray);
 
+        // set the various elements in the tuple
+        // note PyTuple_SetItem steals a reference and 
+        // presumeably decrefs anything already there
+        PyTuple_SetItem(m_pUserParams, PULSES_INDEX, pPulseArray);
+        PyTuple_SetItem(m_pUserParams, POINTS_INDEX, pPointArray);
+        if( m_nCenPtsIndex != -1 )
+        {
+            PyObject *pCenPtsData = ConvertCenPtsCPPArrayToNumpy(cenPts, xSize, ySize);
+            PyTuple_SetItem(m_pUserParams, m_nCenPtsIndex, pCenPtsData);
+        }
+        // otherinputs set in constructor
+
         // call python function 
-        PyObject *pResult;
-        if( m_pOtherInputs == Py_None )
-        {
-            // no other inputs
-            pResult = PyObject_CallFunctionObjArgs(m_pApplyFn, pPulseArray, pPointArray, 
-                        Py_None, NULL);
-        }
-        else
-        {
-            pResult = PyObject_CallFunctionObjArgs(m_pApplyFn, pPulseArray, pPointArray, 
-                        Py_None, m_pOtherInputs, NULL);
-        }
+        PyObject *pResult = PyObject_CallObject(m_pApplyFn, m_pUserParams);
 
         if( pResult == NULL )
         {
             // error
-            Py_DECREF(pPulseArray);
-            Py_DECREF(pPointArray);
             PyErr_Print();
             throw spdlib::SPDProcessingException("Python error");
         }
@@ -318,9 +382,6 @@ public:
         {
             m_pulseConverter.convertRecArraysToCPPPulseArray(pPulseArray, pPointArray, pulses);
         }
-
-        Py_DECREF(pPulseArray);
-        Py_DECREF(pPointArray);
     }
 
     void processDataBlockImage(spdlib::SPDFile *inSPDFile, std::vector<spdlib::SPDPulse*> *pulses, 
@@ -352,6 +413,10 @@ private:
     bool m_bHaveInputImage;
     bool m_bHaveOutputImage;
     PulsePointConverter m_pulseConverter;
+    Py_ssize_t m_nImageDataIndex;
+    Py_ssize_t m_nCenPtsIndex;
+    Py_ssize_t m_nOtherInputsIndex;
+    PyObject *m_pUserParams;
 };
 
 static PyObject *
@@ -359,8 +424,9 @@ spdpy2_blockProcessor(PyObject *self, PyObject *args)
 {
     PyObject *pApplyFn, *pControls, *pOtherInputs;
     const char *pszInputSPDFile, *pszInputImageFile, *pszOutputSPDFile, *pszOutputImageFile;
-    if( !PyArg_ParseTuple(args, "OszzzOO", &pApplyFn, &pszInputSPDFile, &pszInputImageFile, 
-                &pszOutputSPDFile, &pszOutputImageFile, &pControls, &pOtherInputs))
+    int nPassCenPts;
+    if( !PyArg_ParseTuple(args, "OszzzOiO", &pApplyFn, &pszInputSPDFile, &pszInputImageFile, 
+                &pszOutputSPDFile, &pszOutputImageFile, &pControls, &nPassCenPts, &pOtherInputs))
         return NULL;
 
     // get the control values
@@ -508,7 +574,7 @@ spdpy2_blockProcessor(PyObject *self, PyObject *args)
     {
         spdInFile = new spdlib::SPDFile(pszInputSPDFile);
         blockProcessor = new SPDDataBlockProcessorPython(pApplyFn, pOtherInputs, pszOutputSPDFile != NULL,
-                            pszInputImageFile != NULL, pszOutputImageFile != NULL);
+                            pszInputImageFile != NULL, pszOutputImageFile != NULL, nPassCenPts != 0);
 
         spdlib::SPDProcessDataBlocks processBlocks = spdlib::SPDProcessDataBlocks(blockProcessor, 
             overlap, blockXSize, blockYSize, printProgress, keepMinExtent);
