@@ -43,7 +43,7 @@ infile = sys.argv[1]
 outimage = sys.argv[2]
 
 @autojit
-def meanZImg(pulses, points, imagedata):
+def meanZImg(spdfile, pulses, points, imagedata):
     """
     Finds the average z for each bin
     """

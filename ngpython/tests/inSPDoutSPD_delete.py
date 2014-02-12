@@ -42,7 +42,7 @@ infile = sys.argv[1]
 outfile = sys.argv[2]
 
 @autojit
-def deletePts(pulses, points):
+def deletePts(spdfile, pulses, points):
     """
     Delete a random subset of the points
     Note: you don't have to update numberOfReturns

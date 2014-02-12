@@ -31,6 +31,7 @@
 
 #include "pulsearray.h"
 #include "pointarray.h"
+#include "pyspdfile.h"
 
 // global error pointer - set in the pyspdfile_init method
 PyObject *PySPDError;
@@ -268,7 +269,9 @@ CREATE_GET_SET_STRING(GeneratingSoftware)
 CREATE_GET_SET_STRING(SystemIdentifier)
 CREATE_GET_SET_STRING(FileSignature)
 CREATE_GET_SET_INT(YearOfCreation)
+CREATE_GET_SET_INT(MonthOfCreation)
 CREATE_GET_SET_INT(DayOfCreation)
+CREATE_GET_SET_INT(HourOfCreation)
 CREATE_GET_SET_INT(MinuteOfCreation)
 CREATE_GET_SET_INT(SecondOfCreation)
 CREATE_GET_SET_INT(YearOfCapture)
@@ -347,7 +350,9 @@ static PyGetSetDef PySPDFile_getseters[] = {
     GETSETDEF(SystemIdentifier),
     GETSETDEF(FileSignature),
     GETSETDEF(YearOfCreation),
+    GETSETDEF(MonthOfCreation),
     GETSETDEF(DayOfCreation),
+    GETSETDEF(HourOfCreation),
     GETSETDEF(MinuteOfCreation),
     GETSETDEF(SecondOfCreation),
     GETSETDEF(YearOfCapture),
@@ -699,4 +704,267 @@ PyMODINIT_FUNC pyspdfile_init(PyObject *module, PyObject *error)
 #endif
 }
 
+void addSPDFileFields(RecArrayCreator *pCreator, spdlib::SPDFile *pFile)
+{
+    //pCreator->addField("FilePath", NPY_CHAR, pFile->getFilePath().size());
+    //pCreator->addField("SpatialReference", NPY_CHAR, pFile->getSpatialReference().size());
+    pCreator->addField("IndexType", NPY_UINT16);
+    pCreator->addField("FileType", NPY_UINT16);
+    pCreator->addField("DiscretePtDefined", NPY_INT16);
+    pCreator->addField("DecomposedPtDefined", NPY_INT16);
+    pCreator->addField("TransWaveformDefined", NPY_INT16);
+    pCreator->addField("ReceiveWaveformDefined", NPY_INT16);
+    pCreator->addField("MajorSPDVersion", NPY_UINT16);
+    pCreator->addField("MinorSPDVersion", NPY_UINT16);
+    pCreator->addField("PointVersion", NPY_UINT16);
+    pCreator->addField("PulseVersion", NPY_UINT16);
+    //pCreator->addField("GeneratingSoftware", NPY_CHAR, pFile->getGeneratingSoftware().size());
+    //pCreator->addField("SystemIdentifier", NPY_CHAR, pFile->getSystemIdentifier().size());
+    //pCreator->addField("FileSignature", NPY_CHAR, pFile->getGeneratingSoftware().size());
+    pCreator->addField("YearOfCreation", NPY_UINT16);
+    pCreator->addField("MonthOfCreation", NPY_UINT16);
+    pCreator->addField("DayOfCreation", NPY_UINT16);
+    pCreator->addField("HourOfCreation", NPY_UINT16);
+    pCreator->addField("MinuteOfCreation", NPY_UINT16);
+    pCreator->addField("SecondOfCreation", NPY_UINT16);
+    pCreator->addField("YearOfCapture", NPY_UINT16);
+    pCreator->addField("MonthOfCapture", NPY_UINT16);
+    pCreator->addField("DayOfCapture", NPY_UINT16);
+    pCreator->addField("HourOfCapture", NPY_UINT16);
+    pCreator->addField("MinuteOfCapture", NPY_UINT16);
+    pCreator->addField("SecondOfCapture", NPY_UINT16);
+    pCreator->addField("NumberOfPoints", NPY_UINT64);
+    pCreator->addField("NumberOfPulses", NPY_UINT64);
+    //pCreator->addField("UserMetaField", NPY_CHAR, pFile->getUserMetaField().size());
+    pCreator->addField("XMin", NPY_DOUBLE);
+    pCreator->addField("XMax", NPY_DOUBLE);
+    pCreator->addField("YMin", NPY_DOUBLE);
+    pCreator->addField("YMax", NPY_DOUBLE);
+    pCreator->addField("ZMin", NPY_DOUBLE);
+    pCreator->addField("ZMax", NPY_DOUBLE);
+    pCreator->addField("ZenithMin", NPY_DOUBLE);
+    pCreator->addField("ZenithMax", NPY_DOUBLE);
+    pCreator->addField("AzimuthMin", NPY_DOUBLE);
+    pCreator->addField("AzimuthMax", NPY_DOUBLE);
+    pCreator->addField("RangeMin", NPY_DOUBLE);
+    pCreator->addField("RangeMax", NPY_DOUBLE);
+    pCreator->addField("ScanlineMin", NPY_DOUBLE);
+    pCreator->addField("ScanlineMax", NPY_DOUBLE);
+    pCreator->addField("ScanlineIdxMin", NPY_DOUBLE);
+    pCreator->addField("ScanlineIdxMax", NPY_DOUBLE);
+    pCreator->addField("BinSize", NPY_DOUBLE);
+    pCreator->addField("NumberBinsX", NPY_UINT32);
+    pCreator->addField("NumberBinsY", NPY_UINT32);
+    pCreator->addField("Wavelengths", NPY_FLOAT, pFile->getWavelengths()->size());
+    pCreator->addField("Bandwidths", NPY_FLOAT, pFile->getBandwidths()->size());
+    pCreator->addField("NumOfWavelengths", NPY_UINT16);
+    pCreator->addField("PulseRepetitionFreq", NPY_FLOAT);
+    pCreator->addField("BeamDivergence", NPY_FLOAT);
+    pCreator->addField("SensorHeight", NPY_DOUBLE);
+    pCreator->addField("Footprint", NPY_FLOAT);
+    pCreator->addField("MaxScanAngle", NPY_FLOAT);
+    pCreator->addField("RGBDefined", NPY_INT16);
+    pCreator->addField("PulseBlockSize", NPY_UINT16);
+    pCreator->addField("ReceivedBlockSize", NPY_UINT16);
+    pCreator->addField("TransmittedBlockSize", NPY_UINT16);
+    pCreator->addField("WaveformBitRes", NPY_UINT16);
+    pCreator->addField("TemporalBinSpacing", NPY_DOUBLE);
+    pCreator->addField("ReturnNumsSynGen", NPY_INT16);
+    pCreator->addField("HeightDefined", NPY_INT16);
+    pCreator->addField("SensorSpeed", NPY_FLOAT);
+    pCreator->addField("SensorScanRate", NPY_FLOAT);
+    pCreator->addField("PointDensity", NPY_FLOAT);
+    pCreator->addField("PulseDensity", NPY_FLOAT);
+    pCreator->addField("PulseCrossTrackSpacing", NPY_FLOAT);
+    pCreator->addField("PulseAlongTrackSpacing", NPY_FLOAT);
+    pCreator->addField("OriginDefined", NPY_INT16);
+    pCreator->addField("PulseAngularSpacingAzimuth", NPY_FLOAT);
+    pCreator->addField("PulseAngularSpacingZenith", NPY_FLOAT);
+    pCreator->addField("PulseIdxMethod", NPY_INT16);
+    pCreator->addField("SensorApertureSize", NPY_FLOAT);
+    pCreator->addField("PulseEnergy", NPY_FLOAT);
+    pCreator->addField("FieldOfView", NPY_FLOAT);
+}
+
+SPDFileArrayIndices* getSPDFileIndices(PyObject *pArray)
+{
+    SPDFileArrayIndices* indices = new SPDFileArrayIndices();
+    //indices->FilePath.setField(pArray, "FilePath");
+    //indices->SpatialReference.setField(pArray, "SpatialReference");
+    indices->IndexType.setField(pArray, "IndexType");
+    indices->FileType.setField(pArray, "FileType");
+    indices->DiscretePtDefined.setField(pArray, "DiscretePtDefined");
+    indices->DecomposedPtDefined.setField(pArray, "DecomposedPtDefined");
+    indices->TransWaveformDefined.setField(pArray, "TransWaveformDefined");
+    indices->ReceiveWaveformDefined.setField(pArray, "ReceiveWaveformDefined");
+    indices->MajorSPDVersion.setField(pArray, "MajorSPDVersion");
+    indices->MinorSPDVersion.setField(pArray, "MinorSPDVersion");
+    indices->PointVersion.setField(pArray, "PointVersion");
+    indices->PulseVersion.setField(pArray, "PulseVersion");
+    //indices->GeneratingSoftware.setField(pArray, "GeneratingSoftware");
+    //indices->SystemIdentifier.setField(pArray, "SystemIdentifier");
+    //indices->FileSignature.setField(pArray, "FileSignature");
+    indices->YearOfCreation.setField(pArray, "YearOfCreation");
+    indices->MonthOfCreation.setField(pArray, "MonthOfCreation");
+    indices->DayOfCreation.setField(pArray, "DayOfCreation");
+    indices->HourOfCreation.setField(pArray, "HourOfCreation");
+    indices->MinuteOfCreation.setField(pArray, "MinuteOfCreation");
+    indices->SecondOfCreation.setField(pArray, "SecondOfCreation");
+    indices->YearOfCapture.setField(pArray, "YearOfCapture");
+    indices->MonthOfCapture.setField(pArray, "MonthOfCapture");
+    indices->DayOfCapture.setField(pArray, "DayOfCapture");
+    indices->HourOfCapture.setField(pArray, "HourOfCapture");
+    indices->MinuteOfCapture.setField(pArray, "MinuteOfCapture");
+    indices->SecondOfCapture.setField(pArray, "SecondOfCapture");
+    indices->NumberOfPoints.setField(pArray, "NumberOfPoints");
+    indices->NumberOfPulses.setField(pArray, "NumberOfPulses");
+    //indices->UserMetaField.setField(pArray, "UserMetaField");
+    indices->XMin.setField(pArray, "XMin");
+    indices->XMax.setField(pArray, "XMax");
+    indices->YMin.setField(pArray, "YMin");
+    indices->YMax.setField(pArray, "YMax");
+    indices->ZMin.setField(pArray, "ZMin");
+    indices->ZMax.setField(pArray, "ZMax");
+    indices->ZenithMin.setField(pArray, "ZenithMin");
+    indices->ZenithMax.setField(pArray, "ZenithMax");
+    indices->AzimuthMin.setField(pArray, "AzimuthMin");
+    indices->AzimuthMax.setField(pArray, "AzimuthMax");
+    indices->RangeMin.setField(pArray, "RangeMin");
+    indices->RangeMax.setField(pArray, "RangeMax");
+    indices->ScanlineMin.setField(pArray, "ScanlineMin");
+    indices->ScanlineMax.setField(pArray, "ScanlineMax");
+    indices->ScanlineIdxMin.setField(pArray, "ScanlineIdxMin");
+    indices->ScanlineIdxMax.setField(pArray, "ScanlineIdxMax");
+    indices->BinSize.setField(pArray, "BinSize");
+    indices->NumberBinsX.setField(pArray, "NumberBinsX");
+    indices->NumberBinsY.setField(pArray, "NumberBinsY");
+    indices->Wavelengths.setField(pArray, "Wavelengths");
+    indices->Bandwidths.setField(pArray, "Bandwidths");
+    indices->NumOfWavelengths.setField(pArray, "NumOfWavelengths");
+    indices->PulseRepetitionFreq.setField(pArray, "PulseRepetitionFreq");
+    indices->BeamDivergence.setField(pArray, "BeamDivergence");
+    indices->SensorHeight.setField(pArray, "SensorHeight");
+    indices->Footprint.setField(pArray, "Footprint");
+    indices->MaxScanAngle.setField(pArray, "MaxScanAngle");
+    indices->RGBDefined.setField(pArray, "RGBDefined");
+    indices->PulseBlockSize.setField(pArray, "PulseBlockSize");
+    indices->ReceivedBlockSize.setField(pArray, "ReceivedBlockSize");
+    indices->TransmittedBlockSize.setField(pArray, "TransmittedBlockSize");
+    indices->WaveformBitRes.setField(pArray, "WaveformBitRes");
+    indices->TemporalBinSpacing.setField(pArray, "TemporalBinSpacing");
+    indices->ReturnNumsSynGen.setField(pArray, "ReturnNumsSynGen");
+    indices->HeightDefined.setField(pArray, "HeightDefined");
+    indices->SensorSpeed.setField(pArray, "SensorSpeed");
+    indices->SensorScanRate.setField(pArray, "SensorScanRate");
+    indices->PointDensity.setField(pArray, "PointDensity");
+    indices->PulseDensity.setField(pArray, "PulseDensity");
+    indices->PulseCrossTrackSpacing.setField(pArray, "PulseCrossTrackSpacing");
+    indices->PulseAlongTrackSpacing.setField(pArray, "PulseAlongTrackSpacing");
+    indices->OriginDefined.setField(pArray, "OriginDefined");
+    indices->PulseAngularSpacingAzimuth.setField(pArray, "PulseAngularSpacingAzimuth");
+    indices->PulseAngularSpacingZenith.setField(pArray, "PulseAngularSpacingZenith");
+    indices->PulseIdxMethod.setField(pArray, "PulseIdxMethod");
+    indices->SensorApertureSize.setField(pArray, "SensorApertureSize");
+    indices->PulseEnergy.setField(pArray, "PulseEnergy");
+    indices->FieldOfView.setField(pArray, "FieldOfView");
+    return indices;
+}
+
+PyObject* createSPDFileArray(spdlib::SPDFile *pFile)
+{
+    RecArrayCreator spdfileCreator;
+    addSPDFileFields(&spdfileCreator, pFile);
+
+    // length 1
+    PyObject *pArray = spdfileCreator.createArray(1);
+    
+    SPDFileArrayIndices *pIndices = getSPDFileIndices(pArray);
+
+    // get the first element 
+    void *pRecord = PyArray_GETPTR1(pArray, 0);
+
+    //pIndices->FilePath.setValueArray(pRecord, pFile->getFilePath().c_str());
+    //pIndices->SpatialReference.setValueArray(pRecord, pFile->getSpatialReference().c_str());
+    pIndices->IndexType.setValue(pRecord, pFile->getIndexType());
+    pIndices->FileType.setValue(pRecord, pFile->getFileType());
+    pIndices->DiscretePtDefined.setValue(pRecord, pFile->getDiscretePtDefined());
+    pIndices->DecomposedPtDefined.setValue(pRecord, pFile->getDecomposedPtDefined());
+    pIndices->TransWaveformDefined.setValue(pRecord, pFile->getTransWaveformDefined());
+    pIndices->ReceiveWaveformDefined.setValue(pRecord, pFile->getReceiveWaveformDefined());
+    pIndices->MajorSPDVersion.setValue(pRecord, pFile->getMajorSPDVersion());
+    pIndices->MinorSPDVersion.setValue(pRecord, pFile->getMinorSPDVersion());
+    pIndices->PointVersion.setValue(pRecord, pFile->getPointVersion());
+    pIndices->PulseVersion.setValue(pRecord, pFile->getPulseVersion());
+    //pIndices->GeneratingSoftware.setValueArray(pRecord, pFile->getGeneratingSoftware().c_str());
+    //pIndices->SystemIdentifier.setValueArray(pRecord, pFile->getSystemIdentifier().c_str());
+    //pIndices->FileSignature.setValueArray(pRecord, pFile->getFileSignature().c_str());
+    pIndices->YearOfCreation.setValue(pRecord, pFile->getYearOfCreation());
+    pIndices->MonthOfCreation.setValue(pRecord, pFile->getMonthOfCreation());
+    pIndices->DayOfCreation.setValue(pRecord, pFile->getDayOfCreation());
+    pIndices->HourOfCreation.setValue(pRecord, pFile->getHourOfCreation());
+    pIndices->MinuteOfCreation.setValue(pRecord, pFile->getMinuteOfCreation());
+    pIndices->SecondOfCreation.setValue(pRecord, pFile->getSecondOfCreation());
+    pIndices->YearOfCapture.setValue(pRecord, pFile->getYearOfCapture());
+    pIndices->MonthOfCapture.setValue(pRecord, pFile->getMonthOfCapture());
+    pIndices->DayOfCapture.setValue(pRecord, pFile->getDayOfCapture());
+    pIndices->HourOfCapture.setValue(pRecord, pFile->getHourOfCapture());
+    pIndices->MinuteOfCapture.setValue(pRecord, pFile->getMinuteOfCapture());
+    pIndices->SecondOfCapture.setValue(pRecord, pFile->getSecondOfCapture());
+    pIndices->NumberOfPoints.setValue(pRecord, pFile->getNumberOfPoints());
+    pIndices->NumberOfPulses.setValue(pRecord, pFile->getNumberOfPulses());
+    //pIndices->UserMetaField.setValueArray(pRecord, pFile->getUserMetaField().c_str());
+    pIndices->XMin.setValue(pRecord, pFile->getXMin());
+    pIndices->XMax.setValue(pRecord, pFile->getXMax());
+    pIndices->YMin.setValue(pRecord, pFile->getYMin());
+    pIndices->YMax.setValue(pRecord, pFile->getYMax());
+    pIndices->ZMin.setValue(pRecord, pFile->getZMin());
+    pIndices->ZMax.setValue(pRecord, pFile->getZMax());
+    pIndices->ZenithMin.setValue(pRecord, pFile->getZenithMin());
+    pIndices->ZenithMax.setValue(pRecord, pFile->getZenithMax());
+    pIndices->AzimuthMin.setValue(pRecord, pFile->getAzimuthMin());
+    pIndices->AzimuthMax.setValue(pRecord, pFile->getAzimuthMax());
+    pIndices->RangeMin.setValue(pRecord, pFile->getRangeMin());
+    pIndices->RangeMax.setValue(pRecord, pFile->getRangeMax());
+    pIndices->ScanlineMin.setValue(pRecord, pFile->getScanlineMin());
+    pIndices->ScanlineMax.setValue(pRecord, pFile->getScanlineMax());
+    pIndices->ScanlineIdxMin.setValue(pRecord, pFile->getScanlineIdxMin());
+    pIndices->ScanlineIdxMax.setValue(pRecord, pFile->getScanlineIdxMax());
+    pIndices->BinSize.setValue(pRecord, pFile->getBinSize());
+    pIndices->NumberBinsX.setValue(pRecord, pFile->getNumberBinsX());
+    pIndices->NumberBinsY.setValue(pRecord, pFile->getNumberBinsY());
+    std::vector<float> *pWavelengths = pFile->getWavelengths();
+    pIndices->Wavelengths.setValueArray(pRecord, &(*pWavelengths)[0]);
+    std::vector<float> *pBandWidths = pFile->getBandwidths();
+    pIndices->Bandwidths.setValueArray(pRecord, &(*pBandWidths)[0]);
+    pIndices->NumOfWavelengths.setValue(pRecord, pFile->getNumOfWavelengths());
+    pIndices->PulseRepetitionFreq.setValue(pRecord, pFile->getPulseRepetitionFreq());
+    pIndices->BeamDivergence.setValue(pRecord, pFile->getBeamDivergence());
+    pIndices->SensorHeight.setValue(pRecord, pFile->getSensorHeight());
+    pIndices->Footprint.setValue(pRecord, pFile->getFootprint());
+    pIndices->MaxScanAngle.setValue(pRecord, pFile->getMaxScanAngle());
+    pIndices->RGBDefined.setValue(pRecord, pFile->getRGBDefined());
+    pIndices->PulseBlockSize.setValue(pRecord, pFile->getPulseBlockSize());
+    pIndices->ReceivedBlockSize.setValue(pRecord, pFile->getReceivedBlockSize());
+    pIndices->TransmittedBlockSize.setValue(pRecord, pFile->getTransmittedBlockSize());
+    pIndices->WaveformBitRes.setValue(pRecord, pFile->getWaveformBitRes());
+    pIndices->TemporalBinSpacing.setValue(pRecord, pFile->getTemporalBinSpacing());
+    pIndices->ReturnNumsSynGen.setValue(pRecord, pFile->getReturnNumsSynGen());
+    pIndices->HeightDefined.setValue(pRecord, pFile->getHeightDefined());
+    pIndices->SensorSpeed.setValue(pRecord, pFile->getSensorSpeed());
+    pIndices->SensorScanRate.setValue(pRecord, pFile->getSensorScanRate());
+    pIndices->PointDensity.setValue(pRecord, pFile->getPointDensity());
+    pIndices->PulseDensity.setValue(pRecord, pFile->getPulseDensity());
+    pIndices->PulseCrossTrackSpacing.setValue(pRecord, pFile->getPulseCrossTrackSpacing());
+    pIndices->PulseAlongTrackSpacing.setValue(pRecord, pFile->getPulseAlongTrackSpacing());
+    pIndices->OriginDefined.setValue(pRecord, pFile->getOriginDefined());
+    pIndices->PulseAngularSpacingAzimuth.setValue(pRecord, pFile->getPulseAngularSpacingAzimuth());
+    pIndices->PulseAngularSpacingZenith.setValue(pRecord, pFile->getPulseAngularSpacingZenith());
+    pIndices->PulseIdxMethod.setValue(pRecord, pFile->getPulseIdxMethod());
+    pIndices->SensorApertureSize.setValue(pRecord, pFile->getSensorApertureSize());
+    pIndices->PulseEnergy.setValue(pRecord, pFile->getPulseEnergy());
+    pIndices->FieldOfView.setValue(pRecord, pFile->getFieldOfView());
+
+    delete pIndices;
+    return pArray;
+}
 

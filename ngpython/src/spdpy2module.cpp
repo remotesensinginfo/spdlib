@@ -223,8 +223,9 @@ PyObject *ConvertCenPtsCPPArrayToNumpy(spdlib::SPDXYPoint ***cenPts, boost::uint
 }
 
 // to the users function
-const Py_ssize_t PULSES_INDEX = 0;
-const Py_ssize_t POINTS_INDEX = 1;
+const Py_ssize_t FILE_INDEX = 0;
+const Py_ssize_t PULSES_INDEX = 1;
+const Py_ssize_t POINTS_INDEX = 2;
 
 // For use in the blockProcessor function
 class SPDDataBlockProcessorPython : public spdlib::SPDDataBlockProcessor
@@ -238,6 +239,9 @@ public:
         m_bHaveOutputSPD = bHaveOutputSPD;
         m_bHaveInputImage = bHaveInputImage;
         m_bHaveOutputImage = bHaveOutputImage;
+        // assume that this just needs to be done once
+        // and stays the same for each block
+        m_bHaveCreatedFileArray = false;
 
         // work out the indices of the optional params
         Py_ssize_t nLastIndex = POINTS_INDEX;
@@ -294,6 +298,14 @@ public:
             float ***imageDataBlock, spdlib::SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, 
             boost::uint_fast32_t numImgBands, float binSize) throw(spdlib::SPDProcessingException)
     {
+        // convert file into numpy array on the first call
+        if( !m_bHaveCreatedFileArray )
+        {
+            PyObject *pFileArray = createSPDFileArray(inSPDFile);
+            PyTuple_SetItem(m_pUserParams, FILE_INDEX, pFileArray);
+            m_bHaveCreatedFileArray = true;
+        }
+
         // convert data to numpy array
         PyObject *pPulseArray, *pPointArray;
         m_pulseConverter.convertCPPPulseArrayToRecArrays(pulses, xSize, ySize, &pPulseArray, &pPointArray);
@@ -350,6 +362,14 @@ public:
             spdlib::SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, 
             float binSize) throw(spdlib::SPDProcessingException)
     {
+        // convert file into numpy array on the first call
+        if( !m_bHaveCreatedFileArray )
+        {
+            PyObject *pFileArray = createSPDFileArray(inSPDFile);
+            PyTuple_SetItem(m_pUserParams, FILE_INDEX, pFileArray);
+            m_bHaveCreatedFileArray = true;
+        }
+
         // convert data to numpy array
         PyObject *pPulseArray, *pPointArray;
         m_pulseConverter.convertCPPPulseArrayToRecArrays(pulses, xSize, ySize, &pPulseArray, &pPointArray);
@@ -417,6 +437,7 @@ private:
     Py_ssize_t m_nCenPtsIndex;
     Py_ssize_t m_nOtherInputsIndex;
     PyObject *m_pUserParams;
+    bool m_bHaveCreatedFileArray;
 };
 
 static PyObject *

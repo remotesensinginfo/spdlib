@@ -114,8 +114,10 @@ def apply(applyfn, inputSPDFile, inputImageFile=None, outputSPDFile=None,
         otherinputs is an instance of OtherInputs where additional things can be stored.
         
     The applyfn signature looks like::
-        applyfn(pulses, points, [imagedata,] [cenPts,] [otherinputs,])
+        applyfn(spdfile, pulses, points, [imagedata,] [cenPts,] [otherinputs,])
         
+    spdfile is a single-element structured array of the information in the SPD
+                file header.
     pulses is a structured array of pulses
     points is a structured array of points (first point is given by 
                 pulses[x]['startPtsIdx'], number of points given by 
