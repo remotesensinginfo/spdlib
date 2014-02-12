@@ -784,6 +784,9 @@ void addSPDFileFields(RecArrayCreator *pCreator, spdlib::SPDFile *pFile)
     pCreator->addField("SensorApertureSize", NPY_FLOAT);
     pCreator->addField("PulseEnergy", NPY_FLOAT);
     pCreator->addField("FieldOfView", NPY_FLOAT);
+
+    // fake
+    pCreator->addField("processingBinSize", NPY_FLOAT);
 }
 
 SPDFileArrayIndices* getSPDFileIndices(PyObject *pArray)
@@ -867,10 +870,13 @@ SPDFileArrayIndices* getSPDFileIndices(PyObject *pArray)
     indices->SensorApertureSize.setField(pArray, "SensorApertureSize");
     indices->PulseEnergy.setField(pArray, "PulseEnergy");
     indices->FieldOfView.setField(pArray, "FieldOfView");
+
+    // fake
+    indices->processingBinSize.setField(pArray, "processingBinSize");
     return indices;
 }
 
-PyObject* createSPDFileArray(spdlib::SPDFile *pFile)
+PyObject* createSPDFileArray(spdlib::SPDFile *pFile, float binSize)
 {
     RecArrayCreator spdfileCreator;
     addSPDFileFields(&spdfileCreator, pFile);
@@ -963,6 +969,9 @@ PyObject* createSPDFileArray(spdlib::SPDFile *pFile)
     pIndices->SensorApertureSize.setValue(pRecord, pFile->getSensorApertureSize());
     pIndices->PulseEnergy.setValue(pRecord, pFile->getPulseEnergy());
     pIndices->FieldOfView.setValue(pRecord, pFile->getFieldOfView());
+
+    // fake
+    pIndices->processingBinSize.setValue(pRecord, binSize);
 
     delete pIndices;
     return pArray;

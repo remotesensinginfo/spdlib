@@ -121,11 +121,14 @@ public:
     RecArrayField<npy_float> SensorApertureSize;
     RecArrayField<npy_float> PulseEnergy;
     RecArrayField<npy_float> FieldOfView;
+
+    // fake
+    RecArrayField<npy_float> processingBinSize;
 };
 
 void addSPDFileFields(RecArrayCreator *pCreator, spdlib::SPDFile *pFile);
 SPDFileArrayIndices* getSPDFileIndices(PyObject *pArray);
-PyObject* createSPDFileArray(spdlib::SPDFile *pFile);
+PyObject* createSPDFileArray(spdlib::SPDFile *pFile, float binSize);
 
 #endif //PYSPDFILE_H
 
