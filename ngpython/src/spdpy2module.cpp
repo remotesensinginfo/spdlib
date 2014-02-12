@@ -301,7 +301,7 @@ public:
         // convert file into numpy array on the first call
         if( !m_bHaveCreatedFileArray )
         {
-            PyObject *pFileArray = createSPDFileArray(inSPDFile);
+            PyObject *pFileArray = createSPDFileArray(inSPDFile, binSize);
             PyTuple_SetItem(m_pUserParams, FILE_INDEX, pFileArray);
             m_bHaveCreatedFileArray = true;
         }
@@ -365,7 +365,7 @@ public:
         // convert file into numpy array on the first call
         if( !m_bHaveCreatedFileArray )
         {
-            PyObject *pFileArray = createSPDFileArray(inSPDFile);
+            PyObject *pFileArray = createSPDFileArray(inSPDFile, binSize);
             PyTuple_SetItem(m_pUserParams, FILE_INDEX, pFileArray);
             m_bHaveCreatedFileArray = true;
         }
