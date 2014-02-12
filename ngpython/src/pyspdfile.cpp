@@ -706,8 +706,8 @@ PyMODINIT_FUNC pyspdfile_init(PyObject *module, PyObject *error)
 
 void addSPDFileFields(RecArrayCreator *pCreator, spdlib::SPDFile *pFile)
 {
-    //pCreator->addField("FilePath", NPY_CHAR, pFile->getFilePath().size());
-    //pCreator->addField("SpatialReference", NPY_CHAR, pFile->getSpatialReference().size());
+    //pCreator->addField("FilePath", 'S', pFile->getFilePath().size());
+    //pCreator->addField("SpatialReference", 'S', pFile->getSpatialReference().size());
     pCreator->addField("IndexType", NPY_UINT16);
     pCreator->addField("FileType", NPY_UINT16);
     pCreator->addField("DiscretePtDefined", NPY_INT16);
@@ -718,9 +718,9 @@ void addSPDFileFields(RecArrayCreator *pCreator, spdlib::SPDFile *pFile)
     pCreator->addField("MinorSPDVersion", NPY_UINT16);
     pCreator->addField("PointVersion", NPY_UINT16);
     pCreator->addField("PulseVersion", NPY_UINT16);
-    //pCreator->addField("GeneratingSoftware", NPY_CHAR, pFile->getGeneratingSoftware().size());
-    //pCreator->addField("SystemIdentifier", NPY_CHAR, pFile->getSystemIdentifier().size());
-    //pCreator->addField("FileSignature", NPY_CHAR, pFile->getGeneratingSoftware().size());
+    //pCreator->addField("GeneratingSoftware", 'S', pFile->getGeneratingSoftware().size());
+    //pCreator->addField("SystemIdentifier", 'S', pFile->getSystemIdentifier().size());
+    //pCreator->addField("FileSignature", 'S', pFile->getGeneratingSoftware().size());
     pCreator->addField("YearOfCreation", NPY_UINT16);
     pCreator->addField("MonthOfCreation", NPY_UINT16);
     pCreator->addField("DayOfCreation", NPY_UINT16);
@@ -735,7 +735,7 @@ void addSPDFileFields(RecArrayCreator *pCreator, spdlib::SPDFile *pFile)
     pCreator->addField("SecondOfCapture", NPY_UINT16);
     pCreator->addField("NumberOfPoints", NPY_UINT64);
     pCreator->addField("NumberOfPulses", NPY_UINT64);
-    //pCreator->addField("UserMetaField", NPY_CHAR, pFile->getUserMetaField().size());
+    //pCreator->addField("UserMetaField", 'S', pFile->getUserMetaField().size());
     pCreator->addField("XMin", NPY_DOUBLE);
     pCreator->addField("XMax", NPY_DOUBLE);
     pCreator->addField("YMin", NPY_DOUBLE);
@@ -755,8 +755,11 @@ void addSPDFileFields(RecArrayCreator *pCreator, spdlib::SPDFile *pFile)
     pCreator->addField("BinSize", NPY_DOUBLE);
     pCreator->addField("NumberBinsX", NPY_UINT32);
     pCreator->addField("NumberBinsY", NPY_UINT32);
-    pCreator->addField("Wavelengths", NPY_FLOAT, pFile->getWavelengths()->size());
-    pCreator->addField("Bandwidths", NPY_FLOAT, pFile->getBandwidths()->size());
+    //pCreator->addField("Wavelengths", NPY_FLOAT, pFile->getWavelengths()->size());
+    //pCreator->addField("Bandwidths", NPY_FLOAT, pFile->getBandwidths()->size());
+    pCreator->addField("Wavelengths", NPY_FLOAT);
+    pCreator->addField("Bandwidths", NPY_FLOAT);
+
     pCreator->addField("NumOfWavelengths", NPY_UINT16);
     pCreator->addField("PulseRepetitionFreq", NPY_FLOAT);
     pCreator->addField("BeamDivergence", NPY_FLOAT);
@@ -938,10 +941,14 @@ PyObject* createSPDFileArray(spdlib::SPDFile *pFile, float binSize)
     pIndices->BinSize.setValue(pRecord, pFile->getBinSize());
     pIndices->NumberBinsX.setValue(pRecord, pFile->getNumberBinsX());
     pIndices->NumberBinsY.setValue(pRecord, pFile->getNumberBinsY());
+
     std::vector<float> *pWavelengths = pFile->getWavelengths();
-    pIndices->Wavelengths.setValueArray(pRecord, &(*pWavelengths)[0]);
+    //pIndices->Wavelengths.setValueArray(pRecord, &(*pWavelengths)[0]);
     std::vector<float> *pBandWidths = pFile->getBandwidths();
-    pIndices->Bandwidths.setValueArray(pRecord, &(*pBandWidths)[0]);
+    //pIndices->Bandwidths.setValueArray(pRecord, &(*pBandWidths)[0]);
+    pIndices->Wavelengths.setValue(pRecord, (*pWavelengths)[0]);
+    pIndices->Bandwidths.setValue(pRecord, (*pBandWidths)[0]);
+
     pIndices->NumOfWavelengths.setValue(pRecord, pFile->getNumOfWavelengths());
     pIndices->PulseRepetitionFreq.setValue(pRecord, pFile->getPulseRepetitionFreq());
     pIndices->BeamDivergence.setValue(pRecord, pFile->getBeamDivergence());
