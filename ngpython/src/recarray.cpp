@@ -103,6 +103,10 @@ void RecArrayCreator::addField(const char *pszName, NPY_TYPES eType, int nLength
             cKind = 'f';
             nBytes = 8;
             break;
+        case NPY_CHAR:
+            cKind = 'S';
+            nBytes = 1;
+            break;
         default:
             throw RecArrayException("Data type not supported");
             break;

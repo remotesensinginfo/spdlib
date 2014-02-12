@@ -43,7 +43,7 @@ infile = sys.argv[1]
 outfile = sys.argv[2]
 
 @autojit
-def setRandomColours(pulses, points):
+def setRandomColours(spdfile, pulses, points):
     """
     Since this is a bit of a contrived example, the following code works
     well since all the points are now in one array and you don't have to 

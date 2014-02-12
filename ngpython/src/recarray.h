@@ -76,7 +76,7 @@ private:
 void getFieldDescription(PyObject *pArray, const char *pszName, int *pnOffset, char *pcKind, int *pnSize, int *pnLength)throw(RecArrayException);
 
 // template class to access a field. Should set as type one of the types from npy_common.h:
-// npy_byte, npy_ubyte, npy_ushort, npy_uint, npy_ulong, npy_float, npy_double, npy_short, npy_int, npy_long, npy_bool
+// npy_char, npy_byte, npy_ubyte, npy_ushort, npy_uint, npy_ulong, npy_float, npy_double, npy_short, npy_int, npy_long, npy_bool
 // a simple check is done to see the size matches the field
 
 template <class T>
@@ -128,7 +128,7 @@ public:
         return val;
     }
     // set an sub array 
-    void setValueArray(void *pRow, T *pData)
+    void setValueArray(void *pRow, const T *pData)
     {
         memcpy( (char*)pRow + m_nOffset, pData, m_nSize * m_nLength );
     }

@@ -45,7 +45,7 @@ inimage = sys.argv[2]
 outfile = sys.argv[3]
 
 @autojit
-def removeMeanZ(pulses, points, imagedata):
+def removeMeanZ(spdfile, pulses, points, imagedata):
     """
     Removes the image data from the 'z' for each point
     """
