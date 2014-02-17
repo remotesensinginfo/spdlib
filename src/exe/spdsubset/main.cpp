@@ -93,11 +93,26 @@ int main (int argc, char * const argv[])
 		TCLAP::ValueArg<double> ranMaxArg("","ranmax","Maximum range threshold",false,NAN,"double");
 		cmd.add( ranMaxArg );
         
+        TCLAP::ValueArg<double> sliMinArg("","slimin","Minimum scanline index threshold",false,NAN,"uint_fast32_t");
+		cmd.add( sliMinArg );
+		
+		TCLAP::ValueArg<double> sliMaxArg("","slimax","Maximum scanline index threshold",false,NAN,"uint_fast32_t");
+		cmd.add( sliMaxArg );
+		
+		TCLAP::ValueArg<double> slMinArg("","slmin","Minimum scanline threshold",false,NAN,"uint_fast32_t");
+		cmd.add( slMinArg );
+		
+		TCLAP::ValueArg<double> slMaxArg("","slmax","Maximum scanline threshold",false,NAN,"uint_fast32_t");
+		cmd.add( slMaxArg );
+
         TCLAP::SwitchArg heightSwitch("","height","Threshold the height of each pulse (currently only valid with SPD to SPD subsetting)", false);
 		cmd.add( heightSwitch );
         
         TCLAP::SwitchArg sphericalSwitch("","spherical","Subset a spherically indexed SPD file.", false);
         cmd.add( sphericalSwitch );
+
+        TCLAP::SwitchArg scanSwitch("","scan","Subset a scan indexed SPD file.", false);
+        cmd.add( scanSwitch );
 
         TCLAP::ValueArg<std::string> textfileArg("","txtfile","A text containing the extent to which the file should be cut to.",false,"","string");
 		cmd.add( textfileArg );
@@ -150,6 +165,7 @@ int main (int argc, char * const argv[])
             double *bbox = new double[6];
             bool *bboxDefined = new bool[6];
             bool sphericalCoords = sphericalSwitch.getValue();
+            bool scanCoords = scanSwitch.getValue();
             if(textfileArg.isSet())
             {
                 spdlib::SPDTextFileLineReader lineReader;
@@ -174,6 +190,10 @@ int main (int argc, char * const argv[])
                             {
                                 sphericalCoords = true;
                             }
+                            else if(line == "#Scan")
+                            {
+                                scanCoords = true;
+                            }                            
                             first = false;
                         }
                         else
@@ -191,6 +211,10 @@ int main (int argc, char * const argv[])
                 if(dataLineCount == 4)
                 {
                     if(sphericalCoords)
+                    {
+                        ignoreRange = true;
+                    }
+                    else if(scanCoords)
                     {
                         ignoreRange = true;
                     }
@@ -215,6 +239,15 @@ int main (int argc, char * const argv[])
                     bbox[1] = azMaxArg.getValue();
                     bbox[2] = zenMinArg.getValue();
                     bbox[3] = zenMaxArg.getValue();
+                    bbox[4] = ranMinArg.getValue();
+                    bbox[5] = ranMaxArg.getValue();
+                }
+                else if(scanCoords)
+                {
+                    bbox[0] = sliMinArg.getValue();
+                    bbox[1] = sliMaxArg.getValue();
+                    bbox[2] = slMinArg.getValue();
+                    bbox[3] = slMaxArg.getValue();
                     bbox[4] = ranMinArg.getValue();
                     bbox[5] = ranMaxArg.getValue();
                 }
@@ -299,6 +332,15 @@ int main (int argc, char * const argv[])
                 std::cout << "Range Min:" << bbox[4] << std::endl;
                 std::cout << "Range Max:" << bbox[5] << std::endl;
             }
+            else if(scanCoords)
+            {
+                std::cout << "ScanlineIdx Min:" << bbox[0] << std::endl;
+                std::cout << "ScanlineIdx Max:" << bbox[1] << std::endl;
+                std::cout << "Scanline Min:" << bbox[2] << std::endl;
+                std::cout << "Scanline Max:" << bbox[3] << std::endl;
+                std::cout << "Range Min:" << bbox[4] << std::endl;
+                std::cout << "Range Max:" << bbox[5] << std::endl;
+            }
             else
             {
                 std::cout << "X Min:" << bbox[0] << std::endl;
@@ -320,6 +362,19 @@ int main (int argc, char * const argv[])
                 {
                     spdlib::SPDSubsetNonGriddedFile subset;
                     subset.subsetSpherical(inputFile, outputFile, bbox, bboxDefined);
+                }
+            }
+            else if(scanCoords)
+            {
+                if(indexedSPDFile)
+                {
+                    spdlib::SPDSubsetSPDFile subset;
+                    subset.subsetScanSPDFile(inputFile, outputFile, bbox, bboxDefined);
+                }
+                else
+                {
+                    spdlib::SPDSubsetNonGriddedFile subset;
+                    subset.subsetScan(inputFile, outputFile, bbox, bboxDefined);
                 }
             }
             else

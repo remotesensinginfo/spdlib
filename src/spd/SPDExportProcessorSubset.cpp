@@ -302,6 +302,90 @@ namespace spdlib
 		delete pulses;
 	}
 	
+    SPDExportProcessorSubsetScan::SPDExportProcessorSubsetScan(SPDDataExporter *exporter, SPDFile *spdFileOut, double *bbox) throw(SPDException) : SPDImporterProcessor()
+	{
+		this->exporter = exporter;
+		this->spdFileOut = spdFileOut;
+		this->bbox = bbox;
+		if(exporter->requireGrid())
+		{
+			throw SPDException("This class does not support the export of gridded formats.");
+		}
+		
+		try 
+		{
+			this->exporter->open(this->spdFileOut, this->spdFileOut->getFilePath());
+		}
+		catch (SPDException &e) 
+		{
+			throw e;
+		}
+		this->fileOpen = true;
+		this->pulses = new std::list<SPDPulse*>();
+	}
+	
+	void SPDExportProcessorSubsetScan::processImportedPulse(SPDFile *spdFile, SPDPulse *pulse) throw(SPDIOException)
+	{
+		try
+		{
+			if((pulse->scanlineIdx > bbox[0]) & (pulse->scanlineIdx < bbox[1]) &
+			   (pulse->scanline > bbox[2]) & (pulse->scanline < bbox[3]))
+			{
+				bool rangeWithBBox = true;
+				if((pulse->pts != NULL) && (pulse->numberOfReturns > 0))
+				{
+					if((pulse->pts->front()->range < bbox[4]) |
+					   (pulse->pts->front()->range > bbox[5]))
+					{
+						rangeWithBBox = false;
+					}
+					
+					if((pulse->pts->back()->range < bbox[4]) |
+					   (pulse->pts->back()->range > bbox[5]))
+					{
+						rangeWithBBox = false;
+					}
+				}
+				
+				if(rangeWithBBox)
+				{
+					this->pulses->push_back(pulse);
+					this->exporter->writeDataColumn(pulses, 0, 0);
+				}
+				else
+				{
+					SPDPulseUtils::deleteSPDPulse(pulse);
+				}
+			}
+			else 
+			{
+				SPDPulseUtils::deleteSPDPulse(pulse);
+			}
+            
+		}
+		catch (SPDIOException &e) 
+		{
+			throw e;
+		}
+	}
+	
+	void SPDExportProcessorSubsetScan::completeFileAndClose(SPDFile *spdFile)throw(SPDIOException)
+	{
+		try 
+		{
+			spdFileOut->copyAttributesFrom(spdFile);
+			exporter->finaliseClose();
+		}
+		catch (SPDIOException &e) 
+		{
+			throw e;
+		}
+	}
+	
+	SPDExportProcessorSubsetScan::~SPDExportProcessorSubsetScan()
+	{
+		delete pulses;
+	}
 	
 	
 	SPDSubsetNonGriddedFile::SPDSubsetNonGriddedFile()
@@ -429,6 +513,72 @@ namespace spdlib
             SPDDataExporter *exporter = new SPDNoIdxFileWriter();
             
             SPDExportProcessorSubsetSpherical *exportAsRead = new SPDExportProcessorSubsetSpherical(exporter, outSPDFile, bbox);
+            reader.readAndProcessAllData(input, inSPDFile, exportAsRead);
+            exportAsRead->completeFileAndClose(inSPDFile);
+            delete outSPDFile;
+            delete exportAsRead;
+            delete inSPDFile;
+            delete exporter;
+        }
+        catch(SPDException &e)
+        {
+            throw e;
+        }
+    }
+
+    void SPDSubsetNonGriddedFile::subsetScan(std::string input, std::string output, double *bbox, bool *bboxDefined) throw(SPDException)
+    {
+        try
+        {                        
+            SPDFile *inSPDFile = new SPDFile(input);
+            SPDFile *outSPDFile = new SPDFile(output);
+            
+            SPDFileReader reader;
+            reader.readHeaderInfo(input, inSPDFile);
+            
+            if(!bboxDefined[0] |
+               !bboxDefined[1] |
+               !bboxDefined[2] |
+               !bboxDefined[3] |
+               !bboxDefined[4] |
+               !bboxDefined[5])
+            {                
+                if(!bboxDefined[0])
+                {
+                    bbox[0] = inSPDFile->getScanlineIdxMin();
+                }
+                
+                if(!bboxDefined[1])
+                {
+                    bbox[1] = inSPDFile->getScanlineIdxMax();
+                }
+                
+                if(!bboxDefined[2])
+                {
+                    bbox[2] = inSPDFile->getScanlineMin();
+                }
+                
+                if(!bboxDefined[3])
+                {
+                    bbox[3] = inSPDFile->getScanlineMax();
+                }
+                
+                if(!bboxDefined[4])
+                {
+                    bbox[4] = inSPDFile->getRangeMin();
+                }
+                
+                if(!bboxDefined[5])
+                {
+                    bbox[5] = inSPDFile->getRangeMax();
+                }
+            }
+            
+            std::cout << "BBOX: [" << bbox[0] << "," << bbox[1] << "][" << bbox[2] << "," << bbox[3] << "][" << bbox[4] << "," << bbox[5] << "]\n";
+            
+            SPDDataExporter *exporter = new SPDNoIdxFileWriter();
+            
+            SPDExportProcessorSubsetScan *exportAsRead = new SPDExportProcessorSubsetScan(exporter, outSPDFile, bbox);
             reader.readAndProcessAllData(input, inSPDFile, exportAsRead);
             exportAsRead->completeFileAndClose(inSPDFile);
             delete outSPDFile;
