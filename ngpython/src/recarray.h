@@ -101,10 +101,11 @@ public:
         // store info on the field
         getFieldDescription(pArray, pszName, &m_nOffset, &m_cKind, &m_nSize, &m_nLength);
         // do a simple check - can be easily fooled
-        if( sizeof(T) != m_nSize )
-        {
-            throw RecArrayException("size mismatch");
-        }
+        // doesn't work for subarrays so commented out
+        //if( sizeof(T) != m_nSize )
+        //{
+        //    throw RecArrayException("size mismatch");
+        //}
     }
 
     // set a scalar value into the field
