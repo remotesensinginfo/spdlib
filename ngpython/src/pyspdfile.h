@@ -40,11 +40,9 @@ public:
     {
     }
 
-    // removed string fields - seems to be a problem 
-    // with their 'kind' being reset to 'V' by Python
-    // which numba can't understand
-    //RecArrayField<npy_char> FilePath;           // array
-    //RecArrayField<npy_char> SpatialReference;   // array
+    // numba currently not supporting strings so leave for now
+    //RecArrayField<npy_char> FilePath;           // string
+    //RecArrayField<npy_char> SpatialReference;   // string
     RecArrayField<npy_uint16> IndexType;
     RecArrayField<npy_uint16> FileType;
     RecArrayField<npy_int16> DiscretePtDefined;
@@ -55,9 +53,9 @@ public:
     RecArrayField<npy_uint16> MinorSPDVersion;
     RecArrayField<npy_uint16> PointVersion;
     RecArrayField<npy_uint16> PulseVersion;
-    //RecArrayField<npy_char> GeneratingSoftware; // array
-    //RecArrayField<npy_char> SystemIdentifier;   // array
-    //RecArrayField<npy_char> FileSignature;      // array
+    //RecArrayField<npy_char> GeneratingSoftware; // string
+    //RecArrayField<npy_char> SystemIdentifier;   // string
+    //RecArrayField<npy_char> FileSignature;      // string
     RecArrayField<npy_uint16> YearOfCreation;
     RecArrayField<npy_uint16> MonthOfCreation;
     RecArrayField<npy_uint16> DayOfCreation;
@@ -72,7 +70,7 @@ public:
     RecArrayField<npy_uint16> SecondOfCapture;
     RecArrayField<npy_uint64> NumberOfPoints;
     RecArrayField<npy_uint64> NumberOfPulses;
-    //RecArrayField<npy_char> UserMetaField;      // array
+    //RecArrayField<npy_char> UserMetaField;      // string
     RecArrayField<npy_double> XMin;
     RecArrayField<npy_double> XMax;
     RecArrayField<npy_double> YMin;
