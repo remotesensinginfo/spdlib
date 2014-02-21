@@ -101,7 +101,7 @@ class OtherInputs(object):
     
 def apply(applyfn, inputSPDFile, inputImageFile=None, outputSPDFile=None,
         outputImageFile=None, controls=None, passCentrePts=False, 
-        otherinputs=None):
+        passWaveforms=False, otherinputs=None):
     """
     Applies the applyfn over the input blocks and writes the outputs
         inputSPDFile is the path to the input SPD File. This must be supplied.
@@ -114,7 +114,7 @@ def apply(applyfn, inputSPDFile, inputImageFile=None, outputSPDFile=None,
         otherinputs is an instance of OtherInputs where additional things can be stored.
         
     The applyfn signature looks like::
-        applyfn(spdfile, pulses, points, [imagedata,] [cenPts,] [otherinputs,])
+        applyfn(spdfile, pulses, points, [imagedata,] [cenPts,] [transmitted, received], [otherinputs,])
         
     spdfile is a single-element structured array of the information in the SPD
                 file header.
@@ -126,6 +126,12 @@ def apply(applyfn, inputSPDFile, inputImageFile=None, outputSPDFile=None,
                 are not None
     cenPts is a 3d array of centre points for each bin. cenPts[0] is x coords,
                 cenPts[1] is y. Passed when passCentrePts=True
+    transmitted is a 1 dimensional array of the transmitted pulses passed when 
+                passWaveforms=True. (first element is given by pulses[x]['startTransmittedIdx'], 
+                number of elements given by pulses[x]['numOfTransmittedBins'])
+    received is a 1 dimensional array of the received pulses passed when 
+                passWaveforms=True. (first element is given by pulses[x]['startReceivedIdx'], 
+                number of elements given by pulses[x]['numOfReceivedBins'])
     otherinputs is a Python object, passed when the otherinput parameter to this 
                 function is not Noe
         
@@ -138,5 +144,6 @@ def apply(applyfn, inputSPDFile, inputImageFile=None, outputSPDFile=None,
         raise ValueError("inputSPDFile must be not None")
         
     blockProcessor(applyfn, inputSPDFile, inputImageFile, outputSPDFile, 
-            outputImageFile, controls, passCentrePts, otherinputs)
+            outputImageFile, controls, passCentrePts, passWaveforms, 
+            otherinputs)
     

@@ -232,7 +232,7 @@ class SPDDataBlockProcessorPython : public spdlib::SPDDataBlockProcessor
 {
 public:
     SPDDataBlockProcessorPython(PyObject *pApplyFn, PyObject *pOtherInputs, bool bHaveOutputSPD,
-                    bool bHaveInputImage, bool bHaveOutputImage, bool passCenPts)
+                    bool bHaveInputImage, bool bHaveOutputImage, bool bPassCenPts, bool bPassWaveforms)
     {
         m_pApplyFn = pApplyFn;
         m_pOtherInputs = pOtherInputs;
@@ -255,7 +255,7 @@ public:
             m_nImageDataIndex = -1;
         }
 
-        if( passCenPts )
+        if( bPassCenPts )
         {
             nLastIndex++;
             m_nCenPtsIndex = nLastIndex;
@@ -263,6 +263,19 @@ public:
         else
         {
             m_nCenPtsIndex = -1;
+        }
+
+        if( bPassWaveforms )
+        {
+            nLastIndex++;
+            m_nTransmittedIndex = nLastIndex;
+            nLastIndex++;
+            m_nReceivedIndex = nLastIndex;
+        }
+        else
+        {
+            m_nTransmittedIndex = -1;
+            m_nReceivedIndex = -1;
         }
 
         if( m_pOtherInputs != Py_None )
@@ -306,9 +319,19 @@ public:
             m_bHaveCreatedFileArray = true;
         }
 
-        // convert data to numpy array
+        // convert data to numpy arrays
         PyObject *pPulseArray, *pPointArray;
-        m_pulseConverter.convertCPPPulseArrayToRecArrays(pulses, xSize, ySize, &pPulseArray, &pPointArray);
+        PyObject *pTransmittedArray, *pReceivedArray;
+        if( m_nTransmittedIndex != -1 )
+        {
+            // need the transmitted and received
+            m_pulseConverter.convertCPPPulseArrayToRecArrays(pulses, xSize, ySize, &pPulseArray, &pPointArray,
+                    &pTransmittedArray, &pReceivedArray);
+        }
+        else
+        {
+            m_pulseConverter.convertCPPPulseArrayToRecArrays(pulses, xSize, ySize, &pPulseArray, &pPointArray);
+        }
 
         // grab the image data - wrap with a numpy array
         PyObject *pImageData;
@@ -333,6 +356,11 @@ public:
         {
             PyObject *pCenPtsData = ConvertCenPtsCPPArrayToNumpy(cenPts, xSize, ySize);
             PyTuple_SetItem(m_pUserParams, m_nCenPtsIndex, pCenPtsData);
+        }
+        if( m_nTransmittedIndex != -1 )
+        {
+            PyTuple_SetItem(m_pUserParams, m_nTransmittedIndex, pTransmittedArray);
+            PyTuple_SetItem(m_pUserParams, m_nReceivedIndex, pReceivedArray);
         }
         // otherinputs set in constructor
 
@@ -370,9 +398,19 @@ public:
             m_bHaveCreatedFileArray = true;
         }
 
-        // convert data to numpy array
+        // convert data to numpy arrays
         PyObject *pPulseArray, *pPointArray;
-        m_pulseConverter.convertCPPPulseArrayToRecArrays(pulses, xSize, ySize, &pPulseArray, &pPointArray);
+        PyObject *pTransmittedArray, *pReceivedArray;
+        if( m_nTransmittedIndex != -1 )
+        {
+            // need the transmitted and received
+            m_pulseConverter.convertCPPPulseArrayToRecArrays(pulses, xSize, ySize, &pPulseArray, &pPointArray,
+                    &pTransmittedArray, &pReceivedArray);
+        }
+        else
+        {
+            m_pulseConverter.convertCPPPulseArrayToRecArrays(pulses, xSize, ySize, &pPulseArray, &pPointArray);
+        }
 
         // set the various elements in the tuple
         // note PyTuple_SetItem steals a reference and 
@@ -383,6 +421,11 @@ public:
         {
             PyObject *pCenPtsData = ConvertCenPtsCPPArrayToNumpy(cenPts, xSize, ySize);
             PyTuple_SetItem(m_pUserParams, m_nCenPtsIndex, pCenPtsData);
+        }
+        if( m_nTransmittedIndex != -1 )
+        {
+            PyTuple_SetItem(m_pUserParams, m_nTransmittedIndex, pTransmittedArray);
+            PyTuple_SetItem(m_pUserParams, m_nReceivedIndex, pReceivedArray);
         }
         // otherinputs set in constructor
 
@@ -435,6 +478,8 @@ private:
     PulsePointConverter m_pulseConverter;
     Py_ssize_t m_nImageDataIndex;
     Py_ssize_t m_nCenPtsIndex;
+    Py_ssize_t m_nTransmittedIndex;
+    Py_ssize_t m_nReceivedIndex;
     Py_ssize_t m_nOtherInputsIndex;
     PyObject *m_pUserParams;
     bool m_bHaveCreatedFileArray;
@@ -445,9 +490,10 @@ spdpy2_blockProcessor(PyObject *self, PyObject *args)
 {
     PyObject *pApplyFn, *pControls, *pOtherInputs;
     const char *pszInputSPDFile, *pszInputImageFile, *pszOutputSPDFile, *pszOutputImageFile;
-    int nPassCenPts;
-    if( !PyArg_ParseTuple(args, "OszzzOiO", &pApplyFn, &pszInputSPDFile, &pszInputImageFile, 
-                &pszOutputSPDFile, &pszOutputImageFile, &pControls, &nPassCenPts, &pOtherInputs))
+    int nPassCenPts, nPassWaveforms;
+    if( !PyArg_ParseTuple(args, "OszzzOiiO", &pApplyFn, &pszInputSPDFile, &pszInputImageFile, 
+                &pszOutputSPDFile, &pszOutputImageFile, &pControls, &nPassCenPts, &nPassWaveforms, 
+                &pOtherInputs))
         return NULL;
 
     // get the control values
@@ -595,7 +641,8 @@ spdpy2_blockProcessor(PyObject *self, PyObject *args)
     {
         spdInFile = new spdlib::SPDFile(pszInputSPDFile);
         blockProcessor = new SPDDataBlockProcessorPython(pApplyFn, pOtherInputs, pszOutputSPDFile != NULL,
-                            pszInputImageFile != NULL, pszOutputImageFile != NULL, nPassCenPts != 0);
+                            pszInputImageFile != NULL, pszOutputImageFile != NULL, nPassCenPts != 0,
+                            nPassWaveforms != 0);
 
         spdlib::SPDProcessDataBlocks processBlocks = spdlib::SPDProcessDataBlocks(blockProcessor, 
             overlap, blockXSize, blockYSize, printProgress, keepMinExtent);
