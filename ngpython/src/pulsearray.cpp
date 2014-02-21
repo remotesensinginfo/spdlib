@@ -72,6 +72,8 @@ void addPulseFields(RecArrayCreator *pCreator)
     pCreator->addField("blockX", NPY_UINT);
     pCreator->addField("blockY", NPY_UINT);
     pCreator->addField("thisPulseIdx", NPY_UINT);
+    pCreator->addField("startTransmittedIdx", NPY_UINT);
+    pCreator->addField("startReceivedIdx", NPY_UINT);
 }
 
 PulseArrayIndices* getPulseIndices(PyObject *pArray)
@@ -112,6 +114,8 @@ PulseArrayIndices* getPulseIndices(PyObject *pArray)
     indices->blockX.setField(pArray, "blockX");
     indices->blockY.setField(pArray, "blockY");
     indices->thisPulseIdx.setField(pArray, "thisPulseIdx");
+    indices->startTransmittedIdx.setField(pArray, "startTransmittedIdx");
+    indices->startReceivedIdx.setField(pArray, "startReceivedIdx");
     return indices;
 }
 
@@ -133,10 +137,10 @@ PulsePointConverter::~PulsePointConverter()
 
 void PulsePointConverter::convertCPPPulseArrayToRecArrays(std::vector<spdlib::SPDPulse*> ***pulses, 
         boost::uint_fast32_t xSize, boost::uint_fast32_t ySize,
-        PyObject **pPulseArray, PyObject **pPointArray)
+        PyObject **pPulseArray, PyObject **pPointArray, PyObject **pTransmittedArray/*=NULL*/, PyObject **pReceivedArray/*=NULL*/)
 {
     // first need to scan through and get total size of arrays to be created
-    npy_intp nPulses = 0, nPoints = 0;
+    npy_intp nPulses = 0, nPoints = 0, nTransmitted = 0, nReceived = 0;
     for(boost::uint_fast32_t i = 0; i < ySize; ++i)
     {
         for(boost::uint_fast32_t j = 0; j < xSize; ++j)
@@ -145,12 +149,23 @@ void PulsePointConverter::convertCPPPulseArrayToRecArrays(std::vector<spdlib::SP
             {
                 nPulses++;
                 nPoints += (*iterPls)->pts->size();
+                nTransmitted += (*iterPls)->numOfTransmittedBins;
+                nReceived += (*iterPls)->numOfReceivedBins;
             }
         }
     }
     
     *pPulseArray = m_pulseCreator.createArray(nPulses);
     *pPointArray = m_pointCreator.createArray(nPoints);
+
+    if( pTransmittedArray != NULL )
+    {
+        *pTransmittedArray = PyArray_SimpleNew(1, &nTransmitted, NPY_INT32);
+    }
+    if( pReceivedArray != NULL )
+    {
+        *pReceivedArray = PyArray_SimpleNew(1, &nReceived, NPY_INT32);
+    }
 
     // get the indices of our fields - assume these won't
     // be different for each array created
@@ -159,7 +174,7 @@ void PulsePointConverter::convertCPPPulseArrayToRecArrays(std::vector<spdlib::SP
     if( m_ppointIndices == NULL )
         m_ppointIndices = getPointIndices(*pPointArray);
 
-    npy_intp nPulseCount = 0, nPointCount = 0;
+    npy_intp nPulseCount = 0, nPointCount = 0, nTransmittedCount = 0, nReceivedCount = 0;
     void *pRecord;
     for(boost::uint_fast32_t i = 0; i < ySize; ++i)
     {
@@ -186,6 +201,42 @@ void PulsePointConverter::convertCPPPulseArrayToRecArrays(std::vector<spdlib::SP
                 {
                     copyPulseToRecord(pRecord, (*iterPls), m_ppulseIndices, 0, 0, j, i, thisPulseIdx);
                 }
+
+                // copy the transmitted
+                if( pTransmittedArray != NULL )
+                {
+                    npy_intp nStartTransmitted = nTransmittedCount;
+                    for( boost::uint_fast16_t n = 0; n < (*iterPls)->numOfTransmittedBins; n++ )
+                    {
+                        *(npy_int32*)PyArray_GETPTR1(*pTransmittedArray, nTransmittedCount) = (*iterPls)->transmitted[n];
+                        nTransmittedCount++;
+                    }
+                    m_ppulseIndices->startTransmittedIdx.setValue(pRecord, nStartTransmitted);
+                    // numberOfTransmitted already set
+                }
+                else
+                {
+                    m_ppulseIndices->startTransmittedIdx.setValue(pRecord, 0);
+                }
+
+                // copy the received
+                if( pReceivedArray != NULL )
+                {
+                    npy_intp nStartReceived = nReceivedCount;
+                    for( boost::uint_fast16_t n = 0; n < (*iterPls)->numOfReceivedBins; n++ )
+                    {
+                        *(npy_int32*)PyArray_GETPTR1(*pReceivedArray, nReceivedCount) = (*iterPls)->received[n];
+                        nReceivedCount++;
+                    }
+                    m_ppulseIndices->startReceivedIdx.setValue(pRecord, nStartReceived);
+                    // numberOfReceived already set
+                }
+                else
+                {
+                    m_ppulseIndices->startReceivedIdx.setValue(pRecord, 0);
+                }
+
+
                 nPulseCount++;
                 thisPulseIdx++;
             }

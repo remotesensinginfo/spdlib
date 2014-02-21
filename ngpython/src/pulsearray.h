@@ -45,8 +45,6 @@ public:
     RecArrayField<npy_float> azimuth;
     RecArrayField<npy_float> zenith;
     RecArrayField<npy_ushort> numberOfReturns;
-    // TODO: transmitted
-    // TODO: received
     RecArrayField<npy_ushort> numOfTransmittedBins;
     RecArrayField<npy_ushort> numOfReceivedBins;
     RecArrayField<npy_float> rangeToWaveformStart;
@@ -73,6 +71,10 @@ public:
     RecArrayField<npy_uint> blockY;
     // index of this pulse in the vector of pulses for this bin
     RecArrayField<npy_uint> thisPulseIdx;
+    // index into associated 'transmitted' array
+    RecArrayField<npy_uint> startTransmittedIdx;
+    // index into associated 'received' array
+    RecArrayField<npy_uint> startReceivedIdx;
 };
 
 void addPulseFields(RecArrayCreator *pCreator);
@@ -188,7 +190,7 @@ public:
 
     // methods to convert to/from C++ arrays    
     void convertCPPPulseArrayToRecArrays(std::vector<spdlib::SPDPulse*> ***pulses, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize,
-        PyObject **pPulseArray, PyObject **pPointArray);
+        PyObject **pPulseArray, PyObject **pPointArray, PyObject **pTransmittedArray=NULL, PyObject **pReceivedArray=NULL);
 
     void convertRecArraysToCPPPulseArray(PyObject *pPulseArray, PyObject *pPointArray, std::vector<spdlib::SPDPulse*> ***pulses);
 
