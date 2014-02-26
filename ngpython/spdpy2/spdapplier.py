@@ -44,6 +44,10 @@ class ApplierControls(object):
         numImgBands             If writing to an image this is the number of bands
         gdalFormat              If writing to an image this is the GDAL format
         imageBandDescriptions   If writing to an image this are the names of the output bands
+        headerValuesCB          Function called at end of processing to allow
+                                    header values to be set. Function takes 2 args:
+                                    an instance of SPDFile and the otherinputs param
+                                    to apply (None if this is None). 
     """
     def __init__(self):
         self.overlap = 1
@@ -55,6 +59,7 @@ class ApplierControls(object):
         self.numImgBands = 1;
         self.gdalFormat = 'KEA'
         self.imageBandDescriptions = []
+        self.headerValuesCB = None # reference to a function
         
     def setOverlap(self, overlap):
         "sets the overlap"
@@ -94,6 +99,10 @@ class ApplierControls(object):
     def setImageBandDescriptions(self, desc):
         "descriptions of the output image bands"
         self.imageBandDescriptions = desc
+        
+    def setHeaderValuesCB(self, cb):
+        "sets the header values callback function"
+        self.headerValuesCB = cb
         
 class OtherInputs(object):
     """

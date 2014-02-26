@@ -128,5 +128,8 @@ void addSPDFileFields(RecArrayCreator *pCreator, spdlib::SPDFile *pFile);
 SPDFileArrayIndices* getSPDFileIndices(PyObject *pArray);
 PyObject* createSPDFileArray(spdlib::SPDFile *pFile, float binSize);
 
+PyObject* PySPDFile_NewFromFilePtr(spdlib::SPDFile *pFile);
+PyObject* PySPDFile_NewFromFileName(std::string filePath);
+
 #endif //PYSPDFILE_H
 

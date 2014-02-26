@@ -65,4 +65,12 @@ def setRandomColours(spdfile, pulses, points):
                 points[startPoint+npoint]['blue'] = numpy.random.randint(0, 255)
                 points[startPoint+npoint]['green'] = numpy.random.randint(0, 255)
 
-spdapplier.apply(setRandomColours, infile, outputSPDFile=outfile)
+# we need a controls object so we can set the header values callback
+# and set the RGBDefined property
+def headerValuesCallback(spdfile, otherinputs):
+    spdfile.RGBDefined = 1
+
+controls = spdapplier.ApplierControls()
+controls.setHeaderValuesCB(headerValuesCallback)
+
+spdapplier.apply(setRandomColours, infile, outputSPDFile=outfile, controls=controls)

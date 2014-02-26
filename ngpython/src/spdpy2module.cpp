@@ -231,11 +231,13 @@ const Py_ssize_t POINTS_INDEX = 2;
 class SPDDataBlockProcessorPython : public spdlib::SPDDataBlockProcessor
 {
 public:
-    SPDDataBlockProcessorPython(PyObject *pApplyFn, PyObject *pOtherInputs, std::vector<std::string> *pBandDescriptions,
+    SPDDataBlockProcessorPython(PyObject *pApplyFn, PyObject *pOtherInputs, PyObject *pHeaderValuesCB,
+            std::vector<std::string> *pBandDescriptions,
             bool bHaveOutputSPD, bool bHaveInputImage, bool bHaveOutputImage, bool bPassCenPts, bool bPassWaveforms)
     {
         m_pApplyFn = pApplyFn;
         m_pOtherInputs = pOtherInputs;
+        m_pHeaderValuesCB = pHeaderValuesCB;
         m_pBandDescriptions = pBandDescriptions;
         m_bHaveOutputSPD = bHaveOutputSPD;
         m_bHaveInputImage = bHaveInputImage;
@@ -467,11 +469,28 @@ public:
 
     void setHeaderValues(spdlib::SPDFile *spdFile) throw(spdlib::SPDProcessingException)
     {
-        // TODO
+        if( m_pHeaderValuesCB != Py_None )
+        {
+            // wrap the spdlib::SPDFile instance
+            PyObject *pPySPDFile = PySPDFile_NewFromFilePtr(spdFile);
+
+            // call the supplied callable
+            PyObject *pResult = PyObject_CallFunctionObjArgs(m_pHeaderValuesCB, pPySPDFile, m_pOtherInputs, NULL);
+            if( pResult == NULL )
+            {
+                PyErr_Print();
+                Py_DECREF(pPySPDFile);
+                throw spdlib::SPDProcessingException("Python error");
+            }
+
+            Py_DECREF(pResult);
+            Py_DECREF(pPySPDFile);
+        }
     }
 private:
     PyObject *m_pApplyFn;
     PyObject *m_pOtherInputs;
+    PyObject *m_pHeaderValuesCB;
     std::vector<std::string> *m_pBandDescriptions;
     bool m_bHaveOutputSPD;
     bool m_bHaveInputImage;
@@ -662,15 +681,26 @@ spdpy2_blockProcessor(PyObject *self, PyObject *args)
     }
     Py_DECREF(pVal);
 
+    PyObject *pHeaderValuesCB = PyObject_GetAttrString(pControls, "headerValuesCB");
+    if( ( pHeaderValuesCB == NULL ) || ( (pHeaderValuesCB != Py_None ) && !PyCallable_Check(pHeaderValuesCB) ) )
+    {
+        PyErr_SetString(GETSTATE(self)->error, "controls object must have a callable headerValuesCB field");
+        Py_XDECREF(pHeaderValuesCB);
+        return NULL;
+    }
+    // we decref pHeaderValuesCB later when finished processing
+
     // check combo makes sense
     if( pszInputSPDFile == NULL )
     {
         PyErr_SetString(GETSTATE(self)->error, "outputs object must have a valid SDPFile");
+        Py_DECREF(pHeaderValuesCB);
         return NULL;
     }
     if( ( pszInputImageFile != NULL ) && ( pszOutputImageFile != NULL ) )
     {
         PyErr_SetString(GETSTATE(self)->error, "can't have an input and output image file");
+        Py_DECREF(pHeaderValuesCB);
         return NULL;
     }
 
@@ -680,7 +710,7 @@ spdpy2_blockProcessor(PyObject *self, PyObject *args)
     {
         spdInFile = new spdlib::SPDFile(pszInputSPDFile);
         blockProcessor = new SPDDataBlockProcessorPython(pApplyFn, pOtherInputs, 
-                            &bandDescriptions, pszOutputSPDFile != NULL,
+                            pHeaderValuesCB, &bandDescriptions, pszOutputSPDFile != NULL,
                             pszInputImageFile != NULL, pszOutputImageFile != NULL, nPassCenPts != 0,
                             nPassWaveforms != 0);
 
@@ -715,6 +745,7 @@ spdpy2_blockProcessor(PyObject *self, PyObject *args)
     catch (spdlib::SPDException &e)
     {
         PyErr_SetString(GETSTATE(self)->error, e.what());
+        Py_DECREF(pHeaderValuesCB);
         delete blockProcessor;
         delete spdInFile;
         return NULL;
@@ -722,11 +753,13 @@ spdpy2_blockProcessor(PyObject *self, PyObject *args)
     catch (std::exception &e)
     {
         PyErr_SetString(GETSTATE(self)->error, e.what());
+        Py_DECREF(pHeaderValuesCB);
         delete blockProcessor;
         delete spdInFile;
         return NULL;
     }
 
+    Py_DECREF(pHeaderValuesCB);
 
     Py_RETURN_NONE;
 }

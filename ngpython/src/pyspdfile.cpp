@@ -41,13 +41,17 @@ typedef struct
 {
     PyObject_HEAD
     spdlib::SPDFile *pFile;
+    bool bOwned;
 } PySPDFile;
 
 // destructor - delete pFile
 static void
 PySPDFile_dealloc(PySPDFile *self)
 {
-    delete self->pFile;
+    if( self->bOwned )
+    {
+        delete self->pFile;
+    }
     Py_TYPE(self)->tp_free((PyObject*)self);
 }
 
@@ -69,6 +73,8 @@ PySPDFile_init(PySPDFile *self, PyObject *args, PyObject *kwds)
         PyErr_SetString( PySPDError, "Unable to create SPDFile" );
         return -1;
     }
+    // we need to delete it
+    self->bOwned = true;
     return 0;
 }
 
@@ -702,6 +708,35 @@ PyMODINIT_FUNC pyspdfile_init(PyObject *module, PyObject *error)
 #if PY_MAJOR_VERSION >= 3
     return NULL;
 #endif
+}
+
+
+// To be called from C++ - creates a new instance of a PySPDFile
+// but wraps an existing spdlib::SPDFile
+// won't delete file on destruction
+PyObject* PySPDFile_NewFromFilePtr(spdlib::SPDFile *pFile)
+{
+    PySPDFile *pPyFile = PyObject_New(PySPDFile, &PySPDFileType);
+    pPyFile->pFile = pFile;
+    pPyFile->bOwned = false;
+    return (PyObject*)pPyFile;
+}
+
+// same as above but takes a filename and creates a new  spdlib::SPDFile
+// that will be deleted on destruction
+PyObject* PySPDFile_NewFromFileName(std::string filePath)
+{
+    spdlib::SPDFile *pFile = new spdlib::SPDFile(filePath);
+    if( pFile == NULL )
+    {
+        PyErr_SetString( PySPDError, "Unable to create SPDFile" );
+        return NULL;
+    }
+
+    PySPDFile *pPyFile = PyObject_New(PySPDFile, &PySPDFileType);
+    pPyFile->pFile = pFile;
+    pPyFile->bOwned = true;
+    return (PyObject*)pPyFile;
 }
 
 void addSPDFileFields(RecArrayCreator *pCreator, spdlib::SPDFile *pFile)
