@@ -43,6 +43,7 @@ class ApplierControls(object):
         processingResolution    If zero, this is the resolution of the dataset
         numImgBands             If writing to an image this is the number of bands
         gdalFormat              If writing to an image this is the GDAL format
+        imageBandDescriptions   If writing to an image this are the names of the output bands
     """
     def __init__(self):
         self.overlap = 1
@@ -53,6 +54,7 @@ class ApplierControls(object):
         self.processingResolution = 0; # native bin size of the dataset
         self.numImgBands = 1;
         self.gdalFormat = 'KEA'
+        self.imageBandDescriptions = []
         
     def setOverlap(self, overlap):
         "sets the overlap"
@@ -88,6 +90,10 @@ class ApplierControls(object):
     def setGdalFormat(self, fmt):
         "name of GDAL driver for output image"
         self.gdalFormat = fmt
+        
+    def setImageBandDescriptions(self, desc):
+        "descriptions of the output image bands"
+        self.imageBandDescriptions = desc
         
 class OtherInputs(object):
     """

@@ -231,11 +231,12 @@ const Py_ssize_t POINTS_INDEX = 2;
 class SPDDataBlockProcessorPython : public spdlib::SPDDataBlockProcessor
 {
 public:
-    SPDDataBlockProcessorPython(PyObject *pApplyFn, PyObject *pOtherInputs, bool bHaveOutputSPD,
-                    bool bHaveInputImage, bool bHaveOutputImage, bool bPassCenPts, bool bPassWaveforms)
+    SPDDataBlockProcessorPython(PyObject *pApplyFn, PyObject *pOtherInputs, std::vector<std::string> *pBandDescriptions,
+            bool bHaveOutputSPD, bool bHaveInputImage, bool bHaveOutputImage, bool bPassCenPts, bool bPassWaveforms)
     {
         m_pApplyFn = pApplyFn;
         m_pOtherInputs = pOtherInputs;
+        m_pBandDescriptions = pBandDescriptions;
         m_bHaveOutputSPD = bHaveOutputSPD;
         m_bHaveInputImage = bHaveInputImage;
         m_bHaveOutputImage = bHaveOutputImage;
@@ -461,8 +462,7 @@ public:
 
     std::vector<std::string> getImageBandDescriptions() throw(spdlib::SPDProcessingException)
     {
-        // TODO
-        return std::vector<std::string>();
+        return *m_pBandDescriptions;
     }
 
     void setHeaderValues(spdlib::SPDFile *spdFile) throw(spdlib::SPDProcessingException)
@@ -472,6 +472,7 @@ public:
 private:
     PyObject *m_pApplyFn;
     PyObject *m_pOtherInputs;
+    std::vector<std::string> *m_pBandDescriptions;
     bool m_bHaveOutputSPD;
     bool m_bHaveInputImage;
     bool m_bHaveOutputImage;
@@ -616,11 +617,49 @@ spdpy2_blockProcessor(PyObject *self, PyObject *args)
     }
 #if PY_MAJOR_VERSION >= 3
     PyObject *bytes = PyUnicode_AsEncodedString(pVal, NULL, NULL);
-    char *gdalFormat = PyBytes_AsString(bytes);
+    std::string gdalFormat = PyBytes_AsString(bytes);
     Py_DECREF(bytes);
 #else   
-    char *gdalFormat = PyString_AsString(pVal);
+    std::string gdalFormat = PyString_AsString(pVal);
 #endif
+    Py_DECREF(pVal);
+
+    pVal = PyObject_GetAttrString(pControls, "imageBandDescriptions");
+    if( ( pVal == NULL ) || !PySequence_Check(pVal) )
+    {
+        PyErr_SetString(GETSTATE(self)->error, "controls object must have a sequence imageBandDescriptions field");
+        Py_XDECREF(pVal);
+        return NULL;
+    }
+
+    Py_ssize_t nFields = PySequence_Size(pVal);
+    std::vector<std::string> bandDescriptions;
+    bandDescriptions.reserve(nFields);
+    for( Py_ssize_t i = 0; i < nFields; i++ )
+    {
+        PyObject *pFieldObj = PySequence_GetItem(pVal, i);
+#if PY_MAJOR_VERSION >= 3
+        if( !PyUnicode_Check(pFieldObj) )
+#else
+        if( !PyString_Check(pFieldObj) )
+#endif
+        {
+            PyErr_SetString(GETSTATE(self)->error, "all elements in imageBandDescriptions need to be strings");
+            Py_DECREF(pFieldObj);
+            Py_DECREF(pVal);
+            return NULL;
+        }
+
+#if PY_MAJOR_VERSION >= 3
+        bytes = PyUnicode_AsEncodedString(pFieldObj, NULL, NULL);
+        std::string bandDesc = PyBytes_AsString(bytes);
+        Py_DECREF(bytes);
+#else
+        std::string bandDesc = PyString_AsString(pFieldObj);
+#endif
+        bandDescriptions.push_back(bandDesc);
+        Py_DECREF(pFieldObj);
+    }
     Py_DECREF(pVal);
 
     // check combo makes sense
@@ -640,7 +679,8 @@ spdpy2_blockProcessor(PyObject *self, PyObject *args)
     try
     {
         spdInFile = new spdlib::SPDFile(pszInputSPDFile);
-        blockProcessor = new SPDDataBlockProcessorPython(pApplyFn, pOtherInputs, pszOutputSPDFile != NULL,
+        blockProcessor = new SPDDataBlockProcessorPython(pApplyFn, pOtherInputs, 
+                            &bandDescriptions, pszOutputSPDFile != NULL,
                             pszInputImageFile != NULL, pszOutputImageFile != NULL, nPassCenPts != 0,
                             nPassWaveforms != 0);
 
