@@ -141,6 +141,9 @@ int main (int argc, char * const argv[])
         
         TCLAP::SwitchArg useOnlyVegReturnsSwitch("","usevegreturns","An option when the CHM interpolation is being applied, where only returns classified as vegetation will be used for the interpolation.", false);
         cmd.add( useOnlyVegReturnsSwitch );
+		
+		TCLAP::SwitchArg useOnlyGroundReturnsSwitch("","usegroundreturns","An option when the Amplitude interpolation is being applied, where only returns classified as ground be used for the interpolation.", false);
+        cmd.add( useOnlyGroundReturnsSwitch );
         
 		TCLAP::ValueArg<std::string> inputFileArg("i","input","The input SPD file.",true,"","String");
 		cmd.add( inputFileArg );
@@ -194,7 +197,7 @@ int main (int argc, char * const argv[])
         }
         else if(ampSwitch.getValue())
         {
-            thinPtSelectLowHigh = spdlib::SPD_SELECT_HIGHEST;
+            thinPtSelectLowHigh = spdlib::SPD_SELECT_LOWEST;
         }
         else
         {
@@ -252,7 +255,7 @@ int main (int argc, char * const argv[])
         }
         else if(ampSwitch.getValue())
         {
-            blockProcessor = new spdlib::SPDAmplitudeInterpolation(interpolator);
+            blockProcessor = new spdlib::SPDAmplitudeInterpolation(interpolator, useOnlyGroundReturnsSwitch.getValue());
         }
         else
         {
