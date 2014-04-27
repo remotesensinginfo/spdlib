@@ -1662,6 +1662,812 @@ namespace spdlib
             throw e;
         }
     }
+    
+    
+    void SPDProcessDataBlocks::processDataBlocksGridPulsesOutputImage(SPDFile *spdInFile, GDALDataset *outImageDS) throw(SPDProcessingException)
+    {
+        try
+        {
+            GDALAllRegister();
+            SPDGridData gridData;
+            SPDFileReader reader;
+            reader.readHeaderInfo(spdInFile->getFilePath(), spdInFile);
+            
+            if(spdInFile->getIndexType() == SPD_UPD_TYPE)
+            {
+                throw SPDProcessingException("The SPD file must have a spatial index. Use spdtranslate.");
+            }
+            
+            if(this->blockXSize == 0)
+            {
+                this->blockXSize = spdInFile->getNumberBinsX();
+            }
+            
+            if((this->overlap > this->blockXSize) | (this->overlap > this->blockYSize))
+            {
+                throw SPDProcessingException("The overlap must be smaller than the block size in both axis\'");
+            }
+            
+            if(outImageDS == NULL)
+            {
+                std::string message = std::string("The GDAL Dataset provided was not open.");
+                throw SPDProcessingException(message);
+            }
+            double *geoTrans = new double[6];
+            outImageDS->GetGeoTransform(geoTrans);
+            
+            double imgTLX = geoTrans[0];
+            double imgTLY = geoTrans[3];
+            double imgBRX = geoTrans[0] + (outImageDS->GetRasterXSize() * geoTrans[1]);
+            double imgBRY = geoTrans[3] - (outImageDS->GetRasterYSize() * geoTrans[1]);
+            
+            if(imgBRX < spdInFile->getXMax())
+            {
+                throw SPDProcessingException("Image has a small extent that the SPD file: X Max");
+            }
+            if(imgTLY < spdInFile->getYMin())
+            {
+                throw SPDProcessingException("Image has a small extent that the SPD file: Y Max");
+            }
+            if(imgTLX > spdInFile->getXMin())
+            {
+                throw SPDProcessingException("Image has a small extent that the SPD file: X Min");
+            }
+            if(imgBRY > spdInFile->getYMin())
+            {
+                throw SPDProcessingException("Image has a small extent that the SPD file: Y Min");
+            }
+            
+            float processingResolution = geoTrans[1];
+            delete[] geoTrans;
+            boost::uint_fast16_t numImgBands = outImageDS->GetRasterCount();
+            GDALRasterBand **imageBands = new GDALRasterBand*[numImgBands];
+            for(boost::uint_fast16_t i = 0; i < numImgBands; ++i)
+            {
+                imageBands[i] = outImageDS->GetRasterBand(i+1);
+            }
+            
+            boost::uint_fast64_t nativeXBins = spdInFile->getNumberBinsX();
+            boost::uint_fast64_t nativeYBins = spdInFile->getNumberBinsY();
+            
+            boost::uint_fast64_t procResXBins = 0;
+            boost::uint_fast64_t procResYBins = 0;
+            
+            double geoWidth = 0;
+            double geoHeight = 0;
+            
+            if(spdInFile->getIndexType() == SPD_CARTESIAN_IDX)
+            {
+                geoWidth = spdInFile->getXMax() - spdInFile->getXMin();
+                geoHeight = spdInFile->getYMax() - spdInFile->getYMin();
+            }
+            else if(spdInFile->getIndexType() == SPD_SPHERICAL_IDX)
+            {
+                geoWidth = spdInFile->getAzimuthMax() - spdInFile->getAzimuthMin();
+                geoHeight = spdInFile->getZenithMax() - spdInFile->getZenithMin();
+            }
+            else if(spdInFile->getIndexType() == SPD_SCAN_IDX)
+            {
+                geoWidth = spdInFile->getScanlineIdxMax() - spdInFile->getScanlineIdxMin();
+                geoHeight = spdInFile->getScanlineMax() - spdInFile->getScanlineMin();
+            }
+            
+            //std::cout << "Geo: [" << geoWidth << "," << geoHeight << "]\n";
+            
+            bool usingNativeRes = false;
+            bool scaleDown = true;
+            boost::uint_fast32_t binScaling = 0;
+            if(processingResolution == spdInFile->getBinSize())
+            {
+                usingNativeRes = true;
+                procResXBins = spdInFile->getNumberBinsX();
+                procResYBins = spdInFile->getNumberBinsY();
+            }
+            else if(processingResolution > spdInFile->getBinSize())
+            {
+                if(fmod(processingResolution, spdInFile->getBinSize()) != 0)
+                {
+                    std::cerr << "Native Res: " << spdInFile->getBinSize() << std::endl;
+                    std::cerr << "Process Res: " << processingResolution << std::endl;
+                    throw SPDProcessingException("The processing resolution must be a multiple of the native resoltion.");
+                }
+                usingNativeRes = false;
+                procResXBins = ceil(((double)geoWidth / processingResolution))+1;
+                procResYBins = ceil(((double)geoHeight / processingResolution))+1;
+                
+                scaleDown = false;
+                binScaling = boost::numeric_cast<boost::uint_fast32_t>(processingResolution/spdInFile->getBinSize());
+            }
+            else
+            {
+                float tmpNumOutBins = spdInFile->getBinSize()/processingResolution;
+                if(fmod(tmpNumOutBins, ((float)1.0)) != 0)
+                {
+                    std::cerr << "Native Res: " << spdInFile->getBinSize() << std::endl;
+                    std::cerr << "Process Res: " << processingResolution << std::endl;
+                    throw SPDProcessingException("The processing resolution must be a multiple of the native resoltion.");
+                }
+                usingNativeRes = false;
+                procResXBins = ceil(((double)geoWidth / processingResolution))+1;
+                procResYBins = ceil(((double)geoHeight / processingResolution))+1;
+                
+                scaleDown = true;
+                binScaling = boost::numeric_cast<boost::uint_fast32_t>(spdInFile->getBinSize()/processingResolution);
+            }
+            
+            //std::cout << "Bin Scaling: " << binScaling << std::endl;
+            //std::cout << "Process Bins: [" << procResXBins << "," << procResYBins << "]\n";
+            
+            if(usingNativeRes)
+            {
+                std::cout << "Using native resolution for processing\n";
+            }
+            else
+            {
+                std::cout << "Resampling native resolution\n";
+                if(scaleDown)
+                {
+                    std::cout << "Scaling down\n";
+                }
+                else
+                {
+                    std::cout << "Scaling up\n";
+                }
+            }
+            
+            boost::uint_fast32_t numXFullBlocks = floor(((double)nativeXBins)/this->blockXSize);
+            boost::uint_fast32_t numYFullBlocks = floor(((double)nativeYBins)/this->blockYSize);
+            
+            //std::cout << "Number of full blocks: [" << numXFullBlocks << "," << numYFullBlocks << "]\n";
+            
+            boost::uint_fast32_t remainingCols = nativeXBins - (numXFullBlocks * this->blockXSize);
+            boost::uint_fast32_t remainingRows = nativeYBins - (numYFullBlocks * this->blockYSize);
+            
+            //std::cout << "Remainder: [" << remainingCols << "," << remainingRows << "]\n";
+            
+            double blockMinX = 0;
+            double blockMaxX = 0;
+            double blockMinY = 0;
+            double blockMaxY = 0;
+            
+            double blockWidth = blockXSize * spdInFile->getBinSize();
+            double blockHeight = blockYSize * spdInFile->getBinSize();
+            
+            boost::uint_fast32_t procResXBlockSize = 0;
+            boost::uint_fast32_t procResYBlockSize = 0;
+            
+            if(binScaling == 0)
+            {
+                procResXBlockSize = blockXSize;
+                procResYBlockSize = blockYSize;
+            }
+            else if(scaleDown)
+            {
+                procResXBlockSize = ceil(((double)blockXSize) * binScaling);
+                procResYBlockSize = ceil(((double)blockYSize) * binScaling);
+            }
+            else
+            {
+                procResXBlockSize = ceil(((double)blockXSize) / binScaling);
+                procResYBlockSize = ceil(((double)blockYSize) / binScaling);
+            }
+            
+            //std::cout << "Native block size: [" << this->blockXSize << "," << this->blockYSize << "]\n";
+            //std::cout << "Process block size: [" << procResXBlockSize << "," << procResYBlockSize << "]\n";
+            //std::cout << "Block Size: [" << blockWidth << "," << blockHeight << "]\n";
+            
+            boost::uint_fast32_t numBlocks = numYFullBlocks * numXFullBlocks;
+            if(remainingCols > 0)
+            {
+                numBlocks += numYFullBlocks;
+            }
+            if(remainingRows > 0)
+            {
+                numBlocks += numXFullBlocks;
+                if(remainingCols > 0)
+                {
+                    numBlocks += 1;
+                }
+            }
+            boost::uint_fast32_t cBlocksIdx = 1;
+            
+            blockMinY = 0;
+            blockMaxY = blockYSize;
+            
+            boost::uint_fast32_t pulsesBlockSizeX = this->blockXSize + (2 * this->overlap);
+            boost::uint_fast32_t pulsesBlockSizeY = this->blockYSize + (2 * this->overlap);
+            boost::uint_fast32_t remainingColsScaled = remainingCols;
+            boost::uint_fast32_t remainingRowsScaled = remainingRows;
+            
+            boost::uint_fast32_t scaledOverlap = 0;
+            if(binScaling != 0)
+            {
+                if(scaleDown)
+                {
+                    scaledOverlap = this->overlap * binScaling;
+                    remainingColsScaled = ceil(((double)remainingCols * binScaling));
+                    remainingRowsScaled = ceil(((double)remainingRows * binScaling));
+                }
+                else
+                {
+                    scaledOverlap = this->overlap / binScaling;
+                    remainingColsScaled = ceil(((double)remainingCols / binScaling));
+                    remainingRowsScaled = ceil(((double)remainingRows / binScaling));
+                }
+            }
+            
+            boost::uint_fast32_t pulsesScaledBlockSizeX = procResXBlockSize + (2 * scaledOverlap);
+            boost::uint_fast32_t pulsesScaledBlockSizeY = procResYBlockSize + (2 * scaledOverlap);
+            
+            //std::cout << "Pulses Block Size: [" << pulsesBlockSizeX << "," << pulsesBlockSizeY << "]\n";
+            //std::cout << "Processing Pulses Block Size: [" << procResXBlockSize << "," << procResYBlockSize << "]\n";
+            //std::cout << "Remaining: [" << remainingColsScaled << "," << remainingRowsScaled << "]\n";
+            
+            SPDFileIncrementalReader incReader;
+            incReader.open(spdInFile);
+            
+            std::vector<SPDPulse*> ***pulses = new std::vector<SPDPulse*>**[pulsesBlockSizeY];
+            for(boost::uint_fast32_t i = 0; i < pulsesBlockSizeY; ++i)
+            {
+                pulses[i] = new std::vector<SPDPulse*>*[pulsesBlockSizeX];
+                for(boost::uint_fast32_t j = 0; j < pulsesBlockSizeX; ++j)
+                {
+                    pulses[i][j] = new std::vector<SPDPulse*>();
+                }
+            }
+            
+            SPDXYPoint ***cenPts = NULL;
+            std::vector<SPDPulse*> ***pulseScaled = NULL;
+            float ***imageBlockVals = NULL;
+            if(binScaling != 0)
+            {
+                pulseScaled = new std::vector<SPDPulse*>**[pulsesScaledBlockSizeY];
+                cenPts = new SPDXYPoint**[pulsesScaledBlockSizeY];
+                imageBlockVals = new float**[pulsesScaledBlockSizeY];
+                for(boost::uint_fast32_t i = 0; i < pulsesScaledBlockSizeY; ++i)
+                {
+                    pulseScaled[i] = new std::vector<SPDPulse*>*[pulsesScaledBlockSizeX];
+                    cenPts[i] = new SPDXYPoint*[pulsesScaledBlockSizeX];
+                    imageBlockVals[i] = new float*[pulsesScaledBlockSizeX];
+                    for(boost::uint_fast32_t j = 0; j < pulsesScaledBlockSizeX; ++j)
+                    {
+                        pulseScaled[i][j] = new std::vector<SPDPulse*>();
+                        cenPts[i][j] = new SPDXYPoint();
+                        imageBlockVals[i][j] = new float[numImgBands];
+                        for(boost::uint_fast32_t k = 0; k < numImgBands; ++k)
+                        {
+                            imageBlockVals[i][j][k] = 0.0;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                cenPts = new SPDXYPoint**[pulsesBlockSizeY];
+                imageBlockVals = new float**[pulsesBlockSizeY];
+                for(boost::uint_fast32_t i = 0; i < pulsesBlockSizeY; ++i)
+                {
+                    cenPts[i] = new SPDXYPoint*[pulsesBlockSizeX];
+                    imageBlockVals[i] = new float*[pulsesBlockSizeX];
+                    for(boost::uint_fast32_t j = 0; j < pulsesBlockSizeX; ++j)
+                    {
+                        cenPts[i][j] = new SPDXYPoint();
+                        imageBlockVals[i][j] = new float[numImgBands];
+                        for(boost::uint_fast32_t k = 0; k < numImgBands; ++k)
+                        {
+                            imageBlockVals[i][j][k] = 0.0;
+                        }
+                    }
+                }
+            }
+            
+            boost::uint_fast32_t *bbox = new boost::uint_fast32_t[4];
+            
+            boost::uint_fast32_t xOffset = 0;
+            boost::uint_fast32_t yOffset = 0;
+            
+            double blockXOrigin = 0;
+            double blockYOrigin = 0;
+            
+            boost::uint_fast32_t blockMinXScaled = 0;
+            boost::uint_fast32_t blockMinYScaled = 0;
+            
+            if(spdInFile->getIndexType() == SPD_CARTESIAN_IDX)
+            {
+                blockXOrigin = spdInFile->getXMin() - (overlap * spdInFile->getBinSize());
+                blockYOrigin = spdInFile->getYMax() + (overlap * spdInFile->getBinSize());
+            }
+            else if(spdInFile->getIndexType() == SPD_SPHERICAL_IDX)
+            {
+                blockXOrigin = spdInFile->getAzimuthMin() - (overlap * spdInFile->getBinSize());
+                blockYOrigin = spdInFile->getZenithMin() - (overlap * spdInFile->getBinSize());
+            }
+            else if(spdInFile->getIndexType() == SPD_SCAN_IDX)
+            {
+                blockXOrigin = spdInFile->getScanlineIdxMin() - (overlap * spdInFile->getBinSize());
+                blockYOrigin = spdInFile->getScanlineMin() - (overlap * spdInFile->getBinSize());
+            }
+            
+            for(boost::uint_fast32_t i = 0; i < numYFullBlocks; ++i)
+            {
+                blockMinX = 0;
+                blockMaxX = blockXSize;
+                
+                if(spdInFile->getIndexType() == SPD_CARTESIAN_IDX)
+                {
+                    blockXOrigin = spdInFile->getXMin() - (overlap * spdInFile->getBinSize());
+                }
+                else if(spdInFile->getIndexType() == SPD_SPHERICAL_IDX)
+                {
+                    blockXOrigin = spdInFile->getAzimuthMin() - (overlap * spdInFile->getBinSize());
+                }
+                else if(spdInFile->getIndexType() == SPD_SCAN_IDX)
+                {
+                    blockXOrigin = spdInFile->getScanlineIdxMin() - (overlap * spdInFile->getBinSize());
+                }
+                
+                for(boost::uint_fast32_t j = 0; j < numXFullBlocks; ++j)
+                {
+                    if(this->printProgress)
+                    {
+                        std::cout << "Processing block " << cBlocksIdx++ << " of " << numBlocks << " blocks\n";
+                    }
+                    
+                    bbox[0] = blockMinX;
+                    bbox[1] = blockMinY;
+                    bbox[2] = blockMaxX;
+                    bbox[3] = blockMaxY;
+                    
+                    xOffset = 0;
+                    yOffset = 0;
+                    
+                    if((((long)blockMinX)-((int)overlap)) < 0)
+                    {
+                        bbox[0] = 0;
+                        xOffset = (((long)blockMinX)-((int)overlap)) * (-1);
+                    }
+                    else
+                    {
+                        bbox[0] = blockMinX-overlap;
+                        xOffset = 0;
+                    }
+                    if((((long)blockMinY)-((int)overlap)) < 0)
+                    {
+                        bbox[1] = 0;
+                        yOffset = (((long)blockMinY)-((int)overlap)) * (-1);
+                    }
+                    else
+                    {
+                        bbox[1] = blockMinY-overlap;
+                        yOffset = 0;
+                    }
+                    
+                    if((blockMaxX + overlap) > nativeXBins)
+                    {
+                        bbox[2] = nativeXBins;
+                    }
+                    else
+                    {
+                        bbox[2] = blockMaxX + overlap;
+                    }
+                    
+                    if((blockMaxY + overlap) > nativeYBins)
+                    {
+                        bbox[3] = nativeYBins;
+                    }
+                    else
+                    {
+                        bbox[3] = blockMaxY + overlap;
+                    }
+                    
+                    //std::cout << "xOffset = " << xOffset << std::endl;
+                    //std::cout << "yOffset = " << yOffset << std::endl;
+                    incReader.readPulseDataBlock(pulses, bbox, xOffset, yOffset);
+                    if(binScaling == 0)
+                    {
+                        this->resetImageBlock2Zeros(imageBlockVals, pulsesBlockSizeX, pulsesBlockSizeY, numImgBands);
+                        this->populateCentrePoints(cenPts, pulsesBlockSizeX, pulsesBlockSizeY, blockXOrigin, blockYOrigin, processingResolution);
+                        dataBlockProcessor->processDataBlockImage(spdInFile, pulses, imageBlockVals, cenPts, pulsesBlockSizeX, pulsesBlockSizeY, numImgBands, processingResolution);
+                        this->writeImageData(imageBands, imageBlockVals, this->blockXSize, this->blockYSize, numImgBands, overlap, overlap, blockMinX, blockMinY);
+                        this->clearPulses(pulses, pulsesBlockSizeX, pulsesBlockSizeY);
+                    }
+                    else
+                    {
+                        this->resetImageBlock2Zeros(imageBlockVals, pulsesScaledBlockSizeX, pulsesScaledBlockSizeY, numImgBands);
+                        this->populateCentrePoints(cenPts, pulsesScaledBlockSizeX, pulsesScaledBlockSizeY, blockXOrigin, blockYOrigin, processingResolution);
+                        gridData.reGridData(spdInFile->getIndexType(), pulses, pulsesBlockSizeX, pulsesBlockSizeY, pulseScaled, pulsesScaledBlockSizeX, pulsesScaledBlockSizeY, blockXOrigin, blockYOrigin, processingResolution);
+                        dataBlockProcessor->processDataBlockImage(spdInFile, pulseScaled, imageBlockVals, cenPts, pulsesScaledBlockSizeX, pulsesScaledBlockSizeY, numImgBands, processingResolution);
+                        if(scaleDown)
+                        {
+                            blockMinXScaled = blockMinX * binScaling;
+                            blockMinYScaled = blockMinY * binScaling;
+                        }
+                        else
+                        {
+                            blockMinXScaled = blockMinX / binScaling;
+                            blockMinYScaled = blockMinY / binScaling;
+                        }
+                        this->writeImageData(imageBands, imageBlockVals, procResXBlockSize, procResYBlockSize, numImgBands, scaledOverlap, scaledOverlap, blockMinXScaled, blockMinYScaled);
+                        this->clearPulses(pulses, pulsesBlockSizeX, pulsesBlockSizeY);
+                        this->clearPulsesNoDelete(pulseScaled, pulsesScaledBlockSizeX, pulsesScaledBlockSizeY);
+                    }
+                    
+                    blockXOrigin += blockWidth;
+                    
+                    blockMinX += blockXSize;
+                    blockMaxX += blockXSize;
+                }
+                if(remainingCols > 0)
+                {
+                    if(this->printProgress)
+                    {
+                        std::cout << "Processing block " << cBlocksIdx++ << " of " << numBlocks << " blocks\n";
+                    }
+                    blockMaxX -= (blockXSize-remainingCols);
+                    
+                    bbox[0] = blockMinX;
+                    bbox[1] = blockMinY;
+                    bbox[2] = blockMaxX;
+                    bbox[3] = blockMaxY;
+                    
+                    xOffset = 0;
+                    yOffset = 0;
+                    
+                    if((((long)blockMinX)-((int)overlap)) < 0)
+                    {
+                        bbox[0] = 0;
+                        xOffset = (((long)blockMinX)-((int)overlap)) * (-1);
+                    }
+                    else
+                    {
+                        bbox[0] = blockMinX-overlap;
+                        xOffset = 0;
+                    }
+                    if((((long)blockMinY)-((int)overlap)) < 0)
+                    {
+                        bbox[1] = 0;
+                        yOffset = (((long)blockMinY)-((int)overlap)) * (-1);
+                    }
+                    else
+                    {
+                        bbox[1] = blockMinY-overlap;
+                        yOffset = 0;
+                    }
+                    
+                    if((blockMaxX + overlap) > nativeXBins)
+                    {
+                        bbox[2] = nativeXBins;
+                    }
+                    else
+                    {
+                        bbox[2] = blockMaxX + overlap;
+                    }
+                    
+                    if((blockMaxY + overlap) > nativeYBins)
+                    {
+                        bbox[3] = nativeYBins;
+                    }
+                    else
+                    {
+                        bbox[3] = blockMaxY + overlap;
+                    }
+                    
+                    incReader.readPulseDataBlock(pulses, bbox, xOffset, yOffset);
+                    
+                    if(binScaling == 0)
+                    {
+                        this->resetImageBlock2Zeros(imageBlockVals, pulsesBlockSizeX, pulsesBlockSizeY, numImgBands);
+                        this->populateCentrePoints(cenPts, pulsesBlockSizeX, pulsesBlockSizeY, blockXOrigin, blockYOrigin, processingResolution);
+                        dataBlockProcessor->processDataBlockImage(spdInFile, pulses, imageBlockVals, cenPts, pulsesBlockSizeX, pulsesBlockSizeY, numImgBands, processingResolution);
+                        this->writeImageData(imageBands, imageBlockVals, remainingCols, this->blockYSize, numImgBands, overlap, overlap, blockMinX, blockMinY);
+                        this->clearPulses(pulses, pulsesBlockSizeX, pulsesBlockSizeY);
+                    }
+                    else
+                    {
+                        this->resetImageBlock2Zeros(imageBlockVals, pulsesScaledBlockSizeX, pulsesScaledBlockSizeY, numImgBands);
+                        this->populateCentrePoints(cenPts, pulsesScaledBlockSizeX, pulsesScaledBlockSizeY, blockXOrigin, blockYOrigin, processingResolution);
+                        gridData.reGridData(spdInFile->getIndexType(), pulses, pulsesBlockSizeX, pulsesBlockSizeY, pulseScaled, pulsesScaledBlockSizeX, pulsesScaledBlockSizeY, blockXOrigin, blockYOrigin, processingResolution);
+                        dataBlockProcessor->processDataBlockImage(spdInFile, pulseScaled, imageBlockVals, cenPts, pulsesScaledBlockSizeX, pulsesScaledBlockSizeY, numImgBands, processingResolution);
+                        if(scaleDown)
+                        {
+                            blockMinXScaled = blockMinX * binScaling;
+                            blockMinYScaled = blockMinY * binScaling;
+                        }
+                        else
+                        {
+                            blockMinXScaled = blockMinX / binScaling;
+                            blockMinYScaled = blockMinY / binScaling;
+                        }
+                        this->writeImageData(imageBands, imageBlockVals, remainingColsScaled, procResYBlockSize, numImgBands, scaledOverlap, scaledOverlap, blockMinXScaled, blockMinYScaled);
+                        this->clearPulses(pulses, pulsesBlockSizeX, pulsesBlockSizeY);
+                        this->clearPulsesNoDelete(pulseScaled, pulsesScaledBlockSizeX, pulsesScaledBlockSizeY);
+                    }
+                }
+                
+                if(spdInFile->getIndexType() == SPD_CARTESIAN_IDX)
+                {
+                    blockYOrigin -= blockHeight;
+                }
+                else if(spdInFile->getIndexType() == SPD_SPHERICAL_IDX)
+                {
+                    blockYOrigin += blockHeight;
+                }
+                else if(spdInFile->getIndexType() == SPD_SCAN_IDX)
+                {
+                    blockYOrigin += blockHeight;
+                }
+                
+                blockMinY += blockYSize;
+                blockMaxY += blockYSize;
+            }
+            
+            if(remainingRows > 0)
+            {
+                blockMaxY -= (blockYSize-remainingRows);
+                
+                blockMinX = 0;
+                blockMaxX = blockXSize;
+                
+                if(spdInFile->getIndexType() == SPD_CARTESIAN_IDX)
+                {
+                    blockXOrigin = spdInFile->getXMin() - (overlap * spdInFile->getBinSize());
+                }
+                else if(spdInFile->getIndexType() == SPD_SPHERICAL_IDX)
+                {
+                    blockXOrigin = spdInFile->getAzimuthMin() - (overlap * spdInFile->getBinSize());
+                }
+                else if(spdInFile->getIndexType() == SPD_SCAN_IDX)
+                {
+                    blockXOrigin = spdInFile->getScanlineIdxMin() - (overlap * spdInFile->getBinSize());
+                }
+                
+                for(boost::uint_fast32_t j = 0; j < numXFullBlocks; ++j)
+                {
+                    if(this->printProgress)
+                    {
+                        std::cout << "Processing block " << cBlocksIdx++ << " of " << numBlocks << " blocks\n";
+                    }
+                    
+                    bbox[0] = blockMinX;
+                    bbox[1] = blockMinY;
+                    bbox[2] = blockMaxX;
+                    bbox[3] = blockMaxY;
+                    
+                    xOffset = 0;
+                    yOffset = 0;
+                    
+                    if((((long)blockMinX)-((int)overlap)) < 0)
+                    {
+                        bbox[0] = 0;
+                        xOffset = (((long)blockMinX)-((int)overlap)) * (-1);
+                    }
+                    else
+                    {
+                        bbox[0] = blockMinX-overlap;
+                        xOffset = 0;
+                    }
+                    if((((long)blockMinY)-((int)overlap)) < 0)
+                    {
+                        bbox[1] = 0;
+                        yOffset = (((long)blockMinY)-((int)overlap)) * (-1);
+                    }
+                    else
+                    {
+                        bbox[1] = blockMinY-overlap;
+                        yOffset = 0;
+                    }
+                    
+                    if((blockMaxX + overlap) > nativeXBins)
+                    {
+                        bbox[2] = nativeXBins;
+                    }
+                    else
+                    {
+                        bbox[2] = blockMaxX + overlap;
+                    }
+                    
+                    if((blockMaxY + overlap) > nativeYBins)
+                    {
+                        bbox[3] = nativeYBins;
+                    }
+                    else
+                    {
+                        bbox[3] = blockMaxY + overlap;
+                    }
+                    
+                    incReader.readPulseDataBlock(pulses, bbox, xOffset, yOffset);
+                    
+                    if(binScaling == 0)
+                    {
+                        this->resetImageBlock2Zeros(imageBlockVals, pulsesBlockSizeX, pulsesBlockSizeY, numImgBands);
+                        this->populateCentrePoints(cenPts, pulsesBlockSizeX, pulsesBlockSizeY, blockXOrigin, blockYOrigin, processingResolution);
+                        dataBlockProcessor->processDataBlockImage(spdInFile, pulses, imageBlockVals, cenPts, pulsesBlockSizeX, pulsesBlockSizeY, numImgBands, processingResolution);
+                        this->writeImageData(imageBands, imageBlockVals, this->blockXSize, remainingRows, numImgBands, overlap, overlap, blockMinX, blockMinY);
+                        this->clearPulses(pulses, pulsesBlockSizeX, pulsesBlockSizeY);
+                    }
+                    else
+                    {
+                        this->resetImageBlock2Zeros(imageBlockVals, pulsesScaledBlockSizeX, pulsesScaledBlockSizeY, numImgBands);
+                        this->populateCentrePoints(cenPts, pulsesScaledBlockSizeX, pulsesScaledBlockSizeY, blockXOrigin, blockYOrigin, processingResolution);
+                        gridData.reGridData(spdInFile->getIndexType(), pulses, pulsesBlockSizeX, pulsesBlockSizeY, pulseScaled, pulsesScaledBlockSizeX, pulsesScaledBlockSizeY, blockXOrigin, blockYOrigin, processingResolution);
+                        dataBlockProcessor->processDataBlockImage(spdInFile, pulseScaled, imageBlockVals, cenPts, pulsesScaledBlockSizeX, pulsesScaledBlockSizeY, numImgBands, processingResolution);
+                        if(scaleDown)
+                        {
+                            blockMinXScaled = blockMinX * binScaling;
+                            blockMinYScaled = blockMinY * binScaling;
+                        }
+                        else
+                        {
+                            blockMinXScaled = blockMinX / binScaling;
+                            blockMinYScaled = blockMinY / binScaling;
+                        }
+                        this->writeImageData(imageBands, imageBlockVals, procResXBlockSize, remainingRowsScaled, numImgBands, scaledOverlap, scaledOverlap, blockMinXScaled, blockMinYScaled);
+                        this->clearPulses(pulses, pulsesBlockSizeX, pulsesBlockSizeY);
+                        this->clearPulsesNoDelete(pulseScaled, pulsesScaledBlockSizeX, pulsesScaledBlockSizeY);
+                    }
+                    
+                    blockMinX += blockXSize;
+                    blockMaxX += blockXSize;
+                    blockXOrigin += blockWidth;
+                }
+                if(remainingCols > 0)
+                {
+                    if(this->printProgress)
+                    {
+                        std::cout << "Processing block " << cBlocksIdx++ << " of " << numBlocks << " blocks\n";
+                    }
+                    
+                    bbox[0] = blockMinX;
+                    bbox[1] = blockMinY;
+                    bbox[2] = blockMaxX;
+                    bbox[3] = blockMaxY;
+                    
+                    xOffset = 0;
+                    yOffset = 0;
+                    
+                    if((((long)blockMinX)-((int)overlap)) < 0)
+                    {
+                        bbox[0] = 0;
+                        xOffset = (((long)blockMinX)-((int)overlap)) * (-1);
+                    }
+                    else
+                    {
+                        bbox[0] = blockMinX-overlap;
+                        xOffset = 0;
+                    }
+                    if((((long)blockMinY)-((int)overlap)) < 0)
+                    {
+                        bbox[1] = 0;
+                        yOffset = (((long)blockMinY)-((int)overlap)) * (-1);
+                    }
+                    else
+                    {
+                        bbox[1] = blockMinY-overlap;
+                        yOffset = 0;
+                    }
+                    
+                    if((blockMaxX + overlap) > nativeXBins)
+                    {
+                        bbox[2] = nativeXBins;
+                    }
+                    else
+                    {
+                        bbox[2] = blockMaxX + overlap;
+                    }
+                    
+                    if((blockMaxY + overlap) > nativeYBins)
+                    {
+                        bbox[3] = nativeYBins;
+                    }
+                    else
+                    {
+                        bbox[3] = blockMaxY + overlap;
+                    }
+                    
+                    incReader.readPulseDataBlock(pulses, bbox, xOffset, yOffset);
+                    
+                    if(binScaling == 0)
+                    {
+                        this->resetImageBlock2Zeros(imageBlockVals, pulsesBlockSizeX, pulsesBlockSizeY, numImgBands);
+                        this->populateCentrePoints(cenPts, pulsesBlockSizeX, pulsesBlockSizeY, blockXOrigin, blockYOrigin, processingResolution);
+                        dataBlockProcessor->processDataBlockImage(spdInFile, pulses, imageBlockVals, cenPts, pulsesBlockSizeX, pulsesBlockSizeY, numImgBands, processingResolution);
+                        this->writeImageData(imageBands, imageBlockVals, remainingCols, remainingRows, numImgBands, overlap, overlap, blockMinX, blockMinY);
+                        this->clearPulses(pulses, pulsesBlockSizeX, pulsesBlockSizeY);
+                    }
+                    else
+                    {
+                        this->resetImageBlock2Zeros(imageBlockVals, pulsesScaledBlockSizeX, pulsesScaledBlockSizeY, numImgBands);
+                        this->populateCentrePoints(cenPts, pulsesScaledBlockSizeX, pulsesScaledBlockSizeY, blockXOrigin, blockYOrigin, processingResolution);
+                        gridData.reGridData(spdInFile->getIndexType(), pulses, pulsesBlockSizeX, pulsesBlockSizeY, pulseScaled, pulsesScaledBlockSizeX, pulsesScaledBlockSizeY, blockXOrigin, blockYOrigin, processingResolution);
+                        dataBlockProcessor->processDataBlockImage(spdInFile, pulseScaled, imageBlockVals, cenPts, pulsesScaledBlockSizeX, pulsesScaledBlockSizeY, numImgBands, processingResolution);
+                        if(scaleDown)
+                        {
+                            blockMinXScaled = blockMinX * binScaling;
+                            blockMinYScaled = blockMinY * binScaling;
+                        }
+                        else
+                        {
+                            blockMinXScaled = blockMinX / binScaling;
+                            blockMinYScaled = blockMinY / binScaling;
+                        }
+                        this->writeImageData(imageBands, imageBlockVals, remainingColsScaled, remainingRowsScaled, numImgBands, scaledOverlap, scaledOverlap, blockMinXScaled, blockMinYScaled);
+                        this->clearPulses(pulses, pulsesBlockSizeX, pulsesBlockSizeY);
+                        this->clearPulsesNoDelete(pulseScaled, pulsesScaledBlockSizeX, pulsesScaledBlockSizeY);
+                    }
+                }
+            }
+            std::cout << "Complete\n";
+            
+            for(boost::uint_fast32_t i = 0; i < pulsesBlockSizeY; ++i)
+            {
+                for(boost::uint_fast32_t j = 0; j < pulsesBlockSizeX; ++j)
+                {
+                    delete pulses[i][j];
+                }
+                delete[] pulses[i];
+            }
+            delete[] pulses;
+            
+            if(binScaling != 0)
+            {
+                for(boost::uint_fast32_t i = 0; i < pulsesScaledBlockSizeY; ++i)
+                {
+                    for(boost::uint_fast32_t j = 0; j < pulsesScaledBlockSizeX; ++j)
+                    {
+                        delete pulseScaled[i][j];
+                        delete cenPts[i][j];
+                        delete[] imageBlockVals[i][j];
+                    }
+                    delete[] pulseScaled[i];
+                    delete [] cenPts[i];
+                    delete[] imageBlockVals[i];
+                }
+                delete[] pulseScaled;
+                delete[] cenPts;
+                delete[] imageBlockVals;
+            }
+            else
+            {
+                for(boost::uint_fast32_t i = 0; i < pulsesBlockSizeY; ++i)
+                {
+                    for(boost::uint_fast32_t j = 0; j < pulsesBlockSizeX; ++j)
+                    {
+                        delete cenPts[i][j];
+                        delete[] imageBlockVals[i][j];
+                    }
+                    delete[] cenPts[i];
+                    delete[] imageBlockVals[i];
+                }
+                delete[] cenPts;
+                delete[] imageBlockVals;
+            }
+            
+            delete[] bbox;
+            delete[] imageBands;
+            incReader.close();
+            delete[] geoTrans;
+        }
+		catch(boost::numeric::negative_overflow& e)
+		{
+			throw SPDProcessingException(e.what());
+		}
+		catch(boost::numeric::positive_overflow& e)
+		{
+			throw SPDProcessingException(e.what());
+		}
+		catch(boost::numeric::bad_numeric_cast& e)
+		{
+			throw SPDProcessingException(e.what());
+		}
+        catch(SPDIOException &e)
+        {
+            throw SPDProcessingException(e.what());
+        }
+        catch (SPDProcessingException &e)
+        {
+            throw e;
+        }
+    }
 
     void SPDProcessDataBlocks::processDataBlocksGridPulsesOutputSPD(SPDFile *spdInFile, std::string outFile, float processingResolution) throw(SPDProcessingException)
     {

@@ -49,24 +49,28 @@ int main (int argc, char * const argv[])
 	{
         TCLAP::CmdLine cmd("Tools for mosaicing raster results following tiling: spdtileimg", ' ', "1.0.0");
         
-        TCLAP::SwitchArg mosaicSwitch("m","mosaic","Mosaic the images (within the input list) together.", false);
-		TCLAP::SwitchArg clumpSwitch("c","clump","Create a clumps image specifying the location of the tiles.", false);
+        TCLAP::SwitchArg imageSwitch("","image","Create a \'blank\' image for the whole region.", false);
+        TCLAP::SwitchArg imageTileSwitch("","imagetile","Create a \'blank\' image for an individual tile.", false);
+        TCLAP::SwitchArg mosaicSwitch("","mosaic","Mosaic the images (within the input list) together.", false);
+		TCLAP::SwitchArg clumpSwitch("","clump","Create a clumps image specifying the location of the tiles.", false);
         
         std::vector<TCLAP::Arg*> arguments;
         arguments.push_back(&mosaicSwitch);
         arguments.push_back(&clumpSwitch);
+        arguments.push_back(&imageSwitch);
+        arguments.push_back(&imageTileSwitch);
         cmd.xorAdd(arguments);
         
         TCLAP::ValueArg<std::string> formatArg("f","format","The output image format.",false,"KEA","String");
 		cmd.add( formatArg );
         
-        TCLAP::ValueArg<double> resolutionArg("r","resolution","The output image pixel size (--clump only).",false,10,"double");
+        TCLAP::ValueArg<double> resolutionArg("r","resolution","The output image pixel size (--clump, --image and --imagetile only).",false,10,"double");
 		cmd.add( resolutionArg );
         
-        TCLAP::ValueArg<double> backgrdValArg("b","background","The output image background value (--mosaic only).",false,0,"double");
+        TCLAP::ValueArg<double> backgrdValArg("b","background","The output image background value (--mosaic, --image and --imagetile only).",false,0,"double");
 		cmd.add( backgrdValArg );
         
-        TCLAP::ValueArg<std::string> wktFileArg("w","wkt","A file containing the WKT string representing the projection (--clump only).",false,"","String");
+        TCLAP::ValueArg<std::string> wktFileArg("w","wkt","A file containing the WKT string representing the projection (--clump, --image and --imagetile only).",false,"","String");
 		cmd.add( wktFileArg );
         
         TCLAP::ValueArg<std::string> outputFileArg("o","output","The output image.",false,"","String");
@@ -75,11 +79,21 @@ int main (int argc, char * const argv[])
         TCLAP::ValueArg<std::string> tilesFileArg("t","tiles","The input XML file defining the tiles.",false,"","String");
 		cmd.add( tilesFileArg );
         
-        TCLAP::ValueArg<std::string> inputFilesArg("i","input","The text file with a list of input files.",false,"","String");
+        TCLAP::ValueArg<std::string> inputFilesArg("i","input","The text file with a list of input files (--mosaic only).",false,"","String");
 		cmd.add( inputFilesArg );
         
         TCLAP::SwitchArg ignoreRowColSwitch("", "ignore-row-col", "During mosaicing, ignores the row and column count and tile size for output extents, uses those read from tile XML instead", false);
         cmd.add( ignoreRowColSwitch );
+        
+        TCLAP::ValueArg<boost::uint_fast32_t> rowValArg("","row","The row of the tile for which an image is to be created (--imagetile only).",false,0,"uint_fast32_t");
+		cmd.add( rowValArg );
+        
+        TCLAP::ValueArg<boost::uint_fast32_t> colValArg("","col","The column of the tile for which an image is to be created (--imagetile only).",false,0,"uint_fast32_t");
+		cmd.add( colValArg );
+        
+        TCLAP::ValueArg<boost::uint_fast32_t> numImgBandsValArg("","numbands","The number of image bands within the output image (--imagetile and --image only).",false,0,"uint_fast32_t");
+		cmd.add( numImgBandsValArg );
+        
 		      
 		cmd.parse( argc, argv );
         
@@ -239,6 +253,135 @@ int main (int argc, char * const argv[])
             tileUtils.addTiles2ClumpImage(outDataset, tiles);
             
             GDALClose(outDataset);
+        }
+        else if(imageSwitch.getValue())
+        {
+            double xTileSize = 0;
+            double yTileSize = 0;
+            double overlap = 0;
+            
+            double xMin = 0;
+            double xMax = 0;
+            double yMin = 0;
+            double yMax = 0;
+            
+            double xRes = resolutionArg.getValue();
+            double yRes = resolutionArg.getValue()*(-1);
+            
+            boost::uint_fast32_t rows = 0;
+            boost::uint_fast32_t cols = 0;
+            boost::uint_fast32_t numOfImgBands = numImgBandsValArg.getValue();
+            if(numOfImgBands == 0)
+            {
+                throw spdlib::SPDException("The number of bands within the output image file needs to be specified (> 0).");
+            }
+            
+            std::cout.precision(12);
+            
+            std::cout << "Reading tile XML\n";
+            spdlib::SPDTilesUtils tileUtils;
+            std::vector<spdlib::SPDTile*> *tiles = tileUtils.importTilesFromXML(tilesFileArg.getValue(), &rows, &cols, &xTileSize, &yTileSize, &overlap, &xMin, &xMax, &yMin, &yMax);
+            
+            tileUtils.deleteTiles(tiles);
+            
+            std::cout << "Number of rows: " << rows << std::endl;
+            std::cout << "Number of cols: " << cols << std::endl;
+            
+            std::cout << "Tile Size: [" << xTileSize << "," << yTileSize << "] Overlap: " << overlap << std::endl;
+            
+            if (!ignoreRowColSwitch.getValue()) {
+                double totalSizeX = cols * xTileSize;
+                double totalSizeY = rows * yTileSize;
+                
+                xMax = xMin + totalSizeX;
+                yMax = yMin + totalSizeY;
+            }
+            
+            std::cout << "Full Area: [" << xMin << "," << xMax << "][" << yMin << "," << yMax << "]\n";
+            
+            spdlib::SPDTextFileUtilities txtUtils;
+            std::string wktStr = txtUtils.readFileToString(wktFileArg.getValue());
+            
+            boost::uint_fast32_t xImgSize = floor(((xMax - xMin)/xRes)+0.5);
+            boost::uint_fast32_t yImgSize = floor(((yMax - yMin)/xRes)+0.5);
+            
+            std::cout << "Create blank image\n";
+            GDALDataset *outDataset = tileUtils.createNewImageFile(outputFileArg.getValue(), formatArg.getValue(), GDT_Float32, wktStr, xRes, yRes, xMin, yMax, xImgSize, yImgSize, numOfImgBands, backgrdValArg.getValue());
+            
+            GDALClose(outDataset);
+        }
+        else if(imageTileSwitch.getValue())
+        {
+            double xTileSize = 0;
+            double yTileSize = 0;
+            double overlap = 0;
+            
+            double xMin = 0;
+            double xMax = 0;
+            double yMin = 0;
+            double yMax = 0;
+            
+            double xRes = resolutionArg.getValue();
+            double yRes = resolutionArg.getValue()*(-1);
+            
+            boost::uint_fast32_t rows = 0;
+            boost::uint_fast32_t cols = 0;
+            boost::uint_fast32_t numOfImgBands = numImgBandsValArg.getValue();
+            if(numOfImgBands == 0)
+            {
+                throw spdlib::SPDException("The number of bands within the output image file needs to be specified (> 0).");
+            }
+            boost::uint_fast32_t row = rowValArg.getValue();
+            boost::uint_fast32_t col = colValArg.getValue();
+            
+            std::cout.precision(12);
+            
+            std::cout << "Reading tile XML\n";
+            spdlib::SPDTilesUtils tileUtils;
+            std::vector<spdlib::SPDTile*> *tiles = tileUtils.importTilesFromXML(tilesFileArg.getValue(), &rows, &cols, &xTileSize, &yTileSize, &overlap, &xMin, &xMax, &yMin, &yMax);
+            
+            std::cout << "Number of rows: " << rows << std::endl;
+            std::cout << "Number of cols: " << cols << std::endl;
+            
+            spdlib::SPDTile *tile = NULL;
+            bool foundTile = false;
+            for(std::vector<spdlib::SPDTile*>::iterator iterTiles = tiles->begin(); iterTiles != tiles->end(); ++iterTiles)
+            {
+                if(((*iterTiles)->col == col) && ((*iterTiles)->row == row))
+                {
+                    tile = (*iterTiles);
+                    foundTile = true;
+                    break;
+                }
+            }
+            
+            if(!foundTile)
+            {
+                tileUtils.deleteTiles(tiles);
+                std::cout << "Could not find tile [" << row << ", " << col << "].\n";
+                throw spdlib::SPDException("Tile could not be found.");
+            }
+            
+            std::cout << "Tile Size: [" << xTileSize << "," << yTileSize << "] Overlap: " << overlap << std::endl;
+            
+            xMin = tile->xMin;
+            xMax = tile->xMax;
+            yMin = tile->yMin;
+            yMax = tile->yMax;
+            
+            std::cout << "Full Area: [" << xMin << "," << xMax << "][" << yMin << "," << yMax << "]\n";
+            
+            spdlib::SPDTextFileUtilities txtUtils;
+            std::string wktStr = txtUtils.readFileToString(wktFileArg.getValue());
+            
+            boost::uint_fast32_t xImgSize = xTileSize + overlap;
+            boost::uint_fast32_t yImgSize = yTileSize + overlap;
+            
+            std::cout << "Create blank image\n";
+            GDALDataset *outDataset = tileUtils.createNewImageFile(outputFileArg.getValue(), formatArg.getValue(), GDT_Float32, wktStr, xRes, yRes, xMin, yMax, xImgSize, yImgSize, numOfImgBands, backgrdValArg.getValue());
+            
+            GDALClose(outDataset);
+            tileUtils.deleteTiles(tiles);
         }
         else
         {

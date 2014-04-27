@@ -57,7 +57,8 @@ namespace spdlib
 		
         void processDataBlocksGridPulsesInputImage(SPDFile *spdInFile, std::string outFile, std::string imageFilePath) throw(SPDProcessingException);
         void processDataBlocksGridPulsesOutputImage(SPDFile *spdInFile, std::string outImagePath, float processingResolution, boost::uint_fast16_t numImgBands, std::string gdalFormat) throw(SPDProcessingException);
-		void processDataBlocksGridPulsesOutputSPD(SPDFile *spdInFile, std::string outFile, float processingResolution) throw(SPDProcessingException);
+        void processDataBlocksGridPulsesOutputImage(SPDFile *spdInFile, GDALDataset *outImageDS) throw(SPDProcessingException);
+        void processDataBlocksGridPulsesOutputSPD(SPDFile *spdInFile, std::string outFile, float processingResolution) throw(SPDProcessingException);
         void processDataBlocksGridPulses(SPDFile *spdInFile, float processingResolution) throw(SPDProcessingException);
         
         void processDataBlocksOutputImage(SPDFile *spdInFile, std::string outImagePath, float processingResolution, boost::uint_fast16_t numImgBands, std::string gdalFormat) throw(SPDProcessingException);
