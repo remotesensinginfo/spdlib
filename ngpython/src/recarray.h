@@ -1,3 +1,26 @@
+/*
+ *  recarray.h
+ *  SPDLIB
+ *
+ *  Created by Sam Gillingham on 22/01/2014.
+ *  Copyright 2013 SPDLib. All rights reserved.
+ *
+ *  This file is part of SPDLib.
+ *
+ *  SPDLib is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  SPDLib is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with SPDLib.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 
 #ifndef RECARRAY_H
 #define RECARRAY_H
@@ -46,13 +69,14 @@ public:
 
 private:
     PyObject *m_DTypeList;
+    PyArray_Descr *m_pDescr;
 };
 
 // helper method used by RecArrayField to get info about a field
 void getFieldDescription(PyObject *pArray, const char *pszName, int *pnOffset, char *pcKind, int *pnSize, int *pnLength)throw(RecArrayException);
 
 // template class to access a field. Should set as type one of the types from npy_common.h:
-// npy_byte, npy_ubyte, npy_ushort, npy_uint, npy_ulong, npy_float, npy_double, npy_short, npy_int, npy_long, npy_bool
+// npy_char, npy_byte, npy_ubyte, npy_ushort, npy_uint, npy_ulong, npy_float, npy_double, npy_short, npy_int, npy_long, npy_bool
 // a simple check is done to see the size matches the field
 
 template <class T>
@@ -77,10 +101,11 @@ public:
         // store info on the field
         getFieldDescription(pArray, pszName, &m_nOffset, &m_cKind, &m_nSize, &m_nLength);
         // do a simple check - can be easily fooled
-        if( sizeof(T) != m_nSize )
-        {
-            throw RecArrayException("size mismatch");
-        }
+        // doesn't work for subarrays so commented out
+        //if( sizeof(T) != m_nSize )
+        //{
+        //    throw RecArrayException("size mismatch");
+        //}
     }
 
     // set a scalar value into the field
@@ -104,7 +129,7 @@ public:
         return val;
     }
     // set an sub array 
-    void setValueArray(void *pRow, T *pData)
+    void setValueArray(void *pRow, const T *pData)
     {
         memcpy( (char*)pRow + m_nOffset, pData, m_nSize * m_nLength );
     }

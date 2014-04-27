@@ -57,6 +57,7 @@ namespace spdlib
         void subsetSPDFile(std::string inputFile, std::string outputFile, std::string shapefile) throw(SPDException);
         void subsetSPDFileHeightOnly(std::string inputFile, std::string outputFile, double lowHeight, double upperHeight) throw(SPDException);
         void subsetSphericalSPDFile(std::string inputFile, std::string outputFile, double *bbox, bool *bboxDefined) throw(SPDException);
+        void subsetScanSPDFile(std::string inputFile, std::string outputFile, double *bbox, bool *bboxDefined) throw(SPDException);
 		~SPDSubsetSPDFile();
 	};
     
