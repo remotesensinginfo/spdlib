@@ -77,6 +77,20 @@ namespace spdlib
 		double *bbox;
 	};
 
+	class SPDExportProcessorSubsetScan : public SPDImporterProcessor
+	{
+	public:
+		SPDExportProcessorSubsetScan(SPDDataExporter *exporter, SPDFile *spdFileOut, double *bbox) throw(SPDException);
+		void processImportedPulse(SPDFile *spdFile, SPDPulse *pulse) throw(SPDIOException);
+		void completeFileAndClose(SPDFile *spdFile)throw(SPDIOException);
+		~SPDExportProcessorSubsetScan();
+	private:
+		SPDDataExporter *exporter;
+		SPDFile *spdFileOut;
+		bool fileOpen;
+		std::list<SPDPulse*> *pulses;
+		double *bbox;
+	};
     
 	class SPDSubsetNonGriddedFile
 	{
@@ -84,6 +98,7 @@ namespace spdlib
 		SPDSubsetNonGriddedFile();
 		void subsetCartesian(std::string input, std::string output, double *bbox, bool *bboxDefined) throw(SPDException);
         void subsetSpherical(std::string input, std::string output, double *bbox, bool *bboxDefined) throw(SPDException);
+        void subsetScan(std::string input, std::string output, double *bbox, bool *bboxDefined) throw(SPDException);
 		~SPDSubsetNonGriddedFile();
 	};
 }

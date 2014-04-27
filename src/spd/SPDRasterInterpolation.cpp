@@ -339,9 +339,10 @@ namespace spdlib
     }
     
     
-    SPDAmplitudeInterpolation::SPDAmplitudeInterpolation(SPDPointInterpolator *interpolator)
+    SPDAmplitudeInterpolation::SPDAmplitudeInterpolation(SPDPointInterpolator *interpolator, bool useGroundClassifiedPts)
     {
         this->interpolator = interpolator;
+		this->useGroundClassifiedPts = useGroundClassifiedPts;
     }
     
     void SPDAmplitudeInterpolation::processDataBlockImage(SPDFile *inSPDFile, std::vector<SPDPulse*> ***pulses, float ***imageDataBlock, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast32_t numImgBands, float binSize) throw(SPDProcessingException)
@@ -356,7 +357,14 @@ namespace spdlib
             bool ptsAvail = true;
             try
             {
-                interpolator->initInterpolator(pulses, xSize, ySize, SPD_ALL_CLASSES);
+				if(useGroundClassifiedPts) 
+				{
+					interpolator->initInterpolator(pulses, xSize, ySize, SPD_GROUND);
+				}
+				else
+				{
+					interpolator->initInterpolator(pulses, xSize, ySize, SPD_ALL_CLASSES);
+				}
 			}
             catch (SPDException &e)
             {

@@ -1,3 +1,26 @@
+/*
+ *  pyspdfile.cpp
+ *  SPDLIB
+ *
+ *  Created by Sam Gillingham on 22/01/2014.
+ *  Copyright 2013 SPDLib. All rights reserved.
+ *
+ *  This file is part of SPDLib.
+ *
+ *  SPDLib is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  SPDLib is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with SPDLib.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 
 #include "spd/SPDFile.h"
 #include "spd/SPDFileReader.h"
@@ -8,6 +31,7 @@
 
 #include "pulsearray.h"
 #include "pointarray.h"
+#include "pyspdfile.h"
 
 // global error pointer - set in the pyspdfile_init method
 PyObject *PySPDError;
@@ -17,13 +41,17 @@ typedef struct
 {
     PyObject_HEAD
     spdlib::SPDFile *pFile;
+    bool bOwned;
 } PySPDFile;
 
 // destructor - delete pFile
 static void
 PySPDFile_dealloc(PySPDFile *self)
 {
-    delete self->pFile;
+    if( self->bOwned )
+    {
+        delete self->pFile;
+    }
     Py_TYPE(self)->tp_free((PyObject*)self);
 }
 
@@ -45,6 +73,8 @@ PySPDFile_init(PySPDFile *self, PyObject *args, PyObject *kwds)
         PyErr_SetString( PySPDError, "Unable to create SPDFile" );
         return -1;
     }
+    // we need to delete it
+    self->bOwned = true;
     return 0;
 }
 
@@ -245,7 +275,9 @@ CREATE_GET_SET_STRING(GeneratingSoftware)
 CREATE_GET_SET_STRING(SystemIdentifier)
 CREATE_GET_SET_STRING(FileSignature)
 CREATE_GET_SET_INT(YearOfCreation)
+CREATE_GET_SET_INT(MonthOfCreation)
 CREATE_GET_SET_INT(DayOfCreation)
+CREATE_GET_SET_INT(HourOfCreation)
 CREATE_GET_SET_INT(MinuteOfCreation)
 CREATE_GET_SET_INT(SecondOfCreation)
 CREATE_GET_SET_INT(YearOfCapture)
@@ -324,7 +356,9 @@ static PyGetSetDef PySPDFile_getseters[] = {
     GETSETDEF(SystemIdentifier),
     GETSETDEF(FileSignature),
     GETSETDEF(YearOfCreation),
+    GETSETDEF(MonthOfCreation),
     GETSETDEF(DayOfCreation),
+    GETSETDEF(HourOfCreation),
     GETSETDEF(MinuteOfCreation),
     GETSETDEF(SecondOfCreation),
     GETSETDEF(YearOfCapture),
@@ -466,100 +500,7 @@ PySPDFile_readHeader(PySPDFile *self, PyObject *args)
 }
 
 static PyObject*
-PySPDFile_readPulsesIntoBlock1d(PySPDFile *self, PyObject *args)
-{
-    PyObject *pSeq;
-    if( !PyArg_ParseTuple(args, "O", &pSeq ) )
-        return NULL;
-
-    if( !PySequence_Check(pSeq) )
-    {
-        PyErr_SetString(PySPDError, "Must pass a sequnce" );
-        return NULL;
-    }
-
-    if( PySequence_Size(pSeq) != 4 )
-    {
-        PyErr_SetString(PySPDError, "Expected a 4 element sequence" );
-        return NULL;
-    }
-
-    boost::uint_fast32_t bboxArr[4];
-    for( int n = 0; n < 4; n++ )
-    {
-        PyObject *o = PySequence_GetItem(pSeq, n); 
-#if PY_MAJOR_VERSION >= 3
-        if( !PyLong_Check(o) ) 
-#else
-        if( !PyInt_Check(o) ) 
-#endif
-        { 
-            PyErr_SetString(PySPDError, "Must be a sequence of ints" ); 
-            Py_DECREF(o); 
-            return NULL;
-        } 
-#if PY_MAJOR_VERSION >= 3
-        bboxArr[n] = PyLong_AsLong(o);
-#else
-        bboxArr[n] = PyInt_AsLong(o); 
-#endif
-        Py_DECREF(o); 
-    }
-
-    PyObject *pArray = NULL;
-    // Create C++ list
-    std::vector<spdlib::SPDPulse*> *pulses = new std::vector<spdlib::SPDPulse*>();
-
-    try
-    {
-        // Create incremental reader
-        spdlib::SPDFileIncrementalReader incReader;
-
-        // Open incremental UPD reader
-        incReader.open(self->pFile);
-
-        // Read SPD Pulse data from SPD file
-        incReader.readPulseDataBlock(pulses, bboxArr);
-
-        // close the incremental reader
-        incReader.close();
-
-        // create array
-        RecArrayCreator creator;
-
-        // add our fields
-        addPulseFields(&creator);
-
-        // create array
-        pArray = creator.createArray(pulses->size());
-
-        // get the indices of our fields
-        PulseArrayIndices indices = getPulseIndices(pArray);
-
-        void *pRecord;
-        for( size_t n = 0; n < pulses->size(); n++ )
-        {
-            pRecord = PyArray_GETPTR1(pArray, n);
-            copyPulseToRecord(pRecord, pulses->at(n), indices);
-        }
-
-        // Delete pulses list.
-        // TODO: do we need to delete individual elements?
-        delete pulses;
-        pulses = NULL;
-    }
-    catch(spdlib::SPDException &e)
-    {
-        PyErr_SetString(PySPDError, e.what());
-        Py_XDECREF(pArray);
-        delete pulses;
-        return NULL;
-    }
-    return pArray;
-}
-
-static PyObject*
-PySPDFile_readPulsesIntoBlock2d(PySPDFile *self, PyObject *args)
+PySPDFile_readBlock(PySPDFile *self, PyObject *args)
 {
     PyObject *pSeq;
     if( !PyArg_ParseTuple(args, "O", &pSeq ) )
@@ -612,10 +553,7 @@ PySPDFile_readPulsesIntoBlock2d(PySPDFile *self, PyObject *args)
             pulses[i][j] = new std::vector<spdlib::SPDPulse*>();
         }
     }
-
-    // create 2d array the whole thing lives in
-    npy_intp dims[] = {xBlockSize, yBlockSize};
-    PyObject *pMainArray = PyArray_SimpleNew(2, dims, PyArray_OBJECT);
+    spdlib::SPDPulseUtils pulseUtils;
 
     try
     {
@@ -631,174 +569,66 @@ PySPDFile_readPulsesIntoBlock2d(PySPDFile *self, PyObject *args)
         // close the incremental reader
         incReader.close();
 
-        // create array
-        RecArrayCreator creator;
-
-        // add our fields
-        addPulseFields(&creator);
-
-        for(boost::uint_fast32_t i = 0; i < yBlockSize; ++i)
-        {
-            for(boost::uint_fast32_t j = 0; j < xBlockSize; ++j)
-            {
-                std::vector<spdlib::SPDPulse*>* sub = pulses[i][j];
-                // create array
-                PyObject *pArray = creator.createArray(sub->size());
-
-                // get the indices of our fields
-                PulseArrayIndices indices = getPulseIndices(pArray);
-
-                void *pRecord;
-                for( size_t n = 0; n < sub->size(); n++ )
-                {
-                    pRecord = PyArray_GETPTR1(pArray, n);
-                    copyPulseToRecord(pRecord, sub->at(n), indices);
-                }
-
-                memcpy(PyArray_GETPTR2(pMainArray, i,j), &pArray, sizeof(PyObject*));
-            }
-        }
-        // Delete pulses list.
-        // TODO: do we need to delete individual elements?
-        delete[] pulses;
-        pulses = NULL;
     }
     catch(spdlib::SPDException &e)
     {
         PyErr_SetString(PySPDError, e.what());
-        Py_XDECREF(pMainArray);
-        delete pulses;
-        return NULL;
-    }
-    return pMainArray;
-}
-
-static PyObject*
-PySPDFile_readPointsIntoBlock2d(PySPDFile *self, PyObject *args)
-{
-    PyObject *pSeq;
-    if( !PyArg_ParseTuple(args, "O", &pSeq ) )
-        return NULL;
-
-    if( !PySequence_Check(pSeq) )
-    {
-        PyErr_SetString(PySPDError, "Must pass a sequnce" );
-        return NULL;
-    }
-
-    if( PySequence_Size(pSeq) != 4 )
-    {
-        PyErr_SetString(PySPDError, "Expected a 4 element sequence" );
-        return NULL;
-    }
-
-    boost::uint_fast32_t bboxArr[4];
-    for( int n = 0; n < 4; n++ )
-    {
-        PyObject *o = PySequence_GetItem(pSeq, n); 
-#if PY_MAJOR_VERSION >= 3
-        if( !PyLong_Check(o) ) 
-#else
-        if( !PyInt_Check(o) ) 
-#endif
-        { 
-            PyErr_SetString(PySPDError, "Must be a sequence of ints" ); 
-            Py_DECREF(o); 
-            return NULL;
-        } 
-#if PY_MAJOR_VERSION >= 3
-        bboxArr[n] = PyLong_AsLong(o);
-#else
-        bboxArr[n] = PyInt_AsLong(o); 
-#endif
-        Py_DECREF(o); 
-    }
-
-    boost::uint_fast32_t xBlockSize = bboxArr[2] - bboxArr[0];
-    boost::uint_fast32_t yBlockSize = bboxArr[3] - bboxArr[1];
-
-    // Create C++ list
-    std::vector<spdlib::SPDPulse*> ***pulses = new std::vector<spdlib::SPDPulse*>**[yBlockSize];
-    for(boost::uint_fast32_t i = 0; i < yBlockSize; ++i)
-    {
-        pulses[i] = new std::vector<spdlib::SPDPulse*>*[xBlockSize];
-        for(boost::uint_fast32_t j = 0; j < xBlockSize; ++j)
-        {
-            pulses[i][j] = new std::vector<spdlib::SPDPulse*>();
-        }
-    }
-
-    // create 2d array the whole thing lives in
-    npy_intp dims[] = {xBlockSize, yBlockSize};
-    PyObject *pMainArray = PyArray_SimpleNew(2, dims, PyArray_OBJECT);
-
-    try
-    {
-        // Create incremental reader
-        spdlib::SPDFileIncrementalReader incReader;
-
-        // Open incremental UPD reader
-        incReader.open(self->pFile);
-
-        // Read SPD Pulse data from SPD file
-        incReader.readPulseDataBlock(pulses, bboxArr);
-
-        // close the incremental reader
-        incReader.close();
-
-        // create array
-        RecArrayCreator creator;
-
-        // add our fields
-        addPointFields(&creator);
-
+        // Delete pulses list.
         for(boost::uint_fast32_t i = 0; i < yBlockSize; ++i)
         {
             for(boost::uint_fast32_t j = 0; j < xBlockSize; ++j)
             {
-                std::vector<spdlib::SPDPulse*>* sub = pulses[i][j];
-                // work out how many points are in all the pulses
-                size_t nPoints = 0;
-                for( size_t n = 0; n < sub->size(); n++ )
+                if(pulses[i][j]->size() > 0)
                 {
-                    nPoints += sub->at(n)->pts->size();
-                }
-
-                // create array
-                PyObject *pArray = creator.createArray(nPoints);
-
-                // get the indices of our fields
-                PointArrayIndices indices = getPointIndices(pArray);
-
-                void *pRecord;
-                size_t nPointIdx = 0;
-                for(size_t nPulseIdx = 0; nPulseIdx < sub->size(); nPulseIdx++ )
-                {
-                    spdlib::SPDPulse* pPulse = sub->at(nPulseIdx);
-                    for( size_t n = 0; n < pPulse->pts->size(); n++ )
+                    for(std::vector<spdlib::SPDPulse*>::iterator iterPulses = pulses[i][j]->begin(); iterPulses != pulses[i][j]->end(); ++iterPulses)
                     {
-                        pRecord = PyArray_GETPTR1(pArray, nPointIdx);
-                        copyPointToRecord(pRecord, pPulse->pts->at(n), indices);
-                        nPointIdx++;
+                        pulseUtils.deleteSPDPulse(*iterPulses);
                     }
+                    pulses[i][j]->clear();
                 }
-                Py_XDECREF((PyObject*)PyArray_GETPTR2(pMainArray, i,j));
-                memcpy(PyArray_GETPTR2(pMainArray, i,j), &pArray, sizeof(PyObject*));
             }
+            delete[] pulses[i];
         }
-        // Delete pulses list.
-        // TODO: do we need to delete individual elements?
         delete[] pulses;
-        pulses = NULL;
-    }
-    catch(spdlib::SPDException &e)
-    {
-        PyErr_SetString(PySPDError, e.what());
-        Py_XDECREF(pMainArray);
-        delete pulses;
         return NULL;
     }
-    return pMainArray;
+
+    // create rec arrays
+    PyObject *pPulseArray, *pPointArray;
+    PulsePointConverter converter;
+    converter.convertCPPPulseArrayToRecArrays(pulses, xBlockSize, yBlockSize, &pPulseArray, &pPointArray);
+
+    // Delete pulses list.
+    for(boost::uint_fast32_t i = 0; i < yBlockSize; ++i)
+    {
+        for(boost::uint_fast32_t j = 0; j < xBlockSize; ++j)
+        {
+            if(pulses[i][j]->size() > 0)
+            {
+                for(std::vector<spdlib::SPDPulse*>::iterator iterPulses = pulses[i][j]->begin(); iterPulses != pulses[i][j]->end(); ++iterPulses)
+                {
+                    pulseUtils.deleteSPDPulse(*iterPulses);
+                }
+                pulses[i][j]->clear();
+            }
+        }
+        delete[] pulses[i];
+    }
+    delete[] pulses;
+
+    // create a tuple holding the results
+    PyObject *pResults = PyTuple_New(2);
+    if( pResults == NULL )
+    {
+        PyErr_SetString(PySPDError, "Unable to create result tuple");
+        Py_DECREF(pPulseArray);
+        Py_DECREF(pPointArray);
+        return NULL;
+    }
+    PyTuple_SetItem(pResults, 0, pPulseArray);
+    PyTuple_SetItem(pResults, 1, pPointArray);
+
+    return pResults;
 }
 
 // our table of methods
@@ -809,9 +639,7 @@ static PyMethodDef PySPDFile_methods[] = {
     {"setBoundingVolumeSpherical", (PyCFunction)PySPDFile_setBoundingVolumeSpherical, METH_VARARGS, NULL},
     {"setBoundingBoxScanline", (PyCFunction)PySPDFile_setBoundingBoxScanline, METH_VARARGS, NULL},
     {"readHeader", (PyCFunction)PySPDFile_readHeader, METH_NOARGS, NULL},
-    {"readPulsesIntoBlock1d", (PyCFunction)PySPDFile_readPulsesIntoBlock1d, METH_VARARGS, NULL},
-    {"readPulsesIntoBlock2d", (PyCFunction)PySPDFile_readPulsesIntoBlock2d, METH_VARARGS, NULL},
-    {"readPointsIntoBlock2d", (PyCFunction)PySPDFile_readPointsIntoBlock2d, METH_VARARGS, NULL},
+    {"readBlock", (PyCFunction)PySPDFile_readBlock, METH_VARARGS, NULL},
     {NULL}  /* Sentinel */
 };
 
@@ -822,7 +650,7 @@ static PyTypeObject PySPDFileType = {
     PyObject_HEAD_INIT(NULL)
     0,                         /*ob_size*/
 #endif
-    "spdpy2.SPDFile",         /*tp_name*/
+    "_spdpy2.SPDFile",         /*tp_name*/
     sizeof(PySPDFile),             /*tp_basicsize*/
     0,                         /*tp_itemsize*/
     (destructor)PySPDFile_dealloc, /*tp_dealloc*/
@@ -882,4 +710,312 @@ PyMODINIT_FUNC pyspdfile_init(PyObject *module, PyObject *error)
 #endif
 }
 
+
+// To be called from C++ - creates a new instance of a PySPDFile
+// but wraps an existing spdlib::SPDFile
+// won't delete file on destruction
+PyObject* PySPDFile_NewFromFilePtr(spdlib::SPDFile *pFile)
+{
+    PySPDFile *pPyFile = PyObject_New(PySPDFile, &PySPDFileType);
+    pPyFile->pFile = pFile;
+    pPyFile->bOwned = false;
+    return (PyObject*)pPyFile;
+}
+
+// same as above but takes a filename and creates a new  spdlib::SPDFile
+// that will be deleted on destruction
+PyObject* PySPDFile_NewFromFileName(std::string filePath)
+{
+    spdlib::SPDFile *pFile = new spdlib::SPDFile(filePath);
+    if( pFile == NULL )
+    {
+        PyErr_SetString( PySPDError, "Unable to create SPDFile" );
+        return NULL;
+    }
+
+    PySPDFile *pPyFile = PyObject_New(PySPDFile, &PySPDFileType);
+    pPyFile->pFile = pFile;
+    pPyFile->bOwned = true;
+    return (PyObject*)pPyFile;
+}
+
+void addSPDFileFields(RecArrayCreator *pCreator, spdlib::SPDFile *pFile)
+{
+    //pCreator->addField("FilePath", 'S', pFile->getFilePath().size());
+    //pCreator->addField("SpatialReference", 'S', pFile->getSpatialReference().size());
+    pCreator->addField("IndexType", NPY_UINT16);
+    pCreator->addField("FileType", NPY_UINT16);
+    pCreator->addField("DiscretePtDefined", NPY_INT16);
+    pCreator->addField("DecomposedPtDefined", NPY_INT16);
+    pCreator->addField("TransWaveformDefined", NPY_INT16);
+    pCreator->addField("ReceiveWaveformDefined", NPY_INT16);
+    pCreator->addField("MajorSPDVersion", NPY_UINT16);
+    pCreator->addField("MinorSPDVersion", NPY_UINT16);
+    pCreator->addField("PointVersion", NPY_UINT16);
+    pCreator->addField("PulseVersion", NPY_UINT16);
+    //pCreator->addField("GeneratingSoftware", 'S', pFile->getGeneratingSoftware().size());
+    //pCreator->addField("SystemIdentifier", 'S', pFile->getSystemIdentifier().size());
+    //pCreator->addField("FileSignature", 'S', pFile->getGeneratingSoftware().size());
+    pCreator->addField("YearOfCreation", NPY_UINT16);
+    pCreator->addField("MonthOfCreation", NPY_UINT16);
+    pCreator->addField("DayOfCreation", NPY_UINT16);
+    pCreator->addField("HourOfCreation", NPY_UINT16);
+    pCreator->addField("MinuteOfCreation", NPY_UINT16);
+    pCreator->addField("SecondOfCreation", NPY_UINT16);
+    pCreator->addField("YearOfCapture", NPY_UINT16);
+    pCreator->addField("MonthOfCapture", NPY_UINT16);
+    pCreator->addField("DayOfCapture", NPY_UINT16);
+    pCreator->addField("HourOfCapture", NPY_UINT16);
+    pCreator->addField("MinuteOfCapture", NPY_UINT16);
+    pCreator->addField("SecondOfCapture", NPY_UINT16);
+    pCreator->addField("NumberOfPoints", NPY_UINT64);
+    pCreator->addField("NumberOfPulses", NPY_UINT64);
+    //pCreator->addField("UserMetaField", 'S', pFile->getUserMetaField().size());
+    pCreator->addField("XMin", NPY_DOUBLE);
+    pCreator->addField("XMax", NPY_DOUBLE);
+    pCreator->addField("YMin", NPY_DOUBLE);
+    pCreator->addField("YMax", NPY_DOUBLE);
+    pCreator->addField("ZMin", NPY_DOUBLE);
+    pCreator->addField("ZMax", NPY_DOUBLE);
+    pCreator->addField("ZenithMin", NPY_DOUBLE);
+    pCreator->addField("ZenithMax", NPY_DOUBLE);
+    pCreator->addField("AzimuthMin", NPY_DOUBLE);
+    pCreator->addField("AzimuthMax", NPY_DOUBLE);
+    pCreator->addField("RangeMin", NPY_DOUBLE);
+    pCreator->addField("RangeMax", NPY_DOUBLE);
+    pCreator->addField("ScanlineMin", NPY_DOUBLE);
+    pCreator->addField("ScanlineMax", NPY_DOUBLE);
+    pCreator->addField("ScanlineIdxMin", NPY_DOUBLE);
+    pCreator->addField("ScanlineIdxMax", NPY_DOUBLE);
+    pCreator->addField("BinSize", NPY_DOUBLE);
+    pCreator->addField("NumberBinsX", NPY_UINT32);
+    pCreator->addField("NumberBinsY", NPY_UINT32);
+    //pCreator->addField("Wavelengths", NPY_FLOAT, pFile->getWavelengths()->size());
+    //pCreator->addField("Bandwidths", NPY_FLOAT, pFile->getBandwidths()->size());
+    pCreator->addField("Wavelengths", NPY_FLOAT);
+    pCreator->addField("Bandwidths", NPY_FLOAT);
+
+    pCreator->addField("NumOfWavelengths", NPY_UINT16);
+    pCreator->addField("PulseRepetitionFreq", NPY_FLOAT);
+    pCreator->addField("BeamDivergence", NPY_FLOAT);
+    pCreator->addField("SensorHeight", NPY_DOUBLE);
+    pCreator->addField("Footprint", NPY_FLOAT);
+    pCreator->addField("MaxScanAngle", NPY_FLOAT);
+    pCreator->addField("RGBDefined", NPY_INT16);
+    pCreator->addField("PulseBlockSize", NPY_UINT16);
+    pCreator->addField("ReceivedBlockSize", NPY_UINT16);
+    pCreator->addField("TransmittedBlockSize", NPY_UINT16);
+    pCreator->addField("WaveformBitRes", NPY_UINT16);
+    pCreator->addField("TemporalBinSpacing", NPY_DOUBLE);
+    pCreator->addField("ReturnNumsSynGen", NPY_INT16);
+    pCreator->addField("HeightDefined", NPY_INT16);
+    pCreator->addField("SensorSpeed", NPY_FLOAT);
+    pCreator->addField("SensorScanRate", NPY_FLOAT);
+    pCreator->addField("PointDensity", NPY_FLOAT);
+    pCreator->addField("PulseDensity", NPY_FLOAT);
+    pCreator->addField("PulseCrossTrackSpacing", NPY_FLOAT);
+    pCreator->addField("PulseAlongTrackSpacing", NPY_FLOAT);
+    pCreator->addField("OriginDefined", NPY_INT16);
+    pCreator->addField("PulseAngularSpacingAzimuth", NPY_FLOAT);
+    pCreator->addField("PulseAngularSpacingZenith", NPY_FLOAT);
+    pCreator->addField("PulseIdxMethod", NPY_INT16);
+    pCreator->addField("SensorApertureSize", NPY_FLOAT);
+    pCreator->addField("PulseEnergy", NPY_FLOAT);
+    pCreator->addField("FieldOfView", NPY_FLOAT);
+
+    // fake
+    pCreator->addField("processingBinSize", NPY_FLOAT);
+}
+
+SPDFileArrayIndices* getSPDFileIndices(PyObject *pArray)
+{
+    SPDFileArrayIndices* indices = new SPDFileArrayIndices();
+    //indices->FilePath.setField(pArray, "FilePath");
+    //indices->SpatialReference.setField(pArray, "SpatialReference");
+    indices->IndexType.setField(pArray, "IndexType");
+    indices->FileType.setField(pArray, "FileType");
+    indices->DiscretePtDefined.setField(pArray, "DiscretePtDefined");
+    indices->DecomposedPtDefined.setField(pArray, "DecomposedPtDefined");
+    indices->TransWaveformDefined.setField(pArray, "TransWaveformDefined");
+    indices->ReceiveWaveformDefined.setField(pArray, "ReceiveWaveformDefined");
+    indices->MajorSPDVersion.setField(pArray, "MajorSPDVersion");
+    indices->MinorSPDVersion.setField(pArray, "MinorSPDVersion");
+    indices->PointVersion.setField(pArray, "PointVersion");
+    indices->PulseVersion.setField(pArray, "PulseVersion");
+    //indices->GeneratingSoftware.setField(pArray, "GeneratingSoftware");
+    //indices->SystemIdentifier.setField(pArray, "SystemIdentifier");
+    //indices->FileSignature.setField(pArray, "FileSignature");
+    indices->YearOfCreation.setField(pArray, "YearOfCreation");
+    indices->MonthOfCreation.setField(pArray, "MonthOfCreation");
+    indices->DayOfCreation.setField(pArray, "DayOfCreation");
+    indices->HourOfCreation.setField(pArray, "HourOfCreation");
+    indices->MinuteOfCreation.setField(pArray, "MinuteOfCreation");
+    indices->SecondOfCreation.setField(pArray, "SecondOfCreation");
+    indices->YearOfCapture.setField(pArray, "YearOfCapture");
+    indices->MonthOfCapture.setField(pArray, "MonthOfCapture");
+    indices->DayOfCapture.setField(pArray, "DayOfCapture");
+    indices->HourOfCapture.setField(pArray, "HourOfCapture");
+    indices->MinuteOfCapture.setField(pArray, "MinuteOfCapture");
+    indices->SecondOfCapture.setField(pArray, "SecondOfCapture");
+    indices->NumberOfPoints.setField(pArray, "NumberOfPoints");
+    indices->NumberOfPulses.setField(pArray, "NumberOfPulses");
+    //indices->UserMetaField.setField(pArray, "UserMetaField");
+    indices->XMin.setField(pArray, "XMin");
+    indices->XMax.setField(pArray, "XMax");
+    indices->YMin.setField(pArray, "YMin");
+    indices->YMax.setField(pArray, "YMax");
+    indices->ZMin.setField(pArray, "ZMin");
+    indices->ZMax.setField(pArray, "ZMax");
+    indices->ZenithMin.setField(pArray, "ZenithMin");
+    indices->ZenithMax.setField(pArray, "ZenithMax");
+    indices->AzimuthMin.setField(pArray, "AzimuthMin");
+    indices->AzimuthMax.setField(pArray, "AzimuthMax");
+    indices->RangeMin.setField(pArray, "RangeMin");
+    indices->RangeMax.setField(pArray, "RangeMax");
+    indices->ScanlineMin.setField(pArray, "ScanlineMin");
+    indices->ScanlineMax.setField(pArray, "ScanlineMax");
+    indices->ScanlineIdxMin.setField(pArray, "ScanlineIdxMin");
+    indices->ScanlineIdxMax.setField(pArray, "ScanlineIdxMax");
+    indices->BinSize.setField(pArray, "BinSize");
+    indices->NumberBinsX.setField(pArray, "NumberBinsX");
+    indices->NumberBinsY.setField(pArray, "NumberBinsY");
+    indices->Wavelengths.setField(pArray, "Wavelengths");
+    indices->Bandwidths.setField(pArray, "Bandwidths");
+    indices->NumOfWavelengths.setField(pArray, "NumOfWavelengths");
+    indices->PulseRepetitionFreq.setField(pArray, "PulseRepetitionFreq");
+    indices->BeamDivergence.setField(pArray, "BeamDivergence");
+    indices->SensorHeight.setField(pArray, "SensorHeight");
+    indices->Footprint.setField(pArray, "Footprint");
+    indices->MaxScanAngle.setField(pArray, "MaxScanAngle");
+    indices->RGBDefined.setField(pArray, "RGBDefined");
+    indices->PulseBlockSize.setField(pArray, "PulseBlockSize");
+    indices->ReceivedBlockSize.setField(pArray, "ReceivedBlockSize");
+    indices->TransmittedBlockSize.setField(pArray, "TransmittedBlockSize");
+    indices->WaveformBitRes.setField(pArray, "WaveformBitRes");
+    indices->TemporalBinSpacing.setField(pArray, "TemporalBinSpacing");
+    indices->ReturnNumsSynGen.setField(pArray, "ReturnNumsSynGen");
+    indices->HeightDefined.setField(pArray, "HeightDefined");
+    indices->SensorSpeed.setField(pArray, "SensorSpeed");
+    indices->SensorScanRate.setField(pArray, "SensorScanRate");
+    indices->PointDensity.setField(pArray, "PointDensity");
+    indices->PulseDensity.setField(pArray, "PulseDensity");
+    indices->PulseCrossTrackSpacing.setField(pArray, "PulseCrossTrackSpacing");
+    indices->PulseAlongTrackSpacing.setField(pArray, "PulseAlongTrackSpacing");
+    indices->OriginDefined.setField(pArray, "OriginDefined");
+    indices->PulseAngularSpacingAzimuth.setField(pArray, "PulseAngularSpacingAzimuth");
+    indices->PulseAngularSpacingZenith.setField(pArray, "PulseAngularSpacingZenith");
+    indices->PulseIdxMethod.setField(pArray, "PulseIdxMethod");
+    indices->SensorApertureSize.setField(pArray, "SensorApertureSize");
+    indices->PulseEnergy.setField(pArray, "PulseEnergy");
+    indices->FieldOfView.setField(pArray, "FieldOfView");
+
+    // fake
+    indices->processingBinSize.setField(pArray, "processingBinSize");
+    return indices;
+}
+
+PyObject* createSPDFileArray(spdlib::SPDFile *pFile, float binSize)
+{
+    RecArrayCreator spdfileCreator;
+    addSPDFileFields(&spdfileCreator, pFile);
+
+    // length 1
+    PyObject *pArray = spdfileCreator.createArray(1);
+    
+    SPDFileArrayIndices *pIndices = getSPDFileIndices(pArray);
+
+    // get the first element 
+    void *pRecord = PyArray_GETPTR1(pArray, 0);
+
+    //pIndices->FilePath.setValueArray(pRecord, pFile->getFilePath().c_str());
+    //pIndices->SpatialReference.setValueArray(pRecord, pFile->getSpatialReference().c_str());
+    pIndices->IndexType.setValue(pRecord, pFile->getIndexType());
+    pIndices->FileType.setValue(pRecord, pFile->getFileType());
+    pIndices->DiscretePtDefined.setValue(pRecord, pFile->getDiscretePtDefined());
+    pIndices->DecomposedPtDefined.setValue(pRecord, pFile->getDecomposedPtDefined());
+    pIndices->TransWaveformDefined.setValue(pRecord, pFile->getTransWaveformDefined());
+    pIndices->ReceiveWaveformDefined.setValue(pRecord, pFile->getReceiveWaveformDefined());
+    pIndices->MajorSPDVersion.setValue(pRecord, pFile->getMajorSPDVersion());
+    pIndices->MinorSPDVersion.setValue(pRecord, pFile->getMinorSPDVersion());
+    pIndices->PointVersion.setValue(pRecord, pFile->getPointVersion());
+    pIndices->PulseVersion.setValue(pRecord, pFile->getPulseVersion());
+    //pIndices->GeneratingSoftware.setValueArray(pRecord, pFile->getGeneratingSoftware().c_str());
+    //pIndices->SystemIdentifier.setValueArray(pRecord, pFile->getSystemIdentifier().c_str());
+    //pIndices->FileSignature.setValueArray(pRecord, pFile->getFileSignature().c_str());
+    pIndices->YearOfCreation.setValue(pRecord, pFile->getYearOfCreation());
+    pIndices->MonthOfCreation.setValue(pRecord, pFile->getMonthOfCreation());
+    pIndices->DayOfCreation.setValue(pRecord, pFile->getDayOfCreation());
+    pIndices->HourOfCreation.setValue(pRecord, pFile->getHourOfCreation());
+    pIndices->MinuteOfCreation.setValue(pRecord, pFile->getMinuteOfCreation());
+    pIndices->SecondOfCreation.setValue(pRecord, pFile->getSecondOfCreation());
+    pIndices->YearOfCapture.setValue(pRecord, pFile->getYearOfCapture());
+    pIndices->MonthOfCapture.setValue(pRecord, pFile->getMonthOfCapture());
+    pIndices->DayOfCapture.setValue(pRecord, pFile->getDayOfCapture());
+    pIndices->HourOfCapture.setValue(pRecord, pFile->getHourOfCapture());
+    pIndices->MinuteOfCapture.setValue(pRecord, pFile->getMinuteOfCapture());
+    pIndices->SecondOfCapture.setValue(pRecord, pFile->getSecondOfCapture());
+    pIndices->NumberOfPoints.setValue(pRecord, pFile->getNumberOfPoints());
+    pIndices->NumberOfPulses.setValue(pRecord, pFile->getNumberOfPulses());
+    //pIndices->UserMetaField.setValueArray(pRecord, pFile->getUserMetaField().c_str());
+    pIndices->XMin.setValue(pRecord, pFile->getXMin());
+    pIndices->XMax.setValue(pRecord, pFile->getXMax());
+    pIndices->YMin.setValue(pRecord, pFile->getYMin());
+    pIndices->YMax.setValue(pRecord, pFile->getYMax());
+    pIndices->ZMin.setValue(pRecord, pFile->getZMin());
+    pIndices->ZMax.setValue(pRecord, pFile->getZMax());
+    pIndices->ZenithMin.setValue(pRecord, pFile->getZenithMin());
+    pIndices->ZenithMax.setValue(pRecord, pFile->getZenithMax());
+    pIndices->AzimuthMin.setValue(pRecord, pFile->getAzimuthMin());
+    pIndices->AzimuthMax.setValue(pRecord, pFile->getAzimuthMax());
+    pIndices->RangeMin.setValue(pRecord, pFile->getRangeMin());
+    pIndices->RangeMax.setValue(pRecord, pFile->getRangeMax());
+    pIndices->ScanlineMin.setValue(pRecord, pFile->getScanlineMin());
+    pIndices->ScanlineMax.setValue(pRecord, pFile->getScanlineMax());
+    pIndices->ScanlineIdxMin.setValue(pRecord, pFile->getScanlineIdxMin());
+    pIndices->ScanlineIdxMax.setValue(pRecord, pFile->getScanlineIdxMax());
+    pIndices->BinSize.setValue(pRecord, pFile->getBinSize());
+    pIndices->NumberBinsX.setValue(pRecord, pFile->getNumberBinsX());
+    pIndices->NumberBinsY.setValue(pRecord, pFile->getNumberBinsY());
+
+    std::vector<float> *pWavelengths = pFile->getWavelengths();
+    //pIndices->Wavelengths.setValueArray(pRecord, &(*pWavelengths)[0]);
+    std::vector<float> *pBandWidths = pFile->getBandwidths();
+    //pIndices->Bandwidths.setValueArray(pRecord, &(*pBandWidths)[0]);
+    pIndices->Wavelengths.setValue(pRecord, (*pWavelengths)[0]);
+    pIndices->Bandwidths.setValue(pRecord, (*pBandWidths)[0]);
+
+    pIndices->NumOfWavelengths.setValue(pRecord, pFile->getNumOfWavelengths());
+    pIndices->PulseRepetitionFreq.setValue(pRecord, pFile->getPulseRepetitionFreq());
+    pIndices->BeamDivergence.setValue(pRecord, pFile->getBeamDivergence());
+    pIndices->SensorHeight.setValue(pRecord, pFile->getSensorHeight());
+    pIndices->Footprint.setValue(pRecord, pFile->getFootprint());
+    pIndices->MaxScanAngle.setValue(pRecord, pFile->getMaxScanAngle());
+    pIndices->RGBDefined.setValue(pRecord, pFile->getRGBDefined());
+    pIndices->PulseBlockSize.setValue(pRecord, pFile->getPulseBlockSize());
+    pIndices->ReceivedBlockSize.setValue(pRecord, pFile->getReceivedBlockSize());
+    pIndices->TransmittedBlockSize.setValue(pRecord, pFile->getTransmittedBlockSize());
+    pIndices->WaveformBitRes.setValue(pRecord, pFile->getWaveformBitRes());
+    pIndices->TemporalBinSpacing.setValue(pRecord, pFile->getTemporalBinSpacing());
+    pIndices->ReturnNumsSynGen.setValue(pRecord, pFile->getReturnNumsSynGen());
+    pIndices->HeightDefined.setValue(pRecord, pFile->getHeightDefined());
+    pIndices->SensorSpeed.setValue(pRecord, pFile->getSensorSpeed());
+    pIndices->SensorScanRate.setValue(pRecord, pFile->getSensorScanRate());
+    pIndices->PointDensity.setValue(pRecord, pFile->getPointDensity());
+    pIndices->PulseDensity.setValue(pRecord, pFile->getPulseDensity());
+    pIndices->PulseCrossTrackSpacing.setValue(pRecord, pFile->getPulseCrossTrackSpacing());
+    pIndices->PulseAlongTrackSpacing.setValue(pRecord, pFile->getPulseAlongTrackSpacing());
+    pIndices->OriginDefined.setValue(pRecord, pFile->getOriginDefined());
+    pIndices->PulseAngularSpacingAzimuth.setValue(pRecord, pFile->getPulseAngularSpacingAzimuth());
+    pIndices->PulseAngularSpacingZenith.setValue(pRecord, pFile->getPulseAngularSpacingZenith());
+    pIndices->PulseIdxMethod.setValue(pRecord, pFile->getPulseIdxMethod());
+    pIndices->SensorApertureSize.setValue(pRecord, pFile->getSensorApertureSize());
+    pIndices->PulseEnergy.setValue(pRecord, pFile->getPulseEnergy());
+    pIndices->FieldOfView.setValue(pRecord, pFile->getFieldOfView());
+
+    // fake
+    pIndices->processingBinSize.setValue(pRecord, binSize);
+
+    delete pIndices;
+    return pArray;
+}
 

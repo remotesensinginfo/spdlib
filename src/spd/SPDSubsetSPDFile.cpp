@@ -778,6 +778,238 @@ namespace spdlib
 		}
     }
     
+    void SPDSubsetSPDFile::subsetScanSPDFile(std::string inputFile, std::string outputFile, double *bbox, bool *bboxDefined) throw(SPDException)
+    {
+        try 
+		{
+			SPDFile *spdFile = new SPDFile(inputFile);
+			SPDFile *spdOutFile = new SPDFile(outputFile);
+			
+			SPDFileReader reader;
+			reader.readHeaderInfo(spdFile->getFilePath(), spdFile);
+            
+            if(spdFile->getIndexType() != SPD_SCAN_IDX)
+            {
+                throw SPDException("This function only supports subsetting scan indexed SPD files.");
+            }
+            
+			spdOutFile->copyAttributesFrom(spdFile);
+			
+			if(!bboxDefined[0] |
+			   !bboxDefined[1] |
+			   !bboxDefined[2] |
+			   !bboxDefined[3] |
+			   !bboxDefined[4] |
+			   !bboxDefined[5])
+			{
+				if(!bboxDefined[0])
+				{
+					bbox[0] = spdFile->getScanlineIdxMin();
+				}
+				
+				if(!bboxDefined[1])
+				{
+					bbox[1] = spdFile->getScanlineIdxMax();
+				}
+				
+				if(!bboxDefined[2])
+				{
+                    bbox[2] = spdFile->getScanlineMin();
+				}
+				
+				if(!bboxDefined[3])
+				{
+                    bbox[3] = spdFile->getScanlineMax();
+				}
+				
+				if(!bboxDefined[4])
+				{
+					bbox[4] = spdFile->getRangeMin();
+				}
+				
+				if(!bboxDefined[5])
+				{
+					bbox[5] = spdFile->getRangeMax();
+				}
+			}
+			
+            std::cout << "Input SPD File has " << spdFile->getNumberBinsX() << " columns and " << spdFile->getNumberBinsY() << " rows\n";
+            
+			boost::uint_fast32_t startCol = 0;
+			boost::uint_fast32_t endCol = 0;
+			boost::uint_fast32_t startRow = 0;
+			boost::uint_fast32_t endRow = 0;
+			
+			double tmpDist = 0;
+			boost::uint_fast32_t numCols = 0;
+			boost::uint_fast32_t numRows = 0;
+			try
+			{
+				// Define Starting Column
+				tmpDist = bbox[0] - spdFile->getScanlineIdxMin();
+				if(tmpDist < 0)
+				{
+					startCol = 0;
+				}
+				else
+				{
+					numCols = boost::numeric_cast<boost::uint_fast32_t>(tmpDist/spdFile->getBinSize());
+					startCol = numCols;
+					spdOutFile->setScanlineIdxMin(spdFile->getScanlineIdxMin() + (((float)numCols) * spdFile->getBinSize()));
+				}
+				
+				// Define End Column
+				tmpDist = bbox[1] - bbox[0];
+				numCols = boost::numeric_cast<boost::uint_fast32_t>(tmpDist/spdFile->getBinSize());
+                endCol = startCol + numCols;
+                
+                spdOutFile->setScanlineIdxMax(spdFile->getAzimuthMin() + (((float)endCol) * spdFile->getBinSize()));
+				
+				// Define Starting Row
+				tmpDist = bbox[2] - spdFile->getScanlineMin();
+				if(tmpDist < 0)
+				{
+					startRow = 0;
+				}
+				else
+				{
+					numRows = boost::numeric_cast<boost::uint_fast32_t>(tmpDist/spdFile->getBinSize());
+					startRow = numRows;
+					spdOutFile->setScanlineMin(spdFile->getScanlineMin() + (((float)numRows) * spdFile->getBinSize()));
+				}
+				
+				// Define End Row
+				tmpDist = bbox[3] - bbox[2];
+				numRows = boost::numeric_cast<boost::uint_fast32_t>(tmpDist/spdFile->getBinSize());
+                endRow = startRow + numRows;
+                
+                if(endRow > spdFile->getNumberBinsY())
+                {
+                    endRow = spdFile->getNumberBinsY();
+                }
+                
+                spdOutFile->setScanlineMax(spdFile->getScanlineMin() + (((float)endRow) * spdFile->getBinSize()));
+                
+			}
+			catch(boost::numeric::negative_overflow& e) 
+			{
+				throw SPDProcessingException(e.what());
+			}
+			catch(boost::numeric::positive_overflow& e) 
+			{
+				throw SPDProcessingException(e.what());
+			}
+			catch(boost::numeric::bad_numeric_cast& e) 
+			{
+				throw SPDProcessingException(e.what());
+			}
+			
+            //std::cout << "Cols: [" << startCol << "," << endCol << "]\n";
+            //std::cout << "Rows: [" << startRow << "," << endRow << "]\n";
+            
+			if(endCol <= startCol)
+			{
+				throw SPDProcessingException("Define subset is not within the input file (X Axis).");
+			}
+			
+			if(endRow <= startRow)
+			{
+				throw SPDProcessingException("Define subset is not within the input file (Y Axis).");
+			}
+			
+			spdOutFile->setNumberBinsX(endCol - startCol);
+			spdOutFile->setNumberBinsY(endRow - startRow);
+			
+			std::cout << "Subset To: ScanlineIdx[" << bbox[0] << "," << bbox[1] << "] Scanline[" << bbox[2] << "," << bbox[3] << "] Range[" << bbox[4] << "," << bbox[5] << "]\n";
+			std::cout << "New SPD file has " << spdOutFile->getNumberBinsX() << " columns and " << spdOutFile->getNumberBinsY() << " rows\n";
+			
+			std::list<SPDPulse*> **pulses = new std::list<SPDPulse*>*[spdFile->getNumberBinsX()];
+			for(boost::uint_fast32_t i = 0; i < spdFile->getNumberBinsX(); ++i)
+			{
+				pulses[i] = new std::list<SPDPulse*>();
+			}
+			
+			SPDSeqFileWriter spdWriter;
+			spdWriter.open(spdOutFile, outputFile);
+			SPDFileIncrementalReader spdIncReader;
+			spdIncReader.open(spdFile);
+			
+			int feedback = spdOutFile->getNumberBinsY()/10;
+			int feedbackCounter = 0;
+			
+			numRows = 0;
+			std::cout << "Started (Write Data) .";
+			for(boost::uint_fast32_t rows = startRow; rows < endRow; ++rows)
+			{
+				if((spdOutFile->getNumberBinsY() > 10) && (numRows % feedback == 0))
+				{
+					std::cout << "." << feedbackCounter << "." << std::flush;
+					feedbackCounter += 10;
+				}
+				
+				spdIncReader.readPulseDataRow(rows, pulses);
+				
+				numCols = 0;
+				bool zWithBBox = true;
+				for(boost::uint_fast32_t cols = startCol; cols < endCol; ++cols)
+				{
+					if(bboxDefined[4] | bboxDefined[5])
+					{
+						for(std::list<SPDPulse*>::iterator iterPulses = pulses[cols]->begin(); iterPulses != pulses[cols]->end(); )
+						{
+							zWithBBox = true;
+							if(((*iterPulses)->pts != NULL) && ((*iterPulses)->numberOfReturns > 0))
+							{
+								if(((*iterPulses)->pts->front()->range < bbox[4]) |
+								   ((*iterPulses)->pts->front()->range > bbox[5]))
+								{
+									zWithBBox = false;
+								}
+								
+								if(((*iterPulses)->pts->back()->range < bbox[4]) |
+								   ((*iterPulses)->pts->back()->range > bbox[5]))
+								{
+									zWithBBox = false;
+								}
+							}
+							
+							if(zWithBBox)
+							{
+								++iterPulses; // Next Pulse...
+							}
+							else 
+							{
+								SPDPulseUtils::deleteSPDPulse(*iterPulses);
+								iterPulses = pulses[cols]->erase(iterPulses);
+							}
+						}
+					}
+					
+					spdWriter.writeDataColumn(pulses[cols], numCols, numRows);
+					++numCols;
+				}
+				
+				for(boost::uint_fast32_t i = 0; i < spdFile->getNumberBinsX(); ++i)
+				{
+					for(std::list<SPDPulse*>::iterator iterPulses = pulses[i]->begin(); iterPulses != pulses[i]->end(); )
+					{
+						SPDPulseUtils::deleteSPDPulse(*iterPulses);
+						iterPulses = pulses[i]->erase(iterPulses);
+					}
+				}
+				++numRows;
+			}
+			std::cout << ". Complete.\n";
+			spdIncReader.close();
+			spdWriter.finaliseClose();
+		}
+		catch (SPDException *e) 
+		{
+			throw e;
+		}
+    }
+
+
 	SPDSubsetSPDFile::~SPDSubsetSPDFile()
 	{
 		

@@ -1,3 +1,26 @@
+/*
+ *  recarray.cpp
+ *  SPDLIB
+ *
+ *  Created by Sam Gillingham on 22/01/2014.
+ *  Copyright 2013 SPDLib. All rights reserved.
+ *
+ *  This file is part of SPDLib.
+ *
+ *  SPDLib is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  SPDLib is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with SPDLib.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 
 #include "recarray.h"
 
@@ -14,12 +37,15 @@ PyMODINIT_FUNC recarray_init()
 RecArrayCreator::RecArrayCreator()
 {
     m_DTypeList = NULL;
+    m_pDescr = NULL;
 }
 
 RecArrayCreator::~RecArrayCreator()
 {
     // destroy our list
     Py_XDECREF(m_DTypeList);
+    // description
+    Py_XDECREF(m_pDescr);
 }
 
 // Adds a field to our list for creation of array
@@ -76,6 +102,10 @@ void RecArrayCreator::addField(const char *pszName, NPY_TYPES eType, int nLength
         case NPY_DOUBLE:
             cKind = 'f';
             nBytes = 8;
+            break;
+        case NPY_CHAR:
+            cKind = 'S';
+            nBytes = 1;
             break;
         default:
             throw RecArrayException("Data type not supported");
@@ -135,15 +165,19 @@ PyObject *RecArrayCreator::createArray(int nd, npy_intp *dims)
 {
     // Convert to a PyArray_Descr object
     // see http://stackoverflow.com/questions/214549/how-to-create-a-numpy-record-array-from-c
-    PyArray_Descr *pDescr;
-    if( !PyArray_DescrConverter(m_DTypeList, &pDescr) )
+    // this assumes once they call here they have finished adding fields...
+    if( m_pDescr == NULL )
     {
-        throw RecArrayException("Unable to convert array description");
+        if( !PyArray_DescrConverter(m_DTypeList, &m_pDescr) )
+        {
+            throw RecArrayException("Unable to convert array description");
+        }
     }
 
     // create a 1-d array with this descr
     // steals ref to descr
-    PyObject *pArray = PyArray_SimpleNewFromDescr(nd, dims, pDescr);
+    Py_INCREF(m_pDescr); // need to give away ref
+    PyObject *pArray = PyArray_SimpleNewFromDescr(nd, dims, m_pDescr);
     if( pArray == NULL )
     {
         throw RecArrayException("Unable to create array");

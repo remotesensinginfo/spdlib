@@ -302,6 +302,21 @@ namespace spdlib
             {
                 if(boost::math::isnan(surfaceGrid->data[i][j]))
                 {
+					// if we fall below min density and we are working with only points of a certain class
+					// then un-classify all the points
+					if(this->classParameters != SPD_ALL_CLASSES) {
+						for(iterPulses = pulses[i][j]->begin(); iterPulses != pulses[i][j]->end(); ++iterPulses)
+						{
+							// for each point in the pulse
+							for(iterPoints = (*iterPulses)->pts->begin(); iterPoints != (*iterPulses)->pts->end(); ++iterPoints)
+							{
+								 if((*iterPoints)->classification == this->classParameters) {
+									 (*iterPoints)->classification = SPD_CREATED;
+								 }
+							}
+						}
+					}
+								 
                     continue;
                 }
                 
@@ -314,12 +329,16 @@ namespace spdlib
                     // for each point in the pulse
                     for(iterPoints = (*iterPulses)->pts->begin(); iterPoints != (*iterPulses)->pts->end(); ++iterPoints)
                     {
-                        // if residual is within threshold then classify it as ground
-                        res = (*iterPoints)->z - surfaceGrid->data[i][j];
-                        if(fabs(res) < grdPtDev && !boost::math::isnan(median) && !boost::math::isnan(stdDev) && res < median+(classDevThresh*stdDev) && res > median-(classDevThresh*stdDev))
-                        {
-                            (*iterPoints)->classification = SPD_GROUND;
-                        }
+						if(this->classParameters == SPD_ALL_CLASSES || (*iterPoints)->classification == this->classParameters) {
+							// if residual is within threshold then classify it as ground
+							res = (*iterPoints)->z - surfaceGrid->data[i][j];
+							if(fabs(res) < grdPtDev && !boost::math::isnan(median) && !boost::math::isnan(stdDev) && res < median+(classDevThresh*stdDev) && res > median-(classDevThresh*stdDev))
+							{
+								(*iterPoints)->classification = SPD_GROUND;
+							} else {
+								(*iterPoints)->classification = SPD_CREATED;
+							}
+						}
                     }         
                 }
             }
@@ -396,7 +415,7 @@ namespace spdlib
                                 }
 								else
                                 {
-                                    if((*iterPoints)->classification == classParameters)
+                                    if((*iterPoints)->classification == this->classParameters)
                                     {
                                         if(firstPts)
                                         {
@@ -993,9 +1012,13 @@ namespace spdlib
             {
                 for(iterPoints = (*iterPulses)->pts->begin(); iterPoints != (*iterPulses)->pts->end(); ++iterPoints)
                 {
-                    if(fabs((*iterPoints)->z - dtmHeight) < 0.3f) {
-                        gridPointResiduals.push_back((*iterPoints)->z - dtmHeight);
-                    }
+					if(this->classParameters == SPD_ALL_CLASSES || (*iterPoints)->classification == this->classParameters) 
+					{
+						if(fabs((*iterPoints)->z - dtmHeight) < 0.3f) 
+						{
+							gridPointResiduals.push_back((*iterPoints)->z - dtmHeight);
+						}
+					}
                 }
             }
             
@@ -1027,9 +1050,9 @@ namespace spdlib
         std::vector<float>::iterator iterPoints;
         for(iterPoints = allPoints->begin(); iterPoints != allPoints->end(); ++iterPoints)
         {
-            if((*iterPoints) > median-(3*stdDev) && (*iterPoints) < median+(3*stdDev)) {
-                filteredPoints->push_back(*iterPoints);
-            }
+			if((*iterPoints) > median-(3*stdDev) && (*iterPoints) < median+(3*stdDev)) {
+				filteredPoints->push_back(*iterPoints);
+			}
         }
         
         // if they are the same size, we are done, otherwise keep filtering

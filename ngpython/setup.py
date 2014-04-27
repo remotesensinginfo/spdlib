@@ -33,17 +33,17 @@ def getFlags():
 extraincludes = getFlags()
 
 # create our extension
-extkwargs = {'name':"spdpy2", 
-                'sources':["spdpy2module.cpp", "pyspdfile.cpp", "recarray.cpp", "pulsearray.cpp", "pointarray.cpp"],
-                'library_dirs':[os.path.join('..', 'src')],
-                'libraries':['spdio'],
-                'include_dirs':[os.path.join("..","include")] + extraincludes}
-
-spdpy2module = Extension(**extkwargs)
+spdpy2module = Extension(name="spdpy2._spdpy2", 
+                sources=["src/spdpy2module.cpp", "src/pyspdfile.cpp", "src/recarray.cpp", 
+                            "src/pulsearray.cpp", "src/pointarray.cpp"],
+                library_dirs=[os.path.join('..', 'src')],
+                libraries=['spdio', 'spd'],
+                include_dirs=[os.path.join("..","include")] + extraincludes)
 
 setup(name="spdpy2",
         version="0.1",
         ext_modules=[spdpy2module],
-        description="blah",
+        description="Python Bindings for SPDLib using structred numpy arrays",
+        packages=['spdpy2'],
         author="Sam Gillingham",
         author_email="gillingham.sam@gmail.com")
