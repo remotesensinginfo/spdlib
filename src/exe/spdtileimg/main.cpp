@@ -374,8 +374,8 @@ int main (int argc, char * const argv[])
             spdlib::SPDTextFileUtilities txtUtils;
             std::string wktStr = txtUtils.readFileToString(wktFileArg.getValue());
             
-            boost::uint_fast32_t xImgSize = xTileSize + overlap;
-            boost::uint_fast32_t yImgSize = yTileSize + overlap;
+            boost::uint_fast32_t xImgSize = xTileSize + (overlap * 2);
+            boost::uint_fast32_t yImgSize = yTileSize + (overlap * 2);
             
             std::cout << "Create blank image\n";
             GDALDataset *outDataset = tileUtils.createNewImageFile(outputFileArg.getValue(), formatArg.getValue(), GDT_Float32, wktStr, xRes, yRes, xMin, yMax, xImgSize, yImgSize, numOfImgBands, backgrdValArg.getValue());

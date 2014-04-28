@@ -140,6 +140,22 @@ namespace spdlib{
 		
 		return line.substr(firstChar, lastChar-firstChar);
 	}
+    
+    std::string SPDTextFileUtilities::removeChar(std::string line, char val)
+    {
+        std::string word = "";
+        unsigned int lineLength = line.length();
+        
+        for(unsigned int i = 0; i < lineLength; i++)
+		{
+			if((line.at(i) != val))
+			{
+				word = word + line.at(i);
+			}
+		}
+        //std::cout << "Removed " << val << " = " << word << std::endl;
+        return word;
+    }
 	
 	void SPDTextFileUtilities::tokenizeString(std::string line, char token, std::vector<std::string> *tokens, bool ignoreDuplicateTokens)
 	{

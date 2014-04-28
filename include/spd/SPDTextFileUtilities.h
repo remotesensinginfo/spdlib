@@ -49,6 +49,7 @@ namespace spdlib{
 		bool lineStart(std::string line, char token);
 		bool blankline(std::string line);
 		std::string removeWhiteSpace(std::string line);
+        std::string removeChar(std::string line, char val);
 		void tokenizeString(std::string line, char token, std::vector<std::string> *tokens, bool ignoreDuplicateTokens=true);
 		std::string readFileToString(std::string input) throw(SPDIOException);
         std::vector<std::string> readFileLinesToVector(std::string input) throw(SPDIOException);

@@ -43,6 +43,7 @@
 #include "spd/SPDDecomposedCOOFileImporter.h"
 #include "spd/SPDASCIIMultiLineReader.h"
 #include "spd/SPDImportSALCAData2SPD.h"
+#include "spd/SPDOptechFullWaveformImport.h"
 
 #include "spd/SPDFileWriter.h"
 #include "spd/SPDGeneralASCIIFileWriter.h"
