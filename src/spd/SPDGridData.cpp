@@ -39,7 +39,7 @@ namespace spdlib
 		{
 			if(pls->size() < 1)
 			{
-				throw SPDProcessingException("Inputted point list does not contain any points.");
+				throw SPDProcessingException("Inputted pulses list does not contain any pulses.");
 			}
 			
 			if(spdFile->getIndexType() == SPD_CARTESIAN_IDX)
@@ -79,7 +79,7 @@ namespace spdlib
 		{
 			if(pls->size() < 1)
 			{
-				throw SPDProcessingException("Inputted point list does not contain any points.");
+				throw SPDProcessingException("Inputted pulses list does not contain any pulses.");
 			}
 			
 			if(spdFile->getIndexType() == SPD_CARTESIAN_IDX)

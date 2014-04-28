@@ -60,6 +60,7 @@ int main (int argc, char * const argv[])
 		allowedInFormats.push_back("DECOMPOSED_COO");
         allowedInFormats.push_back("ASCIIMULTILINE");
         allowedInFormats.push_back("SALCA");
+        allowedInFormats.push_back("OPTECH_WFASCII");
 		TCLAP::ValuesConstraint<std::string> allowedInFormatsVals( allowedInFormats );
 		
 		TCLAP::ValueArg<std::string> inFormatArg("","if","Format of the input file (Default SPD)",true,"SPD", &allowedInFormatsVals);

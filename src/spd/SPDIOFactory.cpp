@@ -125,6 +125,7 @@ namespace spdlib
 		this->importers->push_back(new SPDDecomposedCOOFileImporter());
         this->importers->push_back(new SPDASCIIMultiLineReader());
         this->importers->push_back(new SPDSALCADataBinaryImporter());
+        this->importers->push_back(new SPDOptechFullWaveformASCIIImport());
 				
 		this->exporters->push_back(new SPDSeqFileWriter());
         this->exporters->push_back(new SPDNonSeqFileWriter());
