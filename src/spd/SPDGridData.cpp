@@ -218,6 +218,82 @@ namespace spdlib
 		}
     }
     
+    void SPDGridData::cartGridDataIgnoringOutGrid(std::vector<SPDPulse*>* pls, std::vector<SPDPulse*>*** grid, OGREnvelope *env, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, float binsize) throw(SPDProcessingException)
+    {
+        if((xSize < 1) | (ySize < 1))
+		{
+			throw SPDProcessingException("There insufficent number of bins for binning (try reducing resolution).");
+		}
+        
+        try
+		{
+			double xDiff = 0;
+			double yDiff = 0;
+			boost::uint_fast32_t xIdx = 0;
+			boost::uint_fast32_t yIdx = 0;
+			
+            std::cout << "Started (Grid " << pls->size() << " Pulses) ." << std::flush;
+            
+			boost::uint_fast32_t feedback = pls->size()/10;
+			boost::uint_fast32_t feedbackCounter = 0;
+			
+            bool ignorePls = false;
+            boost::uint_fast64_t i = 0;
+			for(std::vector<SPDPulse*>::iterator iterPls = pls->begin(); iterPls != pls->end(); ++iterPls)
+            {
+				if((pls->size() > 10) && (i % feedback == 0))
+				{
+					std::cout << "." << feedbackCounter << "." << std::flush;
+					feedbackCounter += 10;
+				}
+				
+                ignorePls = false;
+				xDiff = ((*iterPls)->xIdx - env->MinX)/binsize;
+				yDiff = (env->MaxY - (*iterPls)->yIdx)/binsize;
+                
+				try
+				{
+					xIdx = boost::numeric_cast<boost::uint_fast32_t>(xDiff);
+					yIdx = boost::numeric_cast<boost::uint_fast32_t>(yDiff);
+				}
+				catch(boost::numeric::negative_overflow& e)
+				{
+                    ignorePls = true;
+				}
+				catch(boost::numeric::positive_overflow& e)
+				{
+                    ignorePls = true;
+				}
+				catch(boost::numeric::bad_numeric_cast& e)
+				{
+                    ignorePls = true;
+				}
+				
+                //std::cout << "Index [" << xIdx << "," << yIdx << "]\n";
+                
+				if((xIdx > ((xSize)-1)) | (yIdx > ((ySize)-1)))
+				{
+					ignorePls = true;
+				}
+                
+                if(!ignorePls)
+                {
+                    //std::cout << "pushing back to the grid\n";
+                    grid[yIdx][xIdx]->push_back((*iterPls));
+                    //std::cout << "added to grid\n";
+                }
+                
+                ++i;
+			}
+			
+			std::cout << " Complete.\n";
+		}
+		catch (SPDProcessingException &e)
+		{
+            std::cout << e.what() << std::endl;
+			throw e;
+		}
+    }
     
 	/* Private functions */
 	
