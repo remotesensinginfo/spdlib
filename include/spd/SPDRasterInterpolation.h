@@ -37,6 +37,9 @@
 #include "spd/SPDProcessingException.h"
 #include "spd/SPDDataBlockProcessor.h"
 #include "spd/SPDPointInterpolation.h"
+#include "spd/SPDGridData.h"
+
+#include "ogr_api.h"
 
 #include "boost/math/special_functions/fpclassify.hpp"
 
@@ -53,8 +56,7 @@ namespace spdlib
         void processDataBlock(SPDFile *inSPDFile, std::vector<SPDPulse*> ***pulses, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, float binSize) throw(SPDProcessingException)
         {throw SPDProcessingException("SPDDTMInterpolation only produces an image output.");};
         
-        void processDataBlockImage(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses, float ***imageDataBlock, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast32_t numImgBands) throw(SPDProcessingException)
-		{throw SPDProcessingException("SPDDTMInterpolation requires processing with a grid.");};
+        void processDataBlockImage(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses, float ***imageDataBlock, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast32_t numImgBands) throw(SPDProcessingException);
         
         void processDataBlock(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses) throw(SPDProcessingException)
         {throw SPDProcessingException("SPDDTMInterpolation requires processing with a grid.");};
@@ -86,11 +88,10 @@ namespace spdlib
         void processDataBlock(SPDFile *inSPDFile, std::vector<SPDPulse*> ***pulses, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, float binSize) throw(SPDProcessingException)
         {throw SPDProcessingException("SPDDSMInterpolation only produces an image output.");};
         
-        void processDataBlockImage(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses, float ***imageDataBlock, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast32_t numImgBands) throw(SPDProcessingException)
-		{throw SPDProcessingException("SPDDSMInterpolation requires processing with a grid.");};
+        void processDataBlockImage(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses, float ***imageDataBlock, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast32_t numImgBands) throw(SPDProcessingException);
         
         void processDataBlock(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses) throw(SPDProcessingException)
-        {throw SPDProcessingException("SPDDSMInterpolation requires processing with a grid.");};
+        {throw SPDProcessingException("SPDDSMInterpolation only produces an image output.");};
         
         std::vector<std::string> getImageBandDescriptions() throw(SPDProcessingException)
         {
@@ -118,13 +119,12 @@ namespace spdlib
         void processDataBlockImage(SPDFile *inSPDFile, std::vector<SPDPulse*> ***pulses, float ***imageDataBlock, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast32_t numImgBands, float binSize) throw(SPDProcessingException);
 		
         void processDataBlock(SPDFile *inSPDFile, std::vector<SPDPulse*> ***pulses, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, float binSize) throw(SPDProcessingException)
-        {throw SPDProcessingException("SPDDSMInterpolation only produces an image output.");};
+        {throw SPDProcessingException("SPDCHMInterpolation only produces an image output.");};
         
-        void processDataBlockImage(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses, float ***imageDataBlock, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast32_t numImgBands) throw(SPDProcessingException)
-		{throw SPDProcessingException("SPDDSMInterpolation requires processing with a grid.");};
+        void processDataBlockImage(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses, float ***imageDataBlock, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast32_t numImgBands) throw(SPDProcessingException);
         
         void processDataBlock(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses) throw(SPDProcessingException)
-        {throw SPDProcessingException("SPDDSMInterpolation requires processing with a grid.");};
+        {throw SPDProcessingException("SPDCHMInterpolation only produces an image output.");};
         
         std::vector<std::string> getImageBandDescriptions() throw(SPDProcessingException)
         {

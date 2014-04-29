@@ -51,6 +51,9 @@ namespace spdlib
         void gridData(std::list<SPDPulse*>* pls, SPDFile *spdFile, std::list<SPDPulse*>*** grid, OGREnvelope *env, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, float binsize) throw(SPDProcessingException);
         void gridData(std::vector<SPDPulse*>* pls, SPDFile *spdFile, std::list<SPDPulse*>*** grid, OGREnvelope *env, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, float binsize) throw(SPDProcessingException);
 		void reGridData(boost::uint_fast16_t indexType, std::vector<SPDPulse*> ***inGridPls, boost::uint_fast32_t inXSize, boost::uint_fast32_t inYSize, std::vector<SPDPulse*> ***outGridPls, boost::uint_fast32_t outXSize, boost::uint_fast32_t outYSize, double originX, double originY, float outBinSize) throw(SPDProcessingException);
+        
+        void cartGridDataIgnoringOutGrid(std::vector<SPDPulse*>* pls, std::vector<SPDPulse*>*** grid, OGREnvelope *env, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, float binsize) throw(SPDProcessingException);
+        
         ~SPDGridData();
 	private:
 		std::list<SPDPulse*>*** gridDataCartesian(std::list<SPDPulse*>* pls, SPDFile *spdFile) throw(SPDProcessingException);

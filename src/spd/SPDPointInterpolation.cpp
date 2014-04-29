@@ -348,6 +348,7 @@ namespace spdlib
         SPDPoint *pt = NULL;
 		for(iterPulses = pulses->begin(); iterPulses != pulses->end(); ++iterPulses)
 		{
+            //std::cout << "Pulse " << (*iterPulses)->pulseID << std::endl;
 			if((*iterPulses)->numberOfReturns > 0)
 			{
 				if(ptClass == SPD_VEGETATION_TOP)
@@ -362,7 +363,7 @@ namespace spdlib
                 }
                 else if(ptClass == SPD_ALL_CLASSES_TOP)
                 {
-                    points->push_back((*iterPulses)->pts->front());
+                    points->push_back((*iterPulses)->pts->at(0));
                 }
                 else
                 {

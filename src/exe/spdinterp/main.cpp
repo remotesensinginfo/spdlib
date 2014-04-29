@@ -28,6 +28,8 @@
 
 #include <spd/tclap/CmdLine.h>
 
+#include "gdal_priv.h"
+
 #include "spd/SPDException.h"
 #include "spd/SPDFile.h"
 
@@ -148,13 +150,37 @@ int main (int argc, char * const argv[])
 		TCLAP::ValueArg<std::string> inputFileArg("i","input","The input SPD file.",true,"","String");
 		cmd.add( inputFileArg );
         
-        TCLAP::ValueArg<std::string> outputFileArg("o","output","The output SPD file.",true,"","String");
+        TCLAP::ValueArg<std::string> outputFileArg("o","output","The output image file.",false,"","String");
 		cmd.add( outputFileArg );
+        
+        TCLAP::ValueArg<std::string> outputImageFileArg("","outimg","The output pre-exiting image file.",false,"","String");
+		cmd.add( outputImageFileArg );
         
 		cmd.parse( argc, argv );
 		
+        if(!outputFileArg.isSet() & !outputImageFileArg.isSet())
+        {
+            throw spdlib::SPDException("Either an output image path or pre-existing output image need to be provided.");
+        }
+        else if(outputFileArg.isSet() & outputImageFileArg.isSet())
+        {
+            throw spdlib::SPDException("Either an output image path or pre-existing output image need to be provided - i.e., not both!");
+        }
+        
 		std::string inSPDFilePath = inputFileArg.getValue();
-        std::string outFilePath = outputFileArg.getValue();
+        std::string outFilePath = "";
+        std::string outImgFilePath = "";
+        bool usePreExistingImg = false;
+        
+        if(outputFileArg.isSet())
+        {
+            outFilePath = outputFileArg.getValue();
+        }
+        else if(outputImageFileArg.isSet())
+        {
+            outImgFilePath = outputImageFileArg.getValue();
+            usePreExistingImg = true;
+        }
         
         std::string interpolatorStr = interpolatorsArg.getValue();
         
@@ -264,7 +290,24 @@ int main (int argc, char * const argv[])
         
         spdlib::SPDFile *spdInFile = new spdlib::SPDFile(inSPDFilePath);
         spdlib::SPDProcessDataBlocks processBlocks = spdlib::SPDProcessDataBlocks(blockProcessor, overlapArg.getValue(), numOfColsBlockArg.getValue(), numOfRowsBlockArg.getValue(), true);
-        processBlocks.processDataBlocksGridPulsesOutputImage(spdInFile, outFilePath, binSizeArg.getValue(), 1, imgFormatArg.getValue());
+        
+        if(usePreExistingImg)
+        {
+            GDALAllRegister();
+            GDALDataset *outImgDataset = (GDALDataset *) GDALOpen(outImgFilePath.c_str(), GA_Update);
+            if(outImgDataset == NULL)
+            {
+                std::string message = std::string("Could not open image ") + outImgFilePath;
+                throw spdlib::SPDException(message.c_str());
+            }
+            
+            processBlocks.processDataBlocksGridPulsesOutputImage(spdInFile, outImgDataset);
+            GDALClose(outImgDataset);
+        }
+        else
+        {
+            processBlocks.processDataBlocksGridPulsesOutputImage(spdInFile, outFilePath, binSizeArg.getValue(), 1, imgFormatArg.getValue());
+        }
         
         delete spdInFile;
         delete blockProcessor;
