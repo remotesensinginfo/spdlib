@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+	Description:
+		XML File for execution within SPDLib
+		This file contains a template for the
+		metrics XML interface.
+		
+	Created by Pete Bunting on Thu Mar 17 16:33:36 2011.
+	Copyright (c) 2011 Pete Bunting. All rights reserved.
+-->
+
+<spdlib:metrics xmlns:spdlib="http://www.spdlib.org/xml/">
+	<spdlib:metric metric="meanamplitude" field="MeanIntensity" />
+</spdlib:metrics>
+

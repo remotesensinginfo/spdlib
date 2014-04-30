@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+	Description:
+		XML File for execution within SPDLib
+		This file contains a template for the
+		metrics XML interface.
+		
+	Created by Pete Bunting on Thu Mar 17 16:33:36 2011.
+	Copyright (c) 2011 Pete Bunting. All rights reserved.
+-->
+
+<spdlib:metrics xmlns:spdlib="http://www.spdlib.org/xml/">
+    
+    <spdlib:metric metric="divide" field="GapFraction" >
+        <spdlib:metric metric="numreturnsheight" field="Out_Name" return="First" class="Grd" />
+        <spdlib:metric metric="numreturnsheight" field="Out_Name" return="All" class="All"  />
+    </spdlib:metric>
+    
+</spdlib:metrics>
