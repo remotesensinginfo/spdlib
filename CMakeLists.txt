@@ -342,13 +342,15 @@ if (SPDLIB_WITH_UTILITIES)
 	target_link_libraries (spdtiling ${SPDLIB_MITLIB_NAME} ${SPDLIB_LIB_NAME} )
 	add_executable(spdgrdtidy ${PROJECT_SOURCE_DIR}/exe/spdgrdtidy/main.cpp)
 	target_link_libraries (spdgrdtidy ${SPDLIB_MITLIB_NAME} ${SPDLIB_LIB_NAME} )
+	add_executable(spdclassify ${PROJECT_SOURCE_DIR}/exe/spdclassify/main.cpp)
+	target_link_libraries (spdclassify ${SPDLIB_MITLIB_NAME} ${SPDLIB_LIB_NAME} )
 endif(SPDLIB_WITH_UTILITIES)
 ###############################################################################
 
 ###############################################################################
 # Installation
 if (SPDLIB_WITH_UTILITIES)
-	install (TARGETS spdtranslate spdversion spdcopy spdstats spdmaskgen spdpmfgrd spdmccgrd spdpolygrd spdinterp spddefheight spddecomp spdlastest spdmetrics spdmerge spdsubset spdoverlap spddefrgb spdelevation spdproj spdrmnoise spdclearclass spdpffgrd spdinfo spdthin spdextract spdwarp spdprofile spddeftiles spdtileimg spdtiling spdgrdtidy DESTINATION bin PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE)
+	install (TARGETS spdtranslate spdversion spdcopy spdstats spdmaskgen spdpmfgrd spdmccgrd spdpolygrd spdinterp spddefheight spddecomp spdlastest spdmetrics spdmerge spdsubset spdoverlap spddefrgb spdelevation spdproj spdrmnoise spdclearclass spdpffgrd spdinfo spdthin spdextract spdwarp spdprofile spddeftiles spdtileimg spdtiling spdgrdtidy spdclassify DESTINATION bin PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE)
 endif(SPDLIB_WITH_UTILITIES)
 
 install (FILES "${PROJECT_BINARY_DIR}/spd-config" DESTINATION bin PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE)
