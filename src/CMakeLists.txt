@@ -101,6 +101,7 @@ set(SPDLIB_H_Processing_Interfaces
 set(SPDLIB_H_Processing_Algorithms
 	${SPDLIB_HEADERS_DIR}/SPDApplyElevationChange.h
 	${SPDLIB_HEADERS_DIR}/SPDCalcMetrics.h
+	${SPDLIB_HEADERS_DIR}/SPDClassifyPts.h
 	${SPDLIB_HEADERS_DIR}/SPDCopyRemovingClassificationProcessor.h
 	${SPDLIB_HEADERS_DIR}/SPDCreateVerticalProfiles.h
 	${SPDLIB_HEADERS_DIR}/SPDDecomposeWaveforms.h
@@ -201,6 +202,7 @@ set(SPDLIB_CPP_Processing_Interfaces
 set(SPDLIB_CPP_Processing_Algorithms
 	${SPDLIB_SRC_DIR}/SPDApplyElevationChange.cpp
 	${SPDLIB_SRC_DIR}/SPDCalcMetrics.cpp
+	${SPDLIB_SRC_DIR}/SPDClassifyPts.cpp
 	${SPDLIB_SRC_DIR}/SPDCopyRemovingClassificationProcessor.cpp
 	${SPDLIB_SRC_DIR}/SPDCreateVerticalProfiles.cpp
 	${SPDLIB_SRC_DIR}/SPDDecomposeWaveforms.cpp
