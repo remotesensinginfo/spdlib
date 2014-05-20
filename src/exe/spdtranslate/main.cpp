@@ -54,6 +54,7 @@ int main (int argc, char * const argv[])
         allowedInFormats.push_back("ASCII");
 		allowedInFormats.push_back("FWF_DAT");
 		allowedInFormats.push_back("DECOMPOSED_DAT");
+        allowedInFormats.push_back("ARA_DECOMPOSED_DAT");
 		allowedInFormats.push_back("LAS");
         allowedInFormats.push_back("LASNP");
         allowedInFormats.push_back("LASSTRICT");

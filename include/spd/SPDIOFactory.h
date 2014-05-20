@@ -39,6 +39,7 @@
 #include "spd/SPDLineParserASCII.h"
 #include "spd/SPDFullWaveformDatFileImporter.h"
 #include "spd/SPDDecomposedDatFileImporter.h"
+#include "spd/SPDARADecomposedDatFileImporter.h"
 #include "spd/SPDLASFileImporter.h"
 #include "spd/SPDDecomposedCOOFileImporter.h"
 #include "spd/SPDASCIIMultiLineReader.h"
