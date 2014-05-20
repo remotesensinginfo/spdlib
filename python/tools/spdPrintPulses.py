@@ -1,4 +1,4 @@
-#! /usr/bin/env python
+#!/usr/bin/env python
 
 ############################################################################
 # Copyright (c) 2011 Dr. Peter Bunting, Aberystwyth University
@@ -47,8 +47,9 @@ class SPDPrintPulses (object):
         print("Pulse GPS Time: " + str(pulse.gpsTime))
         print("Pulse Index [x,y]: [" + str(pulse.xIdx) + "," + str(pulse.yIdx) + "]")
         print("Pulse Origin [x,y,z,h]: [" + str(pulse.x0) + "," + str(pulse.y0) + "," + str(pulse.z0) + "," + str(pulse.h0) + "]")
-        print("Pulse Azimuth: " + str(math.degrees(pulse.azimuth)))
-        print("Pulse Zenith: " + str(math.degrees(pulse.zenith)))
+        print("Pulse Azimuth: " + str(pulse.azimuth))
+        print("Pulse Zenith: " + str(pulse.zenith))
+        print("Pulse Source ID: " + str(pulse.sourceID))
         print("Pulse Noise Transmitted Thres: " + str(pulse.transWaveNoiseThres))
         print("Pulse Noise Received Thres: " + str(pulse.receiveWaveNoiseThreshold))
         print("Pulse Num. Transmitted Bins: " + str(pulse.numOfTransmittedBins))
@@ -60,17 +61,17 @@ class SPDPrintPulses (object):
         if pulse.numOfTransmittedBins > 0:
             print("Transmitted bins: ")
             for val in pulse.transmitted:
-                print(str((val*pulse.transWaveGain)+pulse.transWaveOffset) + ",", end="")
+                print(str((val*pulse.transWaveGain)+pulse.transWaveOffset) + ",")
             print("")
         if pulse.numOfReceivedBins > 0:
             print("Received bins: ")
             for val in pulse.received:
-                print(str((val*pulse.receiveWaveGain)+pulse.receiveWaveOffset) + ",", end="")
+                print(str((val*pulse.receiveWaveGain)+pulse.receiveWaveOffset) + ",")
             print("")
         print("Pulse Num Points: " + str(pulse.numberOfReturns))
         if pulse.numberOfReturns > 0:
             for pt in pulse.pts:
-                print("Return ID: ", str(pt.returnID))
+                print("Return ID: " + str(pt.returnID))
                 print("[x,y,z,h]: [" + str(pt.x) + "," + str(pt.y) + "," + str(pt.z) + "," + str(pt.height) + "]")
                 print("Amplitude: " + str(pt.amplitudeReturn))
                 print("Width: " + str(pt.widthReturn))
