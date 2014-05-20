@@ -114,7 +114,7 @@ int main (int argc, char * const argv[])
         TCLAP::SwitchArg keepExtentSwitch("","keepextent","When indexing the file use the extent of the input file as the minimum extent of the output file.", false);
 		cmd.add( keepExtentSwitch );
         
-        TCLAP::ValueArg<std::string> outputFileArg("o","output","The output SPD file.",true,"","String");
+        TCLAP::ValueArg<std::string> outputFileArg("o","output","The output SPD file.",true,"","std::string");
 		cmd.add( outputFileArg );
 
 		TCLAP::UnlabeledMultiArg<std::string> multiFileNames("Files", "The list of input files", true, "std::string");
