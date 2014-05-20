@@ -76,6 +76,7 @@ set(SPDLIB_H_IO
 	${SPDLIB_HEADERS_DIR}/SPDASCIIMultiLineReader.h
 	${SPDLIB_HEADERS_DIR}/SPDDecomposedCOOFileImporter.h
 	${SPDLIB_HEADERS_DIR}/SPDDecomposedDatFileImporter.h
+    ${SPDLIB_HEADERS_DIR}/SPDARADecomposedDatFileImporter.h
 	${SPDLIB_HEADERS_DIR}/SPDExportAsReadUnGridded.h
 	${SPDLIB_HEADERS_DIR}/SPDExportAsTiles.h
 	${SPDLIB_HEADERS_DIR}/SPDFullWaveformDatFileImporter.h
@@ -177,6 +178,7 @@ set(SPDLIB_CPP_IO
 	${SPDLIB_SRC_DIR}/SPDASCIIMultiLineReader.cpp
 	${SPDLIB_SRC_DIR}/SPDDecomposedCOOFileImporter.cpp
 	${SPDLIB_SRC_DIR}/SPDDecomposedDatFileImporter.cpp
+    ${SPDLIB_SRC_DIR}/SPDARADecomposedDatFileImporter.cpp
 	${SPDLIB_SRC_DIR}/SPDExportAsReadUnGridded.cpp
 	${SPDLIB_SRC_DIR}/SPDExportAsTiles.cpp
 	${SPDLIB_SRC_DIR}/SPDFullWaveformDatFileImporter.cpp
@@ -220,6 +222,7 @@ set(SPDLIB_CPP_Processing_Algorithms
 	${SPDLIB_SRC_DIR}/SPDRasterInterpolation.cpp 
 	${SPDLIB_SRC_DIR}/SPDRemoveVerticalNoise.cpp
 	${SPDLIB_SRC_DIR}/SPDSampleInTime.cpp
+    ${SPDLIB_SRC_DIR}/SPDSplit.cpp
 	${SPDLIB_SRC_DIR}/SPDThinPulses.cpp
 	${SPDLIB_SRC_DIR}/SPDWarpData.cpp
 	${SPDLIB_SRC_DIR}/SPDTidyGroundReturn.cpp )
