@@ -50,7 +50,7 @@ class ApplierControls(object):
                                     to apply (None if this is None). 
     """
     def __init__(self):
-        self.overlap = 1
+        self.overlap = 0
         self.blockXSize = 10
         self.blockYSize = 10
         self.printProgress = True
