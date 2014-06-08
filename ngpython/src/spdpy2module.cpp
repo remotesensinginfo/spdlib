@@ -602,7 +602,7 @@ spdpy2_blockProcessor(PyObject *self, PyObject *args)
         Py_XDECREF(pVal);
         return NULL;
     }
-    float processingResolution = PyFloat_AS_DOUBLE(pVal);
+    float processingResolution = PyFloat_AsDouble(pVal);    
     Py_DECREF(pVal);
 
     pVal = PyObject_GetAttrString(pControls, "numImgBands");
