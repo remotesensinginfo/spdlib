@@ -55,6 +55,8 @@ namespace spdlib
 		double azimuthMax = 0;
 		double zenithMin = 0;
 		double zenithMax = 0;
+		double rangeMin = 0;
+		double rangeMax = 0;               
 		bool first = true;
 		bool firstZ = true;
         double azimuth = 0;
@@ -93,7 +95,10 @@ namespace spdlib
 					std::cout << "." << numPulses << "." << std::flush;
 				}
 				
-				pointLine = lineReader.readLine();
+				if(!incompletePulse)
+				{
+				    pointLine = lineReader.readLine();
+				}
 				
 				if(!textFileUtils.blankline(pointLine))
 				{
@@ -127,7 +132,8 @@ namespace spdlib
                     {
                         pulse->azimuth = azimuth;
                     }
-					
+                    
+                    // Create point
 					point = this->createSPDPoint(pointLine, pulse);
 					
 					if(point != NULL)
@@ -161,6 +167,14 @@ namespace spdlib
 									//std::cout << pointLine << "; " << i << "\n";
 									
 									point = this->createSPDPoint(pointLine, pulse);
+									
+								    if((i+2) != point->returnID)
+								    {
+								        //std::cout << pointLine << "; " << i << "\n";
+								        incompletePulse = true;
+								        break;
+								    }
+									
 									if(point != NULL)
 									{
 										if(firstZ)
@@ -182,12 +196,13 @@ namespace spdlib
 										}
 										pulse->pts->push_back(point);
 									}
-									else
+									else 
 									{
 										std::cout << "\'" << pointLine << "\'\n";
 										std::cout << "Warning: Could not create a point from line.\n";
 										incompletePulse = true;
 									}
+
 								}
 								else 
 								{
@@ -251,6 +266,8 @@ namespace spdlib
 								azimuthMax = pulse->azimuth;
 								zenithMin = pulse->zenith;
 								zenithMax = pulse->zenith;
+								rangeMin = pulse->pts->front()->range;
+								rangeMax = pulse->pts->back()->range;
 								first = false;
 							}
 							else
@@ -290,8 +307,18 @@ namespace spdlib
 								{
 									zenithMax = pulse->zenith;
 								}
+								
+								if(pulse->pts->front()->range < rangeMin)
+								{
+									rangeMin = pulse->pts->front()->range;
+								}
+								else if(pulse->pts->back()->range > rangeMax)
+								{
+									rangeMax = pulse->pts->back()->range;
+								}
+								
 							}
-							
+                            							
 							totalNumPoints += pulse->numberOfReturns;
 							pulse->pulseID = numPulses++;
 							pulses->push_back(pulse);
@@ -322,6 +349,8 @@ namespace spdlib
 			}
 			spdFile->setBoundingVolume(xMin, xMax, yMin, yMax, zMin, zMax);
 			spdFile->setBoundingBoxSpherical(zenithMin, zenithMax, azimuthMin, azimuthMax);
+			spdFile->setRangeMin(rangeMin);
+			spdFile->setRangeMax(rangeMax);
 			if(convertCoords)
 			{
 				spdFile->setSpatialReference(outputProjWKT);
@@ -377,7 +406,7 @@ namespace spdlib
 		double zenithMin = 0;
 		double zenithMax = 0;
 		double rangeMin = 0;
-		double rangeMax = 0;		
+		double rangeMax = 0;		    
 		bool first = true;
 		bool firstZ = true;
         double azimuth = 0;
@@ -453,7 +482,8 @@ namespace spdlib
                     {
                         pulse->azimuth = azimuth;
                     }
-					
+                    
+                    // Create point					
 					point = this->createSPDPoint(pointLine, pulse);
 					
 					if(point != NULL)
@@ -633,7 +663,7 @@ namespace spdlib
 								else if(pulse->pts->back()->range > rangeMax)
 								{
 									rangeMax = pulse->pts->back()->range;
-								}								
+								}
 								
 							}
 							
@@ -668,7 +698,7 @@ namespace spdlib
 			spdFile->setBoundingVolume(xMin, xMax, yMin, yMax, zMin, zMax);
 			spdFile->setBoundingBoxSpherical(zenithMin, zenithMax, azimuthMin, azimuthMax);
 			spdFile->setRangeMin(rangeMin);
-			spdFile->setRangeMax(rangeMax);
+			spdFile->setRangeMax(rangeMax);           
 			if(convertCoords)
 			{
 				spdFile->setSpatialReference(outputProjWKT);
@@ -723,6 +753,8 @@ namespace spdlib
 		double azimuthMax = 0;
 		double zenithMin = 0;
 		double zenithMax = 0;
+		double rangeMin = 0;
+		double rangeMax = 0;                       
 		bool first = true;
 		bool firstZ = true;
         double azimuth = 0;
@@ -760,7 +792,10 @@ namespace spdlib
 					std::cout << "." << numPulses << "." << std::flush;
 				}
 				
-				pointLine = lineReader.readLine();
+				if(!incompletePulse)
+				{
+				    pointLine = lineReader.readLine();
+				}
 				
 				if(!textFileUtils.blankline(pointLine))
 				{
@@ -795,6 +830,7 @@ namespace spdlib
                         pulse->azimuth = azimuth;
                     }
 					
+                    // Create point
 					point = this->createSPDPoint(pointLine, pulse);
 					
 					if(point != NULL)
@@ -816,6 +852,7 @@ namespace spdlib
 								zMax = point->z;
 							}
 						}
+
 						
 						pulse->pts->push_back(point);
 						for(boost::uint_fast16_t i = 0; i < (pulse->numberOfReturns-1); ++i)
@@ -828,6 +865,14 @@ namespace spdlib
 									//std::cout << pointLine << "; " << i << "\n";
 									
 									point = this->createSPDPoint(pointLine, pulse);
+									
+								    if((i+2) != point->returnID)
+								    {
+								        //std::cout << pointLine << "; " << i << "\n";
+								        incompletePulse = true;
+								        break;
+								    }
+									
 									if(point != NULL)
 									{
 										if(firstZ)
@@ -855,6 +900,7 @@ namespace spdlib
 										std::cout << "Warning: Could not create a point from line.\n";
 										incompletePulse = true;
 									}
+
 								}
 								else 
 								{
@@ -919,6 +965,8 @@ namespace spdlib
 								azimuthMax = pulse->azimuth;
 								zenithMin = pulse->zenith;
 								zenithMax = pulse->zenith;
+								rangeMin = pulse->pts->front()->range;
+								rangeMax = pulse->pts->back()->range;
 								first = false;
 							}
 							else
@@ -958,6 +1006,16 @@ namespace spdlib
 								{
 									zenithMax = pulse->zenith;
 								}
+								
+								if(pulse->pts->front()->range < rangeMin)
+								{
+									rangeMin = pulse->pts->front()->range;
+								}
+								else if(pulse->pts->back()->range > rangeMax)
+								{
+									rangeMax = pulse->pts->back()->range;
+								}
+								
 							}
 							
 							totalNumPoints += pulse->numberOfReturns;
@@ -990,6 +1048,8 @@ namespace spdlib
 			}
 			spdFile->setBoundingVolume(xMin, xMax, yMin, yMax, zMin, zMax);
 			spdFile->setBoundingBoxSpherical(zenithMin, zenithMax, azimuthMin, azimuthMax);
+			spdFile->setRangeMin(rangeMin);
+			spdFile->setRangeMax(rangeMax);
 			if(convertCoords)
 			{
 				spdFile->setSpatialReference(outputProjWKT);
