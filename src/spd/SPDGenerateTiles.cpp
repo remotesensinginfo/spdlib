@@ -1528,7 +1528,8 @@ namespace spdlib
             
             //std::cout << "Image Size: X = " << image->GetRasterXSize() << " Y = " << image->GetRasterYSize() << std::endl;
             
-            GDALRasterAttributeTable *gdalATT = new GDALRasterAttributeTable();
+            //GDALRasterAttributeTable *gdalATT = new GDALRasterAttributeTable();
+            GDALRasterAttributeTable *gdalATT = new GDALDefaultRasterAttributeTable();
             gdalATT->SetRowCount(tiles->size()+1);
             
             int xBlock = 0;
