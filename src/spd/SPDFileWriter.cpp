@@ -3335,7 +3335,7 @@ namespace spdlib
 			
             std::list<SPDPulse*>::iterator iterInPls;
             float qkVal = 0;
-            boost::uint_fast16_t numVals = 0;
+            //boost::uint_fast16_t numVals = 0;
             bool first = true;
             
             // Calculate the Quicklook value
@@ -3813,7 +3813,7 @@ namespace spdlib
 			
             std::vector<SPDPulse*>::iterator iterInPls;
             float qkVal = 0;
-            boost::uint_fast16_t numVals = 0;
+            //boost::uint_fast16_t numVals = 0;
             bool first = true;
             
             // Calculate the Quicklook value
@@ -3861,11 +3861,15 @@ namespace spdlib
                     {
                         for(boost::uint_fast32_t i = 0; i < (*iterInPls)->numOfReceivedBins; ++i)
                         {
-                            qkVal += (*iterInPls)->received[i];
-                            ++numVals;
+                            //qkVal += (*iterInPls)->received[i];
+                            //++numVals;
+                            if(qkVal < (*iterInPls)->received[i])
+                            {
+                                qkVal = (*iterInPls)->received[i];
+                            } 
                         }
                     }
-                    qkVal = qkVal/numVals;
+                    //qkVal = qkVal/numVals;
                 }
                 else
                 {
@@ -5099,7 +5103,7 @@ namespace spdlib
 			
             std::list<SPDPulse*>::iterator iterInPls;
             float qkVal = 0;
-            boost::uint_fast16_t numVals = 0;
+            //boost::uint_fast16_t numVals = 0;
             bool first = true;
             
             // Calculate the Quicklook value
@@ -5147,11 +5151,15 @@ namespace spdlib
                     {
                         for(boost::uint_fast32_t i = 0; i < (*iterInPls)->numOfReceivedBins; ++i)
                         {
-                            qkVal += (*iterInPls)->received[i];
-                            ++numVals;
+                            //qkVal += (*iterInPls)->received[i];
+                            //++numVals;
+                            if(qkVal < (*iterInPls)->received[i])
+                            {
+                                qkVal = (*iterInPls)->received[i];
+                            } 
                         }
                     }
-                    qkVal = qkVal/numVals;
+                    //qkVal = qkVal/numVals;
                 }
                 else
                 {
@@ -5520,7 +5528,7 @@ namespace spdlib
 			
             std::vector<SPDPulse*>::iterator iterInPls;
             float qkVal = 0;
-            boost::uint_fast16_t numVals = 0;
+            //boost::uint_fast16_t numVals = 0;
             bool first = true;
             
             // Calculate the Quicklook value
@@ -5568,11 +5576,15 @@ namespace spdlib
                     {
                         for(boost::uint_fast32_t i = 0; i < (*iterInPls)->numOfReceivedBins; ++i)
                         {
-                            qkVal += (*iterInPls)->received[i];
-                            ++numVals;
+                            //qkVal += (*iterInPls)->received[i];
+                            //++numVals;
+                            if(qkVal < (*iterInPls)->received[i])
+                            {
+                                qkVal = (*iterInPls)->received[i];
+                            } 
                         }
                     }
-                    qkVal = qkVal/numVals;
+                    //qkVal = qkVal/numVals;
                 }
                 else
                 {
