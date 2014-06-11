@@ -3385,9 +3385,9 @@ namespace spdlib
                         {
                             //qkVal += (*iterInPls)->received[i];
                             //++numVals;
-                            if(qkVal < (*iterPts)->received[i])
+                            if(qkVal < (*iterInPls)->received[i])
                             {
-                                qkVal = (*iterPts)->received[i];
+                                qkVal = (*iterInPls)->received[i];
                             }           
                             
                         }
