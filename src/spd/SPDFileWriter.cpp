@@ -3383,11 +3383,16 @@ namespace spdlib
                     {
                         for(boost::uint_fast32_t i = 0; i < (*iterInPls)->numOfReceivedBins; ++i)
                         {
-                            qkVal += (*iterInPls)->received[i];
-                            ++numVals;
+                            //qkVal += (*iterInPls)->received[i];
+                            //++numVals;
+                            if(qkVal < (*iterPts)->received[i])
+                            {
+                                qkVal = (*iterPts)->received[i];
+                            }           
+                            
                         }
                     }
-                    qkVal = qkVal/numVals;
+                    //qkVal = qkVal/numVals;
                 }
                 else
                 {
