@@ -92,6 +92,89 @@ namespace spdlib
         
     }
     
+    
+    
+    SPDTidyGroundReturnsPlaneFitting::SPDTidyGroundReturnsPlaneFitting() : SPDPulseProcessor()
+    {
+        
+    }
+    
+    void SPDTidyGroundReturnsPlaneFitting::processDataWindow(SPDFile *inSPDFile, bool **validBins, std::vector<SPDPulse*> ***pulses, SPDXYPoint ***cenPts, boost::uint_fast16_t winSize) throw(SPDProcessingException)
+    {
+        try
+        {
+            SPDMathsUtils mathUtils;
+            
+            boost::uint_fast16_t winHSize = (winSize-1)/2;
+            
+            std::vector<SPDPoint*> *grdPts = new std::vector<SPDPoint*>();
+            for(boost::uint_fast16_t i = 0; i < winSize; ++i)
+            {
+                for(boost::uint_fast16_t j = 0; j < winSize; ++j)
+                {
+                    if(validBins[i][j])
+                    {
+                        for(std::vector<SPDPulse*>::iterator iterPls = pulses[i][j]->begin(); iterPls != pulses[i][j]->end(); ++iterPls)
+                        {
+                            if((*iterPls)->numberOfReturns > 0)
+                            {
+                                for(std::vector<SPDPoint*>::iterator iterPts = (*iterPls)->pts->begin(); iterPts != (*iterPls)->pts->end(); ++iterPts)
+                                {
+                                    if((*iterPts)->classification == SPD_GROUND)
+                                    {
+                                        grdPts->push_back((*iterPts));
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            
+            boost::uint_fast32_t numGrdPts = grdPts->size();
+            if(numGrdPts > 3)
+            {
+                SPDMathsUtils mathUtils;
+                double *x = new double[numGrdPts];
+                double *y = new double[numGrdPts];
+                double *z = new double[numGrdPts];
+                
+                double normX = cenPts[winHSize][winHSize]->x;
+                double normY = cenPts[winHSize][winHSize]->y;
+                
+                double a = 0;
+                double b = 0;
+                double c = 0;
+                
+                for(boost::uint_fast32_t i = 0; i < numGrdPts; ++i)
+                {
+                    x[i] = grdPts->at(i)->x;
+                    y[i] = grdPts->at(i)->y;
+                    z[i] = grdPts->at(i)->z;
+                }
+                mathUtils.fitPlane(x, y, z, numGrdPts, normX, normY, &a, &b, &c);
+                std::cout << "Plane: a = " << a << " b = " << b << " c = " << c << std::endl;
+                mathUtils.devFromPlane(x, y, z, numGrdPts, normX, normY, a, b, c);
+                
+                std::cout << "WARNING: SPDTidyGroundReturnsPlaneFitting implementation is not COMPLETE!!!!!!!!\n";
+                
+                delete[] x;
+                delete[] y;
+                delete[] z;
+                
+            }
+        }
+        catch (SPDProcessingException &e)
+        {
+            throw e;
+        }
+    }
+    
+    SPDTidyGroundReturnsPlaneFitting::~SPDTidyGroundReturnsPlaneFitting()
+    {
+        
+    }
+    
 }
 
 
