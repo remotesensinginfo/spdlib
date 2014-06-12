@@ -34,6 +34,7 @@
 #include "spd/SPDTidyGroundReturn.h"
 #include "spd/SPDProcessDataBlocks.h"
 #include "spd/SPDDataBlockProcessor.h"
+#include "spd/SPDProcessPulses.h"
 
 #include "spd/spd-config.h"
 
@@ -64,6 +65,12 @@ int main (int argc, char * const argv[])
         
         TCLAP::ValueArg<boost::uint_fast32_t> numOfColsBlockArg("c","blockcols","Number of columns within a block (Default 0) - Note values greater than 1 result in a non-sequencial SPD file.",false,0,"unsigned int");
 		cmd.add( numOfColsBlockArg );
+        
+        TCLAP::ValueArg<float> binSizeArg("b","binsize","Bin size for processing and output image (Default 0) - Note 0 will use the native SPD file bin size.",false,0,"float");
+		cmd.add( binSizeArg );
+        
+        TCLAP::ValueArg<boost::uint_fast16_t> winHSizeArg("w","winhsize","Half the window size for the processing (Default 3) - Note 3 means a 7 x 7 filter window size (in units of the bin size).",false,3,"int");
+		cmd.add( winHSizeArg );
         
         TCLAP::ValueArg<std::string> inputFileArg("i","input","The input SPD file.",true,"","String");
 		cmd.add( inputFileArg );
@@ -96,10 +103,17 @@ int main (int argc, char * const argv[])
             {
                 throw spdlib::SPDException("The height field must be defined; use spddefheight.");
             }
+            delete spdInFile;
         }
         else if(planeFitSwitch.getValue())
         {
-            
+            spdlib::SPDFile *spdInFile = new spdlib::SPDFile(inSPDFilePath);
+            spdlib::SPDPulseProcessor *pulseProcessor = new spdlib::SPDTidyGroundReturnsPlaneFitting();
+            spdlib::SPDSetupProcessPulses processPulses = spdlib::SPDSetupProcessPulses(numOfColsBlockArg.getValue(), numOfRowsBlockArg.getValue(), true);
+            processPulses.processPulsesWithOutputSPD(pulseProcessor, spdInFile, outFilePath, binSizeArg.getValue(), true, winHSizeArg.getValue());
+
+            delete pulseProcessor;
+            delete spdInFile;
         }
         else
         {

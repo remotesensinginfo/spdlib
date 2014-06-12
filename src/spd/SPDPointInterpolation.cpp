@@ -968,14 +968,15 @@ namespace spdlib
                 this->thinPoints(points);
             }
             
-            rbfModel = spd_alglib::rbfmodel();
-            spd_alglib::rbfcreate(2, 1, rbfModel);
+            rbfModel = new spd_alglib::rbfmodel();
+            spd_alglib::rbfcreate(2, 1, *rbfModel);
             
             size_t numPts = points->size();
             std::cout << numPts << " are being used for the interpolation." << std::endl;
             
             double minX = 0;
             double minY = 0;
+            this->minZ = 0;
             double maxX = 0;
             double maxY = 0;
             bool first = true;
@@ -987,6 +988,20 @@ namespace spdlib
                     maxX = (*iterPts)->x;
                     minY = (*iterPts)->y;
                     maxY = (*iterPts)->y;
+                    
+                    if(elevVal == SPD_USE_Z)
+                    {
+                        minZ = (*iterPts)->z;
+                    }
+                    else if(elevVal == SPD_USE_HEIGHT)
+                    {
+                        minZ = (*iterPts)->height;
+                    }
+                    else
+                    {
+                        throw SPDProcessingException("Elevation type not recognised.");
+                    }
+                    
                     first = false;
                 }
                 else
@@ -1007,6 +1022,27 @@ namespace spdlib
                     {
                         maxY = (*iterPts)->y;
                     }
+                    
+                    if(elevVal == SPD_USE_Z)
+                    {
+                        if((*iterPts)->z < minZ)
+                        {
+                            minZ = (*iterPts)->z;
+                        }
+                    }
+                    else if(elevVal == SPD_USE_HEIGHT)
+                    {
+                        if((*iterPts)->height < minZ)
+                        {
+                            minZ = (*iterPts)->height;
+                        }
+                    }
+                    else
+                    {
+                        throw SPDProcessingException("Elevation type not recognised.");
+                    }
+                    
+                    
                 }
             }
             this->midX = minX + ((maxX-minX)/2);
@@ -1029,15 +1065,11 @@ namespace spdlib
                 
                 if(elevVal == SPD_USE_Z)
                 {
-                    zVal = (*iterPts)->z;
+                    zVal = (*iterPts)->z - minZ;
                 }
                 else if(elevVal == SPD_USE_HEIGHT)
                 {
-                    zVal = (*iterPts)->height;
-                }
-                else if(elevVal == SPD_USE_AMP)
-                {
-                    zVal = (*iterPts)->amplitudeReturn;
+                    zVal = (*iterPts)->height - minZ;
                 }
                 else
                 {
@@ -1049,11 +1081,11 @@ namespace spdlib
             }
             
             //std::cout << "Data:\n" << dataPts.tostring(3) << std::endl;
-            spd_alglib::rbfsetpoints(rbfModel, dataPts);
-            spd_alglib::rbfsetalgomultilayer(rbfModel, radius, numLayers);
+            spd_alglib::rbfsetpoints(*rbfModel, dataPts);
+            spd_alglib::rbfsetalgomultilayer(*rbfModel, radius, numLayers);
             std::cout << "Building Model\n";
             spd_alglib::rbfreport rep;
-            spd_alglib::rbfbuildmodel(rbfModel, rep);
+            spd_alglib::rbfbuildmodel(*rbfModel, rep);
             
             std::cout << "Initialised...\n";
             delete points;
@@ -1120,7 +1152,7 @@ namespace spdlib
         float val = 0.0;
         if(initialised)
 		{
-            val = spd_alglib::rbfcalc2(rbfModel, round((eastings - midX)), round((northings - midY)));
+            val = spd_alglib::rbfcalc2(*rbfModel, round((eastings - midX)), round((northings - midY))) + minZ;
         }
         else
         {
@@ -1133,7 +1165,10 @@ namespace spdlib
     {
         if(initialised)
 		{
-            
+            if(rbfModel != NULL)
+            {
+                delete rbfModel;
+            }
             initialised = false;
 		}
     }
@@ -1142,7 +1177,10 @@ namespace spdlib
     {
         if(initialised)
 		{
-            
+            if(rbfModel != NULL)
+            {
+                delete rbfModel;
+            }
             initialised = false;
 		}
     }
