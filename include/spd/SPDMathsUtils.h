@@ -123,6 +123,8 @@ namespace spdlib
         bool rectangle1Contains2(double xMin1, double xMax1, double yMin1, double yMax1, double xMin2, double xMax2, double yMin2, double yMax2);
         double calcRectangleIntersection(double xMin1, double xMax1, double yMin1, double yMax1, double xMin2, double xMax2, double yMin2, double yMax2);
         double calcValueViaPlaneFitting(SPD3DDataPt *a, SPD3DDataPt *b, SPD3DDataPt *c, double x, double y) throw(SPDProcessingException);
+        void fitPlane(double *x, double *y, double *z, boost::uint_fast32_t numValues, double normX, double normY, double *a, double *b, double *c) throw(SPDProcessingException);
+        double devFromPlane(double *x, double *y, double *z, boost::uint_fast32_t numValues, double normX, double normY, double a, double b, double c) throw(SPDProcessingException);
         ~SPDMathsUtils();
     };
     

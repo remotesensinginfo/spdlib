@@ -180,9 +180,10 @@ namespace spdlib
     protected:
         double radius;
         boost::uint_fast16_t numLayers;
-        spd_alglib::rbfmodel rbfModel;
+        spd_alglib::rbfmodel *rbfModel;
         double midX;
         double midY;
+        double minZ;
 	};
 	
 	
