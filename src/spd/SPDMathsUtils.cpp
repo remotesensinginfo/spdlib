@@ -958,6 +958,116 @@ namespace spdlib {
         return outVal;
     }
     
+    void SPDMathsUtils::fitPlane(double *x, double *y, double *z, boost::uint_fast32_t numValues, double normX, double normY, double *a, double *b, double *c) throw(SPDProcessingException)
+    {
+        SPDMatrixUtils matrices;
+		spdlib::Matrix *matrixA = NULL;
+		spdlib::Matrix *matrixB = NULL;
+		spdlib::Matrix *matrixCoFactors = NULL;
+		spdlib::Matrix *matrixCoFactorsT = NULL;
+		spdlib::Matrix *outputs = NULL;
+		try
+		{
+			double sXY = 0;
+			double sX = 0;
+			double sXSqu = 0;
+			double sY = 0;
+			double sYSqu = 0;
+			double sXZ = 0;
+			double sYZ = 0;
+			double sZ = 0;
+			
+			for(unsigned int i = 0; i < numValues; i++)
+			{
+				sXY += ((x[i]-normX) * (y[i]-normY));
+				sX += (x[i]-normX);
+				sXSqu += ((x[i]-normX) * (x[i]-normX));
+				sY += (y[i]-normY);
+				sYSqu += ((y[i]-normY) * (y[i]-normY));
+				sXZ += ((x[i]-normX) * z[i]);
+				sYZ += ((y[i]-normY) * z[i]);
+				sZ += z[i];
+			}
+			
+			matrixA = matrices.createMatrix(3, 3);
+			matrixA->matrix[0] = sXSqu;
+			matrixA->matrix[1] = sXY;
+			matrixA->matrix[2] = sX;
+			matrixA->matrix[3] = sXY;
+			matrixA->matrix[4] = sYSqu;
+			matrixA->matrix[5] = sY;
+			matrixA->matrix[6] = sX;
+			matrixA->matrix[7] = sY;
+			matrixA->matrix[8] = numValues;
+			matrixB = matrices.createMatrix(1, 3);
+			matrixB->matrix[0] = sXZ;
+			matrixB->matrix[1] = sYZ;
+			matrixB->matrix[2] = sZ;
+			
+			double determinantA = matrices.determinant(matrixA);
+			matrixCoFactors = matrices.cofactors(matrixA);
+			matrixCoFactorsT = matrices.transpose(matrixCoFactors);
+			double multiplier = 1/determinantA;
+			matrices.multipleSingle(matrixCoFactorsT, multiplier);
+			outputs = matrices.multiplication(matrixCoFactorsT, matrixB);
+			*a = outputs->matrix[0];
+			*b = outputs->matrix[1];
+			*c = outputs->matrix[2];
+		}
+		catch(SPDProcessingException e)
+		{
+			if(matrixA != NULL)
+			{
+                matrices.freeMatrix(matrixA);
+			}
+			if(matrixB != NULL)
+			{
+				matrices.freeMatrix(matrixB);
+			}
+			if(matrixCoFactors != NULL)
+			{
+				matrices.freeMatrix(matrixCoFactors);
+			}
+			if(matrixCoFactorsT != NULL)
+			{
+				matrices.freeMatrix(matrixCoFactorsT);
+			}
+			if(outputs != NULL)
+			{
+				matrices.freeMatrix(outputs);
+			}
+			throw SPDProcessingException(e.what());
+		}
+		
+        matrices.freeMatrix(matrixA);
+        matrices.freeMatrix(matrixB);
+        matrices.freeMatrix(matrixCoFactors);
+        matrices.freeMatrix(matrixCoFactorsT);
+        matrices.freeMatrix(outputs);
+    }
+
+    double SPDMathsUtils::devFromPlane(double *x, double *y, double *z, boost::uint_fast32_t numValues, double normX, double normY, double a, double b, double c) throw(SPDProcessingException)
+    {
+        try
+        {
+            // Plane is aX + bY + cZ = d
+            
+            double *diffs = new double[numValues];
+            for(boost::uint_fast32_t i = 0; i < numValues; ++i)
+            {
+                diffs[i] = (((a * (x[i]-normX)) + (b * (y[i]-normY)))/c);
+                //std::cout << "Diff[" << i << "] = " << diffs[i] << std::endl;
+            }
+            delete[] diffs;
+        }
+        catch(SPDProcessingException &e)
+        {
+            throw e;
+        }
+        
+        return 0.0;
+    }
+    
     SPDMathsUtils::~SPDMathsUtils()
     {
         
