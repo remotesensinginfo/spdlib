@@ -93,116 +93,171 @@ namespace spdlib
             spdFile->setTemporalBinSpacing(0.5);
             
             
-            int z = 0, band = 0;    /* Loop control */
-            int numb = 0;           /* Number of zenith steps */
-            int nBins = 0;          /* Range bins per file (one file per azimuth) */
-            int sOffset = 0;        /* Bounds to avoid outgoing pulse */
-            int start[2];           /* Array start */
-            int end[2];             /* Array end bounds */
-            int length = 0;         /* Total file length */
-            int waveStart = 0;      /* Waveform start in data array */
-            float zen = 0;          /* True zenith */
-            float az = 0;           /* True azimuth */
-            char *data = NULL;      /* Waveform data. Holds whole file. */
-            char ringTest = 0;      /* Ringing and saturation indicator */
-            int val = 0;
+            unsigned int numb = 0;           // Number of zenith steps
+            unsigned int nBins = 0;          // Range bins per file (one file per azimuth)
+            unsigned int length = 0;         // Total file length
+            unsigned int maxRangeNBins = 0;  // Number of bins which represented the maximum range extent.
+            float zen = 0.0;                 // True zenith
+            float az = 0.0;                  // True azimuth
+            int *data = NULL;                // Waveform data. Holds whole file.
+            //char ringTest = 0;             // Ringing and saturation indicator
             SPDPulse *pulse = NULL;
             SPDPulseUtils plsUtils;
             size_t pulseID = 0;
             boost::uint_fast32_t scanline = 0;
             boost::uint_fast16_t scanlineIdx = 0;
             
-            sOffset=7;   /* 1.05 m */
+            //sOffset=7;   // 1.05 m
             
-            numb=(int)(inParams->maxZen/0.059375); /* Number of zenith steps. Zenith res is hard wired for SALCA */
+            maxRangeNBins = inParams->maxR / 0.15;
+            
+            numb=(int)(inParams->maxZen/0.059375); // Number of zenith steps. Zenith res is hard wired for SALCA
             nBins=(int)((150.0+inParams->maxR)/0.15);
-            
-            /* Band start and end bins for sampling */
-            start[0]=sOffset;   /* 1.05 m to avoid the outgoing pulse */
-            end[0]=(int)(inParams->maxR/0.15);
-            start[1]=1000+sOffset;   /* 7 to avoid outgoing pulses */
-            end[1]=nBins;
-            
-            /* Set up squint angles */
-            this->translateSquint(inParams);
-            this->setSquint(inParams, numb);
             
             for(std::vector<std::pair<float, std::string> >::iterator iterFiles = inputBinFiles->begin(); iterFiles != inputBinFiles->end(); ++iterFiles)
             {
                 std::cout << (*iterFiles).second << " with azimuth = " << (*iterFiles).first << std::endl;
-                /* Read binary data into an array */
-                data=this->readData((*iterFiles).second, (*iterFiles).first, &numb, &nBins, &length, inParams);
+                
+                az = (float)(*iterFiles).first;
+                
+                // Read binary data into an array
+                data=this->readData((*iterFiles).second, (*iterFiles).first, numb, nBins, &length);
+                
+                
+                std::cout << "Number = " << numb << std::endl;
+                std::cout << "nBins = " << nBins << std::endl;
+                std::cout << "Length = " << length << std::endl;
+                std::cout << "Max Range (nBins) = " << maxRangeNBins << std::endl;
+                
                 
                 if(data)
                 {
-                    zen = 0;
-                    for(z = 0; z < numb; ++z)
+                    zen = 0.0;
+                    unsigned int wl1StartIdxRec = 0;
+                    unsigned int wl1EndIdxRec = 0;
+                    unsigned int wl2StartIdxRec = 0;
+                    unsigned int wl2EndIdxRec = 0;
+                    
+                    unsigned int wl1StartIdxTrans = 0;
+                    unsigned int wl1EndIdxTrans = 0;
+                    unsigned int wl2StartIdxTrans = 0;
+                    unsigned int wl2EndIdxTrans = 0;
+                    
+                    unsigned int prevWL2EndIdx = 0;
+                    
+                    for(unsigned int z = 0; z < numb; ++z)
                     {
-                        /* zenith loop */
-                        //zen=inParams->zen[z]; /* This is the 'really' zenith calculated value as provided by Steven */
-                        zen += 0.059375; /* TESTING: trying to simiplify with regular zenith intervals to see if get something closer to what I expect */
+                        //std::cout << z << ") Zenith = " << zen << std::endl;
                         
-                        az=inParams->azOff[z]+(float)(*iterFiles).first*inParams->azStep+inParams->azStart;
+                        wl1StartIdxRec = 0;
+                        wl1EndIdxRec = 0;
                         
-                        for(band = 0; band < 2; ++band)
+                        wl2StartIdxRec = 0;
+                        wl2EndIdxRec = 0;
+                        
+                        wl1StartIdxTrans = 0;
+                        wl1EndIdxTrans = 0;
+                        
+                        wl2StartIdxTrans = 0;
+                        wl2EndIdxTrans = 0;
+                        
+                        this->findWaveformsBinIdxes(data, length, maxRangeNBins, prevWL2EndIdx, &wl1StartIdxTrans, &wl2StartIdxTrans, &wl1EndIdxTrans, &wl2EndIdxTrans, &wl1StartIdxRec, &wl2StartIdxRec, &wl1EndIdxRec, &wl2EndIdxRec);
+                        /*
+                        std::cout << "Wavelength #1: Trans = [" << wl1StartIdxTrans << ", " << wl1EndIdxTrans << "] (" << wl1EndIdxTrans - wl1StartIdxTrans << ") Rec = [" << wl1StartIdxRec << ", " << wl1EndIdxRec << "] (" << wl1EndIdxRec - wl1StartIdxRec << ")\n";
+                        
+                        std::cout << "Wavelength #2: Trans = [" << wl2StartIdxTrans << ", " << wl2EndIdxTrans << "] (" << wl2EndIdxTrans - wl2StartIdxTrans << ") Rec = [" << wl2StartIdxRec << ", " << wl2EndIdxRec << "] (" << wl2EndIdxRec - wl2StartIdxRec << ")\n";
+                          */
+                        // WAVELENGTH #1
+                        pulse = new SPDPulse();
+                        plsUtils.initSPDPulse(pulse);
+                        pulse->pulseID = pulseID++;
+                        
+                        pulse->wavelength = 1063;
+                        pulse->numOfReceivedBins = wl1EndIdxRec - wl1StartIdxRec;
+                        pulse->received = new uint_fast32_t[pulse->numOfReceivedBins];
+                        for(unsigned int i = wl1StartIdxRec, n = 0; i < wl1EndIdxRec; ++i, ++n)
                         {
-                            /* loop through wavebands */
-                            /* determine shot start position */
-                            waveStart=this->findStart(start[band],end[band],&ringTest,data,z*nBins);
-                            if((band==0) && (waveStart<0))
-                            {
-                                waveStart=0; /* as the 1545 pulse is often lost off the end */
-                            }
-                            
-                            pulse = new SPDPulse();
-                            plsUtils.initSPDPulse(pulse);
-                            pulse->pulseID = pulseID++;
-                            
-                            /*the wave runs from data[z*nBins+waveStart] to data[z*nBins+end[band]] */
-                            //fprintf(stdout,"Wave az %f zen %d band %d runs from %d to %d\n",(*iterFiles).first,z,band,z*nBins+waveStart,z*nBins+end[band]);
-                            pulse->numOfReceivedBins = (z*nBins+end[band]) - (z*nBins+waveStart);
-                            pulse->received = new uint_fast32_t[pulse->numOfReceivedBins];
-                            for(int n = z*nBins+waveStart, i = 0; n < z*nBins+end[band]+1; ++n, ++i)
-                            {
-                                val = data[n];
-                                val += 128;
-                                pulse->received[i] = val;
-                            }
-                            
-                            pulse->sourceID = band;
-                            if(band == 0)
-                            {
-                                pulse->wavelength = 1063;
-                            }
-                            else if(band == 1)
-                            {
-                                pulse->wavelength = 1545;
-                            }
-                            
-                            if(this->defineOrigin)
-                            {
-                                pulse->x0 = this->originX;
-                                pulse->y0 = this->originY;
-                                pulse->z0 = this->originZ;
-                            }
-                            else
-                            {
-                                pulse->x0 = 0;
-                                pulse->y0 = 0;
-                                pulse->z0 = 0;
-                            }
-                            
-                            pulse->azimuth = ((*iterFiles).first/180.0)*M_PI;
-                            pulse->zenith = ((zen/180.0)*M_PI)+(M_PI/2);
-                            //std::cout << z << "\t zen = " << zen << "\tpulse->zenith = " << pulse->zenith << std::endl;
-                            //std::cout << z << "," << zen << std::endl;
-                            pulse->scanline = scanlineIdx;
-                            pulse->scanlineIdx = scanline;
-                            pulse->receiveWaveNoiseThreshold = 30;
-                            pulse->rangeToWaveformStart = 0;
-                            
-                            processor->processImportedPulse(spdFile, pulse);
+                            pulse->received[n] = data[i];
                         }
+                        
+                        pulse->numOfTransmittedBins = wl1EndIdxTrans - wl1StartIdxTrans;
+                        pulse->transmitted = new uint_fast32_t[pulse->numOfTransmittedBins];
+                        for(unsigned int i = wl1StartIdxTrans, n = 0; i < wl1EndIdxTrans; ++i, ++n)
+                        {
+                            pulse->transmitted[n] = data[i];
+                        }
+                        
+                        if(this->defineOrigin)
+                        {
+                            pulse->x0 = this->originX;
+                            pulse->y0 = this->originY;
+                            pulse->z0 = this->originZ;
+                        }
+                        else
+                        {
+                            pulse->x0 = 0;
+                            pulse->y0 = 0;
+                            pulse->z0 = 0;
+                        }
+                        
+                        pulse->azimuth = ((*iterFiles).first/180.0)*M_PI;
+                        pulse->zenith = ((zen/180.0)*M_PI)+(M_PI/2);
+                        pulse->scanline = scanlineIdx;
+                        pulse->scanlineIdx = scanline;
+                        pulse->receiveWaveNoiseThreshold = 30;
+                        pulse->rangeToWaveformStart = 0;
+                        pulse->sourceID = 1;
+                        
+                        processor->processImportedPulse(spdFile, pulse);
+                        
+                        
+                        
+                        // WAVELENGTH #2
+                        pulse = new SPDPulse();
+                        plsUtils.initSPDPulse(pulse);
+                        pulse->pulseID = pulseID++;
+                        
+                        pulse->wavelength = 1545;
+                        pulse->numOfReceivedBins = wl2EndIdxRec - wl2StartIdxRec;
+                        pulse->received = new uint_fast32_t[pulse->numOfReceivedBins];
+                        for(unsigned int i = wl2StartIdxRec, n = 0; i < wl2EndIdxRec; ++i, ++n)
+                        {
+                            pulse->received[n] = data[i];
+                        }
+                        
+                        pulse->numOfTransmittedBins = wl2EndIdxTrans - wl2StartIdxTrans;
+                        pulse->transmitted = new uint_fast32_t[pulse->numOfTransmittedBins];
+                        for(unsigned int i = wl2StartIdxTrans, n = 0; i < wl2EndIdxTrans; ++i, ++n)
+                        {
+                            pulse->transmitted[n] = data[i];
+                        }
+                        
+                        if(this->defineOrigin)
+                        {
+                            pulse->x0 = this->originX;
+                            pulse->y0 = this->originY;
+                            pulse->z0 = this->originZ;
+                        }
+                        else
+                        {
+                            pulse->x0 = 0;
+                            pulse->y0 = 0;
+                            pulse->z0 = 0;
+                        }
+                        
+                        pulse->azimuth = ((*iterFiles).first/180.0)*M_PI;
+                        pulse->zenith = ((zen/180.0)*M_PI)+(M_PI/2);
+                        pulse->scanline = scanlineIdx;
+                        pulse->scanlineIdx = scanline;
+                        pulse->receiveWaveNoiseThreshold = 30;
+                        pulse->rangeToWaveformStart = 0;
+                        pulse->sourceID = 2;
+                        
+                        processor->processImportedPulse(spdFile, pulse);
+                        
+                        
+                        prevWL2EndIdx = wl2EndIdxRec;
+                        zen += 0.059375;
                         ++scanlineIdx;
                     }
                     delete[] data;
@@ -211,6 +266,7 @@ namespace spdlib
                 {
                     throw SPDIOException("The data file was not opened or data was not read in correctly.");
                 }
+                
                 ++scanline;
                 scanlineIdx = 0;
             }
@@ -303,6 +359,21 @@ namespace spdlib
                         {
                             tokens->clear();
                             txtUtils.tokenizeString(line, '=', tokens, true);
+                            
+                            if(tokens->size() >= 2)
+                            {
+                                if(txtUtils.lineContainsChar(tokens->at(1), '#'))
+                                {
+                                    std::string temp1Val = tokens->at(0);
+                                    std::string temp2Val = tokens->at(1);
+                                    tokens->clear();
+                                    txtUtils.tokenizeString(temp2Val, '#', tokens, true);
+                                    temp2Val = tokens->at(0);
+                                    tokens->clear();
+                                    tokens->push_back(temp1Val);
+                                    tokens->push_back(temp2Val);
+                                }
+                            }
 
                             if(tokens->at(0) == "maxR")
                             {
@@ -411,282 +482,368 @@ namespace spdlib
         
         return hdrParams;
     }
-    
-    /** Translate from nice squint angles to those used in equations */
-    void SPDSALCADataBinaryImporter::translateSquint(SalcaHDRParams *options)
-    {
-        float sinAz=0,sinZen=0;
-        
-        sinZen=sin(options->zenSquint);
-        sinAz=sin(options->azSquint);
-        
-        options->azSquint=atan2(sinAz,sinZen);
-        options->zenSquint=atan2(sqrt(sinAz*sinAz+sinZen*sinZen),1.0);
-    }/*translateSquint*/
-    
-    
-    /** Precalculate squint angles */
-    void SPDSALCADataBinaryImporter::setSquint(SalcaHDRParams *options, int numb)
-    {
-        float zen=0,az=0;
-        float cZen=0,cAz=0;
-        
-        options->zen = new float[numb];
-        options->azOff = new float[numb];
-        
-        az=0.0;
-        for(int i = 0; i < numb; ++i)
-        {
-            zen=((float)(options->nZen/2)-(float)i)*options->zStep;
-            this->squint(&(cZen),&(cAz),zen,az,options->zenSquint,options->azSquint,options->omega);
-            options->zen[i]=cZen;
-            options->azOff[i]=cAz;
-        }
-        /*zenith loop*/
-
-    }/*setSquint*/
-    
-    /** Caluclate squint angle */
-    void SPDSALCADataBinaryImporter::squint(float *cZen,float *cAz,float zM,float aM,float zE,float aE,float omega)
-    {
-        float inc = 0;  /* Angle of incidence */
-        float *vect = NULL;
-        /* Working variables */
-        float mX=0,mY=0,mZ=0; /* Mirror vector */
-        float lX=0,lY=0,lZ=0; /* Incoming laser vector */
-        float rX=0,rY=0,rZ=0; /* Vector orthogonal to m and l */
-        float thetaZ=0;       /* Angle to rotate to mirror surface about z axis */
-        float thetaX=0;       /* Angle to rotate about x axis */
-        float slope=0;        /* Rotation vector slope angle, for rounding issues */
-        /*trig*/
-        float coszE=0,sinzE=0;
-        float cosaE=0,sinaE=0;
-        float coszM=0,sinzM=0;
-        float cosW=0,sinW=0;
-        
-        coszE=cos(zE);
-        sinzE=sin(zE);
-        cosaE=cos(aE);
-        sinaE=sin(aE);
-        cosW=cos(omega);
-        sinW=sin(omega);
-        coszM=cos(zM);
-        sinzM=sin(zM);
-        
-        mX=cosW;        /* Mirror normal vector */
-        mY=sinW*sinzM;
-        mZ=sinW*coszM;
-        lX=-1.0*coszE;  /* Laser Pointing vector */
-        lY=sinaE*sinzE;
-        lZ=cosaE*sinzE;
-        rX=lY*mZ-lZ*mY; /* Cross product of mirror and laser */
-        rY=lZ*mX-lX*mZ; /* ie The vector to rotate about */
-        rZ=lX*mY-lY*mX;
-        
-        inc=acos(-1.0*mX*lX+mY*lY+mZ*lZ);   /* Angle of incidence. Reverse x to get acute angle */
-        thetaZ=-1.0*atan2(rX,rY);
-        thetaX=atan2(rZ,sqrt(rX*rX+rY*rY));
-        
-        vect = new float[3];
-        vect[0]=lX;
-        vect[1]=lY;
-        vect[2]=lZ;
-        
-        /* To avoid rounding rotate to z or y axis as appropriate */
-        slope=atan2(sqrt(rX*rX+rY*rY),fabs(rZ));
-        if(fabs(slope)<(M_PI/4.0))
-        {
-            /* Rotate about z axis */
-            thetaX=-1.0*atan2(sqrt(rX*rX+rY*rY),rZ);
-            thetaZ=-1.0*atan2(rX,rY);
-            this->rotateZ(vect,thetaZ);
-            this->rotateX(vect,thetaX);
-            this->rotateZ(vect,-2.0*inc);
-            this->rotateX(vect,-1.0*thetaX);
-            this->rotateZ(vect,-1.0*thetaZ);
-        }
-        else
-        {
-            /* Rotate about y axis */
-            thetaZ=-1.0*atan2(rX,rY);
-            thetaX=atan2(rZ,sqrt(rX*rX+rY*rY));
-            this->rotateZ(vect,thetaZ);
-            this->rotateX(vect,thetaX);
-            this->rotateY(vect,-2.0*inc);
-            this->rotateX(vect,-1.0*thetaX);
-            this->rotateZ(vect,-1.0*thetaZ);
-        }
-        
-        *cZen=atan2(sqrt(vect[0]*vect[0]+vect[1]*vect[1]),vect[2]);
-        if(vect[1]!=0.0)
-        {
-            *cAz=atan2(vect[0],vect[1])+aM;
-        }
-        else
-        {
-            *cAz=aM;
-        }
-        
-        delete[] vect;
-    }/*squint*/
-    
-    /* Rotate about x axis */
-    void SPDSALCADataBinaryImporter::rotateX(float *vect, float theta)
-    {
-        float temp[3];
-        
-        temp[0]=vect[0];
-        temp[1]=vect[1]*cos(theta)+vect[2]*sin(theta);
-        temp[2]=vect[2]*cos(theta)-vect[1]*sin(theta);
-        
-        for(int i = 0; i < 3; ++i)
-        {
-            vect[i]=temp[i];
-        }
-    }/*rotateX*/
-    
-    /* Rotate about y axis */
-    void SPDSALCADataBinaryImporter::rotateY(float *vect, float theta)
-    {
-        float temp[3];
-        
-        temp[0]=vect[0]*cos(theta)-vect[1]*sin(theta);
-        temp[1]=vect[1];
-        temp[2]=vect[0]*sin(theta)+vect[2]*cos(theta);
-        
-        for(int i = 0; i < 3; ++i)
-        {
-            vect[i]=temp[i];
-        }
-    }/*rotateY*/
-    
-    /** Rotate about z axis */
-    void SPDSALCADataBinaryImporter::rotateZ(float *vect, float theta)
-    {
-        float temp[3];
-        
-        temp[0]=vect[0]*cos(theta)+vect[1]*sin(theta);
-        temp[1]=vect[1]*cos(theta)-vect[0]*sin(theta);
-        temp[2]=vect[2];
-        
-        for(int i = 0; i < 3; ++i)
-        {
-            vect[i]=temp[i];
-        }
-    }/*rotateZ*/
+ 
     
     /** Read data into array */
-    char* SPDSALCADataBinaryImporter::readData(std::string inFilePath, int i, int *numb, int *nBins, int *length, SalcaHDRParams *options) throw(SPDIOException)
+    int* SPDSALCADataBinaryImporter::readData(std::string inFilePath, int i, unsigned int numb, unsigned int nBins, unsigned int *length) throw(SPDIOException)
     {
-        char *data = NULL;
-        FILE *ipoo = NULL;
-        
-        //fprintf(stdout,"%d of %d Reading %s\n",i,options->nAz,inFilePath.c_str());  /*progress indicator*/
-        
-        /* Open the input file */
-        if((ipoo=fopen(inFilePath.c_str(),"rb"))==NULL)
+        int *outData = NULL;
+        try
         {
-            std::string message = std::string("Could not open file: \'") + inFilePath + std::string("\'");
-            throw SPDIOException(message);
+            char *data = NULL;
+            FILE *ipoo = NULL;
+            
+            // Open the input file
+            if((ipoo=fopen(inFilePath.c_str(),"rb"))==NULL)
+            {
+                std::string message = std::string("Could not open file: \'") + inFilePath + std::string("\'");
+                throw SPDIOException(message);
+            }
+            
+            // Determine the file length
+            if(fseek(ipoo,(long)0,SEEK_END))
+            {
+                throw SPDIOException("Could not determine the length of the file.");
+            }
+            *length=ftell(ipoo);
+            
+            if((nBins*numb)>(*length))
+            {
+                std::string message = std::string("File size mismatch: \'") + inFilePath + std::string("\'");
+                std::cout << "(nBins*numb) = " << nBins*numb << std::endl;
+                std::cout << "*length = " << *length << std::endl;
+                throw SPDIOException(message);
+            }
+            data = new char[*length];
+            
+            // Now we know how long, read the file
+            if(fseek(ipoo,(long)0,SEEK_SET))
+            {
+                throw SPDIOException("Could not restart the seek read to the beginning of the file.");
+            }
+            
+            // Read the data into the data array
+            if(fread(&(data[0]),sizeof(char),*length,ipoo)!=*length)
+            {
+                throw SPDIOException("Failed to read the data - reason unknown.");
+            }
+            
+            if(ipoo)
+            {
+                fclose(ipoo);
+                ipoo=NULL;
+            }
+            
+            outData = new int[*length];
+            for(int i = 0; i < (*length); ++i)
+            {
+                outData[i] = ((int)data[i])+128;
+            }
+            delete[] data;
+            
         }
-        
-        /* Determine the file length */
-        if(fseek(ipoo,(long)0,SEEK_END))
+        catch(std::exception &e)
         {
-            throw SPDIOException("Could not determine the length of the file.");
+            throw SPDIOException(e.what());
         }
-        *length=ftell(ipoo);
-        
-        if(((*nBins)*(*numb))>(*length))
+        catch(SPDIOException &e)
         {
-            fprintf(stderr,"File size mismatch\n");
-            exit(1);
+            throw e;
         }
-        data = new char[*length];
-        
-        /* Now we know how long, read the file*/
-        if(fseek(ipoo,(long)0,SEEK_SET))
+        catch(SPDException &e)
         {
-            throw SPDIOException("Could not restart the seek read to the beginning of the file.");
+            throw SPDIOException(e.what());
         }
-        
-        /* Read the data into the data array */
-        if(fread(&(data[0]),sizeof(char),*length,ipoo)!=*length)
-        {
-            throw SPDIOException("Failed to read the data - reason unknown.");
-        }
-        
-        if(ipoo)
-        {
-            fclose(ipoo);
-            ipoo=NULL;
-        }
-        
-        return(data);
-    }/*readData*/
     
-    /** Find outgoing pulse and check saturation */
-    int SPDSALCADataBinaryImporter::findStart(int start,int end,char *satTest, char *data,int offset)
+        return(outData);
+    }
+
+    void SPDSALCADataBinaryImporter::findWaveformsBinIdxes(int *data, unsigned int dataLen, unsigned int maxRNBins, unsigned int prevWl2End, unsigned int *wl1StartIdxTrans, unsigned int *wl2StartIdxTrans, unsigned int *wl1EndIdxTrans, unsigned int *wl2EndIdxTrans, unsigned int *wl1StartIdxRec, unsigned int *wl2StartIdxRec, unsigned int *wl1EndIdxRec, unsigned int *wl2EndIdxRec) throw(SPDIOException)
     {
-        int i=0,b=0,e=0;  /*loop control and bounds*/
-        int place=0;      /*array index*/
-        int waveStart=0;  /*outgoing pulse bin*/
-        char max=0;       /*max intensity*/
-        char satThresh=0; /*saturation threshold*/
-        char thresh=0;
-        int sOffset=0;
-        
-        sOffset=7;   /*1.05 m*/
-        waveStart=-1; /*start-sOffset;*/
-        
-        thresh=-110;  /*noise threshold, chosen from histograms*/
-        satThresh=127;
-        max=-125;
-        
-        *satTest=0;  /*not saturated by default*/
-        b=start-50;   /*4.5m, from histograms*/
-        if(b < 0)
+        try
         {
-            b=0;  /*truncate at 0*/
-        }
-        
-        e=start+sOffset;
-        if(e > end)
-        {
-            e=end;
-        }
-        
-        max=-125;
-        for(i = b; i < e; ++i)
-        {
-            /*loop around where we think the pulse might be*/
-            place=offset+i;
-            if((data[place]>thresh)&&(data[place]>max))
+            bool foundWl1Trans = false;
+            bool foundWl2Trans = false;
+            bool foundNextWl1Trans = false;
+            unsigned int nextWl1TransIdx = 0;
+            for(unsigned int i = prevWl2End; i < dataLen; ++i)
             {
-                /*outgoing peak*/
-                max=data[place];
-                waveStart=i;
+                // Check for zero crossing... (i.e. a peak).
+                if(data[i] > 230)
+                {
+                    if(i == 0)
+                    {
+                        if(this->zeroCrossing(data, 0, 2, i))
+                        {
+                            foundWl1Trans = true;
+                            *wl1StartIdxTrans = i;
+                        }
+                    }
+                    else
+                    {
+                        bool zeroCross = false;
+                        
+                        if(i == 1)
+                        {
+                            zeroCross = this->zeroCrossing(data, i-1, i+2, i);
+                        }
+                        else if(i == dataLen-1)
+                        {
+                            zeroCross = this->zeroCrossing(data, i-1, i, i);
+                        }
+                        else if(i == dataLen-2)
+                        {
+                            zeroCross = this->zeroCrossing(data, i-2, i+1, i);
+                        }
+                        else
+                        {
+                            zeroCross = this->zeroCrossing(data, i-2, i+2, i);
+                        }
+                        
+                        if(zeroCross)
+                        {
+                            if(!foundWl1Trans)
+                            {
+                                if((i - prevWl2End) > 40)
+                                {
+                                    foundWl1Trans = true;
+                                    *wl1StartIdxTrans = prevWl2End;
+                                    foundWl2Trans = true;
+                                    *wl2StartIdxTrans = i-1;
+                                }
+                                else
+                                {
+                                    foundWl1Trans = true;
+                                    *wl1StartIdxTrans = i-1;
+                                }
+                            }
+                            else if(!foundWl2Trans)
+                            {
+                                if(((i-1) > (*wl1StartIdxTrans)) & (((i-1)) - (*wl1StartIdxTrans) > maxRNBins))
+                                {
+                                    foundWl2Trans = true;
+                                    *wl2StartIdxTrans = i-1;
+                                }
+                            }
+                            else if(!foundNextWl1Trans)
+                            {
+                                if((((i-1)) > (*wl2StartIdxTrans)) & (((i-1)) - (*wl2StartIdxTrans) > maxRNBins))
+                                {
+                                    foundNextWl1Trans = true;
+                                    nextWl1TransIdx = i-1;
+                                    break;
+                                }
+                            }
+                            else
+                            {
+                                break;
+                            }
+                        }
+                    }
+                }
             }
-            /*outgoing peak test*/
-            if((max>-125) && (data[place]<=thresh))
+            
+            std::cout << "Start W1 Trans Idx = " << *wl1StartIdxTrans << std::endl;
+            std::cout << "Start W2 Trans Idx = " << *wl2StartIdxTrans << std::endl;
+            std::cout << "Start Next Trans Idx = " << nextWl1TransIdx << std::endl;
+            
+            
+            if((foundWl1Trans & foundWl2Trans) & (!foundNextWl1Trans))
             {
-                break;
+                nextWl1TransIdx = dataLen;
             }
-        }/*range loop*/
-        
-        for(i = start; i < end; ++i)
-        {
-            /*loop through full waveform to test for saturation*/
-            place=offset+i;
-            if(data[place]>=satThresh)
+            else if((!foundWl1Trans) | (!foundWl2Trans) | (!foundNextWl1Trans))
             {
-                /*saturated*/
-                *satTest=1;
-                break;
-            }  
-        }/*saturation test loop*/
+                throw SPDIOException("Did not find all the required transmitted waveforms...");
+            }
+            
+            *wl1EndIdxTrans = (*wl1StartIdxTrans) + 2;
+            *wl1StartIdxRec = (*wl1EndIdxTrans) + 1;
+            *wl1EndIdxRec = (*wl2StartIdxTrans) - 1;
+            if((*wl1EndIdxRec) >= dataLen)
+            {
+                (*wl1EndIdxRec) = dataLen;
+            }
+            else if(((*wl1EndIdxRec) - (*wl1StartIdxRec)) > 1400)
+            {
+                std::cout << "(*wl1StartIdxRec) = " << (*wl1StartIdxRec) << std::endl;
+                std::cout << "(*wl1EndIdxRec) = " << (*wl1EndIdxRec) << std::endl;
+                
+                for(unsigned int i = (*wl1StartIdxRec); i < (*wl1EndIdxRec)+10; ++i)
+                {
+                    if(i == (*wl1StartIdxRec))
+                    {
+                        std::cout << data[i];
+                    }
+                    else
+                    {
+                        std::cout << ", " << data[i];
+                    }
+                }
+                std::cout << std::endl;
+                
+                throw SPDIOException("Number of bins too long for a single pulse error occurred.");
+                //(*wl1EndIdxRec) = (*wl1StartIdxRec) + maxRNBins;
+            }
+            
+            *wl2EndIdxTrans = (*wl2StartIdxTrans) + 2;
+            *wl2StartIdxRec = (*wl2EndIdxTrans) + 1;
+            *wl2EndIdxRec = nextWl1TransIdx-1;
+            if((*wl2EndIdxRec) >= dataLen)
+            {
+                (*wl2EndIdxRec) = dataLen;
+            }
+            else if(((*wl2EndIdxRec) - (*wl2StartIdxRec)) > 1400)
+            {
+                std::cout << "(*wl2StartIdxRec) = " << (*wl2StartIdxRec) << std::endl;
+                std::cout << "(*wl2EndIdxRec) = " << (*wl2EndIdxRec) << std::endl;
+                
+                for(unsigned int i = (*wl2StartIdxRec)-15; i < (*wl2EndIdxRec)+10; ++i)
+                {
+                    if(i == (*wl2StartIdxRec))
+                    {
+                        std::cout << data[i];
+                    }
+                    else
+                    {
+                        std::cout << ", " << data[i];
+                    }
+                }
+                std::cout << std::endl;
+                
+                throw SPDIOException("Number of bins too long for a single pulse error occurred.");
+                //(*wl2EndIdxRec) = (*wl2StartIdxRec) + maxRNBins;
+            }
+            
+        }
+        catch(std::exception &e)
+        {
+            throw SPDIOException(e.what());
+        }
+        catch(SPDIOException &e)
+        {
+            throw e;
+        }
+        catch(SPDException &e)
+        {
+            throw SPDIOException(e.what());
+        }
+    }
+    
+    bool SPDSALCADataBinaryImporter::zeroCrossing(int *data, unsigned int startIdx, unsigned int endIdx, unsigned int idx) throw(SPDIOException)
+    {
+        //std::cout << "Idx = " << idx << " [" << startIdx << ", " << endIdx << "]\n";
         
-        return(waveStart);
+        bool foundCrossing = false;
+        try
+        {
+            if((endIdx - startIdx) == 2) // 3
+            {
+                if((startIdx+1) != idx)
+                {
+                    throw SPDIOException("For a length of 3 the index needs to be the centre");
+                }
+                
+                if((data[idx] > data[startIdx]) & (data[idx] > data[endIdx]))
+                {
+                    foundCrossing = true;
+                }
+                else
+                {
+                    foundCrossing = false;
+                }
+            }
+            else if((endIdx - startIdx) == 1) //2
+            {
+                if(idx == endIdx)
+                {
+                    if(data[idx] > data[startIdx])
+                    {
+                        foundCrossing = true;
+                    }
+                    else
+                    {
+                        foundCrossing = false;
+                    }
+                }
+                else if(idx == startIdx)
+                {
+                    if(data[idx] > data[endIdx])
+                    {
+                        foundCrossing = true;
+                    }
+                    else
+                    {
+                        foundCrossing = false;
+                    }
+                }
+                else
+                {
+                    throw SPDIOException("For a length of 2 the index needs to either be equal to the start or the end index.");
+                }
+            }
+            else if((endIdx - startIdx) == 3) //4
+            {
+                if((idx == (startIdx+1)) | (idx == (endIdx-1)))
+                {
+                    if((data[idx] > data[idx-1]) & (data[idx] > data[idx+1]))
+                    {
+                        foundCrossing = true;
+                    }
+                    else if((data[startIdx+1] > data[startIdx]) & (data[startIdx+1] == data[startIdx+2]) & (data[startIdx+2] > data[startIdx+3]))
+                    {
+                        foundCrossing = true;
+                    }
+                    else
+                    {
+                        foundCrossing = false;
+                    }
+                }
+                else
+                {
+                    throw SPDIOException("For a length of 4 the index needs to either of the middle two bins.");
+                }
+            }
+            else if((endIdx - startIdx) == 4) //5
+            {
+                if(idx != startIdx+2)
+                {
+                    throw SPDIOException("For a length of 5 the index needs to be the middle bin.");
+                }
+                else
+                {
+                    if((data[idx] > data[idx-1]) & (data[idx] > data[idx+1]))
+                    {
+                        foundCrossing = true;
+                    }
+                    else if((data[idx] > data[idx-2]) & (data[idx] > data[idx+2]))
+                    {
+                        foundCrossing = true;
+                    }
+                    else
+                    {
+                        foundCrossing = false;
+                    }
+                }
+            }
+            else
+            {
+                throw SPDIOException("Can only find the zero crossing for regions of 2, 3, 4, or 5 bins.");
+            }
+        }
+        catch(std::exception &e)
+        {
+            throw SPDIOException(e.what());
+        }
+        catch(SPDIOException &e)
+        {
+            throw e;
+        }
+        catch(SPDException &e)
+        {
+            throw SPDIOException(e.what());
+        }
+        return foundCrossing;
     }
     
     SPDSALCADataBinaryImporter::~SPDSALCADataBinaryImporter()
