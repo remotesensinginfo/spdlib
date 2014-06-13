@@ -80,22 +80,11 @@ namespace spdlib
 		~SPDSALCADataBinaryImporter();
 	private:
 		SalcaHDRParams* readHeaderParameters(std::string headerFilePath, std::vector<std::pair<float,std::string> > *fileList)throw(SPDIOException);
-        /** Translate from nice squint angles to those used in equations */
-        void translateSquint(SalcaHDRParams *options);
-        /** Precalculate squint angles */
-        void setSquint(SalcaHDRParams *options, int numb);
-        /** Caluclate squint angle */
-        void squint(float *cZen,float *cAz,float zM,float aM,float zE,float aE,float omega);
-        /** Rotate about x axis */
-        void rotateX(float *vect,float theta);
-        /** Rotate about y axis */
-        void rotateY(float *vect,float theta);
-        /** Rotate about z axis */
-        void rotateZ(float *vect,float theta);
         /** read data into array */
-        char* readData(std::string inFilePath, int i, int *numb, int *nBins, int *length, SalcaHDRParams *options) throw(SPDIOException);
+        int* readData(std::string inFilePath, int i, unsigned int numb, unsigned int nBins, unsigned int *length) throw(SPDIOException);
         /** Find outgoing pulse and check saturation */
-        int findStart(int start,int end,char *satTest, char *data,int offset);
+        void findWaveformsBinIdxes(int *data, unsigned int dataLen, unsigned int maxRNBins, unsigned int prevWl2End, unsigned int *wl1StartIdxTrans, unsigned int *wl2StartIdxTrans, unsigned int *wl1EndIdxTrans, unsigned int *wl2EndIdxTrans, unsigned int *wl1StartIdxRec, unsigned int *wl2StartIdxRec, unsigned int *wl1EndIdxRec, unsigned int *wl2EndIdxRec) throw(SPDIOException);
+        bool zeroCrossing(int *data, unsigned int startIdx, unsigned int endIdx, unsigned int idx) throw(SPDIOException);
 	};
     
     
