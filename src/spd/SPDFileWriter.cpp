@@ -388,12 +388,24 @@ namespace spdlib
 			dimsWavelengthsValue[0] = spdFile->getNumOfWavelengths();
 			H5::DataSpace wavelengthsDataSpace(1, dimsWavelengthsValue);
             
+            float *dataVals = new float[spdFile->getNumOfWavelengths()];
+            for(unsigned int i = 0; i < spdFile->getNumOfWavelengths(); ++i)
+            {
+                dataVals[i] = spdFile->getWavelengths()->at(i);
+            }
             H5::DataSet datasetWavelengths = spdOutH5File->createDataSet( SPDFILE_DATASETNAME_WAVELENGTHS, floatDataTypeDisk, wavelengthsDataSpace );
-            datasetWavelengths.write( &spdFile->getWavelengths()[0], H5::PredType::NATIVE_FLOAT );
-                        
+            datasetWavelengths.write( dataVals, H5::PredType::NATIVE_FLOAT );
+            
+            
+            for(unsigned int i = 0; i < spdFile->getNumOfWavelengths(); ++i)
+            {
+                dataVals[i] = spdFile->getBandwidths()->at(i);
+            }
 			H5::DataSet datasetBandwidths = spdOutH5File->createDataSet( SPDFILE_DATASETNAME_BANDWIDTHS, floatDataTypeDisk, wavelengthsDataSpace );
-            datasetBandwidths.write( &spdFile->getBandwidths()[0], H5::PredType::NATIVE_FLOAT );
-                        
+            datasetBandwidths.write(dataVals, H5::PredType::NATIVE_FLOAT );
+            delete[] dataVals;
+            
+            
             if(spdFile->getFileType() != SPD_UPD_TYPE)
             {
                 H5::DataSet datasetBinSize = spdOutH5File->createDataSet( SPDFILE_DATASETNAME_BIN_SIZE, floatDataTypeDisk, singleValueDataspace);
@@ -1199,11 +1211,21 @@ namespace spdlib
                     dimsWavelengthsValue[0] = spdFile->getNumOfWavelengths();
                     H5::DataSpace wavelengthsDataSpace(1, dimsWavelengthsValue);
                     
+                    float *dataVals = new float[spdFile->getNumOfWavelengths()];
+                    for(unsigned int i = 0; i < spdFile->getNumOfWavelengths(); ++i)
+                    {
+                        dataVals[i] = spdFile->getWavelengths()->at(i);
+                    }
                     H5::DataSet datasetWavelengths = spdH5File->openDataSet( SPDFILE_DATASETNAME_WAVELENGTHS );
-                    datasetWavelengths.write( &spdFile->getWavelengths()[0], H5::PredType::NATIVE_FLOAT );
+                    datasetWavelengths.write(dataVals, H5::PredType::NATIVE_FLOAT );
                     
+                    for(unsigned int i = 0; i < spdFile->getNumOfWavelengths(); ++i)
+                    {
+                        dataVals[i] = spdFile->getBandwidths()->at(i);
+                    }
                     H5::DataSet datasetBandwidths = spdH5File->openDataSet( SPDFILE_DATASETNAME_BANDWIDTHS );
-                    datasetBandwidths.write( &spdFile->getBandwidths()[0], H5::PredType::NATIVE_FLOAT );
+                    datasetBandwidths.write(dataVals, H5::PredType::NATIVE_FLOAT );
+                    delete[] dataVals;
                 }
                 else
                 {
@@ -1241,10 +1263,21 @@ namespace spdlib
                 H5::DataSpace wavelengthsDataSpace(1, dimsWavelengthsValue);
                 H5::FloatType floatDataTypeDisk( H5::PredType::IEEE_F32LE );
                 
+                float *dataVals = new float[spdFile->getNumOfWavelengths()];
+                for(unsigned int i = 0; i < spdFile->getNumOfWavelengths(); ++i)
+                {
+                    dataVals[i] = spdFile->getWavelengths()->at(i);
+                }
                 H5::DataSet datasetWavelengths = spdH5File->createDataSet( SPDFILE_DATASETNAME_WAVELENGTHS, floatDataTypeDisk, wavelengthsDataSpace );
-                datasetWavelengths.write( &spdFile->getWavelengths()[0], H5::PredType::NATIVE_FLOAT );
+                datasetWavelengths.write(dataVals, H5::PredType::NATIVE_FLOAT );
+                
+                for(unsigned int i = 0; i < spdFile->getNumOfWavelengths(); ++i)
+                {
+                    dataVals[i] = spdFile->getBandwidths()->at(i);
+                }
                 H5::DataSet datasetBandwidths = spdH5File->createDataSet( SPDFILE_DATASETNAME_BANDWIDTHS, floatDataTypeDisk, wavelengthsDataSpace );
-                datasetBandwidths.write( &spdFile->getBandwidths()[0], H5::PredType::NATIVE_FLOAT );
+                datasetBandwidths.write(dataVals, H5::PredType::NATIVE_FLOAT );
+                delete[] dataVals;
             }
 			spdH5File->flush(H5F_SCOPE_GLOBAL);
 			
@@ -2041,11 +2074,21 @@ namespace spdlib
                     dimsWavelengthsValue[0] = spdFile->getNumOfWavelengths();
                     H5::DataSpace wavelengthsDataSpace(1, dimsWavelengthsValue);
                     
+                    float *dataVals = new float[spdFile->getNumOfWavelengths()];
+                    for(unsigned int i = 0; i < spdFile->getNumOfWavelengths(); ++i)
+                    {
+                        dataVals[i] = spdFile->getWavelengths()->at(i);
+                    }
                     H5::DataSet datasetWavelengths = spdH5File->openDataSet( SPDFILE_DATASETNAME_WAVELENGTHS );
-                    datasetWavelengths.write( &spdFile->getWavelengths()[0], H5::PredType::NATIVE_FLOAT );
+                    datasetWavelengths.write(dataVals, H5::PredType::NATIVE_FLOAT );
                     
+                    for(unsigned int i = 0; i < spdFile->getNumOfWavelengths(); ++i)
+                    {
+                        dataVals[i] = spdFile->getBandwidths()->at(i);
+                    }
                     H5::DataSet datasetBandwidths = spdH5File->openDataSet( SPDFILE_DATASETNAME_BANDWIDTHS );
-                    datasetBandwidths.write( &spdFile->getBandwidths()[0], H5::PredType::NATIVE_FLOAT );
+                    datasetBandwidths.write(dataVals, H5::PredType::NATIVE_FLOAT );
+                    delete[] dataVals;
                 }
                 else
                 {
@@ -2083,10 +2126,21 @@ namespace spdlib
                 H5::DataSpace wavelengthsDataSpace(1, dimsWavelengthsValue);
                 H5::FloatType floatDataTypeDisk( H5::PredType::IEEE_F32LE );
                 
+                float *dataVals = new float[spdFile->getNumOfWavelengths()];
+                for(unsigned int i = 0; i < spdFile->getNumOfWavelengths(); ++i)
+                {
+                    dataVals[i] = spdFile->getWavelengths()->at(i);
+                }
                 H5::DataSet datasetWavelengths = spdH5File->createDataSet( SPDFILE_DATASETNAME_WAVELENGTHS, floatDataTypeDisk, wavelengthsDataSpace );
-                datasetWavelengths.write( &spdFile->getWavelengths()[0], H5::PredType::NATIVE_FLOAT );
+                datasetWavelengths.write(dataVals, H5::PredType::NATIVE_FLOAT );
+                
+                for(unsigned int i = 0; i < spdFile->getNumOfWavelengths(); ++i)
+                {
+                    dataVals[i] = spdFile->getBandwidths()->at(i);
+                }
                 H5::DataSet datasetBandwidths = spdH5File->createDataSet( SPDFILE_DATASETNAME_BANDWIDTHS, floatDataTypeDisk, wavelengthsDataSpace );
-                datasetBandwidths.write( &spdFile->getBandwidths()[0], H5::PredType::NATIVE_FLOAT );
+                datasetBandwidths.write(dataVals, H5::PredType::NATIVE_FLOAT );
+                delete[] dataVals;
             }
 			spdH5File->flush(H5F_SCOPE_GLOBAL);
 			spdH5File->close();
