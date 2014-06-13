@@ -358,6 +358,24 @@ namespace spdlib{
         
         return hashPresent;
     }
+    
+    bool SPDTextFileUtilities::lineContainsChar(std::string line, char val) throw(SPDIOException)
+    {
+        bool charPresent = false;
+        
+        unsigned int lineLength = line.length();
+        
+        for(unsigned int i = 0; i < lineLength; i++)
+		{
+			if(line.at(i) == val)
+			{
+				charPresent = true;
+                break;
+			}
+		}
+        
+        return charPresent;
+    }
 	
 	double SPDTextFileUtilities::strtodouble(std::string inValue) throw(SPDTextFileException)
 	{
