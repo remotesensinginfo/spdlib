@@ -55,6 +55,7 @@ namespace spdlib{
         std::vector<std::string> readFileLinesToVector(std::string input) throw(SPDIOException);
         bool isNumber(char val);
         bool lineStartWithHash(std::string line) throw(SPDIOException);
+        bool lineContainsChar(std::string line, char val) throw(SPDIOException);
 		
 		double strtodouble(std::string inValue)throw(SPDTextFileException);
 		float strtofloat(std::string inValue)throw(SPDTextFileException);
