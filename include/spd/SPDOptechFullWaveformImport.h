@@ -51,7 +51,7 @@
 namespace spdlib
 {
 	
-    class SPDOptechFullWaveformASCIIImport : public SPDDataImporter
+    class DllExport SPDOptechFullWaveformASCIIImport : public SPDDataImporter
 	{
 	public:
 		SPDOptechFullWaveformASCIIImport(bool convertCoords=false, std::string outputProjWKT="", std::string schema="", boost::uint_fast16_t indexCoords=SPD_FIRST_RETURN, bool defineOrigin=false, double originX=0, double originY=0, float originZ=0, float waveNoiseThreshold=0);

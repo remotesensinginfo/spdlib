@@ -46,7 +46,7 @@
 namespace spdlib
 {
 	
-	class SPDLASFileImporter : public SPDDataImporter
+	class DllExport SPDLASFileImporter : public SPDDataImporter
 	{
 	public:
 		SPDLASFileImporter(bool convertCoords=false, std::string outputProjWKT="", std::string schema="", boost::uint_fast16_t indexCoords=SPD_FIRST_RETURN, bool defineOrigin=false, double originX=0, double originY=0, float originZ=0, float waveNoiseThreshold=0);
@@ -62,7 +62,7 @@ namespace spdlib
 		bool classWarningGiven;
 	};
     
-    class SPDLASFileImporterStrictPulses : public SPDDataImporter
+    class DllExport SPDLASFileImporterStrictPulses : public SPDDataImporter
 	{
 	public:
 		SPDLASFileImporterStrictPulses(bool convertCoords=false, std::string outputProjWKT="", std::string schema="", boost::uint_fast16_t indexCoords=SPD_FIRST_RETURN, bool defineOrigin=false, double originX=0, double originY=0, float originZ=0, float waveNoiseThreshold=0);
@@ -79,7 +79,7 @@ namespace spdlib
 	};
     
     
-    class SPDLASFileNoPulsesImporter : public SPDDataImporter
+    class DllExport SPDLASFileNoPulsesImporter : public SPDDataImporter
 	{
 	public:
 		SPDLASFileNoPulsesImporter(bool convertCoords=false, std::string outputProjWKT="", std::string schema="", boost::uint_fast16_t indexCoords=SPD_FIRST_RETURN, bool defineOrigin=false, double originX=0, double originY=0, float originZ=0, float waveNoiseThreshold=0);

@@ -44,7 +44,7 @@
 namespace spdlib
 {
 	
-	class SPDImageUtils
+	class DllExport SPDImageUtils
 	{
 	public:
 		SPDImageUtils();

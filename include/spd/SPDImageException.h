@@ -31,7 +31,7 @@
 
 namespace spdlib
 {
-	class SPDImageException : public SPDException
+	class DllExport SPDImageException : public SPDException
 	{
 	public:
 		SPDImageException();

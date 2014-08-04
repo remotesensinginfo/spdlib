@@ -44,7 +44,7 @@
 
 namespace spdlib
 {
-    class SPDRemoveVerticalNoise : public SPDPulseProcessor
+    class DllExport SPDRemoveVerticalNoise : public SPDPulseProcessor
 	{
 	public:
         SPDRemoveVerticalNoise(bool absUpSet, bool absLowSet, bool relUpSet, bool relLowSet, float absUpThres, float absLowThres, float relUpThres, float relLowThres);

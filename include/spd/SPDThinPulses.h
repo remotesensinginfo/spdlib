@@ -41,7 +41,7 @@
 
 namespace spdlib
 {
-    class SPDThinPulses : public SPDPulseProcessor
+    class DllExport SPDThinPulses : public SPDPulseProcessor
 	{
 	public:
         SPDThinPulses(boost::uint_fast16_t numPulses);

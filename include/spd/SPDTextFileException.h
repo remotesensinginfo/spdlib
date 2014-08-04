@@ -31,7 +31,7 @@
 
 namespace spdlib
 {
-	class SPDTextFileException : public SPDException
+	class DllExport SPDTextFileException : public SPDException
 	{
 	public:
 		SPDTextFileException();

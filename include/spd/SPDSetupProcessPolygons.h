@@ -49,7 +49,7 @@
 namespace spdlib
 {
 	
-	class SPDSetupProcessPolygonsAbstract
+	class DllExport SPDSetupProcessPolygonsAbstract
 	{
 	public:
 		SPDSetupProcessPolygonsAbstract(){};
@@ -60,7 +60,7 @@ namespace spdlib
 		std::string getLayerName(std::string filepath);
 	};
 	
-	class SPDSetupProcessShapefilePolygons : public SPDSetupProcessPolygonsAbstract
+	class DllExport SPDSetupProcessShapefilePolygons : public SPDSetupProcessPolygonsAbstract
 	{
 	public:
 		SPDSetupProcessShapefilePolygons();

@@ -42,7 +42,7 @@
 
 namespace spdlib
 {	
-	class SPDCalcFileStats
+	class DllExport SPDCalcFileStats
 	{
 	public:
 		SPDCalcFileStats();
@@ -52,7 +52,7 @@ namespace spdlib
 	};
     
     
-    class SPDPulseProcessorCalcStats : public SPDPulseProcessor
+    class DllExport SPDPulseProcessorCalcStats : public SPDPulseProcessor
 	{
 	public:
         SPDPulseProcessorCalcStats();

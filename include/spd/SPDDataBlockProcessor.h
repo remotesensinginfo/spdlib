@@ -38,7 +38,7 @@
 
 namespace spdlib
 {
-    struct SPDXYPoint
+    struct DllExport SPDXYPoint
     {
         SPDXYPoint()
         {
@@ -54,7 +54,7 @@ namespace spdlib
         double y;
     };
 	
-	class SPDDataBlockProcessor
+	class DllExport SPDDataBlockProcessor
 	{
 	public:
         virtual void processDataBlockImage(SPDFile *inSPDFile, std::vector<SPDPulse*> ***pulses, float ***imageDataBlock, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast32_t numImgBands, float binSize) throw(SPDProcessingException)=0;
@@ -68,7 +68,7 @@ namespace spdlib
         virtual ~SPDDataBlockProcessor(){};
 	};
     
-    class SPDDataBlockProcessorBlank : public SPDDataBlockProcessor
+    class DllExport SPDDataBlockProcessorBlank : public SPDDataBlockProcessor
 	{
 	public:
         SPDDataBlockProcessorBlank():SPDDataBlockProcessor(){};

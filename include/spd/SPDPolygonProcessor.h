@@ -45,7 +45,7 @@
 namespace spdlib
 {
 	
-	class SPDPolygonProcessor
+	class DllExport SPDPolygonProcessor
 	{
 	public:
 		SPDPolygonProcessor(){};

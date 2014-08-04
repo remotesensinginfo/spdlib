@@ -38,7 +38,7 @@
 
 namespace spdlib
 {
-	class SPDExportAsReadUnGridded : public SPDImporterProcessor
+	class DllExport SPDExportAsReadUnGridded : public SPDImporterProcessor
 	{
 	public:
 		SPDExportAsReadUnGridded(SPDDataExporter *exporter, SPDFile *spdFileOut, bool defineSource=false, boost::uint_fast16_t sourceID=0, bool defineReturnID=false, boost::uint_fast16_t returnID=0, bool defineClasses=false, boost::uint_fast16_t classValue=0) throw(SPDException);

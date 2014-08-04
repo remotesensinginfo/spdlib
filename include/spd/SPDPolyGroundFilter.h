@@ -48,7 +48,7 @@
 namespace spdlib
 {
 	
-	class SPDFindMinReturnsProcessor : public SPDPulseProcessor
+	class DllExport SPDFindMinReturnsProcessor : public SPDPulseProcessor
 	{
 	public:
         SPDFindMinReturnsProcessor(std::vector<SPDPoint*> *minPts, boost::uint_fast16_t ptSelectClass)
@@ -134,7 +134,7 @@ namespace spdlib
 	};
 
     
-    class SPDClassifyGrdReturnsFromSurfaceCoefficientsProcessor : public SPDPulseProcessor
+    class DllExport SPDClassifyGrdReturnsFromSurfaceCoefficientsProcessor : public SPDPulseProcessor
 	{
 	public:
         SPDClassifyGrdReturnsFromSurfaceCoefficientsProcessor(float grdThres, boost::uint_fast16_t degree, boost::uint_fast16_t iters, gsl_vector *coefficients, boost::uint_fast16_t ptSelectClass)
@@ -263,7 +263,7 @@ namespace spdlib
 	};
     
     
-    class SPDPolyFitGroundLocalFilter : public SPDDataBlockProcessor
+    class DllExport SPDPolyFitGroundLocalFilter : public SPDDataBlockProcessor
 	{
 	public:
         // constructor
@@ -299,7 +299,7 @@ namespace spdlib
 
 
     
-    class SPDPolyFitGroundFilter
+    class DllExport SPDPolyFitGroundFilter
 	{
 	public:
 		SPDPolyFitGroundFilter();

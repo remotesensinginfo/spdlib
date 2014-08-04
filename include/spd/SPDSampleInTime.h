@@ -38,7 +38,7 @@
 
 namespace spdlib
 {
-	class SPDSampleInTime : public SPDImporterProcessor
+	class DllExport SPDSampleInTime : public SPDImporterProcessor
 	{
 	public:
 		SPDSampleInTime(std::string outputFilePath, boost::uint_fast16_t tSample) throw(SPDException);

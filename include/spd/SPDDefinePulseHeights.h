@@ -44,7 +44,7 @@
 namespace spdlib
 {
     
-    class SPDDefinePulseHeights : public SPDDataBlockProcessor
+    class DllExport SPDDefinePulseHeights : public SPDDataBlockProcessor
 	{
 	public:
         SPDDefinePulseHeights(SPDPointInterpolator *interpolator);

@@ -56,7 +56,7 @@
 namespace spdlib
 {
 	
-	class SPDCalcMetrics
+	class DllExport SPDCalcMetrics
 	{
 	public:
 		SPDCalcMetrics();
@@ -71,7 +71,7 @@ namespace spdlib
     
 
     
-    class SPDCalcPolyMetrics : public SPDPolygonProcessor
+    class DllExport SPDCalcPolyMetrics : public SPDPolygonProcessor
 	{
 	public:
 		SPDCalcPolyMetrics(std::vector<SPDMetric*> *metrics, std::vector<std::string> *fieldNames);
@@ -86,7 +86,7 @@ namespace spdlib
 	};
     
     
-    class SPDCalcImageMetrics : public SPDPulseProcessor
+    class DllExport SPDCalcImageMetrics : public SPDPulseProcessor
 	{
 	public:
         SPDCalcImageMetrics(std::vector<SPDMetric*> *metrics, std::vector<std::string> *fieldNames);
@@ -111,7 +111,7 @@ namespace spdlib
     
     
     
-    class SPDCalcZMedianVal : public SPDPulseProcessor
+    class DllExport SPDCalcZMedianVal : public SPDPulseProcessor
 	{
 	public:
         SPDCalcZMedianVal();

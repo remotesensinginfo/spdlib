@@ -858,7 +858,7 @@ namespace spdlib
                         }
                         else
                         {
-                            std::string outMess = std::string("Directory \'") + outDir.native() + std::string("\' was not present. Did you build the directory structure?");
+                            std::string outMess = std::string("Directory \'") + std::string(outDir.native()) + std::string("\' was not present. Did you build the directory structure?");
                             throw SPDProcessingException(outMess);
                         }
                     }

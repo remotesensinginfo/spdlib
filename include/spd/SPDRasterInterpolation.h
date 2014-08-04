@@ -46,7 +46,7 @@
 namespace spdlib
 {
     
-    class SPDDTMInterpolation : public SPDDataBlockProcessor
+    class DllExport SPDDTMInterpolation : public SPDDataBlockProcessor
 	{
 	public:
         SPDDTMInterpolation(SPDPointInterpolator *interpolator);
@@ -78,7 +78,7 @@ namespace spdlib
         SPDPointInterpolator *interpolator;
 	};
     
-    class SPDDSMInterpolation : public SPDDataBlockProcessor
+    class DllExport SPDDSMInterpolation : public SPDDataBlockProcessor
 	{
 	public:
         SPDDSMInterpolation(SPDPointInterpolator *interpolator);
@@ -111,7 +111,7 @@ namespace spdlib
 	};
     
     
-    class SPDCHMInterpolation : public SPDDataBlockProcessor
+    class DllExport SPDCHMInterpolation : public SPDDataBlockProcessor
 	{
 	public:
         SPDCHMInterpolation(SPDPointInterpolator *interpolator, bool useVegClassifiedPts);
@@ -144,7 +144,7 @@ namespace spdlib
         bool useVegClassifiedPts;
 	};
     
-    class SPDAmplitudeInterpolation : public SPDDataBlockProcessor
+    class DllExport SPDAmplitudeInterpolation : public SPDDataBlockProcessor
 	{
 	public:
         SPDAmplitudeInterpolation(SPDPointInterpolator *interpolator, bool useGroundClassifiedPts);
@@ -179,7 +179,7 @@ namespace spdlib
 	};
     
     
-    class SPDRangeInterpolation : public SPDDataBlockProcessor
+    class DllExport SPDRangeInterpolation : public SPDDataBlockProcessor
 	{
 	public:
         SPDRangeInterpolation(SPDPointInterpolator *interpolator);

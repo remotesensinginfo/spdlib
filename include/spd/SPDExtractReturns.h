@@ -40,7 +40,7 @@
 
 namespace spdlib
 {
-	class SPDExtractReturnsImportProcess : public SPDImporterProcessor
+	class DllExport SPDExtractReturnsImportProcess : public SPDImporterProcessor
 	{
 	public:
 		SPDExtractReturnsImportProcess(std::string outputFilePath, bool classValSet, boost::uint_fast16_t classID, bool returnValSet, boost::uint_fast16_t returnVal) throw(SPDException);
@@ -58,7 +58,7 @@ namespace spdlib
 	};
     
     
-    class SPDExtractReturnsBlockProcess : public SPDPulseProcessor
+    class DllExport SPDExtractReturnsBlockProcess : public SPDPulseProcessor
 	{
 	public:
         SPDExtractReturnsBlockProcess(bool classValSet, boost::uint_fast16_t classID, bool returnValSet, boost::uint_fast16_t returnVal, bool minMaxSet, boost::uint_fast16_t highOrLow);

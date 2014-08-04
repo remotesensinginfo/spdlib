@@ -42,7 +42,7 @@
 
 namespace spdlib
 {	
-	class SPDGenBinaryMask
+	class DllExport SPDGenBinaryMask
 	{
 	public:
 		SPDGenBinaryMask();
@@ -51,7 +51,7 @@ namespace spdlib
 	};
     
     
-    class SPDPulseProcessorCalcMask : public SPDPulseProcessor
+    class DllExport SPDPulseProcessorCalcMask : public SPDPulseProcessor
 	{
 	public:
         SPDPulseProcessorCalcMask(boost::uint_fast32_t numPulses);

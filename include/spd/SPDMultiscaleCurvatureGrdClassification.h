@@ -55,7 +55,7 @@ namespace spdlib
         medianFilter = 1
     };
     
-    class SPDMultiscaleCurvatureGrdClassification : public SPDDataBlockProcessor
+    class DllExport SPDMultiscaleCurvatureGrdClassification : public SPDDataBlockProcessor
 	{
 	public:
         SPDMultiscaleCurvatureGrdClassification(float initScale,boost::uint_fast16_t numOfScalesAbove,boost::uint_fast16_t numOfScalesBelow, float scaleGaps, float initCurveTolerance, float minCurveTolerance, float stepCurveTolerance, float interpMaxRadius,boost::uint_fast16_t interpNumPoints, SPDSmoothFilterType filterType,boost::uint_fast16_t smoothFilterHSize, float thresOfChange, bool multiReturnPulsesOnly,boost::uint_fast16_t classParameters);
@@ -108,7 +108,7 @@ namespace spdlib
     
     
     
-    class SPDTPSNumPtsUseAvThinInterpolator
+    class DllExport SPDTPSNumPtsUseAvThinInterpolator
 	{
 	public:
 		SPDTPSNumPtsUseAvThinInterpolator(float radius,boost::uint_fast16_t numPoints,boost::uint_fast16_t elevVal, double gridResolution, bool thinGrid);

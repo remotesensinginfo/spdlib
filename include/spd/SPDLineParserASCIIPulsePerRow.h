@@ -40,7 +40,7 @@
 
 namespace spdlib
 {
-	class SPDLineParserASCIIPulsePerRow : public SPDTextLineProcessor
+	class DllExport SPDLineParserASCIIPulsePerRow : public SPDTextLineProcessor
 	{
 	public:
 		SPDLineParserASCIIPulsePerRow();

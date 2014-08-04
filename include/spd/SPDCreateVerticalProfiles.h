@@ -42,7 +42,7 @@
 namespace spdlib
 {
 	
-    class SPDCreateVerticalProfiles : public SPDPulseProcessor
+    class DllExport SPDCreateVerticalProfiles : public SPDPulseProcessor
 	{
 	public:
         SPDCreateVerticalProfiles(bool useSmoothing, boost::uint_fast32_t smoothWindowSize, boost::uint_fast32_t smoothPolyOrder, boost::uint_fast32_t maxProfileHeight, boost::uint_fast32_t numOfBins, float minPtHeight);

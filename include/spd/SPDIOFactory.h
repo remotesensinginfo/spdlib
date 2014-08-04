@@ -52,7 +52,7 @@
 
 namespace spdlib
 {	
-	class SPDIOFactory
+	class DllExport SPDIOFactory
 	{
 	public:
 		SPDIOFactory();
