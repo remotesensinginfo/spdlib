@@ -48,7 +48,7 @@
 namespace spdlib
 {
 	
-	class SPDFullWaveformDatFileImporter : public SPDDataImporter
+	class DllExport SPDFullWaveformDatFileImporter : public SPDDataImporter
 	{
 	public:
 		SPDFullWaveformDatFileImporter(bool convertCoords=false, std::string outputProjWKT="", std::string schema="", boost::uint_fast16_t indexCoords=SPD_START_OF_RECEIVED_WAVEFORM, bool defineOrigin=false, double originX=0, double originY=0, float originZ=0, float waveNoiseThreshold=0);

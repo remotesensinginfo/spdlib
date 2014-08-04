@@ -42,7 +42,7 @@
 
 namespace spdlib
 {
-	class SPDGridData
+	class DllExport SPDGridData
 	{
 	public:
 		SPDGridData();

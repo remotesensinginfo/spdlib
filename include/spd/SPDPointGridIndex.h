@@ -75,7 +75,7 @@ namespace spdlib
         return pt1->height < pt2->height;
     };
     
-	class SPDPointGridIndex
+	class DllExport SPDPointGridIndex
 	{
 	public:
 		SPDPointGridIndex();

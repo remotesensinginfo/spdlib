@@ -40,7 +40,7 @@
 namespace spdlib
 {
 	   
-    class SPDClassifyPtsNumReturns : public SPDDataBlockProcessor
+    class DllExport SPDClassifyPtsNumReturns : public SPDDataBlockProcessor
 	{
 	public:
 

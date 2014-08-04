@@ -59,7 +59,7 @@ namespace spdlib
         spd_decomp_indvid
     };
     
-    class SPDDecomposeWaveforms
+    class DllExport SPDDecomposeWaveforms
     {
     public:
         SPDDecomposeWaveforms();
@@ -67,7 +67,7 @@ namespace spdlib
         ~SPDDecomposeWaveforms();
     };
     
-    class SPDDecomposePulse
+    class DllExport SPDDecomposePulse
     {
     public:
         SPDDecomposePulse(){};
@@ -75,7 +75,7 @@ namespace spdlib
         virtual ~SPDDecomposePulse(){};
     };
     
-    class SPDDecomposePulseAll : public SPDDecomposePulse
+    class DllExport SPDDecomposePulseAll : public SPDDecomposePulse
     {
     public:
         SPDDecomposePulseAll(SPDInitDecomposition *findInitPts, boost::uint_fast32_t intThreshold, bool thresholdSet, bool noiseSet);
@@ -90,7 +90,7 @@ namespace spdlib
 		mp_result *mpResultsValues;
     };
     
-    class SPDDecomposePulseIndividually : public SPDDecomposePulse
+    class DllExport SPDDecomposePulseIndividually : public SPDDecomposePulse
     {
     public:
         SPDDecomposePulseIndividually(SPDInitDecomposition *findInitPts, boost::uint_fast16_t waveFitWindow, boost::uint_fast32_t intThreshold, bool thresholdSet);
@@ -104,7 +104,7 @@ namespace spdlib
 		mp_result *mpResultsValues;
     };
     
-    class SPDDecomposePulseImportProcessor : public SPDImporterProcessor
+    class DllExport SPDDecomposePulseImportProcessor : public SPDImporterProcessor
 	{
 	public:
 		SPDDecomposePulseImportProcessor(SPDDecomposePulse *decompose, SPDDataExporter *exporter, SPDFile *spdFileOut) throw(SPDException)
@@ -172,7 +172,7 @@ namespace spdlib
 	};
     
     
-    class SPDDecomposePulseColumnProcessor : public SPDPulseProcessor
+    class DllExport SPDDecomposePulseColumnProcessor : public SPDPulseProcessor
 	{
 	public:
         SPDDecomposePulseColumnProcessor(SPDDecomposePulse *decompose)

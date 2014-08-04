@@ -36,7 +36,7 @@
 
 namespace spdlib
 {
-	class SPDTextFileLineReader
+	class DllExport SPDTextFileLineReader
 	{
 	public:
 		SPDTextFileLineReader();

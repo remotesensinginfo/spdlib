@@ -41,7 +41,7 @@
 namespace spdlib
 {
 	
-    class SPDDefineRGBValues : public SPDPulseProcessor
+    class DllExport SPDDefineRGBValues : public SPDPulseProcessor
 	{
 	public:
         SPDDefineRGBValues(boost::uint_fast16_t redBand, boost::uint_fast16_t greenBand, boost::uint_fast16_t blueBand);
@@ -68,7 +68,7 @@ namespace spdlib
         boost::uint_fast16_t blueBand;
 	};
     
-    class SPDFindRGBValuesStats : public SPDPulseProcessor
+    class DllExport SPDFindRGBValuesStats : public SPDPulseProcessor
 	{
 	public:
         SPDFindRGBValuesStats();
@@ -174,7 +174,7 @@ namespace spdlib
 	};
     
     
-    class SPDLinearStretchRGBValues : public SPDPulseProcessor
+    class DllExport SPDLinearStretchRGBValues : public SPDPulseProcessor
 	{
 	public:
         SPDLinearStretchRGBValues(float redMin, float redMax, float greenMin, float greenMax, float blueMin, float blueMax, bool stretchIndepend);

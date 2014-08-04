@@ -45,7 +45,7 @@
 
 namespace spdlib
 {	
-	class SPDProcessPolygons
+	class DllExport SPDProcessPolygons
 	{
 	public:
 		SPDProcessPolygons(SPDPolygonProcessor *processor);

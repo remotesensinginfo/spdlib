@@ -78,7 +78,7 @@ namespace spdlib
 	 * SPDPoint/SPDPulse data.
 	 *
 	 */
-	class SPDPointInterpolator
+	class DllExport SPDPointInterpolator
 	{
 	public:
 		SPDPointInterpolator(boost::uint_fast16_t elevVal, float thinGridRes, bool thinData, boost::uint_fast16_t selectHighOrLow, boost::uint_fast16_t maxNumPtsPerBin);
@@ -113,7 +113,7 @@ namespace spdlib
 	 * cleans up the triangulation.
 	 *
 	 */
-	class SPDTriangulationPointInterpolator : public SPDPointInterpolator
+	class DllExport SPDTriangulationPointInterpolator : public SPDPointInterpolator
 	{
 	public:
 		SPDTriangulationPointInterpolator(boost::uint_fast16_t elevVal, float thinGridRes, bool thinData, boost::uint_fast16_t selectHighOrLow, boost::uint_fast16_t maxNumPtsPerBin);
@@ -140,7 +140,7 @@ namespace spdlib
 	 * cleans up the index.
 	 *
 	 */
-	class SPDGridIndexPointInterpolator : public SPDPointInterpolator
+	class DllExport SPDGridIndexPointInterpolator : public SPDPointInterpolator
 	{
 	public:
 		SPDGridIndexPointInterpolator(double gridResolution, boost::uint_fast16_t elevVal, float thinGridRes, bool thinData, boost::uint_fast16_t selectHighOrLow, boost::uint_fast16_t maxNumPtsPerBin);
@@ -166,7 +166,7 @@ namespace spdlib
 	 * cleans up the index.
 	 *
 	 */
-	class SPDRFBPointInterpolator : public SPDPointInterpolator
+	class DllExport SPDRFBPointInterpolator : public SPDPointInterpolator
 	{
 	public:
 		SPDRFBPointInterpolator(double radius, boost::uint_fast16_t numLayers, boost::uint_fast16_t elevVal, float thinGridRes, bool thinData, boost::uint_fast16_t selectHighOrLow, boost::uint_fast16_t maxNumPtsPerBin);
@@ -193,7 +193,7 @@ namespace spdlib
 	 * to define the nearest neighbor. 
 	 *
 	 */
-	class SPDNearestNeighbourInterpolator : public SPDTriangulationPointInterpolator
+	class DllExport SPDNearestNeighbourInterpolator : public SPDTriangulationPointInterpolator
 	{
 	public:
 		SPDNearestNeighbourInterpolator(boost::uint_fast16_t elevVal, float thinGridRes, bool thinData, boost::uint_fast16_t selectHighOrLow, boost::uint_fast16_t maxNumPtsPerBin);
@@ -207,7 +207,7 @@ namespace spdlib
 	 * to define the three neighboring points. 
 	 *
 	 */
-	class SPDTINPlaneFitInterpolator : public SPDTriangulationPointInterpolator
+	class DllExport SPDTINPlaneFitInterpolator : public SPDTriangulationPointInterpolator
 	{
 	public:
 		SPDTINPlaneFitInterpolator(boost::uint_fast16_t elevVal, float thinGridRes, bool thinData, boost::uint_fast16_t selectHighOrLow, boost::uint_fast16_t maxNumPtsPerBin);
@@ -225,7 +225,7 @@ namespace spdlib
 	 * An implementation of a Standard Deviation filtering interpolator
 	 * from Lee and Lucas 2007.
 	 */
-	class SPDStdDevFilterInterpolator : public SPDGridIndexPointInterpolator
+	class DllExport SPDStdDevFilterInterpolator : public SPDGridIndexPointInterpolator
 	{
 	public:
 		SPDStdDevFilterInterpolator(float stdDevThreshold, float lowDist, float highDist, float stdDevDist, double gridResolution, boost::uint_fast16_t elevVal, float thinGridRes, bool thinData, boost::uint_fast16_t selectHighOrLow, boost::uint_fast16_t maxNumPtsPerBin);
@@ -238,7 +238,7 @@ namespace spdlib
 		float stdDevDist;
 	};
 	
-	class SPDTPSRadiusInterpolator : public SPDGridIndexPointInterpolator
+	class DllExport SPDTPSRadiusInterpolator : public SPDGridIndexPointInterpolator
 	{
 	public:
 		SPDTPSRadiusInterpolator(float radius, boost::uint_fast16_t minNumPoints, double gridResolution, boost::uint_fast16_t elevVal, float thinGridRes, bool thinData, boost::uint_fast16_t selectHighOrLow, boost::uint_fast16_t maxNumPtsPerBin);
@@ -249,7 +249,7 @@ namespace spdlib
         boost::uint_fast16_t minNumPoints;
 	};
     
-    class SPDTPSNumPtsInterpolator : public SPDGridIndexPointInterpolator
+    class DllExport SPDTPSNumPtsInterpolator : public SPDGridIndexPointInterpolator
 	{
 	public:
 		SPDTPSNumPtsInterpolator(float radius, boost::uint_fast16_t numPoints, double gridResolution, boost::uint_fast16_t elevVal, float thinGridRes, bool thinData, boost::uint_fast16_t selectHighOrLow, boost::uint_fast16_t maxNumPtsPerBin);
@@ -260,7 +260,7 @@ namespace spdlib
         boost::uint_fast16_t numPoints;
 	};
     
-	class SPDNaturalNeighborPointInterpolator :public SPDTriangulationPointInterpolator
+	class DllExport SPDNaturalNeighborPointInterpolator :public SPDTriangulationPointInterpolator
 	{
 	public:
 		SPDNaturalNeighborPointInterpolator(boost::uint_fast16_t elevVal, float thinGridRes, bool thinData, boost::uint_fast16_t selectHighOrLow, boost::uint_fast16_t maxNumPtsPerBin);
@@ -294,7 +294,7 @@ namespace spdlib
 	 * SPDPoint/SPDPulse data projected spherically.
 	 *
 	 */
-	class SPDSphericalPointInterpolator
+	class DllExport SPDSphericalPointInterpolator
 	{
 	public:
 		SPDSphericalPointInterpolator(boost::uint_fast16_t elevVal, float thinGridRes, bool thinData, boost::uint_fast16_t selectHighOrLow, boost::uint_fast16_t maxNumPtsPerBin);
@@ -328,7 +328,7 @@ namespace spdlib
 	 * cleans up the triangulation.
 	 *
 	 */
-	class SPDTriangulationSphericalPointInterpolator : public SPDSphericalPointInterpolator
+	class DllExport SPDTriangulationSphericalPointInterpolator : public SPDSphericalPointInterpolator
 	{
 	public:
 		SPDTriangulationSphericalPointInterpolator(boost::uint_fast16_t elevVal, float thinGridRes, bool thinData, boost::uint_fast16_t selectHighOrLow, boost::uint_fast16_t maxNumPtsPerBin);
@@ -355,7 +355,7 @@ namespace spdlib
 	 * cleans up the index.
 	 *
 	 */
-	class SPDGridIndexSphericalPointInterpolator : public SPDSphericalPointInterpolator
+	class DllExport SPDGridIndexSphericalPointInterpolator : public SPDSphericalPointInterpolator
 	{
 	public:
 		SPDGridIndexSphericalPointInterpolator(double gridResolution, boost::uint_fast16_t elevVal, float thinGridRes, bool thinData, boost::uint_fast16_t selectHighOrLow, boost::uint_fast16_t maxNumPtsPerBin);
@@ -373,7 +373,7 @@ namespace spdlib
 	};
 
     
-    class SPDNaturalNeighborSphericalPointInterpolator :public SPDTriangulationSphericalPointInterpolator
+    class DllExport SPDNaturalNeighborSphericalPointInterpolator :public SPDTriangulationSphericalPointInterpolator
 	{
 	public:
 		SPDNaturalNeighborSphericalPointInterpolator(boost::uint_fast16_t elevVal, float thinGridRes, bool thinData, boost::uint_fast16_t selectHighOrLow, boost::uint_fast16_t maxNumPtsPerBin);
@@ -381,7 +381,7 @@ namespace spdlib
 		~SPDNaturalNeighborSphericalPointInterpolator();
 	};
     
-    class SPDNearestNeighborSphericalPointInterpolator :public SPDTriangulationSphericalPointInterpolator
+    class DllExport SPDNearestNeighborSphericalPointInterpolator :public SPDTriangulationSphericalPointInterpolator
 	{
 	public:
 		SPDNearestNeighborSphericalPointInterpolator(boost::uint_fast16_t elevVal, float thinGridRes, bool thinData, boost::uint_fast16_t selectHighOrLow, boost::uint_fast16_t maxNumPtsPerBin, float distanceThreshold);
@@ -391,7 +391,7 @@ namespace spdlib
         float distanceThreshold;
 	};
     
-    class SPDTPSRadiusSphericalInterpolator : public SPDGridIndexSphericalPointInterpolator
+    class DllExport SPDTPSRadiusSphericalInterpolator : public SPDGridIndexSphericalPointInterpolator
 	{
 	public:
 		SPDTPSRadiusSphericalInterpolator(float radius, boost::uint_fast16_t minNumPoints, double gridResolution, boost::uint_fast16_t elevVal, float thinGridRes, bool thinData, boost::uint_fast16_t selectHighOrLow, boost::uint_fast16_t maxNumPtsPerBin);
@@ -402,7 +402,7 @@ namespace spdlib
         boost::uint_fast16_t minNumPoints;
 	};
     
-    class SPDTPSNumPtsSphericalInterpolator : public SPDGridIndexSphericalPointInterpolator
+    class DllExport SPDTPSNumPtsSphericalInterpolator : public SPDGridIndexSphericalPointInterpolator
 	{
 	public:
 		SPDTPSNumPtsSphericalInterpolator(float radius, boost::uint_fast16_t numPoints, double gridResolution, boost::uint_fast16_t elevVal, float thinGridRes, bool thinData, boost::uint_fast16_t selectHighOrLow, boost::uint_fast16_t maxNumPtsPerBin);

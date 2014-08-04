@@ -41,7 +41,7 @@
 
 namespace spdlib 
 {
-    class SPDFileUtilities
+    class DllExport SPDFileUtilities
     {
     public: 
         SPDFileUtilities();

@@ -45,7 +45,7 @@
 
 namespace spdlib
 {	
-	class SPDConvertFormats
+	class DllExport SPDConvertFormats
 	{
 	public:
 		SPDConvertFormats();

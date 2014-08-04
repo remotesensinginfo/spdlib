@@ -42,14 +42,14 @@ namespace spdlib{
 	 * m - x axis
 	 * n - y axis
 	 */
-	struct Matrix
+	struct DllExport Matrix
 	{
 		double *matrix;
 		int m;
 		int n;
 	};
 	
-	class SPDMatrixUtils
+	class DllExport SPDMatrixUtils
 	{
 	public:
 		SPDMatrixUtils();

@@ -46,7 +46,7 @@
 
 namespace spdlib
 {	
-	class SPDApplyElevationChange
+	class DllExport SPDApplyElevationChange
 	{
 	public:
 		SPDApplyElevationChange();
@@ -57,7 +57,7 @@ namespace spdlib
 		~SPDApplyElevationChange();
 	};
 	
-	class SPDApplyUnsortedElevChangeConstant : public SPDImporterProcessor
+	class DllExport SPDApplyUnsortedElevChangeConstant : public SPDImporterProcessor
 	{
 	public:
 		SPDApplyUnsortedElevChangeConstant(double elevConstant, bool addOffset, SPDDataExporter *exporter, SPDFile *spdFileOut) throw(SPDException);
@@ -72,7 +72,7 @@ namespace spdlib
 		std::list<SPDPulse*> *pulses;
 	};
 	
-	class SPDApplyUnsortedElevChangeVariable : public SPDImporterProcessor
+	class DllExport SPDApplyUnsortedElevChangeVariable : public SPDImporterProcessor
 	{
 	public:
 		SPDApplyUnsortedElevChangeVariable(GDALDataset *elevImage, bool addOffset, SPDDataExporter *exporter, SPDFile *spdFileOut) throw(SPDException);
@@ -93,7 +93,7 @@ namespace spdlib
 	
     
     
-    class SPDApplySPDElevChangeConstant : public SPDPulseProcessor
+    class DllExport SPDApplySPDElevChangeConstant : public SPDPulseProcessor
 	{
 	public:
         SPDApplySPDElevChangeConstant(double elevConstant, bool addOffset);
@@ -120,7 +120,7 @@ namespace spdlib
 		bool addOffset;
 	};
     
-    class SPDApplySPDElevChangeVariable : public SPDPulseProcessor
+    class DllExport SPDApplySPDElevChangeVariable : public SPDPulseProcessor
 	{
 	public:
         SPDApplySPDElevChangeVariable(GDALDataset *elevImage, bool addOffset);
@@ -153,7 +153,7 @@ namespace spdlib
     
     
     /*
-	class SPDApplySPDElevChangeConstant : public SPDPulsesProcessor
+	class DllExport SPDApplySPDElevChangeConstant : public SPDPulsesProcessor
 	{
 	public:
 		SPDApplySPDElevChangeConstant(double elevConstant, bool addOffset);
@@ -184,7 +184,7 @@ namespace spdlib
 		bool addOffset;
 	};
 	
-	class SPDApplySPDElevChangeVariable : public SPDPulsesProcessor
+	class DllExport SPDApplySPDElevChangeVariable : public SPDPulsesProcessor
 	{
 	public:
 		SPDApplySPDElevChangeVariable(GDALDataset *elevImage, bool addOffset);

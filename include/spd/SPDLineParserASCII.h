@@ -50,7 +50,7 @@
 
 namespace spdlib
 {
-	class SPDLineParserASCII : public SPDTextLineProcessor
+	class DllExport SPDLineParserASCII : public SPDTextLineProcessor
 	{
         struct ASCIIField
         {

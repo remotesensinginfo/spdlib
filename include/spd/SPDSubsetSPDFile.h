@@ -49,7 +49,7 @@
 
 namespace spdlib
 {	
-	class SPDSubsetSPDFile
+	class DllExport SPDSubsetSPDFile
 	{
 	public:
 		SPDSubsetSPDFile();
@@ -61,7 +61,7 @@ namespace spdlib
 		~SPDSubsetSPDFile();
 	};
     
-    class SPDUPDPulseSubset
+    class DllExport SPDUPDPulseSubset
 	{
 	public:
 		SPDUPDPulseSubset();

@@ -57,7 +57,7 @@ namespace spdlib
         float pxlRes;
     };
         
-    class SPDParameterFreeGroundFilter : public SPDDataBlockProcessor
+    class DllExport SPDParameterFreeGroundFilter : public SPDDataBlockProcessor
 	{
 	public:
         // constructor
@@ -123,7 +123,7 @@ namespace spdlib
     
     
     
-    class SPDTPSPFFGrdFilteringInterpolator
+    class DllExport SPDTPSPFFGrdFilteringInterpolator
 	{
 	public:
 		SPDTPSPFFGrdFilteringInterpolator(float radius);

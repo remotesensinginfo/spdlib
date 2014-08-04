@@ -49,7 +49,7 @@
 
 namespace spdlib
 {
-	class SPDProcessDataBlocks
+	class DllExport SPDProcessDataBlocks
 	{
 	public:		
 		SPDProcessDataBlocks(SPDDataBlockProcessor *dataBlockProcessor, boost::uint_fast32_t overlap=25, boost::uint_fast32_t blockXSize=250, boost::uint_fast32_t blockYSize=250, bool printProgress=true, bool keepMinExtent=true);

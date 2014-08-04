@@ -55,7 +55,7 @@ namespace spdlib
 		virtual ~SPDImporterProcessor(){};
 	};
 	
-	class SPDDataImporter
+	class DllExport SPDDataImporter
 	{
 	public:
 		SPDDataImporter(bool convertCoords, std::string outputProjWKT, std::string schema, boost::uint_fast16_t indexCoords, bool defineOrigin, double originX, double originY, float originZ, float waveNoiseThreshold):convertCoords(false),outputProjWKT(""),indexCoords(SPD_FIRST_RETURN),pj_in(),pj_out(),coordTransform(NULL),haveCoordsBeenInit(false),defineOrigin(false),originX(0),originY(0),originZ(0),waveNoiseThreshold(0)

@@ -42,7 +42,7 @@
 namespace spdlib
 {
 
-	class SPDCopyRemovingClassificationProcessor : public SPDPulseProcessor
+	class DllExport SPDCopyRemovingClassificationProcessor : public SPDPulseProcessor
 	{
 	public:
         SPDCopyRemovingClassificationProcessor();

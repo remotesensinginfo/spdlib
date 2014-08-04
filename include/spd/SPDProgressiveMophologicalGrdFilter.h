@@ -41,7 +41,7 @@
 namespace spdlib
 {
 
-    class SPDProgressiveMophologicalGrdFilter : public SPDDataBlockProcessor
+    class DllExport SPDProgressiveMophologicalGrdFilter : public SPDDataBlockProcessor
 	{
 	public:
         SPDProgressiveMophologicalGrdFilter(boost::uint_fast16_t initFilterHSize, boost::uint_fast16_t maxFilterHSize, float terrainSlope, float initElevDiff, float maxElevDiff, float grdPtDev, bool medianFilter,boost::uint_fast16_t medianFilterHSize,boost::uint_fast16_t classParameters);

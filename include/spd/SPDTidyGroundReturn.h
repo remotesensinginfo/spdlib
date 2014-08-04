@@ -46,7 +46,7 @@
 namespace spdlib
 {
     
-    class SPDTidyGroundReturnNegativeHeights : public SPDDataBlockProcessor
+    class DllExport SPDTidyGroundReturnNegativeHeights : public SPDDataBlockProcessor
 	{
 	public:
         SPDTidyGroundReturnNegativeHeights();
@@ -67,7 +67,7 @@ namespace spdlib
 	};
     
     
-    class SPDTidyGroundReturnsPlaneFitting : public SPDPulseProcessor
+    class DllExport SPDTidyGroundReturnsPlaneFitting : public SPDPulseProcessor
 	{
 	public:
         SPDTidyGroundReturnsPlaneFitting();

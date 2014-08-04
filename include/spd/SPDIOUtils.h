@@ -38,7 +38,7 @@
 
 namespace spdlib
 {	
-	class SPDIOUtils
+	class DllExport SPDIOUtils
 	{
 	public:
 		SPDIOUtils();

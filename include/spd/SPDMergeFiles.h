@@ -42,7 +42,7 @@
 
 namespace spdlib
 {	
-	class SPDMergeFiles
+	class DllExport SPDMergeFiles
 	{
 	public:
 		SPDMergeFiles();

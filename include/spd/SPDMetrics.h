@@ -51,7 +51,7 @@
 
 namespace spdlib{
 
-	class SPDMetric
+	class DllExport SPDMetric
 	{
 	public:
 		SPDMetric(){};
@@ -59,7 +59,7 @@ namespace spdlib{
 		virtual ~SPDMetric(){};
 	};
 
-    class SPDMetricAdd : public SPDMetric
+    class DllExport SPDMetricAdd : public SPDMetric
 	{
 	public:
 		SPDMetricAdd(std::vector<SPDMetric*> *metrics)
@@ -80,7 +80,7 @@ namespace spdlib{
         std::vector<SPDMetric*> *metrics;
 	};
 
-    class SPDMetricMinus : public SPDMetric
+    class DllExport SPDMetricMinus : public SPDMetric
 	{
 	public:
 		SPDMetricMinus(SPDMetric *metric1, SPDMetric *metric2)
@@ -98,7 +98,7 @@ namespace spdlib{
         SPDMetric *metric2;
 	};
 
-    class SPDMetricMultiply : public SPDMetric
+    class DllExport SPDMetricMultiply : public SPDMetric
 	{
 	public:
 		SPDMetricMultiply(std::vector<SPDMetric*> *metrics)
@@ -123,7 +123,7 @@ namespace spdlib{
         std::vector<SPDMetric*> *metrics;
 	};
 
-    class SPDMetricDivide : public SPDMetric
+    class DllExport SPDMetricDivide : public SPDMetric
 	{
 	public:
 		SPDMetricDivide(SPDMetric *metric1, SPDMetric *metric2)
@@ -141,7 +141,7 @@ namespace spdlib{
         SPDMetric *metric2;
 	};
 
-    class SPDMetricPow : public SPDMetric
+    class DllExport SPDMetricPow : public SPDMetric
 	{
 	public:
 		SPDMetricPow(SPDMetric *metric1, SPDMetric *metric2)
@@ -159,7 +159,7 @@ namespace spdlib{
         SPDMetric *metric2;
 	};
 
-    class SPDMetricAbs : public SPDMetric
+    class DllExport SPDMetricAbs : public SPDMetric
 	{
 	public:
 		SPDMetricAbs(SPDMetric *metric)
@@ -175,7 +175,7 @@ namespace spdlib{
         SPDMetric *metric;
 	};
 
-    class SPDMetricSqrt : public SPDMetric
+    class DllExport SPDMetricSqrt : public SPDMetric
 	{
 	public:
 		SPDMetricSqrt(SPDMetric *metric)
@@ -191,7 +191,7 @@ namespace spdlib{
         SPDMetric *metric;
 	};
 
-    class SPDMetricSine : public SPDMetric
+    class DllExport SPDMetricSine : public SPDMetric
 	{
 	public:
 		SPDMetricSine(SPDMetric *metric)
@@ -207,7 +207,7 @@ namespace spdlib{
         SPDMetric *metric;
 	};
 
-    class SPDMetricCosine : public SPDMetric
+    class DllExport SPDMetricCosine : public SPDMetric
 	{
 	public:
 		SPDMetricCosine(SPDMetric *metric)
@@ -223,7 +223,7 @@ namespace spdlib{
         SPDMetric *metric;
 	};
 
-    class SPDMetricTangent : public SPDMetric
+    class DllExport SPDMetricTangent : public SPDMetric
 	{
 	public:
 		SPDMetricTangent(SPDMetric *metric)
@@ -239,7 +239,7 @@ namespace spdlib{
         SPDMetric *metric;
 	};
 
-    class SPDMetricInvSine : public SPDMetric
+    class DllExport SPDMetricInvSine : public SPDMetric
 	{
 	public:
 		SPDMetricInvSine(SPDMetric *metric)
@@ -255,7 +255,7 @@ namespace spdlib{
         SPDMetric *metric;
 	};
 
-    class SPDMetricInvCos : public SPDMetric
+    class DllExport SPDMetricInvCos : public SPDMetric
 	{
 	public:
 		SPDMetricInvCos(SPDMetric *metric)
@@ -271,7 +271,7 @@ namespace spdlib{
         SPDMetric *metric;
 	};
 
-    class SPDMetricInvTan : public SPDMetric
+    class DllExport SPDMetricInvTan : public SPDMetric
 	{
 	public:
 		SPDMetricInvTan(SPDMetric *metric)
@@ -287,7 +287,7 @@ namespace spdlib{
         SPDMetric *metric;
 	};
 
-    class SPDMetricLog10 : public SPDMetric
+    class DllExport SPDMetricLog10 : public SPDMetric
 	{
 	public:
 		SPDMetricLog10(SPDMetric *metric)
@@ -303,7 +303,7 @@ namespace spdlib{
         SPDMetric *metric;
 	};
 
-    class SPDMetricLn : public SPDMetric
+    class DllExport SPDMetricLn : public SPDMetric
 	{
 	public:
 		SPDMetricLn(SPDMetric *metric)
@@ -319,7 +319,7 @@ namespace spdlib{
         SPDMetric *metric;
 	};
 
-    class SPDMetricExp : public SPDMetric
+    class DllExport SPDMetricExp : public SPDMetric
 	{
 	public:
 		SPDMetricExp(SPDMetric *metric)
@@ -335,7 +335,7 @@ namespace spdlib{
         SPDMetric *metric;
 	};
 
-    class SPDMetricPercentage : public SPDMetric
+    class DllExport SPDMetricPercentage : public SPDMetric
 	{
 	public:
 		SPDMetricPercentage(SPDMetric *metric1, SPDMetric *metric2)
@@ -353,7 +353,7 @@ namespace spdlib{
         SPDMetric *metric2;
 	};
 
-    class SPDMetricAddConst : public SPDMetric
+    class DllExport SPDMetricAddConst : public SPDMetric
 	{
 	public:
 		SPDMetricAddConst(SPDMetric *metric, double constVal)
@@ -371,7 +371,7 @@ namespace spdlib{
         double constVal;
 	};
 
-	class SPDMetricMinusConstFrom : public SPDMetric
+	class DllExport SPDMetricMinusConstFrom : public SPDMetric
 	{
 	public:
 		SPDMetricMinusConstFrom(SPDMetric *metric, double constVal)
@@ -389,7 +389,7 @@ namespace spdlib{
         double constVal;
 	};
 
-    class SPDMetricMinusFromConst : public SPDMetric
+    class DllExport SPDMetricMinusFromConst : public SPDMetric
 	{
 	public:
 		SPDMetricMinusFromConst(SPDMetric *metric, double constVal)
@@ -407,7 +407,7 @@ namespace spdlib{
         double constVal;
 	};
 
-    class SPDMetricMultiplyConst : public SPDMetric
+    class DllExport SPDMetricMultiplyConst : public SPDMetric
 	{
 	public:
 		SPDMetricMultiplyConst(SPDMetric *metric, double constVal)
@@ -425,7 +425,7 @@ namespace spdlib{
         double constVal;
 	};
 
-    class SPDMetricDivideByConst : public SPDMetric
+    class DllExport SPDMetricDivideByConst : public SPDMetric
 	{
 	public:
 		SPDMetricDivideByConst(SPDMetric *metric, double constVal)
@@ -443,7 +443,7 @@ namespace spdlib{
         double constVal;
 	};
 
-    class SPDMetricDivideConstBy : public SPDMetric
+    class DllExport SPDMetricDivideConstBy : public SPDMetric
 	{
 	public:
 		SPDMetricDivideConstBy(SPDMetric *metric, double constVal)
@@ -461,7 +461,7 @@ namespace spdlib{
         double constVal;
 	};
 
-    class SPDMetricPowMetricConst : public SPDMetric
+    class DllExport SPDMetricPowMetricConst : public SPDMetric
 	{
 	public:
 		SPDMetricPowMetricConst(SPDMetric *metric, double constVal)
@@ -479,7 +479,7 @@ namespace spdlib{
         double constVal;
 	};
 
-    class SPDMetricPowConstMetric : public SPDMetric
+    class DllExport SPDMetricPowConstMetric : public SPDMetric
 	{
 	public:
 		SPDMetricPowConstMetric(SPDMetric *metric, double constVal)
@@ -497,7 +497,7 @@ namespace spdlib{
         double constVal;
 	};
 
-    class SPDMetricCalc : public SPDMetric
+    class DllExport SPDMetricCalc : public SPDMetric
 	{
 	public:
 		SPDMetricCalc(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1)
@@ -16322,7 +16322,7 @@ namespace spdlib{
 
     // Num of Returns metrics.
 
-    class SPDMetricCalcNumPulses : public SPDMetricCalc
+    class DllExport SPDMetricCalcNumPulses : public SPDMetricCalc
 	{
 	public:
 		SPDMetricCalcNumPulses(boost::uint_fast16_t minNumReturns=0):SPDMetricCalc(SPD_ALL_RETURNS, SPD_ALL_CLASSES, minNumReturns, 0, 0, 0, 0){};
@@ -16330,7 +16330,7 @@ namespace spdlib{
 		virtual ~SPDMetricCalcNumPulses(){};
 	};
 
-    class SPDMetricCalcCanopyCover : public SPDMetricCalc
+    class DllExport SPDMetricCalcCanopyCover : public SPDMetricCalc
 	{
 	public:
 		SPDMetricCalcCanopyCover(float resolution, float radius,boost::int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0)
@@ -16345,7 +16345,7 @@ namespace spdlib{
         float radius;
 	};
 
-    class SPDMetricCalcCanopyCoverPercent : public SPDMetricCalc
+    class DllExport SPDMetricCalcCanopyCoverPercent : public SPDMetricCalc
 	{
 	public:
 		SPDMetricCalcCanopyCoverPercent(float resolution, float radius,boost::int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0)
@@ -16365,7 +16365,7 @@ namespace spdlib{
 
     // Height Metrics..
 
-    class SPDMetricCalcLeeOpennessHeight : public SPDMetricCalc
+    class DllExport SPDMetricCalcLeeOpennessHeight : public SPDMetricCalc
 	{
 	public:
 		SPDMetricCalcLeeOpennessHeight(float vRes,boost::int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0)
@@ -16378,7 +16378,7 @@ namespace spdlib{
         float vRes;
 	};
 
-    class SPDMetricCalcNumReturnsHeight : public SPDMetricCalc
+    class DllExport SPDMetricCalcNumReturnsHeight : public SPDMetricCalc
 	{
 	public:
 		SPDMetricCalcNumReturnsHeight(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
@@ -16386,7 +16386,7 @@ namespace spdlib{
 		virtual ~SPDMetricCalcNumReturnsHeight(){};
 	};
 
-    class SPDMetricCalcSumHeight : public SPDMetricCalc
+    class DllExport SPDMetricCalcSumHeight : public SPDMetricCalc
 	{
 	public:
 		SPDMetricCalcSumHeight(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
@@ -16394,7 +16394,7 @@ namespace spdlib{
 		virtual ~SPDMetricCalcSumHeight(){};
 	};
 
-    class SPDMetricCalcMeanHeight : public SPDMetricCalc
+    class DllExport SPDMetricCalcMeanHeight : public SPDMetricCalc
 	{
 	public:
 		SPDMetricCalcMeanHeight(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
@@ -16402,7 +16402,7 @@ namespace spdlib{
 		virtual ~SPDMetricCalcMeanHeight(){};
 	};
 
-    class SPDMetricCalcMedianHeight : public SPDMetricCalc
+    class DllExport SPDMetricCalcMedianHeight : public SPDMetricCalc
 	{
 	public:
 		SPDMetricCalcMedianHeight(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
@@ -16410,7 +16410,7 @@ namespace spdlib{
 		virtual ~SPDMetricCalcMedianHeight(){};
 	};
 
-    class SPDMetricCalcModeHeight : public SPDMetricCalc
+    class DllExport SPDMetricCalcModeHeight : public SPDMetricCalc
 	{
 	public:
 		SPDMetricCalcModeHeight(float resolution,boost::int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0)
@@ -16423,7 +16423,7 @@ namespace spdlib{
         float resolution;
 	};
 
-    class SPDMetricCalcMinHeight : public SPDMetricCalc
+    class DllExport SPDMetricCalcMinHeight : public SPDMetricCalc
 	{
 	public:
 		SPDMetricCalcMinHeight(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
@@ -16431,7 +16431,7 @@ namespace spdlib{
 		virtual ~SPDMetricCalcMinHeight(){};
 	};
 
-    class SPDMetricCalcMaxHeight : public SPDMetricCalc
+    class DllExport SPDMetricCalcMaxHeight : public SPDMetricCalc
 	{
 	public:
 		SPDMetricCalcMaxHeight(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
@@ -16439,7 +16439,7 @@ namespace spdlib{
 		virtual ~SPDMetricCalcMaxHeight(){};
 	};
 
-    class SPDMetricCalcDominantHeight : public SPDMetricCalc
+    class DllExport SPDMetricCalcDominantHeight : public SPDMetricCalc
 	{
 	public:
 		SPDMetricCalcDominantHeight(float resolution,boost::int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0)
@@ -16452,7 +16452,7 @@ namespace spdlib{
         float resolution;
 	};
 
-    class SPDMetricCalcStdDevHeight : public SPDMetricCalc
+    class DllExport SPDMetricCalcStdDevHeight : public SPDMetricCalc
 	{
 	public:
 		SPDMetricCalcStdDevHeight(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
@@ -16460,7 +16460,7 @@ namespace spdlib{
 		virtual ~SPDMetricCalcStdDevHeight(){};
 	};
 
-    class SPDMetricCalcVarianceHeight : public SPDMetricCalc
+    class DllExport SPDMetricCalcVarianceHeight : public SPDMetricCalc
 	{
 	public:
 		SPDMetricCalcVarianceHeight(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
@@ -16470,7 +16470,7 @@ namespace spdlib{
         float threshold;
 	};
 
-    class SPDMetricCalcAbsDeviationHeight : public SPDMetricCalc
+    class DllExport SPDMetricCalcAbsDeviationHeight : public SPDMetricCalc
 	{
 	public:
 		SPDMetricCalcAbsDeviationHeight(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
@@ -16478,7 +16478,7 @@ namespace spdlib{
 		virtual ~SPDMetricCalcAbsDeviationHeight(){};
 	};
 
-    class SPDMetricCalcCoefficientOfVariationHeight : public SPDMetricCalc
+    class DllExport SPDMetricCalcCoefficientOfVariationHeight : public SPDMetricCalc
 	{
 	public:
 		SPDMetricCalcCoefficientOfVariationHeight(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
@@ -16486,7 +16486,7 @@ namespace spdlib{
 		virtual ~SPDMetricCalcCoefficientOfVariationHeight(){};
 	};
 
-    class SPDMetricCalcPercentileHeight : public SPDMetricCalc
+    class DllExport SPDMetricCalcPercentileHeight : public SPDMetricCalc
 	{
 	public:
 		SPDMetricCalcPercentileHeight(boost::uint_fast16_t percentile,boost::int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0)
@@ -16499,7 +16499,7 @@ namespace spdlib{
        boost::uint_fast16_t percentile;
 	};
 
-    class SPDMetricCalcSkewnessHeight : public SPDMetricCalc
+    class DllExport SPDMetricCalcSkewnessHeight : public SPDMetricCalc
 	{
 	public:
 		SPDMetricCalcSkewnessHeight(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
@@ -16507,7 +16507,7 @@ namespace spdlib{
 		virtual ~SPDMetricCalcSkewnessHeight(){};
 	};
 
-    class SPDMetricCalcPersonModeSkewnessHeight : public SPDMetricCalc
+    class DllExport SPDMetricCalcPersonModeSkewnessHeight : public SPDMetricCalc
 	{
 	public:
         SPDMetricCalcPersonModeSkewnessHeight(float resolution,boost::int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0)
@@ -16520,7 +16520,7 @@ namespace spdlib{
         float resolution;
 	};
 
-    class SPDMetricCalcPersonMedianSkewnessHeight : public SPDMetricCalc
+    class DllExport SPDMetricCalcPersonMedianSkewnessHeight : public SPDMetricCalc
 	{
 	public:
 		SPDMetricCalcPersonMedianSkewnessHeight(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
@@ -16528,7 +16528,7 @@ namespace spdlib{
 		virtual ~SPDMetricCalcPersonMedianSkewnessHeight(){};
 	};
 
-    class SPDMetricCalcKurtosisHeight : public SPDMetricCalc
+    class DllExport SPDMetricCalcKurtosisHeight : public SPDMetricCalc
 	{
 	public:
 		SPDMetricCalcKurtosisHeight(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
@@ -16536,7 +16536,7 @@ namespace spdlib{
 		virtual ~SPDMetricCalcKurtosisHeight(){};
 	};
 
-    class SPDMetricCalcNumReturnsAboveMetricHeight : public SPDMetricCalc
+    class DllExport SPDMetricCalcNumReturnsAboveMetricHeight : public SPDMetricCalc
 	{
 	public:
 		SPDMetricCalcNumReturnsAboveMetricHeight(SPDMetric *metric,boost::int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){
@@ -16548,7 +16548,7 @@ namespace spdlib{
         SPDMetric *metric;
 	};
 
-    class SPDMetricCalcNumReturnsBelowMetricHeight : public SPDMetricCalc
+    class DllExport SPDMetricCalcNumReturnsBelowMetricHeight : public SPDMetricCalc
 	{
 	public:
 		SPDMetricCalcNumReturnsBelowMetricHeight(SPDMetric *metric,boost::int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){
@@ -16560,7 +16560,7 @@ namespace spdlib{
         SPDMetric *metric;
 	};
 
-    class SPDMetricCalcWeibullAlphaHeight : public SPDMetricCalc
+    class DllExport SPDMetricCalcWeibullAlphaHeight : public SPDMetricCalc
 	{
 	public:
 		SPDMetricCalcWeibullAlphaHeight(float resolution,boost::int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0)
@@ -16594,7 +16594,7 @@ namespace spdlib{
 		mp_result *mpResultsValues;
 	};
 
-    class SPDMetricCalcWeibullBetaHeight : public SPDMetricCalc
+    class DllExport SPDMetricCalcWeibullBetaHeight : public SPDMetricCalc
 	{
 	public:
 		SPDMetricCalcWeibullBetaHeight(float resolution,boost::int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0)
@@ -16628,7 +16628,7 @@ namespace spdlib{
 		mp_result *mpResultsValues;
 	};
 
-    class SPDMetricCalcWeibullQuantileRangeHeight : public SPDMetricCalc
+    class DllExport SPDMetricCalcWeibullQuantileRangeHeight : public SPDMetricCalc
 	{
 	public:
 		SPDMetricCalcWeibullQuantileRangeHeight(float resolution, float interval,boost::int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0)
@@ -16670,7 +16670,7 @@ namespace spdlib{
 
     // Z Metrics..
 
-    class SPDMetricCalcNumReturnsZ : public SPDMetricCalc
+    class DllExport SPDMetricCalcNumReturnsZ : public SPDMetricCalc
 	{
 	public:
 		SPDMetricCalcNumReturnsZ(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
@@ -16678,7 +16678,7 @@ namespace spdlib{
 		virtual ~SPDMetricCalcNumReturnsZ(){};
 	};
 
-    class SPDMetricCalcSumZ : public SPDMetricCalc
+    class DllExport SPDMetricCalcSumZ : public SPDMetricCalc
 	{
 	public:
 		SPDMetricCalcSumZ(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
@@ -16686,7 +16686,7 @@ namespace spdlib{
 		virtual ~SPDMetricCalcSumZ(){};
 	};
 
-    class SPDMetricCalcMeanZ : public SPDMetricCalc
+    class DllExport SPDMetricCalcMeanZ : public SPDMetricCalc
 	{
 	public:
 		SPDMetricCalcMeanZ(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
@@ -16694,7 +16694,7 @@ namespace spdlib{
 		virtual ~SPDMetricCalcMeanZ(){};
 	};
 
-    class SPDMetricCalcMedianZ : public SPDMetricCalc
+    class DllExport SPDMetricCalcMedianZ : public SPDMetricCalc
 	{
 	public:
 		SPDMetricCalcMedianZ(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
@@ -16702,7 +16702,7 @@ namespace spdlib{
 		virtual ~SPDMetricCalcMedianZ(){};
 	};
 
-    class SPDMetricCalcModeZ : public SPDMetricCalc
+    class DllExport SPDMetricCalcModeZ : public SPDMetricCalc
 	{
 	public:
 		SPDMetricCalcModeZ(float resolution,boost::int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0)
@@ -16715,7 +16715,7 @@ namespace spdlib{
         float resolution;
 	};
 
-    class SPDMetricCalcMinZ : public SPDMetricCalc
+    class DllExport SPDMetricCalcMinZ : public SPDMetricCalc
 	{
 	public:
 		SPDMetricCalcMinZ(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
@@ -16723,7 +16723,7 @@ namespace spdlib{
 		virtual ~SPDMetricCalcMinZ(){};
 	};
 
-    class SPDMetricCalcMaxZ : public SPDMetricCalc
+    class DllExport SPDMetricCalcMaxZ : public SPDMetricCalc
 	{
 	public:
 		SPDMetricCalcMaxZ(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
@@ -16731,7 +16731,7 @@ namespace spdlib{
 		virtual ~SPDMetricCalcMaxZ(){};
 	};
 
-    class SPDMetricCalcStdDevZ : public SPDMetricCalc
+    class DllExport SPDMetricCalcStdDevZ : public SPDMetricCalc
 	{
 	public:
 		SPDMetricCalcStdDevZ(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
@@ -16739,7 +16739,7 @@ namespace spdlib{
 		virtual ~SPDMetricCalcStdDevZ(){};
 	};
 
-    class SPDMetricCalcVarianceZ : public SPDMetricCalc
+    class DllExport SPDMetricCalcVarianceZ : public SPDMetricCalc
 	{
 	public:
 		SPDMetricCalcVarianceZ(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
@@ -16749,7 +16749,7 @@ namespace spdlib{
         float threshold;
 	};
 
-    class SPDMetricCalcAbsDeviationZ : public SPDMetricCalc
+    class DllExport SPDMetricCalcAbsDeviationZ : public SPDMetricCalc
 	{
 	public:
 		SPDMetricCalcAbsDeviationZ(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
@@ -16757,7 +16757,7 @@ namespace spdlib{
 		virtual ~SPDMetricCalcAbsDeviationZ(){};
 	};
 
-    class SPDMetricCalcCoefficientOfVariationZ : public SPDMetricCalc
+    class DllExport SPDMetricCalcCoefficientOfVariationZ : public SPDMetricCalc
 	{
 	public:
 		SPDMetricCalcCoefficientOfVariationZ(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
@@ -16765,7 +16765,7 @@ namespace spdlib{
 		virtual ~SPDMetricCalcCoefficientOfVariationZ(){};
 	};
 
-    class SPDMetricCalcPercentileZ : public SPDMetricCalc
+    class DllExport SPDMetricCalcPercentileZ : public SPDMetricCalc
 	{
 	public:
 		SPDMetricCalcPercentileZ(boost::uint_fast16_t percentile,boost::int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0)
@@ -16778,7 +16778,7 @@ namespace spdlib{
        boost::uint_fast16_t percentile;
 	};
 
-    class SPDMetricCalcSkewnessZ : public SPDMetricCalc
+    class DllExport SPDMetricCalcSkewnessZ : public SPDMetricCalc
 	{
 	public:
 		SPDMetricCalcSkewnessZ(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
@@ -16786,7 +16786,7 @@ namespace spdlib{
 		virtual ~SPDMetricCalcSkewnessZ(){};
 	};
 
-    class SPDMetricCalcPersonModeSkewnessZ : public SPDMetricCalc
+    class DllExport SPDMetricCalcPersonModeSkewnessZ : public SPDMetricCalc
 	{
 	public:
         SPDMetricCalcPersonModeSkewnessZ(float resolution,boost::int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0)
@@ -16799,7 +16799,7 @@ namespace spdlib{
         float resolution;
 	};
 
-    class SPDMetricCalcPersonMedianSkewnessZ : public SPDMetricCalc
+    class DllExport SPDMetricCalcPersonMedianSkewnessZ : public SPDMetricCalc
 	{
 	public:
 		SPDMetricCalcPersonMedianSkewnessZ(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
@@ -16807,7 +16807,7 @@ namespace spdlib{
 		virtual ~SPDMetricCalcPersonMedianSkewnessZ(){};
 	};
 
-    class SPDMetricCalcKurtosisZ : public SPDMetricCalc
+    class DllExport SPDMetricCalcKurtosisZ : public SPDMetricCalc
 	{
 	public:
 		SPDMetricCalcKurtosisZ(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
@@ -16815,7 +16815,7 @@ namespace spdlib{
 		virtual ~SPDMetricCalcKurtosisZ(){};
 	};
 
-    class SPDMetricCalcNumReturnsAboveMetricZ : public SPDMetricCalc
+    class DllExport SPDMetricCalcNumReturnsAboveMetricZ : public SPDMetricCalc
 	{
 	public:
 		SPDMetricCalcNumReturnsAboveMetricZ(SPDMetric *metric,boost::int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){
@@ -16827,7 +16827,7 @@ namespace spdlib{
         SPDMetric *metric;
 	};
 
-    class SPDMetricCalcNumReturnsBelowMetricZ : public SPDMetricCalc
+    class DllExport SPDMetricCalcNumReturnsBelowMetricZ : public SPDMetricCalc
 	{
 	public:
 		SPDMetricCalcNumReturnsBelowMetricZ(SPDMetric *metric,boost::int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){
@@ -16839,7 +16839,7 @@ namespace spdlib{
         SPDMetric *metric;
 	};
 
-    class SPDMetricCalcWeibullAlphaZ : public SPDMetricCalc
+    class DllExport SPDMetricCalcWeibullAlphaZ : public SPDMetricCalc
 	{
 	public:
 		SPDMetricCalcWeibullAlphaZ(float resolution,boost::int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0)
@@ -16873,7 +16873,7 @@ namespace spdlib{
 		mp_result *mpResultsValues;
 	};
 
-    class SPDMetricCalcWeibullBetaZ : public SPDMetricCalc
+    class DllExport SPDMetricCalcWeibullBetaZ : public SPDMetricCalc
 	{
 	public:
 		SPDMetricCalcWeibullBetaZ(float resolution,boost::int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0)
@@ -16907,7 +16907,7 @@ namespace spdlib{
 		mp_result *mpResultsValues;
 	};
 
-    class SPDMetricCalcWeibullQuantileRangeZ : public SPDMetricCalc
+    class DllExport SPDMetricCalcWeibullQuantileRangeZ : public SPDMetricCalc
 	{
 	public:
 		SPDMetricCalcWeibullQuantileRangeZ(float resolution, float interval,boost::int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0)
@@ -16951,7 +16951,7 @@ namespace spdlib{
 
     // Amplitude Metrics
 
-    class SPDMetricCalcNumReturnsAmplitude : public SPDMetricCalc
+    class DllExport SPDMetricCalcNumReturnsAmplitude : public SPDMetricCalc
 	{
 	public:
 		SPDMetricCalcNumReturnsAmplitude(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold){};
@@ -16959,7 +16959,7 @@ namespace spdlib{
 		virtual ~SPDMetricCalcNumReturnsAmplitude(){};
 	};
 
-    class SPDMetricCalcSumAmplitude : public SPDMetricCalc
+    class DllExport SPDMetricCalcSumAmplitude : public SPDMetricCalc
 	{
 	public:
 		SPDMetricCalcSumAmplitude(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold){};
@@ -16967,7 +16967,7 @@ namespace spdlib{
 		virtual ~SPDMetricCalcSumAmplitude(){};
 	};
 
-    class SPDMetricCalcMeanAmplitude : public SPDMetricCalc
+    class DllExport SPDMetricCalcMeanAmplitude : public SPDMetricCalc
 	{
 	public:
 		SPDMetricCalcMeanAmplitude(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold){};
@@ -16975,7 +16975,7 @@ namespace spdlib{
 		virtual ~SPDMetricCalcMeanAmplitude(){};
 	};
 
-    class SPDMetricCalcMedianAmplitude : public SPDMetricCalc
+    class DllExport SPDMetricCalcMedianAmplitude : public SPDMetricCalc
 	{
 	public:
 		SPDMetricCalcMedianAmplitude(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold){};
@@ -16983,7 +16983,7 @@ namespace spdlib{
 		virtual ~SPDMetricCalcMedianAmplitude(){};
 	};
 
-    class SPDMetricCalcModeAmplitude : public SPDMetricCalc
+    class DllExport SPDMetricCalcModeAmplitude : public SPDMetricCalc
 	{
 	public:
 		SPDMetricCalcModeAmplitude(float resolution,boost::int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold)
@@ -16996,7 +16996,7 @@ namespace spdlib{
         float resolution;
 	};
 
-    class SPDMetricCalcMinAmplitude : public SPDMetricCalc
+    class DllExport SPDMetricCalcMinAmplitude : public SPDMetricCalc
 	{
 	public:
 		SPDMetricCalcMinAmplitude(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold){};
@@ -17004,7 +17004,7 @@ namespace spdlib{
 		virtual ~SPDMetricCalcMinAmplitude(){};
 	};
 
-    class SPDMetricCalcMaxAmplitude : public SPDMetricCalc
+    class DllExport SPDMetricCalcMaxAmplitude : public SPDMetricCalc
 	{
 	public:
 		SPDMetricCalcMaxAmplitude(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold){};
@@ -17012,7 +17012,7 @@ namespace spdlib{
 		virtual ~SPDMetricCalcMaxAmplitude(){};
 	};
 
-    class SPDMetricCalcStdDevAmplitude : public SPDMetricCalc
+    class DllExport SPDMetricCalcStdDevAmplitude : public SPDMetricCalc
 	{
 	public:
 		SPDMetricCalcStdDevAmplitude(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold){};
@@ -17020,7 +17020,7 @@ namespace spdlib{
 		virtual ~SPDMetricCalcStdDevAmplitude(){};
 	};
 
-    class SPDMetricCalcVarianceAmplitude : public SPDMetricCalc
+    class DllExport SPDMetricCalcVarianceAmplitude : public SPDMetricCalc
 	{
 	public:
 		SPDMetricCalcVarianceAmplitude(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold){};
@@ -17030,7 +17030,7 @@ namespace spdlib{
         float threshold;
 	};
 
-    class SPDMetricCalcAbsDeviationAmplitude : public SPDMetricCalc
+    class DllExport SPDMetricCalcAbsDeviationAmplitude : public SPDMetricCalc
 	{
 	public:
 		SPDMetricCalcAbsDeviationAmplitude(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold){};
@@ -17038,7 +17038,7 @@ namespace spdlib{
 		virtual ~SPDMetricCalcAbsDeviationAmplitude(){};
 	};
 
-    class SPDMetricCalcCoefficientOfVariationAmplitude : public SPDMetricCalc
+    class DllExport SPDMetricCalcCoefficientOfVariationAmplitude : public SPDMetricCalc
 	{
 	public:
 		SPDMetricCalcCoefficientOfVariationAmplitude(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold){};
@@ -17046,7 +17046,7 @@ namespace spdlib{
 		virtual ~SPDMetricCalcCoefficientOfVariationAmplitude(){};
 	};
 
-    class SPDMetricCalcPercentileAmplitude : public SPDMetricCalc
+    class DllExport SPDMetricCalcPercentileAmplitude : public SPDMetricCalc
 	{
 	public:
 		SPDMetricCalcPercentileAmplitude(boost::uint_fast16_t percentile,boost::int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold)
@@ -17059,7 +17059,7 @@ namespace spdlib{
        boost::uint_fast16_t percentile;
 	};
 
-    class SPDMetricCalcSkewnessAmplitude : public SPDMetricCalc
+    class DllExport SPDMetricCalcSkewnessAmplitude : public SPDMetricCalc
 	{
 	public:
 		SPDMetricCalcSkewnessAmplitude(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold){};
@@ -17067,7 +17067,7 @@ namespace spdlib{
 		virtual ~SPDMetricCalcSkewnessAmplitude(){};
 	};
 
-    class SPDMetricCalcPersonModeSkewnessAmplitude : public SPDMetricCalc
+    class DllExport SPDMetricCalcPersonModeSkewnessAmplitude : public SPDMetricCalc
 	{
 	public:
         SPDMetricCalcPersonModeSkewnessAmplitude(float resolution,boost::int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold)
@@ -17080,7 +17080,7 @@ namespace spdlib{
         float resolution;
 	};
 
-    class SPDMetricCalcPersonMedianSkewnessAmplitude : public SPDMetricCalc
+    class DllExport SPDMetricCalcPersonMedianSkewnessAmplitude : public SPDMetricCalc
 	{
 	public:
 		SPDMetricCalcPersonMedianSkewnessAmplitude(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold){};
@@ -17088,7 +17088,7 @@ namespace spdlib{
 		virtual ~SPDMetricCalcPersonMedianSkewnessAmplitude(){};
 	};
 
-    class SPDMetricCalcKurtosisAmplitude : public SPDMetricCalc
+    class DllExport SPDMetricCalcKurtosisAmplitude : public SPDMetricCalc
 	{
 	public:
 		SPDMetricCalcKurtosisAmplitude(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold){};
@@ -17096,7 +17096,7 @@ namespace spdlib{
 		virtual ~SPDMetricCalcKurtosisAmplitude(){};
 	};
 
-    class SPDMetricCalcNumReturnsAboveMetricAmplitude : public SPDMetricCalc
+    class DllExport SPDMetricCalcNumReturnsAboveMetricAmplitude : public SPDMetricCalc
 	{
 	public:
 		SPDMetricCalcNumReturnsAboveMetricAmplitude(SPDMetric *metric,boost::int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold){
@@ -17108,7 +17108,7 @@ namespace spdlib{
         SPDMetric *metric;
 	};
 
-    class SPDMetricCalcNumReturnsBelowMetricAmplitude : public SPDMetricCalc
+    class DllExport SPDMetricCalcNumReturnsBelowMetricAmplitude : public SPDMetricCalc
 	{
 	public:
 		SPDMetricCalcNumReturnsBelowMetricAmplitude(SPDMetric *metric,boost::int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold){
@@ -17128,7 +17128,7 @@ namespace spdlib{
 
     // Range metrics
 
-    class SPDMetricCalcNumReturnsRange : public SPDMetricCalc
+    class DllExport SPDMetricCalcNumReturnsRange : public SPDMetricCalc
 	{
 	public:
 		SPDMetricCalcNumReturnsRange(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
@@ -17136,7 +17136,7 @@ namespace spdlib{
 		virtual ~SPDMetricCalcNumReturnsRange(){};
 	};
 
-    class SPDMetricCalcSumRange : public SPDMetricCalc
+    class DllExport SPDMetricCalcSumRange : public SPDMetricCalc
 	{
 	public:
 		SPDMetricCalcSumRange(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
@@ -17144,7 +17144,7 @@ namespace spdlib{
 		virtual ~SPDMetricCalcSumRange(){};
 	};
 
-    class SPDMetricCalcMeanRange : public SPDMetricCalc
+    class DllExport SPDMetricCalcMeanRange : public SPDMetricCalc
 	{
 	public:
 		SPDMetricCalcMeanRange(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
@@ -17152,7 +17152,7 @@ namespace spdlib{
 		virtual ~SPDMetricCalcMeanRange(){};
 	};
 
-    class SPDMetricCalcMedianRange : public SPDMetricCalc
+    class DllExport SPDMetricCalcMedianRange : public SPDMetricCalc
 	{
 	public:
 		SPDMetricCalcMedianRange(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
@@ -17160,7 +17160,7 @@ namespace spdlib{
 		virtual ~SPDMetricCalcMedianRange(){};
 	};
 
-    class SPDMetricCalcModeRange : public SPDMetricCalc
+    class DllExport SPDMetricCalcModeRange : public SPDMetricCalc
 	{
 	public:
 		SPDMetricCalcModeRange(float resolution,boost::int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0)
@@ -17173,7 +17173,7 @@ namespace spdlib{
         float resolution;
 	};
 
-    class SPDMetricCalcMinRange : public SPDMetricCalc
+    class DllExport SPDMetricCalcMinRange : public SPDMetricCalc
 	{
 	public:
 		SPDMetricCalcMinRange(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
@@ -17181,7 +17181,7 @@ namespace spdlib{
 		virtual ~SPDMetricCalcMinRange(){};
 	};
 
-    class SPDMetricCalcMaxRange : public SPDMetricCalc
+    class DllExport SPDMetricCalcMaxRange : public SPDMetricCalc
 	{
 	public:
 		SPDMetricCalcMaxRange(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
@@ -17189,7 +17189,7 @@ namespace spdlib{
 		virtual ~SPDMetricCalcMaxRange(){};
 	};
 
-    class SPDMetricCalcStdDevRange : public SPDMetricCalc
+    class DllExport SPDMetricCalcStdDevRange : public SPDMetricCalc
 	{
 	public:
 		SPDMetricCalcStdDevRange(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
@@ -17197,7 +17197,7 @@ namespace spdlib{
 		virtual ~SPDMetricCalcStdDevRange(){};
 	};
 
-    class SPDMetricCalcVarianceRange : public SPDMetricCalc
+    class DllExport SPDMetricCalcVarianceRange : public SPDMetricCalc
 	{
 	public:
 		SPDMetricCalcVarianceRange(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
@@ -17207,7 +17207,7 @@ namespace spdlib{
         float threshold;
 	};
 
-    class SPDMetricCalcAbsDeviationRange : public SPDMetricCalc
+    class DllExport SPDMetricCalcAbsDeviationRange : public SPDMetricCalc
 	{
 	public:
 		SPDMetricCalcAbsDeviationRange(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
@@ -17215,7 +17215,7 @@ namespace spdlib{
 		virtual ~SPDMetricCalcAbsDeviationRange(){};
 	};
 
-    class SPDMetricCalcCoefficientOfVariationRange : public SPDMetricCalc
+    class DllExport SPDMetricCalcCoefficientOfVariationRange : public SPDMetricCalc
 	{
 	public:
 		SPDMetricCalcCoefficientOfVariationRange(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
@@ -17223,7 +17223,7 @@ namespace spdlib{
 		virtual ~SPDMetricCalcCoefficientOfVariationRange(){};
 	};
 
-    class SPDMetricCalcPercentileRange : public SPDMetricCalc
+    class DllExport SPDMetricCalcPercentileRange : public SPDMetricCalc
 	{
 	public:
 		SPDMetricCalcPercentileRange(boost::uint_fast16_t percentile,boost::int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0)
@@ -17236,7 +17236,7 @@ namespace spdlib{
        boost::uint_fast16_t percentile;
 	};
 
-    class SPDMetricCalcSkewnessRange : public SPDMetricCalc
+    class DllExport SPDMetricCalcSkewnessRange : public SPDMetricCalc
 	{
 	public:
 		SPDMetricCalcSkewnessRange(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
@@ -17244,7 +17244,7 @@ namespace spdlib{
 		virtual ~SPDMetricCalcSkewnessRange(){};
 	};
 
-    class SPDMetricCalcPersonModeSkewnessRange : public SPDMetricCalc
+    class DllExport SPDMetricCalcPersonModeSkewnessRange : public SPDMetricCalc
 	{
 	public:
         SPDMetricCalcPersonModeSkewnessRange(float resolution,boost::int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0)
@@ -17257,7 +17257,7 @@ namespace spdlib{
         float resolution;
 	};
 
-    class SPDMetricCalcPersonMedianSkewnessRange : public SPDMetricCalc
+    class DllExport SPDMetricCalcPersonMedianSkewnessRange : public SPDMetricCalc
 	{
 	public:
 		SPDMetricCalcPersonMedianSkewnessRange(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
@@ -17265,7 +17265,7 @@ namespace spdlib{
 		virtual ~SPDMetricCalcPersonMedianSkewnessRange(){};
 	};
 
-    class SPDMetricCalcKurtosisRange : public SPDMetricCalc
+    class DllExport SPDMetricCalcKurtosisRange : public SPDMetricCalc
 	{
 	public:
 		SPDMetricCalcKurtosisRange(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
@@ -17273,7 +17273,7 @@ namespace spdlib{
 		virtual ~SPDMetricCalcKurtosisRange(){};
 	};
 
-    class SPDMetricCalcNumReturnsAboveMetricRange : public SPDMetricCalc
+    class DllExport SPDMetricCalcNumReturnsAboveMetricRange : public SPDMetricCalc
 	{
 	public:
 		SPDMetricCalcNumReturnsAboveMetricRange(SPDMetric *metric,boost::int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){
@@ -17285,7 +17285,7 @@ namespace spdlib{
         SPDMetric *metric;
 	};
 
-    class SPDMetricCalcNumReturnsBelowMetricRange : public SPDMetricCalc
+    class DllExport SPDMetricCalcNumReturnsBelowMetricRange : public SPDMetricCalc
 	{
 	public:
 		SPDMetricCalcNumReturnsBelowMetricRange(SPDMetric *metric,boost::int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){
@@ -17297,7 +17297,7 @@ namespace spdlib{
         SPDMetric *metric;
 	};
 
-    class SPDMetricCalcWeibullAlphaRange : public SPDMetricCalc
+    class DllExport SPDMetricCalcWeibullAlphaRange : public SPDMetricCalc
 	{
 	public:
 		SPDMetricCalcWeibullAlphaRange(float resolution,boost::int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0)
@@ -17331,7 +17331,7 @@ namespace spdlib{
 		mp_result *mpResultsValues;
 	};
 
-    class SPDMetricCalcWeibullBetaRange : public SPDMetricCalc
+    class DllExport SPDMetricCalcWeibullBetaRange : public SPDMetricCalc
 	{
 	public:
 		SPDMetricCalcWeibullBetaRange(float resolution,boost::int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0)
@@ -17365,7 +17365,7 @@ namespace spdlib{
 		mp_result *mpResultsValues;
 	};
 
-    class SPDMetricCalcWeibullQuantileRangeRange : public SPDMetricCalc
+    class DllExport SPDMetricCalcWeibullQuantileRangeRange : public SPDMetricCalc
 	{
 	public:
 		SPDMetricCalcWeibullQuantileRangeRange(float resolution, float interval,boost::int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0)
@@ -17408,7 +17408,7 @@ namespace spdlib{
 
     // Width Metrics
 
-    class SPDMetricCalcNumReturnsWidth : public SPDMetricCalc
+    class DllExport SPDMetricCalcNumReturnsWidth : public SPDMetricCalc
 	{
 	public:
 		SPDMetricCalcNumReturnsWidth(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold){};
@@ -17416,7 +17416,7 @@ namespace spdlib{
 		virtual ~SPDMetricCalcNumReturnsWidth(){};
 	};
 
-    class SPDMetricCalcSumWidth : public SPDMetricCalc
+    class DllExport SPDMetricCalcSumWidth : public SPDMetricCalc
 	{
 	public:
 		SPDMetricCalcSumWidth(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold){};
@@ -17424,7 +17424,7 @@ namespace spdlib{
 		virtual ~SPDMetricCalcSumWidth(){};
 	};
 
-    class SPDMetricCalcMeanWidth : public SPDMetricCalc
+    class DllExport SPDMetricCalcMeanWidth : public SPDMetricCalc
 	{
 	public:
 		SPDMetricCalcMeanWidth(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold){};
@@ -17432,7 +17432,7 @@ namespace spdlib{
 		virtual ~SPDMetricCalcMeanWidth(){};
 	};
 
-    class SPDMetricCalcMedianWidth : public SPDMetricCalc
+    class DllExport SPDMetricCalcMedianWidth : public SPDMetricCalc
 	{
 	public:
 		SPDMetricCalcMedianWidth(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold){};
@@ -17440,7 +17440,7 @@ namespace spdlib{
 		virtual ~SPDMetricCalcMedianWidth(){};
 	};
 
-    class SPDMetricCalcModeWidth : public SPDMetricCalc
+    class DllExport SPDMetricCalcModeWidth : public SPDMetricCalc
 	{
 	public:
 		SPDMetricCalcModeWidth(float resolution,boost::int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold)
@@ -17453,7 +17453,7 @@ namespace spdlib{
         float resolution;
 	};
 
-    class SPDMetricCalcMinWidth : public SPDMetricCalc
+    class DllExport SPDMetricCalcMinWidth : public SPDMetricCalc
 	{
 	public:
 		SPDMetricCalcMinWidth(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold){};
@@ -17461,7 +17461,7 @@ namespace spdlib{
 		virtual ~SPDMetricCalcMinWidth(){};
 	};
 
-    class SPDMetricCalcMaxWidth : public SPDMetricCalc
+    class DllExport SPDMetricCalcMaxWidth : public SPDMetricCalc
 	{
 	public:
 		SPDMetricCalcMaxWidth(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold){};
@@ -17469,7 +17469,7 @@ namespace spdlib{
 		virtual ~SPDMetricCalcMaxWidth(){};
 	};
 
-    class SPDMetricCalcStdDevWidth : public SPDMetricCalc
+    class DllExport SPDMetricCalcStdDevWidth : public SPDMetricCalc
 	{
 	public:
 		SPDMetricCalcStdDevWidth(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold){};
@@ -17477,7 +17477,7 @@ namespace spdlib{
 		virtual ~SPDMetricCalcStdDevWidth(){};
 	};
 
-    class SPDMetricCalcVarianceWidth : public SPDMetricCalc
+    class DllExport SPDMetricCalcVarianceWidth : public SPDMetricCalc
 	{
 	public:
 		SPDMetricCalcVarianceWidth(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold){};
@@ -17487,7 +17487,7 @@ namespace spdlib{
         float threshold;
 	};
 
-    class SPDMetricCalcAbsDeviationWidth : public SPDMetricCalc
+    class DllExport SPDMetricCalcAbsDeviationWidth : public SPDMetricCalc
 	{
 	public:
 		SPDMetricCalcAbsDeviationWidth(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold){};
@@ -17495,7 +17495,7 @@ namespace spdlib{
 		virtual ~SPDMetricCalcAbsDeviationWidth(){};
 	};
 
-    class SPDMetricCalcCoefficientOfVariationWidth : public SPDMetricCalc
+    class DllExport SPDMetricCalcCoefficientOfVariationWidth : public SPDMetricCalc
 	{
 	public:
 		SPDMetricCalcCoefficientOfVariationWidth(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold){};
@@ -17503,7 +17503,7 @@ namespace spdlib{
 		virtual ~SPDMetricCalcCoefficientOfVariationWidth(){};
 	};
 
-    class SPDMetricCalcPercentileWidth : public SPDMetricCalc
+    class DllExport SPDMetricCalcPercentileWidth : public SPDMetricCalc
 	{
 	public:
 		SPDMetricCalcPercentileWidth(boost::uint_fast16_t percentile,boost::int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold)
@@ -17516,7 +17516,7 @@ namespace spdlib{
        boost::uint_fast16_t percentile;
 	};
 
-    class SPDMetricCalcSkewnessWidth : public SPDMetricCalc
+    class DllExport SPDMetricCalcSkewnessWidth : public SPDMetricCalc
 	{
 	public:
 		SPDMetricCalcSkewnessWidth(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold){};
@@ -17524,7 +17524,7 @@ namespace spdlib{
 		virtual ~SPDMetricCalcSkewnessWidth(){};
 	};
 
-    class SPDMetricCalcPersonModeSkewnessWidth : public SPDMetricCalc
+    class DllExport SPDMetricCalcPersonModeSkewnessWidth : public SPDMetricCalc
 	{
 	public:
         SPDMetricCalcPersonModeSkewnessWidth(float resolution,boost::int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold)
@@ -17537,7 +17537,7 @@ namespace spdlib{
         float resolution;
 	};
 
-    class SPDMetricCalcPersonMedianSkewnessWidth : public SPDMetricCalc
+    class DllExport SPDMetricCalcPersonMedianSkewnessWidth : public SPDMetricCalc
 	{
 	public:
 		SPDMetricCalcPersonMedianSkewnessWidth(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold){};
@@ -17545,7 +17545,7 @@ namespace spdlib{
 		virtual ~SPDMetricCalcPersonMedianSkewnessWidth(){};
 	};
 
-    class SPDMetricCalcKurtosisWidth : public SPDMetricCalc
+    class DllExport SPDMetricCalcKurtosisWidth : public SPDMetricCalc
 	{
 	public:
 		SPDMetricCalcKurtosisWidth(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold){};
@@ -17553,7 +17553,7 @@ namespace spdlib{
 		virtual ~SPDMetricCalcKurtosisWidth(){};
 	};
 
-    class SPDMetricCalcNumReturnsAboveMetricWidth : public SPDMetricCalc
+    class DllExport SPDMetricCalcNumReturnsAboveMetricWidth : public SPDMetricCalc
 	{
 	public:
 		SPDMetricCalcNumReturnsAboveMetricWidth(SPDMetric *metric,boost::int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold){
@@ -17565,7 +17565,7 @@ namespace spdlib{
         SPDMetric *metric;
 	};
 
-    class SPDMetricCalcNumReturnsBelowMetricWidth : public SPDMetricCalc
+    class DllExport SPDMetricCalcNumReturnsBelowMetricWidth : public SPDMetricCalc
 	{
 	public:
 		SPDMetricCalcNumReturnsBelowMetricWidth(SPDMetric *metric,boost::int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold){

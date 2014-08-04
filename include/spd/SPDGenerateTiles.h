@@ -55,7 +55,7 @@
 
 namespace spdlib
 {
-    struct SPDTile
+    struct DllExport SPDTile
     {
         boost::uint_fast16_t row;
         boost::uint_fast16_t col;
@@ -74,7 +74,7 @@ namespace spdlib
     };
     
     
-	class SPDTilesUtils
+	class DllExport SPDTilesUtils
 	{
 	public:
 		SPDTilesUtils() throw(SPDException);
@@ -107,7 +107,7 @@ namespace spdlib
     
     
     
-    class SPDWrite2OverlapTiles : public SPDImporterProcessor
+    class DllExport SPDWrite2OverlapTiles : public SPDImporterProcessor
 	{
 	public:
 		SPDWrite2OverlapTiles(std::vector<SPDTile*> *tiles) throw(SPDException);
@@ -123,7 +123,7 @@ namespace spdlib
 	};
     
     
-    class SPDWrite2TilesCore : public SPDImporterProcessor
+    class DllExport SPDWrite2TilesCore : public SPDImporterProcessor
 	{
 	public:
 		SPDWrite2TilesCore(std::vector<SPDTile*> *tiles) throw(SPDException);

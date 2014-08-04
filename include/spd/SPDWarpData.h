@@ -59,7 +59,7 @@
 
 namespace spdlib
 {    
-    class SPDShiftData : public SPDDataBlockProcessor
+    class DllExport SPDShiftData : public SPDDataBlockProcessor
 	{
 	public:
         SPDShiftData(float xShift, float yShift);
@@ -94,7 +94,7 @@ namespace spdlib
         float yShift;
 	};
     
-    class SPDGCPImg2MapNode
+    class DllExport SPDGCPImg2MapNode
 	{
 	public:
 		SPDGCPImg2MapNode(double eastings, double northings, float xOff, float yOff);
@@ -126,7 +126,7 @@ namespace spdlib
     typedef std::map<CGALPoint, SPDGCPImg2MapNode*, K::Less_xy_2>     PointValueMap;
     
     
-    class SPDWarpException : public SPDException
+    class DllExport SPDWarpException : public SPDException
 	{
 	public:
 		SPDWarpException(){msgs = "A SPDImageException has been created..";};
@@ -135,7 +135,7 @@ namespace spdlib
 	};
     
     
-    class SPDWarpPointData
+    class DllExport SPDWarpPointData
     {
     public:
         SPDWarpPointData();
@@ -149,7 +149,7 @@ namespace spdlib
         std::vector<SPDGCPImg2MapNode*> *gcps;
     };
     
-    class SPDNearestNeighbourWarp : public SPDWarpPointData
+    class DllExport SPDNearestNeighbourWarp : public SPDWarpPointData
     {
     public:
         SPDNearestNeighbourWarp();
@@ -163,7 +163,7 @@ namespace spdlib
         PointValueMap *values;
     };
     
-    class SPDTriangulationPlaneFittingWarp : public SPDWarpPointData
+    class DllExport SPDTriangulationPlaneFittingWarp : public SPDWarpPointData
     {
     public:
         SPDTriangulationPlaneFittingWarp();
@@ -181,7 +181,7 @@ namespace spdlib
     };
     
     
-    class SPDPolynomialWarp : public SPDWarpPointData
+    class DllExport SPDPolynomialWarp : public SPDWarpPointData
     {
     public:
         SPDPolynomialWarp(int order);
@@ -206,7 +206,7 @@ namespace spdlib
         spdwarppulseorigin=3
     };
     
-    class SPDNonLinearWarp : public SPDImporterProcessor
+    class DllExport SPDNonLinearWarp : public SPDImporterProcessor
 	{
 	public:
 		SPDNonLinearWarp(SPDDataExporter *exporter, SPDFile *spdFileOut, SPDWarpPointData *calcOffsets, SPDWarpLocation warpLoc) throw(SPDException);

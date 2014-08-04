@@ -41,7 +41,7 @@
 
 namespace spdlib
 {
-    class SPDProcessPulses : public SPDDataBlockProcessor
+    class DllExport SPDProcessPulses : public SPDDataBlockProcessor
 	{
 	public:
         SPDProcessPulses(SPDPulseProcessor *pulseProcessor, bool usingWindow, boost::uint_fast16_t winHSize);
@@ -62,7 +62,7 @@ namespace spdlib
         boost::uint_fast16_t winHSize;
 	};
     
-    class SPDSetupProcessPulses
+    class DllExport SPDSetupProcessPulses
     {
     public:
         SPDSetupProcessPulses(boost::uint_fast32_t blockXSize=250, boost::uint_fast32_t blockYSize=250, bool printProgress=true);

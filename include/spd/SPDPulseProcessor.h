@@ -39,7 +39,7 @@
 namespace spdlib
 {
 	
-	class SPDPulseProcessor
+	class DllExport SPDPulseProcessor
 	{
 	public:
         SPDPulseProcessor(){};

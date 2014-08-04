@@ -246,7 +246,7 @@ namespace spdlib
                 
 	}
 	
-    struct WeibullFitVals
+    struct DllExport WeibullFitVals
     {
         double *heights;
         double *binVals;
@@ -296,7 +296,7 @@ namespace spdlib
 		return 0;
     }
     
-	struct PulseWaveform 
+	struct DllExport PulseWaveform
 	{
 		double *time;
 		double *intensity;
@@ -440,7 +440,7 @@ namespace spdlib
 		}
 	}
     
-    struct SPD3DTMPPt
+    struct DllExport SPD3DTMPPt
     {
         SPD3DTMPPt(){};
         SPD3DTMPPt(double x, double y, float z)

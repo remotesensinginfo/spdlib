@@ -47,21 +47,21 @@
 
 namespace spdlib
 {
-    struct SPD3DDataPt
+    struct DllExport SPD3DDataPt
     {
         double x;
         double y;
         double z;
     };
     
-    struct GaussianDecompReturnType
+    struct DllExport GaussianDecompReturnType
     {
         float gaussianAmplitude;
         float gaussianWidth;
         float axisInterval;
     };
     
-    class SPDInitDecomposition
+    class DllExport SPDInitDecomposition
 	{
 	public:
 		SPDInitDecomposition(){};
@@ -70,7 +70,7 @@ namespace spdlib
 		virtual ~SPDInitDecomposition(){};
 	};
 	
-	class SPDInitDecompositionZeroCrossingSimple : public SPDInitDecomposition
+	class DllExport SPDInitDecompositionZeroCrossingSimple : public SPDInitDecomposition
 	{
 	public:
 		SPDInitDecompositionZeroCrossingSimple(float decay);
@@ -81,7 +81,7 @@ namespace spdlib
 		float decay;
 	};
 	
-	class SPDInitDecompositionZeroCrossing : public SPDInitDecomposition
+	class DllExport SPDInitDecompositionZeroCrossing : public SPDInitDecomposition
 	{
 	public:
 		SPDInitDecompositionZeroCrossing(float decay,boost::uint_fast32_t intDecayThres);
@@ -94,7 +94,7 @@ namespace spdlib
 	boost::uint_fast32_t intDecayThres;
 	};
     
-    class SPDInitDecompositionZeroCrossingNoRinging : public SPDInitDecomposition
+    class DllExport SPDInitDecompositionZeroCrossingNoRinging : public SPDInitDecomposition
 	{
 	public:
 		SPDInitDecompositionZeroCrossingNoRinging();
@@ -105,7 +105,7 @@ namespace spdlib
 		bool zeroCrossing(float grad1, float grad2);
 	};
     
-    class SPDMathsUtils
+    class DllExport SPDMathsUtils
     {
     public: 
         SPDMathsUtils();
@@ -130,7 +130,7 @@ namespace spdlib
     
     /// This class has been copied from RSGISLib (RSGISSingularValueDecomposition) 
     /// and was originally created by Daniel Clewely. 
-    class SPDSingularValueDecomposition
+    class DllExport SPDSingularValueDecomposition
     {
     public:
         SPDSingularValueDecomposition();
@@ -151,7 +151,7 @@ namespace spdlib
 	/// Class to perform polynomaial fitting
     /// This class has been copied from RSGISLib (RSGISPolyFit) 
     /// and was originally created by Daniel Clewely. 
-	class SPDPolyFit
+	class DllExport SPDPolyFit
     {
     public:
         SPDPolyFit();

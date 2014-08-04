@@ -67,7 +67,7 @@ namespace spdlib
     } SalcaHDRParams;
     
     
-    class SPDSALCADataBinaryImporter : public SPDDataImporter
+    class DllExport SPDSALCADataBinaryImporter : public SPDDataImporter
 	{
 	public:
 		SPDSALCADataBinaryImporter(bool convertCoords=false, std::string outputProjWKT="", std::string schema="", boost::uint_fast16_t indexCoords=SPD_FIRST_RETURN, bool defineOrigin=false, double originX=0, double originY=0, float originZ=0, float waveNoiseThreshold=0);

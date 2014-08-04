@@ -41,7 +41,7 @@
 
 namespace spdlib
 {
-	class SPDGeneralASCIIFileWriter : public SPDDataExporter
+	class DllExport SPDGeneralASCIIFileWriter : public SPDDataExporter
 	{
 	public:
 		SPDGeneralASCIIFileWriter();

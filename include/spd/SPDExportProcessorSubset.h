@@ -40,7 +40,7 @@
 
 namespace spdlib
 {
-	class SPDExportProcessorSubset : public SPDImporterProcessor
+	class DllExport SPDExportProcessorSubset : public SPDImporterProcessor
 	{
 	public:
 		SPDExportProcessorSubset(SPDDataExporter *exporter, SPDFile *spdFileOut, double *bbox) throw(SPDException);
@@ -62,7 +62,7 @@ namespace spdlib
 		bool first;
 	};
 
-	class SPDExportProcessorSubsetSpherical : public SPDImporterProcessor
+	class DllExport SPDExportProcessorSubsetSpherical : public SPDImporterProcessor
 	{
 	public:
 		SPDExportProcessorSubsetSpherical(SPDDataExporter *exporter, SPDFile *spdFileOut, double *bbox) throw(SPDException);
@@ -77,7 +77,7 @@ namespace spdlib
 		double *bbox;
 	};
 
-	class SPDExportProcessorSubsetScan : public SPDImporterProcessor
+	class DllExport SPDExportProcessorSubsetScan : public SPDImporterProcessor
 	{
 	public:
 		SPDExportProcessorSubsetScan(SPDDataExporter *exporter, SPDFile *spdFileOut, double *bbox) throw(SPDException);
@@ -92,7 +92,7 @@ namespace spdlib
 		double *bbox;
 	};
     
-	class SPDSubsetNonGriddedFile
+	class DllExport SPDSubsetNonGriddedFile
 	{
 	public:
 		SPDSubsetNonGriddedFile();

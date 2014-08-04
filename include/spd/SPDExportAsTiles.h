@@ -39,7 +39,7 @@
 
 namespace spdlib
 {
-	struct PointDataTileFile 
+	struct DllExport PointDataTileFile
 	{
 		SPDDataExporter *exporter;
         std::list<SPDPulse*> *pulses;
@@ -47,7 +47,7 @@ namespace spdlib
 		SPDFile *spdFile;
 	};
 	
-	class SPDExportAsRowTiles : public SPDImporterProcessor
+	class DllExport SPDExportAsRowTiles : public SPDImporterProcessor
 	{
 	public:
 		SPDExportAsRowTiles(PointDataTileFile *tiles,boost::uint_fast32_t numOfTiles, SPDFile *overallSPD, double tileHeight, bool useSphericIdx, bool useScanIdx) throw(SPDException);
@@ -65,7 +65,7 @@ namespace spdlib
 	};
     
     
-    class SPDExportAsBlockTiles : public SPDImporterProcessor
+    class DllExport SPDExportAsBlockTiles : public SPDImporterProcessor
 	{
 	public:
 		SPDExportAsBlockTiles(PointDataTileFile *tiles, boost::uint_fast32_t numOfTiles, boost::uint_fast32_t numOfXTiles, boost::uint_fast32_t numOfYTiles, SPDFile *overallSPD, double tileHeight, double tileWidth, bool useSphericIdx, bool useScanIdx) throw(SPDException);

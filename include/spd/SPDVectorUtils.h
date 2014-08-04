@@ -45,7 +45,7 @@
 
 namespace spdlib
 {	
-	class SPDVectorUtils
+	class DllExport SPDVectorUtils
 	{
 	public:
 		SPDVectorUtils();

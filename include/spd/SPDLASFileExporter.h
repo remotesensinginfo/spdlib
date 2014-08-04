@@ -42,7 +42,7 @@
 
 namespace spdlib
 {
-	class SPDLASFileExporter : public SPDDataExporter
+	class DllExport SPDLASFileExporter : public SPDDataExporter
 	{
 	public:
 		SPDLASFileExporter();
@@ -65,7 +65,7 @@ namespace spdlib
 	};
     
     
-    class SPDLAZFileExporter : public SPDDataExporter
+    class DllExport SPDLAZFileExporter : public SPDDataExporter
 	{
 	public:
 		SPDLAZFileExporter();

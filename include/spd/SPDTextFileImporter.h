@@ -43,7 +43,7 @@
 
 namespace spdlib
 {
-	class SPDTextLineProcessor
+	class DllExport SPDTextLineProcessor
 	{
 	public:
 		SPDTextLineProcessor():headerRead(false){};
@@ -60,7 +60,7 @@ namespace spdlib
 	};
 	
 	
-	class SPDTextFileImporter : public SPDDataImporter
+	class DllExport SPDTextFileImporter : public SPDDataImporter
 	{
 	public:
 		SPDTextFileImporter(SPDTextLineProcessor *lineParser, bool convertCoords=false, std::string outputProjWKT="", std::string schema="", boost::uint_fast16_t indexCoords=SPD_FIRST_RETURN, bool defineOrigin=false, double originX=0, double originY=0, float originZ=0, float waveNoiseThreshold=0);
