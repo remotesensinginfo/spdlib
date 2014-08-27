@@ -27,10 +27,13 @@
 # Author: Pete Bunting
 # Email: pete.bunting@aber.ac.uk
 # Date: 21/07/2011
-# Version: 1.0
+# Version: 1.1
 #
 # History:
 # 2011/07/21: Version 1.0 - Created using a script from PML as the basis.
+#                           PML scrit available from: 
+#                           https://github.com/pmlrsg/arsf_tools
+# 2014/08/27: Version 1.1 - Updated for Python 3 (Dan Clewley).
 #
 #############################################################################
 
@@ -115,8 +118,8 @@ class LASWave2UPD (object):
         # Check given file exists
 
         if (not os.path.isfile(filename)):
-            print "\nFile " + filename + " does not exist"
-            print "Please check your file location and try again \n"
+            print("\nFile " + filename + " does not exist")
+            print("Please check your file location and try again \n")
             sys.exit(1)
         #end if
 
@@ -124,8 +127,8 @@ class LASWave2UPD (object):
         basename, extension = os.path.splitext(filename)
 
         if not (extension == ".LAS" or extension == ".las"):
-            print "\nFile " + filename + " is not a *.LAS or *.las file"
-            print "Please specify a LAS file on the command line\n"
+            print("\nFile " + filename + " is not a *.LAS or *.las file")
+            print("Please specify a LAS file on the command line\n")
             sys.exit(1)
         #end if
 
@@ -133,8 +136,8 @@ class LASWave2UPD (object):
         try:
             lasfile = open(filename, "rb")
         except IOError:
-            print "\nCould not open LAS file " + filename
-            print "Please check your file permissions and try again\n"
+            print("\nCould not open LAS file " + filename)
+            print("Please check your file permissions and try again\n")
             sys.exit(1)
         #end try
 
@@ -143,7 +146,7 @@ class LASWave2UPD (object):
             record = lasfile.read(public_header_length)
         except:
             tb = sys.exc_info()[2]
-            print "\nReading failed on input LAS file " + filename
+            print("\nReading failed on input LAS file " + filename)
             sys.exit(1)
         #end try
 
@@ -156,8 +159,8 @@ class LASWave2UPD (object):
         version=str(headdata[7])+'.'+str(+headdata[8])
 
         if version != '1.3':
-            print "\nSpecified file is a LAS %s.%s file, not a LAS 1.3 file" % (headdata[7], headdata[8])
-            print "Please check your file and try again \n"
+            print("\nSpecified file is a LAS {}.{} file, not a LAS 1.3 file".format(headdata[7], headdata[8]))
+            print("Please check your file and try again \n")
             sys.exit(1)
         #end if
 
@@ -173,40 +176,40 @@ class LASWave2UPD (object):
     #  filename: filename of LAS1.3 file
     ################################################################
     def printLASHeader(self, headdata,filename):
-        print "\nHeader file of " , filename
-        print "File Signature (\"LASF\") ", headdata[0]
-        print "File Source ID  ", headdata[1]
-        print "Global Encoding ", headdata[2]
-        print "Project ID - GUID data 1 ", headdata[3]
-        print "Project ID - GUID data 2 ", headdata[4]
-        print "Project ID - GUID data 3 ", headdata[5]
-        print "Project ID - GUID data 4 ", headdata[6]
-        print "Version Major %c" % headdata[7]
-        print "Version Minor ", headdata[8]
-        print "System Identifier ", headdata[9]
-        print "Generating Software ", headdata[10]
-        print "File Creation Day of Year  ", headdata[11]
-        print "File Creation Year ", headdata[12]
-        print "Header Size    ", headdata[13]
-        print "Offset to point data ", headdata[14]
-        print "Number of Variable Length Records ", headdata[15]
-        print "Point Data Format ID (0-99 for spec) ", headdata[16]
-        print "Point Data Record Length ", headdata[17]
-        print "Number of point records ", headdata[18]
-        print "Number of points by return  ", headdata[19:23]
-        print "X scale factor ", headdata[24]
-        print "Y scale factor  ", headdata[25]
-        print "Z scale factor ", headdata[26]
-        print "X offset  ", headdata[27]
-        print "Y offset  ", headdata[28]
-        print "Z offset ", headdata[29]
-        print "Max X  ", headdata[30]
-        print "Min X  ", headdata[31]
-        print "Max Y  ", headdata[32]
-        print "Min Y ", headdata[33]
-        print "Max Z  ", headdata[34]
-        print "Min Z  ", headdata[35]
-        print "Start of Waveform Data Packet Record ", headdata[36] , "\n"
+        print("\nHeader file of " , filename)
+        print("File Signature (\"LASF\") ", headdata[0])
+        print("File Source ID  ", headdata[1])
+        print("Global Encoding ", headdata[2])
+        print("Project ID - GUID data 1 ", headdata[3])
+        print("Project ID - GUID data 2 ", headdata[4])
+        print("Project ID - GUID data 3 ", headdata[5])
+        print("Project ID - GUID data 4 ", headdata[6])
+        print("Version Major %c" % headdata[7])
+        print("Version Minor ", headdata[8])
+        print("System Identifier ", headdata[9])
+        print("Generating Software ", headdata[10])
+        print("File Creation Day of Year  ", headdata[11])
+        print("File Creation Year ", headdata[12])
+        print("Header Size    ", headdata[13])
+        print("Offset to point data ", headdata[14])
+        print("Number of Variable Length Records ", headdata[15])
+        print("Point Data Format ID (0-99 for spec) ", headdata[16])
+        print("Point Data Record Length ", headdata[17])
+        print("Number of point records ", headdata[18])
+        print("Number of points by return  ", headdata[19:23])
+        print("X scale factor ", headdata[24])
+        print("Y scale factor  ", headdata[25])
+        print("Z scale factor ", headdata[26])
+        print("X offset  ", headdata[27])
+        print("Y offset  ", headdata[28])
+        print("Z offset ", headdata[29])
+        print("Max X  ", headdata[30])
+        print("Min X  ", headdata[31])
+        print("Max Y  ", headdata[32])
+        print("Min Y ", headdata[33])
+        print("Max Z  ", headdata[34])
+        print("Min Z  ", headdata[35])
+        print("Start of Waveform Data Packet Record ", headdata[36] , "\n")
     #end function
 
     ################################################################
@@ -232,7 +235,7 @@ class LASWave2UPD (object):
             record = lasfile.read(public_header_length)
         except:
             tb = sys.exc_info()[2]
-            print "Reading failed on input LAS file " + inputFile + "\n"
+            print("Reading failed on input LAS file " + inputFile + "\n")
             sys.exit(1)
         #end try
 
@@ -257,7 +260,7 @@ class LASWave2UPD (object):
                 v_record = lasfile.read(VbleRec_header_length)
             except:
                 tb = sys.exc_info()[2]
-                raise IOError, "Reading failed on input LAS file while reading Vble length record " + inputFile, tb
+                raise IOError("Reading failed on input LAS file while reading Vble length record " + inputFile, tb)
             #end try
 
             headdata_rec = struct.unpack(VbleRec_head_format, v_record)
@@ -350,22 +353,22 @@ class LASWave2UPD (object):
         countPulses = 0
         pulsesInBuffer = 0;
         c_point=[0,0]
-        print "Starting to process %d points" %N_points
-        feedback = int(N_points/100)
+        print("Starting to process {} points".format(N_points))
+        feedback = int(N_points/10)
 
         for p in range(N_points):
             Point = lasfile.read(Size_points)
             point_info = struct.unpack(point_data_format,Point)
 
             wave_desc = point_info[11]
-            if wave_desc <> 0: # if there is waveform asociated to this point
+            if wave_desc != 0: # if there is waveform asociated to this point
                 pulse = spdpy.createSPDPulsePy()
                 pulse.pulseID = countPulses
 
                 scan_dir=(point_info[4]&64)/64
-                pulse.scanDirectionFlag = scan_dir
+                pulse.scanDirectionFlag = int(scan_dir)
                 edge_fl=(point_info[4]&128)/128
-                pulse.edgeFlightLineFlag = edge_fl
+                pulse.edgeFlightLineFlag = int(edge_fl)
 
                 wavedata = []
                 wavedata.append(point_info)
@@ -456,18 +459,22 @@ class LASWave2UPD (object):
                 try:
                     updWriter.writeData(outPulses)
                 except:
-                    raise IOError, "Error writing UPD File."
+                    raise IOError("Error writing UPD File.")
                 pulsesInBuffer = 0
                 del outPulses
                 outPulses = list()
 
             if (countAllPoints % feedback) == 0:
-                print ".", countAllPoints, ".",
+                progress=int(100*countAllPoints/N_points)
+                sys.stdout.write(str(progress)+'..')
                 sys.stdout.flush()
 
             countAllPoints+=1
             #end if
         #end for
+        
+        sys.stdout.write('Complete.\n')
+        sys.stdout.flush()
 
         spdOutFile.setXMin(minX)
         spdOutFile.setXMax(maxX)
@@ -475,11 +482,11 @@ class LASWave2UPD (object):
         spdOutFile.setYMax(maxY)
 
         if countPulses==0:
-            print "\nNo wave forms have been found..."
-            print "Please check your data and try again\n"
+            print("\nNo wave forms have been found...")
+            print("Please check your data and try again\n")
         else:
-            print "\nNumber of extracted waves: ", countPulses
-            print countAllPoints-countPulses, " did not have waveforms."
+            print("\nNumber of extracted waves: ", countPulses)
+            print(countAllPoints-countPulses, " did not have waveforms.")
         #end if
 
         # After points, read EVLR
@@ -487,7 +494,7 @@ class LASWave2UPD (object):
             evlr_record = lasfile.read(EVLR_length)
         except:
             tb = sys.exc_info()[2] # Get traceback (causes circular reference to clean up later)
-            raise IOError, "Reading failed on input LAS file while reading Vble length record " + inputFile, tb
+            raise IOError("Reading failed on input LAS file while reading Vble length record " + inputFile, tb)
         #end try
 
         evlr_data = struct.unpack("=H16sHQ32s", evlr_record)
@@ -526,7 +533,7 @@ class LASWave2UPD (object):
             record = lasfile.read(public_header_length)
         except:
             tb = sys.exc_info()[2]
-            print "Reading failed on input LAS file " + inputFile + "\n"
+            print("Reading failed on input LAS file " + inputFile + "\n")
             sys.exit(1)
         #end try
 
@@ -535,7 +542,7 @@ class LASWave2UPD (object):
         minY = headdata[33]
         maxY = headdata[32]
 
-        print "Extent [minX, maxX, minY, maxY][", minX, ",", maxX, ",", minY, ",", maxY, "]"
+        print("Extent [minX, maxX, minY, maxY][", minX, ",", maxX, ",", minY, ",", maxY, "]")
 
         #printPubHeader(headdata)
         point_scale_factors.append(headdata[24]) # X scale factor
@@ -553,7 +560,7 @@ class LASWave2UPD (object):
                 v_record = lasfile.read(VbleRec_header_length)
             except:
                 tb = sys.exc_info()[2]
-                raise IOError, "Reading failed on input LAS file while reading Vble length record " + inputFile, tb
+                raise IOError("Reading failed on input LAS file while reading Vble length record " + inputFile, tb)
             #end try
 
             headdata_rec = struct.unpack(VbleRec_head_format, v_record)
@@ -582,13 +589,13 @@ class LASWave2UPD (object):
                 mis_info = struct.unpack("=lHHhhhll",skip_record)
                 #print "mission info", mis_info
                 laser_pulse_rate=mis_info[0]
-                print "Laser Pulse Rate: ", laser_pulse_rate
+                print("Laser Pulse Rate: ", laser_pulse_rate)
                 field_of_view=mis_info[1]
                 scanner_offset=mis_info[2]
                 scan_rate=mis_info[3]
-                print "Sensor Scan Rate: ", scan_rate
+                print("Sensor Scan Rate: ", scan_rate)
                 fly_altitude=mis_info[4] # Corresponds to the Nadir Range in the FlightLineLog
-                print "Sensor Height: ", fly_altitude
+                print("Sensor Height: ", fly_altitude)
             #end if
 
             #If RecordID= 1003 it is User inputs containing:
@@ -624,7 +631,7 @@ class LASWave2UPD (object):
             #If RecordID>= 100 it is a waveform Packet Descriptor
             if (headdata_rec[2] >= 100) and (headdata_rec[2] < 356):
                 wv_info = struct.unpack("=cclldd",skip_record)
-                print "Temporal Bin Spacing: ", wv_info[3]/1000.0
+                print("Temporal Bin Spacing: ", wv_info[3]/1000.0)
                 #print wv_info
             #end if
         #end for
@@ -640,7 +647,7 @@ class LASWave2UPD (object):
         lasfile.seek(Offset_points)
         countAllPoints = 0
         c_point=[0,0]
-        print "Starting to process %d points" %N_points
+        print("Starting to process {} points".format(N_points))
         printDBInfo = False
         countPrintedPoints = 0
         countPulses = 0
@@ -650,19 +657,19 @@ class LASWave2UPD (object):
             point_info = struct.unpack(point_data_format,Point)
 
             wave_desc = point_info[11]
-            if wave_desc <> 0: # if there is waveform asociated to this point
+            if wave_desc != 0: # if there is waveform asociated to this point
                 if countAllPoints >= startPt:
                     printDBInfo = True
 
                 if printDBInfo:
-                    print "Point : ", countAllPoints
-                    print "GPS Time: ", point_info[10]
-                    print "XYZ: [", (point_info[0]*point_scale_factors[0])+point_offsets[0], ",", (point_info[1]*point_scale_factors[1])+point_offsets[1], ",", (point_info[2]*point_scale_factors[2])+point_offsets[2], "]"
-                    print "Intensity: ", point_info[3]
-                    print "Return No: ", (point_info[4]&7)
-                    print "No of Returns: ", (point_info[4] & 56)
-                    print "Scan Direction Flag: ", (point_info[4]&64)/64
-                    print "Edge of flightline flag: ", (point_info[4]&128)/128
+                    print("Point : ", countAllPoints)
+                    print("GPS Time: ", point_info[10])
+                    print("XYZ: [", (point_info[0]*point_scale_factors[0])+point_offsets[0], ",", (point_info[1]*point_scale_factors[1])+point_offsets[1], ",", (point_info[2]*point_scale_factors[2])+point_offsets[2], "]")
+                    print("Intensity: ", point_info[3])
+                    print("Return No: ", (point_info[4]&7))
+                    print("No of Returns: ", (point_info[4] & 56))
+                    print("Scan Direction Flag: ", (point_info[4]&64)/64)
+                    print("Edge of flightline flag: ", (point_info[4]&128)/128)
                     countPrintedPoints=countPrintedPoints+1
 
                 wavedata = []
@@ -677,10 +684,10 @@ class LASWave2UPD (object):
                 wavedata.append(wave_data)
 
                 if printDBInfo:
-                    print "AGC: ", wavedata[0][8]
-                    print "Received Gain: ", wv_info[4]
-                    print "Offset: ", wv_info[5]
-                    print "Noise Threshold: ", (17*wavedata[0][8]*wv_info[4])+wv_info[5]
+                    print("AGC: ", wavedata[0][8])
+                    print("Received Gain: ", wv_info[4])
+                    print("Offset: ", wv_info[5])
+                    print("Noise Threshold: ", (17*wavedata[0][8]*wv_info[4])+wv_info[5])
 
                 w_point=[0,0,0]
                 w_point[0]=wavedata[0][0]*point_scale_factors[0]+point_offsets[0]
@@ -705,24 +712,24 @@ class LASWave2UPD (object):
                     azimuth = tempAzimuth;
 
                 if printDBInfo:
-                    print "Origin: [X,Y,Z]: [", float(w_point[0]+ wavedata[0][15]*wavedata[0][14]), ",", float(w_point[1]+ wavedata[0][16]*wavedata[0][14]), ",", float(w_point[2]+ wavedata[0][17]*wavedata[0][14]), "]"
-                    print "X Offset: ", wavedata[0][15]*1000*(wv_info[3]/1000.0) # *1000 to convert from km to meters *sampling to get offset between each sample
-                    print "Y Offset: ", wavedata[0][16]*1000*(wv_info[3]/1000.0) # *1000 to convert from km to meters *sampling to get offset between each sample
-                    print "Z Offset: ", wavedata[0][17]*1000*(wv_info[3]/1000.0) # *1000 to convert from km to meters *sampling to get offset between each sample
-                    print "Arb Point: [", aPtX, ",", aPtY, ",", aPtZ, "]"
-                    print "Azimuth: ", azimuth
-                    print "Zenith: ", zenith
+                    print("Origin: [X,Y,Z]: [", float(w_point[0]+ wavedata[0][15]*wavedata[0][14]), ",", float(w_point[1]+ wavedata[0][16]*wavedata[0][14]), ",", float(w_point[2]+ wavedata[0][17]*wavedata[0][14]), "]")
+                    print("X Offset: ", wavedata[0][15]*1000*(wv_info[3]/1000.0)) # *1000 to convert from km to meters *sampling to get offset between each sample
+                    print("Y Offset: ", wavedata[0][16]*1000*(wv_info[3]/1000.0)) # *1000 to convert from km to meters *sampling to get offset between each sample
+                    print("Z Offset: ", wavedata[0][17]*1000*(wv_info[3]/1000.0)) # *1000 to convert from km to meters *sampling to get offset between each sample
+                    print("Arb Point: [", aPtX, ",", aPtY, ",", aPtZ, "]")
+                    print("Azimuth: ", azimuth)
+                    print("Zenith: ", zenith)
 
 
                 if printDBInfo:
-                    print "Waveform Offset: ", wave_offset
-                    print "Waveform Size: ", wave_size
+                    print("Waveform Offset: ", wave_offset)
+                    print("Waveform Size: ", wave_size)
                     for i in range(len(wave_data)):
                         if i == 0:
-                            print wave_data[i],
+                            sys.stdout.write(wave_data[i])
                         else:
-                            print ",", wave_data[i],
-                    print "\n"
+                            sys.stdout.write("," + str(wave_data[i]))
+                    print("\n")
 
                 lasfile.seek(tmp) # Goes back to next point in file
                 countPulses+=1
@@ -735,11 +742,11 @@ class LASWave2UPD (object):
         #end for
 
         if countPulses==0:
-            print "\nNo wave forms have been found..."
-            print "Please check your data and try again\n"
+            print("\nNo wave forms have been found...")
+            print("Please check your data and try again\n")
         else:
-            print "\nNumber of extracted pulses: ", countPulses
-            print countAllPoints-countPulses, " did not have waveforms."
+            print("\nNumber of extracted pulses: {}".format(countPulses))
+            print("{} did not have waveforms.".format(countAllPoints-countPulses))
         #end if
 
         # After points, read EVLR
@@ -747,7 +754,7 @@ class LASWave2UPD (object):
             evlr_record = lasfile.read(EVLR_length)
         except:
             tb = sys.exc_info()[2] # Get traceback (causes circular reference to clean up later)
-            raise IOError, "Reading failed on input LAS file while reading Vble length record " + inputFile, tb
+            raise IOError("Reading failed on input LAS file while reading Vble length record " + inputFile, tb)
         #end try
 
         evlr_data = struct.unpack("=H16sHQ32s", evlr_record)
@@ -781,7 +788,7 @@ class LASWave2UPD (object):
             record = lasfile.read(public_header_length)
         except:
             tb = sys.exc_info()[2]
-            print "Reading failed on input LAS file " + inputFile + "\n"
+            print("Reading failed on input LAS file " + inputFile + "\n")
             sys.exit(1)
         #end try
 
@@ -806,7 +813,7 @@ class LASWave2UPD (object):
                 v_record = lasfile.read(VbleRec_header_length)
             except:
                 tb = sys.exc_info()[2]
-                raise IOError, "Reading failed on input LAS file while reading Vble length record " + inputFile, tb
+                raise IOError("Reading failed on input LAS file while reading Vble length record " + inputFile, tb)
             #end try
 
             headdata_rec = struct.unpack(VbleRec_head_format, v_record)
@@ -894,8 +901,8 @@ class LASWave2UPD (object):
         countAllPoints = 0
         pulsesInBuffer = 0;
         c_point=[0,0]
-        print "Starting to process %d points" %N_points
-        feedback = int(N_points/100)
+        print("Starting to process {} points".format(N_points))
+        feedback = int(N_points/10)
 
         for p in range(N_points):
             Point = lasfile.read(Size_points)
@@ -903,10 +910,13 @@ class LASWave2UPD (object):
 
             pulse = spdpy.createSPDPulsePy()
             pulse.pulseID = countAllPoints
-            pulse.scanDirectionFlag = (point_info[4]&64)/64
-            pulse.edgeFlightLineFlag = (point_info[4]&128)/128
+            scan_dir=(point_info[4]&64)/64
+            pulse.scanDirectionFlag = int(scan_dir)
+            edge_fl=(point_info[4]&128)/128
+            pulse.edgeFlightLineFlag = int(edge_fl)
             pulse.gpsTime = int(point_info[10])
             pulse.scanAngleRank = point_info[6]
+
 
             pulse.numberOfReturns = 1
             spdPoint = spdpy.createSPDPointPy()
@@ -940,25 +950,29 @@ class LASWave2UPD (object):
                 try:
                     updWriter.writeData(outPulses)
                 except:
-                    raise IOError, "Error writing UPD File."
+                    raise IOError("Error writing UPD File.")
                 pulsesInBuffer = 0
                 del outPulses
                 outPulses = list()
                 #print "Written Data"
 
             if (countAllPoints % feedback) == 0:
-                print ".", countAllPoints, ".",
+                progress=int(100*countAllPoints/N_points)
+                sys.stdout.write(str(progress)+'..')
                 sys.stdout.flush()
 
             countAllPoints+=1
         #end for
+        sys.stdout.write('Complete.\n')
+        sys.stdout.flush()
+
 
 
         if pulsesInBuffer > 0:
             try:
                 updWriter.writeData(outPulses)
             except:
-                raise IOError, "Error writing UPD File."
+                raise IOError("Error writing UPD File.")
             pulsesInBuffer = 0
             del outPulses
             outPulses = list()
@@ -969,10 +983,10 @@ class LASWave2UPD (object):
         spdOutFile.setYMax(maxY)
 
         if countAllPoints==0:
-            print "\nNo points have been found..."
-            print "Please check your data and try again\n"
+            print("\nNo points have been found...")
+            print("Please check your data and try again\n")
         else:
-            print "\nNumber of extracted pulses: ", countAllPoints
+            print("\nNumber of extracted pulses: ", countAllPoints)
         #end if
 
         # After points, read EVLR
@@ -980,7 +994,7 @@ class LASWave2UPD (object):
             evlr_record = lasfile.read(EVLR_length)
         except:
             tb = sys.exc_info()[2] # Get traceback (causes circular reference to clean up later)
-            raise IOError, "Reading failed on input LAS file while reading Vble length record " + inputFile, tb
+            raise IOError("Reading failed on input LAS file while reading Vble length record " + inputFile, tb)
         #end try
 
         evlr_data = struct.unpack("=H16sHQ32s", evlr_record)
@@ -1018,7 +1032,7 @@ class LASWave2UPD (object):
             record = lasfile.read(public_header_length)
         except:
             tb = sys.exc_info()[2]
-            print "Reading failed on input LAS file " + inputFile + "\n"
+            print("Reading failed on input LAS file " + inputFile + "\n")
             sys.exit(1)
         #end try
 
@@ -1027,7 +1041,7 @@ class LASWave2UPD (object):
         minY = headdata[33]
         maxY = headdata[32]
 
-        print "Extent [minX, maxX, minY, maxY][", minX, ",", maxX, ",", minY, ",", maxY, "]"
+        print("Extent [minX, maxX, minY, maxY][", minX, ",", maxX, ",", minY, ",", maxY, "]")
 
         #printPubHeader(headdata)
         point_scale_factors.append(headdata[24]) # X scale factor
@@ -1045,7 +1059,7 @@ class LASWave2UPD (object):
                 v_record = lasfile.read(VbleRec_header_length)
             except:
                 tb = sys.exc_info()[2]
-                raise IOError, "Reading failed on input LAS file while reading Vble length record " + inputFile, tb
+                raise IOError("Reading failed on input LAS file while reading Vble length record " + inputFile, tb)
             #end try
 
             headdata_rec = struct.unpack(VbleRec_head_format, v_record)
@@ -1074,13 +1088,13 @@ class LASWave2UPD (object):
                 mis_info = struct.unpack("=lHHhhhll",skip_record)
                 #print "mission info", mis_info
                 laser_pulse_rate=mis_info[0]
-                print "Laser Pulse Rate: ", laser_pulse_rate
+                print("Laser Pulse Rate: ", laser_pulse_rate)
                 field_of_view=mis_info[1]
                 scanner_offset=mis_info[2]
                 scan_rate=mis_info[3]
-                print "Sensor Scan Rate: ", scan_rate
+                print("Sensor Scan Rate: ", scan_rate)
                 fly_altitude=mis_info[4] # Corresponds to the Nadir Range in the FlightLineLog
-                print "Sensor Height: ", fly_altitude
+                print("Sensor Height: ", fly_altitude)
             #end if
 
             #If RecordID= 1003 it is User inputs containing:
@@ -1116,7 +1130,7 @@ class LASWave2UPD (object):
             #If RecordID>= 100 it is a waveform Packet Descriptor
             if (headdata_rec[2] >= 100) and (headdata_rec[2] < 356):
                 wv_info = struct.unpack("=cclldd",skip_record)
-                print "Temporal Bin Spacing: ", wv_info[3]/1000.0
+                print("Temporal Bin Spacing: ", wv_info[3]/1000.0)
                 #print wv_info
             #end if
         #end for
@@ -1132,7 +1146,7 @@ class LASWave2UPD (object):
         lasfile.seek(Offset_points)
         countAllPoints = 0
         c_point=[0,0]
-        print "Starting to process %d points" %N_points
+        print("Starting to process {} points".format(N_points))
         printDBInfo = False
         countPrintedPoints = 0
 
@@ -1144,15 +1158,15 @@ class LASWave2UPD (object):
                 printDBInfo = True
 
             if printDBInfo:
-                print "Point : ", countAllPoints
-                print "GPS Time: ", point_info[10]
-                print "XYZ: [", (point_info[0]*point_scale_factors[0])+point_offsets[0], ",", (point_info[1]*point_scale_factors[1])+point_offsets[1], ",", (point_info[2]*point_scale_factors[2])+point_offsets[2], "]"
-                print "Intensity: ", point_info[3]
-                print "Return No: ", (point_info[4]&7)
-                print "No of Returns: ", (point_info[4] & 56)
-                print "Scan Direction Flag: ", (point_info[4]&64)/64
-                print "Edge of flightline flag: ", (point_info[4]&128)/128
-                print ''
+                print("Point : ", countAllPoints)
+                print("GPS Time: ", point_info[10])
+                print("XYZ: [", (point_info[0]*point_scale_factors[0])+point_offsets[0], ",", (point_info[1]*point_scale_factors[1])+point_offsets[1], ",", (point_info[2]*point_scale_factors[2])+point_offsets[2], "]")
+                print("Intensity: ", point_info[3])
+                print("Return No: ", (point_info[4]&7))
+                print("No of Returns: ", (point_info[4] & 56))
+                print("Scan Direction Flag: ", (point_info[4]&64)/64)
+                print("Edge of flightline flag: ", (point_info[4]&128)/128)
+                print('')
                 countPrintedPoints=countPrintedPoints+1
 
             if countPrintedPoints >= numPts:
@@ -1161,10 +1175,10 @@ class LASWave2UPD (object):
         #end for
 
         if countAllPoints==0:
-            print "\nNo points have been found..."
-            print "Please check your data and try again\n"
+            print("\nNo points have been found...")
+            print("Please check your data and try again\n")
         else:
-            print "\nNumber of extracted point: ", countAllPoints
+            print("\nNumber of extracted point: ", countAllPoints)
         #end if
 
         # After points, read EVLR
@@ -1172,7 +1186,7 @@ class LASWave2UPD (object):
             evlr_record = lasfile.read(EVLR_length)
         except:
             tb = sys.exc_info()[2] # Get traceback (causes circular reference to clean up later)
-            raise IOError, "Reading failed on input LAS file while reading Vble length record " + inputFile, tb
+            raise IOError("Reading failed on input LAS file while reading Vble length record " + inputFile, tb)
         #end try
 
         evlr_data = struct.unpack("=H16sHQ32s", evlr_record)
@@ -1226,22 +1240,22 @@ class LASWave2UPD (object):
             self.help()
 
     def help(self):
-        print 'LASWave2UPD.py script converts a LAS 1.3 file to a UPD File.'
-        print ''
-        print 'Print LAS header info:'
-        print 'LASWave2UPD.py -header <input file>'
-        print 'Convert Waveforms Only:'
-        print 'LASWave2UPD.py -waves <input file> <output file>'
-        print 'Convert Points Only (each point creates new pulse):'
-        print 'LASWave2UPD.py -pulpoints <input file> <output file>'
-        print 'Debug Waveforms - print to console:'
-        print 'LASWave2UPD.py -wavesdb <input file> <start point> <num points>'
-        print 'Debug Points -print to console:'
-        print 'LASWave2UPD.py -pointsdb <input file> <start point> <num points>'
-        print ''
-        print '\nThis script was distributed with version 3.0.0 of SPDLib\'s'
-        print 'python bindings.'
-        print 'For maintainance email spdlib-develop@lists.sourceforge.net'
+        print('LASWave2UPD.py script converts a LAS 1.3 file to a UPD File.')
+        print('')
+        print('Print LAS header info:')
+        print('LASWave2UPD.py -header <input file>')
+        print('Convert Waveforms Only:')
+        print('LASWave2UPD.py -waves <input file> <output file>')
+        print('Convert Points Only (each point creates new pulse):')
+        print('LASWave2UPD.py -pulpoints <input file> <output file>')
+        print('Debug Waveforms - print to console:')
+        print('LASWave2UPD.py -wavesdb <input file> <start point> <num points>')
+        print('Debug Points -print to console:')
+        print('LASWave2UPD.py -pointsdb <input file> <start point> <num points>')
+        print('')
+        print('\nThis script was distributed with version 3.1.0 of SPDLib\'s')
+        print('Python bindings.')
+        print('For maintainance email spdlib-develop@lists.sourceforge.net')
 
 if __name__ == '__main__':
     obj = LASWave2UPD()
