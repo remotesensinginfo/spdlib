@@ -177,6 +177,7 @@ set(SPDLIB_H_Processing_Algorithms
 	${SPDLIB_HEADERS_DIR}/SPDRasterInterpolation.h 
 	${SPDLIB_HEADERS_DIR}/SPDRemoveVerticalNoise.h
 	${SPDLIB_HEADERS_DIR}/SPDSampleInTime.h
+	${SPDLIB_HEADERS_DIR}/SPDSplit.h
 	${SPDLIB_HEADERS_DIR}/SPDThinPulses.h
 	${SPDLIB_HEADERS_DIR}/SPDWarpData.h
 	${SPDLIB_HEADERS_DIR}/SPDTidyGroundReturn.h )
