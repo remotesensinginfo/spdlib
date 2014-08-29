@@ -38,7 +38,7 @@
 
 namespace spdlib
 {
-	class SPDSplit : public SPDImporterProcessor
+	class DllExport SPDSplit : public SPDImporterProcessor
 	{
 	public:
 		SPDSplit(std::string outputFilePath, boost::uint_fast16_t sourceID) throw(SPDException);
