@@ -147,6 +147,9 @@ int main (int argc, char * const argv[])
 		TCLAP::SwitchArg useOnlyGroundReturnsSwitch("","usegroundreturns","An option when the Amplitude interpolation is being applied, where only returns classified as ground be used for the interpolation.", false);
         cmd.add( useOnlyGroundReturnsSwitch );
         
+        TCLAP::ValueArg<double> minCHMHeightArg("","minchmthres","A threshold for the CHM after which all values are set to zero.",false,0.25,"double");
+		cmd.add( minCHMHeightArg );
+        
 		TCLAP::ValueArg<std::string> inputFileArg("i","input","The input SPD file.",true,"","String");
 		cmd.add( inputFileArg );
         
@@ -273,7 +276,15 @@ int main (int argc, char * const argv[])
         }
         else if(chmSwitch.getValue())
         {
-            blockProcessor = new spdlib::SPDCHMInterpolation(interpolator, useOnlyVegReturnsSwitch.getValue());
+            bool useMinThres = false;
+            double minThresVal = 0.0;
+            if(minCHMHeightArg.isSet())
+            {
+                useMinThres = true;
+                minThresVal = minCHMHeightArg.getValue();
+            }
+            
+            blockProcessor = new spdlib::SPDCHMInterpolation(interpolator, useOnlyVegReturnsSwitch.getValue(), useMinThres, minThresVal);
         }
         else if(dsmSwitch.getValue())
         {
