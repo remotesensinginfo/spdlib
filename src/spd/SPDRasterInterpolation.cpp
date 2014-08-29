@@ -352,10 +352,12 @@ namespace spdlib
     
     
     
-    SPDCHMInterpolation::SPDCHMInterpolation(SPDPointInterpolator *interpolator, bool useVegClassifiedPts)
+    SPDCHMInterpolation::SPDCHMInterpolation(SPDPointInterpolator *interpolator, bool useVegClassifiedPts, bool useMinThres, double minThresVal)
     {
         this->interpolator = interpolator;
         this->useVegClassifiedPts = useVegClassifiedPts;
+        this->useMinThres = useMinThres;
+        this->minThresVal = minThresVal;
     }
     
     void SPDCHMInterpolation::processDataBlockImage(SPDFile *inSPDFile, std::vector<SPDPulse*> ***pulses, float ***imageDataBlock, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast32_t numImgBands, float binSize) throw(SPDProcessingException)
@@ -447,6 +449,14 @@ namespace spdlib
                         else
                         {
                             imageDataBlock[i][j][0] = interpolator->getValue(cenPts[i][j]->x, cenPts[i][j]->y);
+                        }
+                        
+                        if(useMinThres)
+                        {
+                            if(imageDataBlock[i][j][0] < minThresVal)
+                            {
+                                imageDataBlock[i][j][0] = 0.0;
+                            }
                         }
                     }
                 }

@@ -123,14 +123,23 @@ int main (int argc, char * const argv[])
         TCLAP::SwitchArg ignoreZSwitch("","ignorez","Defining that Z should be ignored when subsetting using a text file.", false);
 		cmd.add( ignoreZSwitch );
         
-        TCLAP::ValueArg<std::string> shapefileArg("","shpfile","A shapefile to which the dataset should be subsetted to",false,"","string");
+        TCLAP::ValueArg<std::string> shapefileArg("","shpfile","A shapefile to which the dataset should be subsetted to.",false,"","string");
 		cmd.add( shapefileArg );
+        
+        TCLAP::ValueArg<std::string> imgfileArg("","imgfile","A binary image to which the dataset should be subsetted to (pixel values of 1 define ROI).",false,"","string");
+		cmd.add( imgfileArg );
         
         TCLAP::ValueArg<uint_fast32_t> startArg("","start","First pulse in the block",false,0,"uint_fast32_t");
 		cmd.add( startArg );
 		
 		TCLAP::ValueArg<uint_fast32_t> numArg("","num","Number of pulses to be exported",false,0,"uint_fast32_t");
 		cmd.add( numArg );
+        
+        TCLAP::ValueArg<boost::uint_fast32_t> numOfRowsBlockArg("r","blockrows","Number of rows within a block (Default 100)",false,100,"unsigned int");
+		cmd.add( numOfRowsBlockArg );
+        
+        TCLAP::ValueArg<boost::uint_fast32_t> numOfColsBlockArg("c","blockcols","Number of columns within a block (Default 0) - Note values greater than 1 result in a non-sequencial SPD file.",false,0,"unsigned int");
+		cmd.add( numOfColsBlockArg );
 		
 		TCLAP::ValueArg<std::string> inputFileArg("i","input","The input SPD file.",true,"","String");
 		cmd.add( inputFileArg );
@@ -382,7 +391,12 @@ int main (int argc, char * const argv[])
                 if(indexedSPDFile & (shapefileArg.isSet()))
                 {
                     spdlib::SPDSubsetSPDFile subset;
-                    subset.subsetSPDFile(inputFile, outputFile, shapefileArg.getValue());
+                    subset.subsetSPDFile2Shp(inputFile, outputFile, shapefileArg.getValue());
+                }
+                if(indexedSPDFile & (imgfileArg.isSet()))
+                {
+                    spdlib::SPDSubsetSPDFile subset;
+                    subset.subsetSPDFile2Img(inputFile, outputFile, imgfileArg.getValue(), numOfColsBlockArg.getValue(), numOfRowsBlockArg.getValue());
                 }
                 else if(indexedSPDFile & (heightSwitch.getValue()))
                 {
