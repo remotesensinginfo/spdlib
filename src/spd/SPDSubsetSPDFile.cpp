@@ -279,7 +279,7 @@ namespace spdlib
 		}
 	}
 	
-    void SPDSubsetSPDFile::subsetSPDFile(std::string inputFile, std::string outputFile, std::string shapefile) throw(SPDException)
+    void SPDSubsetSPDFile::subsetSPDFile2Shp(std::string inputFile, std::string outputFile, std::string shapefile) throw(SPDException)
     {
         try
         {
@@ -454,6 +454,29 @@ namespace spdlib
 			spdIncReader.close();
 			spdWriter.finaliseClose();
             
+        }
+        catch(SPDException &e)
+        {
+            throw e;
+        }
+    }
+    
+    
+    void SPDSubsetSPDFile::subsetSPDFile2Img(std::string inputFile, std::string outputFile, std::string imgfile, boost::uint_fast32_t blockXSize, boost::uint_fast32_t blockYSize) throw(SPDException)
+    {
+        try
+        {
+            SPDDataBlockProcessor *dataBlockProcessor = new SPDDataSubsetWithImgBlockProcessor();
+            SPDProcessDataBlocks blockProcessor = SPDProcessDataBlocks(dataBlockProcessor, 0, blockXSize, blockYSize, true, false);
+            
+            SPDFile *spdFile = new SPDFile(inputFile);
+			
+			SPDFileReader reader;
+			reader.readHeaderInfo(spdFile->getFilePath(), spdFile);
+            
+            blockProcessor.processDataBlocksGridPulsesInputImage(spdFile, outputFile, imgfile);
+            
+            delete dataBlockProcessor;
         }
         catch(SPDException &e)
         {
@@ -1054,4 +1077,53 @@ namespace spdlib
 	{
 		
 	}
+    
+    
+    
+    
+    SPDDataSubsetWithImgBlockProcessor::SPDDataSubsetWithImgBlockProcessor()
+    {
+        
+    }
+    
+    void SPDDataSubsetWithImgBlockProcessor::processDataBlockImage(SPDFile *inSPDFile, std::vector<SPDPulse*> ***pulses, float ***imageDataBlock, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast32_t numImgBands, float binSize) throw(SPDProcessingException)
+    {
+        try
+		{
+			if(numImgBands == 0)
+            {
+                throw SPDProcessingException("The input image needs to have at least 1 image band.");
+            }
+            
+            SPDPulseUtils plsUtils;
+
+            for(boost::uint_fast32_t i = 0; i < ySize; ++i)
+            {
+                for(boost::uint_fast32_t j = 0; j < xSize; ++j)
+                {
+                    if(imageDataBlock[i][j][0] != 1.0)
+                    {
+                        for(std::vector<SPDPulse*>::iterator iterPulses = pulses[i][j]->begin(); iterPulses != pulses[i][j]->end(); ++iterPulses)
+                        {
+                            plsUtils.deleteSPDPulse(*iterPulses);
+                        }
+                        pulses[i][j]->clear();
+                    }
+                }
+            }
+			
+		}
+		catch (SPDException &e)
+		{
+			throw SPDProcessingException(e.what());
+		}
+    }
+    
+    SPDDataSubsetWithImgBlockProcessor::~SPDDataSubsetWithImgBlockProcessor()
+    {
+        
+    }
+    
+    
+    
 }
