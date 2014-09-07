@@ -129,6 +129,8 @@ configure_file ( "${PROJECT_TOOLS_DIR}/spdbatchgen.py.in" "${PROJECT_BINARY_DIR}
 configure_file ( "${PROJECT_TOOLS_DIR}/spdbuildmergecmd.py.in" "${PROJECT_BINARY_DIR}/spdbuildmergecmd.py" )
 configure_file ( "${PROJECT_TOOLS_DIR}/spdcmdgen.py.in" "${PROJECT_BINARY_DIR}/spdcmdgen.py" )
 configure_file ( "${PROJECT_TOOLS_DIR}/spdbuildtileextractcmd.py.in" "${PROJECT_BINARY_DIR}/spdbuildtileextractcmd.py" )
+configure_file ( "doc/Doxyfile.in" "doc/Doxyfile" )
+configure_file ( "doc/dox_files/index.dox.in" "doc/dox_files/index.dox" )
 ###############################################################################
 
 ###############################################################################
