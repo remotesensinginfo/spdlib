@@ -140,7 +140,7 @@
 	
 	<spdlib:metric metric="medianheight" field="Out_Name" return="int | All | NotFirst | First | Last | FirstLast" class="int | All | NotGrd | Veg | Grd" minNumReturns="int" upthreshold="double" lowthreshold="double" />
 	
-	<spdlib:metric metric="modeheight" field="Out_Name" return="int | All | NotFirst | First | Last | FirstLast" class="int | All | NotGrd | Veg | Grd" minNumReturns="int" upthreshold="double" lowthreshold="double" />
+	<spdlib:metric metric="modeheight" field="Out_Name" resolution="float" return="int | All | NotFirst | First | Last | FirstLast" class="int | All | NotGrd | Veg | Grd" minNumReturns="int" upthreshold="double" lowthreshold="double" />
 	
 	<spdlib:metric metric="minheight" field="Out_Name" return="int | All | NotFirst | First | Last | FirstLast" class="int | All | NotGrd | Veg | Grd" minNumReturns="int" upthreshold="double" lowthreshold="double" />
 	
@@ -206,7 +206,7 @@
 	
 	<spdlib:metric metric="medianz" field="Out_Name" return="int | All | NotFirst | First | Last | FirstLast" class="int | All | NotGrd | Veg | Grd" minNumReturns="int" upthreshold="double" lowthreshold="double" />
 	
-	<spdlib:metric metric="modez" field="Out_Name" return="int | All | NotFirst | First | Last | FirstLast" class="int | All | NotGrd | Veg | Grd" minNumReturns="int" upthreshold="double" lowthreshold="double" />
+	<spdlib:metric metric="modez" field="Out_Name" resolution="float" return="int | All | NotFirst | First | Last | FirstLast" class="int | All | NotGrd | Veg | Grd" minNumReturns="int" upthreshold="double" lowthreshold="double" />
 	
 	<spdlib:metric metric="minz" field="Out_Name" return="int | All | NotFirst | First | Last | FirstLast" class="int | All | NotGrd | Veg | Grd" minNumReturns="int" upthreshold="double" lowthreshold="double" />
 	
@@ -272,7 +272,7 @@
 	
 	<spdlib:metric metric="medianamplitude" field="Out_Name" return="int | All | NotFirst | First | Last | FirstLast" class="int | All | NotGrd | Veg | Grd" minNumReturns="int" upthreshold="double" lowthreshold="double" heightup="double" heightlow="double" />
 	
-	<spdlib:metric metric="modeamplitude" field="Out_Name" return="int | All | NotFirst | First | Last | FirstLast" class="int | All | NotGrd | Veg | Grd" minNumReturns="int" upthreshold="double" lowthreshold="double" heightup="double" heightlow="double" />
+	<spdlib:metric metric="modeamplitude" field="Out_Name" resolution="float" return="int | All | NotFirst | First | Last | FirstLast" class="int | All | NotGrd | Veg | Grd" minNumReturns="int" upthreshold="double" lowthreshold="double" heightup="double" heightlow="double" />
 	
 	<spdlib:metric metric="minamplitude" field="Out_Name" return="int | All | NotFirst | First | Last | FirstLast" class="int | All | NotGrd | Veg | Grd" minNumReturns="int" upthreshold="double" lowthreshold="double" heightup="double" heightlow="double" />
 	
@@ -327,7 +327,7 @@
 	
 	<spdlib:metric metric="medianrange" field="Out_Name" return="int | All | NotFirst | First | Last | FirstLast" class="int | All | NotGrd | Veg | Grd" minNumReturns="int" upthreshold="double" lowthreshold="double" />
 	
-	<spdlib:metric metric="moderange" field="Out_Name" return="int | All | NotFirst | First | Last | FirstLast" class="int | All | NotGrd | Veg | Grd" minNumReturns="int" upthreshold="double" lowthreshold="double" />
+	<spdlib:metric metric="moderange" field="Out_Name" resolution="float" return="int | All | NotFirst | First | Last | FirstLast" class="int | All | NotGrd | Veg | Grd" minNumReturns="int" upthreshold="double" lowthreshold="double" />
 	
 	<spdlib:metric metric="minrange" field="Out_Name" return="int | All | NotFirst | First | Last | FirstLast" class="int | All | NotGrd | Veg | Grd" minNumReturns="int" upthreshold="double" lowthreshold="double" />
 	
@@ -389,7 +389,7 @@
 	
 	<spdlib:metric metric="medianwidth" field="Out_Name" return="int | All | NotFirst | First | Last | FirstLast" class="int | All | NotGrd | Veg | Grd" minNumReturns="int" upthreshold="double" lowthreshold="double" heightup="double" heightlow="double" />
 	
-	<spdlib:metric metric="modewidth" field="Out_Name" return="int | All | NotFirst | First | Last | FirstLast" class="int | All | NotGrd | Veg | Grd" minNumReturns="int" upthreshold="double" lowthreshold="double" heightup="double" heightlow="double" />
+	<spdlib:metric metric="modewidth" field="Out_Name" resolution="float" return="int | All | NotFirst | First | Last | FirstLast" class="int | All | NotGrd | Veg | Grd" minNumReturns="int" upthreshold="double" lowthreshold="double" heightup="double" heightlow="double" />
 	
 	<spdlib:metric metric="minwidth" field="Out_Name" return="int | All | NotFirst | First | Last | FirstLast" class="int | All | NotGrd | Veg | Grd" minNumReturns="int" upthreshold="double" lowthreshold="double" heightup="double" heightlow="double" />
 	
