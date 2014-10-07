@@ -1,0 +1,10 @@
+/** \mainpage SPDLib
+
+
+Doxygen Documentation for SPDLib @SPDLIB_VERSION@.
+
+Copyright (C) @SPDLIB_COPYRIGHT_YEAR@ Peter Bunting.
+
+For support please email @SPDLIB_PACKAGE_BUGREPORT@.
+
+*/
