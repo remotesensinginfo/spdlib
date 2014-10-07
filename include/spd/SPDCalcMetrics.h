@@ -28,6 +28,7 @@
 #include <string>
 #include <list>
 #include <vector>
+#include <sys/stat.h>
 
 #include <gsl/gsl_sort.h>
 #include <gsl/gsl_statistics.h>

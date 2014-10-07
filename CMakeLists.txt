@@ -29,7 +29,7 @@ set (PROJECT_HEADER_DIR include)
 set (PROJECT_TOOLS_DIR tools)
 
 # The version number.
-set (SPDLIB_REPO_VERSION 280)
+set (SPDLIB_REPO_VERSION 282)
 set (SPDLIB_VERSION_MAJOR 3)
 set (SPDLIB_VERSION_MINOR 1)
 set (SPDLIB_VERSION_PATCH 3)
@@ -129,6 +129,8 @@ configure_file ( "${PROJECT_TOOLS_DIR}/spdbatchgen.py.in" "${PROJECT_BINARY_DIR}
 configure_file ( "${PROJECT_TOOLS_DIR}/spdbuildmergecmd.py.in" "${PROJECT_BINARY_DIR}/spdbuildmergecmd.py" )
 configure_file ( "${PROJECT_TOOLS_DIR}/spdcmdgen.py.in" "${PROJECT_BINARY_DIR}/spdcmdgen.py" )
 configure_file ( "${PROJECT_TOOLS_DIR}/spdbuildtileextractcmd.py.in" "${PROJECT_BINARY_DIR}/spdbuildtileextractcmd.py" )
+configure_file ( "doc/Doxyfile.in" "doc/Doxyfile" )
+configure_file ( "doc/dox_files/index.dox.in" "doc/dox_files/index.dox" )
 ###############################################################################
 
 ###############################################################################

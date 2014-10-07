@@ -116,7 +116,16 @@ namespace spdlib
 
     void SPDCalcMetrics::parseMetricsXML(std::string inXMLFilePath, std::vector<SPDMetric*> *metrics, std::vector<std::string> *fieldNames) throw(SPDProcessingException)
     {
+        
+        // Check file exists
+        struct stat stFileInfo;
+        if (stat(inXMLFilePath.c_str(), &stFileInfo) != 0)
+        {
+            throw SPDProcessingException("XML file provided does not exist.");
+        }
+        
         std::cout << "Reading XML file: " << inXMLFilePath << std::endl;
+        
         xercesc::DOMLSParser* parser = NULL;
 		try
 		{
