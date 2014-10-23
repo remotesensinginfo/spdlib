@@ -91,7 +91,7 @@ namespace spdlib
 		for(boost::uint_fast16_t filterHSize = initFilterHSize; filterHSize <= maxFilterHSize; ++filterHSize)
 		{
 			filterSize = (filterHSize * 2)+1;
-			std::cout << "Filter Size: " << filterHSize << " threshold = " << elevDiffThreshold << std::endl;
+			//std::cout << "Filter Size: " << filterHSize << " threshold = " << elevDiffThreshold << std::endl;
 			
 			element = new boost::uint_fast16_t*[filterSize];
 			for(boost::uint_fast16_t i = 0; i < filterSize; ++i)
@@ -229,7 +229,7 @@ namespace spdlib
 		for(boost::uint_fast16_t filterHSize = initFilterHSize; filterHSize <= maxFilterHSize; ++filterHSize)
 		{
 			filterSize = (filterHSize * 2)+1;
-			std::cout << "Filter Size: " << filterHSize << " threshold = " << elevDiffThreshold << std::endl;
+			//std::cout << "Filter Size: " << filterHSize << " threshold = " << elevDiffThreshold << std::endl;
 			
 			element = new boost::uint_fast16_t*[filterSize];
 			for(boost::uint_fast16_t i = 0; i < filterSize; ++i)
