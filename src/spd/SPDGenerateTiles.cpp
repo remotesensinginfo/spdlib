@@ -834,7 +834,7 @@ namespace spdlib
                         outDir /= boost::filesystem::path("Cols" + txtUtils.int32bittostring((*iterTiles)->col));
                         outDir /= boost::filesystem::path("Tiles");
                         
-                        if(boost::filesystem::exists(outDir.native()) && boost::filesystem::is_directory(outDir.native()))
+                        if(boost::filesystem::exists(outDir.string()) && boost::filesystem::is_directory(outDir.string()))
                         {
                             if(usePrefix)
                             {
@@ -845,7 +845,7 @@ namespace spdlib
                                 outDir /= boost::filesystem::path(std::string("_row") + txtUtils.uInt32bittostring((*iterTiles)->row) + std::string("col") + txtUtils.uInt32bittostring((*iterTiles)->col) + std::string(".spd"));
 
                             }
-                            (*iterTiles)->outFileName = outDir.native();
+                            (*iterTiles)->outFileName = outDir.string();
                             std::cout << "Creating File: " << (*iterTiles)->outFileName << std::endl;
                             (*iterTiles)->spdFile = new SPDFile((*iterTiles)->outFileName);
                             (*iterTiles)->spdFile->copyAttributesFromTemplate(templateSPDFile);
@@ -858,7 +858,7 @@ namespace spdlib
                         }
                         else
                         {
-                            std::string outMess = std::string("Directory \'") + std::string(outDir.native()) + std::string("\' was not present. Did you build the directory structure?");
+                            std::string outMess = std::string("Directory \'") + std::string(outDir.string()) + std::string("\' was not present. Did you build the directory structure?");
                             throw SPDProcessingException(outMess);
                         }
                     }
@@ -1826,9 +1826,9 @@ namespace spdlib
                         outDirs /= boost::filesystem::path("Rows" + txtUtils.int32bittostring(i+1));
                         outDirs /= boost::filesystem::path("Cols" + txtUtils.int32bittostring(j+1));
                         outDirs /= boost::filesystem::path("Tiles");
-                        if(!boost::filesystem::create_directories(outDirs.native()))
+                        if(!boost::filesystem::create_directories(outDirs.string()))
                         {
-                            std::string outMess = std::string("Could not create directory \'") + outDirs.native() + std::string("\'");
+                            std::string outMess = std::string("Could not create directory \'") + outDirs.string() + std::string("\'");
                             throw SPDProcessingException(outMess);
                         }
                     }
@@ -1874,19 +1874,19 @@ namespace spdlib
                         outDirs /= boost::filesystem::path("Rows" + txtUtils.int32bittostring(i+1));
                         outDirs /= boost::filesystem::path("Cols" + txtUtils.int32bittostring(j+1));
                         outDirs /= boost::filesystem::path("Tiles");
-                        if(boost::filesystem::is_directory(outDirs.native()))
+                        if(boost::filesystem::is_directory(outDirs.string()))
                         {
-                            if(SPDFileUtilities::getDIRCount(outDirs.native()) == 0)
+                            if(SPDFileUtilities::getDIRCount(outDirs.string()) == 0)
                             {
                                 outDirs = boost::filesystem::path(outputBase);
                                 outDirs /= boost::filesystem::path("Rows" + txtUtils.int32bittostring(i+1));
                                 outDirs /= boost::filesystem::path("Cols" + txtUtils.int32bittostring(j+1));
-                                std::cout << "Remove: " << outDirs.native() << std::endl;
-                                boost::filesystem::remove_all(outDirs.native());
+                                std::cout << "Remove: " << outDirs.string() << std::endl;
+                                boost::filesystem::remove_all(outDirs.string());
                             }
                             else
                             {
-                                std::cout << "NOT DELETING: " << outDirs.native() << std::endl;
+                                std::cout << "NOT DELETING: " << outDirs.string() << std::endl;
                                 notRemoved = true;
                             }
                         }
@@ -1896,7 +1896,7 @@ namespace spdlib
                     {
                         outDirs = boost::filesystem::path(outputBase);
                         outDirs /= boost::filesystem::path("Rows" + txtUtils.int32bittostring(i+1));
-                        boost::filesystem::remove_all(outDirs.native());
+                        boost::filesystem::remove_all(outDirs.string());
                     }
                 }
             }
