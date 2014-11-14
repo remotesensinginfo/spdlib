@@ -382,7 +382,7 @@ int main (int argc, char * const argv[])
             std::string prefix = "";
             if(usePrefix.getValue())
             {
-                prefix = boost::filesystem::path(inputFilesArg.getValue()).stem().native();
+                prefix = boost::filesystem::path(inputFilesArg.getValue()).stem().string();
             }
             
             std::cout << "Opening and creating output files.\n";
