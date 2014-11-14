@@ -180,7 +180,7 @@
 	
 	<spdlib:metric metric="weibullbetaheight" field="Out_Name" resolution="float" return="int | All | NotFirst | First | Last | FirstLast" class="int | All | NotGrd | Veg | Grd" minNumReturns="int" upthreshold="double" lowthreshold="double" />
 	
-	<spdlib:metric metric="weibullquantileheight" field="Out_Name" resolution="float" interval="float" return="int | All | NotFirst | First | Last | FirstLast" class="int | All | NotGrd | Veg | Grd" minNumReturns="int" upthreshold="double" lowthreshold="double" />
+	<spdlib:metric metric="weibullquantileheight" field="Out_Name" resolution="float" interval="float" return="int | All | NotFirst | First | Last | FirstLast" class="int | All | NotGrd | Veg | Grd" minNumReturns="int" upthreshold="double" lowthreshold="1" />
 	
 	
 	

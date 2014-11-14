@@ -184,7 +184,7 @@ int main (int argc, char * const argv[])
         else if(shapefileArg.isSet())
         {
             // Convert to absolute path
-            std::string inputVector = boost::filesystem::absolute(shapefileArg.getValue()).c_str();
+            std::string inputVector = boost::filesystem::absolute(shapefileArg.getValue()).string();
             
             OGRRegisterAll();
             
@@ -223,7 +223,7 @@ int main (int argc, char * const argv[])
         else if(shapefilePrettyArg.isSet())
         {
             // Convert to absolute path
-            std::string inputVector = boost::filesystem::absolute(shapefileArg.getValue()).c_str();
+            std::string inputVector = boost::filesystem::absolute(shapefileArg.getValue()).string();
             
             OGRRegisterAll();
             
