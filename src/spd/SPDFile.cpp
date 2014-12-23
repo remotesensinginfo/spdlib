@@ -74,6 +74,10 @@ namespace spdlib
 	azimuthMax(0),
 	rangeMin(0),
 	rangeMax(0),
+    scanlineMin(0),
+    scanlineMax(0),
+    scanlineIdxMin(0),
+    scanlineIdxMax(0),   
 	binSize(0),
 	numBinsX(0),
 	numBinsY(0),
@@ -157,8 +161,12 @@ namespace spdlib
 		spdFile->azimuthMin = this->azimuthMin;
 		spdFile->azimuthMax = this->azimuthMax;
 		spdFile->rangeMin = this->rangeMin;
-		spdFile->rangeMax = this->rangeMax;
-		spdFile->binSize = this->binSize;
+		spdFile->rangeMax = this->rangeMax;		
+    	spdFile->scanlineMin = this->scanlineMin;
+    	spdFile->scanlineMax = this->scanlineMax;
+    	spdFile->scanlineIdxMin = this->scanlineIdxMin;
+    	spdFile->scanlineIdxMax =  this->scanlineIdxMax;        
+        spdFile->binSize = this->binSize;
 		spdFile->numBinsX = this->numBinsX;
 		spdFile->numBinsY = this->numBinsY;
 		spdFile->wavelengths = this->wavelengths;
@@ -229,6 +237,10 @@ namespace spdlib
 		this->azimuthMax = spdFile->azimuthMax;
 		this->rangeMin = spdFile->rangeMin;
 		this->rangeMax = spdFile->rangeMax;
+    	this->scanlineMin = spdFile->scanlineMin;
+    	this->scanlineMax = spdFile->scanlineMax;
+    	this->scanlineIdxMin = spdFile->scanlineIdxMin;
+    	this->scanlineIdxMax =  spdFile->scanlineIdxMax;        
 		this->binSize = spdFile->binSize;
 		this->numBinsX = spdFile->numBinsX;
 		this->numBinsY = spdFile->numBinsY;
