@@ -89,6 +89,13 @@ namespace spdlib
 				SPDPulse *spdPulse = NULL;
                 
                 boost::uint_fast16_t nPtIdx = 0;
+                double x0 = 0.0;
+                double y0 = 0.0;
+                double z0 = 0.0;
+                double x1 = 0.0;
+                double y1 = 0.0;
+                double z1 = 0.0;                
+                double range = 0.0;
 				
 				std::cout << "Started (Read Data) ." << std::flush;
 				while (reader.ReadNextPoint())
@@ -124,6 +131,10 @@ namespace spdlib
                             }
                         }
                         
+                        x0 = spdPt->x;
+                        y0 = spdPt->y;
+                        z0 = spdPt->z;
+                            
                         spdPulse = new SPDPulse();
                         pulseUtils.initSPDPulse(spdPulse);
                         spdPulse->pulseID = numOfPulses;
@@ -186,6 +197,10 @@ namespace spdlib
                                     zMax = spdPt->z;
                                 }
                                 
+                                x1 = spdPt->x;
+                                y1 = spdPt->y;
+                                z1 = spdPt->z;                                
+                                
                                 spdPulse->pts->push_back(spdPt);
                                 ++numOfPoints;
                                 ++nPtIdx;
@@ -218,8 +233,24 @@ namespace spdlib
                         {
                             spdPulse->scanDirectionFlag = SPD_NEGATIVE;
                         }
+                                                
+                        if(spdPulse->numberOfReturns > 1)
+                        {
+                            range = std::sqrt(std::pow(x1-x0,2) + std::pow(y1-y0,2) + std::pow(z1-z0,2));
+                            spdPulse->zenith = std::acos((z1-z0) / range);
+                            spdPulse->azimuth = std::atan((x1-x0)/(y1-y0));
+                            if(spdPulse->azimuth < 0)
+                            {
+                                spdPulse->azimuth = spdPulse->azimuth + M_PI * 2;
+                            }
+                        }
+					    else
+                        {
+                            spdPulse->zenith = 0.0;
+                            spdPulse->azimuth = 0.0;
+                        }
+                        spdPulse->user = p.GetScanAngleRank() + 90;
                         
-                        spdPulse->zenith = p.GetScanAngleRank();
                         spdPulse->sourceID = p.GetPointSourceID();
                         
                         if(indexCoords == SPD_FIRST_RETURN)
@@ -365,6 +396,13 @@ namespace spdlib
 				SPDPulse *spdPulse = NULL;
                 
                 boost::uint_fast16_t nPtIdx = 0;
+                double x0 = 0.0;
+                double y0 = 0.0;
+                double z0 = 0.0;
+                double x1 = 0.0;
+                double y1 = 0.0;
+                double z1 = 0.0;                
+                double range = 0.0;
 				
 				std::cout << "Started (Read Data) ." << std::flush;
 				while (reader.ReadNextPoint())
@@ -400,6 +438,10 @@ namespace spdlib
                             }
                         }
                         
+                        x0 = spdPt->x;
+                        y0 = spdPt->y;
+                        z0 = spdPt->z;
+                            
                         spdPulse = new SPDPulse();
                         pulseUtils.initSPDPulse(spdPulse);
                         spdPulse->pulseID = numOfPulses;
@@ -461,7 +503,11 @@ namespace spdlib
                                 {
                                     zMax = spdPt->z;
                                 }
-                                
+                        
+                                x1 = spdPt->x;
+                                y1 = spdPt->y;
+                                z1 = spdPt->z;
+                                                        
                                 spdPulse->pts->push_back(spdPt);
                                 ++numOfPoints;
                                 ++nPtIdx;
@@ -495,7 +541,23 @@ namespace spdlib
                             spdPulse->scanDirectionFlag = SPD_NEGATIVE;
                         }
                         
-                        spdPulse->zenith = p.GetScanAngleRank();
+                        if(spdPulse->numberOfReturns > 1)
+                        {
+                            range = std::sqrt(std::pow(x1-x0,2) + std::pow(y1-y0,2) + std::pow(z1-z0,2));
+                            spdPulse->zenith = std::acos((z1-z0) / range);
+                            spdPulse->azimuth = std::atan((x1-x0)/(y1-y0));
+                            if(spdPulse->azimuth < 0)
+                            {
+                                spdPulse->azimuth = spdPulse->azimuth + M_PI * 2;
+                            }                            
+                        }
+					    else
+                        {
+                            spdPulse->zenith = 0.0;
+                            spdPulse->azimuth = 0.0;
+                        }
+                        spdPulse->user = p.GetScanAngleRank() + 90;
+                                                
                         spdPulse->sourceID = p.GetPointSourceID();
                         
                         if(indexCoords == SPD_FIRST_RETURN)
@@ -638,6 +700,13 @@ namespace spdlib
 				SPDPulse *spdPulse = NULL;
                 
                 boost::uint_fast16_t nPtIdx = 0;
+                double x0 = 0.0;
+                double y0 = 0.0;
+                double z0 = 0.0;
+                double x1 = 0.0;
+                double y1 = 0.0;
+                double z1 = 0.0;                
+                double range = 0.0;
                 				
 				std::cout << "Started (Read Data) ." << std::flush;
 				while (reader.ReadNextPoint())
@@ -671,6 +740,10 @@ namespace spdlib
                                 zMax = spdPt->z;
                             }
                         }
+                        
+                        x0 = spdPt->x;
+                        y0 = spdPt->y;
+                        z0 = spdPt->z;
                         
                         spdPulse = new SPDPulse();
                         pulseUtils.initSPDPulse(spdPulse);
@@ -734,6 +807,10 @@ namespace spdlib
                                     zMax = spdPt->z;
                                 }
                                 
+                                x1 = spdPt->x;
+                                y1 = spdPt->y;
+                                z1 = spdPt->z;
+                                
                                 spdPulse->pts->push_back(spdPt);
                                 ++numOfPoints;
                                 ++nPtIdx;
@@ -767,7 +844,23 @@ namespace spdlib
                             spdPulse->scanDirectionFlag = SPD_NEGATIVE;
                         }
                         
-                        spdPulse->zenith = p.GetScanAngleRank();
+                        if(spdPulse->numberOfReturns > 1)
+                        {
+                            range = std::sqrt(std::pow(x1-x0,2) + std::pow(y1-y0,2) + std::pow(z1-z0,2));
+                            spdPulse->zenith = std::acos((z1-z0) / range);
+                            spdPulse->azimuth = std::atan((x1-x0)/(y1-y0));
+                            if(spdPulse->azimuth < 0)
+                            {
+                                spdPulse->azimuth = spdPulse->azimuth + M_PI * 2;
+                            }                            
+                        }
+					    else
+                        {
+                            spdPulse->zenith = 0.0;
+                            spdPulse->azimuth = 0.0;
+                        }
+                        spdPulse->user = p.GetScanAngleRank() + 90;                        
+                        
                         spdPulse->sourceID = p.GetPointSourceID();
                         
                         if(indexCoords == SPD_FIRST_RETURN)
@@ -1055,6 +1148,13 @@ namespace spdlib
 				SPDPulse *spdPulse = NULL;
                 
                 boost::uint_fast16_t nPtIdx = 0;
+                double x0 = 0.0;
+                double y0 = 0.0;
+                double z0 = 0.0;
+                double x1 = 0.0;
+                double y1 = 0.0;
+                double z1 = 0.0;                
+                double range = 0.0;
 				
 				std::cout << "Started (Read Data) ." << std::flush;
 				while (reader.ReadNextPoint())
@@ -1088,6 +1188,10 @@ namespace spdlib
 						}
 					}
 					
+                    x0 = spdPt->x;
+                    y0 = spdPt->y;
+                    z0 = spdPt->z;
+                    
 					spdPulse = new SPDPulse();
 					pulseUtils.initSPDPulse(spdPulse);
                     spdPulse->pulseID = numOfPulses;
@@ -1148,6 +1252,10 @@ namespace spdlib
 							{
 								zMax = spdPt->z;
 							}
+                            
+                            x1 = spdPt->x;
+                            y1 = spdPt->y;
+                            z1 = spdPt->z;                            
 							
 							spdPulse->pts->push_back(spdPt);
 							++numOfPoints;
@@ -1179,8 +1287,24 @@ namespace spdlib
 					{
 						spdPulse->scanDirectionFlag = SPD_NEGATIVE;
 					}
-					
-					spdPulse->zenith = p.GetScanAngleRank();
+                    
+                    if(p.GetNumberOfReturns() > 1)
+                    {
+                        range = std::sqrt(std::pow(x1-x0,2) + std::pow(y1-y0,2) + std::pow(z1-z0,2));
+                        spdPulse->zenith = std::acos((z1-z0) / range);
+                        spdPulse->azimuth = std::atan((x1-x0)/(y1-y0));
+                        if(spdPulse->azimuth < 0)
+                        {
+                            spdPulse->azimuth = spdPulse->azimuth + M_PI * 2;
+                        }                        
+                    }
+					else
+                    {
+                        spdPulse->zenith = 0.0;
+                        spdPulse->azimuth = 0.0;
+                    }
+                    spdPulse->user = p.GetScanAngleRank() + 90;
+                    
 					spdPulse->sourceID = p.GetPointSourceID();
 					
 					if(indexCoords == SPD_FIRST_RETURN)
@@ -1319,6 +1443,13 @@ namespace spdlib
 				SPDPulse *spdPulse = NULL;
                 
                 boost::uint_fast16_t nPtIdx = 0;
+                double x0 = 0.0;
+                double y0 = 0.0;
+                double z0 = 0.0;
+                double x1 = 0.0;
+                double y1 = 0.0;
+                double z1 = 0.0;                
+                double range = 0.0;
 				
 				std::cout << "Started (Read Data) ." << std::flush;
 				while (reader.ReadNextPoint())
@@ -1351,6 +1482,10 @@ namespace spdlib
 							zMax = spdPt->z;
 						}
 					}
+                    
+                    x0 = spdPt->x;
+                    y0 = spdPt->y;
+                    z0 = spdPt->z;
 					
 					spdPulse = new SPDPulse();
 					pulseUtils.initSPDPulse(spdPulse);
@@ -1412,8 +1547,12 @@ namespace spdlib
 							{
 								zMax = spdPt->z;
 							}
+                            
+                            x1 = spdPt->x;
+                            y1 = spdPt->y;
+                            z1 = spdPt->z;							
 							
-							spdPulse->pts->push_back(spdPt);
+                            spdPulse->pts->push_back(spdPt);
 							++numOfPoints;
 						}
 						else
@@ -1444,7 +1583,23 @@ namespace spdlib
 						spdPulse->scanDirectionFlag = SPD_NEGATIVE;
 					}
 					
-					spdPulse->zenith = p.GetScanAngleRank();
+					if(p.GetNumberOfReturns() > 1)
+                    {
+                        range = std::sqrt(std::pow(x1-x0,2) + std::pow(y1-y0,2) + std::pow(z1-z0,2));
+                        spdPulse->zenith = std::acos((z1-z0) / range);
+                        spdPulse->azimuth = std::atan((x1-x0)/(y1-y0));
+                        if(spdPulse->azimuth < 0)
+                        {
+                            spdPulse->azimuth = spdPulse->azimuth + M_PI * 2;
+                        }
+                    }
+					else
+                    {
+                        spdPulse->zenith = 0.0;
+                        spdPulse->azimuth = 0.0;
+                    }
+                    spdPulse->user = p.GetScanAngleRank() + 90;
+                    
 					spdPulse->sourceID = p.GetPointSourceID();
                     
 					if(indexCoords == SPD_FIRST_RETURN)
@@ -1580,6 +1735,13 @@ namespace spdlib
 				SPDPulse *spdPulse = NULL;
                 
                 boost::uint_fast16_t nPtIdx = 0;
+                double x0 = 0.0;
+                double y0 = 0.0;
+                double z0 = 0.0;
+                double x1 = 0.0;
+                double y1 = 0.0;
+                double z1 = 0.0;                
+                double range = 0.0;
                 
 				std::cout << "Started (Read Data) ." << std::flush;
 				while (reader.ReadNextPoint())
@@ -1611,6 +1773,10 @@ namespace spdlib
 							zMax = spdPt->z;
 						}
 					}
+                    
+                    x0 = spdPt->x;
+                    y0 = spdPt->y;
+                    z0 = spdPt->z;
 					
 					spdPulse = new SPDPulse();
 					pulseUtils.initSPDPulse(spdPulse);
@@ -1671,6 +1837,10 @@ namespace spdlib
 								zMax = spdPt->z;
 							}
 							
+                            x1 = spdPt->x;
+                            y1 = spdPt->y;
+                            z1 = spdPt->z;                            
+                            
 							spdPulse->pts->push_back(spdPt);
 							++numOfPoints;
                             ++nPtIdx;
@@ -1702,9 +1872,25 @@ namespace spdlib
 					{
 						spdPulse->scanDirectionFlag = SPD_NEGATIVE;
 					}
-					
-					spdPulse->zenith = p.GetScanAngleRank();
-					spdPulse->sourceID = p.GetPointSourceID();
+				    
+                    if(p.GetNumberOfReturns() > 1)
+                    {
+                        range = std::sqrt(std::pow(x1-x0,2) + std::pow(y1-y0,2) + std::pow(z1-z0,2));
+                        spdPulse->zenith = std::acos((z1-z0) / range);
+                        spdPulse->azimuth = std::atan((x1-x0)/(y1-y0));
+                        if(spdPulse->azimuth < 0)
+                        {
+                            spdPulse->azimuth = spdPulse->azimuth + M_PI * 2;
+                        }
+                    }
+					else
+                    {
+                        spdPulse->zenith = 0.0;
+                        spdPulse->azimuth = 0.0;
+                    }
+                    spdPulse->user = p.GetScanAngleRank() + 90;
+                    
+                    spdPulse->sourceID = p.GetPointSourceID();
 					
 					if(indexCoords == SPD_FIRST_RETURN)
 					{
@@ -1990,7 +2176,7 @@ namespace spdlib
 				unsigned int feedbackCounter = 0;
 				
 				SPDPoint *spdPt = NULL;
-				SPDPulse *spdPulse = NULL;
+				SPDPulse *spdPulse = NULL;               
 				
 				std::cout << "Started (Read Data) ." << std::flush;
 				while (reader.ReadNextPoint())
@@ -2062,7 +2248,10 @@ namespace spdlib
 						spdPulse->scanDirectionFlag = SPD_NEGATIVE;
 					}
 					
-					spdPulse->zenith = p.GetScanAngleRank();
+                    spdPulse->zenith = 0.0;
+                    spdPulse->azimuth = 0.0;
+                    spdPulse->user = p.GetScanAngleRank() + 90;
+
 					spdPulse->sourceID = p.GetPointSourceID();
 					
 					if(indexCoords == SPD_FIRST_RETURN)
@@ -2231,7 +2420,7 @@ namespace spdlib
 							zMax = spdPt->z;
 						}
 					}
-					
+                    
 					spdPulse = new SPDPulse();
 					pulseUtils.initSPDPulse(spdPulse);
                     spdPulse->pulseID = numOfPulses;
@@ -2269,8 +2458,11 @@ namespace spdlib
 					{
 						spdPulse->scanDirectionFlag = SPD_NEGATIVE;
 					}
-					
-					spdPulse->zenith = p.GetScanAngleRank();
+                                        
+                    spdPulse->zenith = 0.0;
+                    spdPulse->azimuth = 0.0;
+                    spdPulse->user = p.GetScanAngleRank() + 90;
+
 					spdPulse->sourceID = p.GetPointSourceID();
                     
 					if(indexCoords == SPD_FIRST_RETURN)
@@ -2435,7 +2627,7 @@ namespace spdlib
 							zMax = spdPt->z;
 						}
 					}
-					
+                    
 					spdPulse = new SPDPulse();
 					pulseUtils.initSPDPulse(spdPulse);
                     spdPulse->pulseID = numOfPulses;
@@ -2462,8 +2654,11 @@ namespace spdlib
 					{
 						spdPulse->scanDirectionFlag = SPD_NEGATIVE;
 					}
-					
-					spdPulse->zenith = p.GetScanAngleRank();
+                    
+                    spdPulse->zenith = 0.0;
+                    spdPulse->azimuth = 0.0;
+                    spdPulse->user = p.GetScanAngleRank() + 90;                    
+                    
 					spdPulse->sourceID = p.GetPointSourceID();
 					
 					if(indexCoords == SPD_FIRST_RETURN)
