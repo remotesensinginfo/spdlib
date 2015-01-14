@@ -32,6 +32,7 @@
 # Version 1.0 - Created.
 # Version 1.1 - Added <PATH> option with the $ template character
 # Version 1.2 - Changed to use argument parser 
+# Version 1.3 - Updated to use os.walk if running in recursive mode
 #
 #############################################################################
 
@@ -51,23 +52,15 @@ class SPDLibBatchGenerator (object):
         return foundExtension
 
     def findFilesIterative(self, filelist, directory, extension):
+        # Walk through directories.
         if os.path.exists(directory):
-            if os.path.isdir(directory):
-                dirFileList = os.listdir(directory)
-                for filename in dirFileList:
-                    if(os.path.isdir(os.path.join(directory,filename))):
-                        self.findFiles(filelist, os.path.join(directory,filename), extension)
-                    elif(os.path.isfile(os.path.join(directory,filename))):
-                        if(self.checkFileExtension(filename, extension)):
-                            filelist.append(os.path.join(directory,filename))
-                    else:
-                        print(filename + ' is NOT a file or directory!')
-            else:
-                print(directory + ' is not a directory!')
+            for dName, sdName, fList in os.walk(directory):
+                for filename in fList:
+                    if self.checkFileExtension(filename, extension):
+                        filelist.append(os.path.join(dName, filename))
         else:
             print(directory + ' does not exist!')
-
-
+    
     def findFiles(self, filelist, directory, extension):
         if os.path.exists(directory):
             if os.path.isdir(directory):
@@ -108,8 +101,9 @@ class SPDLibBatchGenerator (object):
         outputSHFile.close()
 
     def constructMultiOutputFile(self, filelist, outline, outputfile, path):
-        outputFileTmp = outputfile + str("_runall.sh")
-        outputSHAllFile = open(outputFileTmp, 'w')
+        outputfile = os.path.splitext(outputfile)[0]
+        outputFileAll = outputfile + str("_runall.sh")
+        outputSHAllFile = open(outputFileAll, 'w')
         outShCmd = ""
         for file in filelist:
             basefile = os.path.basename(file)
@@ -127,6 +121,8 @@ class SPDLibBatchGenerator (object):
         outputSHAllFile.flush()
         outputSHAllFile.close()
 
+        return outputFileAll
+
     def run(self):
         parser = argparse.ArgumentParser()
         parser.add_argument("-i", "--input", dest="xmloutlineFile", type=str, help="Input shell template")
@@ -140,12 +136,12 @@ class SPDLibBatchGenerator (object):
         args = parser.parse_args()    
 
         if args.xmloutlineFile is None:
-            print("Input XML template must be set.")
+            print("Input shell template must be set.")
             parser.print_help()
             sys.exit()
             
         if args.outfile is None:
-            print("Output XML must be set.")
+            print("Output shell must be set.")
             parser.print_help()
             sys.exit()
 
@@ -175,7 +171,9 @@ class SPDLibBatchGenerator (object):
         if os.path.exists(args.xmloutlineFile):
             outline = self.readInputTemplate(args.xmloutlineFile)
             if args.outputtype == 'multiple':
-                self.constructMultiOutputFile(filelist, outline, args.outfile, args.path)
+                shellall = self.constructMultiOutputFile(filelist, outline, args.outfile, args.path)
+                print("Complete. Run script:")
+                print("\t\tsh ", shellall)
             else:
                 self.constructOutputFile(filelist, outline, args.outfile, args.path)
                 print("Complete. Run script:")
