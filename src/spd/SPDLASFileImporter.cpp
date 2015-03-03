@@ -27,7 +27,7 @@
 namespace spdlib
 {
 	
-
+    
 	SPDLASFileImporter::SPDLASFileImporter(bool convertCoords, std::string outputProjWKT, std::string schema, boost::uint_fast16_t indexCoords, bool defineOrigin, double originX, double originY, float originZ, float waveNoiseThreshold):SPDDataImporter(convertCoords, outputProjWKT, schema, indexCoords, defineOrigin, originX, originY, originZ, waveNoiseThreshold)
 	{
 		
@@ -58,22 +58,24 @@ namespace spdlib
 		
 		try 
 		{
-			std::ifstream ifs;
-			ifs.open(inputFile.c_str(), std::ios::in | std::ios::binary);
-			if(ifs.is_open())
+            // Open LAS file
+            LASreadOpener lasreadopener;
+            LASreader* lasreader = lasreadopener.open(inputFile.c_str());
+            
+            if(lasreader != 0)
 			{
-				liblas::ReaderFactory lasReaderFactory;
-				liblas::Reader reader = lasReaderFactory.CreateWithStream(ifs);
-				liblas::Header const& header = reader.GetHeader();
-				
-				spdFile->setFileSignature(header.GetFileSignature());
-				spdFile->setSystemIdentifier(header.GetSystemId());
+                // Get header
+                LASheader *header = &lasreader->header;
+                
+				spdFile->setFileSignature(header->file_signature);
+				spdFile->setSystemIdentifier(header->system_identifier);
 				
 				if(spdFile->getSpatialReference() == "")
 				{
-					liblas::SpatialReference const &lasSpatial = header.GetSRS();
+					//FIXME: Need to get spatial information from LAS and convert to WKT (don't think LASlib does this)
+                    /*liblas::SpatialReference const &lasSpatial = header.GetSRS();
 					std::string spatialRefProjWKT = lasSpatial.GetWKT();
-					spdFile->setSpatialReference(spatialRefProjWKT);
+					spdFile->setSpatialReference(spatialRefProjWKT);*/
 				}
 				
 				if(convertCoords)
@@ -81,7 +83,7 @@ namespace spdlib
 					this->initCoordinateSystemTransformation(spdFile);
 				}
 				
-				boost::uint_fast64_t reportedNumOfPts = header.GetPointRecordsCount();
+				boost::uint_fast64_t reportedNumOfPts = header->number_of_point_records;
 				boost::uint_fast64_t feedback = reportedNumOfPts/10;
 				unsigned int feedbackCounter = 0;
 				
@@ -98,7 +100,7 @@ namespace spdlib
                 double range = 0.0;
 				
 				std::cout << "Started (Read Data) ." << std::flush;
-				while (reader.ReadNextPoint())
+				while (lasreader->read_point())
 				{
 					//std::cout << numOfPoints << std::endl;
 					if((reportedNumOfPts > 10) && ((numOfPoints % feedback) == 0))
@@ -107,10 +109,9 @@ namespace spdlib
 						feedbackCounter += 10;
 					}
 					
-					liblas::Point const& p = reader.GetPoint();
-					if(p.GetReturnNumber() <= 1)
+					if(lasreader->point.get_return_number() <= 1)
                     {
-                        spdPt = this->createSPDPoint(p);
+                        spdPt = this->createSPDPoint(lasreader->point);
                         ++numOfPoints;
                         
                         if(firstZ)
@@ -138,7 +139,7 @@ namespace spdlib
                         spdPulse = new SPDPulse();
                         pulseUtils.initSPDPulse(spdPulse);
                         spdPulse->pulseID = numOfPulses;
-                        spdPulse->numberOfReturns = p.GetNumberOfReturns();
+                        spdPulse->numberOfReturns = lasreader->point.get_number_of_returns();
                         if(spdPulse->numberOfReturns == 0)
                         {
                             spdPulse->numberOfReturns = 1;
@@ -150,7 +151,7 @@ namespace spdlib
                         
                         //std::cout << "Start Pulse (Num Returns = " << p.GetNumberOfReturns() << "): p.GetReturnNumber() = " << p.GetReturnNumber() << std::endl;
                         
-                        if(p.GetReturnNumber() == 0)
+                        if(lasreader->point.get_return_number() == 0)
                         {
                             nPtIdx = 1;
                         }
@@ -163,30 +164,31 @@ namespace spdlib
                         spdPulse->pts->push_back(spdPt);
                         for(boost::uint_fast16_t i = 0; i < (spdPulse->numberOfReturns-1); ++i)
                         {
-                            if(reader.ReadNextPoint())
+                            if(lasreader->read_point())
                             {
                                 if((reportedNumOfPts > 10) && ((numOfPoints % feedback) == 0))
                                 {
                                     std::cout << "." << feedbackCounter << "." << std::flush;
                                     feedbackCounter += 10;
                                 }
-                                liblas::Point const& pt = reader.GetPoint();
                                 
-                                //std::cout << "\tIn Pulse (Num Returns = " << pt.GetNumberOfReturns() << "): pt.GetReturnNumber() = " << pt.GetReturnNumber() << std::endl;
                                 
-                                if(nPtIdx != pt.GetReturnNumber())
+                                //std::cout << "\tIn Pulse (Num Returns = " << pt.get_NumberOfReturns() << "): pt.get_ReturnNumber() = " << pt.get_ReturnNumber() << std::endl;
+                                
+                                if(nPtIdx != lasreader->point.get_return_number())
                                 {
-                                    std::cerr << "Start Pulse (Num Returns = " << spdPulse->numberOfReturns << "): p.GetReturnNumber() = " << p.GetReturnNumber() << std::endl;
-                                    std::cerr << "\tIn Pulse (Num Returns = " << pt.GetNumberOfReturns() << "): pt.GetReturnNumber() = " << pt.GetReturnNumber() << std::endl;
-                                    std::cerr << "The return number was: " << pt.GetReturnNumber() << std::endl;
-                                    std::cerr << "The next return number should have been: " << nPtIdx << std::endl;
+                                    // FIXME: Could this error could be tidied up. Get it a lot with our ALSPP produced LAS files
+                                    /*std::cerr << "Start Pulse (Num Returns = " << spdPulse->numberOfReturns << "): p.GetReturnNumber() = " << p.GetReturnNumber() << std::endl;
+                                    std::cerr << "\tIn Pulse (Num Returns = " << pt.get_NumberOfReturns() << "): pt.get_ReturnNumber() = " << pt.get_ReturnNumber() << std::endl;
+                                    std::cerr << "The return number was: " << pt.get_ReturnNumber() << std::endl;
+                                    std::cerr << "The next return number should have been: " << nPtIdx << std::endl;*/
                                     std::cerr << "WARNING: Pulse was written as incompleted pulse.\n";
                                     spdPulse->numberOfReturns = i+1;
                                     //throw SPDIOException("Error in point numbering when building pulses.");
                                     break;
                                 }
                                 
-                                spdPt = this->createSPDPoint(pt);
+                                spdPt = this->createSPDPoint(lasreader->point);
                                 
                                 if(spdPt->z < zMin)
                                 {
@@ -216,7 +218,7 @@ namespace spdlib
                         }
                         ++numOfPulses;
                         
-                        if(p.GetFlightLineEdge() == 1)
+                        if(lasreader->point.get_edge_of_flight_line() == 1)
                         {
                             spdPulse->edgeFlightLineFlag = SPD_WITH_SCAN;
                         }
@@ -225,7 +227,7 @@ namespace spdlib
                             spdPulse->edgeFlightLineFlag = SPD_SCAN_END;
                         }
                         
-                        if(p.GetScanDirection() == 1)
+                        if(lasreader->point.get_scan_direction_flag() == 1)
                         {
                             spdPulse->scanDirectionFlag = SPD_POSITIVE;
                         }
@@ -249,9 +251,9 @@ namespace spdlib
                             spdPulse->zenith = 0.0;
                             spdPulse->azimuth = 0.0;
                         }
-                        spdPulse->user = p.GetScanAngleRank() + 90;
+                        spdPulse->user = lasreader->point.get_scan_angle_rank() + 90;
                         
-                        spdPulse->sourceID = p.GetPointSourceID();
+                        spdPulse->sourceID = lasreader->point.get_point_source_ID();
                         
                         if(indexCoords == SPD_FIRST_RETURN)
                         {
@@ -301,13 +303,13 @@ namespace spdlib
 					}
                     else
                     {
-                        std::cerr << "p.GetReturnNumber() = " << p.GetReturnNumber() << std::endl;
-                        std::cerr << "p.GetNumberOfReturns() = " << p.GetNumberOfReturns() << std::endl;
+                        //std::cerr << "p.GetReturnNumber() = " << p.GetReturnNumber() << std::endl;
+                        //std::cerr << "p.GetNumberOfReturns() = " << p.GetNumberOfReturns() << std::endl;
                         std::cerr << "Warning: Point ignored. It is the first in pulse but has a return number greater than 1.\n";
                     }
 				}
 				
-				ifs.close();
+				lasreader->close();
 				std::cout << ". Complete\n";
 				spdFile->setBoundingVolume(xMin, xMax, yMin, yMax, zMin, zMax);
 				if(convertCoords)
@@ -363,22 +365,24 @@ namespace spdlib
 		
 		try 
 		{
-			std::ifstream ifs;
-			ifs.open(inputFile.c_str(), std::ios::in | std::ios::binary);
-			if(ifs.is_open())
-			{
-				liblas::ReaderFactory lasReaderFactory;
-				liblas::Reader reader = lasReaderFactory.CreateWithStream(ifs);
-				liblas::Header const& header = reader.GetHeader();
-				
-				spdFile->setFileSignature(header.GetFileSignature());
-				spdFile->setSystemIdentifier(header.GetSystemId());
-				
+            // Open LAS file
+            LASreadOpener lasreadopener;
+            LASreader* lasreader = lasreadopener.open(inputFile.c_str());
+            
+            if(lasreader != 0)
+            {
+                // Get header
+                LASheader *header = &lasreader->header;
+                
+                spdFile->setFileSignature(header->file_signature);
+                spdFile->setSystemIdentifier(header->system_identifier);
+            				
 				if(spdFile->getSpatialReference() == "")
 				{
-					liblas::SpatialReference const &lasSpatial = header.GetSRS();
+					//FIXME: Need to get spatial information from LAS and convert to WKT (don't think LASlib does this)
+                    /*liblas::SpatialReference const &lasSpatial = header.GetSRS();
 					std::string spatialRefProjWKT = lasSpatial.GetWKT();
-					spdFile->setSpatialReference(spatialRefProjWKT);
+					spdFile->setSpatialReference(spatialRefProjWKT);*/
 				}
 				
 				if(convertCoords)
@@ -386,9 +390,9 @@ namespace spdlib
 					this->initCoordinateSystemTransformation(spdFile);
 				}
 				
-				pulses->reserve(header.GetPointRecordsCount());
+				pulses->reserve(header->number_of_point_records);
 				
-				boost::uint_fast64_t reportedNumOfPts = header.GetPointRecordsCount();
+				boost::uint_fast64_t reportedNumOfPts = header->number_of_point_records;
 				boost::uint_fast64_t feedback = reportedNumOfPts/10;
 				unsigned int feedbackCounter = 0;
 				
@@ -405,7 +409,7 @@ namespace spdlib
                 double range = 0.0;
 				
 				std::cout << "Started (Read Data) ." << std::flush;
-				while (reader.ReadNextPoint())
+                while (lasreader->read_point())
 				{
 					//std::cout << numOfPoints << std::endl;
 					if((reportedNumOfPts > 10) && ((numOfPoints % feedback) == 0))
@@ -414,10 +418,9 @@ namespace spdlib
 						feedbackCounter += 10;
 					}
 					
-					liblas::Point const& p = reader.GetPoint();
-					if(p.GetReturnNumber() <= 1)
+                    if(lasreader->point.get_return_number() <= 1)
                     {
-                        spdPt = this->createSPDPoint(p);
+                        spdPt = this->createSPDPoint(lasreader->point);
                         ++numOfPoints;
                         
                         if(firstZ)
@@ -445,7 +448,7 @@ namespace spdlib
                         spdPulse = new SPDPulse();
                         pulseUtils.initSPDPulse(spdPulse);
                         spdPulse->pulseID = numOfPulses;
-                        spdPulse->numberOfReturns = p.GetNumberOfReturns();
+                        spdPulse->numberOfReturns = lasreader->point.get_number_of_returns();
                         if(spdPulse->numberOfReturns == 0)
                         {
                             spdPulse->numberOfReturns = 1;
@@ -457,7 +460,7 @@ namespace spdlib
                         
                         //std::cout << "Start Pulse (Num Returns = " << p.GetNumberOfReturns() << "): p.GetReturnNumber() = " << p.GetReturnNumber() << std::endl;
                         
-                        if(p.GetReturnNumber() == 0)
+                        if(lasreader->point.get_return_number() == 0)
                         {
                             nPtIdx = 1;
                         }
@@ -470,30 +473,29 @@ namespace spdlib
                         spdPulse->pts->push_back(spdPt);
                         for(boost::uint_fast16_t i = 0; i < (spdPulse->numberOfReturns-1); ++i)
                         {
-                            if(reader.ReadNextPoint())
+                            if(lasreader->read_point())
                             {
                                 if((reportedNumOfPts > 10) && ((numOfPoints % feedback) == 0))
                                 {
                                     std::cout << "." << feedbackCounter << "." << std::flush;
                                     feedbackCounter += 10;
                                 }
-                                liblas::Point const& pt = reader.GetPoint();
                                 
-                                //std::cout << "\tIn Pulse (Num Returns = " << pt.GetNumberOfReturns() << "): pt.GetReturnNumber() = " << pt.GetReturnNumber() << std::endl;
+                                //std::cout << "\tIn Pulse (Num Returns = " << pt.get_NumberOfReturns() << "): pt.get_ReturnNumber() = " << pt.get_ReturnNumber() << std::endl;
                                 
-                                if(nPtIdx != pt.GetReturnNumber())
+                                if(nPtIdx != lasreader->point.get_return_number())
                                 {
-                                    std::cerr << "Start Pulse (Num Returns = " << spdPulse->numberOfReturns << "): p.GetReturnNumber() = " << p.GetReturnNumber() << std::endl;
-                                    std::cerr << "\tIn Pulse (Num Returns = " << pt.GetNumberOfReturns() << "): pt.GetReturnNumber() = " << pt.GetReturnNumber() << std::endl;
-                                    std::cerr << "The return number was: " << pt.GetReturnNumber() << std::endl;
-                                    std::cerr << "The next return number should have been: " << nPtIdx << std::endl;
+                                    /*std::cerr << "Start Pulse (Num Returns = " << spdPulse->numberOfReturns << "): p.GetReturnNumber() = " << p.GetReturnNumber() << std::endl;
+                                    std::cerr << "\tIn Pulse (Num Returns = " << pt.get_NumberOfReturns() << "): pt.get_ReturnNumber() = " << pt.get_ReturnNumber() << std::endl;
+                                    std::cerr << "The return number was: " << pt.get_ReturnNumber() << std::endl;
+                                    std::cerr << "The next return number should have been: " << nPtIdx << std::endl;*/
                                     std::cerr << "WARNING: Pulse was written as incompleted pulse.\n";
                                     spdPulse->numberOfReturns = i+1;
                                     //throw SPDIOException("Error in point numbering when building pulses.");
                                     break;
                                 }
                                 
-                                spdPt = this->createSPDPoint(pt);
+                                spdPt = this->createSPDPoint(lasreader->point);
                                 
                                 if(spdPt->z < zMin)
                                 {
@@ -523,7 +525,7 @@ namespace spdlib
                         }
                         ++numOfPulses;
                         
-                        if(p.GetFlightLineEdge() == 1)
+                        if(lasreader->point.get_edge_of_flight_line() == 1)
                         {
                             spdPulse->edgeFlightLineFlag = SPD_WITH_SCAN;
                         }
@@ -532,7 +534,7 @@ namespace spdlib
                             spdPulse->edgeFlightLineFlag = SPD_SCAN_END;
                         }
                         
-                        if(p.GetScanDirection() == 1)
+                        if(lasreader->point.get_scan_direction_flag() == 1)
                         {
                             spdPulse->scanDirectionFlag = SPD_POSITIVE;
                         }
@@ -556,9 +558,9 @@ namespace spdlib
                             spdPulse->zenith = 0.0;
                             spdPulse->azimuth = 0.0;
                         }
-                        spdPulse->user = p.GetScanAngleRank() + 90;
+                        spdPulse->user = lasreader->point.get_scan_angle_rank() + 90;
                                                 
-                        spdPulse->sourceID = p.GetPointSourceID();
+                        spdPulse->sourceID = lasreader->point.get_point_source_ID();
                         
                         if(indexCoords == SPD_FIRST_RETURN)
                         {
@@ -608,13 +610,13 @@ namespace spdlib
 					}
                     else
                     {
-                        std::cerr << "p.GetReturnNumber() = " << p.GetReturnNumber() << std::endl;
-                        std::cerr << "p.GetNumberOfReturns() = " << p.GetNumberOfReturns() << std::endl;
+                        //std::cerr << "p.GetReturnNumber() = " << p.GetReturnNumber() << std::endl;
+                        //std::cerr << "p.GetNumberOfReturns() = " << p.GetNumberOfReturns() << std::endl;
                         std::cerr << "Warning: Point ignored. It is the first in pulse but has a return number greater than 1.\n";
                     }					
 				}
 				
-				ifs.close();
+				lasreader->close();
 				std::cout << ". Complete\n";
 				spdFile->setBoundingVolume(xMin, xMax, yMin, yMax, zMin, zMax);
 				if(convertCoords)
@@ -669,22 +671,24 @@ namespace spdlib
 		
 		try 
 		{
-			std::ifstream ifs;
-			ifs.open(inputFile.c_str(), std::ios::in | std::ios::binary);
-			if(ifs.is_open())
-			{
-				liblas::ReaderFactory lasReaderFactory;
-				liblas::Reader reader = lasReaderFactory.CreateWithStream(ifs);
-				liblas::Header const& header = reader.GetHeader();
-				
-				spdFile->setFileSignature(header.GetFileSignature());
-				spdFile->setSystemIdentifier(header.GetSystemId());
+            // Open LAS file
+            LASreadOpener lasreadopener;
+            LASreader* lasreader = lasreadopener.open(inputFile.c_str());
+            
+            if(lasreader != 0)
+            {
+                // Get header
+                LASheader *header = &lasreader->header;
+                
+                spdFile->setFileSignature(header->file_signature);
+                spdFile->setSystemIdentifier(header->system_identifier);
 				
 				if(spdFile->getSpatialReference() == "")
 				{
-					liblas::SpatialReference const &lasSpatial = header.GetSRS();
-					std::string spatialRefProjWKT = lasSpatial.GetWKT();
-					spdFile->setSpatialReference(spatialRefProjWKT);
+                    //FIXME: Need to get spatial information from LAS and convert to WKT (don't think LASlib does this)
+                    /*liblas::SpatialReference const &lasSpatial = header.GetSRS();
+                     std::string spatialRefProjWKT = lasSpatial.GetWKT();
+                     spdFile->setSpatialReference(spatialRefProjWKT);*/
 				}
 				
 				if(convertCoords)
@@ -692,7 +696,7 @@ namespace spdlib
 					this->initCoordinateSystemTransformation(spdFile);
 				}
 				
-				boost::uint_fast64_t reportedNumOfPts = header.GetPointRecordsCount();
+				boost::uint_fast64_t reportedNumOfPts = header->number_of_point_records;
 				boost::uint_fast64_t feedback = reportedNumOfPts/10;
 				unsigned int feedbackCounter = 0;
 				
@@ -709,7 +713,7 @@ namespace spdlib
                 double range = 0.0;
                 				
 				std::cout << "Started (Read Data) ." << std::flush;
-				while (reader.ReadNextPoint())
+				while (lasreader->read_point())
 				{
 					if((reportedNumOfPts > 10) && ((numOfPoints % feedback) == 0))
 					{
@@ -717,10 +721,9 @@ namespace spdlib
 						feedbackCounter += 10;
 					}
 					
-					liblas::Point const& p = reader.GetPoint();
-					if(p.GetReturnNumber() <= 1)
+                    if(lasreader->point.get_return_number() <= 1)
                     {
-                        spdPt = this->createSPDPoint(p);
+                        spdPt = this->createSPDPoint(lasreader->point);
                         ++numOfPoints;
                         
                         if(firstZ)
@@ -748,7 +751,7 @@ namespace spdlib
                         spdPulse = new SPDPulse();
                         pulseUtils.initSPDPulse(spdPulse);
                         spdPulse->pulseID = numOfPulses;
-                        spdPulse->numberOfReturns = p.GetNumberOfReturns();
+                        spdPulse->numberOfReturns = lasreader->point.get_number_of_returns();
                         if(spdPulse->numberOfReturns == 0)
                         {
                             spdPulse->numberOfReturns = 1;
@@ -760,7 +763,7 @@ namespace spdlib
                         
                         //std::cout << "Start Pulse (Num Returns = " << p.GetNumberOfReturns() << "): p.GetReturnNumber() = " << p.GetReturnNumber() << std::endl;
                         
-                        if(p.GetReturnNumber() == 0)
+                        if(lasreader->point.get_return_number() == 0)
                         {
                             nPtIdx = 1;
                         }
@@ -773,31 +776,30 @@ namespace spdlib
                         spdPulse->pts->push_back(spdPt);
                         for(boost::uint_fast16_t i = 0; i < (spdPulse->numberOfReturns-1); ++i)
                         {
-                            if(reader.ReadNextPoint())
+                            if(lasreader->read_point())
                             {
                                 if((reportedNumOfPts > 10) && ((numOfPoints % feedback) == 0))
                                 {
                                     std::cout << "." << feedbackCounter << "." << std::flush;
                                     feedbackCounter += 10;
                                 }
-                                liblas::Point const& pt = reader.GetPoint();
                                 
-                                //std::cout << "\tIn Pulse (Num Returns = " << pt.GetNumberOfReturns() << "): pt.GetReturnNumber() = " << pt.GetReturnNumber() << std::endl;
+                                //std::cout << "\tIn Pulse (Num Returns = " << pt.get_NumberOfReturns() << "): pt.get_ReturnNumber() = " << pt.get_ReturnNumber() << std::endl;
                                 
-                                if(nPtIdx != pt.GetReturnNumber())
+                                if(nPtIdx != lasreader->point.get_return_number())
                                 {
-                                    std::cerr << "Start Pulse (Num Returns = " << spdPulse->numberOfReturns << "): p.GetReturnNumber() = " << p.GetReturnNumber() << std::endl;
-                                    std::cerr << "\tIn Pulse (Num Returns = " << pt.GetNumberOfReturns() << "): pt.GetReturnNumber() = " << pt.GetReturnNumber() << std::endl;
-                                    std::cerr << "The return number was: " << pt.GetReturnNumber() << std::endl;
-                                    std::cerr << "The next return number should have been: " << nPtIdx << std::endl;
-                                    std::cerr << "WARNING: Pulse was written as incompleted pulse.\n";
+                                    // FIXME: Could this error could be tidied up. Get it a lot with our ALSPP produced LAS files
+                                    /*std::cerr << "Start Pulse (Num Returns = " << spdPulse->numberOfReturns << "): p.GetReturnNumber() = " << p.GetReturnNumber() << std::endl;
+                                     std::cerr << "\tIn Pulse (Num Returns = " << pt.get_NumberOfReturns() << "): pt.get_ReturnNumber() = " << pt.get_ReturnNumber() << std::endl;
+                                     std::cerr << "The return number was: " << pt.get_ReturnNumber() << std::endl;
+                                     std::cerr << "The next return number should have been: " << nPtIdx << std::endl;*/
                                     spdPulse->numberOfReturns = i+1;
                                     //throw SPDIOException("Error in point numbering when building pulses.");
                                     break;
                                 }
                                 
-                                spdPt = this->createSPDPoint(pt);
-                                
+                                spdPt = this->createSPDPoint(lasreader->point);
+
                                 if(spdPt->z < zMin)
                                 {
                                     zMin = spdPt->z;
@@ -826,20 +828,20 @@ namespace spdlib
                         }
                         ++numOfPulses;
                         
-                        if(p.GetFlightLineEdge() == 1)
+                        if(lasreader->point.get_edge_of_flight_line() == 1)
                         {
                             spdPulse->edgeFlightLineFlag = SPD_WITH_SCAN;
                         }
-                        else 
+                        else
                         {
                             spdPulse->edgeFlightLineFlag = SPD_SCAN_END;
                         }
                         
-                        if(p.GetScanDirection() == 1)
+                        if(lasreader->point.get_scan_direction_flag() == 1)
                         {
                             spdPulse->scanDirectionFlag = SPD_POSITIVE;
                         }
-                        else 
+                        else
                         {
                             spdPulse->scanDirectionFlag = SPD_NEGATIVE;
                         }
@@ -859,9 +861,9 @@ namespace spdlib
                             spdPulse->zenith = 0.0;
                             spdPulse->azimuth = 0.0;
                         }
-                        spdPulse->user = p.GetScanAngleRank() + 90;                        
+                        spdPulse->user = lasreader->point.get_scan_angle_rank() + 90;
                         
-                        spdPulse->sourceID = p.GetPointSourceID();
+                        spdPulse->sourceID = lasreader->point.get_point_source_ID();
                         
                         if(indexCoords == SPD_FIRST_RETURN)
                         {
@@ -911,16 +913,16 @@ namespace spdlib
 					}
                     else
                     {
-                        std::cerr << "p.GetReturnNumber() = " << p.GetReturnNumber() << std::endl;
-                        std::cerr << "p.GetNumberOfReturns() = " << p.GetNumberOfReturns() << std::endl;
+                        //std::cerr << "p.GetReturnNumber() = " << p.GetReturnNumber() << std::endl;
+                        //std::cerr << "p.GetNumberOfReturns() = " << p.GetNumberOfReturns() << std::endl;
                         std::cerr << "Warning: Point ignored. It is the first in pulse but has a return number greater than 1.\n";
                     }
 					
 				}
 				
-				ifs.close();
-				std::cout << ". Complete\n";
-				spdFile->setBoundingVolume(xMin, xMax, yMin, yMax, zMin, zMax);
+                lasreader->close();
+                std::cout << ". Complete\n";
+                spdFile->setBoundingVolume(xMin, xMax, yMin, yMax, zMin, zMax);
 				if(convertCoords)
 				{
 					spdFile->setSpatialReference(outputProjWKT);
@@ -967,94 +969,87 @@ namespace spdlib
         // No Header to Read..
     }
     
-	SPDPoint* SPDLASFileImporter::createSPDPoint(liblas::Point const& pt)throw(SPDIOException)
+	SPDPoint* SPDLASFileImporter::createSPDPoint(LASpoint const& pt)throw(SPDIOException)
 	{
 		try 
 		{
 			SPDPointUtils spdPtUtils;
 			SPDPoint *spdPt = new SPDPoint();
 			spdPtUtils.initSPDPoint(spdPt);
-			double x = pt.GetX();
-			double y = pt.GetY();
-			double z = pt.GetZ();
+            double x = pt.get_X();
+            double y = pt.get_Y();
+            double z = pt.get_Z();
+            
+            if(convertCoords)
+            {
+                this->transformCoordinateSystem(&x, &y, &z);
+            }
+            
+            spdPt->x = x;
+            spdPt->y = y;
+            spdPt->z = z;
+            spdPt->amplitudeReturn = pt.get_intensity();
+            spdPt->user = pt.get_user_data();
 			
-			if(convertCoords)
-			{
-				this->transformCoordinateSystem(&x, &y, &z);
-			}
+            unsigned int lasClass = pt.get_classification();
+            
+            switch (lasClass)
+            {
+                case 0:
+                    spdPt->classification = SPD_CREATED;
+                    break;
+                case 1:
+                    spdPt->classification = SPD_UNCLASSIFIED;
+                    break;
+                case 2:
+                    spdPt->classification = SPD_GROUND;
+                    break;
+                case 3:
+                    spdPt->classification = SPD_LOW_VEGETATION;
+                    break;
+                case 4:
+                    spdPt->classification = SPD_MEDIUM_VEGETATION;
+                    break;
+                case 5:
+                    spdPt->classification = SPD_HIGH_VEGETATION;
+                    break;
+                case 6:
+                    spdPt->classification = SPD_BUILDING;
+                    break;
+                case 7:
+                    spdPt->classification = SPD_CREATED;
+                    spdPt->lowPoint = SPD_TRUE;
+                    break;
+                case 8:
+                    spdPt->classification = SPD_CREATED;
+                    spdPt->modelKeyPoint = SPD_TRUE;
+                    break;
+                case 9:
+                    spdPt->classification = SPD_WATER;
+                    break;
+                case 12:
+                    spdPt->classification = SPD_CREATED;
+                    spdPt->overlap = SPD_TRUE;
+                    break;
+                default:
+                    spdPt->classification = SPD_CREATED;
+                    if(!classWarningGiven)
+                    {
+                        std::cerr << "\nWARNING: The class ID " << lasClass<< " was not recognised - check the classes points were allocated too." << std::endl;
+                        classWarningGiven = true;
+                    }
+                    break;
+            }
 			
-			spdPt->x = x;
-			spdPt->y = y;
-			spdPt->z = z;
-			spdPt->amplitudeReturn = pt.GetIntensity();
-			spdPt->user = pt.GetUserData();
-			
-			liblas::Classification lasClass = pt.GetClassification();
-			
-			if(lasClass.GetClass() == pt.eCreated)
-			{
-				spdPt->classification = SPD_CREATED;
-			}
-			else if(lasClass.GetClass() == pt.eUnclassified)
-			{
-				spdPt->classification = SPD_UNCLASSIFIED;
-			}
-			else if(lasClass.GetClass() == pt.eGround)
-			{
-				spdPt->classification = SPD_GROUND;
-			}
-			else if(lasClass.GetClass() == pt.eLowVegetation)
-			{
-				spdPt->classification = SPD_LOW_VEGETATION;
-			}
-			else if(lasClass.GetClass() == pt.eMediumVegetation)
-			{
-				spdPt->classification = SPD_MEDIUM_VEGETATION;
-			}
-			else if(lasClass.GetClass() == pt.eHighVegetation)
-			{
-				spdPt->classification = SPD_HIGH_VEGETATION;
-			}
-			else if(lasClass.GetClass() == pt.eBuilding)
-			{
-				spdPt->classification = SPD_BUILDING;
-			}
-			else if(lasClass.GetClass() == pt.eLowPoint)
-			{
-				spdPt->classification = SPD_CREATED;
-				spdPt->lowPoint = SPD_TRUE;
-			}
-			else if(lasClass.GetClass() == pt.eModelKeyPoint)
-			{
-				spdPt->classification = SPD_CREATED;
-				spdPt->modelKeyPoint = SPD_TRUE;
-			}
-			else if(lasClass.GetClass() == pt.eWater)
-			{
-				spdPt->classification = SPD_WATER;
-			}
-			else if(lasClass.GetClass() == pt.eOverlapPoints)
-			{
-				spdPt->classification = SPD_CREATED;
-				spdPt->overlap = SPD_TRUE;
-			}
-			else
-			{
-				spdPt->classification = SPD_CREATED;
-				if(!classWarningGiven)
-				{
-					std::cerr << "WARNING: The class ID was not recognised - check the classes points were allocated too.";
-					classWarningGiven = true;
-				}
-			}
-			
-			liblas::Color const &lasColor = pt.GetColor();
-			spdPt->red = lasColor.GetRed();
-			spdPt->green = lasColor.GetGreen();
-			spdPt->blue = lasColor.GetBlue();
-			
-			spdPt->returnID = pt.GetReturnNumber();
-			spdPt->gpsTime = pt.GetTime();
+            // Get array of RBG values (of type U16 in LASlib typedef)
+            const unsigned short *rgb = pt.get_rgb();
+            
+            spdPt->red = rgb[0];
+            spdPt->green = rgb[1];
+            spdPt->blue = rgb[2];
+            
+            spdPt->returnID = pt.get_return_number();
+            spdPt->gpsTime = pt.get_gps_time();
 			
 			return spdPt;
 		}
@@ -1117,35 +1112,37 @@ namespace spdlib
 		
 		try
 		{
-			std::ifstream ifs;
-			ifs.open(inputFile.c_str(), std::ios::in | std::ios::binary);
-			if(ifs.is_open())
+            // Open LAS file
+            LASreadOpener lasreadopener;
+            LASreader* lasreader = lasreadopener.open(inputFile.c_str());
+            
+            if(lasreader != 0)
 			{
-				liblas::ReaderFactory lasReaderFactory;
-				liblas::Reader reader = lasReaderFactory.CreateWithStream(ifs);
-				liblas::Header const& header = reader.GetHeader();
-				
-				spdFile->setFileSignature(header.GetFileSignature());
-				spdFile->setSystemIdentifier(header.GetSystemId());
-				
-				if(spdFile->getSpatialReference() == "")
-				{
-					liblas::SpatialReference const &lasSpatial = header.GetSRS();
-					std::string spatialRefProjWKT = lasSpatial.GetWKT();
-					spdFile->setSpatialReference(spatialRefProjWKT);
-				}
-				
-				if(convertCoords)
-				{
-					this->initCoordinateSystemTransformation(spdFile);
-				}
-				
-				boost::uint_fast64_t reportedNumOfPts = header.GetPointRecordsCount();
-				boost::uint_fast64_t feedback = reportedNumOfPts/10;
-				unsigned int feedbackCounter = 0;
-				
-				SPDPoint *spdPt = NULL;
-				SPDPulse *spdPulse = NULL;
+                // Get header
+                LASheader *header = &lasreader->header;
+                
+                spdFile->setFileSignature(header->file_signature);
+                spdFile->setSystemIdentifier(header->system_identifier);
+                
+                if(spdFile->getSpatialReference() == "")
+                {
+                    //FIXME: Need to get spatial information from LAS and convert to WKT (don't think LASlib does this)
+                    /*liblas::SpatialReference const &lasSpatial = header.GetSRS();
+                     std::string spatialRefProjWKT = lasSpatial.GetWKT();
+                     spdFile->setSpatialReference(spatialRefProjWKT);*/
+                }
+                
+                if(convertCoords)
+                {
+                    this->initCoordinateSystemTransformation(spdFile);
+                }
+                
+                boost::uint_fast64_t reportedNumOfPts = header->number_of_point_records;
+                boost::uint_fast64_t feedback = reportedNumOfPts/10;
+                unsigned int feedbackCounter = 0;
+                
+                SPDPoint *spdPt = NULL;
+                SPDPulse *spdPulse = NULL;
                 
                 boost::uint_fast16_t nPtIdx = 0;
                 double x0 = 0.0;
@@ -1155,9 +1152,9 @@ namespace spdlib
                 double y1 = 0.0;
                 double z1 = 0.0;                
                 double range = 0.0;
-				
-				std::cout << "Started (Read Data) ." << std::flush;
-				while (reader.ReadNextPoint())
+                
+                std::cout << "Started (Read Data) ." << std::flush;
+                while (lasreader->read_point())
 				{
 					//std::cout << numOfPoints << std::endl;
 					if((reportedNumOfPts > 10) && ((numOfPoints % feedback) == 0))
@@ -1166,8 +1163,7 @@ namespace spdlib
 						feedbackCounter += 10;
 					}
 					
-					liblas::Point const& p = reader.GetPoint();
-					spdPt = this->createSPDPoint(p);
+					spdPt = this->createSPDPoint(lasreader->point);
 					++numOfPoints;
 					
 					if(firstZ)
@@ -1198,7 +1194,7 @@ namespace spdlib
 					//std::cout << "Pulse size " << sizeof(SPDPulse) << std::endl;
 					//std::cout << "Point size " << sizeof(SPDPoint) << std::endl;
 					//std::cout << "Points capacity (1) " << spdPulse->pts.capacity() << std::endl;
-					spdPulse->numberOfReturns = p.GetNumberOfReturns();
+					spdPulse->numberOfReturns = lasreader->point.get_number_of_returns();
                     if(spdPulse->numberOfReturns == 0)
                     {
                         spdPulse->numberOfReturns = 1;
@@ -1210,7 +1206,7 @@ namespace spdlib
                     
                     //std::cout << "Start Pulse (Num Returns = " << p.GetNumberOfReturns() << "): p.GetReturnNumber() = " << p.GetReturnNumber() << std::endl;
                     
-                    if(p.GetReturnNumber() == 0)
+                    if(lasreader->point.get_return_number() == 0)
                     {
                         nPtIdx = 1;
                     }
@@ -1222,27 +1218,27 @@ namespace spdlib
 					spdPulse->pts->push_back(spdPt);
 					for(boost::uint_fast16_t i = 0; i < (spdPulse->numberOfReturns-1); ++i)
 					{
-						if(reader.ReadNextPoint())
+						if(lasreader->read_point())
 						{
 							if((reportedNumOfPts > 10) && ((numOfPoints % feedback) == 0))
 							{
 								std::cout << "." << feedbackCounter << "." << std::flush;
 								feedbackCounter += 10;
 							}
-							liblas::Point const& pt = reader.GetPoint();
                             
-                            //std::cout << "\tIn Pulse (Num Returns = " << pt.GetNumberOfReturns() << "): pt.GetReturnNumber() = " << pt.GetReturnNumber() << std::endl;
+                            //std::cout << "\tIn Pulse (Num Returns = " << pt.get_NumberOfReturns() << "): pt.get_ReturnNumber() = " << pt.get_ReturnNumber() << std::endl;
                             
-                            if(nPtIdx != pt.GetReturnNumber())
+                            if(nPtIdx != lasreader->point.get_return_number())
                             {
-                                std::cerr << "Start Pulse (Num Returns = " << p.GetNumberOfReturns() << "): p.GetReturnNumber() = " << p.GetReturnNumber() << std::endl;
-                                std::cerr << "\tIn Pulse (Num Returns = " << pt.GetNumberOfReturns() << "): pt.GetReturnNumber() = " << pt.GetReturnNumber() << std::endl;
-                                std::cerr << "The return number was: " << pt.GetReturnNumber() << std::endl;
-                                std::cerr << "The next return number should have been: " << nPtIdx << std::endl;
+                                // FIXME: Could this error could be tidied up. Get it a lot with our ALSPP produced LAS files
+                                /*std::cerr << "Start Pulse (Num Returns = " << p.GetNumberOfReturns() << "): p.GetReturnNumber() = " << p.GetReturnNumber() << std::endl;
+                                std::cerr << "\tIn Pulse (Num Returns = " << pt.get_NumberOfReturns() << "): pt.get_ReturnNumber() = " << pt.get_ReturnNumber() << std::endl;
+                                std::cerr << "The return number was: " << pt.get_ReturnNumber() << std::endl;
+                                std::cerr << "The next return number should have been: " << nPtIdx << std::endl;*/
                                 throw SPDIOException("Error in point numbering when building pulses.");
                             }
                             
-							spdPt = this->createSPDPoint(pt);
+							spdPt = this->createSPDPoint(lasreader->point);
 							
 							if(spdPt->z < zMin)
 							{
@@ -1270,25 +1266,25 @@ namespace spdlib
 					}
 					++numOfPulses;
 					//std::cout << "Points capacity (2) " << spdPulse->pts.capacity() << std::endl << std::endl;
-					if(p.GetFlightLineEdge() == 1)
-					{
-						spdPulse->edgeFlightLineFlag = SPD_WITH_SCAN;
-					}
-					else
-					{
-						spdPulse->edgeFlightLineFlag = SPD_SCAN_END;
-					}
-					
-					if(p.GetScanDirection() == 1)
-					{
-						spdPulse->scanDirectionFlag = SPD_POSITIVE;
-					}
-					else
-					{
-						spdPulse->scanDirectionFlag = SPD_NEGATIVE;
-					}
+                    if(lasreader->point.get_edge_of_flight_line() == 1)
+                    {
+                        spdPulse->edgeFlightLineFlag = SPD_WITH_SCAN;
+                    }
+                    else
+                    {
+                        spdPulse->edgeFlightLineFlag = SPD_SCAN_END;
+                    }
                     
-                    if(p.GetNumberOfReturns() > 1)
+                    if(lasreader->point.get_scan_direction_flag() == 1)
+                    {
+                        spdPulse->scanDirectionFlag = SPD_POSITIVE;
+                    }
+                    else
+                    {
+                        spdPulse->scanDirectionFlag = SPD_NEGATIVE;
+                    }
+                    
+                    if(spdPulse->numberOfReturns > 1)
                     {
                         range = std::sqrt(std::pow(x1-x0,2) + std::pow(y1-y0,2) + std::pow(z1-z0,2));
                         spdPulse->zenith = std::acos((z1-z0) / range);
@@ -1296,16 +1292,16 @@ namespace spdlib
                         if(spdPulse->azimuth < 0)
                         {
                             spdPulse->azimuth = spdPulse->azimuth + M_PI * 2;
-                        }                        
+                        }
                     }
-					else
+                    else
                     {
                         spdPulse->zenith = 0.0;
                         spdPulse->azimuth = 0.0;
                     }
-                    spdPulse->user = p.GetScanAngleRank() + 90;
+                    spdPulse->user = lasreader->point.get_scan_angle_rank() + 90;
                     
-					spdPulse->sourceID = p.GetPointSourceID();
+                    spdPulse->sourceID = lasreader->point.get_point_source_ID();
 					
 					if(indexCoords == SPD_FIRST_RETURN)
 					{
@@ -1354,7 +1350,7 @@ namespace spdlib
 					pulses->push_back(spdPulse);
 				}
 				
-				ifs.close();
+                lasreader->close();
 				std::cout << ". Complete\n";
 				spdFile->setBoundingVolume(xMin, xMax, yMin, yMax, zMin, zMax);
 				if(convertCoords)
@@ -1410,37 +1406,39 @@ namespace spdlib
 		
 		try
 		{
-			std::ifstream ifs;
-			ifs.open(inputFile.c_str(), std::ios::in | std::ios::binary);
-			if(ifs.is_open())
-			{
-				liblas::ReaderFactory lasReaderFactory;
-				liblas::Reader reader = lasReaderFactory.CreateWithStream(ifs);
-				liblas::Header const& header = reader.GetHeader();
-				
-				spdFile->setFileSignature(header.GetFileSignature());
-				spdFile->setSystemIdentifier(header.GetSystemId());
-				
-				if(spdFile->getSpatialReference() == "")
-				{
-					liblas::SpatialReference const &lasSpatial = header.GetSRS();
-					std::string spatialRefProjWKT = lasSpatial.GetWKT();
-					spdFile->setSpatialReference(spatialRefProjWKT);
-				}
-				
-				if(convertCoords)
-				{
-					this->initCoordinateSystemTransformation(spdFile);
-				}
-				
-				pulses->reserve(header.GetPointRecordsCount());
-				
-				boost::uint_fast64_t reportedNumOfPts = header.GetPointRecordsCount();
-				boost::uint_fast64_t feedback = reportedNumOfPts/10;
-				unsigned int feedbackCounter = 0;
-				
-				SPDPoint *spdPt = NULL;
-				SPDPulse *spdPulse = NULL;
+            // Open LAS file
+            LASreadOpener lasreadopener;
+            LASreader* lasreader = lasreadopener.open(inputFile.c_str());
+            
+            if(lasreader != 0)
+            {
+                // Get header
+                LASheader *header = &lasreader->header;
+                
+                spdFile->setFileSignature(header->file_signature);
+                spdFile->setSystemIdentifier(header->system_identifier);
+            				
+                if(spdFile->getSpatialReference() == "")
+                {
+                    //FIXME: Need to get spatial information from LAS and convert to WKT (don't think LASlib does this)
+                    /*liblas::SpatialReference const &lasSpatial = header.GetSRS();
+                     std::string spatialRefProjWKT = lasSpatial.GetWKT();
+                     spdFile->setSpatialReference(spatialRefProjWKT);*/
+                }
+                
+                if(convertCoords)
+                {
+                    this->initCoordinateSystemTransformation(spdFile);
+                }
+                
+                pulses->reserve(header->number_of_point_records);
+                
+                boost::uint_fast64_t reportedNumOfPts = header->number_of_point_records;
+                boost::uint_fast64_t feedback = reportedNumOfPts/10;
+                unsigned int feedbackCounter = 0;
+                
+                SPDPoint *spdPt = NULL;
+                SPDPulse *spdPulse = NULL;
                 
                 boost::uint_fast16_t nPtIdx = 0;
                 double x0 = 0.0;
@@ -1452,7 +1450,7 @@ namespace spdlib
                 double range = 0.0;
 				
 				std::cout << "Started (Read Data) ." << std::flush;
-				while (reader.ReadNextPoint())
+				while (lasreader->read_point())
 				{
 					//std::cout << numOfPoints << std::endl;
 					if((reportedNumOfPts > 10) && ((numOfPoints % feedback) == 0))
@@ -1461,8 +1459,7 @@ namespace spdlib
 						feedbackCounter += 10;
 					}
 					
-					liblas::Point const& p = reader.GetPoint();
-					spdPt = this->createSPDPoint(p);
+                    spdPt = this->createSPDPoint(lasreader->point);
 					++numOfPoints;
 					
 					if(firstZ)
@@ -1493,7 +1490,7 @@ namespace spdlib
 					//std::cout << "Pulse size " << sizeof(SPDPulse) << std::endl;
 					//std::cout << "Point size " << sizeof(SPDPoint) << std::endl;
 					//std::cout << "Points capacity (1) " << spdPulse->pts.capacity() << std::endl;
-					spdPulse->numberOfReturns = p.GetNumberOfReturns();
+					spdPulse->numberOfReturns = lasreader->point.get_number_of_returns();
                     if(spdPulse->numberOfReturns == 0)
                     {
                         spdPulse->numberOfReturns = 1;
@@ -1505,7 +1502,7 @@ namespace spdlib
                     
                     //std::cout << "Start Pulse (Num Returns = " << p.GetNumberOfReturns() << "): p.GetReturnNumber() = " << p.GetReturnNumber() << std::endl;
                     
-                    if(p.GetReturnNumber() == 0)
+                    if(lasreader->point.get_return_number() == 0)
                     {
                         nPtIdx = 1;
                     }
@@ -1517,27 +1514,26 @@ namespace spdlib
 					spdPulse->pts->push_back(spdPt);
 					for(boost::uint_fast16_t i = 0; i < (spdPulse->numberOfReturns-1); ++i)
 					{
-						if(reader.ReadNextPoint())
+						if(lasreader->read_point())
 						{
 							if((reportedNumOfPts > 10) && ((numOfPoints % feedback) == 0))
 							{
 								std::cout << "." << feedbackCounter << "." << std::flush;
 								feedbackCounter += 10;
 							}
-							liblas::Point const& pt = reader.GetPoint();
                             
-                            //std::cout << "\tIn Pulse (Num Returns = " << pt.GetNumberOfReturns() << "): pt.GetReturnNumber() = " << pt.GetReturnNumber() << std::endl;
+                            //std::cout << "\tIn Pulse (Num Returns = " << pt.get_NumberOfReturns() << "): pt.get_ReturnNumber() = " << pt.get_ReturnNumber() << std::endl;
                             
-                            if(nPtIdx != pt.GetReturnNumber())
+                            if(nPtIdx != lasreader->point.get_return_number())
                             {
-                                std::cerr << "Start Pulse (Num Returns = " << p.GetNumberOfReturns() << "): p.GetReturnNumber() = " << p.GetReturnNumber() << std::endl;
-                                std::cerr << "\tIn Pulse (Num Returns = " << pt.GetNumberOfReturns() << "): pt.GetReturnNumber() = " << pt.GetReturnNumber() << std::endl;
-                                std::cerr << "The return number was: " << pt.GetReturnNumber() << std::endl;
-                                std::cerr << "The next return number should have been: " << nPtIdx << std::endl;
+                                /*std::cerr << "Start Pulse (Num Returns = " << p.GetNumberOfReturns() << "): p.GetReturnNumber() = " << p.GetReturnNumber() << std::endl;
+                                std::cerr << "\tIn Pulse (Num Returns = " << pt.get_NumberOfReturns() << "): pt.get_ReturnNumber() = " << pt.get_ReturnNumber() << std::endl;
+                                std::cerr << "The return number was: " << pt.get_ReturnNumber() << std::endl;
+                                std::cerr << "The next return number should have been: " << nPtIdx << std::endl;*/
                                 throw SPDIOException("Error in point numbering when building pulses.");
                             }
                             
-							spdPt = this->createSPDPoint(pt);
+							spdPt = this->createSPDPoint(lasreader->point);
 							
 							if(spdPt->z < zMin)
 							{
@@ -1564,26 +1560,26 @@ namespace spdlib
 						}
 					}
 					++numOfPulses;
-					//std::cout << "Points capacity (2) " << spdPulse->pts.capacity() << std::endl << std::endl;
-					if(p.GetFlightLineEdge() == 1)
-					{
-						spdPulse->edgeFlightLineFlag = SPD_WITH_SCAN;
-					}
-					else
-					{
-						spdPulse->edgeFlightLineFlag = SPD_SCAN_END;
-					}
-					
-					if(p.GetScanDirection() == 1)
-					{
-						spdPulse->scanDirectionFlag = SPD_POSITIVE;
-					}
-					else
-					{
-						spdPulse->scanDirectionFlag = SPD_NEGATIVE;
-					}
-					
-					if(p.GetNumberOfReturns() > 1)
+
+                    if(lasreader->point.get_edge_of_flight_line() == 1)
+                    {
+                        spdPulse->edgeFlightLineFlag = SPD_WITH_SCAN;
+                    }
+                    else
+                    {
+                        spdPulse->edgeFlightLineFlag = SPD_SCAN_END;
+                    }
+                    
+                    if(lasreader->point.get_scan_direction_flag() == 1)
+                    {
+                        spdPulse->scanDirectionFlag = SPD_POSITIVE;
+                    }
+                    else
+                    {
+                        spdPulse->scanDirectionFlag = SPD_NEGATIVE;
+                    }
+                    
+                    if(spdPulse->numberOfReturns > 1)
                     {
                         range = std::sqrt(std::pow(x1-x0,2) + std::pow(y1-y0,2) + std::pow(z1-z0,2));
                         spdPulse->zenith = std::acos((z1-z0) / range);
@@ -1593,14 +1589,14 @@ namespace spdlib
                             spdPulse->azimuth = spdPulse->azimuth + M_PI * 2;
                         }
                     }
-					else
+                    else
                     {
                         spdPulse->zenith = 0.0;
                         spdPulse->azimuth = 0.0;
                     }
-                    spdPulse->user = p.GetScanAngleRank() + 90;
+                    spdPulse->user = lasreader->point.get_scan_angle_rank() + 90;
                     
-					spdPulse->sourceID = p.GetPointSourceID();
+                    spdPulse->sourceID = lasreader->point.get_point_source_ID();
                     
 					if(indexCoords == SPD_FIRST_RETURN)
 					{
@@ -1649,7 +1645,7 @@ namespace spdlib
 					pulses->push_back(spdPulse);
 				}
 				
-				ifs.close();
+				lasreader->close();
 				std::cout << ". Complete\n";
 				spdFile->setBoundingVolume(xMin, xMax, yMin, yMax, zMin, zMax);
 				if(convertCoords)
@@ -1704,30 +1700,32 @@ namespace spdlib
 		
 		try
 		{
-			std::ifstream ifs;
-			ifs.open(inputFile.c_str(), std::ios::in | std::ios::binary);
-			if(ifs.is_open())
+            // Open LAS file
+            LASreadOpener lasreadopener;
+            LASreader* lasreader = lasreadopener.open(inputFile.c_str());
+            
+            if(lasreader != 0)
 			{
-				liblas::ReaderFactory lasReaderFactory;
-				liblas::Reader reader = lasReaderFactory.CreateWithStream(ifs);
-				liblas::Header const& header = reader.GetHeader();
+                // Get header
+                LASheader *header = &lasreader->header;
+                
+                spdFile->setFileSignature(header->file_signature);
+                spdFile->setSystemIdentifier(header->system_identifier);
+            				
+                if(spdFile->getSpatialReference() == "")
+                {
+                    //FIXME: Need to get spatial information from LAS and convert to WKT (don't think LASlib does this)
+                    /*liblas::SpatialReference const &lasSpatial = header.GetSRS();
+                     std::string spatialRefProjWKT = lasSpatial.GetWKT();
+                     spdFile->setSpatialReference(spatialRefProjWKT);*/
+                }
+                
+                if(convertCoords)
+                {
+                    this->initCoordinateSystemTransformation(spdFile);
+                }
 				
-				spdFile->setFileSignature(header.GetFileSignature());
-				spdFile->setSystemIdentifier(header.GetSystemId());
-				
-				if(spdFile->getSpatialReference() == "")
-				{
-					liblas::SpatialReference const &lasSpatial = header.GetSRS();
-					std::string spatialRefProjWKT = lasSpatial.GetWKT();
-					spdFile->setSpatialReference(spatialRefProjWKT);
-				}
-				
-				if(convertCoords)
-				{
-					this->initCoordinateSystemTransformation(spdFile);
-				}
-				
-				boost::uint_fast64_t reportedNumOfPts = header.GetPointRecordsCount();
+				boost::uint_fast64_t reportedNumOfPts = header->number_of_point_records;
 				boost::uint_fast64_t feedback = reportedNumOfPts/10;
 				unsigned int feedbackCounter = 0;
 				
@@ -1744,7 +1742,7 @@ namespace spdlib
                 double range = 0.0;
                 
 				std::cout << "Started (Read Data) ." << std::flush;
-				while (reader.ReadNextPoint())
+				while (lasreader->read_point())
 				{
 					if((reportedNumOfPts > 10) && ((numOfPoints % feedback) == 0))
 					{
@@ -1752,8 +1750,7 @@ namespace spdlib
 						feedbackCounter += 10;
 					}
 					
-					liblas::Point const& p = reader.GetPoint();
-					spdPt = this->createSPDPoint(p);
+                    spdPt = this->createSPDPoint(lasreader->point);
 					++numOfPoints;
 					
 					if(firstZ)
@@ -1781,7 +1778,7 @@ namespace spdlib
 					spdPulse = new SPDPulse();
 					pulseUtils.initSPDPulse(spdPulse);
                     spdPulse->pulseID = numOfPulses;
-					spdPulse->numberOfReturns = p.GetNumberOfReturns();
+					spdPulse->numberOfReturns = lasreader->point.get_number_of_returns();
                     if(spdPulse->numberOfReturns == 0)
                     {
                         spdPulse->numberOfReturns = 1;
@@ -1793,7 +1790,7 @@ namespace spdlib
                     
                     //std::cout << "Start Pulse (Num Returns = " << p.GetNumberOfReturns() << "): p.GetReturnNumber() = " << p.GetReturnNumber() << std::endl;
                     
-                    if(p.GetReturnNumber() == 0)
+                    if(lasreader->point.get_return_number() == 0)
                     {
                         nPtIdx = 1;
                     }
@@ -1806,27 +1803,26 @@ namespace spdlib
 					spdPulse->pts->push_back(spdPt);
 					for(boost::uint_fast16_t i = 0; i < (spdPulse->numberOfReturns-1); ++i)
 					{
-						if(reader.ReadNextPoint())
+						if(lasreader->read_point())
 						{
 							if((reportedNumOfPts > 10) && ((numOfPoints % feedback) == 0))
 							{
 								std::cout << "." << feedbackCounter << "." << std::flush;
 								feedbackCounter += 10;
 							}
-							liblas::Point const& pt = reader.GetPoint();
                             
-                            //std::cout << "\tIn Pulse (Num Returns = " << pt.GetNumberOfReturns() << "): pt.GetReturnNumber() = " << pt.GetReturnNumber() << std::endl;
+                            //std::cout << "\tIn Pulse (Num Returns = " << pt.get_NumberOfReturns() << "): pt.get_ReturnNumber() = " << pt.get_ReturnNumber() << std::endl;
                             
-                            if(nPtIdx != pt.GetReturnNumber())
+                            if(nPtIdx != lasreader->point.get_return_number())
                             {
-                                std::cerr << "Start Pulse (Num Returns = " << spdPulse->numberOfReturns << "): p.GetReturnNumber() = " << p.GetReturnNumber() << std::endl;
-                                std::cerr << "\tIn Pulse (Num Returns = " << pt.GetNumberOfReturns() << "): pt.GetReturnNumber() = " << pt.GetReturnNumber() << std::endl;
-                                std::cerr << "The return number was: " << pt.GetReturnNumber() << std::endl;
-                                std::cerr << "The next return number should have been: " << nPtIdx << std::endl;
+                                /*std::cerr << "Start Pulse (Num Returns = " << spdPulse->numberOfReturns << "): p.GetReturnNumber() = " << p.GetReturnNumber() << std::endl;
+                                std::cerr << "\tIn Pulse (Num Returns = " << pt.get_NumberOfReturns() << "): pt.get_ReturnNumber() = " << pt.get_ReturnNumber() << std::endl;
+                                std::cerr << "The return number was: " << pt.get_ReturnNumber() << std::endl;
+                                std::cerr << "The next return number should have been: " << nPtIdx << std::endl;*/
                                 throw SPDIOException("Error in point numbering when building pulses.");
                             }
                             
-							spdPt = this->createSPDPoint(pt);
+							spdPt = this->createSPDPoint(lasreader->point);
 							
 							if(spdPt->z < zMin)
 							{
@@ -1855,25 +1851,25 @@ namespace spdlib
 					}
 					++numOfPulses;
 					
-					if(p.GetFlightLineEdge() == 1)
-					{
-						spdPulse->edgeFlightLineFlag = SPD_WITH_SCAN;
-					}
-					else
-					{
-						spdPulse->edgeFlightLineFlag = SPD_SCAN_END;
-					}
-					
-					if(p.GetScanDirection() == 1)
-					{
-						spdPulse->scanDirectionFlag = SPD_POSITIVE;
-					}
-					else
-					{
-						spdPulse->scanDirectionFlag = SPD_NEGATIVE;
-					}
-				    
-                    if(p.GetNumberOfReturns() > 1)
+                    if(lasreader->point.get_edge_of_flight_line() == 1)
+                    {
+                        spdPulse->edgeFlightLineFlag = SPD_WITH_SCAN;
+                    }
+                    else
+                    {
+                        spdPulse->edgeFlightLineFlag = SPD_SCAN_END;
+                    }
+                    
+                    if(lasreader->point.get_scan_direction_flag() == 1)
+                    {
+                        spdPulse->scanDirectionFlag = SPD_POSITIVE;
+                    }
+                    else
+                    {
+                        spdPulse->scanDirectionFlag = SPD_NEGATIVE;
+                    }
+                    
+                    if(spdPulse->numberOfReturns > 1)
                     {
                         range = std::sqrt(std::pow(x1-x0,2) + std::pow(y1-y0,2) + std::pow(z1-z0,2));
                         spdPulse->zenith = std::acos((z1-z0) / range);
@@ -1883,14 +1879,14 @@ namespace spdlib
                             spdPulse->azimuth = spdPulse->azimuth + M_PI * 2;
                         }
                     }
-					else
+                    else
                     {
                         spdPulse->zenith = 0.0;
                         spdPulse->azimuth = 0.0;
                     }
-                    spdPulse->user = p.GetScanAngleRank() + 90;
+                    spdPulse->user = lasreader->point.get_scan_angle_rank() + 90;
                     
-                    spdPulse->sourceID = p.GetPointSourceID();
+                    spdPulse->sourceID = lasreader->point.get_point_source_ID();
 					
 					if(indexCoords == SPD_FIRST_RETURN)
 					{
@@ -1939,7 +1935,7 @@ namespace spdlib
 					processor->processImportedPulse(spdFile, spdPulse);
 				}
 				
-				ifs.close();
+				lasreader->close();
 				std::cout << ". Complete\n";
 				spdFile->setBoundingVolume(xMin, xMax, yMin, yMax, zMin, zMax);
 				if(convertCoords)
@@ -1988,16 +1984,16 @@ namespace spdlib
         // No Header to Read..
     }
     
-	SPDPoint* SPDLASFileImporterStrictPulses::createSPDPoint(liblas::Point const& pt)throw(SPDIOException)
+	SPDPoint* SPDLASFileImporterStrictPulses::createSPDPoint(LASpoint const& pt)throw(SPDIOException)
 	{
 		try
 		{
 			SPDPointUtils spdPtUtils;
 			SPDPoint *spdPt = new SPDPoint();
 			spdPtUtils.initSPDPoint(spdPt);
-			double x = pt.GetX();
-			double y = pt.GetY();
-			double z = pt.GetZ();
+			double x = pt.get_X();
+			double y = pt.get_Y();
+			double z = pt.get_Z();
 			
 			if(convertCoords)
 			{
@@ -2007,75 +2003,67 @@ namespace spdlib
 			spdPt->x = x;
 			spdPt->y = y;
 			spdPt->z = z;
-			spdPt->amplitudeReturn = pt.GetIntensity();
-			spdPt->user = pt.GetUserData();
+			spdPt->amplitudeReturn = pt.get_intensity();
+			spdPt->user = pt.get_user_data();
 			
-			liblas::Classification lasClass = pt.GetClassification();
+			unsigned int lasClass = pt.get_classification();
+            
+            switch (lasClass)
+            {
+                case 0:
+                    spdPt->classification = SPD_CREATED;
+                    break;
+                case 1:
+                    spdPt->classification = SPD_UNCLASSIFIED;
+                    break;
+                case 2:
+                    spdPt->classification = SPD_GROUND;
+                    break;
+                case 3:
+                    spdPt->classification = SPD_LOW_VEGETATION;
+                    break;
+                case 4:
+                    spdPt->classification = SPD_MEDIUM_VEGETATION;
+                    break;
+                case 5:
+                    spdPt->classification = SPD_HIGH_VEGETATION;
+                    break;
+                case 6:
+                    spdPt->classification = SPD_BUILDING;
+                    break;
+                case 7:
+                    spdPt->classification = SPD_CREATED;
+                    spdPt->lowPoint = SPD_TRUE;
+                    break;
+                case 8:
+                    spdPt->classification = SPD_CREATED;
+                    spdPt->modelKeyPoint = SPD_TRUE;
+                    break;
+                case 9:
+                    spdPt->classification = SPD_WATER;
+                    break;
+                case 12:
+                    spdPt->classification = SPD_CREATED;
+                    spdPt->overlap = SPD_TRUE;
+                    break;
+                default:
+                    spdPt->classification = SPD_CREATED;
+                    if(!classWarningGiven)
+                    {
+                        std::cerr << "\nWARNING: The class ID " << lasClass<< " was not recognised - check the classes points were allocated too." << std::endl;
+                        classWarningGiven = true;
+                    }
+                    break;
+            }
+            // Get array of RBG values (of type U16 in LASlib typedef)
+            const unsigned short *rgb = pt.get_rgb();
+            
+			spdPt->red = rgb[0];
+			spdPt->green = rgb[1];
+			spdPt->blue = rgb[2];
 			
-			if(lasClass.GetClass() == pt.eCreated)
-			{
-				spdPt->classification = SPD_CREATED;
-			}
-			else if(lasClass.GetClass() == pt.eUnclassified)
-			{
-				spdPt->classification = SPD_UNCLASSIFIED;
-			}
-			else if(lasClass.GetClass() == pt.eGround)
-			{
-				spdPt->classification = SPD_GROUND;
-			}
-			else if(lasClass.GetClass() == pt.eLowVegetation)
-			{
-				spdPt->classification = SPD_LOW_VEGETATION;
-			}
-			else if(lasClass.GetClass() == pt.eMediumVegetation)
-			{
-				spdPt->classification = SPD_MEDIUM_VEGETATION;
-			}
-			else if(lasClass.GetClass() == pt.eHighVegetation)
-			{
-				spdPt->classification = SPD_HIGH_VEGETATION;
-			}
-			else if(lasClass.GetClass() == pt.eBuilding)
-			{
-				spdPt->classification = SPD_BUILDING;
-			}
-			else if(lasClass.GetClass() == pt.eLowPoint)
-			{
-				spdPt->classification = SPD_CREATED;
-				spdPt->lowPoint = SPD_TRUE;
-			}
-			else if(lasClass.GetClass() == pt.eModelKeyPoint)
-			{
-				spdPt->classification = SPD_CREATED;
-				spdPt->modelKeyPoint = SPD_TRUE;
-			}
-			else if(lasClass.GetClass() == pt.eWater)
-			{
-				spdPt->classification = SPD_WATER;
-			}
-			else if(lasClass.GetClass() == pt.eOverlapPoints)
-			{
-				spdPt->classification = SPD_CREATED;
-				spdPt->overlap = SPD_TRUE;
-			}
-			else
-			{
-				spdPt->classification = SPD_CREATED;
-				if(!classWarningGiven)
-				{
-					std::cerr << "WARNING: The class ID was not recognised - check the classes points were allocated too.";
-					classWarningGiven = true;
-				}
-			}
-			
-			liblas::Color const &lasColor = pt.GetColor();
-			spdPt->red = lasColor.GetRed();
-			spdPt->green = lasColor.GetGreen();
-			spdPt->blue = lasColor.GetBlue();
-			
-			spdPt->returnID = pt.GetReturnNumber();
-			spdPt->gpsTime = pt.GetTime();
+			spdPt->returnID = pt.get_return_number();
+			spdPt->gpsTime = pt.get_gps_time();
 			
 			return spdPt;
 		}
@@ -2148,30 +2136,32 @@ namespace spdlib
 		
 		try
 		{
-			std::ifstream ifs;
-			ifs.open(inputFile.c_str(), std::ios::in | std::ios::binary);
-			if(ifs.is_open())
+            // Open LAS file
+            LASreadOpener lasreadopener;
+            LASreader* lasreader = lasreadopener.open(inputFile.c_str());
+            
+            if(lasreader != 0)
 			{
-				liblas::ReaderFactory lasReaderFactory;
-				liblas::Reader reader = lasReaderFactory.CreateWithStream(ifs);
-				liblas::Header const& header = reader.GetHeader();
+                // Get header
+                LASheader *header = &lasreader->header;
+                
+                spdFile->setFileSignature(header->file_signature);
+                spdFile->setSystemIdentifier(header->system_identifier);
+            				
+                if(spdFile->getSpatialReference() == "")
+                {
+                    //FIXME: Need to get spatial information from LAS and convert to WKT (don't think LASlib does this)
+                    /*liblas::SpatialReference const &lasSpatial = header.GetSRS();
+                     std::string spatialRefProjWKT = lasSpatial.GetWKT();
+                     spdFile->setSpatialReference(spatialRefProjWKT);*/
+                }
+                
+                if(convertCoords)
+                {
+                    this->initCoordinateSystemTransformation(spdFile);
+                }
 				
-				spdFile->setFileSignature(header.GetFileSignature());
-				spdFile->setSystemIdentifier(header.GetSystemId());
-				
-				if(spdFile->getSpatialReference() == "")
-				{
-					liblas::SpatialReference const &lasSpatial = header.GetSRS();
-					std::string spatialRefProjWKT = lasSpatial.GetWKT();
-					spdFile->setSpatialReference(spatialRefProjWKT);
-				}
-				
-				if(convertCoords)
-				{
-					this->initCoordinateSystemTransformation(spdFile);
-				}
-				
-				boost::uint_fast64_t reportedNumOfPts = header.GetPointRecordsCount();
+				boost::uint_fast64_t reportedNumOfPts = header->number_of_point_records;
 				boost::uint_fast64_t feedback = reportedNumOfPts/10;
 				unsigned int feedbackCounter = 0;
 				
@@ -2179,7 +2169,7 @@ namespace spdlib
 				SPDPulse *spdPulse = NULL;               
 				
 				std::cout << "Started (Read Data) ." << std::flush;
-				while (reader.ReadNextPoint())
+				while (lasreader->read_point())
 				{
 					//std::cout << numOfPoints << std::endl;
 					if((reportedNumOfPts > 10) && ((numOfPoints % feedback) == 0))
@@ -2188,8 +2178,7 @@ namespace spdlib
 						feedbackCounter += 10;
 					}
 					
-					liblas::Point const& p = reader.GetPoint();
-					spdPt = this->createSPDPoint(p);
+					spdPt = this->createSPDPoint(lasreader->point);
 					++numOfPoints;
 					
 					if(firstZ)
@@ -2216,7 +2205,7 @@ namespace spdlib
 					//std::cout << "Pulse size " << sizeof(SPDPulse) << std::endl;
 					//std::cout << "Point size " << sizeof(SPDPoint) << std::endl;
 					//std::cout << "Points capacity (1) " << spdPulse->pts.capacity() << std::endl;
-					spdPulse->numberOfReturns = p.GetNumberOfReturns();
+					spdPulse->numberOfReturns = lasreader->point.get_number_of_returns();
                     if(spdPulse->numberOfReturns == 0)
                     {
                         spdPulse->numberOfReturns = 1;
@@ -2229,45 +2218,45 @@ namespace spdlib
 					spdPulse->pts->push_back(spdPt);
 
 					++numOfPulses;
-					//std::cout << "Points capacity (2) " << spdPulse->pts.capacity() << std::endl << std::endl;
-					if(p.GetFlightLineEdge() == 1)
-					{
-						spdPulse->edgeFlightLineFlag = SPD_WITH_SCAN;
-					}
-					else
-					{
-						spdPulse->edgeFlightLineFlag = SPD_SCAN_END;
-					}
-					
-					if(p.GetScanDirection() == 1)
-					{
-						spdPulse->scanDirectionFlag = SPD_POSITIVE;
-					}
-					else
-					{
-						spdPulse->scanDirectionFlag = SPD_NEGATIVE;
-					}
-					
+
+                    if(lasreader->point.get_edge_of_flight_line() == 1)
+                    {
+                        spdPulse->edgeFlightLineFlag = SPD_WITH_SCAN;
+                    }
+                    else
+                    {
+                        spdPulse->edgeFlightLineFlag = SPD_SCAN_END;
+                    }
+                    
+                    if(lasreader->point.get_scan_direction_flag() == 1)
+                    {
+                        spdPulse->scanDirectionFlag = SPD_POSITIVE;
+                    }
+                    else
+                    {
+                        spdPulse->scanDirectionFlag = SPD_NEGATIVE;
+                    }
+                    
                     spdPulse->zenith = 0.0;
                     spdPulse->azimuth = 0.0;
-                    spdPulse->user = p.GetScanAngleRank() + 90;
-
-					spdPulse->sourceID = p.GetPointSourceID();
-					
-					if(indexCoords == SPD_FIRST_RETURN)
-					{
-						spdPulse->xIdx = spdPulse->pts->front()->x;
-						spdPulse->yIdx = spdPulse->pts->front()->y;
-					}
-					else if(indexCoords == SPD_LAST_RETURN)
-					{
-						spdPulse->xIdx = spdPulse->pts->back()->x;
-						spdPulse->yIdx = spdPulse->pts->back()->y;
-					}
-					else
-					{
-						throw SPDIOException("Indexing type unsupported");
-					}
+                    spdPulse->user = lasreader->point.get_scan_angle_rank() + 90;
+                    
+                    spdPulse->sourceID = lasreader->point.get_point_source_ID();
+                    
+                    if(indexCoords == SPD_FIRST_RETURN)
+                    {
+                        spdPulse->xIdx = spdPulse->pts->front()->x;
+                        spdPulse->yIdx = spdPulse->pts->front()->y;
+                    }
+                    else if(indexCoords == SPD_LAST_RETURN)
+                    {
+                        spdPulse->xIdx = spdPulse->pts->back()->x;
+                        spdPulse->yIdx = spdPulse->pts->back()->y;
+                    }
+                    else
+                    {
+                        throw SPDIOException("Indexing type unsupported");
+                    }
 					
 					if(first)
 					{
@@ -2301,7 +2290,7 @@ namespace spdlib
 					pulses->push_back(spdPulse);
 				}
 				
-				ifs.close();
+				lasreader->close();
 				std::cout << ". Complete\n";
 				spdFile->setBoundingVolume(xMin, xMax, yMin, yMax, zMin, zMax);
 				if(convertCoords)
@@ -2357,32 +2346,32 @@ namespace spdlib
 		
 		try
 		{
-			std::ifstream ifs;
-			ifs.open(inputFile.c_str(), std::ios::in | std::ios::binary);
-			if(ifs.is_open())
-			{
-				liblas::ReaderFactory lasReaderFactory;
-				liblas::Reader reader = lasReaderFactory.CreateWithStream(ifs);
-				liblas::Header const& header = reader.GetHeader();
+            // Open LAS file
+            LASreadOpener lasreadopener;
+            LASreader* lasreader = lasreadopener.open(inputFile.c_str());
+            
+            if(lasreader != 0)
+            {
+                // Get header
+                LASheader *header = &lasreader->header;
+                
+                spdFile->setFileSignature(header->file_signature);
+                spdFile->setSystemIdentifier(header->system_identifier);
+                
+                if(spdFile->getSpatialReference() == "")
+                {
+                    //FIXME: Need to get spatial information from LAS and convert to WKT (don't think LASlib does this)
+                    /*liblas::SpatialReference const &lasSpatial = header.GetSRS();
+                     std::string spatialRefProjWKT = lasSpatial.GetWKT();
+                     spdFile->setSpatialReference(spatialRefProjWKT);*/
+                }
+                
+                if(convertCoords)
+                {
+                    this->initCoordinateSystemTransformation(spdFile);
+                }
 				
-				spdFile->setFileSignature(header.GetFileSignature());
-				spdFile->setSystemIdentifier(header.GetSystemId());
-				
-				if(spdFile->getSpatialReference() == "")
-				{
-					liblas::SpatialReference const &lasSpatial = header.GetSRS();
-					std::string spatialRefProjWKT = lasSpatial.GetWKT();
-					spdFile->setSpatialReference(spatialRefProjWKT);
-				}
-				
-				if(convertCoords)
-				{
-					this->initCoordinateSystemTransformation(spdFile);
-				}
-				
-				pulses->reserve(header.GetPointRecordsCount());
-				
-				boost::uint_fast64_t reportedNumOfPts = header.GetPointRecordsCount();
+				boost::uint_fast64_t reportedNumOfPts = header->number_of_point_records;
 				boost::uint_fast64_t feedback = reportedNumOfPts/10;
 				unsigned int feedbackCounter = 0;
 				
@@ -2390,7 +2379,7 @@ namespace spdlib
 				SPDPulse *spdPulse = NULL;
 				
 				std::cout << "Started (Read Data) ." << std::flush;
-				while (reader.ReadNextPoint())
+				while (lasreader->read_point())
 				{
 					//std::cout << numOfPoints << std::endl;
 					if((reportedNumOfPts > 10) && ((numOfPoints % feedback) == 0))
@@ -2399,8 +2388,7 @@ namespace spdlib
 						feedbackCounter += 10;
 					}
 					
-					liblas::Point const& p = reader.GetPoint();
-					spdPt = this->createSPDPoint(p);
+					spdPt = this->createSPDPoint(lasreader->point);
 					++numOfPoints;
 					
 					if(firstZ)
@@ -2427,7 +2415,7 @@ namespace spdlib
 					//std::cout << "Pulse size " << sizeof(SPDPulse) << std::endl;
 					//std::cout << "Point size " << sizeof(SPDPoint) << std::endl;
 					//std::cout << "Points capacity (1) " << spdPulse->pts.capacity() << std::endl;
-					spdPulse->numberOfReturns = p.GetNumberOfReturns();
+					spdPulse->numberOfReturns = lasreader->point.get_number_of_returns();
                     if(spdPulse->numberOfReturns == 0)
                     {
                         spdPulse->numberOfReturns = 1;
@@ -2440,30 +2428,30 @@ namespace spdlib
 					spdPulse->pts->push_back(spdPt);
 
 					++numOfPulses;
-					//std::cout << "Points capacity (2) " << spdPulse->pts.capacity() << std::endl << std::endl;
-					if(p.GetFlightLineEdge() == 1)
-					{
-						spdPulse->edgeFlightLineFlag = SPD_WITH_SCAN;
-					}
-					else
-					{
-						spdPulse->edgeFlightLineFlag = SPD_SCAN_END;
-					}
-					
-					if(p.GetScanDirection() == 1)
-					{
-						spdPulse->scanDirectionFlag = SPD_POSITIVE;
-					}
-					else
-					{
-						spdPulse->scanDirectionFlag = SPD_NEGATIVE;
-					}
-                                        
+                    
+                    if(lasreader->point.get_edge_of_flight_line() == 1)
+                    {
+                        spdPulse->edgeFlightLineFlag = SPD_WITH_SCAN;
+                    }
+                    else
+                    {
+                        spdPulse->edgeFlightLineFlag = SPD_SCAN_END;
+                    }
+                    
+                    if(lasreader->point.get_scan_direction_flag() == 1)
+                    {
+                        spdPulse->scanDirectionFlag = SPD_POSITIVE;
+                    }
+                    else
+                    {
+                        spdPulse->scanDirectionFlag = SPD_NEGATIVE;
+                    }
+                    
                     spdPulse->zenith = 0.0;
                     spdPulse->azimuth = 0.0;
-                    spdPulse->user = p.GetScanAngleRank() + 90;
+                    spdPulse->user = lasreader->point.get_scan_angle_rank() + 90;
 
-					spdPulse->sourceID = p.GetPointSourceID();
+					spdPulse->sourceID = lasreader->point.get_point_source_ID();
                     
 					if(indexCoords == SPD_FIRST_RETURN)
 					{
@@ -2512,7 +2500,7 @@ namespace spdlib
 					pulses->push_back(spdPulse);
 				}
 				
-				ifs.close();
+				lasreader->close();
 				std::cout << ". Complete\n";
 				spdFile->setBoundingVolume(xMin, xMax, yMin, yMax, zMin, zMax);
 				if(convertCoords)
@@ -2567,30 +2555,32 @@ namespace spdlib
 		
 		try
 		{
-			std::ifstream ifs;
-			ifs.open(inputFile.c_str(), std::ios::in | std::ios::binary);
-			if(ifs.is_open())
-			{
-				liblas::ReaderFactory lasReaderFactory;
-				liblas::Reader reader = lasReaderFactory.CreateWithStream(ifs);
-				liblas::Header const& header = reader.GetHeader();
+            // Open LAS file
+            LASreadOpener lasreadopener;
+            LASreader* lasreader = lasreadopener.open(inputFile.c_str());
+            
+            if(lasreader != 0)
+            {
+                // Get header
+                LASheader *header = &lasreader->header;
+                
+                spdFile->setFileSignature(header->file_signature);
+                spdFile->setSystemIdentifier(header->system_identifier);
+                
+                if(spdFile->getSpatialReference() == "")
+                {
+                    //FIXME: Need to get spatial information from LAS and convert to WKT (don't think LASlib does this)
+                    /*liblas::SpatialReference const &lasSpatial = header.GetSRS();
+                     std::string spatialRefProjWKT = lasSpatial.GetWKT();
+                     spdFile->setSpatialReference(spatialRefProjWKT);*/
+                }
+                
+                if(convertCoords)
+                {
+                    this->initCoordinateSystemTransformation(spdFile);
+                }
 				
-				spdFile->setFileSignature(header.GetFileSignature());
-				spdFile->setSystemIdentifier(header.GetSystemId());
-				
-				if(spdFile->getSpatialReference() == "")
-				{
-					liblas::SpatialReference const &lasSpatial = header.GetSRS();
-					std::string spatialRefProjWKT = lasSpatial.GetWKT();
-					spdFile->setSpatialReference(spatialRefProjWKT);
-				}
-				
-				if(convertCoords)
-				{
-					this->initCoordinateSystemTransformation(spdFile);
-				}
-				
-				boost::uint_fast64_t reportedNumOfPts = header.GetPointRecordsCount();
+				boost::uint_fast64_t reportedNumOfPts = header->number_of_point_records;
 				boost::uint_fast64_t feedback = reportedNumOfPts/10;
 				unsigned int feedbackCounter = 0;
 				
@@ -2598,7 +2588,7 @@ namespace spdlib
 				SPDPulse *spdPulse = NULL;
                                 
 				std::cout << "Started (Read Data) ." << std::flush;
-				while (reader.ReadNextPoint())
+				while (lasreader->read_point())
 				{
 					if((reportedNumOfPts > 10) && ((numOfPoints % feedback) == 0))
 					{
@@ -2606,8 +2596,7 @@ namespace spdlib
 						feedbackCounter += 10;
 					}
 					
-					liblas::Point const& p = reader.GetPoint();
-					spdPt = this->createSPDPoint(p);
+					spdPt = this->createSPDPoint(lasreader->point);
 					++numOfPoints;
 					
 					if(firstZ)
@@ -2637,29 +2626,29 @@ namespace spdlib
 					
 					++numOfPulses;
 					
-					if(p.GetFlightLineEdge() == 1)
-					{
-						spdPulse->edgeFlightLineFlag = SPD_WITH_SCAN;
-					}
-					else
-					{
-						spdPulse->edgeFlightLineFlag = SPD_SCAN_END;
-					}
-					
-					if(p.GetScanDirection() == 1)
-					{
-						spdPulse->scanDirectionFlag = SPD_POSITIVE;
-					}
-					else
-					{
-						spdPulse->scanDirectionFlag = SPD_NEGATIVE;
-					}
+                    if(lasreader->point.get_edge_of_flight_line() == 1)
+                    {
+                        spdPulse->edgeFlightLineFlag = SPD_WITH_SCAN;
+                    }
+                    else
+                    {
+                        spdPulse->edgeFlightLineFlag = SPD_SCAN_END;
+                    }
+                    
+                    if(lasreader->point.get_scan_direction_flag() == 1)
+                    {
+                        spdPulse->scanDirectionFlag = SPD_POSITIVE;
+                    }
+                    else
+                    {
+                        spdPulse->scanDirectionFlag = SPD_NEGATIVE;
+                    }
                     
                     spdPulse->zenith = 0.0;
                     spdPulse->azimuth = 0.0;
-                    spdPulse->user = p.GetScanAngleRank() + 90;                    
+                    spdPulse->user = lasreader->point.get_scan_angle_rank() + 90;
                     
-					spdPulse->sourceID = p.GetPointSourceID();
+                    spdPulse->sourceID = lasreader->point.get_point_source_ID();
 					
 					if(indexCoords == SPD_FIRST_RETURN)
 					{
@@ -2708,7 +2697,7 @@ namespace spdlib
 					processor->processImportedPulse(spdFile, spdPulse);
 				}
 				
-				ifs.close();
+                lasreader->close();
 				std::cout << ". Complete\n";
 				spdFile->setBoundingVolume(xMin, xMax, yMin, yMax, zMin, zMax);
 				if(convertCoords)
@@ -2757,16 +2746,16 @@ namespace spdlib
         // No Header to Read..
     }
     
-	SPDPoint* SPDLASFileNoPulsesImporter::createSPDPoint(liblas::Point const& pt)throw(SPDIOException)
+	SPDPoint* SPDLASFileNoPulsesImporter::createSPDPoint(LASpoint const& pt)throw(SPDIOException)
 	{
 		try
 		{
 			SPDPointUtils spdPtUtils;
 			SPDPoint *spdPt = new SPDPoint();
 			spdPtUtils.initSPDPoint(spdPt);
-			double x = pt.GetX();
-			double y = pt.GetY();
-			double z = pt.GetZ();
+			double x = pt.get_X();
+			double y = pt.get_Y();
+			double z = pt.get_Z();
 			
 			if(convertCoords)
 			{
@@ -2776,75 +2765,74 @@ namespace spdlib
 			spdPt->x = x;
 			spdPt->y = y;
 			spdPt->z = z;
-			spdPt->amplitudeReturn = pt.GetIntensity();
-			spdPt->user = pt.GetUserData();
+			spdPt->amplitudeReturn = pt.get_intensity();
+			spdPt->user = pt.get_user_data();
 			
-			liblas::Classification lasClass = pt.GetClassification();
+            spdPt->x = x;
+            spdPt->y = y;
+            spdPt->z = z;
+            spdPt->amplitudeReturn = pt.get_intensity();
+            spdPt->user = pt.get_user_data();
+            
+            unsigned int lasClass = pt.get_classification();
+            
+            switch (lasClass)
+            {
+                case 0:
+                    spdPt->classification = SPD_CREATED;
+                    break;
+                case 1:
+                    spdPt->classification = SPD_UNCLASSIFIED;
+                    break;
+                case 2:
+                    spdPt->classification = SPD_GROUND;
+                    break;
+                case 3:
+                    spdPt->classification = SPD_LOW_VEGETATION;
+                    break;
+                case 4:
+                    spdPt->classification = SPD_MEDIUM_VEGETATION;
+                    break;
+                case 5:
+                    spdPt->classification = SPD_HIGH_VEGETATION;
+                    break;
+                case 6:
+                    spdPt->classification = SPD_BUILDING;
+                    break;
+                case 7:
+                    spdPt->classification = SPD_CREATED;
+                    spdPt->lowPoint = SPD_TRUE;
+                    break;
+                case 8:
+                    spdPt->classification = SPD_CREATED;
+                    spdPt->modelKeyPoint = SPD_TRUE;
+                    break;
+                case 9:
+                    spdPt->classification = SPD_WATER;
+                    break;
+                case 12:
+                    spdPt->classification = SPD_CREATED;
+                    spdPt->overlap = SPD_TRUE;
+                    break;
+                default:
+                    spdPt->classification = SPD_CREATED;
+                    if(!classWarningGiven)
+                    {
+                        std::cerr << "\nWARNING: The class ID " << lasClass<< " was not recognised - check the classes points were allocated too." << std::endl;
+                        classWarningGiven = true;
+                    }
+                    break;
+            }
 			
-			if(lasClass.GetClass() == pt.eCreated)
-			{
-				spdPt->classification = SPD_CREATED;
-			}
-			else if(lasClass.GetClass() == pt.eUnclassified)
-			{
-				spdPt->classification = SPD_UNCLASSIFIED;
-			}
-			else if(lasClass.GetClass() == pt.eGround)
-			{
-				spdPt->classification = SPD_GROUND;
-			}
-			else if(lasClass.GetClass() == pt.eLowVegetation)
-			{
-				spdPt->classification = SPD_LOW_VEGETATION;
-			}
-			else if(lasClass.GetClass() == pt.eMediumVegetation)
-			{
-				spdPt->classification = SPD_MEDIUM_VEGETATION;
-			}
-			else if(lasClass.GetClass() == pt.eHighVegetation)
-			{
-				spdPt->classification = SPD_HIGH_VEGETATION;
-			}
-			else if(lasClass.GetClass() == pt.eBuilding)
-			{
-				spdPt->classification = SPD_BUILDING;
-			}
-			else if(lasClass.GetClass() == pt.eLowPoint)
-			{
-				spdPt->classification = SPD_CREATED;
-				spdPt->lowPoint = SPD_TRUE;
-			}
-			else if(lasClass.GetClass() == pt.eModelKeyPoint)
-			{
-				spdPt->classification = SPD_CREATED;
-				spdPt->modelKeyPoint = SPD_TRUE;
-			}
-			else if(lasClass.GetClass() == pt.eWater)
-			{
-				spdPt->classification = SPD_WATER;
-			}
-			else if(lasClass.GetClass() == pt.eOverlapPoints)
-			{
-				spdPt->classification = SPD_CREATED;
-				spdPt->overlap = SPD_TRUE;
-			}
-			else
-			{
-				spdPt->classification = SPD_CREATED;
-				if(!classWarningGiven)
-				{
-					std::cerr << "WARNING: The class ID was not recognised - check the classes points were allocated too.";
-					classWarningGiven = true;
-				}
-			}
-			
-			liblas::Color const &lasColor = pt.GetColor();
-			spdPt->red = lasColor.GetRed();
-			spdPt->green = lasColor.GetGreen();
-			spdPt->blue = lasColor.GetBlue();
-			
-			spdPt->returnID = pt.GetReturnNumber();
-			spdPt->gpsTime = pt.GetTime();
+            // Get array of RBG values (of type U16 in LASlib typedef)
+            const unsigned short *rgb = pt.get_rgb();
+            
+            spdPt->red = rgb[0];
+            spdPt->green = rgb[1];
+            spdPt->blue = rgb[2];
+            
+            spdPt->returnID = pt.get_return_number();
+            spdPt->gpsTime = pt.get_gps_time();
 			
 			return spdPt;
 		}

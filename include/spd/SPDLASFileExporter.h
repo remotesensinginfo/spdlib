@@ -26,12 +26,14 @@
 #ifndef SPDLASFileExporter_H
 #define SPDLASFileExporter_H
 
+#define LAS_SCALE_FACTOR 0.01
+
 #include <fstream>
 #include <iostream>
 #include <string>
 #include <list>
 
-#include <liblas/liblas.hpp>
+#include "laswriter.hpp"
 
 #include "spd/SPDFile.h"
 #include "spd/SPDPoint.h"
@@ -60,7 +62,8 @@ namespace spdlib
 		~SPDLASFileExporter();
 	private:
 		std::fstream *outDataStream;
-		liblas::Writer *lasWriter;
+		LASwriter *lasWriter;
+        LASheader *lasFileHeader;
         bool finalisedClosed;
 	};
     
@@ -83,7 +86,7 @@ namespace spdlib
 		~SPDLAZFileExporter();
 	private:
 		std::fstream *outDataStream;
-		liblas::Writer *lasWriter;
+		LASwriter *lasWriter;
         bool finalisedClosed;
 	};
 }
