@@ -241,7 +241,7 @@ if( NOT BUILD_SPDIO_ONLY )
     if (MSVC)
         set(LIBLAS_LIBRARIES -LIBPATH:${LIBLAS_LIB_PATH} liblas.lib liblas_c.lib)
     else()
-        set(LIBLAS_LIBRARIES -L${LIBLAS_LIB_PATH} -llas -llas_c)
+        set(LIBLAS_LIBRARIES -L${LIBLAS_LIB_PATH} -llas)
     endif(MSVC)
     
     include_directories(${CGAL_INCLUDE_DIR})

@@ -30,7 +30,7 @@
 
 #include <spd/tclap/CmdLine.h>
 
-#include <liblas/liblas.hpp>
+#include <lasreader.hpp>
 
 #include "spd/SPDException.h"
 #include "spd/SPDTextFileUtilities.h"
@@ -48,46 +48,44 @@ namespace spdlib
         {
             try
             {
-                std::cout.precision(12);
-                std::ifstream ifs;
-                ifs.open(inputFile.c_str(), std::ios::in | std::ios::binary);
-                if(ifs.is_open())
+                // Open LAS file
+                LASreadOpener lasreadopener;
+                LASreader* lasreader = lasreadopener.open(inputFile.c_str());
+                
+                if(lasreader != 0)
                 {
-                    liblas::ReaderFactory lasReaderFactory;
-                    liblas::Reader reader = lasReaderFactory.CreateWithStream(ifs);
-                    std::cout << "here\n";
-                    liblas::Header const& header = reader.GetHeader();
-                    std::cout << "Number of Points in LAS file: " <<  header.GetPointRecordsCount() << std::endl;
+                    // Get header
+                    LASheader *header = &lasreader->header;
+                    
+                    std::cout << "Number of Points in LAS file: " << header->number_of_point_records << std::endl;
                     
                     uint_fast16_t numOfReturnsInPulse = 0;
                     uint_fast64_t numOfPoints = 0;
                     uint_fast64_t numOfPulses = 0;
                     uint_fast64_t numOfPrintedPulses = 0;
                     
-                    while (reader.ReadNextPoint())
+                    while (lasreader->read_point())
                     {
-                        liblas::Point const& p = reader.GetPoint();
                         ++numOfPoints;
-                        numOfReturnsInPulse = p.GetNumberOfReturns();
+                        numOfReturnsInPulse = lasreader->point.get_number_of_returns();
                         if(numOfPulses >= startIdx)
                         {
                             std::cout << "###################################\n";
                             std::cout << "Pulse " << numOfPulses << std::endl;
                             std::cout << "Number of Returns: " << numOfReturnsInPulse << std::endl;
-                            std::cout << "Return: " << p.GetReturnNumber() << std::endl;
-                            std::cout << "[X,Y,Z]: [" << p.GetX() << "," << p.GetY() << "," << p.GetZ() << "]\n";
+                            std::cout << "Return: " << lasreader->point.get_return_number()<< std::endl;
+                            std::cout << "[X,Y,Z]: [" << lasreader->point.get_X() << "," << lasreader->point.get_Y() << "," << lasreader->point.get_Z() << "]\n";
                             std::cout << "*********************************\n";
                         }
                         
                         for(boost::uint_fast16_t i = 0; i < (numOfReturnsInPulse-1); ++i)
                         {
-                            if(reader.ReadNextPoint())
+                            if(lasreader->read_point())
                             {
                                 if(numOfPulses >= startIdx)
                                 {
-                                    liblas::Point const& pt = reader.GetPoint();
-                                    std::cout << "Return: " << pt.GetReturnNumber() << std::endl;
-                                    std::cout << "[X,Y,Z]: [" << pt.GetX() << "," << pt.GetY() << "," << pt.GetZ() << "]\n";
+                                    std::cout << "Return: " << lasreader->point.get_return_number()<< std::endl;
+                                    std::cout << "[X,Y,Z]: [" << lasreader->point.get_X() << "," << lasreader->point.get_Y() << "," << lasreader->point.get_Z() << "]\n";
                                     std::cout << "*********************************\n";
                                 }
                                 ++numOfPoints;
@@ -131,40 +129,41 @@ namespace spdlib
         
         void printPulsesFromLASFileNotFirstReturnsStartPulse(std::string inputFile) throw(SPDException)
         {
-            std::cout.precision(10);
-            std::ifstream ifs;
-			ifs.open(inputFile.c_str(), std::ios::in | std::ios::binary);
-			if(ifs.is_open())
-			{
-                liblas::ReaderFactory lasReaderFactory;
-				liblas::Reader reader = lasReaderFactory.CreateWithStream(ifs);
-				liblas::Header const& header = reader.GetHeader();
-                std::cout << "Number of Points in LAS file: " <<  header.GetPointRecordsCount() << std::endl;
+            // Open LAS file
+            LASreadOpener lasreadopener;
+            LASreader* lasreader = lasreadopener.open(inputFile.c_str());
+            
+            if(lasreader != 0)
+            {
+                // Get header
+                LASheader *header = &lasreader->header;
+                
+                std::cout << "Number of Points in LAS file: " << header->number_of_point_records << std::endl;
                 
                 uint_fast16_t numOfReturnsInPulse = 0;
                 uint_fast64_t numOfPoints = 0;
                 uint_fast64_t numOfPulses = 0;
                 uint_fast64_t numOfPrintedPoints = 0;
                 
-                while (reader.ReadNextPoint())
+                while (lasreader->read_point())
 				{
-                    liblas::Point const& p = reader.GetPoint();
                     ++numOfPoints;
-                    numOfReturnsInPulse = p.GetNumberOfReturns();
-                    if(p.GetReturnNumber() > 1)
+                    numOfReturnsInPulse = lasreader->point.get_number_of_returns();
+                    if(lasreader->point.get_return_number() > 1)
                     {
+                        
                         std::cout << "###################################\n";
                         std::cout << "Pulse " << numOfPulses << std::endl;
                         std::cout << "Number of Returns: " << numOfReturnsInPulse << std::endl;
-                        std::cout << "Return: " << p.GetReturnNumber() << std::endl;
-                        std::cout << "[X,Y,Z]: [" << p.GetX() << "," << p.GetY() << "," << p.GetZ() << "]\n";
+                        std::cout << "Return: " << lasreader->point.get_return_number()<< std::endl;
+                        std::cout << "[X,Y,Z]: [" << lasreader->point.get_X() << "," << lasreader->point.get_Y() << "," << lasreader->point.get_Z() << "]\n";
                         std::cout << "###################################\n";
                         ++numOfPrintedPoints;
                     }
                     
                     for(boost::uint_fast16_t i = 0; i < (numOfReturnsInPulse-1); ++i)
 					{
-						if(reader.ReadNextPoint())
+						if(lasreader->read_point())
 						{
 							++numOfPoints;
 						}
@@ -188,29 +187,29 @@ namespace spdlib
         
         void countNumPulses(std::string inputFile) throw(SPDException)
         {
-            std::ifstream ifs;
-			ifs.open(inputFile.c_str(), std::ios::in | std::ios::binary);
-			if(ifs.is_open())
-			{
-                liblas::ReaderFactory lasReaderFactory;
-				liblas::Reader reader = lasReaderFactory.CreateWithStream(ifs);
-				liblas::Header const& header = reader.GetHeader();
-                std::cout << "Number of Points in LAS file: " <<  header.GetPointRecordsCount() << std::endl;
+            // Open LAS file
+            LASreadOpener lasreadopener;
+            LASreader* lasreader = lasreadopener.open(inputFile.c_str());
+            
+            if(lasreader != 0)
+            {
+                // Get header
+                LASheader *header = &lasreader->header;
+                
+                std::cout << "Number of Points in LAS file: " << header->number_of_point_records << std::endl;
                 
                 uint_fast16_t numOfReturnsInPulse = 0;
                 uint_fast64_t numOfPoints = 0;
                 uint_fast64_t numOfPulses = 0;
                 
-                while (reader.ReadNextPoint())
+                while (lasreader->read_point())
 				{
-                    liblas::Point const& p = reader.GetPoint();
                     ++numOfPoints;
-                    numOfReturnsInPulse = p.GetNumberOfReturns();
+                    numOfReturnsInPulse = lasreader->point.get_number_of_returns();
                     for(boost::uint_fast16_t i = 0; i < (numOfReturnsInPulse-1); ++i)
 					{
-						if(reader.ReadNextPoint())
+						if(lasreader->read_point())
 						{
-							//liblas::Point const& p = reader.GetPoint();
 							++numOfPoints;
 						}
 						else

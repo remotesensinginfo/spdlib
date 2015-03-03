@@ -30,7 +30,7 @@
 #include <fstream>
 #include <stdexcept>
 
-#include <liblas/liblas.hpp>
+#include <lasreader.hpp>
 
 #include <boost/cstdint.hpp>
 
@@ -58,7 +58,7 @@ namespace spdlib
         void readHeaderInfo(std::string inputFile, SPDFile *spdFile) throw(SPDIOException);
 		~SPDLASFileImporter();
 	private:
-		SPDPoint* createSPDPoint(liblas::Point const& pt)throw(SPDIOException);
+		SPDPoint* createSPDPoint(LASpoint const& pt)throw(SPDIOException);
 		bool classWarningGiven;
 	};
     
@@ -74,7 +74,7 @@ namespace spdlib
         void readHeaderInfo(std::string inputFile, SPDFile *spdFile) throw(SPDIOException);
 		~SPDLASFileImporterStrictPulses();
 	private:
-		SPDPoint* createSPDPoint(liblas::Point const& pt)throw(SPDIOException);
+		SPDPoint* createSPDPoint(LASpoint const& pt)throw(SPDIOException);
 		bool classWarningGiven;
 	};
     
@@ -91,7 +91,7 @@ namespace spdlib
         void readHeaderInfo(std::string inputFile, SPDFile *spdFile) throw(SPDIOException);
 		~SPDLASFileNoPulsesImporter();
 	private:
-		SPDPoint* createSPDPoint(liblas::Point const& pt)throw(SPDIOException);
+		SPDPoint* createSPDPoint(LASpoint const& pt)throw(SPDIOException);
 		bool classWarningGiven;
 	};
 }
