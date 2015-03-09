@@ -31,10 +31,9 @@
 #include <stdexcept>
 
 #include <lasreader.hpp>
+#include <ogr_spatialref.h>
 
 #include <boost/cstdint.hpp>
-
-#include "ogrsf_frmts.h"
 
 #include "spd/SPDFile.h"
 #include "spd/SPDPulse.h"
@@ -45,8 +44,14 @@
 
 namespace spdlib
 {
-	
-	class DllExport SPDLASFileImporter : public SPDDataImporter
+    
+    /** Function to get WKT string from LAS header */
+    std::string getWKTfromLAS(LASheader &header);
+
+	/**
+     Standard importer for LAS files (LAS)
+    */
+    class DllExport SPDLASFileImporter : public SPDDataImporter
 	{
 	public:
 		SPDLASFileImporter(bool convertCoords=false, std::string outputProjWKT="", std::string schema="", boost::uint_fast16_t indexCoords=SPD_FIRST_RETURN, bool defineOrigin=false, double originX=0, double originY=0, float originZ=0, float waveNoiseThreshold=0);
@@ -62,6 +67,11 @@ namespace spdlib
 		bool classWarningGiven;
 	};
     
+    /**
+     Strict importer for LAS files (LASSTRICT).
+     
+     Throws SPDIOException if pulses can't be created from available points (i.e., not all expected returns are found).
+     */
     class DllExport SPDLASFileImporterStrictPulses : public SPDDataImporter
 	{
 	public:
@@ -78,7 +88,10 @@ namespace spdlib
 		bool classWarningGiven;
 	};
     
-    
+    /**
+     No pulse importer for LAS files (LASNP)
+     
+     */
     class DllExport SPDLASFileNoPulsesImporter : public SPDDataImporter
 	{
 	public:

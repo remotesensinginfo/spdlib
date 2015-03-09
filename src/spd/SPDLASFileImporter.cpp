@@ -26,7 +26,48 @@
 
 namespace spdlib
 {
-	
+    std::string getWKTfromLAS(LASheader *header)
+    {
+        /**
+         Get EPSG projection code from LAS file header and convert to WKT string.
+         
+         TODO: Needs testing with a range of coordinate systems. Within lasinfo a number of 
+         checks for differnent keys are used. Need to confirm only checking for key id 3072 is
+         sufficient and if not how best to create a WKT file from multiple keys.
+         
+         */
+        bool foundProjection = false;
+        char *pszWKT = NULL;
+        
+        for (int j = 0; j < header->vlr_geo_keys->number_of_keys; j++)
+        {
+            if(header->vlr_geo_key_entries[j].key_id == 3072)
+            {
+                
+                OGRSpatialReference lasSRS;
+                if(lasSRS.importFromEPSG(header->vlr_geo_key_entries[j].value_offset) == 0)
+                {
+                    lasSRS.exportToWkt(&pszWKT);
+                    foundProjection = true;
+                }
+                else
+                {
+                    std::cerr << "  WARNING: Could not get coordinate system from code: " << header->vlr_geo_key_entries[j].value_offset << std::endl;
+                }
+            }
+        }
+        
+        if(foundProjection)
+        {
+            return (std::string) pszWKT;
+        }
+        else
+        {
+            std::cerr << "WARNING: Could not get projection from LAS file. Not setting." << std::endl;
+            return "";
+        }
+
+    }
     
 	SPDLASFileImporter::SPDLASFileImporter(bool convertCoords, std::string outputProjWKT, std::string schema, boost::uint_fast16_t indexCoords, bool defineOrigin, double originX, double originY, float originZ, float waveNoiseThreshold):SPDDataImporter(convertCoords, outputProjWKT, schema, indexCoords, defineOrigin, originX, originY, originZ, waveNoiseThreshold)
 	{
@@ -72,10 +113,8 @@ namespace spdlib
 				
 				if(spdFile->getSpatialReference() == "")
 				{
-					//FIXME: Need to get spatial information from LAS and convert to WKT (don't think LASlib does this)
-                    /*liblas::SpatialReference const &lasSpatial = header.GetSRS();
-					std::string spatialRefProjWKT = lasSpatial.GetWKT();
-					spdFile->setSpatialReference(spatialRefProjWKT);*/
+                    // Get WKT string from LAS header
+                    spdFile->setSpatialReference(getWKTfromLAS(header));
 				}
 				
 				if(convertCoords)
@@ -379,12 +418,10 @@ namespace spdlib
             				
 				if(spdFile->getSpatialReference() == "")
 				{
-					//FIXME: Need to get spatial information from LAS and convert to WKT (don't think LASlib does this)
-                    /*liblas::SpatialReference const &lasSpatial = header.GetSRS();
-					std::string spatialRefProjWKT = lasSpatial.GetWKT();
-					spdFile->setSpatialReference(spatialRefProjWKT);*/
+                    // Get WKT string from LAS header
+                    spdFile->setSpatialReference(getWKTfromLAS(header));
 				}
-				
+                
 				if(convertCoords)
 				{
 					this->initCoordinateSystemTransformation(spdFile);
@@ -685,10 +722,8 @@ namespace spdlib
 				
 				if(spdFile->getSpatialReference() == "")
 				{
-                    //FIXME: Need to get spatial information from LAS and convert to WKT (don't think LASlib does this)
-                    /*liblas::SpatialReference const &lasSpatial = header.GetSRS();
-                     std::string spatialRefProjWKT = lasSpatial.GetWKT();
-                     spdFile->setSpatialReference(spatialRefProjWKT);*/
+                    // Get WKT string from LAS header
+                    spdFile->setSpatialReference(getWKTfromLAS(header));
 				}
 				
 				if(convertCoords)
@@ -1126,10 +1161,8 @@ namespace spdlib
                 
                 if(spdFile->getSpatialReference() == "")
                 {
-                    //FIXME: Need to get spatial information from LAS and convert to WKT (don't think LASlib does this)
-                    /*liblas::SpatialReference const &lasSpatial = header.GetSRS();
-                     std::string spatialRefProjWKT = lasSpatial.GetWKT();
-                     spdFile->setSpatialReference(spatialRefProjWKT);*/
+                    // Get WKT string from LAS header
+                    spdFile->setSpatialReference(getWKTfromLAS(header));
                 }
                 
                 if(convertCoords)
@@ -1420,10 +1453,8 @@ namespace spdlib
             				
                 if(spdFile->getSpatialReference() == "")
                 {
-                    //FIXME: Need to get spatial information from LAS and convert to WKT (don't think LASlib does this)
-                    /*liblas::SpatialReference const &lasSpatial = header.GetSRS();
-                     std::string spatialRefProjWKT = lasSpatial.GetWKT();
-                     spdFile->setSpatialReference(spatialRefProjWKT);*/
+                    // Get WKT string from LAS header
+                    spdFile->setSpatialReference(getWKTfromLAS(header));
                 }
                 
                 if(convertCoords)
@@ -1714,10 +1745,8 @@ namespace spdlib
             				
                 if(spdFile->getSpatialReference() == "")
                 {
-                    //FIXME: Need to get spatial information from LAS and convert to WKT (don't think LASlib does this)
-                    /*liblas::SpatialReference const &lasSpatial = header.GetSRS();
-                     std::string spatialRefProjWKT = lasSpatial.GetWKT();
-                     spdFile->setSpatialReference(spatialRefProjWKT);*/
+                    // Get WKT string from LAS header
+                    spdFile->setSpatialReference(getWKTfromLAS(header));
                 }
                 
                 if(convertCoords)
@@ -2150,10 +2179,8 @@ namespace spdlib
             				
                 if(spdFile->getSpatialReference() == "")
                 {
-                    //FIXME: Need to get spatial information from LAS and convert to WKT (don't think LASlib does this)
-                    /*liblas::SpatialReference const &lasSpatial = header.GetSRS();
-                     std::string spatialRefProjWKT = lasSpatial.GetWKT();
-                     spdFile->setSpatialReference(spatialRefProjWKT);*/
+                    // Get WKT string from LAS header
+                    spdFile->setSpatialReference(getWKTfromLAS(header));
                 }
                 
                 if(convertCoords)
@@ -2360,10 +2387,8 @@ namespace spdlib
                 
                 if(spdFile->getSpatialReference() == "")
                 {
-                    //FIXME: Need to get spatial information from LAS and convert to WKT (don't think LASlib does this)
-                    /*liblas::SpatialReference const &lasSpatial = header.GetSRS();
-                     std::string spatialRefProjWKT = lasSpatial.GetWKT();
-                     spdFile->setSpatialReference(spatialRefProjWKT);*/
+                    // Get WKT string from LAS header
+                    spdFile->setSpatialReference(getWKTfromLAS(header));
                 }
                 
                 if(convertCoords)
@@ -2569,10 +2594,8 @@ namespace spdlib
                 
                 if(spdFile->getSpatialReference() == "")
                 {
-                    //FIXME: Need to get spatial information from LAS and convert to WKT (don't think LASlib does this)
-                    /*liblas::SpatialReference const &lasSpatial = header.GetSRS();
-                     std::string spatialRefProjWKT = lasSpatial.GetWKT();
-                     spdFile->setSpatialReference(spatialRefProjWKT);*/
+                    // Get WKT string from LAS header
+                    spdFile->setSpatialReference(getWKTfromLAS(header));
                 }
                 
                 if(convertCoords)
