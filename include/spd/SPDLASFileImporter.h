@@ -31,6 +31,8 @@
 #include <stdexcept>
 
 #include <lasreader.hpp>
+#include <laswaveform13reader.hpp>
+
 #include <ogr_spatialref.h>
 
 #include <boost/cstdint.hpp>

@@ -96,7 +96,8 @@ namespace spdlib
 		bool firstZ = true;
 		
 		classWarningGiven = false;
-		
+        bool haveWaveforms = false;
+        
 		try 
 		{
             // Open LAS file
@@ -122,6 +123,18 @@ namespace spdlib
 					this->initCoordinateSystemTransformation(spdFile);
 				}
 				
+                // Check for waveforms
+                LASwaveform13reader *laswaveformreader = lasreadopener.open_waveform13(&lasreader->header);
+                if (laswaveformreader != 0)
+                {
+                    haveWaveforms = true;
+                    std::cout << "Have waveform data" << std::endl;
+                }
+                else
+                {
+                    std::cout << "No waveform data" << std::endl;
+                }
+                
 				boost::uint_fast64_t reportedNumOfPts = header->number_of_point_records;
 				boost::uint_fast64_t feedback = reportedNumOfPts/10;
 				unsigned int feedbackCounter = 0;
@@ -141,7 +154,6 @@ namespace spdlib
 				std::cout << "Started (Read Data) ." << std::flush;
 				while (lasreader->read_point())
 				{
-					//std::cout << numOfPoints << std::endl;
 					if((reportedNumOfPts > 10) && ((numOfPoints % feedback) == 0))
 					{
 						std::cout << "." << feedbackCounter << "." << std::flush;
@@ -188,8 +200,6 @@ namespace spdlib
                             spdPulse->pts->reserve(spdPulse->numberOfReturns);
                         }
                         
-                        //std::cout << "Start Pulse (Num Returns = " << p.GetNumberOfReturns() << "): p.GetReturnNumber() = " << p.GetReturnNumber() << std::endl;
-                        
                         if(lasreader->point.get_return_number() == 0)
                         {
                             nPtIdx = 1;
@@ -199,8 +209,8 @@ namespace spdlib
                             nPtIdx = 2;
                         }
                         
-                        
                         spdPulse->pts->push_back(spdPt);
+                        
                         for(boost::uint_fast16_t i = 0; i < (spdPulse->numberOfReturns-1); ++i)
                         {
                             if(lasreader->read_point())
@@ -210,9 +220,6 @@ namespace spdlib
                                     std::cout << "." << feedbackCounter << "." << std::flush;
                                     feedbackCounter += 10;
                                 }
-                                
-                                
-                                //std::cout << "\tIn Pulse (Num Returns = " << pt.get_NumberOfReturns() << "): pt.get_ReturnNumber() = " << pt.get_ReturnNumber() << std::endl;
                                 
                                 if(nPtIdx != lasreader->point.get_return_number())
                                 {
@@ -401,6 +408,7 @@ namespace spdlib
 		bool firstZ = true;
 		
 		classWarningGiven = false;
+        bool haveWaveforms = false;
 		
 		try 
 		{
@@ -427,6 +435,18 @@ namespace spdlib
 					this->initCoordinateSystemTransformation(spdFile);
 				}
 				
+                // Check for waveforms
+                LASwaveform13reader *laswaveformreader = lasreadopener.open_waveform13(&lasreader->header);
+                if (laswaveformreader != 0)
+                {
+                    haveWaveforms = true;
+                    std::cout << "Have waveform data" << std::endl;
+                }
+                else
+                {
+                    std::cout << "No waveform data" << std::endl;
+                }
+                
 				pulses->reserve(header->number_of_point_records);
 				
 				boost::uint_fast64_t reportedNumOfPts = header->number_of_point_records;
@@ -495,8 +515,6 @@ namespace spdlib
                             spdPulse->pts->reserve(spdPulse->numberOfReturns);
                         }
                         
-                        //std::cout << "Start Pulse (Num Returns = " << p.GetNumberOfReturns() << "): p.GetReturnNumber() = " << p.GetReturnNumber() << std::endl;
-                        
                         if(lasreader->point.get_return_number() == 0)
                         {
                             nPtIdx = 1;
@@ -505,9 +523,14 @@ namespace spdlib
                         {
                             nPtIdx = 2;
                         }
-                        
-                        
+                    
                         spdPulse->pts->push_back(spdPt);
+                        
+                        if(laswaveformreader->read_waveform(&lasreader->point))
+                        {
+                            
+                        }
+                        
                         for(boost::uint_fast16_t i = 0; i < (spdPulse->numberOfReturns-1); ++i)
                         {
                             if(lasreader->read_point())
@@ -705,7 +728,8 @@ namespace spdlib
 		bool firstZ = true;
 		
 		classWarningGiven = false;
-		
+		bool haveWaveforms = false;
+        
 		try 
 		{
             // Open LAS file
@@ -731,6 +755,18 @@ namespace spdlib
 					this->initCoordinateSystemTransformation(spdFile);
 				}
 				
+                // Check for waveforms
+                LASwaveform13reader *laswaveformreader = lasreadopener.open_waveform13(&lasreader->header);
+                if (laswaveformreader != 0)
+                {
+                    haveWaveforms = true;
+                    std::cout << "Have waveform data" << std::endl;
+                }
+                else
+                {
+                    std::cout << "No waveform data" << std::endl;
+                }
+                
 				boost::uint_fast64_t reportedNumOfPts = header->number_of_point_records;
 				boost::uint_fast64_t feedback = reportedNumOfPts/10;
 				unsigned int feedbackCounter = 0;
@@ -758,6 +794,7 @@ namespace spdlib
 					
                     if(lasreader->point.get_return_number() <= 1)
                     {
+                        
                         spdPt = this->createSPDPoint(lasreader->point);
                         ++numOfPoints;
                         
@@ -794,6 +831,23 @@ namespace spdlib
                         if(spdPulse->numberOfReturns > 0)
                         {
                             spdPulse->pts->reserve(spdPulse->numberOfReturns);
+                        }
+                        
+                        if(haveWaveforms)
+                        {
+                            if(laswaveformreader->read_waveform(&lasreader->point))
+                            {
+                                if(laswaveformreader->nsamples > 0)
+                                {
+                                    spdPulse->numOfReceivedBins = laswaveformreader->nsamples;
+                                    spdPulse->received = new boost::uint_fast32_t[spdPulse->numOfReceivedBins];
+
+                                    for(unsigned int s = 0; s < spdPulse->numOfReceivedBins; s++)
+                                    {
+                                        spdPulse->received[s] = (unsigned int)laswaveformreader->samples[s];
+                                    }
+                                }
+                            }
                         }
                         
                         //std::cout << "Start Pulse (Num Returns = " << p.GetNumberOfReturns() << "): p.GetReturnNumber() = " << p.GetReturnNumber() << std::endl;
