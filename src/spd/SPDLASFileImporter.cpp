@@ -250,6 +250,34 @@ namespace spdlib
                                 z1 = spdPt->z;                                
                                 
                                 spdPulse->pts->push_back(spdPt);
+                                
+                                /* If first return (only copy for one return) and file has waveform data
+                                 copy waveform to SPD Pulse
+                                 */
+                                if((i == 0) && haveWaveforms)
+                                {
+                                    if(laswaveformreader->read_waveform(&lasreader->point))
+                                    {
+                                        if(laswaveformreader->nsamples > 0)
+                                        {
+                                            
+                                            /*spdPulse->x0 = laswaveformreader->XYZreturn[0];
+                                             spdPulse->y0 = laswaveformreader->XYZreturn[1];
+                                             spdPulse->z0 = laswaveformreader->XYZreturn[2];*/
+                                            
+                                            std::cout << "x,y,x" << laswaveformreader->XYZreturn[0] << ", " << laswaveformreader->XYZreturn[1] << ", " << laswaveformreader->XYZreturn[2] << std::endl;
+                                            
+                                            spdPulse->numOfReceivedBins = laswaveformreader->nsamples;
+                                            spdPulse->received = new boost::uint_fast32_t[spdPulse->numOfReceivedBins];
+                                            
+                                            for(unsigned int s = 0; s < spdPulse->numOfReceivedBins; s++)
+                                            {
+                                                spdPulse->received[s] = (unsigned int)laswaveformreader->samples[s];
+                                            }
+                                        }
+                                    }
+                                }
+                                
                                 ++numOfPoints;
                                 ++nPtIdx;
                             }
@@ -523,13 +551,8 @@ namespace spdlib
                         {
                             nPtIdx = 2;
                         }
-                    
-                        spdPulse->pts->push_back(spdPt);
                         
-                        if(laswaveformreader->read_waveform(&lasreader->point))
-                        {
-                            
-                        }
+                        spdPulse->pts->push_back(spdPt);
                         
                         for(boost::uint_fast16_t i = 0; i < (spdPulse->numberOfReturns-1); ++i)
                         {
@@ -571,6 +594,33 @@ namespace spdlib
                                 z1 = spdPt->z;
                                                         
                                 spdPulse->pts->push_back(spdPt);
+                                
+                                /* If first return (only copy for one return) and file has waveform data
+                                 copy waveform to SPD Pulse
+                                 */
+                                if((i == 0) && haveWaveforms)
+                                {
+                                    if(laswaveformreader->read_waveform(&lasreader->point))
+                                    {
+                                        if(laswaveformreader->nsamples > 0)
+                                        {
+                                            
+                                            spdPulse->x0 = laswaveformreader->XYZreturn[0];
+                                            spdPulse->y0 = laswaveformreader->XYZreturn[1];
+                                            spdPulse->z0 = laswaveformreader->XYZreturn[2];
+                                            
+                                            spdPulse->numOfReceivedBins = laswaveformreader->nsamples;
+                                            spdPulse->received = new boost::uint_fast32_t[spdPulse->numOfReceivedBins];
+                                            
+                                            for(unsigned int s = 0; s < spdPulse->numOfReceivedBins; s++)
+                                            {
+                                                spdPulse->received[s] = (unsigned int)laswaveformreader->samples[s];
+                                            }
+                                            
+                                        }
+                                    }
+                                }
+                                
                                 ++numOfPoints;
                                 ++nPtIdx;
                             }
@@ -689,7 +739,14 @@ namespace spdlib
 				spdFile->setDiscretePtDefined(SPD_TRUE);
 				spdFile->setDecomposedPtDefined(SPD_FALSE);
 				spdFile->setTransWaveformDefined(SPD_FALSE);
-                spdFile->setReceiveWaveformDefined(SPD_FALSE);
+                if(haveWaveforms)
+                {
+                    spdFile->setReceiveWaveformDefined(SPD_TRUE);
+                }
+                else
+                {
+                    spdFile->setReceiveWaveformDefined(SPD_FALSE);
+                }
 			}
 			else 
 			{
@@ -833,25 +890,6 @@ namespace spdlib
                             spdPulse->pts->reserve(spdPulse->numberOfReturns);
                         }
                         
-                        if(haveWaveforms)
-                        {
-                            if(laswaveformreader->read_waveform(&lasreader->point))
-                            {
-                                if(laswaveformreader->nsamples > 0)
-                                {
-                                    spdPulse->numOfReceivedBins = laswaveformreader->nsamples;
-                                    spdPulse->received = new boost::uint_fast32_t[spdPulse->numOfReceivedBins];
-
-                                    for(unsigned int s = 0; s < spdPulse->numOfReceivedBins; s++)
-                                    {
-                                        spdPulse->received[s] = (unsigned int)laswaveformreader->samples[s];
-                                    }
-                                }
-                            }
-                        }
-                        
-                        //std::cout << "Start Pulse (Num Returns = " << p.GetNumberOfReturns() << "): p.GetReturnNumber() = " << p.GetReturnNumber() << std::endl;
-                        
                         if(lasreader->point.get_return_number() == 0)
                         {
                             nPtIdx = 1;
@@ -861,6 +899,7 @@ namespace spdlib
                             nPtIdx = 2;
                         }
                         
+                        //std::cout << "Start Pulse (Num Returns = " << p.GetNumberOfReturns() << "): p.GetReturnNumber() = " << p.GetReturnNumber() << std::endl;
                         
                         spdPulse->pts->push_back(spdPt);
                         for(boost::uint_fast16_t i = 0; i < (spdPulse->numberOfReturns-1); ++i)
@@ -903,6 +942,33 @@ namespace spdlib
                                 z1 = spdPt->z;
                                 
                                 spdPulse->pts->push_back(spdPt);
+                                
+                                /* If first return (only copy for one return) and file has waveform data
+                                   copy waveform to SPD Pulse
+                                 */
+                                if((i == 0) && haveWaveforms)
+                                {
+                                    if(laswaveformreader->read_waveform(&lasreader->point))
+                                    {
+                                        /*spdPulse->x0 = laswaveformreader->XYZreturn[0];
+                                        spdPulse->y0 = laswaveformreader->XYZreturn[1];
+                                        spdPulse->z0 = laswaveformreader->XYZreturn[2];*/
+                                        
+                                        std::cout << "x,y,x" << laswaveformreader->XYZreturn[0] << ", " << laswaveformreader->XYZreturn[1] << ", " << laswaveformreader->XYZreturn[2] << std::endl;
+                                        
+                                        if(laswaveformreader->nsamples > 0)
+                                        {
+                                            spdPulse->numOfReceivedBins = laswaveformreader->nsamples;
+                                            spdPulse->received = new boost::uint_fast32_t[spdPulse->numOfReceivedBins];
+                                            
+                                            for(unsigned int s = 0; s < spdPulse->numOfReceivedBins; s++)
+                                            {
+                                                spdPulse->received[s] = (unsigned int)laswaveformreader->samples[s];
+                                            }
+                                        }
+                                    }
+                                }
+                                
                                 ++numOfPoints;
                                 ++nPtIdx;
                             }
@@ -1022,9 +1088,16 @@ namespace spdlib
 				spdFile->setDiscretePtDefined(SPD_TRUE);
 				spdFile->setDecomposedPtDefined(SPD_FALSE);
 				spdFile->setTransWaveformDefined(SPD_FALSE);
-                spdFile->setReceiveWaveformDefined(SPD_FALSE);
+                if(haveWaveforms)
+                {
+                    spdFile->setReceiveWaveformDefined(SPD_TRUE);
+                }
+                else
+                {
+                    spdFile->setReceiveWaveformDefined(SPD_FALSE);
+                }
 			}
-			else 
+			else
 			{
 				throw SPDIOException("LAS file could not be opened.");
 			}
@@ -1065,9 +1138,10 @@ namespace spdlib
 			SPDPointUtils spdPtUtils;
 			SPDPoint *spdPt = new SPDPoint();
 			spdPtUtils.initSPDPoint(spdPt);
-            double x = pt.get_X();
-            double y = pt.get_Y();
-            double z = pt.get_Z();
+            // Get scaled values of x, y and z
+            double x = pt.get_x();
+            double y = pt.get_y();
+            double z = pt.get_z();
             
             if(convertCoords)
             {
@@ -1450,7 +1524,14 @@ namespace spdlib
 				spdFile->setDiscretePtDefined(SPD_TRUE);
 				spdFile->setDecomposedPtDefined(SPD_FALSE);
 				spdFile->setTransWaveformDefined(SPD_FALSE);
-                spdFile->setReceiveWaveformDefined(SPD_FALSE);
+                if(haveWaveforms)
+                {
+                    spdFile->setReceiveWaveformDefined(SPD_TRUE);
+                }
+                else
+                {
+                    spdFile->setReceiveWaveformDefined(SPD_FALSE);
+                }
 			}
 			else
 			{
