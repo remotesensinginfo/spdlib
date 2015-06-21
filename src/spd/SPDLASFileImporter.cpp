@@ -576,20 +576,21 @@ namespace spdlib
 
                                     /* Set the start location of the return pulse
                                     This is calculated as the location of the first return 
-                                    minus the time offset multiplied by XYZ(t) */
+                                    minus the time offset multiplied by XYZ(t) which is a vector
+                                    towards the laser origin */
                                    
-                                    spdPulse->x0 = x0 - location*laswaveformreader->XYZt[0];
-                                    spdPulse->y0 = y0 - location*laswaveformreader->XYZt[1];
-                                    spdPulse->z0 = z0 - location*laswaveformreader->XYZt[2];
+                                    spdPulse->x0 = x0 + location*laswaveformreader->XYZt[0];
+                                    spdPulse->y0 = y0 + location*laswaveformreader->XYZt[1];
+                                    spdPulse->z0 = z0 + location*laswaveformreader->XYZt[2];
 
                                     /* Get the end location of the return pulse
                                     This is calculated as start location of the pulse
                                     plus the pulse duration multipled by XYZ(t)
                                     It is only used to get the azimuth and zenith angle 
                                     of the pulse */
-                                    x1 = x0 + pulse_duration*laswaveformreader->XYZt[0];
-                                    y1 = y0 + pulse_duration*laswaveformreader->XYZt[1];
-                                    z1 = z0 + pulse_duration*laswaveformreader->XYZt[2];
+                                    x1 = x0 - pulse_duration*laswaveformreader->XYZt[0];
+                                    y1 = y0 - pulse_duration*laswaveformreader->XYZt[1];
+                                    z1 = z0 - pulse_duration*laswaveformreader->XYZt[2];
 
                                     // Set intensity gain and offset
                                     spdPulse->receiveWaveGain = lasreader->header.vlr_wave_packet_descr[lasindex]->getDigitizerGain();
