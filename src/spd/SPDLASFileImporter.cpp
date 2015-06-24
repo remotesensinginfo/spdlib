@@ -424,7 +424,8 @@ namespace spdlib
 		classWarningGiven = false;
         bool haveWaveforms = false;
         bool pulseHasWaveform = false;
-		
+        unsigned int numReversedWaveformVectors = 0;
+
 		try 
 		{
             // Open LAS file
@@ -472,10 +473,10 @@ namespace spdlib
 				SPDPulse *spdPulse = NULL;
                 
                 boost::uint_fast16_t nPtIdx = 0;
-                double x0 = 0.0;
+                double x0 = 0.0; // First point in pulse
                 double y0 = 0.0;
                 double z0 = 0.0;
-                double x1 = 0.0;
+                double x1 = 0.0; // Last point in pulse or last sample in pulse (if waveform data is availabe)
                 double y1 = 0.0;
                 double z1 = 0.0;                
                 double range = 0.0;
@@ -561,36 +562,64 @@ namespace spdlib
                                     spdPulse->numOfReceivedBins = laswaveformreader->nsamples;
 
                                     // Get pulse time
-                                    double pulse_duration = spdPulse->numOfReceivedBins*(lasreader->header.vlr_wave_packet_descr[lasindex]->getTemporalSpacing() / 1000);
+                                    double pulse_duration = spdPulse->numOfReceivedBins*(lasreader->header.vlr_wave_packet_descr[lasindex]->getTemporalSpacing());
 
-                                    /* Get the offset (in picoseconts) from the first digitized value
+                                    /* Get the offset (in ps) from the first digitized value
                                     to the location within the waveform packet that the associated 
                                     return pulse was detected.*/
                                     double location = lasreader->point.wavepacket.getLocation();
 
-                                    // Save to point
-                                    spdPt->waveformOffset = location;
+                                    // Save to point (in ns)
+                                    spdPt->waveformOffset = location*1E3;
 
-                                    // Set pulse GPS time
-                                    spdPulse->gpsTime = spdPt->gpsTime - location*10E3;
+                                    // Set pulse GPS time (ns)
+                                    spdPulse->gpsTime = spdPt->gpsTime - spdPt->waveformOffset;
 
                                     /* Set the start location of the return pulse
                                     This is calculated as the location of the first return 
                                     minus the time offset multiplied by XYZ(t) which is a vector
-                                    towards the laser origin */
-                                   
-                                    spdPulse->x0 = x0 + location*laswaveformreader->XYZt[0];
-                                    spdPulse->y0 = y0 + location*laswaveformreader->XYZt[1];
-                                    spdPulse->z0 = z0 + location*laswaveformreader->XYZt[2];
+                                    away from the laser origin */
+
+                                    spdPulse->x0 = x0 - location*laswaveformreader->XYZt[0];
+                                    spdPulse->y0 = y0 - location*laswaveformreader->XYZt[1];
+                                    spdPulse->z0 = z0 - location*laswaveformreader->XYZt[2];
 
                                     /* Get the end location of the return pulse
                                     This is calculated as start location of the pulse
                                     plus the pulse duration multipled by XYZ(t)
                                     It is only used to get the azimuth and zenith angle 
                                     of the pulse */
-                                    x1 = x0 - pulse_duration*laswaveformreader->XYZt[0];
-                                    y1 = y0 - pulse_duration*laswaveformreader->XYZt[1];
-                                    z1 = z0 - pulse_duration*laswaveformreader->XYZt[2];
+                                    x1 = spdPulse->x0 + pulse_duration*laswaveformreader->XYZt[0];
+                                    y1 = spdPulse->y0 + pulse_duration*laswaveformreader->XYZt[1];
+                                    z1 = spdPulse->z0 + pulse_duration*laswaveformreader->XYZt[2];
+
+                                    /* Check if the first sample of the pulse is higher than the last
+                                    If it is this probably means the direction vector (XYZt) is going 
+                                    in the oposite direction (towards the laser origin) so need
+                                    to recalculate the location of the first and last sample 
+                                    I think this problem is specific to LAS 1.3 files exported
+                                    with earlier versions of Leica's ALSPP software.
+                                    */
+                                    if(spdPulse->z0 < z1)
+                                    {
+                                        // Only print warning once.
+                                        if(numReversedWaveformVectors == 0)
+                                        {
+                                            std::cout << "\nWARNING: Reversing direction vector (XYZt)." << std::endl;
+                                        }
+                                        ++numReversedWaveformVectors;
+                                        spdPulse->x0 = x0 + location*laswaveformreader->XYZt[0];
+                                        spdPulse->y0 = y0 + location*laswaveformreader->XYZt[1];
+                                        spdPulse->z0 = z0 + location*laswaveformreader->XYZt[2];
+
+                                        x1 = spdPulse->x0 - pulse_duration*laswaveformreader->XYZt[0];
+                                        y1 = spdPulse->y0 - pulse_duration*laswaveformreader->XYZt[1];
+                                        z1 = spdPulse->z0 - pulse_duration*laswaveformreader->XYZt[2];
+                                    }
+                                    else if(numReversedWaveformVectors > 0)
+                                    {
+                                        throw SPDIOException("Direction vector (XYZt) is not the same direction for all pulses in file");
+                                    }
 
                                     // Set intensity gain and offset
                                     spdPulse->receiveWaveGain = lasreader->header.vlr_wave_packet_descr[lasindex]->getDigitizerGain();
@@ -655,18 +684,18 @@ namespace spdlib
                                 will be the location of the last sample in the
                                 digitsed waveform.
                                 Otherwise will use last point */
-                                if(!pulseHasWaveform) 
+                                if(!pulseHasWaveform)
                                 {
                                     x1 = spdPt->x;
                                     y1 = spdPt->y;
                                     z1 = spdPt->z;
-                                }                        
-                                
+                                }
+
                                 /* If waveform data is available, set offset for
-                                each point to start of wavepacket */
+                                each point to start of wavepacket (in ns) */
                                 if(pulseHasWaveform)
                                 {
-                                    spdPt->waveformOffset = lasreader->point.wavepacket.getLocation();
+                                    spdPt->waveformOffset = lasreader->point.wavepacket.getLocation()*1E3;
                                 }
                                 spdPulse->pts->push_back(spdPt);
                                
@@ -705,8 +734,10 @@ namespace spdlib
                         if((spdPulse->numberOfReturns > 1) | pulseHasWaveform)
                         {
                             range = std::sqrt(std::pow(x1-x0,2) + std::pow(y1-y0,2) + std::pow(z1-z0,2));
+
                             spdPulse->zenith = std::acos((z1-z0) / range);
                             spdPulse->azimuth = std::atan((x1-x0)/(y1-y0));
+
                             if(spdPulse->azimuth < 0)
                             {
                                 spdPulse->azimuth = spdPulse->azimuth + M_PI * 2;
@@ -726,10 +757,23 @@ namespace spdlib
                             spdPulse->xIdx = spdPulse->pts->front()->x;
                             spdPulse->yIdx = spdPulse->pts->front()->y;
                         }
+                        else if(indexCoords == SPD_LAST_RETURN)
+                        {
+                            spdPulse->xIdx = spdPulse->pts->back()->x;
+                            spdPulse->yIdx = spdPulse->pts->back()->y;
+                        }
                         else if(indexCoords == SPD_START_OF_RECEIVED_WAVEFORM)
                         {
-                            spdPulse->xIdx = x0;
-                            spdPulse->yIdx = y0;
+                            if(pulseHasWaveform)
+                            {
+                                spdPulse->xIdx = spdPulse->x0;
+                                spdPulse->yIdx = spdPulse->y0;
+                            }
+                            else
+                            {
+                                spdPulse->xIdx = x0;
+                                spdPulse->yIdx = y0;
+                            }
                         }
                         else if(indexCoords == SPD_END_OF_RECEIVED_WAVEFORM)
                         {
@@ -1265,7 +1309,8 @@ namespace spdlib
             spdPt->blue = rgb[2];
             
             spdPt->returnID = pt.get_return_number();
-            spdPt->gpsTime = pt.get_gps_time();
+            // Get the time in s and save as ns
+            spdPt->gpsTime = pt.get_gps_time()*1E9;
 			
 			return spdPt;
 		}
