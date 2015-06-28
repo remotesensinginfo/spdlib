@@ -156,7 +156,8 @@ namespace spdlib
                             point.SetNumberOfReturns((*iterInPls)->numberOfReturns);
                             point.SetPointSourceID((*iterInPls)->sourceID);
                             point.SetScanAngleRank((*iterInPls)->zenith*180.0/3.141592653589793+0.5-180.0);
-                            point.SetTime((*iterPts)->gpsTime/1000000.0);
+                            // Convert SPD GPS time (ns) to LAS (s)
+                            point.SetTime((*iterPts)->gpsTime/1E9);
                             point.SetUserData((*iterPts)->widthReturn);
                             point.SetColor(liblas::Color ((*iterPts)->red, (*iterPts)->blue, (*iterPts)->green));
                             
@@ -260,7 +261,8 @@ namespace spdlib
                             point.SetNumberOfReturns((*iterInPls)->numberOfReturns);
                             point.SetPointSourceID((*iterInPls)->sourceID);
                             point.SetScanAngleRank((*iterInPls)->zenith*180.0/3.141592653589793+0.5-180.0);
-                            point.SetTime((*iterPts)->gpsTime/1000000.0);
+                            // Convert SPD GPS time (ns) to LAS (s)
+                            point.SetTime((*iterPts)->gpsTime/1E9);
                             point.SetUserData((*iterPts)->widthReturn);
                             point.SetColor(liblas::Color ((*iterPts)->red, (*iterPts)->blue, (*iterPts)->green));
                             
@@ -520,7 +522,8 @@ namespace spdlib
                             point.SetNumberOfReturns((*iterInPls)->numberOfReturns);
                             point.SetPointSourceID((*iterInPls)->sourceID);
                             point.SetScanAngleRank((*iterInPls)->zenith*180.0/3.141592653589793+0.5-180.0);
-                            point.SetTime((*iterPts)->gpsTime/1000000.0);
+                            // Convert SPD GPS time (ns) to LAS (s)
+                            point.SetTime((*iterPts)->gpsTime/1E9);
                             point.SetUserData((*iterPts)->widthReturn);
                             point.SetColor(liblas::Color ((*iterPts)->red, (*iterPts)->blue, (*iterPts)->green));
                             
@@ -624,7 +627,8 @@ namespace spdlib
                             point.SetNumberOfReturns((*iterInPls)->numberOfReturns);
                             point.SetPointSourceID((*iterInPls)->sourceID);
                             point.SetScanAngleRank((*iterInPls)->zenith*180.0/3.141592653589793+0.5-180.0);
-                            point.SetTime((*iterPts)->gpsTime/1000000.0);
+                            // Convert SPD GPS time (ns) to LAS (s)
+                            point.SetTime((*iterPts)->gpsTime/1E9);
                             point.SetUserData((*iterPts)->widthReturn);
                             point.SetColor(liblas::Color ((*iterPts)->red, (*iterPts)->blue, (*iterPts)->green));
                             
