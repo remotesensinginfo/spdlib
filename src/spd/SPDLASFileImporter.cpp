@@ -1054,7 +1054,8 @@ namespace spdlib
 			spdPt->blue = lasColor.GetBlue();
 			
 			spdPt->returnID = pt.GetReturnNumber();
-			spdPt->gpsTime = pt.GetTime();
+            // Convert GPS time in s to ns for SPDLib (stored as 64 bit float)
+			spdPt->gpsTime = pt.GetTime() * 1E9;
 			
 			return spdPt;
 		}
@@ -2075,7 +2076,8 @@ namespace spdlib
 			spdPt->blue = lasColor.GetBlue();
 			
 			spdPt->returnID = pt.GetReturnNumber();
-			spdPt->gpsTime = pt.GetTime();
+            // Convert GPS time in s to ns for SPDLib (stored as 64 bit float)
+			spdPt->gpsTime = pt.GetTime() * 1E9;
 			
 			return spdPt;
 		}
@@ -2844,7 +2846,8 @@ namespace spdlib
 			spdPt->blue = lasColor.GetBlue();
 			
 			spdPt->returnID = pt.GetReturnNumber();
-			spdPt->gpsTime = pt.GetTime();
+            // Convert GPS time in s to ns for SPDLib (stored as 64 bit float)
+			spdPt->gpsTime = pt.GetTime() * 1E9;
 			
 			return spdPt;
 		}
