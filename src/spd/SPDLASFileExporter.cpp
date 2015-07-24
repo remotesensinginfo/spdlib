@@ -168,7 +168,8 @@ namespace spdlib
                             point.set_Y((*iterPts)->y/LAS_SCALE_FACTOR);
                             point.set_Z((*iterPts)->z/LAS_SCALE_FACTOR);
                             point.set_intensity((*iterPts)->amplitudeReturn);
-                            point.set_gps_time((*iterPts)->gpsTime/1E9); // Convert time back from ns to s
+                            // Convert SPD GPS time (ns) to LAS (s)
+                            point.set_gps_time((*iterPts)->gpsTime/1E9);
                             point.set_intensity((*iterPts)->amplitudeReturn);
                             point.set_return_number((*iterPts)->returnID);
                             point.set_number_of_returns((*iterInPls)->numberOfReturns);
@@ -281,7 +282,8 @@ namespace spdlib
                             point.set_Y((*iterPts)->y/LAS_SCALE_FACTOR);
                             point.set_Z((*iterPts)->z/LAS_SCALE_FACTOR);
                             point.set_intensity((*iterPts)->amplitudeReturn);
-                            point.set_gps_time((*iterPts)->gpsTime/1E9); // Convert time back from ns to s
+                            // Convert GPS time in s to ns for SPDLib (stored as 64 bit float)
+                            point.set_gps_time((*iterPts)->gpsTime/1E9);
                             point.set_intensity((*iterPts)->amplitudeReturn);
                             point.set_return_number((*iterPts)->returnID);
                             point.set_number_of_returns((*iterInPls)->numberOfReturns);

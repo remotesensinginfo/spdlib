@@ -631,7 +631,6 @@ namespace spdlib
                                     {
                                         spdPulse->received[s] = (unsigned int)laswaveformreader->samples[s];
                                     }
-
                                 }
                             }
                         }
@@ -733,15 +732,21 @@ namespace spdlib
                         
                         if((spdPulse->numberOfReturns > 1) | pulseHasWaveform)
                         {
-                            range = std::sqrt(std::pow(x1-x0,2) + std::pow(y1-y0,2) + std::pow(z1-z0,2));
 
-                            spdPulse->zenith = std::acos((z1-z0) / range);
-                            spdPulse->azimuth = std::atan((x1-x0)/(y1-y0));
+                            double range = 0;
+                            double zenith = 0;
+                            double azimuth = 0;
+
+                            SPDConvertToSpherical(x1, y1, z1, x0, y0, z0, &zenith, &azimuth, &range);
+
+                            spdPulse->zenith = zenith;
+                            spdPulse->azimuth = azimuth;
 
                             if(spdPulse->azimuth < 0)
                             {
+                                std::cout << spdPulse->azimuth << std::endl;
                                 spdPulse->azimuth = spdPulse->azimuth + M_PI * 2;
-                            }                            
+                            }
                         }
 					    else
                         {
@@ -1309,7 +1314,7 @@ namespace spdlib
             spdPt->blue = rgb[2];
             
             spdPt->returnID = pt.get_return_number();
-            // Get the time in s and save as ns
+            // Convert GPS time in s to ns for SPDLib (stored as 64 bit float)
             spdPt->gpsTime = pt.get_gps_time()*1E9;
 			
 			return spdPt;
@@ -2317,7 +2322,8 @@ namespace spdlib
 			spdPt->blue = rgb[2];
 			
 			spdPt->returnID = pt.get_return_number();
-			spdPt->gpsTime = pt.get_gps_time();
+            // Convert GPS time in s to ns for SPDLib (stored as 64 bit float)
+			spdPt->gpsTime = pt.get_gps_time()*1E9;
 			
 			return spdPt;
 		}
@@ -3080,7 +3086,8 @@ namespace spdlib
             spdPt->blue = rgb[2];
             
             spdPt->returnID = pt.get_return_number();
-            spdPt->gpsTime = pt.get_gps_time();
+            // Convert GPS time in s to ns for SPDLib (stored as 64 bit float)
+            spdPt->gpsTime = pt.get_gps_time()*1E9;
 			
 			return spdPt;
 		}
