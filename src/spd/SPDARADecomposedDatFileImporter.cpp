@@ -206,13 +206,17 @@ namespace spdlib
 								}
 								else 
 								{
-									throw SPDIOException("Blank line found when expecting point.");
+									//throw SPDIOException("Blank line found when expecting point.");
+                                    std::cout << "\nWarning: Blank line found when expecting point.\n";
+                                    incompletePulse = true;
 								}
 								
 							}
 							else 
 							{
-								throw SPDIOException("Unexpected end to the file.");
+								//throw SPDIOException("Unexpected end to the file.");
+                                std::cout << "Warning: Unexpected end to the file.\n";
+                                incompletePulse = true;
 							}
 						}
 						
@@ -554,13 +558,17 @@ namespace spdlib
 								}
 								else 
 								{
-									throw SPDIOException("Blank line found when expecting point.");
+									//throw SPDIOException("Blank line found when expecting point.");
+                                    std::cout << "Warning: Blank line found when expecting point.\n";
+                                    incompletePulse = true;
 								}
 								
 							}
 							else 
 							{
-								throw SPDIOException("Unexpected end to the file.");
+								//throw SPDIOException("Unexpected end to the file.");
+                                std::cout << "Warning: Unexpected end to the file.\n";
+                                incompletePulse = true;
 							}
 						}
 						
@@ -904,14 +912,17 @@ namespace spdlib
 								}
 								else 
 								{
-									throw SPDIOException("Blank line found when expecting point.");
-									
+									//throw SPDIOException("Blank line found when expecting point.");
+                                    std::cout << "Warning: Blank line found when expecting point.\n";                                  
+									incompletePulse = true;
 								}
 								
 							}
 							else 
 							{
-								throw SPDIOException("Unexpected end to the file.");
+								//throw SPDIOException("Unexpected end to the file.");
+                                std::cout << "Warning: Unexpected end to the file.\n";
+                                incompletePulse = true;
 							}
 						}
 						
