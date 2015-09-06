@@ -209,11 +209,6 @@ namespace spdlib
 						pulse->xIdx = pt->x;
 						pulse->yIdx = pt->y;
 					}
-                    else
-                    {
-						pulse->xIdx = 0.0;
-						pulse->yIdx = 0.0;
-                    }
 				}
 				else if(indexCoords == SPD_LAST_RETURN)
 				{
@@ -224,11 +219,6 @@ namespace spdlib
 						pulse->xIdx = pt->x;
 						pulse->yIdx = pt->y;
 					}
-                    else
-                    {
-						pulse->xIdx = 0.0;
-						pulse->yIdx = 0.0;
-                    }
 				}
 				else if(indexCoords == SPD_START_OF_RECEIVED_WAVEFORM)
 				{
