@@ -199,20 +199,22 @@ namespace spdlib
 									else 
 									{
 										std::cout << "\'" << pointLine << "\'\n";
-										std::cout << "Warning: Could not create a point from line.\n";
+										std::cout << "\nWarning: Could not create a point from line.\n";
 										incompletePulse = true;
 									}
 
 								}
 								else 
 								{
-									throw SPDIOException("Blank line found when expecting point.");
+									//throw SPDIOException("Blank line found when expecting point.");
+                                    incompletePulse = true;
 								}
 								
 							}
 							else 
 							{
 								throw SPDIOException("Unexpected end to the file.");
+                                std::cout << "\nWarning: Unexpected end to the file.\n";
 							}
 						}
 						
@@ -554,13 +556,18 @@ namespace spdlib
 								}
 								else 
 								{
-									throw SPDIOException("Blank line found when expecting point.");
+									//throw SPDIOException("Blank line found when expecting point.");
+                                    std::cout << "\nWarning: Blank line found when expecting point " << totalNumPoints << ".\n";
+                                    incompletePulse = true;
 								}
 								
 							}
 							else 
 							{
-								throw SPDIOException("Unexpected end to the file.");
+								//throw SPDIOException("Unexpected end to the file.");
+                                std::cout << "\nWarning: Unexpected end to the file.\n";
+                                incompletePulse = true;
+                                
 							}
 						}
 						
@@ -904,14 +911,17 @@ namespace spdlib
 								}
 								else 
 								{
-									throw SPDIOException("Blank line found when expecting point.");
-									
+									//throw SPDIOException("Blank line found when expecting point.");
+                                    std::cout << "\nWarning: Blank line found when expecting point " << totalNumPoints << ".\n";
+									incompletePulse = true;
 								}
 								
 							}
 							else 
 							{
-								throw SPDIOException("Unexpected end to the file.");
+								//throw SPDIOException("Unexpected end to the file.");
+                                std::cout << "\nWarning: Unexpected end to the file.\n";
+                                incompletePulse = true;
 							}
 						}
 						

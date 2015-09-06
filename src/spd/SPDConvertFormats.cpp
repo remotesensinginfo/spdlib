@@ -135,6 +135,7 @@ namespace spdlib
                         
                         if(tlY < spdFile->getYMax())
                         {
+                            std::cout << "1," << tlY << "," << spdFile->getYMax() << std::endl;
                             throw SPDException("Defined TL corner (Y) needs to be outside the range of the LiDAR data."); 
                         }
                         spdFile->setYMax(tlY);
@@ -322,6 +323,7 @@ namespace spdlib
                 
                 if(tlY < spdFileAllIn->getYMax())
                 {
+                    std::cout << "4," << tlY << "," << spdFileAllIn->getYMax() << std::endl;
                     throw SPDException("Defined TL corner (Y) needs to be outside the range of the LiDAR data."); 
                 }
                 spdFileAllIn->setYMax(tlY);
@@ -557,6 +559,7 @@ namespace spdlib
             
             if(tlY < spdFileAllIn->getYMax())
             {
+                std::cout << "3," << tlY << "," << spdFileAllIn->getYMax() << std::endl;
                 throw SPDException("Defined TL corner (Y) needs to be outside the range of the LiDAR data."); 
             }
             spdFileAllIn->setYMax(tlY);
@@ -881,6 +884,7 @@ namespace spdlib
                 
                 if(tlY < spdFileAllIn->getYMax())
                 {
+                    std::cout << "2," << tlY << "," << spdFileAllIn->getYMax() << std::endl;
                     throw SPDException("Defined TL corner (Y) needs to be outside the range of the LiDAR data."); 
                 }
                 spdFileAllIn->setYMax(tlY);
