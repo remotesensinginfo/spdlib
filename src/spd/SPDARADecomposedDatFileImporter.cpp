@@ -100,6 +100,7 @@ namespace spdlib
 				    pointLine = lineReader.readLine();
 				}
 				
+                
 				if(!textFileUtils.blankline(pointLine))
 				{
 					textFileUtils.tokenizeString(pointLine, ',', lineTokens);
@@ -461,6 +462,7 @@ namespace spdlib
 					pulse = new SPDPulse();
 					pulseUtils.initSPDPulse(pulse);
 					pulse->numberOfReturns = textFileUtils.strto16bitUInt(lineTokens->at(9));
+                    
                     if(pulse->numberOfReturns > 0)
                     {
                         pulse->pts->reserve(pulse->numberOfReturns);
@@ -812,6 +814,7 @@ namespace spdlib
 					pulse = new SPDPulse();
 					pulseUtils.initSPDPulse(pulse);
 					pulse->numberOfReturns = textFileUtils.strto16bitUInt(lineTokens->at(9));
+                    
                     if(pulse->numberOfReturns > 0)
                     {
                         pulse->pts->reserve(pulse->numberOfReturns);
@@ -904,7 +907,7 @@ namespace spdlib
 									}
 									else 
 									{
-										std::cout << "\'" << pointLine << "\'\n";
+										//std::cout << "\'" << pointLine << "\'\n";
 										std::cout << "Warning: Could not create a point from line.\n";
 										incompletePulse = true;
 									}
@@ -1135,7 +1138,7 @@ namespace spdlib
 			point->z = z;
 			point->range = textFileUtils.strtofloat(lineTokens->at(12));
 			point->amplitudeReturn = textFileUtils.strtofloat(lineTokens->at(10));
-			point->returnID = textFileUtils.strto16bitUInt(lineTokens->at(8));
+			point->returnID = textFileUtils.strto16bitUInt(lineTokens->at(8));           
 			point->widthReturn = textFileUtils.strtofloat(lineTokens->at(11));
 			point->classification = textFileUtils.strto16bitUInt(lineTokens->at(7));
 			
