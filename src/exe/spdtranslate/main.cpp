@@ -166,6 +166,9 @@ int main (int argc, char * const argv[])
 		
 		TCLAP::SwitchArg keepExtentSwitch("","keepextent","When indexing the file use the extent of the input file as the minimum extent of the output file.", false);
 		cmd.add( keepExtentSwitch );
+        
+        TCLAP::SwitchArg exportZasHSwitch("","exportZasH","Export file with Height used instead of Z (for LAS/LAZ files).", false);
+        cmd.add( exportZasHSwitch );
 		
 		TCLAP::ValueArg<std::string> inputFileArg("i","input","The input file.",true,"","String");
 		cmd.add( inputFileArg );
@@ -249,6 +252,7 @@ int main (int argc, char * const argv[])
         boost::uint_fast16_t pointVersion = pointVersionArg.getValue();
         boost::uint_fast16_t pulseVersion = pulseVersionArg.getValue();
         bool useInputFileAsMinimumExtent = keepExtentSwitch.getValue();
+        bool exportZasH = exportZasHSwitch.getValue();
         
         if((pointVersion == 0) | (pointVersion > 2))
         {
@@ -313,7 +317,7 @@ int main (int argc, char * const argv[])
             {
                 outputFormat = "SPD-SEQ";
             }
-			convert.convertInMemory(inputFile, outputFile, inputFormat, schema, outputFormat, binSize, inProjWKT, convertCoords, outProjWKT, indexType, defineTLSwitch.getValue(), tlXArg.getValue(), tlYArg.getValue(), defineOriginSwitch.getValue(), originXArg.getValue(), originYArg.getValue(), originZArg.getValue(), defineSphericalSwitch.getValue(), definePolarSwitch.getValue(), defineScanSwitch.getValue(), waveNoiseThresholdArg.getValue(), waveBitRes, pointVersion, pulseVersion, useInputFileAsMinimumExtent);
+			convert.convertInMemory(inputFile, outputFile, inputFormat, schema, outputFormat, binSize, inProjWKT, convertCoords, outProjWKT, indexType, defineTLSwitch.getValue(), tlXArg.getValue(), tlYArg.getValue(), defineOriginSwitch.getValue(), originXArg.getValue(), originYArg.getValue(), originZArg.getValue(), defineSphericalSwitch.getValue(), definePolarSwitch.getValue(), defineScanSwitch.getValue(), waveNoiseThresholdArg.getValue(), waveBitRes, pointVersion, pulseVersion, useInputFileAsMinimumExtent, exportZasH);
 		}
 	}
 	catch (TCLAP::ArgException &e) 
