@@ -31,7 +31,7 @@ namespace spdlib
 		
 	}
 	
-	void SPDConvertFormats::convertInMemory(std::string input, std::string output, std::string inFormat, std::string schema, std::string outFormat, float binsize, std::string inSpatialRef, bool convertCoords, std::string outputProjWKT, boost::uint_fast16_t indexCoords, bool defineTL, double tlX, double tlY, bool defineOrigin, double originX, double originY, float originZ, bool useSphericIdx, bool usePolarIdx, bool useScanIdx, float waveNoiseThreshold, boost::uint_fast16_t waveformBitRes, boost::uint_fast16_t pointVersion, boost::uint_fast16_t pulseVersion, bool keepInMinExtent) throw(SPDException)
+	void SPDConvertFormats::convertInMemory(std::string input, std::string output, std::string inFormat, std::string schema, std::string outFormat, float binsize, std::string inSpatialRef, bool convertCoords, std::string outputProjWKT, boost::uint_fast16_t indexCoords, bool defineTL, double tlX, double tlY, bool defineOrigin, double originX, double originY, float originZ, bool useSphericIdx, bool usePolarIdx, bool useScanIdx, float waveNoiseThreshold, boost::uint_fast16_t waveformBitRes, boost::uint_fast16_t pointVersion, boost::uint_fast16_t pulseVersion, bool keepInMinExtent, bool exportZasH) throw(SPDException)
 	{        
 		try 
 		{
@@ -40,7 +40,7 @@ namespace spdlib
 			SPDIOFactory ioFactory;
 			
 			SPDDataImporter *importer = ioFactory.getImporter(inFormat, convertCoords, outputProjWKT, schema, indexCoords, defineOrigin, originX, originY, originZ, waveNoiseThreshold);
-			SPDDataExporter *exporter = ioFactory.getExporter(outFormat);
+			SPDDataExporter *exporter = ioFactory.getExporter(outFormat, exportZasH);
             exporter->setKeepMinExtent(keepInMinExtent);
 			
 			SPDFile *spdFile = new SPDFile(input);
@@ -271,7 +271,7 @@ namespace spdlib
                 spdFileIn->setPulseVersion(pulseVersion);
                 spdFileIn->setPointVersion(pointVersion);
 				
-				exporterUPD = ioFactory.getExporter("UPD");
+				exporterUPD = ioFactory.getExporter("UPD", false);
                 exporterUPD->setKeepMinExtent(keepInMinExtent);
 				filePathAllData = tempdir + "alldata.spd";
 				spdFileAllIn = new SPDFile(filePathAllData);
@@ -838,7 +838,7 @@ namespace spdlib
                 spdFileIn->setPulseVersion(pulseVersion);
                 spdFileIn->setPointVersion(pointVersion);
 				
-				exporterUPD = ioFactory.getExporter("UPD");
+				exporterUPD = ioFactory.getExporter("UPD", false);
                 exporterUPD->setKeepMinExtent(keepInMinExtent);
 				filePathAllData = tempdir + "alldata.spd";
 				spdFileAllIn = new SPDFile(filePathAllData);

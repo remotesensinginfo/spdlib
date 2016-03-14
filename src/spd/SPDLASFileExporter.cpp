@@ -91,8 +91,16 @@ namespace spdlib
 			}
 			lasFileHeader.SetCompressed(false);
             lasFileHeader.SetScale(0.01,0.01,0.01);
-            lasFileHeader.SetMin(spdFile->getXMin(),spdFile->getYMin(),spdFile->getZMin());
-            lasFileHeader.SetMax(spdFile->getXMax(),spdFile->getYMax(),spdFile->getZMax());
+            if(this->exportZasH)
+            {
+                lasFileHeader.SetMin(spdFile->getXMin(),spdFile->getYMin(), 0.0);
+                lasFileHeader.SetMax(spdFile->getXMax(),spdFile->getYMax(), 0.0);
+            }
+            else
+            {
+                lasFileHeader.SetMin(spdFile->getXMin(),spdFile->getYMin(),spdFile->getZMin());
+                lasFileHeader.SetMax(spdFile->getXMax(),spdFile->getYMax(),spdFile->getZMax());
+            }
             lasFileHeader.SetSoftwareId(SPDLIB_PACKAGE_STRING);
             lasFileHeader.SetSystemId("EXPORT");
 			lasWriter = new liblas::Writer(*outDataStream, lasFileHeader);
@@ -150,7 +158,14 @@ namespace spdlib
                         {
                             liblas::Point point;
                             //cout << "PT (list): [" << (*iterPts)->x << ", " << (*iterPts)->y << ", " << (*iterPts)->z << "]\n";
-                            point.SetCoordinates((*iterPts)->x/0.01, (*iterPts)->y/0.01, (*iterPts)->z/0.01);
+                            if(this->exportZasH)
+                            {
+                                point.SetCoordinates((*iterPts)->x/0.01, (*iterPts)->y/0.01, (*iterPts)->height/0.01);
+                            }
+                            else
+                            {
+                                point.SetCoordinates((*iterPts)->x/0.01, (*iterPts)->y/0.01, (*iterPts)->z/0.01);
+                            }
                             point.SetIntensity((*iterPts)->amplitudeReturn);
                             point.SetReturnNumber((*iterPts)->returnID);                            
                             point.SetNumberOfReturns((*iterInPls)->numberOfReturns);
@@ -255,7 +270,14 @@ namespace spdlib
                         {
                             liblas::Point point;
                             //cout << "PT (list): [" << (*iterPts)->x << ", " << (*iterPts)->y << ", " << (*iterPts)->z << "]\n";
-                            point.SetCoordinates((*iterPts)->x/0.01, (*iterPts)->y/0.01, (*iterPts)->z/0.01);
+                            if(this->exportZasH)
+                            {
+                                point.SetCoordinates((*iterPts)->x/0.01, (*iterPts)->y/0.01, (*iterPts)->height/0.01);
+                            }
+                            else
+                            {
+                                point.SetCoordinates((*iterPts)->x/0.01, (*iterPts)->y/0.01, (*iterPts)->z/0.01);
+                            }
                             point.SetIntensity((*iterPts)->amplitudeReturn);
                             point.SetReturnNumber((*iterPts)->returnID);
                             point.SetNumberOfReturns((*iterInPls)->numberOfReturns);
@@ -457,8 +479,16 @@ namespace spdlib
 			}
 			lasFileHeader.SetCompressed(true);
             lasFileHeader.SetScale(0.01,0.01,0.01);
-            lasFileHeader.SetMin(spdFile->getXMin(),spdFile->getYMin(),spdFile->getZMin());
-            lasFileHeader.SetMax(spdFile->getXMax(),spdFile->getYMax(),spdFile->getZMax());
+            if(this->exportZasH)
+            {
+                lasFileHeader.SetMin(spdFile->getXMin(),spdFile->getYMin(), 0.0);
+                lasFileHeader.SetMax(spdFile->getXMax(),spdFile->getYMax(), 0.0);
+            }
+            else
+            {
+                lasFileHeader.SetMin(spdFile->getXMin(),spdFile->getYMin(),spdFile->getZMin());
+                lasFileHeader.SetMax(spdFile->getXMax(),spdFile->getYMax(),spdFile->getZMax());
+            }
             lasFileHeader.SetSoftwareId(SPDLIB_PACKAGE_STRING);
             lasFileHeader.SetSystemId("EXPORT");
 			lasWriter = new liblas::Writer(*outDataStream, lasFileHeader);
@@ -516,7 +546,14 @@ namespace spdlib
                         {
                             liblas::Point point;
                             //cout << "PT (list): [" << (*iterPts)->x << ", " << (*iterPts)->y << ", " << (*iterPts)->z << "]\n";
-                            point.SetCoordinates((*iterPts)->x/0.01, (*iterPts)->y/0.01, (*iterPts)->z/0.01);
+                            if(this->exportZasH)
+                            {
+                                point.SetCoordinates((*iterPts)->x/0.01, (*iterPts)->y/0.01, (*iterPts)->height/0.01);
+                            }
+                            else
+                            {
+                                point.SetCoordinates((*iterPts)->x/0.01, (*iterPts)->y/0.01, (*iterPts)->z/0.01);
+                            }
                             point.SetIntensity((*iterPts)->amplitudeReturn);
                             point.SetReturnNumber((*iterPts)->returnID);
                             point.SetNumberOfReturns((*iterInPls)->numberOfReturns);
@@ -621,7 +658,14 @@ namespace spdlib
                         {
                             liblas::Point point;
                             //cout << "PT (list): [" << (*iterPts)->x << ", " << (*iterPts)->y << ", " << (*iterPts)->z << "]\n";
-                            point.SetCoordinates((*iterPts)->x/0.01, (*iterPts)->y/0.01, (*iterPts)->z/0.01);
+                            if(this->exportZasH)
+                            {
+                                point.SetCoordinates((*iterPts)->x/0.01, (*iterPts)->y/0.01, (*iterPts)->height/0.01);
+                            }
+                            else
+                            {
+                                point.SetCoordinates((*iterPts)->x/0.01, (*iterPts)->y/0.01, (*iterPts)->z/0.01);
+                            }
                             point.SetIntensity((*iterPts)->amplitudeReturn);
                             point.SetReturnNumber((*iterPts)->returnID);
                             point.SetNumberOfReturns((*iterInPls)->numberOfReturns);
