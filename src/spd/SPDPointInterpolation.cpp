@@ -472,6 +472,7 @@ namespace spdlib
             
             dt = new DelaunayTriangulation();
             values = new PointValueMap();
+            fh = Face_handle();
             
             std::vector<SPDPoint*>::iterator iterPts;
             for(iterPts = points->begin(); iterPts != points->end(); ++iterPts)
@@ -522,6 +523,7 @@ namespace spdlib
             }
             else if(points->size() < 100)
             {
+                std::cout << "Starting with " << points->size() << "points..";
                 double meanX = 0;
                 double meanY = 0;
                 
@@ -557,6 +559,7 @@ namespace spdlib
                     delete points;
                     throw SPDProcessingException("Points are all within a line.");
                 }
+                std::cout << "Increased to " << points->size() << "points" << std::endl;
             }
             if(thinData)
             {
@@ -565,6 +568,7 @@ namespace spdlib
             
             dt = new DelaunayTriangulation();
             values = new PointValueMap();
+            fh = Face_handle();
                         
             std::vector<SPDPoint*>::iterator iterPts;
             for(iterPts = points->begin(); iterPts != points->end(); ++iterPts)
@@ -658,6 +662,7 @@ namespace spdlib
             
             dt = new DelaunayTriangulation();
             values = new PointValueMap();
+            fh = Face_handle();
             
             std::vector<SPDPoint*>::iterator iterPts;
             for(iterPts = points->begin(); iterPts != points->end(); ++iterPts)
@@ -751,6 +756,7 @@ namespace spdlib
             
             dt = new DelaunayTriangulation();
             values = new PointValueMap();
+            fh = Face_handle();
             
             std::vector<SPDPoint*>::iterator iterPts;
             for(iterPts = points->begin(); iterPts != points->end(); ++iterPts)
@@ -796,6 +802,7 @@ namespace spdlib
         {
             delete dt;
             delete values;
+            fh = NULL;
         }
 		initialised = false;
 	}
@@ -1244,7 +1251,7 @@ namespace spdlib
             Vertex_handle vh = dt->nearest_vertex(p);
             CGALPoint nearestPt = vh->point();
             PointValueMap::iterator iterVal;
-            Face_handle fh = dt->locate(nearestPt);
+            fh = dt->locate(nearestPt, fh);
             Vertex_handle pt1Vh = fh->vertex(0);
             iterVal = values->find(pt1Vh->point());
             aPt->x = (*iterVal).first.x();
@@ -1697,7 +1704,11 @@ namespace spdlib
             {
                 K::Point_2 p(eastings, northings);
                 CoordinateVector coords;
-                CGAL::Triple<std::back_insert_iterator<CoordinateVector>, K::FT, bool> result = CGAL::natural_neighbor_coordinates_2(*dt, p, std::back_inserter(coords));
+                // Locate point using previous triangle as a hint and use this as starting point
+                // As going through locations within a block this approach should be valid and makes faster.
+                // from http://stackoverflow.com/questions/30354284/cgal-natural-neighbor-interpolation
+                fh = dt->locate(p, fh);
+                CGAL::Triple<std::back_insert_iterator<CoordinateVector>, K::FT, bool> result = CGAL::natural_neighbor_coordinates_2(*dt, p, std::back_inserter(coords), fh);
                 if(!result.third)
                 {
                     newZValue = std::numeric_limits<float>::signaling_NaN();
