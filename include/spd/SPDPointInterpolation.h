@@ -127,6 +127,8 @@ namespace spdlib
 	protected:
         DelaunayTriangulation *dt;
         PointValueMap *values;
+        Face_handle fh;
+
 	};
     
     

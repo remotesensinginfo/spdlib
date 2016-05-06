@@ -33,6 +33,7 @@
 #include <stdexcept>
 #include <string>
 #include <list>
+#include <stdexcept>
 
 #include "laswriter.hpp"
 
