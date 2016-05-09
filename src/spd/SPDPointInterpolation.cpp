@@ -523,7 +523,6 @@ namespace spdlib
             }
             else if(points->size() < 100)
             {
-                std::cout << "Starting with " << points->size() << "points..";
                 double meanX = 0;
                 double meanY = 0;
                 
@@ -559,7 +558,6 @@ namespace spdlib
                     delete points;
                     throw SPDProcessingException("Points are all within a line.");
                 }
-                std::cout << "Increased to " << points->size() << "points" << std::endl;
             }
             if(thinData)
             {
