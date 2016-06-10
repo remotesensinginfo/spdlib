@@ -223,7 +223,6 @@ namespace spdlib
                                 
                                 if(nPtIdx != lasreader->point.get_return_number())
                                 {
-                                    // FIXME: Could this error could be tidied up. Get it a lot with our ALSPP produced LAS files
                                     /*std::cerr << "Start Pulse (Num Returns = " << spdPulse->numberOfReturns << "): p.GetReturnNumber() = " << p.GetReturnNumber() << std::endl;
                                     std::cerr << "\tIn Pulse (Num Returns = " << pt.get_NumberOfReturns() << "): pt.get_ReturnNumber() = " << pt.get_ReturnNumber() << std::endl;
                                     std::cerr << "The return number was: " << pt.get_ReturnNumber() << std::endl;
@@ -570,7 +569,6 @@ namespace spdlib
                                     double location = lasreader->point.wavepacket.getLocation();
 
                                     // Save to point (in ns)
-                                    spdPt->waveformOffset = location*1E3;
 
                                     // Set pulse GPS time (ns)
                                     spdPulse->gpsTime = spdPt->gpsTime - spdPt->waveformOffset;
@@ -737,7 +735,7 @@ namespace spdlib
                             double zenith = 0;
                             double azimuth = 0;
 
-                            SPDConvertToSpherical(x1, y1, z1, x0, y0, z0, &zenith, &azimuth, &range);
+                            SPDConvertToSpherical(x0, y0, z0, x1, y1, z1, &zenith, &azimuth, &range);
 
                             spdPulse->zenith = zenith;
                             spdPulse->azimuth = azimuth;
@@ -1020,7 +1018,6 @@ namespace spdlib
                                 
                                 if(nPtIdx != lasreader->point.get_return_number())
                                 {
-                                    // FIXME: Could this error could be tidied up. Get it a lot with our ALSPP produced LAS files
                                     /*std::cerr << "Start Pulse (Num Returns = " << spdPulse->numberOfReturns << "): p.GetReturnNumber() = " << p.GetReturnNumber() << std::endl;
                                      std::cerr << "\tIn Pulse (Num Returns = " << pt.get_NumberOfReturns() << "): pt.get_ReturnNumber() = " << pt.get_ReturnNumber() << std::endl;
                                      std::cerr << "The return number was: " << pt.get_ReturnNumber() << std::endl;
@@ -1494,7 +1491,6 @@ namespace spdlib
                             
                             if(nPtIdx != lasreader->point.get_return_number())
                             {
-                                // FIXME: Could this error could be tidied up. Get it a lot with our ALSPP produced LAS files
                                 /*std::cerr << "Start Pulse (Num Returns = " << p.GetNumberOfReturns() << "): p.GetReturnNumber() = " << p.GetReturnNumber() << std::endl;
                                 std::cerr << "\tIn Pulse (Num Returns = " << pt.get_NumberOfReturns() << "): pt.get_ReturnNumber() = " << pt.get_ReturnNumber() << std::endl;
                                 std::cerr << "The return number was: " << pt.get_ReturnNumber() << std::endl;
