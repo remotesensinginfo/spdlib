@@ -50,24 +50,26 @@ namespace spdlib
     /** Function to get WKT string from LAS header */
     std::string getWKTfromLAS(LASheader &header);
 
-	/**
+    /**
      Standard importer for LAS files (LAS)
     */
     class DllExport SPDLASFileImporter : public SPDDataImporter
-	{
-	public:
-		SPDLASFileImporter(bool convertCoords=false, std::string outputProjWKT="", std::string schema="", boost::uint_fast16_t indexCoords=SPD_FIRST_RETURN, bool defineOrigin=false, double originX=0, double originY=0, float originZ=0, float waveNoiseThreshold=0);
-		SPDDataImporter* getInstance(bool convertCoords, std::string outputProjWKT,std::string schema,boost::uint_fast16_t indexCoords, bool defineOrigin, double originX, double originY, float originZ, float waveNoiseThreshold);
-        std::list<SPDPulse*>* readAllDataToList(std::string, SPDFile *spdFile)throw(SPDIOException);
-		std::vector<SPDPulse*>* readAllDataToVector(std::string inputFile, SPDFile *spdFile)throw(SPDIOException);
-		void readAndProcessAllData(std::string inputFile, SPDFile *spdFile, SPDImporterProcessor *processor) throw(SPDIOException);
-		bool isFileType(std::string fileType);
-        void readHeaderInfo(std::string inputFile, SPDFile *spdFile) throw(SPDIOException);
-		~SPDLASFileImporter();
-	private:
-		SPDPoint* createSPDPoint(LASpoint const& pt)throw(SPDIOException);
-		bool classWarningGiven;
-	};
+    {
+    public:
+        SPDLASFileImporter(bool convertCoords=false, std::string outputProjWKT="", std::string schema="", boost::uint_fast16_t indexCoords=SPD_FIRST_RETURN, bool defineOrigin=false, double originX=0, double originY=0, float originZ=0, float waveNoiseThreshold=0);
+        SPDDataImporter* getInstance(bool convertCoords, std::string outputProjWKT,std::string schema,boost::uint_fast16_t indexCoords, bool defineOrigin, double originX, double originY, float originZ, float waveNoiseThreshold);
+      std::list<SPDPulse*>* readAllDataToList(std::string inputFile, SPDFile *spdFile)throw(SPDIOException);
+        std::vector<SPDPulse*>* readAllDataToVector(std::string inputFile, SPDFile *spdFile)throw(SPDIOException);
+        void readAndProcessAllData(std::string inputFile, SPDFile *spdFile, SPDImporterProcessor *processor) throw(SPDIOException);
+        bool isFileType(std::string fileType);
+      void readHeaderInfo(std::string inputFile, SPDFile *spdFile) throw(SPDIOException);
+      void setStrict(bool strictPulses)throw(SPDIOException){this->strictPulses = strictPulses;};
+        ~SPDLASFileImporter();
+    private:
+        SPDPoint* createSPDPoint(LASpoint const& pt)throw(SPDIOException);
+        bool classWarningGiven;
+      bool strictPulses;
+    };
     
     /**
      Strict importer for LAS files (LASSTRICT).
@@ -75,40 +77,41 @@ namespace spdlib
      Throws SPDIOException if pulses can't be created from available points (i.e., not all expected returns are found).
      */
     class DllExport SPDLASFileImporterStrictPulses : public SPDDataImporter
-	{
-	public:
-		SPDLASFileImporterStrictPulses(bool convertCoords=false, std::string outputProjWKT="", std::string schema="", boost::uint_fast16_t indexCoords=SPD_FIRST_RETURN, bool defineOrigin=false, double originX=0, double originY=0, float originZ=0, float waveNoiseThreshold=0);
-		SPDDataImporter* getInstance(bool convertCoords, std::string outputProjWKT,std::string schema,boost::uint_fast16_t indexCoords, bool defineOrigin, double originX, double originY, float originZ, float waveNoiseThreshold);
-        std::list<SPDPulse*>* readAllDataToList(std::string, SPDFile *spdFile)throw(SPDIOException);
-		std::vector<SPDPulse*>* readAllDataToVector(std::string inputFile, SPDFile *spdFile)throw(SPDIOException);
-		void readAndProcessAllData(std::string inputFile, SPDFile *spdFile, SPDImporterProcessor *processor) throw(SPDIOException);
-		bool isFileType(std::string fileType);
-        void readHeaderInfo(std::string inputFile, SPDFile *spdFile) throw(SPDIOException);
-		~SPDLASFileImporterStrictPulses();
-	private:
-		SPDPoint* createSPDPoint(LASpoint const& pt)throw(SPDIOException);
-		bool classWarningGiven;
-	};
+    {
+    public:
+        SPDLASFileImporterStrictPulses(bool convertCoords=false, std::string outputProjWKT="", std::string schema="", boost::uint_fast16_t indexCoords=SPD_FIRST_RETURN, bool defineOrigin=false, double originX=0, double originY=0, float originZ=0, float waveNoiseThreshold=0);
+        SPDDataImporter* getInstance(bool convertCoords, std::string outputProjWKT,std::string schema,boost::uint_fast16_t indexCoords, bool defineOrigin, double originX, double originY, float originZ, float waveNoiseThreshold);
+      std::list<SPDPulse*>* readAllDataToList(std::string inputFile, SPDFile *spdFile)throw(SPDIOException);
+        std::vector<SPDPulse*>* readAllDataToVector(std::string inputFile, SPDFile *spdFile)throw(SPDIOException);
+        void readAndProcessAllData(std::string inputFile, SPDFile *spdFile, SPDImporterProcessor *processor) throw(SPDIOException);
+        bool isFileType(std::string fileType);
+      void readHeaderInfo(std::string inputFile, SPDFile *spdFile) throw(SPDIOException);
+        ~SPDLASFileImporterStrictPulses();
+    private:
+        SPDPoint* createSPDPoint(LASpoint const& pt)throw(SPDIOException);
+      SPDLASFileImporter* lasDataImporter;
+        bool classWarningGiven;
+    };
     
     /**
      No pulse importer for LAS files (LASNP)
      
      */
     class DllExport SPDLASFileNoPulsesImporter : public SPDDataImporter
-	{
-	public:
-		SPDLASFileNoPulsesImporter(bool convertCoords=false, std::string outputProjWKT="", std::string schema="", boost::uint_fast16_t indexCoords=SPD_FIRST_RETURN, bool defineOrigin=false, double originX=0, double originY=0, float originZ=0, float waveNoiseThreshold=0);
-		SPDDataImporter* getInstance(bool convertCoords, std::string outputProjWKT,std::string schema,boost::uint_fast16_t indexCoords, bool defineOrigin, double originX, double originY, float originZ, float waveNoiseThreshold);
-        std::list<SPDPulse*>* readAllDataToList(std::string, SPDFile *spdFile)throw(SPDIOException);
-		std::vector<SPDPulse*>* readAllDataToVector(std::string inputFile, SPDFile *spdFile)throw(SPDIOException);
-		void readAndProcessAllData(std::string inputFile, SPDFile *spdFile, SPDImporterProcessor *processor) throw(SPDIOException);
-		bool isFileType(std::string fileType);
+    {
+    public:
+        SPDLASFileNoPulsesImporter(bool convertCoords=false, std::string outputProjWKT="", std::string schema="", boost::uint_fast16_t indexCoords=SPD_FIRST_RETURN, bool defineOrigin=false, double originX=0, double originY=0, float originZ=0, float waveNoiseThreshold=0);
+        SPDDataImporter* getInstance(bool convertCoords, std::string outputProjWKT,std::string schema,boost::uint_fast16_t indexCoords, bool defineOrigin, double originX, double originY, float originZ, float waveNoiseThreshold);
+        std::list<SPDPulse*>* readAllDataToList(std::string inputFile, SPDFile *spdFile)throw(SPDIOException);
+        std::vector<SPDPulse*>* readAllDataToVector(std::string inputFile, SPDFile *spdFile)throw(SPDIOException);
+        void readAndProcessAllData(std::string inputFile, SPDFile *spdFile, SPDImporterProcessor *processor) throw(SPDIOException);
+        bool isFileType(std::string fileType);
         void readHeaderInfo(std::string inputFile, SPDFile *spdFile) throw(SPDIOException);
-		~SPDLASFileNoPulsesImporter();
-	private:
-		SPDPoint* createSPDPoint(LASpoint const& pt)throw(SPDIOException);
-		bool classWarningGiven;
-	};
+        ~SPDLASFileNoPulsesImporter();
+    private:
+        SPDPoint* createSPDPoint(LASpoint const& pt)throw(SPDIOException);
+        bool classWarningGiven;
+    };
 }
 
 #endif
