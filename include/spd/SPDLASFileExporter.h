@@ -68,29 +68,6 @@ namespace spdlib
         LASheader *lasFileHeader;
         bool finalisedClosed;
 	};
-    
-    
-    class DllExport SPDLAZFileExporter : public SPDDataExporter
-	{
-	public:
-		SPDLAZFileExporter();
-		SPDLAZFileExporter(const SPDDataExporter &dataExporter) throw(SPDException);
-		SPDLAZFileExporter(const SPDLAZFileExporter &dataExporter) throw(SPDException);
-        SPDDataExporter* getInstance();
-		bool open(SPDFile *spdFile, std::string outputFile) throw(SPDIOException);
-        bool reopen(SPDFile *spdFile, std::string outputFile) throw(SPDIOException);
-		void writeDataColumn(std::list<SPDPulse*> *pls,boost::uint_fast32_t col,boost::uint_fast32_t row)throw(SPDIOException);
-		void writeDataColumn(std::vector<SPDPulse*> *pls,boost::uint_fast32_t col,boost::uint_fast32_t row)throw(SPDIOException);
-		void finaliseClose() throw(SPDIOException);
-		bool requireGrid();
-		bool needNumOutPts();
-		SPDLAZFileExporter& operator=(const SPDLAZFileExporter& dataExporter) throw(SPDException);
-		~SPDLAZFileExporter();
-	private:
-		std::fstream *outDataStream;
-		LASwriter *lasWriter;
-        bool finalisedClosed;
-	};
 }
 
 #endif
