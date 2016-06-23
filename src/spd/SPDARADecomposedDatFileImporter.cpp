@@ -100,6 +100,7 @@ namespace spdlib
 				    pointLine = lineReader.readLine();
 				}
 				
+                
 				if(!textFileUtils.blankline(pointLine))
 				{
 					textFileUtils.tokenizeString(pointLine, ',', lineTokens);
@@ -206,13 +207,17 @@ namespace spdlib
 								}
 								else 
 								{
-									throw SPDIOException("Blank line found when expecting point.");
+									//throw SPDIOException("Blank line found when expecting point.");
+                                    std::cout << "\nWarning: Blank line found when expecting point.\n";
+                                    incompletePulse = true;
 								}
 								
 							}
 							else 
 							{
-								throw SPDIOException("Unexpected end to the file.");
+								//throw SPDIOException("Unexpected end to the file.");
+                                std::cout << "Warning: Unexpected end to the file.\n";
+                                incompletePulse = true;
 							}
 						}
 						
@@ -457,6 +462,7 @@ namespace spdlib
 					pulse = new SPDPulse();
 					pulseUtils.initSPDPulse(pulse);
 					pulse->numberOfReturns = textFileUtils.strto16bitUInt(lineTokens->at(9));
+                    
                     if(pulse->numberOfReturns > 0)
                     {
                         pulse->pts->reserve(pulse->numberOfReturns);
@@ -554,13 +560,17 @@ namespace spdlib
 								}
 								else 
 								{
-									throw SPDIOException("Blank line found when expecting point.");
+									//throw SPDIOException("Blank line found when expecting point.");
+                                    std::cout << "Warning: Blank line found when expecting point.\n";
+                                    incompletePulse = true;
 								}
 								
 							}
 							else 
 							{
-								throw SPDIOException("Unexpected end to the file.");
+								//throw SPDIOException("Unexpected end to the file.");
+                                std::cout << "Warning: Unexpected end to the file.\n";
+                                incompletePulse = true;
 							}
 						}
 						
@@ -804,6 +814,7 @@ namespace spdlib
 					pulse = new SPDPulse();
 					pulseUtils.initSPDPulse(pulse);
 					pulse->numberOfReturns = textFileUtils.strto16bitUInt(lineTokens->at(9));
+                    
                     if(pulse->numberOfReturns > 0)
                     {
                         pulse->pts->reserve(pulse->numberOfReturns);
@@ -896,7 +907,7 @@ namespace spdlib
 									}
 									else 
 									{
-										std::cout << "\'" << pointLine << "\'\n";
+										//std::cout << "\'" << pointLine << "\'\n";
 										std::cout << "Warning: Could not create a point from line.\n";
 										incompletePulse = true;
 									}
@@ -904,14 +915,17 @@ namespace spdlib
 								}
 								else 
 								{
-									throw SPDIOException("Blank line found when expecting point.");
-									
+									//throw SPDIOException("Blank line found when expecting point.");
+                                    std::cout << "Warning: Blank line found when expecting point.\n";                                  
+									incompletePulse = true;
 								}
 								
 							}
 							else 
 							{
-								throw SPDIOException("Unexpected end to the file.");
+								//throw SPDIOException("Unexpected end to the file.");
+                                std::cout << "Warning: Unexpected end to the file.\n";
+                                incompletePulse = true;
 							}
 						}
 						
@@ -1124,7 +1138,7 @@ namespace spdlib
 			point->z = z;
 			point->range = textFileUtils.strtofloat(lineTokens->at(12));
 			point->amplitudeReturn = textFileUtils.strtofloat(lineTokens->at(10));
-			point->returnID = textFileUtils.strto16bitUInt(lineTokens->at(8));
+			point->returnID = textFileUtils.strto16bitUInt(lineTokens->at(8));           
 			point->widthReturn = textFileUtils.strtofloat(lineTokens->at(11));
 			point->classification = textFileUtils.strto16bitUInt(lineTokens->at(7));
 			

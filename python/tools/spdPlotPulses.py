@@ -21,8 +21,6 @@
 # THE SOFTWARE.
 #
 #
-# Purpose:  A script to plot waveforms and the associated points  
-#           for either an SPD to UPD file. 
 #
 # Author: Pete Bunting
 # Email: pete.bunting@aber.ac.uk
@@ -93,10 +91,10 @@ class SPDPlotPulses (object):
         axisDims.append(int(ampAxis))
         maxIdx = 0
         for i in range(len(pulse.transmitted)):
-        	if i == 0:
-        		maxIdx = i
-        	elif pulse.transmitted[i] > pulse.transmitted[maxIdx]:
-        		maxIdx = i
+            if i == 0:
+                maxIdx = i
+            elif pulse.transmitted[i] > pulse.transmitted[maxIdx]:
+                maxIdx = i
         
         for i in range(len(pulse.transmitted)):
             timeVals.append(i*temporalBinSpacing)
@@ -115,7 +113,7 @@ class SPDPlotPulses (object):
         print("SPD File: " + inputFile)
         spdFile = spdpy.openSPDFileHeader(inputFile)
         print("Number of SPD Pulse: " + str(spdFile.numPulses))
-        print("Number of SPD Point: ", + str(spdFile.numPts))
+        print("Number of SPD Point: " + str(spdFile.numPts))
         print("Index Size: " + str(spdFile.numBinsX) + " x " + str(spdFile.numBinsY))
         pulses = spdpy.readSPDPulsesRowCols(spdFile, row, startCol, endCol)
         print("Extracted " + str(len(pulses)) + " pulses.")

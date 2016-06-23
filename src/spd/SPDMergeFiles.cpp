@@ -39,7 +39,7 @@ namespace spdlib
 			SPDIOFactory ioFactory;
 			
 			SPDDataImporter *importer = ioFactory.getImporter(inFormat, convertCoords, outputProj4, schema, indexCoords);
-			SPDDataExporter *exporter = ioFactory.getExporter("UPD");
+			SPDDataExporter *exporter = ioFactory.getExporter("UPD", false);
             exporter->setKeepMinExtent(keepMinExtent);
 			
 			SPDFile *spdFileMerged = new SPDFile("");

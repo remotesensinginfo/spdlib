@@ -39,7 +39,7 @@ namespace spdlib
 		this->exporters = ioFactory.exporters;
 	}
 
-	SPDDataExporter* SPDIOFactory::getExporter(std::string filetype) throw(SPDIOException)
+	SPDDataExporter* SPDIOFactory::getExporter(std::string filetype, bool exportZasH) throw(SPDIOException)
 	{
 		SPDDataExporter *dataExporter = NULL;
 		bool found = false;
@@ -50,6 +50,7 @@ namespace spdlib
 			if((*iterExport)->isFileType(filetype))
 			{
 				dataExporter = (*iterExport)->getInstance();
+                dataExporter->setExportZasH(exportZasH);
 				found = true;
 				break;
 			}
