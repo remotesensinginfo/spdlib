@@ -66,7 +66,8 @@ namespace spdlib
 		virtual void setNumOutPts(boost::uint_fast64_t numOutPts);
 		virtual bool isFileType(std::string filetype);
 		virtual bool requireGrid()=0;
-		SPDDataExporter& operator=(const SPDDataExporter& dataExporter) throw(SPDException);
+        virtual void setExportZasH(bool exportZasH){this->exportZasH = exportZasH;};
+        SPDDataExporter& operator=(const SPDDataExporter& dataExporter) throw(SPDException);
 		virtual bool opened();
 		virtual ~SPDDataExporter();
 	protected:
@@ -77,6 +78,7 @@ namespace spdlib
         boost::uint_fast64_t numOutPts;
 		bool numOutPtsDefined;
         bool keepMinExtent;
+        bool exportZasH;
 	};
 }
 

@@ -95,9 +95,16 @@ namespace spdlib
             lasFileHeader->z_scale_factor = LAS_SCALE_FACTOR;
 
             // Set bounding box
-            lasFileHeader->set_bounding_box(spdFile->getXMin(),spdFile->getYMin(),spdFile->getZMin(),
-                                            spdFile->getXMax(),spdFile->getYMax(),spdFile->getZMax());
-
+            if(this->exportZasH)
+            {
+                lasFileHeader->set_bounding_box(spdFile->getXMin(),spdFile->getYMin(),0,
+                                                spdFile->getXMax(),spdFile->getYMax(),0);
+            }
+            else
+            {
+                lasFileHeader->set_bounding_box(spdFile->getXMin(),spdFile->getYMin(),spdFile->getZMin(),
+                                                spdFile->getXMax(),spdFile->getYMax(),spdFile->getZMax());
+            }
             strncpy(lasFileHeader->generating_software, SPDLIB_PACKAGE_STRING, 32);
             strncpy(lasFileHeader->system_identifier, "EXPORT", 32);
 
@@ -165,7 +172,15 @@ namespace spdlib
                             //cout << "PT (list): [" << (*iterPts)->x << ", " << (*iterPts)->y << ", " << (*iterPts)->z << "]\n";
                             point.set_X((*iterPts)->x/LAS_SCALE_FACTOR);
                             point.set_Y((*iterPts)->y/LAS_SCALE_FACTOR);
-                            point.set_Z((*iterPts)->z/LAS_SCALE_FACTOR);
+                            // If exportZasH write point height to Z field
+                            if(this->exportZasH)
+                            {
+                                point.set_Z((*iterPts)->height/LAS_SCALE_FACTOR);
+                            }
+                            else
+                            {
+                                point.set_Z((*iterPts)->z/LAS_SCALE_FACTOR);
+                            }
                             point.set_intensity((*iterPts)->amplitudeReturn);
                             // Convert SPD GPS time (ns) to LAS (s)
                             point.set_gps_time((*iterPts)->gpsTime/1E9);
@@ -281,7 +296,15 @@ namespace spdlib
                         {
                             point.set_X((*iterPts)->x/LAS_SCALE_FACTOR);
                             point.set_Y((*iterPts)->y/LAS_SCALE_FACTOR);
-                            point.set_Z((*iterPts)->z/LAS_SCALE_FACTOR);
+                            // If exportZasH write point height to Z field
+                            if(this->exportZasH)
+                            {
+                                point.set_Z((*iterPts)->height/LAS_SCALE_FACTOR);
+                            }
+                            else
+                            {
+                                point.set_Z((*iterPts)->z/LAS_SCALE_FACTOR);
+                            }
                             point.set_intensity((*iterPts)->amplitudeReturn);
                             // Convert GPS time in s to ns for SPDLib (stored as 64 bit float)
                             point.set_gps_time((*iterPts)->gpsTime/1E9);
