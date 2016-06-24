@@ -35,29 +35,6 @@ namespace spdlib
     std::string SPDVectorUtils::getLayerName(std::string filepath)
 	{
         return boost::filesystem::path(filepath).stem().string();
-		/*int strSize = filepath.size();
-         int lastSlash = 0;
-         for(int i = 0; i < strSize; i++)
-         {
-         if(filepath.at(i) == '/')
-         {
-         lastSlash = i;
-         }
-         }
-         std::string filename = filepath.substr(lastSlash+1);
-         
-         strSize = filename.size();
-         int lastpt = 0;
-         for(int i = 0; i < strSize; i++)
-         {
-         if(filename.at(i) == '.')
-         {
-         lastpt = i;
-         }
-         }
-         
-         std::string layerName = filename.substr(0, lastpt);
-         return layerName;*/
 	}
     
 	OGRGeometryCollection* SPDVectorUtils::getGeometryCollection(std::string inputVector) throw(SPDIOException)
@@ -66,7 +43,7 @@ namespace spdlib
 		
 		std::string SHPFileInLayer = this->getLayerName(inputVector);
 		
-		OGRDataSource *inputSHPDS = NULL;
+		GDALDataset *inputSHPDS = NULL;
 		OGRLayer *inputSHPLayer = NULL;
 		
         OGRGeometryCollection *geomCollection = new OGRGeometryCollection();
@@ -80,7 +57,7 @@ namespace spdlib
 			// Open Input Shapfile.
 			//
 			/////////////////////////////////////
-			inputSHPDS = OGRSFDriverRegistrar::Open(inputVector.c_str(), FALSE);
+            inputSHPDS = (GDALDataset*) GDALOpenEx(inputVector.c_str(), GDAL_OF_VECTOR, NULL, NULL, NULL);
 			if(inputSHPDS == NULL)
 			{
 				std::string message = std::string("Could not open vector file ") + inputVector;
@@ -108,7 +85,7 @@ namespace spdlib
 			throw e;
 		}
 		
-		OGRDataSource::DestroyDataSource(inputSHPDS);
+		GDALClose(inputSHPDS);
 		
 		OGRCleanupAll();
         

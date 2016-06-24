@@ -188,7 +188,7 @@ int main (int argc, char * const argv[])
             
             OGRRegisterAll();
             
-            OGRDataSource *inputSHPDS = NULL;
+            GDALDataset *inputSHPDS = NULL;
             OGRLayer *inputSHPLayer = NULL;
             
             spdlib::SPDVectorUtils vecUtils;
@@ -199,7 +199,7 @@ int main (int argc, char * const argv[])
             // Open Input Shapfile.
             //
             /////////////////////////////////////
-            inputSHPDS = OGRSFDriverRegistrar::Open(inputVector.c_str(), FALSE);
+            inputSHPDS = (GDALDataset*) GDALOpenEx(inputVector.c_str(), GDAL_OF_VECTOR, NULL, NULL, NULL);
             if(inputSHPDS == NULL)
             {
                 std::string message = std::string("Could not open vector file ") + inputVector;
@@ -218,7 +218,7 @@ int main (int argc, char * const argv[])
             std::cout << wktPrettySpatialRef[0] << std::endl;
             OGRFree(wktPrettySpatialRef);
             
-            OGRDataSource::DestroyDataSource(inputSHPDS);
+            GDALClose(inputSHPDS);
         }
         else if(shapefilePrettyArg.isSet())
         {
@@ -227,7 +227,7 @@ int main (int argc, char * const argv[])
             
             OGRRegisterAll();
             
-            OGRDataSource *inputSHPDS = NULL;
+            GDALDataset *inputSHPDS = NULL;
             OGRLayer *inputSHPLayer = NULL;
             
             spdlib::SPDVectorUtils vecUtils;
@@ -238,7 +238,7 @@ int main (int argc, char * const argv[])
             // Open Input Shapfile.
             //
             /////////////////////////////////////
-            inputSHPDS = OGRSFDriverRegistrar::Open(inputVector.c_str(), FALSE);
+            inputSHPDS = (GDALDataset*) GDALOpenEx(inputVector.c_str(), GDAL_OF_VECTOR, NULL, NULL, NULL);
             if(inputSHPDS == NULL)
             {
                 std::string message = std::string("Could not open vector file ") + inputVector;
@@ -257,7 +257,7 @@ int main (int argc, char * const argv[])
             std::cout << wktPrettySpatialRef[0] << std::endl;
             OGRFree(wktPrettySpatialRef);
             
-            OGRDataSource::DestroyDataSource(inputSHPDS);
+            GDALClose(inputSHPDS);
         }
         else
         {

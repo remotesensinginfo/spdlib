@@ -2042,12 +2042,12 @@ namespace spdlib
             //
             /////////////////////////////////////
             const char *pszDriverName = "ESRI Shapefile";
-            OGRSFDriver *shpFiledriver = OGRSFDriverRegistrar::GetRegistrar()->GetDriverByName(pszDriverName );
+            GDALDriver *shpFiledriver = GetGDALDriverManager()->GetDriverByName(pszDriverName );
             if( shpFiledriver == NULL )
             {
                 throw SPDProcessingException("SHP driver not available.");
             }
-            OGRDataSource *outputSHPDS = shpFiledriver->CreateDataSource(shpFile.c_str(), NULL);
+            GDALDataset *outputSHPDS = shpFiledriver->Create(shpFile.c_str(), 0, 0, 0, GDT_Unknown, NULL);
             if( outputSHPDS == NULL )
             {
                 std::string message = std::string("Could not create vector file ") + shpFile;
@@ -2100,7 +2100,7 @@ namespace spdlib
             }
             std::cout << "Complete\n";
             
-            OGRDataSource::DestroyDataSource(outputSHPDS);
+            GDALClose(outputSHPDS);
         }
         catch (SPDProcessingException &e)
         {
