@@ -67,10 +67,10 @@ namespace spdlib
 		std::string SHPFileInLayer = this->getLayerName(inputLayer);
 		std::string SHPFileOutLayer = this->getLayerName(outputLayer);
 		
-		OGRDataSource *inputSHPDS = NULL;
+		GDALDataset *inputSHPDS = NULL;
 		OGRLayer *inputSHPLayer = NULL;
-		OGRSFDriver *shpFiledriver = NULL;
-		OGRDataSource *outputSHPDS = NULL;
+		GDALDriver *shpFiledriver = NULL;
+		GDALDataset *outputSHPDS = NULL;
 		OGRLayer *outputSHPLayer = NULL;
 		
 		try
@@ -95,7 +95,7 @@ namespace spdlib
 			// Open Input Shapfile.
 			//
 			/////////////////////////////////////
-			inputSHPDS = OGRSFDriverRegistrar::Open(inputLayer.c_str(), FALSE);
+			inputSHPDS = (GDALDataset*) GDALOpenEx(inputLayer.c_str(), GDAL_OF_VECTOR, NULL, NULL, NULL);
 			if(inputSHPDS == NULL)
 			{
 				std::string message = std::string("Could not open vector file ") + inputLayer;
@@ -114,12 +114,12 @@ namespace spdlib
 			//
 			/////////////////////////////////////
 			const char *pszDriverName = "ESRI Shapefile";
-			shpFiledriver = OGRSFDriverRegistrar::GetRegistrar()->GetDriverByName(pszDriverName );
+			shpFiledriver = GetGDALDriverManager()->GetDriverByName(pszDriverName );
 			if( shpFiledriver == NULL )
 			{
 				throw SPDProcessingException("SHP driver not available.");
 			}
-			outputSHPDS = shpFiledriver->CreateDataSource(outputLayer.c_str(), NULL);
+			outputSHPDS = shpFiledriver->Create(outputLayer.c_str(), 0, 0, 0, GDT_Unknown, NULL);
 			if( outputSHPDS == NULL )
 			{
 				std::string message = std::string("Could not create vector file ") + outputLayer;
@@ -148,10 +148,9 @@ namespace spdlib
 			throw e;
 		}
 		
-		OGRDataSource::DestroyDataSource(inputSHPDS);
-		OGRDataSource::DestroyDataSource(outputSHPDS);
+		GDALClose(inputSHPDS);
+		GDALClose(outputSHPDS);
 		
-		OGRCleanupAll();
 	}
 	
 	void SPDSetupProcessShapefilePolygons::processPolygons(std::string spdInputFile, std::string inputLayer, std::string outputASCII, SPDPolygonProcessor *processor) throw(SPDProcessingException)
@@ -160,7 +159,7 @@ namespace spdlib
 		
 		std::string SHPFileInLayer = this->getLayerName(inputLayer);
 		
-		OGRDataSource *inputSHPDS = NULL;
+		GDALDataset *inputSHPDS = NULL;
 		OGRLayer *inputSHPLayer = NULL;
 		
 		try
@@ -170,7 +169,7 @@ namespace spdlib
 			// Open Input Shapfile.
 			//
 			/////////////////////////////////////
-			inputSHPDS = OGRSFDriverRegistrar::Open(inputLayer.c_str(), FALSE);
+			inputSHPDS = (GDALDataset*) GDALOpenEx(inputLayer.c_str(), GDAL_OF_VECTOR, NULL, NULL, NULL);
 			if(inputSHPDS == NULL)
 			{
 				std::string message = std::string("Could not open vector file ") + inputLayer;
@@ -213,9 +212,8 @@ namespace spdlib
 			throw e;
 		}
 		
-		OGRDataSource::DestroyDataSource(inputSHPDS);
+		GDALClose(inputSHPDS);
 		
-		OGRCleanupAll();
 	}
 	
 	SPDSetupProcessShapefilePolygons::~SPDSetupProcessShapefilePolygons()
