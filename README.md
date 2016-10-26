@@ -7,7 +7,7 @@ SPDLib is a set of open source software tools for processing laser scanning data
 Binaries of SPDLib for Mac OS X and Linux are provided through [conda](http://conda.pydata.org/miniconda.html). After installing minconda, SPDLib and the required pre-requisites can be installed using:
 
 ```
-conda create -n spdlib_env -c rios spdlib
+conda create -n spdlib_env c conda-forge -c rios spdlib
 source activate spdlib_env
 ```
 
