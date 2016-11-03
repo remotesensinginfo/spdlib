@@ -163,6 +163,7 @@ set(SPDLIB_H_Processing_Algorithms
 	${SPDLIB_HEADERS_DIR}/SPDCopyRemovingClassificationProcessor.h
 	${SPDLIB_HEADERS_DIR}/SPDCreateVerticalProfiles.h
 	${SPDLIB_HEADERS_DIR}/SPDDecomposeWaveforms.h
+	${SPDLIB_HEADERS_DIR}/SPDDefineClassesFromImg.h
 	${SPDLIB_HEADERS_DIR}/SPDDefinePulseHeights.h
 	${SPDLIB_HEADERS_DIR}/SPDDefineRGBValues.h
 	${SPDLIB_HEADERS_DIR}/SPDExtractReturns.h
@@ -322,6 +323,7 @@ set(SPDLIB_CPP_Processing_Algorithms
 	${SPDLIB_SRC_DIR}/SPDCopyRemovingClassificationProcessor.cpp
 	${SPDLIB_SRC_DIR}/SPDCreateVerticalProfiles.cpp
 	${SPDLIB_SRC_DIR}/SPDDecomposeWaveforms.cpp
+	${SPDLIB_SRC_DIR}/SPDDefineClassesFromImg.cpp
 	${SPDLIB_SRC_DIR}/SPDDefinePulseHeights.cpp
 	${SPDLIB_SRC_DIR}/SPDDefineRGBValues.cpp
 	${SPDLIB_SRC_DIR}/SPDExtractReturns.cpp

@@ -360,14 +360,15 @@ if (SPDLIB_WITH_UTILITIES)
 	target_link_libraries (spdtsample ${SPDLIB_MITLIB_NAME} ${SPDLIB_LIB_NAME} )
  	add_executable(spdsplit ${PROJECT_SOURCE_DIR}/exe/spdsplit/main.cpp)
 	target_link_libraries (spdsplit ${SPDLIB_MITLIB_NAME} ${SPDLIB_LIB_NAME} )
-  
+	add_executable(spdclassimg ${PROJECT_SOURCE_DIR}/exe/spdclassimg/main.cpp)
+	target_link_libraries (spdclassimg ${SPDLIB_MITLIB_NAME} ${SPDLIB_LIB_NAME} )  
 endif(SPDLIB_WITH_UTILITIES)
 ###############################################################################
 
 ###############################################################################
 # Installation
 if (SPDLIB_WITH_UTILITIES)
-	install (TARGETS spdtranslate spdversion spdcopy spdstats spdmaskgen spdpmfgrd spdmccgrd spdpolygrd spdinterp spddefheight spddecomp spdlastest spdmetrics spdmerge spdsubset spdoverlap spddefrgb spdelevation spdproj spdrmnoise spdclearclass spdpffgrd spdinfo spdthin spdextract spdwarp spdprofile spddeftiles spdtileimg spdtiling spdgrdtidy spdclassify spdtsample spdsplit DESTINATION bin PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE)
+	install (TARGETS spdtranslate spdversion spdcopy spdstats spdmaskgen spdpmfgrd spdmccgrd spdpolygrd spdinterp spddefheight spddecomp spdlastest spdmetrics spdmerge spdsubset spdoverlap spddefrgb spdelevation spdproj spdrmnoise spdclearclass spdpffgrd spdinfo spdthin spdextract spdwarp spdprofile spddeftiles spdtileimg spdtiling spdgrdtidy spdclassify spdtsample spdsplit spdclassimg DESTINATION bin PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE)
 endif(SPDLIB_WITH_UTILITIES)
 
 install (FILES "${PROJECT_BINARY_DIR}/spd-config" DESTINATION bin PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE)
