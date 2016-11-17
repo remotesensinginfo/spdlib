@@ -57,63 +57,6 @@ set(ALGLIB_H
 	${ALGLIB_HEADERS_DIR}/specialfunctions.h
 	${ALGLIB_HEADERS_DIR}/stdafx.h )
 
-set(PULSEWAVES_H
-	${PULSEWAVES_SRC_DIR}/arithmeticdecoder.hpp
-	${PULSEWAVES_SRC_DIR}/arithmeticencoder.hpp
-	${PULSEWAVES_SRC_DIR}/arithmeticmodel.hpp
-	${PULSEWAVES_SRC_DIR}/bytestreamin.hpp
-	${PULSEWAVES_SRC_DIR}/bytestreamin_array.hpp
-	${PULSEWAVES_SRC_DIR}/bytestreamin_file.hpp
-	${PULSEWAVES_SRC_DIR}/bytestreamin_istream.hpp
-	${PULSEWAVES_SRC_DIR}/bytestreamout.hpp
-	${PULSEWAVES_SRC_DIR}/bytestreamout_array.hpp
-	${PULSEWAVES_SRC_DIR}/bytestreamout_file.hpp
-	${PULSEWAVES_SRC_DIR}/bytestreamout_nil.hpp
-	${PULSEWAVES_SRC_DIR}/bytestreamout_ostream.hpp
-	${PULSEWAVES_SRC_DIR}/entropydecoder.hpp
-	${PULSEWAVES_SRC_DIR}/entropyencoder.hpp
-	${PULSEWAVES_SRC_DIR}/integercompressor.hpp
-	${PULSEWAVES_SRC_DIR}/pulsereaditemcompressed_v1.hpp
-	${PULSEWAVES_SRC_DIR}/pulsereadpulse.hpp
-	${PULSEWAVES_SRC_DIR}/pulsereadwaves_compressed.hpp
-	${PULSEWAVES_SRC_DIR}/pulsewriteitemcompressed_v1.hpp
-	${PULSEWAVES_SRC_DIR}/pulsewritepulse.hpp
-	${PULSEWAVES_SRC_DIR}/pulsewritewaves_compressed.hpp
-	${PULSEWAVES_SRC_DIR}/pulsewritewaves_raw.hpp
-	${PULSEWAVES_SRC_DIR}/pulseziphelper.hpp
-	${PULSEWAVES_SRC_DIR}/pulsedescriptor.hpp
-	${PULSEWAVES_SRC_DIR}/mydefs.hpp
-	${PULSEWAVES_SRC_DIR}/pulsewavesdefinitions.hpp
-	${PULSEWAVES_SRC_DIR}/pulsefilter.hpp
-	${PULSEWAVES_SRC_DIR}/pulsepulse.hpp
-	${PULSEWAVES_SRC_DIR}/pulseheader.hpp
-	${PULSEWAVES_SRC_DIR}/pulsezip.hpp
-	${PULSEWAVES_SRC_DIR}/pulseitem.hpp
-	${PULSEWAVES_SRC_DIR}/pulsevlrs.hpp
-	${PULSEWAVES_SRC_DIR}/pulsequantizer.hpp
-	${PULSEWAVES_SRC_DIR}/pulseattributer.hpp
-	${PULSEWAVES_SRC_DIR}/pulseextraattribute.hpp
-	${PULSEWAVES_SRC_DIR}/pulsereader.hpp
-	${PULSEWAVES_SRC_DIR}/waveswaves.hpp
-	${PULSEWAVES_SRC_DIR}/pulseindex.hpp
-	${PULSEWAVES_SRC_DIR}/pulsetransform.hpp
-	${PULSEWAVES_SRC_DIR}/pulsereader_pls.hpp
-	${PULSEWAVES_SRC_DIR}/pulsereadermerged.hpp
-	${PULSEWAVES_SRC_DIR}/pulsereader_gcw.hpp
-	${PULSEWAVES_SRC_DIR}/pulsereader_csd.hpp
-	${PULSEWAVES_SRC_DIR}/pulsereader_lgw.hpp
-	${PULSEWAVES_SRC_DIR}/pulseutility.hpp
-	${PULSEWAVES_SRC_DIR}/pulsereaditem.hpp
-	${PULSEWAVES_SRC_DIR}/pulsereadwaves_raw.hpp
-	${PULSEWAVES_SRC_DIR}/pulsereadwaves.hpp
-	${PULSEWAVES_SRC_DIR}/pulsereaditemraw.hpp
-	${PULSEWAVES_SRC_DIR}/pulsewriteitem.hpp
-	${PULSEWAVES_SRC_DIR}/pulsewriteitemraw.hpp
-	${PULSEWAVES_SRC_DIR}/pulsewriter.hpp
-	${PULSEWAVES_SRC_DIR}/pulsewriter_pls.hpp
-	${PULSEWAVES_SRC_DIR}/pulsewriter_txt.hpp
-	${PULSEWAVES_SRC_DIR}/pulsewritewaves.hpp)
-
 set(SPDLIB_MIT_H
 	${SPDLIB_HEADERS_DIR}/SPDCommon.h
 	${SPDLIB_HEADERS_DIR}/SPDDataExporter.h
@@ -220,62 +163,6 @@ set(ALGLIB_CPP
 	${ALGLIB_SRC_DIR}/optimization.cpp
 	${ALGLIB_SRC_DIR}/solvers.cpp
 	${ALGLIB_SRC_DIR}/specialfunctions.cpp )
-
-set(PULSEWAVES_CPP
-	${PULSEWAVES_SRC_DIR}/arithmeticdecoder.cpp
-	${PULSEWAVES_SRC_DIR}/arithmeticdecoder.hpp
-	${PULSEWAVES_SRC_DIR}/arithmeticencoder.cpp
-	${PULSEWAVES_SRC_DIR}/arithmeticencoder.hpp
-	${PULSEWAVES_SRC_DIR}/arithmeticmodel.cpp
-	${PULSEWAVES_SRC_DIR}/arithmeticmodel.hpp
-	${PULSEWAVES_SRC_DIR}/bytestreamin.hpp
-	${PULSEWAVES_SRC_DIR}/bytestreamin_array.hpp
-	${PULSEWAVES_SRC_DIR}/bytestreamin_file.hpp
-	${PULSEWAVES_SRC_DIR}/bytestreamin_istream.hpp
-	${PULSEWAVES_SRC_DIR}/bytestreamout.hpp
-	${PULSEWAVES_SRC_DIR}/bytestreamout_array.hpp
-	${PULSEWAVES_SRC_DIR}/bytestreamout_file.hpp
-	${PULSEWAVES_SRC_DIR}/bytestreamout_nil.hpp
-	${PULSEWAVES_SRC_DIR}/bytestreamout_ostream.hpp
-	${PULSEWAVES_SRC_DIR}/entropydecoder.hpp
-	${PULSEWAVES_SRC_DIR}/entropyencoder.hpp
-	${PULSEWAVES_SRC_DIR}/integercompressor.cpp
-	${PULSEWAVES_SRC_DIR}/integercompressor.hpp
-	${PULSEWAVES_SRC_DIR}/pulsedescriptor.cpp
-	${PULSEWAVES_SRC_DIR}/pulsefilter.cpp
-	${PULSEWAVES_SRC_DIR}/pulseheader.cpp
-	${PULSEWAVES_SRC_DIR}/pulsepulse.cpp
-	${PULSEWAVES_SRC_DIR}/pulsereader.cpp
-	${PULSEWAVES_SRC_DIR}/pulsereader_csd.cpp
-	${PULSEWAVES_SRC_DIR}/pulsereader_gcw.cpp
-	${PULSEWAVES_SRC_DIR}/pulsereader_lgw.cpp
-	${PULSEWAVES_SRC_DIR}/pulsereader_pls.cpp
-	${PULSEWAVES_SRC_DIR}/pulsereadermerged.cpp
-	${PULSEWAVES_SRC_DIR}/pulsereaditemcompressed_v1.cpp
-	${PULSEWAVES_SRC_DIR}/pulsereaditemcompressed_v1.hpp
-	${PULSEWAVES_SRC_DIR}/pulsereadpulse.cpp
-	${PULSEWAVES_SRC_DIR}/pulsereadpulse.hpp
-	${PULSEWAVES_SRC_DIR}/pulsereadwaves_compressed.cpp
-	${PULSEWAVES_SRC_DIR}/pulsereadwaves_compressed.hpp
-	${PULSEWAVES_SRC_DIR}/pulsereadwaves_raw.cpp
-	${PULSEWAVES_SRC_DIR}/pulsetransform.cpp
-	${PULSEWAVES_SRC_DIR}/pulseutility.cpp
-	${PULSEWAVES_SRC_DIR}/pulsevlrs.cpp
-	${PULSEWAVES_SRC_DIR}/pulsewriteitemcompressed_v1.cpp
-	${PULSEWAVES_SRC_DIR}/pulsewriteitemcompressed_v1.hpp
-	${PULSEWAVES_SRC_DIR}/pulsewritepulse.cpp
-	${PULSEWAVES_SRC_DIR}/pulsewritepulse.hpp
-	${PULSEWAVES_SRC_DIR}/pulsewriter.cpp
-	${PULSEWAVES_SRC_DIR}/pulsewriter_pls.cpp
-	${PULSEWAVES_SRC_DIR}/pulsewriter_txt.cpp
-	${PULSEWAVES_SRC_DIR}/pulsewritewaves_compressed.cpp
-	${PULSEWAVES_SRC_DIR}/pulsewritewaves_compressed.hpp
-	${PULSEWAVES_SRC_DIR}/pulsewritewaves_raw.cpp
-	${PULSEWAVES_SRC_DIR}/pulsewritewaves_raw.hpp
-	${PULSEWAVES_SRC_DIR}/pulsezip.cpp
-	${PULSEWAVES_SRC_DIR}/pulseziphelper.hpp
-	${PULSEWAVES_SRC_DIR}/waveswaves.cpp
-	${PULSEWAVES_SRC_DIR}/pulsewritewaves.cpp)
 
 set(SPDLIB_CPP_MIT_IO
 	${SPDLIB_SRC_DIR}/SPDDataExporter.cpp
@@ -397,10 +284,9 @@ target_link_libraries(${SPDLIB_MITLIB_NAME} ${GDAL_LIBRARIES} ${HDF5_LIBRARIES} 
 
 if (NOT BUILD_SPDIO_ONLY )
     add_library( ${SPDLIB_ALGLIB_NAME} ${ALGLIB_CPP} ${ALGLIB_H} )
-    add_library( ${SPDLIB_PLSWAV_NAME} ${PULSEWAVES_CPP} ${PULSEWAVES_H} )
 
     add_library(${SPDLIB_LIB_NAME} ${SPDLIB_CPP_IO} ${SPDLIB_H_IO} ${SPDLIB_CPP_Processing_Interfaces} ${SPDLIB_H_Processing_Interfaces} ${SPDLIB_CPP_Processing_Algorithms} ${SPDLIB_H_Processing_Algorithms} ${SPDLIB_CPP_Utils} ${SPDLIB_H_Utils} ${SPDLIB_CPP_Frameworks} ${SPDLIB_H_Frameworks} ${CMPFIT_C} ${CMPFIT_H} ${TCLAP_H} ${TPS_CPP} ${TPS_H} ${PULSEWAVES_H} )
-    target_link_libraries(${SPDLIB_LIB_NAME} ${SPDLIB_MITLIB_NAME} ${BOOST_LIBRARIES} ${GDAL_LIBRARIES} ${HDF5_LIBRARIES} ${LIBLAS_LIBRARIES} ${GSL_LIBRARIES} ${CGAL_LIBRARIES} ${XERCESC_LIBRARIES} ${GMP_LIBRARIES} ${MPFR_LIBRARIES} ${SPDLIB_ALGLIB_NAME} ${SPDLIB_PLSWAV_NAME} )
+    target_link_libraries(${SPDLIB_LIB_NAME} ${SPDLIB_MITLIB_NAME} ${BOOST_LIBRARIES} ${GDAL_LIBRARIES} ${HDF5_LIBRARIES} ${LIBLAS_LIBRARIES} ${GSL_LIBRARIES} ${CGAL_LIBRARIES} ${XERCESC_LIBRARIES} ${GMP_LIBRARIES} ${MPFR_LIBRARIES} ${SPDLIB_ALGLIB_NAME} )
 endif(NOT BUILD_SPDIO_ONLY )
 ###############################################################################
 
@@ -437,7 +323,7 @@ endif(NOT BUILD_SPDIO_ONLY )
 # Installation 
 install (TARGETS ${SPDLIB_MITLIB_NAME} DESTINATION lib)
 if (NOT BUILD_SPDIO_ONLY )
-    install (TARGETS ${SPDLIB_LIB_NAME} ${SPDLIB_ALGLIB_NAME} ${SPDLIB_PLSWAV_NAME} DESTINATION lib)
+    install (TARGETS ${SPDLIB_LIB_NAME} ${SPDLIB_ALGLIB_NAME} DESTINATION lib)
 endif(NOT BUILD_SPDIO_ONLY )
 install (FILES ${SPDLIB_MIT_H} DESTINATION include/spd)
 install (FILES ${SPDLIB_H_IO} DESTINATION include/spd)
@@ -448,5 +334,4 @@ install (FILES ${SPDLIB_H_Frameworks} DESTINATION include/spd)
 install (FILES ${CMPFIT_H} DESTINATION include/spd/cmpfit)
 install (FILES ${TPS_H} DESTINATION include/spd/tps)
 install (FILES ${ALGLIB_H} DESTINATION include/spd/alglibspd)
-install (FILES ${PULSEWAVES_H} DESTINATION include/spd/pulsewaves)
 ###############################################################################
