@@ -1,7 +1,0 @@
-
-
-
-
-namespace spdlib{ namespace nn{
-
-}}
