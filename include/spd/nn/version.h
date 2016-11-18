@@ -11,9 +11,13 @@
  *
  *****************************************************************************/
 
-#if !defined(_VERSION_H)
-#define _VERSION_H
+#ifndef SPD_NN_VERSION_H
+#define SPD_NN_VERSION_H
+
+namespace spdlib{ namespace nn{
 
 char* nn_version = "1.85";
+    
+}}
 
 #endif

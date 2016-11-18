@@ -15,8 +15,10 @@
  *
  *****************************************************************************/
 
-#if !defined(_NN_INTERNAL_H)
-#define _NN_INTERNAL_H
+#ifndef SPD_NN_NN_INTERNAL_H
+#define SPD_NN_NN_INTERNAL_H
+
+namespace spdlib{ namespace nn{
 
 /*
  * nnpi.c
@@ -34,5 +36,7 @@ int circle_build2(circle* c, point* p0, point* p1, point* p2);
 int circle_contains(circle* c, point* p);
 void nn_quit(char* format, ...);
 int str2double(char* token, double* value);
+    
+}}
 
 #endif

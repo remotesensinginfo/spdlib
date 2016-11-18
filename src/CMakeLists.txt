@@ -57,7 +57,8 @@ set(NN_H
 	${NN_HEADERS_DIR}/nn_internal.h
 	${NN_HEADERS_DIR}/preader.h
 	${NN_HEADERS_DIR}/triangle.h
-	${NN_HEADERS_DIR}/version.h)
+	${NN_HEADERS_DIR}/version.h
+	${NN_HEADERS_DIR}/performNNInterp.h)
 	
 set(ALGLIB_H
 	${ALGLIB_HEADERS_DIR}/alglibinternal.h 
@@ -168,19 +169,18 @@ set(TPS_CPP
 	${TPS_SRC_DIR}/spline.cpp)
 
 set(NN_C
-	${NN_SRC_DIR}/delaunay.c
-	${NN_SRC_DIR}/hash.c
-	${NN_SRC_DIR}/istack.c
-	${NN_SRC_DIR}/lpi.c
-	${NN_SRC_DIR}/minell.c
-	${NN_SRC_DIR}/nnai.c
-	${NN_SRC_DIR}/nncommon-vulnerable.c
-	${NN_SRC_DIR}/nncommon.c
-	${NN_SRC_DIR}/nnpi.c
-	${NN_SRC_DIR}/nnpi.c
-	${NN_SRC_DIR}/performNNInterp.c
-	${NN_SRC_DIR}/preader.c
-	${NN_SRC_DIR}/triangle.c)
+	${NN_SRC_DIR}/delaunay.cpp
+	${NN_SRC_DIR}/hash.cpp
+	${NN_SRC_DIR}/istack.cpp
+	${NN_SRC_DIR}/lpi.cpp
+	${NN_SRC_DIR}/minell.cpp
+	${NN_SRC_DIR}/nnai.cpp
+	${NN_SRC_DIR}/nncommon-vulnerable.cpp
+	${NN_SRC_DIR}/nncommon.cpp
+	${NN_SRC_DIR}/nnpi.cpp
+	${NN_SRC_DIR}/performNNInterp.cpp
+	${NN_SRC_DIR}/preader.cpp
+	${NN_SRC_DIR}/triangle.cpp)
 
 set(ALGLIB_CPP
 	${ALGLIB_SRC_DIR}/alglibinternal.cpp 
@@ -290,7 +290,7 @@ source_group("src_spd_utils" FILES ${SPDLIB_CPP_Utils})
 source_group("src_spd_frameworks" FILES ${SPDLIB_CPP_Frameworks})
 source_group("src_cmpfit" FILES ${CMPFIT_C})
 source_group("src_tps" FILES ${TPS_CPP})
-source_group("src_tps" FILES ${NN_C})
+source_group("src_nn" FILES ${NN_C})
 source_group("src_alglib" FILES ${ALGLIB_CPP}) 
 source_group("include_spd_MIT" FILES ${SPDLIB_MIT_H})
 source_group("include_spd_io" FILES ${SPDLIB_H_IO})

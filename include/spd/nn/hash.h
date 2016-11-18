@@ -14,9 +14,11 @@
  *
  *****************************************************************************/
 
-#ifndef _HASH_H
-#define _HASH_H
+#ifndef SPD_NN_HASH_H
+#define SPD_NN_HASH_H
 
+namespace spdlib{ namespace nn{
+    
 struct hashtable;
 typedef struct hashtable hashtable;
 
@@ -114,5 +116,7 @@ int ht_getsize(hashtable* table);
  * @return The number of table elements filled
  */
 int ht_getnfilled(hashtable* table);
+
+}}
 
 #endif                          /* _HASH_H */

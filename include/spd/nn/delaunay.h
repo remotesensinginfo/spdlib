@@ -17,10 +17,12 @@
  *
  *****************************************************************************/
 
-#if !defined(_DELAUNAY_H)
-#define _DELAUNAY_H
+#ifndef SPD_NN_DELAUNAY_H
+#define SPD_NN_DELAUNAY_H
 
 #include "nn.h"
+
+namespace spdlib{ namespace nn{
 
 typedef struct {
     int vids[3];
@@ -102,4 +104,6 @@ struct delaunay {
 void delaunay_circles_find(delaunay* d, point* p, int* n, int** out);
 int delaunay_xytoi(delaunay* d, point* p, int seed);
 
+}}
+    
 #endif
