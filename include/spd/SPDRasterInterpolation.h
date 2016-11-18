@@ -110,7 +110,6 @@ namespace spdlib
         SPDPointInterpolator *interpolator;
 	};
     
-    
     class DllExport SPDCHMInterpolation : public SPDDataBlockProcessor
 	{
 	public:
@@ -179,7 +178,6 @@ namespace spdlib
         SPDPointInterpolator *interpolator;
 		bool useGroundClassifiedPts;
 	};
-    
     
     class DllExport SPDRangeInterpolation : public SPDDataBlockProcessor
 	{

@@ -16,8 +16,10 @@
  *
  *****************************************************************************/
 
-#if !defined(_NAN_H)
-#define _NAN_H
+#ifndef SPD_NN_NAN_H
+#define SPD_NN_NAN_H
+
+namespace spdlib{ namespace nn{
 
 #if defined(__GNUC__) && !defined(__INTEL_COMPILER)
 
@@ -36,5 +38,7 @@ static const long long lNaN = ((unsigned long long) 1 << 63) - 1;
 #define NaN (*(double*)&lNaN)
 
 #endif
+
+}}
 
 #endif

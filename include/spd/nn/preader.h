@@ -13,8 +13,10 @@
  *
  *****************************************************************************/
 
-#if !defined(_PREADER_H)
-#define _PREADER_H
+#ifndef SPD_NN_PREADER_H
+#define SPD_NN_PREADER_H
+
+namespace spdlib{ namespace nn{
 
 struct preader;
 typedef struct preader preader;
@@ -23,5 +25,7 @@ preader* preader_create1(double xmin, double xmax, double ymin, double ymax, int
 preader* preader_create2(char* fname);
 point* preader_getpoint(preader* pr);
 void preader_destroy(preader* pr);
+    
+}}
 
 #endif

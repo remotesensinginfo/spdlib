@@ -87,6 +87,14 @@ namespace spdlib
 		virtual void initInterpolator(std::list<SPDPulse*> *pulses, boost::uint_fast16_t ptClass) throw(SPDProcessingException) = 0;
 		virtual void initInterpolator(std::vector<SPDPulse*> *pulses, boost::uint_fast16_t ptClass) throw(SPDProcessingException) = 0;
 		virtual float getValue(double eastings, double northings) throw(SPDProcessingException) = 0;
+        virtual void getValues(double *eastings, double *northings, float *zVals, unsigned long nPts) throw(SPDProcessingException)
+        {
+            for(unsigned long i = 0; i < nPts; ++i)
+            {
+                zVals[i] = this->getValue(eastings[i], northings[i]);
+            }
+        };
+        virtual bool useGetValues(){return false;};
 		virtual void resetInterpolator() throw(SPDProcessingException) = 0;
 		virtual ~SPDPointInterpolator(){};
 	protected:
@@ -130,6 +138,33 @@ namespace spdlib
         Face_handle fh;
 
 	};
+    
+    /**
+     * SPDTriangulationNNPointInterpolator is an abstract interface for the interpolation
+     * of SPDPoint/SPDPulse data using a triangulation.
+     *
+     * Uses the NN code for the interpolation.
+     *
+     */
+    class DllExport SPDTriangulationNNPointInterpolator : public SPDPointInterpolator
+    {
+    public:
+        SPDTriangulationNNPointInterpolator(boost::uint_fast16_t elevVal, float thinGridRes, bool thinData, boost::uint_fast16_t selectHighOrLow, boost::uint_fast16_t maxNumPtsPerBin);
+        virtual void initInterpolator(std::list<SPDPulse*> ***pulses, boost::uint_fast32_t numXBins, boost::uint_fast32_t numYBins, boost::uint_fast16_t ptClass) throw(SPDProcessingException);
+        virtual void initInterpolator(std::vector<SPDPulse*> ***pulses, boost::uint_fast32_t numXBins, boost::uint_fast32_t numYBins, boost::uint_fast16_t ptClass) throw(SPDProcessingException);
+        virtual void initInterpolator(std::list<SPDPulse*> *pulses, boost::uint_fast16_t ptClass) throw(SPDProcessingException);
+        virtual void initInterpolator(std::vector<SPDPulse*> *pulses, boost::uint_fast16_t ptClass) throw(SPDProcessingException);
+        virtual float getValue(double eastings, double northings) throw(SPDProcessingException);
+        virtual void getValues(double *eastings, double *northings, float *zVals, unsigned long nPts) throw(SPDProcessingException) = 0;
+        virtual void resetInterpolator() throw(SPDProcessingException);
+        virtual bool useGetValues(){return true;};
+        virtual ~SPDTriangulationNNPointInterpolator();
+    protected:
+        double *xPts;
+        double *yPts;
+        double *zPts;
+        unsigned long nPts;
+    };
     
     
 	
@@ -262,13 +297,29 @@ namespace spdlib
         boost::uint_fast16_t numPoints;
 	};
     
-	class DllExport SPDNaturalNeighborPointInterpolator :public SPDTriangulationPointInterpolator
+	class DllExport SPDNaturalNeighborCGALPointInterpolator :public SPDTriangulationPointInterpolator
 	{
 	public:
-		SPDNaturalNeighborPointInterpolator(boost::uint_fast16_t elevVal, float thinGridRes, bool thinData, boost::uint_fast16_t selectHighOrLow, boost::uint_fast16_t maxNumPtsPerBin);
+		SPDNaturalNeighborCGALPointInterpolator(boost::uint_fast16_t elevVal, float thinGridRes, bool thinData, boost::uint_fast16_t selectHighOrLow, boost::uint_fast16_t maxNumPtsPerBin);
 		float getValue(double eastings, double northings) throw(SPDProcessingException);
-		~SPDNaturalNeighborPointInterpolator();
+		~SPDNaturalNeighborCGALPointInterpolator();
 	};
+    
+    
+    
+    class DllExport SPDNaturalNeighborNNPointInterpolator :public SPDTriangulationNNPointInterpolator
+    {
+    public:
+        SPDNaturalNeighborNNPointInterpolator(boost::uint_fast16_t elevVal, float thinGridRes, bool thinData, boost::uint_fast16_t selectHighOrLow, boost::uint_fast16_t maxNumPtsPerBin);
+        void getValues(double *eastings, double *northings, float *zVals, unsigned long nPts) throw(SPDProcessingException);
+        ~SPDNaturalNeighborNNPointInterpolator();
+    };
+    
+    
+    
+    
+    
+    
     
     
     

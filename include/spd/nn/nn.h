@@ -15,8 +15,10 @@
  *
  *****************************************************************************/
 
-#if !defined(_NN_H)
-#define _NN_H
+#ifndef SPD_NN_NN_H
+#define SPD_NN_NN_H
+
+namespace spdlib{ namespace nn{
 
 typedef enum { SIBSON, NON_SIBSONIAN } NN_RULE;
 
@@ -347,4 +349,6 @@ extern char* nn_version;
  */
 extern int nn_test_vertice;
 
+}}
+    
 #endif                          /* _NN_H */

@@ -15,8 +15,10 @@
  *
  *****************************************************************************/
 
-#if !defined(_ISTACK_H)
-#define _ISTACK_H
+#ifndef SPD_NN_ISTACK_H
+#define SPD_NN_ISTACK_H
+
+namespace spdlib{ namespace nn{
 
 #if !defined(_ISTACK_STRUCT)
 #define _ISTACK_STRUCT
@@ -37,4 +39,6 @@ int istack_pop(istack* s);
 int istack_contains(istack* s, int v);
 void istack_reset(istack* s);
 
+}}
+    
 #endif

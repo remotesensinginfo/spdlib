@@ -13,8 +13,10 @@
  *
  *****************************************************************************/
 
-#if !defined(_MINELL_H)
-#define _MINELL_H
+#ifndef SPD_NN_MINELL_H
+#define SPD_NN_MINELL_H
+
+namespace spdlib{ namespace nn{
 
 #if !defined(_POINT_STRUCT)
 #define _POINT_STRUCT
@@ -37,4 +39,6 @@ void minell_destroy(minell* me);
 void minell_scalepoints(minell* me, int n, point p[]);
 void minell_rescalepoints(minell* me, int n, point p[]);
 
+}}
+    
 #endif
