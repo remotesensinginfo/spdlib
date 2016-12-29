@@ -2159,7 +2159,7 @@ namespace spdlib{
 					else if(returnCode == MP_ERR_MEMORY)
 					{
 						throw SPDException("mpfit - memory allocation error - may have run out!");
-					}
+                    }
 					else if(returnCode == MP_ERR_INITBOUNDS)
 					{
 						throw SPDException("mpfit - Initial parameter values inconsistant with constraints.");
@@ -2395,7 +2395,16 @@ namespace spdlib{
 
     double SPDMetricCalcSumAmplitude::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
     {
-        std::vector<double> *ptVals = this->getPointsValuesWithinAmplitudeParameters(pulses, spdFile, geom);
+        std::vector<double> *ptVals;
+        // If the recieved waveform is defined use all the values within the digitised waveform
+        if(spdFile->getReceiveWaveformDefined() == SPD_TRUE)
+        {
+            ptVals = this->getPulseValues(pulses, spdFile, geom);
+        }
+        else
+        {
+           ptVals = this->getPointsValuesWithinAmplitudeParameters(pulses, spdFile, geom);
+        }
         double sum = 0;
         for(std::vector<double>::iterator iterVals = ptVals->begin(); iterVals != ptVals->end(); ++iterVals)
         {
@@ -2407,8 +2416,18 @@ namespace spdlib{
 
     double SPDMetricCalcMeanAmplitude::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
     {
-        std::vector<double> *ptVals = this->getPointsValuesWithinAmplitudeParameters(pulses, spdFile, geom);
         double mean = 0;
+
+        std::vector<double> *ptVals;
+        // If the recieved waveform is defined use all the values within the digitised waveform
+        if(spdFile->getReceiveWaveformDefined() == SPD_TRUE)
+        {
+            ptVals = this->getPulseValues(pulses, spdFile, geom);
+        }
+        else
+        {
+            ptVals = this->getPointsValuesWithinAmplitudeParameters(pulses, spdFile, geom);
+        }
         if(ptVals->size() > 0)
 		{
             mean = gsl_stats_mean (&(*ptVals)[0], 1, ptVals->size());
@@ -2418,12 +2437,23 @@ namespace spdlib{
             mean = std::numeric_limits<float>::signaling_NaN();
         }
         delete ptVals;
+
         return mean;
     }
 
     double SPDMetricCalcMedianAmplitude::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
     {
-        std::vector<double> *ptVals = this->getPointsValuesWithinAmplitudeParameters(pulses, spdFile, geom);
+        std::vector<double> *ptVals;
+        // If the recieved waveform is defined use all the values within the digitised waveform
+        if(spdFile->getReceiveWaveformDefined() == SPD_TRUE)
+        {
+            ptVals = this->getPulseValues(pulses, spdFile, geom);
+        }
+        else
+        {
+            ptVals = this->getPointsValuesWithinAmplitudeParameters(pulses, spdFile, geom);
+        }
+
         double median = 0;
         if(ptVals->size() > 0)
 		{
@@ -2440,7 +2470,17 @@ namespace spdlib{
 
     double SPDMetricCalcModeAmplitude::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
     {
-        std::vector<double> *ptVals = this->getPointsValuesWithinAmplitudeParameters(pulses, spdFile, geom);
+        std::vector<double> *ptVals;
+        // If the recieved waveform is defined use all the values within the digitised waveform
+        if(spdFile->getReceiveWaveformDefined() == SPD_TRUE)
+        {
+            ptVals = this->getPulseValues(pulses, spdFile, geom);
+        }
+        else
+        {
+            ptVals = this->getPointsValuesWithinAmplitudeParameters(pulses, spdFile, geom);
+        }
+
         double mode = 0;
         if(ptVals->size() > 0)
         {
@@ -2457,7 +2497,17 @@ namespace spdlib{
 
     double SPDMetricCalcMinAmplitude::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
     {
-        std::vector<double> *ptVals = this->getPointsValuesWithinAmplitudeParameters(pulses, spdFile, geom);
+        std::vector<double> *ptVals;
+        // If the recieved waveform is defined use all the values within the digitised waveform
+        if(spdFile->getReceiveWaveformDefined() == SPD_TRUE)
+        {
+            ptVals = this->getPulseValues(pulses, spdFile, geom);
+        }
+        else
+        {
+            ptVals = this->getPointsValuesWithinAmplitudeParameters(pulses, spdFile, geom);
+        }
+
         double min = 0;
         if(ptVals->size() > 0)
 		{
@@ -2473,7 +2523,17 @@ namespace spdlib{
 
     double SPDMetricCalcMaxAmplitude::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
     {
-        std::vector<double> *ptVals = this->getPointsValuesWithinAmplitudeParameters(pulses, spdFile, geom);
+        std::vector<double> *ptVals;
+        // If the recieved waveform is defined use all the values within the digitised waveform
+        if(spdFile->getReceiveWaveformDefined() == SPD_TRUE)
+        {
+            ptVals = this->getPulseValues(pulses, spdFile, geom);
+        }
+        else
+        {
+            ptVals = this->getPointsValuesWithinAmplitudeParameters(pulses, spdFile, geom);
+        }
+
         double max = 0;
         if(ptVals->size() > 0)
 		{
@@ -2489,7 +2549,17 @@ namespace spdlib{
 
     double SPDMetricCalcStdDevAmplitude::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
     {
-        std::vector<double> *ptVals = this->getPointsValuesWithinAmplitudeParameters(pulses, spdFile, geom);
+        std::vector<double> *ptVals;
+        // If the recieved waveform is defined use all the values within the digitised waveform
+        if(spdFile->getReceiveWaveformDefined() == SPD_TRUE)
+        {
+            ptVals = this->getPulseValues(pulses, spdFile, geom);
+        }
+        else
+        {
+            ptVals = this->getPointsValuesWithinAmplitudeParameters(pulses, spdFile, geom);
+        }
+
         double stddev = 0;
         if(ptVals->size() > 0)
 		{
@@ -2505,7 +2575,17 @@ namespace spdlib{
 
     double SPDMetricCalcVarianceAmplitude::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
     {
-        std::vector<double> *ptVals = this->getPointsValuesWithinAmplitudeParameters(pulses, spdFile, geom);
+        std::vector<double> *ptVals;
+        // If the recieved waveform is defined use all the values within the digitised waveform
+        if(spdFile->getReceiveWaveformDefined() == SPD_TRUE)
+        {
+            ptVals = this->getPulseValues(pulses, spdFile, geom);
+        }
+        else
+        {
+            ptVals = this->getPointsValuesWithinAmplitudeParameters(pulses, spdFile, geom);
+        }
+
         double variance = 0;
         if(ptVals->size() > 0)
 		{
@@ -2521,7 +2601,17 @@ namespace spdlib{
 
     double SPDMetricCalcAbsDeviationAmplitude::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
     {
-        std::vector<double> *ptVals = this->getPointsValuesWithinAmplitudeParameters(pulses, spdFile, geom);
+        std::vector<double> *ptVals;
+        // If the recieved waveform is defined use all the values within the digitised waveform
+        if(spdFile->getReceiveWaveformDefined() == SPD_TRUE)
+        {
+            ptVals = this->getPulseValues(pulses, spdFile, geom);
+        }
+        else
+        {
+            ptVals = this->getPointsValuesWithinAmplitudeParameters(pulses, spdFile, geom);
+        }
+
         double absdev = 0;
         if(ptVals->size() > 0)
 		{
@@ -2537,7 +2627,17 @@ namespace spdlib{
 
     double SPDMetricCalcCoefficientOfVariationAmplitude::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
     {
-        std::vector<double> *ptVals = this->getPointsValuesWithinAmplitudeParameters(pulses, spdFile, geom);
+        std::vector<double> *ptVals;
+        // If the recieved waveform is defined use all the values within the digitised waveform
+        if(spdFile->getReceiveWaveformDefined() == SPD_TRUE)
+        {
+            ptVals = this->getPulseValues(pulses, spdFile, geom);
+        }
+        else
+        {
+            ptVals = this->getPointsValuesWithinAmplitudeParameters(pulses, spdFile, geom);
+        }
+
         double cv = 0;
         if(ptVals->size() > 0)
 		{
@@ -2560,7 +2660,17 @@ namespace spdlib{
 
     double SPDMetricCalcPercentileAmplitude::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
     {
-        std::vector<double> *ptVals = this->getPointsValuesWithinAmplitudeParameters(pulses, spdFile, geom);
+        std::vector<double> *ptVals;
+        // If the recieved waveform is defined use all the values within the digitised waveform
+        if(spdFile->getReceiveWaveformDefined() == SPD_TRUE)
+        {
+            ptVals = this->getPulseValues(pulses, spdFile, geom);
+        }
+        else
+        {
+            ptVals = this->getPointsValuesWithinAmplitudeParameters(pulses, spdFile, geom);
+        }
+
         double quantile = 0;
         if(ptVals->size() > 0)
 		{
@@ -2578,7 +2688,17 @@ namespace spdlib{
 
     double SPDMetricCalcSkewnessAmplitude::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
     {
-        std::vector<double> *ptVals = this->getPointsValuesWithinAmplitudeParameters(pulses, spdFile, geom);
+        std::vector<double> *ptVals;
+        // If the recieved waveform is defined use all the values within the digitised waveform
+        if(spdFile->getReceiveWaveformDefined() == SPD_TRUE)
+        {
+            ptVals = this->getPulseValues(pulses, spdFile, geom);
+        }
+        else
+        {
+            ptVals = this->getPointsValuesWithinAmplitudeParameters(pulses, spdFile, geom);
+        }
+
         double skew = 0;
         if(ptVals->size() > 0)
 		{
@@ -2594,7 +2714,17 @@ namespace spdlib{
 
     double SPDMetricCalcPersonModeSkewnessAmplitude::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
     {
-        std::vector<double> *ptVals = this->getPointsValuesWithinAmplitudeParameters(pulses, spdFile, geom);
+        std::vector<double> *ptVals;
+        // If the recieved waveform is defined use all the values within the digitised waveform
+        if(spdFile->getReceiveWaveformDefined() == SPD_TRUE)
+        {
+            ptVals = this->getPulseValues(pulses, spdFile, geom);
+        }
+        else
+        {
+            ptVals = this->getPointsValuesWithinAmplitudeParameters(pulses, spdFile, geom);
+        }
+
         double personModeSkew = 0;
         if(ptVals->size() > 0)
 		{
@@ -2615,7 +2745,17 @@ namespace spdlib{
 
     double SPDMetricCalcPersonMedianSkewnessAmplitude::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
     {
-        std::vector<double> *ptVals = this->getPointsValuesWithinAmplitudeParameters(pulses, spdFile, geom);
+        std::vector<double> *ptVals;
+        // If the recieved waveform is defined use all the values within the digitised waveform
+        if(spdFile->getReceiveWaveformDefined() == SPD_TRUE)
+        {
+            ptVals = this->getPulseValues(pulses, spdFile, geom);
+        }
+        else
+        {
+            ptVals = this->getPointsValuesWithinAmplitudeParameters(pulses, spdFile, geom);
+        }
+
         double personMedianSkew = 0;
         if(ptVals->size() > 0)
 		{
@@ -2636,7 +2776,17 @@ namespace spdlib{
 
     double SPDMetricCalcKurtosisAmplitude::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
     {
-        std::vector<double> *ptVals = this->getPointsValuesWithinAmplitudeParameters(pulses, spdFile, geom);
+        std::vector<double> *ptVals;
+        // If the recieved waveform is defined use all the values within the digitised waveform
+        if(spdFile->getReceiveWaveformDefined() == SPD_TRUE)
+        {
+            ptVals = this->getPulseValues(pulses, spdFile, geom);
+        }
+        else
+        {
+            ptVals = this->getPointsValuesWithinAmplitudeParameters(pulses, spdFile, geom);
+        }
+
         double kurtosis = 0;
         if(ptVals->size() > 0)
 		{

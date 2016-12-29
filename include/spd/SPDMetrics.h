@@ -16112,6 +16112,29 @@ namespace spdlib{
             }
             return points;
         };
+        virtual std::vector<double>* getPulseValues(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+        {
+            std::vector<double> *points = new std::vector<double>();
+            if(spdFile->getReceiveWaveformDefined() == SPD_TRUE)
+            {
+                for(std::vector<SPDPulse*>::iterator iterPulses = pulses->begin(); iterPulses != pulses->end(); ++iterPulses)
+                {
+                    for(unsigned int s = 0; s < (*iterPulses)->numOfReceivedBins; s++)
+                    {
+                        double pulse_dn_val =(*iterPulses)->received[s];
+                        if(pulse_dn_val > (*iterPulses)->receiveWaveNoiseThreshold)
+                        {
+                            points->push_back(pulse_dn_val);
+                        }
+                    }
+                }
+            }
+            else
+            {
+                throw SPDProcessingException("No waveform has been defined - can't get pulse values");
+            }
+            return points;
+        };
         virtual double calcBinnedMode(std::vector<double> *values, float resolution) throw(SPDProcessingException)
         {
             double mode = 0;
