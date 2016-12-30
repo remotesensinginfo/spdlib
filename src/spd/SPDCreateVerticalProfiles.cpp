@@ -94,8 +94,8 @@ namespace spdlib
 
                         if((binIdx >= 0) && (binIdx < this->numOfBins))
                         {
-                            // Add 1 to the bin.
-                            imageData[binIdx] += 1;
+                            // Add pulse amplitude value to the total for the bin.
+                            imageData[binIdx] += pulseDNVal;
                             ++numReturns;
                         }
                     }
@@ -103,7 +103,7 @@ namespace spdlib
 
             }
         }
-        // If no waveform is defined using the points within each pulse
+        // If no waveform is defined use the points within each pulse
         else if(pulses->size() > 0)
         {
             for(iterPulses = pulses->begin(); iterPulses != pulses->end(); ++iterPulses)
@@ -120,8 +120,8 @@ namespace spdlib
 
                             if((binIdx >= 0) && (binIdx < this->numOfBins))
                             {
-                                // Add 1 to the bin.
-                                imageData[binIdx] += 1;
+                                // Add return amplitude value to the total for the bin.
+                                imageData[binIdx] += (*iterPoints)->amplitudeReturn;
                                 ++numReturns;
                             }
                         }
