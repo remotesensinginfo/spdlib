@@ -364,7 +364,7 @@ namespace spdlib
 
         boost::uint_fast32_t returnID = 0;
         boost::uint_fast32_t classID = 0;
-        boost::uint_fast32_t minNumReturns = 0;
+        boost::uint_fast32_t minNumReturns = 1;
         double upThreshold = 0;
         double lowThreshold = 0;
         double heightUpThreshold = 0;
@@ -455,7 +455,7 @@ namespace spdlib
             }
             else
             {
-                minNumReturns = 0;
+                minNumReturns = 1;
             }
 
             if(metricElement->hasAttribute(metricUpThresholdXMLStr))

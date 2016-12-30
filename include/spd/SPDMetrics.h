@@ -500,7 +500,7 @@ namespace spdlib{
     class DllExport SPDMetricCalc : public SPDMetric
 	{
 	public:
-		SPDMetricCalc(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1)
+		SPDMetricCalc(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=1, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1)
         {
             this->returnID = returnID;
             this->classification = classification;
@@ -516,7 +516,53 @@ namespace spdlib{
         virtual std::vector<double>* getPointsValuesWithinHeightParameters(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
         {
             std::vector<double> *points = new std::vector<double>();
-            if((spdFile->getDecomposedPtDefined() == SPD_TRUE) | (spdFile->getDiscretePtDefined() == SPD_TRUE))
+            // If there is waveform data and the minimum number of returns has been set to 0
+            if((spdFile->getReceiveWaveformDefined() == SPD_TRUE) & this->minNumReturns == 0)
+            {
+                double tmpX = 0;
+                double tmpY = 0;
+                double tmpH = 0;
+
+                for(std::vector<SPDPulse*>::iterator iterPulses = pulses->begin(); iterPulses != pulses->end(); ++iterPulses)
+                {
+                    for(unsigned int s = 0; s < (*iterPulses)->numOfReceivedBins; s++)
+                    {
+                        // Get the DN of the digitised value and check
+                        // this is above the noise threshold.
+                        double pulseDNVal = (*iterPulses)->received[s];
+
+                        if(pulseDNVal > (*iterPulses)->receiveWaveNoiseThreshold)
+                        {
+                            // Get the time of the digitised value, relative to the origin
+                            double timeOffset = s * spdFile->getTemporalBinSpacing();
+
+                            // Get the height of the digitised value using the height of the origin
+                            // and the time offset within the pulse.
+                            SPDConvertToCartesian((*iterPulses)->zenith, (*iterPulses)->azimuth, 
+                                                (SPD_SPEED_OF_LIGHT_NS * timeOffset), (*iterPulses)->x0, (*iterPulses)->y0, (*iterPulses)->h0, &tmpX, &tmpY, &tmpH);
+
+                            if((boost::math::isnan(this->upThreshold)) & (boost::math::isnan(this->lowThreshold)))
+                            {
+                                points->push_back(tmpH);
+                            }
+                            else if((boost::math::isnan(this->lowThreshold)) & (tmpH <= this->upThreshold))
+                            {
+                                points->push_back(tmpH);
+                            }
+                            else if((tmpH >= this->lowThreshold) & (boost::math::isnan(this->upThreshold)))
+                            {
+                                points->push_back(tmpH);
+                            }
+                            else if((tmpH >= this->lowThreshold) & (tmpH <= this->upThreshold))
+                            {
+                                points->push_back(tmpH);
+                            }
+
+                        }
+                    }
+                }
+            }
+            else if((spdFile->getDecomposedPtDefined() == SPD_TRUE) | (spdFile->getDiscretePtDefined() == SPD_TRUE))
             {
                 for(std::vector<SPDPulse*>::iterator iterPulses = pulses->begin(); iterPulses != pulses->end(); ++iterPulses)
                 {
@@ -1242,9 +1288,10 @@ namespace spdlib{
                     }
                 }
             }
-            else if(spdFile->getReceiveWaveformDefined() == SPD_TRUE)
+            else if((spdFile->getReceiveWaveformDefined() == SPD_TRUE) & this->minNumReturns != 0)
             {
-                throw SPDProcessingException("Use the waveform metrics for waveform only data or decomposed to retrieve points.");
+                throw SPDProcessingException("There are no points and the number of returns has been set to a number > 0."
+                                             " Either set 'minNumReturns' to 0 or run decomposition");
             }
             else
             {
@@ -1256,7 +1303,52 @@ namespace spdlib{
         virtual std::vector<double>* getPointsValuesWithinZParameters(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
         {
             std::vector<double> *points = new std::vector<double>();
-            if((spdFile->getDecomposedPtDefined() == SPD_TRUE) | (spdFile->getDiscretePtDefined() == SPD_TRUE))
+            if((spdFile->getReceiveWaveformDefined() == SPD_TRUE) & this->minNumReturns == 0)
+            {
+                double tmpX = 0;
+                double tmpY = 0;
+                double tmpZ = 0;
+
+                for(std::vector<SPDPulse*>::iterator iterPulses = pulses->begin(); iterPulses != pulses->end(); ++iterPulses)
+                {
+                    for(unsigned int s = 0; s < (*iterPulses)->numOfReceivedBins; s++)
+                    {
+                        // Get the DN of the digitised value and check
+                        // this is above the noise threshold.
+                        double pulseDNVal = (*iterPulses)->received[s];
+
+                        if(pulseDNVal > (*iterPulses)->receiveWaveNoiseThreshold)
+                        {
+                            // Get the time of the digitised value, relative to the origin
+                            double timeOffset = s * spdFile->getTemporalBinSpacing();
+
+                            // Get the height of the digitised value using the height of the origin
+                            // and the time offset within the pulse.
+                            SPDConvertToCartesian((*iterPulses)->zenith, (*iterPulses)->azimuth, 
+                                                (SPD_SPEED_OF_LIGHT_NS * timeOffset), (*iterPulses)->x0, (*iterPulses)->y0, (*iterPulses)->z0, &tmpX, &tmpY, &tmpZ);
+
+                            if((boost::math::isnan(this->upThreshold)) & (boost::math::isnan(this->lowThreshold)))
+                            {
+                                points->push_back(tmpZ);
+                            }
+                            else if((boost::math::isnan(this->lowThreshold)) & (tmpZ <= this->upThreshold))
+                            {
+                                points->push_back(tmpZ);
+                            }
+                            else if((tmpZ >= this->lowThreshold) & (boost::math::isnan(this->upThreshold)))
+                            {
+                                points->push_back(tmpZ);
+                            }
+                            else if((tmpZ >= this->lowThreshold) & (tmpZ <= this->upThreshold))
+                            {
+                                points->push_back(tmpZ);
+                            }
+
+                        }
+                    }
+                }
+            }
+            else if((spdFile->getDecomposedPtDefined() == SPD_TRUE) | (spdFile->getDiscretePtDefined() == SPD_TRUE))
             {
                 for(std::vector<SPDPulse*>::iterator iterPulses = pulses->begin(); iterPulses != pulses->end(); ++iterPulses)
                 {
@@ -1982,9 +2074,10 @@ namespace spdlib{
                     }
                 }
             }
-            else if(spdFile->getReceiveWaveformDefined() == SPD_TRUE)
+            else if((spdFile->getReceiveWaveformDefined() == SPD_TRUE) & this->minNumReturns != 0)
             {
-                throw SPDProcessingException("Use the waveform metrics for waveform only data or decomposed to retrieve points.");
+                throw SPDProcessingException("There are no points and the number of returns has been set to a number > 0."
+                                             " Either set 'minNumReturns' to 0 or run decomposition");
             }
             else
             {
@@ -1996,7 +2089,38 @@ namespace spdlib{
         virtual std::vector<double>* getPointsValuesWithinAmplitudeParameters(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
         {
             std::vector<double> *points = new std::vector<double>();
-            if((spdFile->getDecomposedPtDefined() == SPD_TRUE) | (spdFile->getDiscretePtDefined() == SPD_TRUE))
+            // If there is waveform data and the minimum number of returns has been set to 0
+            if((spdFile->getReceiveWaveformDefined() == SPD_TRUE) & this->minNumReturns == 0)
+            {
+                // Get amplitude values for all returns of pulses in geom with amplitude falling between lowThreshold and upThreshold.
+                for(std::vector<SPDPulse*>::iterator iterPulses = pulses->begin(); iterPulses != pulses->end(); ++iterPulses)
+                {
+                    for(unsigned int s = 0; s < (*iterPulses)->numOfReceivedBins; s++)
+                    {
+                        double pulseDNVal = (*iterPulses)->received[s];
+                        if(pulseDNVal > (*iterPulses)->receiveWaveNoiseThreshold)
+                        {
+                            if((boost::math::isnan(this->upThreshold)) & (boost::math::isnan(this->lowThreshold)))
+                            {
+                                points->push_back(pulseDNVal);
+                            }
+                            else if((boost::math::isnan(this->lowThreshold)) & (pulseDNVal <= this->upThreshold))
+                            {
+                                points->push_back(pulseDNVal);
+                            }
+                            else if((pulseDNVal >= this->lowThreshold) & (boost::math::isnan(this->upThreshold)))
+                            {
+                                points->push_back(pulseDNVal);
+                            }
+                            else if((pulseDNVal >= this->lowThreshold) & (pulseDNVal <= this->upThreshold))
+                            {
+                                points->push_back(pulseDNVal);
+                            }
+                        }
+                    }
+                }
+            }
+            else if((spdFile->getDecomposedPtDefined() == SPD_TRUE) | (spdFile->getDiscretePtDefined() == SPD_TRUE))
             {
                 for(std::vector<SPDPulse*>::iterator iterPulses = pulses->begin(); iterPulses != pulses->end(); ++iterPulses)
                 {
@@ -4774,9 +4898,10 @@ namespace spdlib{
                     }
                 }
             }
-            else if(spdFile->getReceiveWaveformDefined() == SPD_TRUE)
+            else if((spdFile->getReceiveWaveformDefined() == SPD_TRUE) & this->minNumReturns != 0)
             {
-                throw SPDProcessingException("Use the waveform metrics for waveform only data or decomposed to retrieve points.");
+                throw SPDProcessingException("There are no points and the number of returns has been set to a number > 0."
+                                             " Either set 'minNumReturns' to 0 or run decomposition");
             }
             else
             {
@@ -16112,45 +16237,6 @@ namespace spdlib{
             }
             return points;
         };
-        virtual std::vector<double>* getPulseValuesWithinAmplitudeParameters(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
-        {
-            // Get amplitude values for all returns of pulses in geom with amplitude falling between lowThreshold and upThreshold.
-            std::vector<double> *points = new std::vector<double>();
-            if(spdFile->getReceiveWaveformDefined() == SPD_TRUE)
-            {
-                for(std::vector<SPDPulse*>::iterator iterPulses = pulses->begin(); iterPulses != pulses->end(); ++iterPulses)
-                {
-                    for(unsigned int s = 0; s < (*iterPulses)->numOfReceivedBins; s++)
-                    {
-                        double pulse_dn_val = (*iterPulses)->received[s];
-                        if(pulse_dn_val > (*iterPulses)->receiveWaveNoiseThreshold)
-                        {
-                            if((boost::math::isnan(this->upThreshold)) & (boost::math::isnan(this->lowThreshold)))
-                            {
-                                points->push_back(pulse_dn_val);
-                            }
-                            else if((boost::math::isnan(this->lowThreshold)) & (pulse_dn_val <= this->upThreshold))
-                            {
-                                points->push_back(pulse_dn_val);
-                            }
-                            else if((pulse_dn_val >= this->lowThreshold) & (boost::math::isnan(this->upThreshold)))
-                            {
-                                points->push_back(pulse_dn_val);
-                            }
-                            else if((pulse_dn_val >= this->lowThreshold) & (pulse_dn_val <= this->upThreshold))
-                            {
-                                points->push_back(pulse_dn_val);
-                            }
-                        }
-                    }
-                }
-            }
-            else
-            {
-                throw SPDProcessingException("No waveform has been defined - can't get pulse values");
-            }
-            return points;
-        };
         virtual double calcBinnedMode(std::vector<double> *values, float resolution) throw(SPDProcessingException)
         {
             double mode = 0;
@@ -16364,7 +16450,7 @@ namespace spdlib{
     class DllExport SPDMetricCalcNumPulses : public SPDMetricCalc
 	{
 	public:
-		SPDMetricCalcNumPulses(boost::uint_fast16_t minNumReturns=0):SPDMetricCalc(SPD_ALL_RETURNS, SPD_ALL_CLASSES, minNumReturns, 0, 0, 0, 0){};
+		SPDMetricCalcNumPulses(boost::uint_fast16_t minNumReturns=1):SPDMetricCalc(SPD_ALL_RETURNS, SPD_ALL_CLASSES, minNumReturns, 0, 0, 0, 0){};
 		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcNumPulses(){};
 	};
@@ -16372,7 +16458,7 @@ namespace spdlib{
     class DllExport SPDMetricCalcCanopyCover : public SPDMetricCalc
 	{
 	public:
-		SPDMetricCalcCanopyCover(float resolution, float radius,boost::int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0)
+		SPDMetricCalcCanopyCover(float resolution, float radius,boost::int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=1, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0)
         {
             this->resolution = resolution;
             this->radius = radius;
@@ -16387,7 +16473,7 @@ namespace spdlib{
     class DllExport SPDMetricCalcCanopyCoverPercent : public SPDMetricCalc
 	{
 	public:
-		SPDMetricCalcCanopyCoverPercent(float resolution, float radius,boost::int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0)
+		SPDMetricCalcCanopyCoverPercent(float resolution, float radius,boost::int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=1, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0)
         {
             this->resolution = resolution;
             this->radius = radius;
@@ -16407,7 +16493,7 @@ namespace spdlib{
     class DllExport SPDMetricCalcLeeOpennessHeight : public SPDMetricCalc
 	{
 	public:
-		SPDMetricCalcLeeOpennessHeight(float vRes,boost::int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0)
+		SPDMetricCalcLeeOpennessHeight(float vRes,boost::int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=1, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0)
         {
             this->vRes = vRes;
         };
@@ -16420,7 +16506,7 @@ namespace spdlib{
     class DllExport SPDMetricCalcNumReturnsHeight : public SPDMetricCalc
 	{
 	public:
-		SPDMetricCalcNumReturnsHeight(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
+		SPDMetricCalcNumReturnsHeight(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=1, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
 		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcNumReturnsHeight(){};
 	};
@@ -16428,7 +16514,7 @@ namespace spdlib{
     class DllExport SPDMetricCalcSumHeight : public SPDMetricCalc
 	{
 	public:
-		SPDMetricCalcSumHeight(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
+		SPDMetricCalcSumHeight(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=1, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
 		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcSumHeight(){};
 	};
@@ -16436,7 +16522,7 @@ namespace spdlib{
     class DllExport SPDMetricCalcMeanHeight : public SPDMetricCalc
 	{
 	public:
-		SPDMetricCalcMeanHeight(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
+		SPDMetricCalcMeanHeight(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=1, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
 		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcMeanHeight(){};
 	};
@@ -16444,7 +16530,7 @@ namespace spdlib{
     class DllExport SPDMetricCalcMedianHeight : public SPDMetricCalc
 	{
 	public:
-		SPDMetricCalcMedianHeight(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
+		SPDMetricCalcMedianHeight(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=1, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
 		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcMedianHeight(){};
 	};
@@ -16452,7 +16538,7 @@ namespace spdlib{
     class DllExport SPDMetricCalcModeHeight : public SPDMetricCalc
 	{
 	public:
-		SPDMetricCalcModeHeight(float resolution,boost::int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0)
+		SPDMetricCalcModeHeight(float resolution,boost::int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=1, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0)
         {
             this->resolution = resolution;
         };
@@ -16465,7 +16551,7 @@ namespace spdlib{
     class DllExport SPDMetricCalcMinHeight : public SPDMetricCalc
 	{
 	public:
-		SPDMetricCalcMinHeight(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
+		SPDMetricCalcMinHeight(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=1, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
 		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcMinHeight(){};
 	};
@@ -16473,7 +16559,7 @@ namespace spdlib{
     class DllExport SPDMetricCalcMaxHeight : public SPDMetricCalc
 	{
 	public:
-		SPDMetricCalcMaxHeight(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
+		SPDMetricCalcMaxHeight(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=1, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
 		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcMaxHeight(){};
 	};
@@ -16481,7 +16567,7 @@ namespace spdlib{
     class DllExport SPDMetricCalcDominantHeight : public SPDMetricCalc
 	{
 	public:
-		SPDMetricCalcDominantHeight(float resolution,boost::int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0)
+		SPDMetricCalcDominantHeight(float resolution,boost::int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=1, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0)
         {
             this->resolution = resolution;
         };
@@ -16494,7 +16580,7 @@ namespace spdlib{
     class DllExport SPDMetricCalcStdDevHeight : public SPDMetricCalc
 	{
 	public:
-		SPDMetricCalcStdDevHeight(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
+		SPDMetricCalcStdDevHeight(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=1, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
 		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcStdDevHeight(){};
 	};
@@ -16502,7 +16588,7 @@ namespace spdlib{
     class DllExport SPDMetricCalcVarianceHeight : public SPDMetricCalc
 	{
 	public:
-		SPDMetricCalcVarianceHeight(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
+		SPDMetricCalcVarianceHeight(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=1, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
 		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcVarianceHeight(){};
     private:
@@ -16512,7 +16598,7 @@ namespace spdlib{
     class DllExport SPDMetricCalcAbsDeviationHeight : public SPDMetricCalc
 	{
 	public:
-		SPDMetricCalcAbsDeviationHeight(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
+		SPDMetricCalcAbsDeviationHeight(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=1, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
 		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcAbsDeviationHeight(){};
 	};
@@ -16520,7 +16606,7 @@ namespace spdlib{
     class DllExport SPDMetricCalcCoefficientOfVariationHeight : public SPDMetricCalc
 	{
 	public:
-		SPDMetricCalcCoefficientOfVariationHeight(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
+		SPDMetricCalcCoefficientOfVariationHeight(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=1, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
 		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcCoefficientOfVariationHeight(){};
 	};
@@ -16528,7 +16614,7 @@ namespace spdlib{
     class DllExport SPDMetricCalcPercentileHeight : public SPDMetricCalc
 	{
 	public:
-		SPDMetricCalcPercentileHeight(boost::uint_fast16_t percentile,boost::int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0)
+		SPDMetricCalcPercentileHeight(boost::uint_fast16_t percentile,boost::int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=1, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0)
         {
             this->percentile = percentile;
         };
@@ -16541,7 +16627,7 @@ namespace spdlib{
     class DllExport SPDMetricCalcSkewnessHeight : public SPDMetricCalc
 	{
 	public:
-		SPDMetricCalcSkewnessHeight(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
+		SPDMetricCalcSkewnessHeight(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=1, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
 		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcSkewnessHeight(){};
 	};
@@ -16549,7 +16635,7 @@ namespace spdlib{
     class DllExport SPDMetricCalcPersonModeSkewnessHeight : public SPDMetricCalc
 	{
 	public:
-        SPDMetricCalcPersonModeSkewnessHeight(float resolution,boost::int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0)
+        SPDMetricCalcPersonModeSkewnessHeight(float resolution,boost::int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=1, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0)
         {
             this->resolution = resolution;
         };
@@ -16562,7 +16648,7 @@ namespace spdlib{
     class DllExport SPDMetricCalcPersonMedianSkewnessHeight : public SPDMetricCalc
 	{
 	public:
-		SPDMetricCalcPersonMedianSkewnessHeight(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
+		SPDMetricCalcPersonMedianSkewnessHeight(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=1, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
 		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcPersonMedianSkewnessHeight(){};
 	};
@@ -16570,7 +16656,7 @@ namespace spdlib{
     class DllExport SPDMetricCalcKurtosisHeight : public SPDMetricCalc
 	{
 	public:
-		SPDMetricCalcKurtosisHeight(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
+		SPDMetricCalcKurtosisHeight(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=1, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
 		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcKurtosisHeight(){};
 	};
@@ -16578,7 +16664,7 @@ namespace spdlib{
     class DllExport SPDMetricCalcNumReturnsAboveMetricHeight : public SPDMetricCalc
 	{
 	public:
-		SPDMetricCalcNumReturnsAboveMetricHeight(SPDMetric *metric,boost::int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){
+		SPDMetricCalcNumReturnsAboveMetricHeight(SPDMetric *metric,boost::int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=1, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){
             this->metric = metric;
 		};
 		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
@@ -16590,7 +16676,7 @@ namespace spdlib{
     class DllExport SPDMetricCalcNumReturnsBelowMetricHeight : public SPDMetricCalc
 	{
 	public:
-		SPDMetricCalcNumReturnsBelowMetricHeight(SPDMetric *metric,boost::int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){
+		SPDMetricCalcNumReturnsBelowMetricHeight(SPDMetric *metric,boost::int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=1, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){
 		    this->metric = metric;
 		};
 		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
@@ -16602,7 +16688,7 @@ namespace spdlib{
     class DllExport SPDMetricCalcWeibullAlphaHeight : public SPDMetricCalc
 	{
 	public:
-		SPDMetricCalcWeibullAlphaHeight(float resolution,boost::int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0)
+		SPDMetricCalcWeibullAlphaHeight(float resolution,boost::int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=1, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0)
         {
             this->resolution = resolution;
             this->mpConfigValues = new mp_config();
@@ -16636,7 +16722,7 @@ namespace spdlib{
     class DllExport SPDMetricCalcWeibullBetaHeight : public SPDMetricCalc
 	{
 	public:
-		SPDMetricCalcWeibullBetaHeight(float resolution,boost::int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0)
+		SPDMetricCalcWeibullBetaHeight(float resolution,boost::int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=1, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0)
         {
             this->resolution = resolution;
             this->mpConfigValues = new mp_config();
@@ -16670,7 +16756,7 @@ namespace spdlib{
     class DllExport SPDMetricCalcWeibullQuantileRangeHeight : public SPDMetricCalc
 	{
 	public:
-		SPDMetricCalcWeibullQuantileRangeHeight(float resolution, float interval,boost::int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0)
+		SPDMetricCalcWeibullQuantileRangeHeight(float resolution, float interval,boost::int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=1, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0)
         {
             this->resolution = resolution;
             this->interval = interval;
@@ -16712,7 +16798,7 @@ namespace spdlib{
     class DllExport SPDMetricCalcNumReturnsZ : public SPDMetricCalc
 	{
 	public:
-		SPDMetricCalcNumReturnsZ(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
+		SPDMetricCalcNumReturnsZ(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=1, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
 		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcNumReturnsZ(){};
 	};
@@ -16720,7 +16806,7 @@ namespace spdlib{
     class DllExport SPDMetricCalcSumZ : public SPDMetricCalc
 	{
 	public:
-		SPDMetricCalcSumZ(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
+		SPDMetricCalcSumZ(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=1, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
 		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcSumZ(){};
 	};
@@ -16728,7 +16814,7 @@ namespace spdlib{
     class DllExport SPDMetricCalcMeanZ : public SPDMetricCalc
 	{
 	public:
-		SPDMetricCalcMeanZ(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
+		SPDMetricCalcMeanZ(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=1, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
 		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcMeanZ(){};
 	};
@@ -16736,7 +16822,7 @@ namespace spdlib{
     class DllExport SPDMetricCalcMedianZ : public SPDMetricCalc
 	{
 	public:
-		SPDMetricCalcMedianZ(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
+		SPDMetricCalcMedianZ(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=1, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
 		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcMedianZ(){};
 	};
@@ -16744,7 +16830,7 @@ namespace spdlib{
     class DllExport SPDMetricCalcModeZ : public SPDMetricCalc
 	{
 	public:
-		SPDMetricCalcModeZ(float resolution,boost::int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0)
+		SPDMetricCalcModeZ(float resolution,boost::int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=1, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0)
         {
             this->resolution = resolution;
         };
@@ -16757,7 +16843,7 @@ namespace spdlib{
     class DllExport SPDMetricCalcMinZ : public SPDMetricCalc
 	{
 	public:
-		SPDMetricCalcMinZ(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
+		SPDMetricCalcMinZ(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=1, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
 		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcMinZ(){};
 	};
@@ -16765,7 +16851,7 @@ namespace spdlib{
     class DllExport SPDMetricCalcMaxZ : public SPDMetricCalc
 	{
 	public:
-		SPDMetricCalcMaxZ(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
+		SPDMetricCalcMaxZ(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=1, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
 		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcMaxZ(){};
 	};
@@ -16773,7 +16859,7 @@ namespace spdlib{
     class DllExport SPDMetricCalcStdDevZ : public SPDMetricCalc
 	{
 	public:
-		SPDMetricCalcStdDevZ(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
+		SPDMetricCalcStdDevZ(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=1, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
 		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcStdDevZ(){};
 	};
@@ -16781,7 +16867,7 @@ namespace spdlib{
     class DllExport SPDMetricCalcVarianceZ : public SPDMetricCalc
 	{
 	public:
-		SPDMetricCalcVarianceZ(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
+		SPDMetricCalcVarianceZ(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=1, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
 		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcVarianceZ(){};
     private:
@@ -16791,7 +16877,7 @@ namespace spdlib{
     class DllExport SPDMetricCalcAbsDeviationZ : public SPDMetricCalc
 	{
 	public:
-		SPDMetricCalcAbsDeviationZ(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
+		SPDMetricCalcAbsDeviationZ(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=1, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
 		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcAbsDeviationZ(){};
 	};
@@ -16799,7 +16885,7 @@ namespace spdlib{
     class DllExport SPDMetricCalcCoefficientOfVariationZ : public SPDMetricCalc
 	{
 	public:
-		SPDMetricCalcCoefficientOfVariationZ(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
+		SPDMetricCalcCoefficientOfVariationZ(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=1, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
 		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcCoefficientOfVariationZ(){};
 	};
@@ -16807,7 +16893,7 @@ namespace spdlib{
     class DllExport SPDMetricCalcPercentileZ : public SPDMetricCalc
 	{
 	public:
-		SPDMetricCalcPercentileZ(boost::uint_fast16_t percentile,boost::int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0)
+		SPDMetricCalcPercentileZ(boost::uint_fast16_t percentile,boost::int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=1, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0)
         {
             this->percentile = percentile;
         };
@@ -16820,7 +16906,7 @@ namespace spdlib{
     class DllExport SPDMetricCalcSkewnessZ : public SPDMetricCalc
 	{
 	public:
-		SPDMetricCalcSkewnessZ(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
+		SPDMetricCalcSkewnessZ(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=1, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
 		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcSkewnessZ(){};
 	};
@@ -16828,7 +16914,7 @@ namespace spdlib{
     class DllExport SPDMetricCalcPersonModeSkewnessZ : public SPDMetricCalc
 	{
 	public:
-        SPDMetricCalcPersonModeSkewnessZ(float resolution,boost::int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0)
+        SPDMetricCalcPersonModeSkewnessZ(float resolution,boost::int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=1, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0)
         {
             this->resolution = resolution;
         };
@@ -16841,7 +16927,7 @@ namespace spdlib{
     class DllExport SPDMetricCalcPersonMedianSkewnessZ : public SPDMetricCalc
 	{
 	public:
-		SPDMetricCalcPersonMedianSkewnessZ(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
+		SPDMetricCalcPersonMedianSkewnessZ(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=1, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
 		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcPersonMedianSkewnessZ(){};
 	};
@@ -16849,7 +16935,7 @@ namespace spdlib{
     class DllExport SPDMetricCalcKurtosisZ : public SPDMetricCalc
 	{
 	public:
-		SPDMetricCalcKurtosisZ(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
+		SPDMetricCalcKurtosisZ(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=1, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
 		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcKurtosisZ(){};
 	};
@@ -16857,7 +16943,7 @@ namespace spdlib{
     class DllExport SPDMetricCalcNumReturnsAboveMetricZ : public SPDMetricCalc
 	{
 	public:
-		SPDMetricCalcNumReturnsAboveMetricZ(SPDMetric *metric,boost::int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){
+		SPDMetricCalcNumReturnsAboveMetricZ(SPDMetric *metric,boost::int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=1, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){
             this->metric = metric;
 		};
 		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
@@ -16869,7 +16955,7 @@ namespace spdlib{
     class DllExport SPDMetricCalcNumReturnsBelowMetricZ : public SPDMetricCalc
 	{
 	public:
-		SPDMetricCalcNumReturnsBelowMetricZ(SPDMetric *metric,boost::int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){
+		SPDMetricCalcNumReturnsBelowMetricZ(SPDMetric *metric,boost::int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=1, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){
 		    this->metric = metric;
 		};
 		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
@@ -16881,7 +16967,7 @@ namespace spdlib{
     class DllExport SPDMetricCalcWeibullAlphaZ : public SPDMetricCalc
 	{
 	public:
-		SPDMetricCalcWeibullAlphaZ(float resolution,boost::int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0)
+		SPDMetricCalcWeibullAlphaZ(float resolution,boost::int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=1, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0)
         {
             this->resolution = resolution;
             this->mpConfigValues = new mp_config();
@@ -16915,7 +17001,7 @@ namespace spdlib{
     class DllExport SPDMetricCalcWeibullBetaZ : public SPDMetricCalc
 	{
 	public:
-		SPDMetricCalcWeibullBetaZ(float resolution,boost::int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0)
+		SPDMetricCalcWeibullBetaZ(float resolution,boost::int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=1, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0)
         {
             this->resolution = resolution;
             this->mpConfigValues = new mp_config();
@@ -16949,7 +17035,7 @@ namespace spdlib{
     class DllExport SPDMetricCalcWeibullQuantileRangeZ : public SPDMetricCalc
 	{
 	public:
-		SPDMetricCalcWeibullQuantileRangeZ(float resolution, float interval,boost::int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0)
+		SPDMetricCalcWeibullQuantileRangeZ(float resolution, float interval,boost::int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=1, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0)
         {
             this->resolution = resolution;
             this->interval = interval;
@@ -16993,7 +17079,7 @@ namespace spdlib{
     class DllExport SPDMetricCalcNumReturnsAmplitude : public SPDMetricCalc
 	{
 	public:
-		SPDMetricCalcNumReturnsAmplitude(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold){};
+		SPDMetricCalcNumReturnsAmplitude(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=1, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold){};
 		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcNumReturnsAmplitude(){};
 	};
@@ -17001,7 +17087,7 @@ namespace spdlib{
     class DllExport SPDMetricCalcSumAmplitude : public SPDMetricCalc
 	{
 	public:
-		SPDMetricCalcSumAmplitude(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold){};
+		SPDMetricCalcSumAmplitude(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=1, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold){};
 		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcSumAmplitude(){};
 	};
@@ -17009,7 +17095,7 @@ namespace spdlib{
     class DllExport SPDMetricCalcMeanAmplitude : public SPDMetricCalc
 	{
 	public:
-		SPDMetricCalcMeanAmplitude(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold){};
+		SPDMetricCalcMeanAmplitude(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=1, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold){};
 		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcMeanAmplitude(){};
 	};
@@ -17017,7 +17103,7 @@ namespace spdlib{
     class DllExport SPDMetricCalcMedianAmplitude : public SPDMetricCalc
 	{
 	public:
-		SPDMetricCalcMedianAmplitude(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold){};
+		SPDMetricCalcMedianAmplitude(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=1, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold){};
 		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcMedianAmplitude(){};
 	};
@@ -17025,7 +17111,7 @@ namespace spdlib{
     class DllExport SPDMetricCalcModeAmplitude : public SPDMetricCalc
 	{
 	public:
-		SPDMetricCalcModeAmplitude(float resolution,boost::int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold)
+		SPDMetricCalcModeAmplitude(float resolution,boost::int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=1, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold)
         {
             this->resolution = resolution;
         };
@@ -17038,7 +17124,7 @@ namespace spdlib{
     class DllExport SPDMetricCalcMinAmplitude : public SPDMetricCalc
 	{
 	public:
-		SPDMetricCalcMinAmplitude(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold){};
+		SPDMetricCalcMinAmplitude(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=1, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold){};
 		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcMinAmplitude(){};
 	};
@@ -17046,7 +17132,7 @@ namespace spdlib{
     class DllExport SPDMetricCalcMaxAmplitude : public SPDMetricCalc
 	{
 	public:
-		SPDMetricCalcMaxAmplitude(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold){};
+		SPDMetricCalcMaxAmplitude(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=1, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold){};
 		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcMaxAmplitude(){};
 	};
@@ -17054,7 +17140,7 @@ namespace spdlib{
     class DllExport SPDMetricCalcStdDevAmplitude : public SPDMetricCalc
 	{
 	public:
-		SPDMetricCalcStdDevAmplitude(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold){};
+		SPDMetricCalcStdDevAmplitude(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=1, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold){};
 		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcStdDevAmplitude(){};
 	};
@@ -17062,7 +17148,7 @@ namespace spdlib{
     class DllExport SPDMetricCalcVarianceAmplitude : public SPDMetricCalc
 	{
 	public:
-		SPDMetricCalcVarianceAmplitude(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold){};
+		SPDMetricCalcVarianceAmplitude(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=1, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold){};
 		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcVarianceAmplitude(){};
     private:
@@ -17072,7 +17158,7 @@ namespace spdlib{
     class DllExport SPDMetricCalcAbsDeviationAmplitude : public SPDMetricCalc
 	{
 	public:
-		SPDMetricCalcAbsDeviationAmplitude(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold){};
+		SPDMetricCalcAbsDeviationAmplitude(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=1, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold){};
 		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcAbsDeviationAmplitude(){};
 	};
@@ -17080,7 +17166,7 @@ namespace spdlib{
     class DllExport SPDMetricCalcCoefficientOfVariationAmplitude : public SPDMetricCalc
 	{
 	public:
-		SPDMetricCalcCoefficientOfVariationAmplitude(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold){};
+		SPDMetricCalcCoefficientOfVariationAmplitude(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=1, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold){};
 		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcCoefficientOfVariationAmplitude(){};
 	};
@@ -17088,7 +17174,7 @@ namespace spdlib{
     class DllExport SPDMetricCalcPercentileAmplitude : public SPDMetricCalc
 	{
 	public:
-		SPDMetricCalcPercentileAmplitude(boost::uint_fast16_t percentile,boost::int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold)
+		SPDMetricCalcPercentileAmplitude(boost::uint_fast16_t percentile,boost::int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=1, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold)
         {
             this->percentile = percentile;
         };
@@ -17101,7 +17187,7 @@ namespace spdlib{
     class DllExport SPDMetricCalcSkewnessAmplitude : public SPDMetricCalc
 	{
 	public:
-		SPDMetricCalcSkewnessAmplitude(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold){};
+		SPDMetricCalcSkewnessAmplitude(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=1, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold){};
 		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcSkewnessAmplitude(){};
 	};
@@ -17109,7 +17195,7 @@ namespace spdlib{
     class DllExport SPDMetricCalcPersonModeSkewnessAmplitude : public SPDMetricCalc
 	{
 	public:
-        SPDMetricCalcPersonModeSkewnessAmplitude(float resolution,boost::int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold)
+        SPDMetricCalcPersonModeSkewnessAmplitude(float resolution,boost::int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=1, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold)
         {
             this->resolution = resolution;
         };
@@ -17122,7 +17208,7 @@ namespace spdlib{
     class DllExport SPDMetricCalcPersonMedianSkewnessAmplitude : public SPDMetricCalc
 	{
 	public:
-		SPDMetricCalcPersonMedianSkewnessAmplitude(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold){};
+		SPDMetricCalcPersonMedianSkewnessAmplitude(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=1, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold){};
 		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcPersonMedianSkewnessAmplitude(){};
 	};
@@ -17130,7 +17216,7 @@ namespace spdlib{
     class DllExport SPDMetricCalcKurtosisAmplitude : public SPDMetricCalc
 	{
 	public:
-		SPDMetricCalcKurtosisAmplitude(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold){};
+		SPDMetricCalcKurtosisAmplitude(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=1, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold){};
 		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcKurtosisAmplitude(){};
 	};
@@ -17138,7 +17224,7 @@ namespace spdlib{
     class DllExport SPDMetricCalcNumReturnsAboveMetricAmplitude : public SPDMetricCalc
 	{
 	public:
-		SPDMetricCalcNumReturnsAboveMetricAmplitude(SPDMetric *metric,boost::int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold){
+		SPDMetricCalcNumReturnsAboveMetricAmplitude(SPDMetric *metric,boost::int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=1, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold){
             this->metric = metric;
 		};
 		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
@@ -17150,7 +17236,7 @@ namespace spdlib{
     class DllExport SPDMetricCalcNumReturnsBelowMetricAmplitude : public SPDMetricCalc
 	{
 	public:
-		SPDMetricCalcNumReturnsBelowMetricAmplitude(SPDMetric *metric,boost::int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold){
+		SPDMetricCalcNumReturnsBelowMetricAmplitude(SPDMetric *metric,boost::int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=1, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold){
 		    this->metric = metric;
 		};
 		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
@@ -17170,7 +17256,7 @@ namespace spdlib{
     class DllExport SPDMetricCalcNumReturnsRange : public SPDMetricCalc
 	{
 	public:
-		SPDMetricCalcNumReturnsRange(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
+		SPDMetricCalcNumReturnsRange(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=1, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
 		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcNumReturnsRange(){};
 	};
@@ -17178,7 +17264,7 @@ namespace spdlib{
     class DllExport SPDMetricCalcSumRange : public SPDMetricCalc
 	{
 	public:
-		SPDMetricCalcSumRange(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
+		SPDMetricCalcSumRange(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=1, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
 		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcSumRange(){};
 	};
@@ -17186,7 +17272,7 @@ namespace spdlib{
     class DllExport SPDMetricCalcMeanRange : public SPDMetricCalc
 	{
 	public:
-		SPDMetricCalcMeanRange(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
+		SPDMetricCalcMeanRange(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=1, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
 		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcMeanRange(){};
 	};
@@ -17194,7 +17280,7 @@ namespace spdlib{
     class DllExport SPDMetricCalcMedianRange : public SPDMetricCalc
 	{
 	public:
-		SPDMetricCalcMedianRange(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
+		SPDMetricCalcMedianRange(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=1, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
 		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcMedianRange(){};
 	};
@@ -17202,7 +17288,7 @@ namespace spdlib{
     class DllExport SPDMetricCalcModeRange : public SPDMetricCalc
 	{
 	public:
-		SPDMetricCalcModeRange(float resolution,boost::int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0)
+		SPDMetricCalcModeRange(float resolution,boost::int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=1, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0)
         {
             this->resolution = resolution;
         };
@@ -17215,7 +17301,7 @@ namespace spdlib{
     class DllExport SPDMetricCalcMinRange : public SPDMetricCalc
 	{
 	public:
-		SPDMetricCalcMinRange(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
+		SPDMetricCalcMinRange(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=1, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
 		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcMinRange(){};
 	};
@@ -17223,7 +17309,7 @@ namespace spdlib{
     class DllExport SPDMetricCalcMaxRange : public SPDMetricCalc
 	{
 	public:
-		SPDMetricCalcMaxRange(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
+		SPDMetricCalcMaxRange(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=1, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
 		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcMaxRange(){};
 	};
@@ -17231,7 +17317,7 @@ namespace spdlib{
     class DllExport SPDMetricCalcStdDevRange : public SPDMetricCalc
 	{
 	public:
-		SPDMetricCalcStdDevRange(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
+		SPDMetricCalcStdDevRange(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=1, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
 		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcStdDevRange(){};
 	};
@@ -17239,7 +17325,7 @@ namespace spdlib{
     class DllExport SPDMetricCalcVarianceRange : public SPDMetricCalc
 	{
 	public:
-		SPDMetricCalcVarianceRange(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
+		SPDMetricCalcVarianceRange(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=1, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
 		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcVarianceRange(){};
     private:
@@ -17249,7 +17335,7 @@ namespace spdlib{
     class DllExport SPDMetricCalcAbsDeviationRange : public SPDMetricCalc
 	{
 	public:
-		SPDMetricCalcAbsDeviationRange(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
+		SPDMetricCalcAbsDeviationRange(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=1, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
 		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcAbsDeviationRange(){};
 	};
@@ -17257,7 +17343,7 @@ namespace spdlib{
     class DllExport SPDMetricCalcCoefficientOfVariationRange : public SPDMetricCalc
 	{
 	public:
-		SPDMetricCalcCoefficientOfVariationRange(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
+		SPDMetricCalcCoefficientOfVariationRange(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=1, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
 		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcCoefficientOfVariationRange(){};
 	};
@@ -17265,7 +17351,7 @@ namespace spdlib{
     class DllExport SPDMetricCalcPercentileRange : public SPDMetricCalc
 	{
 	public:
-		SPDMetricCalcPercentileRange(boost::uint_fast16_t percentile,boost::int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0)
+		SPDMetricCalcPercentileRange(boost::uint_fast16_t percentile,boost::int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=1, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0)
         {
             this->percentile = percentile;
         };
@@ -17278,7 +17364,7 @@ namespace spdlib{
     class DllExport SPDMetricCalcSkewnessRange : public SPDMetricCalc
 	{
 	public:
-		SPDMetricCalcSkewnessRange(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
+		SPDMetricCalcSkewnessRange(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=1, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
 		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcSkewnessRange(){};
 	};
@@ -17286,7 +17372,7 @@ namespace spdlib{
     class DllExport SPDMetricCalcPersonModeSkewnessRange : public SPDMetricCalc
 	{
 	public:
-        SPDMetricCalcPersonModeSkewnessRange(float resolution,boost::int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0)
+        SPDMetricCalcPersonModeSkewnessRange(float resolution,boost::int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=1, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0)
         {
             this->resolution = resolution;
         };
@@ -17299,7 +17385,7 @@ namespace spdlib{
     class DllExport SPDMetricCalcPersonMedianSkewnessRange : public SPDMetricCalc
 	{
 	public:
-		SPDMetricCalcPersonMedianSkewnessRange(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
+		SPDMetricCalcPersonMedianSkewnessRange(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=1, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
 		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcPersonMedianSkewnessRange(){};
 	};
@@ -17307,7 +17393,7 @@ namespace spdlib{
     class DllExport SPDMetricCalcKurtosisRange : public SPDMetricCalc
 	{
 	public:
-		SPDMetricCalcKurtosisRange(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
+		SPDMetricCalcKurtosisRange(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=1, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
 		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcKurtosisRange(){};
 	};
@@ -17315,7 +17401,7 @@ namespace spdlib{
     class DllExport SPDMetricCalcNumReturnsAboveMetricRange : public SPDMetricCalc
 	{
 	public:
-		SPDMetricCalcNumReturnsAboveMetricRange(SPDMetric *metric,boost::int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){
+		SPDMetricCalcNumReturnsAboveMetricRange(SPDMetric *metric,boost::int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=1, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){
             this->metric = metric;
 		};
 		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
@@ -17327,7 +17413,7 @@ namespace spdlib{
     class DllExport SPDMetricCalcNumReturnsBelowMetricRange : public SPDMetricCalc
 	{
 	public:
-		SPDMetricCalcNumReturnsBelowMetricRange(SPDMetric *metric,boost::int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){
+		SPDMetricCalcNumReturnsBelowMetricRange(SPDMetric *metric,boost::int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=1, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){
             this->metric = metric;
 		};
 		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
@@ -17339,7 +17425,7 @@ namespace spdlib{
     class DllExport SPDMetricCalcWeibullAlphaRange : public SPDMetricCalc
 	{
 	public:
-		SPDMetricCalcWeibullAlphaRange(float resolution,boost::int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0)
+		SPDMetricCalcWeibullAlphaRange(float resolution,boost::int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=1, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0)
         {
             this->resolution = resolution;
             this->mpConfigValues = new mp_config();
@@ -17373,7 +17459,7 @@ namespace spdlib{
     class DllExport SPDMetricCalcWeibullBetaRange : public SPDMetricCalc
 	{
 	public:
-		SPDMetricCalcWeibullBetaRange(float resolution,boost::int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0)
+		SPDMetricCalcWeibullBetaRange(float resolution,boost::int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=1, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0)
         {
             this->resolution = resolution;
             this->mpConfigValues = new mp_config();
@@ -17407,7 +17493,7 @@ namespace spdlib{
     class DllExport SPDMetricCalcWeibullQuantileRangeRange : public SPDMetricCalc
 	{
 	public:
-		SPDMetricCalcWeibullQuantileRangeRange(float resolution, float interval,boost::int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0)
+		SPDMetricCalcWeibullQuantileRangeRange(float resolution, float interval,boost::int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=1, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0)
         {
             this->resolution = resolution;
             this->interval = interval;
@@ -17450,7 +17536,7 @@ namespace spdlib{
     class DllExport SPDMetricCalcNumReturnsWidth : public SPDMetricCalc
 	{
 	public:
-		SPDMetricCalcNumReturnsWidth(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold){};
+		SPDMetricCalcNumReturnsWidth(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=1, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold){};
 		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcNumReturnsWidth(){};
 	};
@@ -17458,7 +17544,7 @@ namespace spdlib{
     class DllExport SPDMetricCalcSumWidth : public SPDMetricCalc
 	{
 	public:
-		SPDMetricCalcSumWidth(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold){};
+		SPDMetricCalcSumWidth(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=1, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold){};
 		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcSumWidth(){};
 	};
@@ -17466,7 +17552,7 @@ namespace spdlib{
     class DllExport SPDMetricCalcMeanWidth : public SPDMetricCalc
 	{
 	public:
-		SPDMetricCalcMeanWidth(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold){};
+		SPDMetricCalcMeanWidth(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=1, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold){};
 		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcMeanWidth(){};
 	};
@@ -17474,7 +17560,7 @@ namespace spdlib{
     class DllExport SPDMetricCalcMedianWidth : public SPDMetricCalc
 	{
 	public:
-		SPDMetricCalcMedianWidth(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold){};
+		SPDMetricCalcMedianWidth(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=1, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold){};
 		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcMedianWidth(){};
 	};
@@ -17482,7 +17568,7 @@ namespace spdlib{
     class DllExport SPDMetricCalcModeWidth : public SPDMetricCalc
 	{
 	public:
-		SPDMetricCalcModeWidth(float resolution,boost::int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold)
+		SPDMetricCalcModeWidth(float resolution,boost::int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=1, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold)
         {
             this->resolution = resolution;
         };
@@ -17495,7 +17581,7 @@ namespace spdlib{
     class DllExport SPDMetricCalcMinWidth : public SPDMetricCalc
 	{
 	public:
-		SPDMetricCalcMinWidth(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold){};
+		SPDMetricCalcMinWidth(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=1, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold){};
 		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcMinWidth(){};
 	};
@@ -17503,7 +17589,7 @@ namespace spdlib{
     class DllExport SPDMetricCalcMaxWidth : public SPDMetricCalc
 	{
 	public:
-		SPDMetricCalcMaxWidth(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold){};
+		SPDMetricCalcMaxWidth(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=1, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold){};
 		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcMaxWidth(){};
 	};
@@ -17511,7 +17597,7 @@ namespace spdlib{
     class DllExport SPDMetricCalcStdDevWidth : public SPDMetricCalc
 	{
 	public:
-		SPDMetricCalcStdDevWidth(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold){};
+		SPDMetricCalcStdDevWidth(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=1, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold){};
 		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcStdDevWidth(){};
 	};
@@ -17519,7 +17605,7 @@ namespace spdlib{
     class DllExport SPDMetricCalcVarianceWidth : public SPDMetricCalc
 	{
 	public:
-		SPDMetricCalcVarianceWidth(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold){};
+		SPDMetricCalcVarianceWidth(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=1, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold){};
 		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcVarianceWidth(){};
     private:
@@ -17529,7 +17615,7 @@ namespace spdlib{
     class DllExport SPDMetricCalcAbsDeviationWidth : public SPDMetricCalc
 	{
 	public:
-		SPDMetricCalcAbsDeviationWidth(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold){};
+		SPDMetricCalcAbsDeviationWidth(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=1, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold){};
 		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcAbsDeviationWidth(){};
 	};
@@ -17537,7 +17623,7 @@ namespace spdlib{
     class DllExport SPDMetricCalcCoefficientOfVariationWidth : public SPDMetricCalc
 	{
 	public:
-		SPDMetricCalcCoefficientOfVariationWidth(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold){};
+		SPDMetricCalcCoefficientOfVariationWidth(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=1, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold){};
 		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcCoefficientOfVariationWidth(){};
 	};
@@ -17545,7 +17631,7 @@ namespace spdlib{
     class DllExport SPDMetricCalcPercentileWidth : public SPDMetricCalc
 	{
 	public:
-		SPDMetricCalcPercentileWidth(boost::uint_fast16_t percentile,boost::int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold)
+		SPDMetricCalcPercentileWidth(boost::uint_fast16_t percentile,boost::int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=1, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold)
         {
             this->percentile = percentile;
         };
@@ -17558,7 +17644,7 @@ namespace spdlib{
     class DllExport SPDMetricCalcSkewnessWidth : public SPDMetricCalc
 	{
 	public:
-		SPDMetricCalcSkewnessWidth(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold){};
+		SPDMetricCalcSkewnessWidth(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=1, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold){};
 		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcSkewnessWidth(){};
 	};
@@ -17566,7 +17652,7 @@ namespace spdlib{
     class DllExport SPDMetricCalcPersonModeSkewnessWidth : public SPDMetricCalc
 	{
 	public:
-        SPDMetricCalcPersonModeSkewnessWidth(float resolution,boost::int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold)
+        SPDMetricCalcPersonModeSkewnessWidth(float resolution,boost::int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=1, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold)
         {
             this->resolution = resolution;
         };
@@ -17579,7 +17665,7 @@ namespace spdlib{
     class DllExport SPDMetricCalcPersonMedianSkewnessWidth : public SPDMetricCalc
 	{
 	public:
-		SPDMetricCalcPersonMedianSkewnessWidth(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold){};
+		SPDMetricCalcPersonMedianSkewnessWidth(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=1, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold){};
 		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcPersonMedianSkewnessWidth(){};
 	};
@@ -17587,7 +17673,7 @@ namespace spdlib{
     class DllExport SPDMetricCalcKurtosisWidth : public SPDMetricCalc
 	{
 	public:
-		SPDMetricCalcKurtosisWidth(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold){};
+		SPDMetricCalcKurtosisWidth(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=1, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold){};
 		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
 		virtual ~SPDMetricCalcKurtosisWidth(){};
 	};
@@ -17595,7 +17681,7 @@ namespace spdlib{
     class DllExport SPDMetricCalcNumReturnsAboveMetricWidth : public SPDMetricCalc
 	{
 	public:
-		SPDMetricCalcNumReturnsAboveMetricWidth(SPDMetric *metric,boost::int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold){
+		SPDMetricCalcNumReturnsAboveMetricWidth(SPDMetric *metric,boost::int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=1, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold){
             this->metric = metric;
 		};
 		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
@@ -17607,7 +17693,7 @@ namespace spdlib{
     class DllExport SPDMetricCalcNumReturnsBelowMetricWidth : public SPDMetricCalc
 	{
 	public:
-		SPDMetricCalcNumReturnsBelowMetricWidth(SPDMetric *metric,boost::int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=0, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold){
+		SPDMetricCalcNumReturnsBelowMetricWidth(SPDMetric *metric,boost::int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=1, float upThreshold=-1, float lowThreshold=-1, float heightUpThreshold=-1, float heightLowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold){
             this->metric = metric;
 		};
 		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
