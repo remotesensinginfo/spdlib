@@ -45,29 +45,67 @@ namespace spdlib
             this->binHeightValues[i] = (i*binWidth)+binHalfWidth;
         }
     }
-        
+
     void SPDCreateVerticalProfiles::processDataColumnImage(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses, float *imageData, SPDXYPoint *cenPts, boost::uint_fast32_t numImgBands, float binSize) throw(SPDProcessingException)
     {
         if(this->numOfBins != numImgBands)
         {
             throw SPDProcessingException("The number of images bands is not equal to the number of required bins.");
         }
-        
+
         for(boost::uint_fast32_t i = 0; i < numImgBands; ++i)
         {
             imageData[i] = 0.0;
         }
-        
-        
-        if(pulses->size() > 0)
-        {
-            
-            boost::int_fast32_t binIdx = 0;
-            size_t numReturns = 0;
-            
-            std::vector<SPDPulse*>::iterator iterPulses;
-            std::vector<SPDPoint*>::iterator iterPoints;
 
+        boost::int_fast32_t binIdx = 0;
+        size_t numReturns = 0;
+
+        std::vector<SPDPulse*>::iterator iterPulses;
+        std::vector<SPDPoint*>::iterator iterPoints;
+
+        if(inSPDFile->getReceiveWaveformDefined() == SPD_TRUE)
+        {
+            // If the recieved waveform is defined use this to generate the profiles
+			double tmpX = 0;
+			double tmpY = 0;
+			double tmpH = 0;
+
+            for(iterPulses = pulses->begin(); iterPulses != pulses->end(); ++iterPulses)
+            {
+                for(unsigned int s = 0; s < (*iterPulses)->numOfReceivedBins; s++)
+                {
+                    // Get the DN of the digitised value and check
+                    // this is above the noise threshold.
+                    double pulseDNVal = (*iterPulses)->received[s];
+
+                    if(pulseDNVal > (*iterPulses)->receiveWaveNoiseThreshold)
+                    {
+                        // Get the time of the digitised value, relative to the origin
+                        double timeOffset = s * inSPDFile->getTemporalBinSpacing();
+
+                        // Get the height of the digitised value using the height of the origin
+                        // and the time offset within the pulse.
+                        SPDConvertToCartesian((*iterPulses)->zenith, (*iterPulses)->azimuth, 
+                                            (SPD_SPEED_OF_LIGHT_NS * timeOffset), (*iterPulses)->x0, (*iterPulses)->y0, (*iterPulses)->h0, &tmpX, &tmpY, &tmpH);
+
+                        // Identify the bin.
+                        binIdx = floor(tmpH/this->binWidth);
+
+                        if((binIdx >= 0) && (binIdx < this->numOfBins))
+                        {
+                            // Add 1 to the bin.
+                            imageData[binIdx] += 1;
+                            ++numReturns;
+                        }
+                    }
+                }
+
+            }
+        }
+        // If no waveform is defined using the points within each pulse
+        else if(pulses->size() > 0)
+        {
             for(iterPulses = pulses->begin(); iterPulses != pulses->end(); ++iterPulses)
             {
                 if((*iterPulses)->numberOfReturns > 0)
@@ -79,7 +117,7 @@ namespace spdlib
                         {
                             // Identify the bin.
                             binIdx = floor((*iterPoints)->height/this->binWidth);
-                            
+
                             if((binIdx >= 0) && (binIdx < this->numOfBins))
                             {
                                 // Add 1 to the bin.
@@ -90,17 +128,29 @@ namespace spdlib
                     }
                 }
             }
-            
-            if((numReturns > 0) && useSmoothing)
-            {
-                SPDMathsUtils mathUtils;
-                mathUtils.applySavitzkyGolaySmoothing(imageData, this->binHeightValues, this->numOfBins, this->smoothWindowSize, this->smoothPolyOrder, true);
-            }
         }
-        
-        
+
+        // If more than one return (or waveform sample) and useSmooting
+        // apply Savitzky-Golay filter
+        if((numReturns > 0) && useSmoothing)
+        {
+            SPDMathsUtils mathUtils;
+            mathUtils.applySavitzkyGolaySmoothing(imageData, this->binHeightValues, this->numOfBins, this->smoothWindowSize, this->smoothPolyOrder, true);
+        }
+
     }
-		  
+
+    std::vector<std::string> SPDCreateVerticalProfiles::getImageBandDescriptions() throw(SPDProcessingException)
+    {
+        // Set the band names to the height in the middle of the bin, equal to (upper+lower) / 2
+        std::vector<std::string> bandNames;
+        for(boost::uint_fast32_t i = 0; i < numOfBins; ++i)
+        {
+            bandNames.push_back(boost::lexical_cast<std::string>(this->binHeightValues[i]) + " m");
+        }
+        return bandNames;
+    }
+
     SPDCreateVerticalProfiles::~SPDCreateVerticalProfiles()
     {
         delete[] this->binHeightValues;
