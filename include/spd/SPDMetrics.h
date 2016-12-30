@@ -16112,8 +16112,9 @@ namespace spdlib{
             }
             return points;
         };
-        virtual std::vector<double>* getPulseValues(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+        virtual std::vector<double>* getPulseValuesWithinAmplitudeParameters(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
         {
+            // Get amplitude values for all returns of pulses in geom with amplitude falling between lowThreshold and upThreshold.
             std::vector<double> *points = new std::vector<double>();
             if(spdFile->getReceiveWaveformDefined() == SPD_TRUE)
             {
@@ -16121,10 +16122,25 @@ namespace spdlib{
                 {
                     for(unsigned int s = 0; s < (*iterPulses)->numOfReceivedBins; s++)
                     {
-                        double pulse_dn_val =(*iterPulses)->received[s];
+                        double pulse_dn_val = (*iterPulses)->received[s];
                         if(pulse_dn_val > (*iterPulses)->receiveWaveNoiseThreshold)
                         {
-                            points->push_back(pulse_dn_val);
+                            if((boost::math::isnan(this->upThreshold)) & (boost::math::isnan(this->lowThreshold)))
+                            {
+                                points->push_back(pulse_dn_val);
+                            }
+                            else if((boost::math::isnan(this->lowThreshold)) & (pulse_dn_val <= this->upThreshold))
+                            {
+                                points->push_back(pulse_dn_val);
+                            }
+                            else if((pulse_dn_val >= this->lowThreshold) & (boost::math::isnan(this->upThreshold)))
+                            {
+                                points->push_back(pulse_dn_val);
+                            }
+                            else if((pulse_dn_val >= this->lowThreshold) & (pulse_dn_val <= this->upThreshold))
+                            {
+                                points->push_back(pulse_dn_val);
+                            }
                         }
                     }
                 }
