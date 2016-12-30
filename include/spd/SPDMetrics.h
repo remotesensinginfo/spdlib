@@ -4912,7 +4912,12 @@ namespace spdlib{
         virtual std::vector<double>* getPointsValuesWithinRangeParameters(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
         {
             std::vector<double> *points = new std::vector<double>();
-            if((spdFile->getDecomposedPtDefined() == SPD_TRUE) | (spdFile->getDiscretePtDefined() == SPD_TRUE))
+            if((spdFile->getReceiveWaveformDefined() == SPD_TRUE) & this->minNumReturns == 0)
+            {
+                throw SPDProcessingException("Waveform metrics haven't been implemented for range."
+                                             " Set minNumReturns to 1 (default) to calculate using returns");
+            }
+            else if((spdFile->getDecomposedPtDefined() == SPD_TRUE) | (spdFile->getDiscretePtDefined() == SPD_TRUE))
             {
                 for(std::vector<SPDPulse*>::iterator iterPulses = pulses->begin(); iterPulses != pulses->end(); ++iterPulses)
                 {
@@ -5651,7 +5656,12 @@ namespace spdlib{
         virtual std::vector<double>* getPointsValuesWithinWidthParameters(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
         {
             std::vector<double> *points = new std::vector<double>();
-            if((spdFile->getDecomposedPtDefined() == SPD_TRUE) | (spdFile->getDiscretePtDefined() == SPD_TRUE))
+            if((spdFile->getReceiveWaveformDefined() == SPD_TRUE) & this->minNumReturns == 0)
+            {
+                throw SPDProcessingException("Can't calculate width metrics using only waveform data, need to use returns."
+                                             " Set minNumReturns to 1 (default) to calculate using returns.");
+            }
+            else if((spdFile->getDecomposedPtDefined() == SPD_TRUE) | (spdFile->getDiscretePtDefined() == SPD_TRUE))
             {
                 for(std::vector<SPDPulse*>::iterator iterPulses = pulses->begin(); iterPulses != pulses->end(); ++iterPulses)
                 {
@@ -8444,7 +8454,12 @@ namespace spdlib{
         virtual std::vector<SPDPoint*>* getPointsWithinHeightParameters(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
         {
             std::vector<SPDPoint*> *points = new std::vector<SPDPoint*>();
-            if((spdFile->getDecomposedPtDefined() == SPD_TRUE) | (spdFile->getDiscretePtDefined() == SPD_TRUE))
+            if((spdFile->getReceiveWaveformDefined() == SPD_TRUE) & this->minNumReturns == 0)
+            {
+                throw SPDProcessingException("This metric can't be calculated from waveform data."
+                                             " Set minNumReturns to 1 (default) to calculate using returns");
+            }
+            else if((spdFile->getDecomposedPtDefined() == SPD_TRUE) | (spdFile->getDiscretePtDefined() == SPD_TRUE))
             {
                 for(std::vector<SPDPulse*>::iterator iterPulses = pulses->begin(); iterPulses != pulses->end(); ++iterPulses)
                 {
@@ -9184,7 +9199,12 @@ namespace spdlib{
         virtual std::vector<SPDPoint*>* getPointsWithinZParameters(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
         {
             std::vector<SPDPoint*> *points = new std::vector<SPDPoint*>();
-            if((spdFile->getDecomposedPtDefined() == SPD_TRUE) | (spdFile->getDiscretePtDefined() == SPD_TRUE))
+            if((spdFile->getReceiveWaveformDefined() == SPD_TRUE) & this->minNumReturns == 0)
+            {
+                throw SPDProcessingException("This metric can't be calculated from waveform data."
+                                             " Set minNumReturns to 1 (default) to calculate using returns");
+            }
+            else if((spdFile->getDecomposedPtDefined() == SPD_TRUE) | (spdFile->getDiscretePtDefined() == SPD_TRUE))
             {
                 for(std::vector<SPDPulse*>::iterator iterPulses = pulses->begin(); iterPulses != pulses->end(); ++iterPulses)
                 {
@@ -9924,7 +9944,12 @@ namespace spdlib{
         virtual std::vector<SPDPoint*>* getPointsWithinAmplitudeParameters(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
         {
             std::vector<SPDPoint*> *points = new std::vector<SPDPoint*>();
-            if((spdFile->getDecomposedPtDefined() == SPD_TRUE) | (spdFile->getDiscretePtDefined() == SPD_TRUE))
+            if((spdFile->getReceiveWaveformDefined() == SPD_TRUE) & this->minNumReturns == 0)
+            {
+                throw SPDProcessingException("This metric can't be calculated from waveform data."
+                                             " Set minNumReturns to 1 (default) to calculate using returns");
+            }
+            else if((spdFile->getDecomposedPtDefined() == SPD_TRUE) | (spdFile->getDiscretePtDefined() == SPD_TRUE))
             {
                 for(std::vector<SPDPulse*>::iterator iterPulses = pulses->begin(); iterPulses != pulses->end(); ++iterPulses)
                 {
@@ -12716,7 +12741,12 @@ namespace spdlib{
         virtual std::vector<SPDPoint*>* getPointsWithinRangeParameters(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
         {
             std::vector<SPDPoint*> *points = new std::vector<SPDPoint*>();
-            if((spdFile->getDecomposedPtDefined() == SPD_TRUE) | (spdFile->getDiscretePtDefined() == SPD_TRUE))
+            if((spdFile->getReceiveWaveformDefined() == SPD_TRUE) & this->minNumReturns == 0)
+            {
+                throw SPDProcessingException("Waveform metrics haven't been implemented for range."
+                                             " Set minNumReturns to 1 (default) to calculate using returns.");
+            }
+            else if((spdFile->getDecomposedPtDefined() == SPD_TRUE) | (spdFile->getDiscretePtDefined() == SPD_TRUE))
             {
                 for(std::vector<SPDPulse*>::iterator iterPulses = pulses->begin(); iterPulses != pulses->end(); ++iterPulses)
                 {
@@ -13455,7 +13485,12 @@ namespace spdlib{
         virtual std::vector<SPDPoint*>* getPointsWithinWidthParameters(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
         {
             std::vector<SPDPoint*> *points = new std::vector<SPDPoint*>();
-            if((spdFile->getDecomposedPtDefined() == SPD_TRUE) | (spdFile->getDiscretePtDefined() == SPD_TRUE))
+            if((spdFile->getReceiveWaveformDefined() == SPD_TRUE) & this->minNumReturns == 0)
+            {
+                throw SPDProcessingException("Can't calculate width metrics using only waveform data, need to use returns."
+                                             " Set minNumReturns to 1 (default) to calculate using returns.");
+            }
+            else if((spdFile->getDecomposedPtDefined() == SPD_TRUE) | (spdFile->getDiscretePtDefined() == SPD_TRUE))
             {
                 for(std::vector<SPDPulse*>::iterator iterPulses = pulses->begin(); iterPulses != pulses->end(); ++iterPulses)
                 {
