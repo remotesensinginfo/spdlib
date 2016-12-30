@@ -46,7 +46,12 @@ int main (int argc, char * const argv[])
 	
 	try
 	{
-        TCLAP::CmdLine cmd("Generate vertical profiles: spdprofile", ' ', "1.0.0");
+        TCLAP::CmdLine cmd("Generate vertical profiles: spdprofile\n"
+                           "Creates an image where each band represents a vertical bin above the ground.\n"
+                           "The value if each pixel is the sum of amplitudes from all values falling within the bin.\n"
+                           "If a return waveform is defined all digitised values above the nose threshold are used to generate the profile."
+                           " If a waveform isn't defined the returns are used"
+                            , ' ', "1.1.0");
         
         TCLAP::SwitchArg smoothSwitch("","smooth","Apply a Savitzky Golay smoothing to the profiles.", false);
 		cmd.add( smoothSwitch );
