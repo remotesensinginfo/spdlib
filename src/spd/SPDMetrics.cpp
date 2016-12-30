@@ -780,42 +780,14 @@ namespace spdlib{
 
     double SPDMetricCalcPercentileHeight::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
     {
-        /*
-        std::cout << std::endl << std::endl << std::endl;
-        std::vector<SPDPulse*>::iterator iterPulses;
-        for(iterPulses = pulses->begin(); iterPulses != pulses->end(); ++iterPulses)
-        {
-            if((*iterPulses)->numberOfReturns > 0)
-            {
-                for(std::vector<SPDPoint*>::iterator iterPts = (*iterPulses)->pts->begin(); iterPts != (*iterPulses)->pts->end(); ++iterPts)
-                {
-                    std::cout << (*iterPulses)->pulseID << "," << (*iterPts)->x << "," << (*iterPts)->y << "," << (*iterPts)->z << "," << (*iterPts)->height << "," << (*iterPts)->classification << std::endl;
-                }
-            }
-        }
-        std::cout << std::endl << std::endl << std::endl;
-        */
         std::vector<double> *ptVals = this->getPointsValuesWithinHeightParameters(pulses, spdFile, geom);
         double percentileVal = 0;
         if(ptVals->size() > 0)
 		{
             double quatFrac = ((double)percentile)/100;
             std::sort(ptVals->begin(), ptVals->end());
-            /*std::cout << "Calc Percentile " << quatFrac << std::endl;
-            for(unsigned int i = 0; i < ptVals->size(); ++i)
-            {
-                if( i == 0 )
-                {
-                    std::cout << &(*ptVals)[0][i];
-                }
-                else
-                {
-                    std::cout << ", " << &(*ptVals)[0][i];
-                }
-            }
-            std::cout << std::endl;*/
+
             percentileVal = gsl_stats_quantile_from_sorted_data(&(*ptVals)[0], 1, ptVals->size(), quatFrac);
-            //std::cout << "Percentile = " << percentileVal << std::endl << std::endl;
         }
         else
         {
@@ -2399,7 +2371,7 @@ namespace spdlib{
         // If the recieved waveform is defined use all the values within the digitised waveform
         if(spdFile->getReceiveWaveformDefined() == SPD_TRUE)
         {
-            ptVals = this->getPulseValues(pulses, spdFile, geom);
+            ptVals = this->getPulseValuesWithinAmplitudeParameters(pulses, spdFile, geom);
         }
         else
         {
@@ -2422,7 +2394,7 @@ namespace spdlib{
         // If the recieved waveform is defined use all the values within the digitised waveform
         if(spdFile->getReceiveWaveformDefined() == SPD_TRUE)
         {
-            ptVals = this->getPulseValues(pulses, spdFile, geom);
+            ptVals = this->getPulseValuesWithinAmplitudeParameters(pulses, spdFile, geom);
         }
         else
         {
@@ -2447,7 +2419,7 @@ namespace spdlib{
         // If the recieved waveform is defined use all the values within the digitised waveform
         if(spdFile->getReceiveWaveformDefined() == SPD_TRUE)
         {
-            ptVals = this->getPulseValues(pulses, spdFile, geom);
+            ptVals = this->getPulseValuesWithinAmplitudeParameters(pulses, spdFile, geom);
         }
         else
         {
@@ -2474,7 +2446,7 @@ namespace spdlib{
         // If the recieved waveform is defined use all the values within the digitised waveform
         if(spdFile->getReceiveWaveformDefined() == SPD_TRUE)
         {
-            ptVals = this->getPulseValues(pulses, spdFile, geom);
+            ptVals = this->getPulseValuesWithinAmplitudeParameters(pulses, spdFile, geom);
         }
         else
         {
@@ -2501,7 +2473,7 @@ namespace spdlib{
         // If the recieved waveform is defined use all the values within the digitised waveform
         if(spdFile->getReceiveWaveformDefined() == SPD_TRUE)
         {
-            ptVals = this->getPulseValues(pulses, spdFile, geom);
+            ptVals = this->getPulseValuesWithinAmplitudeParameters(pulses, spdFile, geom);
         }
         else
         {
@@ -2527,7 +2499,7 @@ namespace spdlib{
         // If the recieved waveform is defined use all the values within the digitised waveform
         if(spdFile->getReceiveWaveformDefined() == SPD_TRUE)
         {
-            ptVals = this->getPulseValues(pulses, spdFile, geom);
+            ptVals = this->getPulseValuesWithinAmplitudeParameters(pulses, spdFile, geom);
         }
         else
         {
@@ -2553,7 +2525,7 @@ namespace spdlib{
         // If the recieved waveform is defined use all the values within the digitised waveform
         if(spdFile->getReceiveWaveformDefined() == SPD_TRUE)
         {
-            ptVals = this->getPulseValues(pulses, spdFile, geom);
+            ptVals = this->getPulseValuesWithinAmplitudeParameters(pulses, spdFile, geom);
         }
         else
         {
@@ -2579,7 +2551,7 @@ namespace spdlib{
         // If the recieved waveform is defined use all the values within the digitised waveform
         if(spdFile->getReceiveWaveformDefined() == SPD_TRUE)
         {
-            ptVals = this->getPulseValues(pulses, spdFile, geom);
+            ptVals = this->getPulseValuesWithinAmplitudeParameters(pulses, spdFile, geom);
         }
         else
         {
@@ -2605,7 +2577,7 @@ namespace spdlib{
         // If the recieved waveform is defined use all the values within the digitised waveform
         if(spdFile->getReceiveWaveformDefined() == SPD_TRUE)
         {
-            ptVals = this->getPulseValues(pulses, spdFile, geom);
+            ptVals = this->getPulseValuesWithinAmplitudeParameters(pulses, spdFile, geom);
         }
         else
         {
@@ -2631,7 +2603,7 @@ namespace spdlib{
         // If the recieved waveform is defined use all the values within the digitised waveform
         if(spdFile->getReceiveWaveformDefined() == SPD_TRUE)
         {
-            ptVals = this->getPulseValues(pulses, spdFile, geom);
+            ptVals = this->getPulseValuesWithinAmplitudeParameters(pulses, spdFile, geom);
         }
         else
         {
@@ -2664,7 +2636,7 @@ namespace spdlib{
         // If the recieved waveform is defined use all the values within the digitised waveform
         if(spdFile->getReceiveWaveformDefined() == SPD_TRUE)
         {
-            ptVals = this->getPulseValues(pulses, spdFile, geom);
+            ptVals = this->getPulseValuesWithinAmplitudeParameters(pulses, spdFile, geom);
         }
         else
         {
@@ -2692,7 +2664,7 @@ namespace spdlib{
         // If the recieved waveform is defined use all the values within the digitised waveform
         if(spdFile->getReceiveWaveformDefined() == SPD_TRUE)
         {
-            ptVals = this->getPulseValues(pulses, spdFile, geom);
+            ptVals = this->getPulseValuesWithinAmplitudeParameters(pulses, spdFile, geom);
         }
         else
         {
@@ -2718,7 +2690,7 @@ namespace spdlib{
         // If the recieved waveform is defined use all the values within the digitised waveform
         if(spdFile->getReceiveWaveformDefined() == SPD_TRUE)
         {
-            ptVals = this->getPulseValues(pulses, spdFile, geom);
+            ptVals = this->getPulseValuesWithinAmplitudeParameters(pulses, spdFile, geom);
         }
         else
         {
@@ -2749,7 +2721,7 @@ namespace spdlib{
         // If the recieved waveform is defined use all the values within the digitised waveform
         if(spdFile->getReceiveWaveformDefined() == SPD_TRUE)
         {
-            ptVals = this->getPulseValues(pulses, spdFile, geom);
+            ptVals = this->getPulseValuesWithinAmplitudeParameters(pulses, spdFile, geom);
         }
         else
         {
@@ -2780,7 +2752,7 @@ namespace spdlib{
         // If the recieved waveform is defined use all the values within the digitised waveform
         if(spdFile->getReceiveWaveformDefined() == SPD_TRUE)
         {
-            ptVals = this->getPulseValues(pulses, spdFile, geom);
+            ptVals = this->getPulseValuesWithinAmplitudeParameters(pulses, spdFile, geom);
         }
         else
         {
