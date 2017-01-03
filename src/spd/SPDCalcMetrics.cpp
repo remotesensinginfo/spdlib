@@ -338,6 +338,7 @@ namespace spdlib
         XMLCh *metricpersonmodewidth = xercesc::XMLString::transcode("personmodewidth");
         XMLCh *metricpersonmedianwidth = xercesc::XMLString::transcode("personmedianwidth");
         XMLCh *metrickurtosiswidth = xercesc::XMLString::transcode("kurtosiswidth");
+        XMLCh *metrichome = xercesc::XMLString::transcode("home");
         XMLCh *metricreturnsabovewidthmetric = xercesc::XMLString::transcode("returnsabovewidthmetric");
         XMLCh *metricreturnsbelowwidthmetric = xercesc::XMLString::transcode("returnsbelowwidthmetric");
         XMLCh *metricNameXMLStr = xercesc::XMLString::transcode("metric");
@@ -1730,6 +1731,12 @@ namespace spdlib
                 SPDMetric *metric1 = this->createMetric(metricElementIn);
 
                 metric = new SPDMetricCalcNumReturnsBelowMetricWidth(metric1, returnID, classID, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold);
+            }
+            else if(xercesc::XMLString::equals(metricNameStr, metrichome))
+            {
+                // Number of returns is set to 0 as only using waveform data
+                // The lower threshold is fixed at 0 so only above ground returns are considered.
+                metric = new SPDMetricCalcHeightOfMedianEnergy(returnID, classID, 0, upThreshold, 0);
             }
             else
             {

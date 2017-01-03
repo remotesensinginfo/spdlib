@@ -517,7 +517,7 @@ namespace spdlib{
         {
             std::vector<double> *points = new std::vector<double>();
             // If there is waveform data and the minimum number of returns has been set to 0
-            if((spdFile->getReceiveWaveformDefined() == SPD_TRUE) & this->minNumReturns == 0)
+            if((spdFile->getReceiveWaveformDefined() == SPD_TRUE) & (this->minNumReturns == 0))
             {
                 double tmpX = 0;
                 double tmpY = 0;
@@ -1303,7 +1303,7 @@ namespace spdlib{
         virtual std::vector<double>* getPointsValuesWithinZParameters(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
         {
             std::vector<double> *points = new std::vector<double>();
-            if((spdFile->getReceiveWaveformDefined() == SPD_TRUE) & this->minNumReturns == 0)
+            if((spdFile->getReceiveWaveformDefined() == SPD_TRUE) & (this->minNumReturns == 0))
             {
                 double tmpX = 0;
                 double tmpY = 0;
@@ -2090,7 +2090,7 @@ namespace spdlib{
         {
             std::vector<double> *points = new std::vector<double>();
             // If there is waveform data and the minimum number of returns has been set to 0
-            if((spdFile->getReceiveWaveformDefined() == SPD_TRUE) & this->minNumReturns == 0)
+            if((spdFile->getReceiveWaveformDefined() == SPD_TRUE) & (this->minNumReturns == 0))
             {
                 // Get amplitude values for all returns of pulses in geom with amplitude falling between lowThreshold and upThreshold.
                 for(std::vector<SPDPulse*>::iterator iterPulses = pulses->begin(); iterPulses != pulses->end(); ++iterPulses)
@@ -4912,7 +4912,7 @@ namespace spdlib{
         virtual std::vector<double>* getPointsValuesWithinRangeParameters(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
         {
             std::vector<double> *points = new std::vector<double>();
-            if((spdFile->getReceiveWaveformDefined() == SPD_TRUE) & this->minNumReturns == 0)
+            if((spdFile->getReceiveWaveformDefined() == SPD_TRUE) & (this->minNumReturns == 0))
             {
                 throw SPDProcessingException("Waveform metrics haven't been implemented for range."
                                              " Set minNumReturns to 1 (default) to calculate using returns");
@@ -5656,7 +5656,7 @@ namespace spdlib{
         virtual std::vector<double>* getPointsValuesWithinWidthParameters(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
         {
             std::vector<double> *points = new std::vector<double>();
-            if((spdFile->getReceiveWaveformDefined() == SPD_TRUE) & this->minNumReturns == 0)
+            if((spdFile->getReceiveWaveformDefined() == SPD_TRUE) & (this->minNumReturns == 0))
             {
                 throw SPDProcessingException("Can't calculate width metrics using only waveform data, need to use returns."
                                              " Set minNumReturns to 1 (default) to calculate using returns.");
@@ -8454,7 +8454,7 @@ namespace spdlib{
         virtual std::vector<SPDPoint*>* getPointsWithinHeightParameters(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
         {
             std::vector<SPDPoint*> *points = new std::vector<SPDPoint*>();
-            if((spdFile->getReceiveWaveformDefined() == SPD_TRUE) & this->minNumReturns == 0)
+            if((spdFile->getReceiveWaveformDefined() == SPD_TRUE) & (this->minNumReturns == 0))
             {
                 throw SPDProcessingException("This metric can't be calculated from waveform data."
                                              " Set minNumReturns to 1 (default) to calculate using returns");
@@ -9199,7 +9199,7 @@ namespace spdlib{
         virtual std::vector<SPDPoint*>* getPointsWithinZParameters(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
         {
             std::vector<SPDPoint*> *points = new std::vector<SPDPoint*>();
-            if((spdFile->getReceiveWaveformDefined() == SPD_TRUE) & this->minNumReturns == 0)
+            if((spdFile->getReceiveWaveformDefined() == SPD_TRUE) & (this->minNumReturns == 0))
             {
                 throw SPDProcessingException("This metric can't be calculated from waveform data."
                                              " Set minNumReturns to 1 (default) to calculate using returns");
@@ -9944,7 +9944,7 @@ namespace spdlib{
         virtual std::vector<SPDPoint*>* getPointsWithinAmplitudeParameters(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
         {
             std::vector<SPDPoint*> *points = new std::vector<SPDPoint*>();
-            if((spdFile->getReceiveWaveformDefined() == SPD_TRUE) & this->minNumReturns == 0)
+            if((spdFile->getReceiveWaveformDefined() == SPD_TRUE) & (this->minNumReturns == 0))
             {
                 throw SPDProcessingException("This metric can't be calculated from waveform data."
                                              " Set minNumReturns to 1 (default) to calculate using returns");
@@ -12741,7 +12741,7 @@ namespace spdlib{
         virtual std::vector<SPDPoint*>* getPointsWithinRangeParameters(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
         {
             std::vector<SPDPoint*> *points = new std::vector<SPDPoint*>();
-            if((spdFile->getReceiveWaveformDefined() == SPD_TRUE) & this->minNumReturns == 0)
+            if((spdFile->getReceiveWaveformDefined() == SPD_TRUE) & (this->minNumReturns == 0))
             {
                 throw SPDProcessingException("Waveform metrics haven't been implemented for range."
                                              " Set minNumReturns to 1 (default) to calculate using returns.");
@@ -13485,7 +13485,7 @@ namespace spdlib{
         virtual std::vector<SPDPoint*>* getPointsWithinWidthParameters(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
         {
             std::vector<SPDPoint*> *points = new std::vector<SPDPoint*>();
-            if((spdFile->getReceiveWaveformDefined() == SPD_TRUE) & this->minNumReturns == 0)
+            if((spdFile->getReceiveWaveformDefined() == SPD_TRUE) & (this->minNumReturns == 0))
             {
                 throw SPDProcessingException("Can't calculate width metrics using only waveform data, need to use returns."
                                              " Set minNumReturns to 1 (default) to calculate using returns.");
@@ -16384,6 +16384,88 @@ namespace spdlib{
             }
             return mode;
         };
+        virtual std::vector<double>* getPulseExpandedHistWithinHeightParameters(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+        {
+            /**
+            Assumes the pulse is a histogram using the DN for each bin as the number of counts.
+            This function returns a vector of values with the number of times each value appears given by the waveform DN.binData
+
+            Values where the DN is less than the noise threshold or where the height is < 0 are ignored.
+            For example assuming the following waveform:
+
+              4  |
+                 | X
+                 | X           X
+              0  |_X___________X_________X_________X___
+                   10m         5m        0m       -5m
+            
+            a vector would be returned containing:
+
+            10,10,10,5,5,0
+            
+            */
+            std::vector<double> *points = new std::vector<double>();
+            // If there is waveform data and the minimum number of returns has been set to 0
+            if((spdFile->getReceiveWaveformDefined() == SPD_TRUE))
+            {
+                double tmpX = 0;
+                double tmpY = 0;
+                double tmpH = 0;
+
+                for(std::vector<SPDPulse*>::iterator iterPulses = pulses->begin(); iterPulses != pulses->end(); ++iterPulses)
+                {
+                    for(unsigned int s = 0; s < (*iterPulses)->numOfReceivedBins; s++)
+                    {
+                        // Get the DN of the digitised value and check
+                        // this is above the noise threshold.
+                        boost::uint_fast32_t pulseDNVal = (*iterPulses)->received[s];
+
+                        if(pulseDNVal > (*iterPulses)->receiveWaveNoiseThreshold)
+                        {
+                            // Get the time of the digitised value, relative to the origin
+                            double timeOffset = s * spdFile->getTemporalBinSpacing();
+
+                            // Get the height of the digitised value using the height of the origin
+                            // and the time offset within the pulse.
+                            SPDConvertToCartesian((*iterPulses)->zenith, (*iterPulses)->azimuth, 
+                                                (SPD_SPEED_OF_LIGHT_NS * timeOffset), (*iterPulses)->x0, (*iterPulses)->y0, (*iterPulses)->h0, &tmpX, &tmpY, &tmpH);
+                            
+                            bool addVals = false;
+                            if((boost::math::isnan(this->upThreshold)) & (boost::math::isnan(this->lowThreshold)))
+                            {
+                                addVals = true;
+                            }
+                            else if((boost::math::isnan(this->lowThreshold)) & (tmpH <= this->upThreshold))
+                            {
+                                addVals = true;
+                            }
+                            else if((tmpH >= this->lowThreshold) & (boost::math::isnan(this->upThreshold)))
+                            {
+                                addVals = true;
+                            }
+                            else if((tmpH >= this->lowThreshold) & (tmpH <= this->upThreshold))
+                            {
+                                 addVals = true;
+                            }
+
+                            if(addVals)
+                            {
+                                for(boost::uint_fast32_t i = 0; i < pulseDNVal; ++i)
+                                {
+                                    points->push_back(tmpH);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            else
+            {
+                throw SPDProcessingException("Need to have a revieved waveform defined to use this function");
+            }
+
+            return points;
+        };
         virtual double* binData(std::vector<double> *values, float resolution,boost::uint_fast32_t *numBins, double min, double max) throw(SPDProcessingException)
         {
             double *bins = NULL;
@@ -17737,6 +17819,16 @@ namespace spdlib{
         SPDMetric *metric;
 	};
 
+    class DllExport SPDMetricCalcHeightOfMedianEnergy : public SPDMetricCalc
+    /**
+    Height of Median Energy (HOME)
+    */
+	{
+	public:
+		SPDMetricCalcHeightOfMedianEnergy(int_fast16_t returnID=-1,boost::int_fast16_t classification=-1,boost::uint_fast16_t minNumReturns=1, float upThreshold=-1, float lowThreshold=-1):SPDMetricCalc(returnID, classification, minNumReturns, upThreshold, lowThreshold, 0, 0){};
+		double calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException);
+		virtual ~SPDMetricCalcHeightOfMedianEnergy(){};
+	};
 
 }
 
