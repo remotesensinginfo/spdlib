@@ -3796,4 +3796,27 @@ namespace spdlib{
         return valCount;
     }
 
+    /**
+    Waveform-only metrics
+    */
+    double SPDMetricCalcHeightOfMedianEnergy::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    {
+        /*
+        Calculate Height of Median Energy (HOME)
+        */
+        std::vector<double> *pulseVals = this->getPulseExpandedHistWithinHeightParameters(pulses, spdFile, geom);
+        double median = 0;
+        if(pulseVals->size() > 0)
+		{
+            std::sort(pulseVals->begin(), pulseVals->end());
+            median = gsl_stats_median_from_sorted_data(&(*pulseVals)[0], 1, pulseVals->size());
+        }
+        else
+        {
+            median = std::numeric_limits<float>::signaling_NaN();
+        }
+        delete pulseVals;
+        return median;
+    }
+
 }
