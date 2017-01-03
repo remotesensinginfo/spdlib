@@ -420,5 +420,9 @@
 	<spdlib:metric metric="returnsbelowwidthmetric" field="Out_Name" return="int | All | NotFirst | First | Last | FirstLast" class="int | All | NotGrd | Veg | Grd" minNumReturns="int" upthreshold="double" lowthreshold="double" heightup="double" heightlow="double" >
 	   <!--  Requires one metric -->
 	</spdlib:metric>
+
+    <!-- Waveform specific metrics -->
+	<spdlib:metric metric="home" field="Out_Name" upthreshold="double"/>
+
 </spdlib:metrics>
 
