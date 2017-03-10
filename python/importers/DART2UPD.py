@@ -93,7 +93,6 @@ class DART2UPD (object):
       with open(self.snFile,'r') as f:
         for row in f.readlines():
           content=row.split()
-#          print(int(content[0]), int(content[1]), float(content[5]))
           self.addToSnMap(int(content[0]), int(content[1]), float(content[5]))
 
     def addToSnMap(self, indX, indY, snValue):
@@ -209,9 +208,6 @@ class DART2UPD (object):
         
         spdOutFile.setTemporalBinSpacing(timeStep)
         
-        #print(ifFormatFloat, ifExistNonConv, ifExistFirstOrder, ifExistStats, nbBinsConvolved, nbBinsNonConvolved)
-        #print(timeStep, distStep, nbPulses)
-        
         #read and convert parameters:
         minX=minY=1e10
         maxX=maxY=-1e10
@@ -265,21 +261,11 @@ class DART2UPD (object):
               
             if (maxCntGlobe<maxCount):
               maxCntGlobe=maxCount
-            #if maxCount>thresCount:
                         
             if (self.ifFixedGain):
               receiveWaveGain=float(self.fixedGain)
             else:
               receiveWaveGain=float(self.maxOutput)/maxCount
-            #maxOutput/maxCount
-            #else:
-              #receiveWaveGain=1
-              
-            #print(receiveWaveGain)
-
-            
-            #print(pulse_info[3], pulse_info[4], pulse_info[5], pulse_info[6], pulse_info[7], pulse_info[8])
-            
             
             pulse = spdpy.createSPDPulsePy()
             pulse.pulseID = pulse_info[14]
@@ -302,10 +288,6 @@ class DART2UPD (object):
             pulse.y0 = pulse_info[7] + pulse_info[4]/2*distToBeginWave
             pulse.z0 = pulse_info[8] + pulse_info[5]/2*distToBeginWave            
 
-            #print(pulse_info)
-            
-            #print(pulse.x0, pulse.y0, pulse.z0, distToBeginWave)
-            
             if pulse.x0 < minX:
                 minX = pulse.x0
             elif pulse.x0 > maxX:
@@ -330,12 +312,6 @@ class DART2UPD (object):
             elif aPtY > maxY:
                 maxY = aPtY
                         
-            #zenith=pulse_info[1]
-            
-            #azimuth=pulse_info[2]
-            
-            #print(zenith, azimuth)
-                        
             tempX = aPtX - pulse.x0
             tempY = aPtY - pulse.y0
             tempZ = aPtZ - pulse.z0
@@ -349,21 +325,14 @@ class DART2UPD (object):
             else:
                 azimuth = tempAzimuth;
 
-            #print(pulse_info[1], pulse_info[2], zenith, azimuth)
-            
             pulse.azimuth = azimuth
             pulse.zenith = zenith
             
             pulse.xIdx = pulse.x0
             pulse.yIdx = pulse.y0
             
-            #print("xxx", nbBinsConvolved)
-            
-            #print(receiveWaveGain)
-            
             for i in range(nbBinsConvolved):      
                 c=int(wave_data[i]*receiveWaveGain)  #approximated count < 128
-                #print(c,end=' ')
                 if c>self.maxOutput:
                   c=self.maxOutput
                 c_s=chr(c)
@@ -372,7 +341,6 @@ class DART2UPD (object):
                 
                 if self.ifOutputImagePerBin:
                   self.addToContainerImagePerBin(i, pulse_info[12], pulse_info[13], c);
-#                print(pulse.received)
                         
             pulse.numOfReceivedBins=nbBinsConvolved
 
@@ -408,10 +376,6 @@ class DART2UPD (object):
         print("maxX:",maxX,end=' ')
         print("minY",minY,end=' ')
         print("maxY",maxY)
-        #minX-=100
-        #minY-=100
-        #maxX+=100
-        #maxY+=100
         spdOutFile.setXMin(minX)
         spdOutFile.setXMax(maxX)
         spdOutFile.setYMin(minY)
@@ -500,29 +464,6 @@ class DART2UPD (object):
         
         self.readDARTLidarImageBinaryFile(args.inputFile, args.outputFile)
         
-        
-        
-        
-
-#    def help(self):
-#        print 'DART2UPD.py script converts a DART LIDAR IMAGE output file to a UPD File.'
-#        print 'DART2UPD.py inputDARTLidarImageFile outputUPDFile'
-        
-#        print 'Print LAS header info:'
-#        print 'LASWave2UPD.py -header <input file>'
-#        print 'Convert Waveforms Only:'
-#        print 'LASWave2UPD.py -waves <input file> <output file>'
-#        print 'Convert Points Only (each point creates new pulse):'
-#        print 'LASWave2UPD.py -pulpoints <input file> <output file>'
-#        print 'Debug Waveforms - print to console:'
-#        print 'LASWave2UPD.py -wavesdb <input file> <start point> <num points>'
-#        print 'Debug Points -print to console:'
-#        print 'LASWave2UPD.py -pointsdb <input file> <start point> <num points>'
-#        print ''
-#        print '\nThis script was distributed with version 3.0.0 of SPDLib\'s'
-#        print 'python bindings.'
-#        print 'For maintainance email spdlib-develop@lists.sourceforge.net'
-
 if __name__ == '__main__':
     obj = DART2UPD()
     obj.run()
