@@ -269,6 +269,7 @@ class DART2UPD (object):
 
             pulse = spdpy.createSPDPulsePy()
             pulse.pulseID = pulse_info[14]
+            # Simulated data doesn't have GPS time so set to pulse ID.
             pulse.gpsTime = pulse_info[14]
             #pulse.scanDirectionFlag = scanDirectionFlag
             #pulse.edgeFlightLineFlag = edgeFlightLineFlag
