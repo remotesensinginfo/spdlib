@@ -39,10 +39,14 @@ set (SPDLIB_IO_VERSION_PATCH 0)
 set (SPDLIB_ALG_VERSION_MAJOR 3)
 set (SPDLIB_ALG_VERSION_MINOR 8)
 set (SPDLIB_ALG_VERSION_PATCH 0)
+set (SPDLIB_NN_VERSION_MAJOR 1)
+set (SPDLIB_NN_VERSION_MINOR 0)
+set (SPDLIB_NN_VERSION_PATCH 0)
 
 set (SPDLIB_VERSION "${SPDLIB_VERSION_MAJOR}.${SPDLIB_VERSION_MINOR}.${SPDLIB_VERSION_PATCH}")
 set (SPDLIB_IO_VERSION "${SPDLIB_IO_VERSION_MAJOR}.${SPDLIB_IO_VERSION_MINOR}.${SPDLIB_IO_VERSION_PATCH}")
 set (SPDLIB_ALG_VERSION "${SPDLIB_ALG_VERSION_MAJOR}.${SPDLIB_ALG_VERSION_MINOR}.${SPDLIB_ALG_VERSION_PATCH}")
+set (SPDLIB_NN_VERSION "${SPDLIB_NN_VERSION_MAJOR}.${SPDLIB_NN_VERSION_MINOR}.${SPDLIB_NN_VERSION_PATCH}")
 set (SPDLIB_PACKAGE_VERSION "${SPDLIB_VERSION_MAJOR}.${SPDLIB_VERSION_MINOR}.${SPDLIB_REPO_VERSION}")
 set (SPDLIB_PACKAGE_STRING "SPDLib ${SPDLIB_VERSION_MAJOR}.${SPDLIB_VERSION_MINOR}.${SPDLIB_REPO_VERSION}")
 set (SPDLIB_PACKAGE_BUGREPORT "spdlib-develop@lists.sourceforge.net")
@@ -54,11 +58,13 @@ if(WIN32)
     set(SPDLIB_LIB_NAME libspd)
 	set(SPDLIB_MITLIB_NAME libspdio)
 	set(SPDLIB_ALGLIB_NAME libspdalg)
+	set(SPDLIB_NN_NAME libspdnn)
 else()
     # Name of C++ library
     set(SPDLIB_LIB_NAME spd)
 	set(SPDLIB_MITLIB_NAME spdio)
 	set(SPDLIB_ALGLIB_NAME spdalg)
+	set(SPDLIB_NN_NAME spdnn)
 endif()
 
 option (BUILD_SHARED_LIBS "Build with shared library" ON)
@@ -182,6 +188,25 @@ else()
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SPDLIB_COMMON_CXX_FLAGS}")
   endif()
 endif(WIN32)
+
+if(APPLE)
+    # use, i.e. don't skip the full RPATH for the build tree
+    SET(CMAKE_SKIP_BUILD_RPATH  FALSE)
+    
+    # when building, don't use the install RPATH already
+    # (but later on when installing)
+    SET(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE) 
+    
+    # the RPATH to be used when installing
+    SET(CMAKE_INSTALL_RPATH "")
+    
+    # don't add the automatically determined parts of the RPATH
+    # which point to directories outside the build tree to the install RPATH
+    SET(CMAKE_INSTALL_RPATH_USE_LINK_PATH FALSE)
+        
+    SET(CMAKE_MACOSX_RPATH TRUE)
+endif(APPLE)
+
 
 if (APPLE)
   set(SO_EXT dylib)
