@@ -43,6 +43,19 @@
 #include "spd/SPDExportAsReadUnGridded.h"
 #include "spd/SPDExportAsTiles.h"
 
+// mark all exported classes/functions with DllExport to have
+// them exported by Visual Studio
+#undef DllExport
+#ifdef _MSC_VER
+    #ifdef libspd_EXPORTS
+        #define DllExport   __declspec( dllexport )
+    #else
+        #define DllExport   __declspec( dllimport )
+    #endif
+#else
+    #define DllExport
+#endif
+
 namespace spdlib
 {	
 	class DllExport SPDConvertFormats

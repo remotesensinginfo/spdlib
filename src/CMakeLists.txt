@@ -11,6 +11,7 @@ set(NN_SRC_DIR nn)
 set(NN_HEADERS_DIR ../include/spd/nn)
 set(ALGLIB_SRC_DIR alglibspd)
 set(ALGLIB_HEADERS_DIR ../include/spd/alglibspd)
+set(WINDOWS_HEADERS_DIR ../include/spd/windows)
 
 set(CMPFIT_H
 	${CMPFIT_HEADER_DIR}/mpfit.h)
@@ -309,14 +310,12 @@ source_group("include_alglib" FILES ${ALGLIB_H})
 add_library( ${SPDLIB_MITLIB_NAME} ${SPDLIB_CPP_MIT_IO} ${SPDLIB_MIT_H} )
 target_link_libraries(${SPDLIB_MITLIB_NAME} ${GDAL_LIBRARIES} ${HDF5_LIBRARIES} )
 
-if (NOT BUILD_SPDIO_ONLY )
-    add_library( ${SPDLIB_ALGLIB_NAME} ${ALGLIB_CPP} ${ALGLIB_H} )
-    
-    add_library( ${SPDLIB_NN_NAME} ${NN_C} ${NN_H} )
-    
-    add_library(${SPDLIB_LIB_NAME} ${SPDLIB_CPP_IO} ${SPDLIB_H_IO} ${SPDLIB_CPP_Processing_Interfaces} ${SPDLIB_H_Processing_Interfaces} ${SPDLIB_CPP_Processing_Algorithms} ${SPDLIB_H_Processing_Algorithms} ${SPDLIB_CPP_Utils} ${SPDLIB_H_Utils} ${SPDLIB_CPP_Frameworks} ${SPDLIB_H_Frameworks} ${CMPFIT_C} ${CMPFIT_H} ${TCLAP_H} ${TPS_CPP} ${TPS_H} )
-    target_link_libraries(${SPDLIB_LIB_NAME} ${SPDLIB_MITLIB_NAME} ${BOOST_LIBRARIES} ${GDAL_LIBRARIES} ${HDF5_LIBRARIES} ${LIBLAS_LIBRARIES} ${GSL_LIBRARIES} ${CGAL_LIBRARIES} ${XERCESC_LIBRARIES} ${GMP_LIBRARIES} ${MPFR_LIBRARIES} ${SPDLIB_ALGLIB_NAME} ${SPDLIB_NN_NAME} )
-endif(NOT BUILD_SPDIO_ONLY )
+add_library( ${SPDLIB_ALGLIB_NAME} ${ALGLIB_CPP} ${ALGLIB_H} )
+
+add_library( ${SPDLIB_NN_NAME} ${NN_C} ${NN_H} )
+
+add_library(${SPDLIB_LIB_NAME} ${SPDLIB_CPP_IO} ${SPDLIB_H_IO} ${SPDLIB_CPP_Processing_Interfaces} ${SPDLIB_H_Processing_Interfaces} ${SPDLIB_CPP_Processing_Algorithms} ${SPDLIB_H_Processing_Algorithms} ${SPDLIB_CPP_Utils} ${SPDLIB_H_Utils} ${SPDLIB_CPP_Frameworks} ${SPDLIB_H_Frameworks} ${CMPFIT_C} ${CMPFIT_H} ${TCLAP_H} ${TPS_CPP} ${TPS_H} )
+target_link_libraries(${SPDLIB_LIB_NAME} ${SPDLIB_MITLIB_NAME} ${BOOST_LIBRARIES} ${GDAL_LIBRARIES} ${HDF5_LIBRARIES} ${LIBLAS_LIBRARIES} ${GSL_LIBRARIES} ${CGAL_LIBRARIES} ${XERCESC_LIBRARIES} ${GMP_LIBRARIES} ${MPFR_LIBRARIES} ${SPDLIB_ALGLIB_NAME} ${SPDLIB_NN_NAME} )
 ###############################################################################
 
 ###############################################################################
@@ -327,33 +326,29 @@ PROPERTIES
         VERSION ${SPDLIB_IO_VERSION}
 )
 
-if (NOT BUILD_SPDIO_ONLY )
-    SET_TARGET_PROPERTIES(${SPDLIB_ALGLIB_NAME}
-    PROPERTIES
-        SOVERSION ${SPDLIB_ALG_VERSION}
-        VERSION ${SPDLIB_ALG_VERSION}
-    )
-    
-    SET_TARGET_PROPERTIES(${SPDLIB_NN_NAME}
-    PROPERTIES
-        SOVERSION ${SPDLIB_NN_VERSION}
-        VERSION ${SPDLIB_NN_VERSION}
-    )
-    
-    SET_TARGET_PROPERTIES(${SPDLIB_LIB_NAME}
-    PROPERTIES
-        SOVERSION ${SPDLIB_VERSION}
-        VERSION ${SPDLIB_VERSION}
-    )
-endif(NOT BUILD_SPDIO_ONLY )
+SET_TARGET_PROPERTIES(${SPDLIB_ALGLIB_NAME}
+PROPERTIES
+    SOVERSION ${SPDLIB_ALG_VERSION}
+    VERSION ${SPDLIB_ALG_VERSION}
+)
+
+SET_TARGET_PROPERTIES(${SPDLIB_NN_NAME}
+PROPERTIES
+    SOVERSION ${SPDLIB_NN_VERSION}
+    VERSION ${SPDLIB_NN_VERSION}
+)
+
+SET_TARGET_PROPERTIES(${SPDLIB_LIB_NAME}
+PROPERTIES
+    SOVERSION ${SPDLIB_VERSION}
+    VERSION ${SPDLIB_VERSION}
+)
 ###############################################################################
 
 ###############################################################################
 # Installation 
 install (TARGETS ${SPDLIB_MITLIB_NAME} DESTINATION lib)
-if (NOT BUILD_SPDIO_ONLY )
-    install (TARGETS ${SPDLIB_LIB_NAME} ${SPDLIB_ALGLIB_NAME} ${SPDLIB_NN_NAME} DESTINATION lib)
-endif(NOT BUILD_SPDIO_ONLY )
+install (TARGETS ${SPDLIB_LIB_NAME} ${SPDLIB_ALGLIB_NAME} ${SPDLIB_NN_NAME} DESTINATION lib)
 install (FILES ${SPDLIB_MIT_H} DESTINATION include/spd)
 install (FILES ${SPDLIB_H_IO} DESTINATION include/spd)
 install (FILES ${SPDLIB_H_Processing_Interfaces} DESTINATION include/spd)

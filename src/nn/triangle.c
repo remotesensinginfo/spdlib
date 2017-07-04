@@ -348,7 +348,7 @@
 #include <stdint.h>
 #define __STDC_FORMAT_MACROS
 #include <inttypes.h>
-#include "config.h"
+#include "spd/nn/config.h"
 #ifndef NO_TIMER
 #include <sys/time.h>
 #endif /* not NO_TIMER */
@@ -359,7 +359,7 @@
 #include <fpu_control.h>
 #endif /* LINUX */
 #ifdef TRILIBRARY
-#include "triangle.h"
+#include "spd/nn/triangle.h"
 #endif /* TRILIBRARY */
 
 /* A few forward declarations.                                               */
