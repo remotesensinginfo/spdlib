@@ -71,6 +71,19 @@ typedef CGAL::Delaunay_triangulation_2<K>::Face_handle    Face_handle;
 typedef std::vector< std::pair<CGALPoint, CGALCoordType> >   CoordinateVector;
 typedef std::map<CGALPoint, CGALCoordType, K::Less_xy_2>     PointValueMap;
 
+// mark all exported classes/functions with DllExport to have
+// them exported by Visual Studio
+#undef DllExport
+#ifdef _MSC_VER
+    #ifdef libspd_EXPORTS
+        #define DllExport   __declspec( dllexport )
+    #else
+        #define DllExport   __declspec( dllimport )
+    #endif
+#else
+    #define DllExport
+#endif
+
 namespace spdlib
 {	
 	/**

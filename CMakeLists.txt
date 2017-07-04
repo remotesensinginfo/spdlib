@@ -68,7 +68,6 @@ else()
 endif()
 
 option (BUILD_SHARED_LIBS "Build with shared library" ON)
-option (BUILD_SPDIO_ONLY "Only build the SPDIO library" OFF)
 set(SPDLIB_WITH_UTILITIES TRUE CACHE BOOL "Choose if SPDLib utilities should be built")
 
 set(BOOST_INCLUDE_DIR /usr/local/include CACHE PATH "Include PATH for Boost")
@@ -143,7 +142,7 @@ file(WRITE "README.txt" "${README}")
 
 if(WIN32)
     if (MSVC)
-        if (MSVC80 OR MSVC90 OR MSVC10)
+        if (MSVC80 OR MSVC90 OR MSVC10 OR MSVC14)
             add_definitions(-D_CRT_SECURE_NO_DEPRECATE)
             add_definitions(-D_CRT_SECURE_NO_WARNINGS)
             add_definitions(-D_CRT_NONSTDC_NO_WARNING)
@@ -151,10 +150,10 @@ if(WIN32)
         endif()
         
         if(CMAKE_CXX_FLAGS MATCHES "/W[0-4]")
-            string(REGEX REPLACE "/W[0-4]" "/W4"
+            string(REGEX REPLACE "/W[0-4]" "/W2"
                    CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
         else()
-            set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W4")
+            set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W2")
         endif()
 
         # Generate dot-user file with user-specific settings for Visual Studio project
@@ -164,10 +163,20 @@ if(WIN32)
         set(VCPROJ_USER_ENVIRONMENT_PATH_DEBUG "${ENVIRONMENT_PATH}")
         mark_as_advanced(VCPROJ_USER_ENVIRONMENT_PATH_DEBUG)
 
-        # MSVC can't compile the whole of SPDLib - yet. Seems to do ok on spdio
-        set(BUILD_SPDIO_ONLY ON)
-        message(STATUS "MSVC detected. BUILD_SPDIO_ONLY set to ON.")
+        # Use cmake's MSVC_VERSION to work out the name of the Boost/CGAL DLL's 
+        # to use (they use a different numbering scheme from cmake)
+        set(MSVC_STRING_1500 "vc90")
+        set(MSVC_STRING_1600 "vc100")
+        set(MSVC_STRING_1700 "vc110")
+        set(MSVC_STRING_1800 "vc120")
+        set(MSVC_STRING_1900 "vc140")
+        set(MSVC_STRING ${MSVC_STRING_${MSVC_VERSION}})
+        message(STATUS "Using MSVC String " ${MSVC_STRING})
         
+        # get GSL functions
+        add_definitions(-DGSL_DLL)
+        # HDF5 functions/classes
+        add_definitions(-DH5_BUILT_AS_DYNAMIC_LIB)        
     endif()
 
 else()
@@ -230,67 +239,76 @@ endif(MSVC)
 
 include_directories(${HDF5_INCLUDE_DIR})
 if (MSVC)
-    set(HDF5_LIBRARIES -LIBPATH:${HDF5_LIB_PATH} hdf5dll.lib hdf5_cppdll.lib)
+    set(HDF5_LIBRARIES -LIBPATH:${HDF5_LIB_PATH} hdf5.lib hdf5_hl.lib hdf5_cpp.lib)
 else()
     set(HDF5_LIBRARIES -L${HDF5_LIB_PATH} -lhdf5 -lhdf5_hl -lhdf5_cpp)
 endif(MSVC)
 
 include_directories(${BOOST_INCLUDE_DIR})
 
-# the following not needed if just doing SPDIO
-if( NOT BUILD_SPDIO_ONLY )
+if (MSVC)
+    # Under Windows, the boost libs are strangely named - use glob to find them
+    file(GLOB BOOST_FS_LIB ${BOOST_LIB_PATH}/libboost_filesystem-${MSVC_STRING}-*.lib )
+    if(NOT BOOST_FS_LIB)
+        message(FATAL_ERROR "Could not find boost_filesystem lib")
+    endif()
+    file(GLOB BOOST_SYS_LIB ${BOOST_LIB_PATH}/libboost_system-${MSVC_STRING}-*.lib )
+    if(NOT BOOST_SYS_LIB)
+        message(FATAL_ERROR "Could not find boost_system lib")
+    endif()
+    message(STATUS "Found boost libraries " ${BOOST_FS_LIB} ${BOOST_SYS_LIB})
+    set(BOOST_LIBRARIES -LIBPATH:${BOOST_LIB_PATH} ${BOOST_FS_LIB} ${BOOST_SYS_LIB})
+else()
+    set(BOOST_LIBRARIES -L${BOOST_LIB_PATH} -lboost_filesystem -lboost_system)
+endif(MSVC)
 
-    if (MSVC)
-        # NOTE: Should really use find_package( Boost ) to get the right libs for Windows.
-        # not using at the moment (spdio doesn't need boost libs) so ignore
-        set(BOOST_LIBRARIES -LIBPATH:${BOOST_LIB_PATH} libboost_filesystem-vc100-mt-1_53.lib libboost_system-vc100-mt-1_53.lib)
-    else()
-        set(BOOST_LIBRARIES -L${BOOST_LIB_PATH} -lboost_filesystem -lboost_system)
-    endif(MSVC)
+include_directories(${GSL_INCLUDE_DIR})
+if (MSVC)
+    set(GSL_LIBRARIES -LIBPATH:${GSL_LIB_PATH} gsl.lib gslcblas.lib)
+else()
+    set(GSL_LIBRARIES -L${GSL_LIB_PATH} -lgsl -lgslcblas)
+endif(MSVC)
 
-    include_directories(${GSL_INCLUDE_DIR})
-    if (MSVC)
-        set(GSL_LIBRARIES -LIBPATH:${GSL_LIB_PATH} libgsl.lib libcblas.lib)
-    else()
-        set(GSL_LIBRARIES -L${GSL_LIB_PATH} -lgsl -lgslcblas)
-    endif(MSVC)
+include_directories(${LIBLAS_INCLUDE_DIR})
+if (MSVC)
+    set(LIBLAS_LIBRARIES -LIBPATH:${LIBLAS_LIB_PATH} liblas.lib)
+else()
+    set(LIBLAS_LIBRARIES -L${LIBLAS_LIB_PATH} -llas)
+endif(MSVC)
+
+include_directories(${CGAL_INCLUDE_DIR})
+if (MSVC)
+    file(GLOB CGAL_LIB_NAME ${BOOST_LIB_PATH}/CGAL-${MSVC_STRING}-*.lib )
+    if(NOT CGAL_LIB_NAME)
+        message(FATAL_ERROR "Could not find CGAL lib")
+    endif()
+    message(STATUS "Using CGAL lib " ${CGAL_LIB_NAME})
+    set(CGAL_LIBRARIES -LIBPATH:${CGAL_LIB_PATH} ${CGAL_LIB_NAME})
+else()
+    set(CGAL_LIBRARIES -L${CGAL_LIB_PATH} -lCGAL)
+endif(MSVC)
+
+include_directories(${XERCESC_INCLUDE_DIR})
+if (MSVC)
+    set(XERCESC_LIBRARIES -LIBPATH:${XERCESC_LIB_PATH} xerces-c_3.lib)
+else()
+    set(XERCESC_LIBRARIES -L${XERCESC_LIB_PATH} -lxerces-c)
+endif(MSVC)
+
+include_directories(${GMP_INCLUDE_DIR})
+if (MSVC)
+    set(GMP_LIBRARIES -LIBPATH:${GMP_LIB_PATH} mpir.lib)
+else()
+    set(GMP_LIBRARIES -L${GMP_LIB_PATH} -lgmp)
+endif(MSVC)
+
+include_directories(${MPFR_INCLUDE_DIR})
+if (MSVC)
+    set(MPFR_LIBRARIES -LIBPATH:${MPFR_LIB_PATH} mpfr.lib)
+else()
+    set(MPFR_LIBRARIES -L${MPFR_LIB_PATH} -lmpfr)
+endif(MSVC)
     
-    include_directories(${LIBLAS_INCLUDE_DIR})
-    if (MSVC)
-        set(LIBLAS_LIBRARIES -LIBPATH:${LIBLAS_LIB_PATH} liblas.lib liblas_c.lib)
-    else()
-        set(LIBLAS_LIBRARIES -L${LIBLAS_LIB_PATH} -llas)
-    endif(MSVC)
-    
-    include_directories(${CGAL_INCLUDE_DIR})
-    if (MSVC)
-        set(CGAL_LIBRARIES -LIBPATH:${CGAL_LIB_PATH} CGAL-vc100-mt-4.1.lib)
-    else()
-        set(CGAL_LIBRARIES -L${CGAL_LIB_PATH} -lCGAL)
-    endif(MSVC)
-    
-    include_directories(${XERCESC_INCLUDE_DIR})
-    if (MSVC)
-        set(XERCESC_LIBRARIES -LIBPATH:${XERCESC_LIB_PATH} xerces-c_static_3.lib)
-    else()
-        set(XERCESC_LIBRARIES -L${XERCESC_LIB_PATH} -lxerces-c)
-    endif(MSVC)
-    
-    include_directories(${GMP_INCLUDE_DIR})
-    if (MSVC)
-        set(GMP_LIBRARIES -LIBPATH:${GMP_LIB_PATH} mpir.lib)
-    else()
-        set(GMP_LIBRARIES -L${GMP_LIB_PATH} -lgmp)
-    endif(MSVC)
-    
-    include_directories(${MPFR_INCLUDE_DIR})
-    if (MSVC)
-        set(MPFR_LIBRARIES -LIBPATH:${MPFR_LIB_PATH} mpfr.lib)
-    else()
-        set(MPFR_LIBRARIES -L${MPFR_LIB_PATH} -lmpfr)
-    endif(MSVC)
-    
-endif(NOT BUILD_SPDIO_ONLY )
 ###############################################################################
 
 ###############################################################################
@@ -302,10 +320,6 @@ add_subdirectory ("${PROJECT_SOURCE_DIR}")
 
 ###############################################################################
 # Build executables
-if (BUILD_SPDIO_ONLY)
-    set(SPDLIB_WITH_UTILITIES OFF)
-    message(STATUS "BUILD_SPDIO_ONLY is ON. SPDLIB_WITH_UTILITIES set to OFF")
-endif (BUILD_SPDIO_ONLY)
 
 if (SPDLIB_WITH_UTILITIES)
 	add_executable(spdtest ${PROJECT_SOURCE_DIR}/exe/test/main.cpp)

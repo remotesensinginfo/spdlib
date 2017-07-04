@@ -24,7 +24,11 @@
 #ifndef SPDFileUtilities_H
 #define SPDFileUtilities_H
 
-#include <dirent.h>
+#ifdef _MSC_VER
+    #include "spd/windows/dirent.h"
+#else
+    #include <dirent.h>
+#endif
 #include <errno.h>
 #include <vector>
 #include <list>
@@ -38,6 +42,19 @@
 #include "boost/filesystem.hpp"
 
 #include "spd/SPDException.h"
+
+// mark all exported classes/functions with DllExport to have
+// them exported by Visual Studio
+#undef DllExport
+#ifdef _MSC_VER
+    #ifdef libspd_EXPORTS
+        #define DllExport   __declspec( dllexport )
+    #else
+        #define DllExport   __declspec( dllimport )
+    #endif
+#else
+    #define DllExport
+#endif
 
 namespace spdlib 
 {
