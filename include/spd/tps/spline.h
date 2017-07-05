@@ -29,7 +29,8 @@
 #include <exception>
 #include <vector>
 #include <math.h>
-#include <alloca.h>
+// alloca.h not needed? Breaks Windows builds
+//#include <alloca.h>
 
 #include <boost/numeric/ublas/matrix.hpp>
 

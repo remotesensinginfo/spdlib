@@ -315,7 +315,8 @@ add_library( ${SPDLIB_ALGLIB_NAME} ${ALGLIB_CPP} ${ALGLIB_H} )
 add_library( ${SPDLIB_NN_NAME} ${NN_C} ${NN_H} )
 
 add_library(${SPDLIB_LIB_NAME} ${SPDLIB_CPP_IO} ${SPDLIB_H_IO} ${SPDLIB_CPP_Processing_Interfaces} ${SPDLIB_H_Processing_Interfaces} ${SPDLIB_CPP_Processing_Algorithms} ${SPDLIB_H_Processing_Algorithms} ${SPDLIB_CPP_Utils} ${SPDLIB_H_Utils} ${SPDLIB_CPP_Frameworks} ${SPDLIB_H_Frameworks} ${CMPFIT_C} ${CMPFIT_H} ${TCLAP_H} ${TPS_CPP} ${TPS_H} )
-target_link_libraries(${SPDLIB_LIB_NAME} ${SPDLIB_MITLIB_NAME} ${BOOST_LIBRARIES} ${GDAL_LIBRARIES} ${HDF5_LIBRARIES} ${LIBLAS_LIBRARIES} ${GSL_LIBRARIES} ${CGAL_LIBRARIES} ${XERCESC_LIBRARIES} ${GMP_LIBRARIES} ${MPFR_LIBRARIES} ${SPDLIB_ALGLIB_NAME} ${SPDLIB_NN_NAME} )
+# SPDLIB_NN_NAME no longer needed?
+target_link_libraries(${SPDLIB_LIB_NAME} ${SPDLIB_MITLIB_NAME} ${BOOST_LIBRARIES} ${GDAL_LIBRARIES} ${HDF5_LIBRARIES} ${LIBLAS_LIBRARIES} ${GSL_LIBRARIES} ${CGAL_LIBRARIES} ${XERCESC_LIBRARIES} ${GMP_LIBRARIES} ${MPFR_LIBRARIES} ${SPDLIB_ALGLIB_NAME} )
 ###############################################################################
 
 ###############################################################################

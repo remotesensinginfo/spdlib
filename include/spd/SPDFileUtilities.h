@@ -24,11 +24,8 @@
 #ifndef SPDFileUtilities_H
 #define SPDFileUtilities_H
 
-#ifdef _MSC_VER
-    #include "spd/windows/dirent.h"
-#else
-    #include <dirent.h>
-#endif
+// dirent.h now included in the .cpp so we don't have to install
+// Windows emulation header
 #include <errno.h>
 #include <vector>
 #include <list>
