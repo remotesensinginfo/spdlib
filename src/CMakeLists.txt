@@ -348,8 +348,12 @@ PROPERTIES
 
 ###############################################################################
 # Installation 
-install (TARGETS ${SPDLIB_MITLIB_NAME} DESTINATION lib)
-install (TARGETS ${SPDLIB_LIB_NAME} ${SPDLIB_ALGLIB_NAME} ${SPDLIB_NN_NAME} DESTINATION lib)
+install (TARGETS ${SPDLIB_MITLIB_NAME} RUNTIME DESTINATION bin
+            LIBRARY DESTINATION lib
+            ARCHIVE DESTINATION lib)
+install (TARGETS ${SPDLIB_LIB_NAME} ${SPDLIB_ALGLIB_NAME} ${SPDLIB_NN_NAME} RUNTIME DESTINATION bin
+            LIBRARY DESTINATION lib
+            ARCHIVE DESTINATION lib)
 install (FILES ${SPDLIB_MIT_H} DESTINATION include/spd)
 install (FILES ${SPDLIB_H_IO} DESTINATION include/spd)
 install (FILES ${SPDLIB_H_Processing_Interfaces} DESTINATION include/spd)
