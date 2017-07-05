@@ -1688,12 +1688,12 @@ namespace spdlib
 	}
 
     
-    SPDNaturalNeighborPointInterpolator::SPDNaturalNeighborPointInterpolator(boost::uint_fast16_t elevVal, float thinGridRes, bool thinData, boost::uint_fast16_t selectHighOrLow, boost::uint_fast16_t maxNumPtsPerBin):SPDTriangulationPointInterpolator(elevVal, thinGridRes, thinData, selectHighOrLow, maxNumPtsPerBin)
+    SPDNaturalNeighborCGALPointInterpolator::SPDNaturalNeighborCGALPointInterpolator(boost::uint_fast16_t elevVal, float thinGridRes, bool thinData, boost::uint_fast16_t selectHighOrLow, boost::uint_fast16_t maxNumPtsPerBin):SPDTriangulationPointInterpolator(elevVal, thinGridRes, thinData, selectHighOrLow, maxNumPtsPerBin)
     {
 
     }
     
-    float SPDNaturalNeighborPointInterpolator::getValue(double eastings, double northings) throw(SPDProcessingException)
+    float SPDNaturalNeighborCGALPointInterpolator::getValue(double eastings, double northings) throw(SPDProcessingException)
     {
         float newZValue = std::numeric_limits<float>::signaling_NaN(); 
         if(initialised)
@@ -1728,7 +1728,7 @@ namespace spdlib
         return newZValue;
     }
 
-    SPDNaturalNeighborPointInterpolator::~SPDNaturalNeighborPointInterpolator()
+    SPDNaturalNeighborCGALPointInterpolator::~SPDNaturalNeighborCGALPointInterpolator()
     {
         
     }
