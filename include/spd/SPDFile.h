@@ -453,8 +453,8 @@ namespace spdlib
         void setFieldOfView(float fieldOfView){this->fieldOfView = fieldOfView;};
 		float getFieldOfView(){return fieldOfView;};
 		
-		friend std::ostream& operator<<(std::ostream& stream, SPDFile &obj);
-		friend std::ostream& operator<<(std::ostream& stream, SPDFile *obj);
+		DllExport friend std::ostream& operator<<(std::ostream& stream, SPDFile &obj);
+		DllExport friend std::ostream& operator<<(std::ostream& stream, SPDFile *obj);
 		
 		~SPDFile();
 		
