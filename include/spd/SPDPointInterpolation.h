@@ -159,7 +159,8 @@ namespace spdlib
      * Uses the NN code for the interpolation.
      *
      */
-    class DllExport SPDTriangulationNNPointInterpolator : public SPDPointInterpolator
+    //  No implementation yet???
+    /*class DllExport SPDTriangulationNNPointInterpolator : public SPDPointInterpolator
     {
     public:
         SPDTriangulationNNPointInterpolator(boost::uint_fast16_t elevVal, float thinGridRes, bool thinData, boost::uint_fast16_t selectHighOrLow, boost::uint_fast16_t maxNumPtsPerBin);
@@ -178,7 +179,7 @@ namespace spdlib
         double *zPts;
         unsigned long nPts;
     };
-    
+    */
     
 	
 	/**
@@ -319,14 +320,14 @@ namespace spdlib
 	};
     
     
-    
-    class DllExport SPDNaturalNeighborNNPointInterpolator :public SPDTriangulationNNPointInterpolator
+    // not currently implemented?
+    /*class DllExport SPDNaturalNeighborNNPointInterpolator :public SPDTriangulationNNPointInterpolator
     {
     public:
         SPDNaturalNeighborNNPointInterpolator(boost::uint_fast16_t elevVal, float thinGridRes, bool thinData, boost::uint_fast16_t selectHighOrLow, boost::uint_fast16_t maxNumPtsPerBin);
         void getValues(double *eastings, double *northings, float *zVals, unsigned long nPts) throw(SPDProcessingException);
         ~SPDNaturalNeighborNNPointInterpolator();
-    };
+    };*/
     
     
     

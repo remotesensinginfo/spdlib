@@ -176,7 +176,9 @@ if(WIN32)
         # get GSL functions
         add_definitions(-DGSL_DLL)
         # HDF5 functions/classes
-        add_definitions(-DH5_BUILT_AS_DYNAMIC_LIB)        
+        add_definitions(-DH5_BUILT_AS_DYNAMIC_LIB) 
+        # this seems to be required otherwise OGRGeometry::IsEmpty is not found
+        add_definitions(-DHAVE_GEOS)
     endif()
 
 else()
@@ -271,7 +273,7 @@ endif(MSVC)
 
 include_directories(${LIBLAS_INCLUDE_DIR})
 if (MSVC)
-    set(LIBLAS_LIBRARIES -LIBPATH:${LIBLAS_LIB_PATH} liblas.lib)
+    set(LIBLAS_LIBRARIES -LIBPATH:${LIBLAS_LIB_PATH} las.lib)
 else()
     set(LIBLAS_LIBRARIES -L${LIBLAS_LIB_PATH} -llas)
 endif(MSVC)

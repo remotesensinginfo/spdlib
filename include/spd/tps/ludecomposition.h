@@ -14,7 +14,9 @@
 
 #include <boost/numeric/ublas/matrix.hpp>
 #include <boost/numeric/ublas/matrix_proxy.hpp>
-#include <alloca.h>
+#ifndef _MSC_VER
+    #include <alloca.h>
+#endif
 
 
 inline bool LUDECOMPOSITION_compare_double(double d1, double d2)

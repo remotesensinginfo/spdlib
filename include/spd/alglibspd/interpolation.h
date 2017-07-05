@@ -27,6 +27,18 @@ http://www.fsf.org/licensing/licenses
 #include "spd/alglibspd/specialfunctions.h"
 #include "spd/alglibspd/integration.h"
 
+// mark all exported classes/functions with DllExport to have
+// them exported by Visual Studio
+#undef DllExport
+#ifdef _MSC_VER
+    #ifdef libspdalg_EXPORTS
+        #define DllExport   __declspec( dllexport )
+    #else
+        #define DllExport   __declspec( dllimport )
+    #endif
+#else
+    #define DllExport
+#endif
 /////////////////////////////////////////////////////////////////////////
 //
 // THIS SECTION CONTAINS COMPUTATIONAL CORE DECLARATIONS (DATATYPES)
@@ -258,7 +270,7 @@ namespace spd_alglib
 /*************************************************************************
 IDW interpolant.
 *************************************************************************/
-class _idwinterpolant_owner
+class DllExport _idwinterpolant_owner
 {
 public:
     _idwinterpolant_owner();
@@ -283,7 +295,7 @@ public:
 /*************************************************************************
 Barycentric interpolant.
 *************************************************************************/
-class _barycentricinterpolant_owner
+class DllExport _barycentricinterpolant_owner
 {
 public:
     _barycentricinterpolant_owner();
@@ -310,7 +322,7 @@ public:
 /*************************************************************************
 1-dimensional spline interpolant
 *************************************************************************/
-class _spline1dinterpolant_owner
+class DllExport _spline1dinterpolant_owner
 {
 public:
     _spline1dinterpolant_owner();
@@ -322,7 +334,7 @@ public:
 protected:
     spd_alglib_impl::spline1dinterpolant *p_struct;
 };
-class spline1dinterpolant : public _spline1dinterpolant_owner
+class DllExport spline1dinterpolant : public _spline1dinterpolant_owner
 {
 public:
     spline1dinterpolant();
@@ -340,7 +352,7 @@ Polynomial fitting report:
     AvgRelError     average relative error (for non-zero Y[I])
     MaxError        maximum error
 *************************************************************************/
-class _polynomialfitreport_owner
+class DllExport _polynomialfitreport_owner
 {
 public:
     _polynomialfitreport_owner();
@@ -352,7 +364,7 @@ public:
 protected:
     spd_alglib_impl::polynomialfitreport *p_struct;
 };
-class polynomialfitreport : public _polynomialfitreport_owner
+class DllExport polynomialfitreport : public _polynomialfitreport_owner
 {
 public:
     polynomialfitreport();
@@ -376,7 +388,7 @@ Barycentric fitting report:
     MaxError        maximum error
     TaskRCond       reciprocal of task's condition number
 *************************************************************************/
-class _barycentricfitreport_owner
+class DllExport _barycentricfitreport_owner
 {
 public:
     _barycentricfitreport_owner();
@@ -388,7 +400,7 @@ public:
 protected:
     spd_alglib_impl::barycentricfitreport *p_struct;
 };
-class barycentricfitreport : public _barycentricfitreport_owner
+class DllExport barycentricfitreport : public _barycentricfitreport_owner
 {
 public:
     barycentricfitreport();
@@ -416,7 +428,7 @@ Fields  below are  filled  by   obsolete    functions   (Spline1DFitCubic,
 Spline1DFitHermite). Modern fitting functions do NOT fill these fields:
     TaskRCond       reciprocal of task's condition number
 *************************************************************************/
-class _spline1dfitreport_owner
+class DllExport _spline1dfitreport_owner
 {
 public:
     _spline1dfitreport_owner();
@@ -476,7 +488,7 @@ fields are initialized.
     R2              coefficient of determination (non-weighted, non-adjusted),
                     filled by some solvers.
 *************************************************************************/
-class _lsfitreport_owner
+class DllExport _lsfitreport_owner
 {
 public:
     _lsfitreport_owner();
@@ -488,7 +500,7 @@ public:
 protected:
     spd_alglib_impl::lsfitreport *p_struct;
 };
-class lsfitreport : public _lsfitreport_owner
+class DllExport lsfitreport : public _lsfitreport_owner
 {
 public:
     lsfitreport();
@@ -518,7 +530,7 @@ Nonlinear fitter.
 You should use ALGLIB functions to work with fitter.
 Never try to access its fields directly!
 *************************************************************************/
-class _lsfitstate_owner
+class DllExport _lsfitstate_owner
 {
 public:
     _lsfitstate_owner();
@@ -530,7 +542,7 @@ public:
 protected:
     spd_alglib_impl::lsfitstate *p_struct;
 };
-class lsfitstate : public _lsfitstate_owner
+class DllExport lsfitstate : public _lsfitstate_owner
 {
 public:
     lsfitstate();
@@ -555,7 +567,7 @@ Parametric spline inteprolant: 2-dimensional curve.
 You should not try to access its members directly - use PSpline2XXXXXXXX()
 functions instead.
 *************************************************************************/
-class _pspline2interpolant_owner
+class DllExport _pspline2interpolant_owner
 {
 public:
     _pspline2interpolant_owner();
@@ -567,7 +579,7 @@ public:
 protected:
     spd_alglib_impl::pspline2interpolant *p_struct;
 };
-class pspline2interpolant : public _pspline2interpolant_owner
+class DllExport pspline2interpolant : public _pspline2interpolant_owner
 {
 public:
     pspline2interpolant();
@@ -584,7 +596,7 @@ Parametric spline inteprolant: 3-dimensional curve.
 You should not try to access its members directly - use PSpline3XXXXXXXX()
 functions instead.
 *************************************************************************/
-class _pspline3interpolant_owner
+class DllExport _pspline3interpolant_owner
 {
 public:
     _pspline3interpolant_owner();
@@ -596,7 +608,7 @@ public:
 protected:
     spd_alglib_impl::pspline3interpolant *p_struct;
 };
-class pspline3interpolant : public _pspline3interpolant_owner
+class DllExport pspline3interpolant : public _pspline3interpolant_owner
 {
 public:
     pspline3interpolant();
@@ -612,7 +624,7 @@ RBF model.
 Never try to directly work with fields of this object - always use  ALGLIB
 functions to use this object.
 *************************************************************************/
-class _rbfmodel_owner
+class DllExport _rbfmodel_owner
 {
 public:
     _rbfmodel_owner();
@@ -624,7 +636,7 @@ public:
 protected:
     spd_alglib_impl::rbfmodel *p_struct;
 };
-class rbfmodel : public _rbfmodel_owner
+class DllExport rbfmodel : public _rbfmodel_owner
 {
 public:
     rbfmodel();
@@ -640,7 +652,7 @@ RBF solution report:
 * TerminationType   -   termination type, positive values - success,
                         non-positive - failure.
 *************************************************************************/
-class _rbfreport_owner
+class DllExport _rbfreport_owner
 {
 public:
     _rbfreport_owner();
@@ -652,7 +664,7 @@ public:
 protected:
     spd_alglib_impl::rbfreport *p_struct;
 };
-class rbfreport : public _rbfreport_owner
+class DllExport rbfreport : public _rbfreport_owner
 {
 public:
     rbfreport();
@@ -671,7 +683,7 @@ public:
 /*************************************************************************
 2-dimensional spline inteprolant
 *************************************************************************/
-class _spline2dinterpolant_owner
+class DllExport _spline2dinterpolant_owner
 {
 public:
     _spline2dinterpolant_owner();
@@ -683,7 +695,7 @@ public:
 protected:
     spd_alglib_impl::spline2dinterpolant *p_struct;
 };
-class spline2dinterpolant : public _spline2dinterpolant_owner
+class DllExport spline2dinterpolant : public _spline2dinterpolant_owner
 {
 public:
     spline2dinterpolant();
@@ -696,7 +708,7 @@ public:
 /*************************************************************************
 3-dimensional spline inteprolant
 *************************************************************************/
-class _spline3dinterpolant_owner
+class DllExport _spline3dinterpolant_owner
 {
 public:
     _spline3dinterpolant_owner();
@@ -708,7 +720,7 @@ public:
 protected:
     spd_alglib_impl::spline3dinterpolant *p_struct;
 };
-class spline3dinterpolant : public _spline3dinterpolant_owner
+class DllExport spline3dinterpolant : public _spline3dinterpolant_owner
 {
 public:
     spline3dinterpolant();
@@ -732,7 +744,7 @@ Result:
   -- ALGLIB --
      Copyright 02.03.2010 by Bochkanov Sergey
 *************************************************************************/
-double idwcalc(const idwinterpolant &z, const real_1d_array &x);
+DllExport double idwcalc(const idwinterpolant &z, const real_1d_array &x);
 
 
 /*************************************************************************
@@ -790,7 +802,7 @@ NOTES:
   -- ALGLIB PROJECT --
      Copyright 02.03.2010 by Bochkanov Sergey
 *************************************************************************/
-void idwbuildmodifiedshepard(const real_2d_array &xy, const ae_int_t n, const ae_int_t nx, const ae_int_t d, const ae_int_t nq, const ae_int_t nw, idwinterpolant &z);
+DllExport void idwbuildmodifiedshepard(const real_2d_array &xy, const ae_int_t n, const ae_int_t nx, const ae_int_t d, const ae_int_t nq, const ae_int_t nw, idwinterpolant &z);
 
 
 /*************************************************************************
@@ -820,7 +832,7 @@ NOTES:
   -- ALGLIB PROJECT --
      Copyright 11.04.2010 by Bochkanov Sergey
 *************************************************************************/
-void idwbuildmodifiedshepardr(const real_2d_array &xy, const ae_int_t n, const ae_int_t nx, const double r, idwinterpolant &z);
+DllExport void idwbuildmodifiedshepardr(const real_2d_array &xy, const ae_int_t n, const ae_int_t nx, const double r, idwinterpolant &z);
 
 
 /*************************************************************************
@@ -886,7 +898,7 @@ NOTES:
   -- ALGLIB PROJECT --
      Copyright 02.03.2010 by Bochkanov Sergey
 *************************************************************************/
-void idwbuildnoisy(const real_2d_array &xy, const ae_int_t n, const ae_int_t nx, const ae_int_t d, const ae_int_t nq, const ae_int_t nw, idwinterpolant &z);
+DllExport void idwbuildnoisy(const real_2d_array &xy, const ae_int_t n, const ae_int_t nx, const ae_int_t d, const ae_int_t nq, const ae_int_t nw, idwinterpolant &z);
 
 /*************************************************************************
 Rational interpolation using barycentric formula
@@ -904,7 +916,7 @@ Result:
   -- ALGLIB --
      Copyright 17.08.2009 by Bochkanov Sergey
 *************************************************************************/
-double barycentriccalc(const barycentricinterpolant &b, const double t);
+DllExport double barycentriccalc(const barycentricinterpolant &b, const double t);
 
 
 /*************************************************************************
@@ -929,7 +941,7 @@ NOTE
   -- ALGLIB --
      Copyright 17.08.2009 by Bochkanov Sergey
 *************************************************************************/
-void barycentricdiff1(const barycentricinterpolant &b, const double t, double &f, double &df);
+DllExport void barycentricdiff1(const barycentricinterpolant &b, const double t, double &f, double &df);
 
 
 /*************************************************************************
@@ -953,7 +965,7 @@ BarycentricDiff1() subroutine in such cases.
   -- ALGLIB --
      Copyright 17.08.2009 by Bochkanov Sergey
 *************************************************************************/
-void barycentricdiff2(const barycentricinterpolant &b, const double t, double &f, double &df, double &d2f);
+DllExport void barycentricdiff2(const barycentricinterpolant &b, const double t, double &f, double &df, double &d2f);
 
 
 /*************************************************************************
@@ -969,7 +981,7 @@ OUTPUT PARAMETERS:
   -- ALGLIB PROJECT --
      Copyright 19.08.2009 by Bochkanov Sergey
 *************************************************************************/
-void barycentriclintransx(const barycentricinterpolant &b, const double ca, const double cb);
+DllExport void barycentriclintransx(const barycentricinterpolant &b, const double ca, const double cb);
 
 
 /*************************************************************************
@@ -986,7 +998,7 @@ OUTPUT PARAMETERS:
   -- ALGLIB PROJECT --
      Copyright 19.08.2009 by Bochkanov Sergey
 *************************************************************************/
-void barycentriclintransy(const barycentricinterpolant &b, const double ca, const double cb);
+DllExport void barycentriclintransy(const barycentricinterpolant &b, const double ca, const double cb);
 
 
 /*************************************************************************
@@ -1004,7 +1016,7 @@ OUTPUT PARAMETERS:
   -- ALGLIB --
      Copyright 17.08.2009 by Bochkanov Sergey
 *************************************************************************/
-void barycentricunpack(const barycentricinterpolant &b, ae_int_t &n, real_1d_array &x, real_1d_array &y, real_1d_array &w);
+DllExport void barycentricunpack(const barycentricinterpolant &b, ae_int_t &n, real_1d_array &x, real_1d_array &y, real_1d_array &w);
 
 
 /*************************************************************************
@@ -1024,7 +1036,7 @@ OUTPUT PARAMETERS:
   -- ALGLIB --
      Copyright 17.08.2009 by Bochkanov Sergey
 *************************************************************************/
-void barycentricbuildxyw(const real_1d_array &x, const real_1d_array &y, const real_1d_array &w, const ae_int_t n, barycentricinterpolant &b);
+DllExport void barycentricbuildxyw(const real_1d_array &x, const real_1d_array &y, const real_1d_array &w, const ae_int_t n, barycentricinterpolant &b);
 
 
 /*************************************************************************
@@ -1054,7 +1066,7 @@ Note:
   -- ALGLIB PROJECT --
      Copyright 17.06.2007 by Bochkanov Sergey
 *************************************************************************/
-void barycentricbuildfloaterhormann(const real_1d_array &x, const real_1d_array &y, const ae_int_t n, const ae_int_t d, barycentricinterpolant &b);
+DllExport void barycentricbuildfloaterhormann(const real_1d_array &x, const real_1d_array &y, const ae_int_t n, const ae_int_t d, barycentricinterpolant &b);
 
 /*************************************************************************
 Conversion from barycentric representation to Chebyshev basis.
@@ -1080,7 +1092,7 @@ NOTES:
   -- ALGLIB --
      Copyright 30.09.2010 by Bochkanov Sergey
 *************************************************************************/
-void polynomialbar2cheb(const barycentricinterpolant &p, const double a, const double b, real_1d_array &t);
+DllExport void polynomialbar2cheb(const barycentricinterpolant &p, const double a, const double b, real_1d_array &t);
 
 
 /*************************************************************************
@@ -1103,8 +1115,8 @@ OUTPUT PARAMETERS
   -- ALGLIB --
      Copyright 30.09.2010 by Bochkanov Sergey
 *************************************************************************/
-void polynomialcheb2bar(const real_1d_array &t, const ae_int_t n, const double a, const double b, barycentricinterpolant &p);
-void polynomialcheb2bar(const real_1d_array &t, const double a, const double b, barycentricinterpolant &p);
+DllExport void polynomialcheb2bar(const real_1d_array &t, const ae_int_t n, const double a, const double b, barycentricinterpolant &p);
+DllExport void polynomialcheb2bar(const real_1d_array &t, const double a, const double b, barycentricinterpolant &p);
 
 
 /*************************************************************************
@@ -1147,8 +1159,8 @@ NOTES:
   -- ALGLIB --
      Copyright 30.09.2010 by Bochkanov Sergey
 *************************************************************************/
-void polynomialbar2pow(const barycentricinterpolant &p, const double c, const double s, real_1d_array &a);
-void polynomialbar2pow(const barycentricinterpolant &p, real_1d_array &a);
+DllExport void polynomialbar2pow(const barycentricinterpolant &p, const double c, const double s, real_1d_array &a);
+DllExport void polynomialbar2pow(const barycentricinterpolant &p, real_1d_array &a);
 
 
 /*************************************************************************
@@ -1187,8 +1199,8 @@ NOTES:
   -- ALGLIB --
      Copyright 30.09.2010 by Bochkanov Sergey
 *************************************************************************/
-void polynomialpow2bar(const real_1d_array &a, const ae_int_t n, const double c, const double s, barycentricinterpolant &p);
-void polynomialpow2bar(const real_1d_array &a, barycentricinterpolant &p);
+DllExport void polynomialpow2bar(const real_1d_array &a, const ae_int_t n, const double c, const double s, barycentricinterpolant &p);
+DllExport void polynomialpow2bar(const real_1d_array &a, barycentricinterpolant &p);
 
 
 /*************************************************************************
@@ -1208,8 +1220,8 @@ OUTPUT PARAMETERS
   -- ALGLIB --
      Copyright 02.12.2009 by Bochkanov Sergey
 *************************************************************************/
-void polynomialbuild(const real_1d_array &x, const real_1d_array &y, const ae_int_t n, barycentricinterpolant &p);
-void polynomialbuild(const real_1d_array &x, const real_1d_array &y, barycentricinterpolant &p);
+DllExport void polynomialbuild(const real_1d_array &x, const real_1d_array &y, const ae_int_t n, barycentricinterpolant &p);
+DllExport void polynomialbuild(const real_1d_array &x, const real_1d_array &y, barycentricinterpolant &p);
 
 
 /*************************************************************************
@@ -1231,8 +1243,8 @@ OUTPUT PARAMETERS
   -- ALGLIB --
      Copyright 03.12.2009 by Bochkanov Sergey
 *************************************************************************/
-void polynomialbuildeqdist(const double a, const double b, const real_1d_array &y, const ae_int_t n, barycentricinterpolant &p);
-void polynomialbuildeqdist(const double a, const double b, const real_1d_array &y, barycentricinterpolant &p);
+DllExport void polynomialbuildeqdist(const double a, const double b, const real_1d_array &y, const ae_int_t n, barycentricinterpolant &p);
+DllExport void polynomialbuildeqdist(const double a, const double b, const real_1d_array &y, barycentricinterpolant &p);
 
 
 /*************************************************************************
@@ -1255,8 +1267,8 @@ OUTPUT PARAMETERS
   -- ALGLIB --
      Copyright 03.12.2009 by Bochkanov Sergey
 *************************************************************************/
-void polynomialbuildcheb1(const double a, const double b, const real_1d_array &y, const ae_int_t n, barycentricinterpolant &p);
-void polynomialbuildcheb1(const double a, const double b, const real_1d_array &y, barycentricinterpolant &p);
+DllExport void polynomialbuildcheb1(const double a, const double b, const real_1d_array &y, const ae_int_t n, barycentricinterpolant &p);
+DllExport void polynomialbuildcheb1(const double a, const double b, const real_1d_array &y, barycentricinterpolant &p);
 
 
 /*************************************************************************
@@ -1279,8 +1291,8 @@ OUTPUT PARAMETERS
   -- ALGLIB --
      Copyright 03.12.2009 by Bochkanov Sergey
 *************************************************************************/
-void polynomialbuildcheb2(const double a, const double b, const real_1d_array &y, const ae_int_t n, barycentricinterpolant &p);
-void polynomialbuildcheb2(const double a, const double b, const real_1d_array &y, barycentricinterpolant &p);
+DllExport void polynomialbuildcheb2(const double a, const double b, const real_1d_array &y, const ae_int_t n, barycentricinterpolant &p);
+DllExport void polynomialbuildcheb2(const double a, const double b, const real_1d_array &y, barycentricinterpolant &p);
 
 
 /*************************************************************************
@@ -1307,8 +1319,8 @@ IMPORTANT
   -- ALGLIB --
      Copyright 02.12.2009 by Bochkanov Sergey
 *************************************************************************/
-double polynomialcalceqdist(const double a, const double b, const real_1d_array &f, const ae_int_t n, const double t);
-double polynomialcalceqdist(const double a, const double b, const real_1d_array &f, const double t);
+DllExport double polynomialcalceqdist(const double a, const double b, const real_1d_array &f, const ae_int_t n, const double t);
+DllExport double polynomialcalceqdist(const double a, const double b, const real_1d_array &f, const double t);
 
 
 /*************************************************************************
@@ -1337,8 +1349,8 @@ IMPORTANT
   -- ALGLIB --
      Copyright 02.12.2009 by Bochkanov Sergey
 *************************************************************************/
-double polynomialcalccheb1(const double a, const double b, const real_1d_array &f, const ae_int_t n, const double t);
-double polynomialcalccheb1(const double a, const double b, const real_1d_array &f, const double t);
+DllExport double polynomialcalccheb1(const double a, const double b, const real_1d_array &f, const ae_int_t n, const double t);
+DllExport double polynomialcalccheb1(const double a, const double b, const real_1d_array &f, const double t);
 
 
 /*************************************************************************
@@ -4046,7 +4058,7 @@ NOTE 1: memory requirements. RBF models require amount of memory  which is
   -- ALGLIB --
      Copyright 13.12.2011 by Bochkanov Sergey
 *************************************************************************/
-void rbfcreate(const ae_int_t nx, const ae_int_t ny, rbfmodel &s);
+DllExport void rbfcreate(const ae_int_t nx, const ae_int_t ny, rbfmodel &s);
 
 
 /*************************************************************************
@@ -4075,8 +4087,8 @@ NOTE: this   function  has   some   serialization-related  subtleties.  We
   -- ALGLIB --
      Copyright 13.12.2011 by Bochkanov Sergey
 *************************************************************************/
-void rbfsetpoints(const rbfmodel &s, const real_2d_array &xy, const ae_int_t n);
-void rbfsetpoints(const rbfmodel &s, const real_2d_array &xy);
+DllExport void rbfsetpoints(const rbfmodel &s, const real_2d_array &xy, const ae_int_t n);
+DllExport void rbfsetpoints(const rbfmodel &s, const real_2d_array &xy);
 
 
 /*************************************************************************
@@ -4132,8 +4144,8 @@ NOTE: this   function  has   some   serialization-related  subtleties.  We
   -- ALGLIB --
      Copyright 13.12.2011 by Bochkanov Sergey
 *************************************************************************/
-void rbfsetalgoqnn(const rbfmodel &s, const double q, const double z);
-void rbfsetalgoqnn(const rbfmodel &s);
+DllExport void rbfsetalgoqnn(const rbfmodel &s, const double q, const double z);
+DllExport void rbfsetalgoqnn(const rbfmodel &s);
 
 
 /*************************************************************************
@@ -4226,8 +4238,8 @@ TYPICAL ERRORS
   -- ALGLIB --
      Copyright 02.03.2012 by Bochkanov Sergey
 *************************************************************************/
-void rbfsetalgomultilayer(const rbfmodel &s, const double rbase, const ae_int_t nlayers, const double lambdav);
-void rbfsetalgomultilayer(const rbfmodel &s, const double rbase, const ae_int_t nlayers);
+DllExport void rbfsetalgomultilayer(const rbfmodel &s, const double rbase, const ae_int_t nlayers, const double lambdav);
+DllExport void rbfsetalgomultilayer(const rbfmodel &s, const double rbase, const ae_int_t nlayers);
 
 
 /*************************************************************************
@@ -4245,7 +4257,7 @@ NOTE: this   function  has   some   serialization-related  subtleties.  We
   -- ALGLIB --
      Copyright 13.12.2011 by Bochkanov Sergey
 *************************************************************************/
-void rbfsetlinterm(const rbfmodel &s);
+DllExport void rbfsetlinterm(const rbfmodel &s);
 
 
 /*************************************************************************
@@ -4263,7 +4275,7 @@ NOTE: this   function  has   some   serialization-related  subtleties.  We
   -- ALGLIB --
      Copyright 13.12.2011 by Bochkanov Sergey
 *************************************************************************/
-void rbfsetconstterm(const rbfmodel &s);
+DllExport void rbfsetconstterm(const rbfmodel &s);
 
 
 /*************************************************************************
@@ -4281,7 +4293,7 @@ NOTE: this   function  has   some   serialization-related  subtleties.  We
   -- ALGLIB --
      Copyright 13.12.2011 by Bochkanov Sergey
 *************************************************************************/
-void rbfsetzeroterm(const rbfmodel &s);
+DllExport void rbfsetzeroterm(const rbfmodel &s);
 
 
 /*************************************************************************
@@ -4318,7 +4330,7 @@ unchanged.
   -- ALGLIB --
      Copyright 13.12.2011 by Bochkanov Sergey
 *************************************************************************/
-void rbfbuildmodel(const rbfmodel &s, rbfreport &rep);
+DllExport void rbfbuildmodel(const rbfmodel &s, rbfreport &rep);
 
 
 /*************************************************************************
@@ -4349,7 +4361,7 @@ RESULT:
   -- ALGLIB --
      Copyright 13.12.2011 by Bochkanov Sergey
 *************************************************************************/
-double rbfcalc2(const rbfmodel &s, const double x0, const double x1);
+DllExport double rbfcalc2(const rbfmodel &s, const double x0, const double x1);
 
 
 /*************************************************************************
@@ -4377,7 +4389,7 @@ RESULT:
   -- ALGLIB --
      Copyright 13.12.2011 by Bochkanov Sergey
 *************************************************************************/
-double rbfcalc3(const rbfmodel &s, const double x0, const double x1, const double x2);
+DllExport double rbfcalc3(const rbfmodel &s, const double x0, const double x1, const double x2);
 
 
 /*************************************************************************
@@ -4405,7 +4417,7 @@ OUTPUT PARAMETERS:
   -- ALGLIB --
      Copyright 13.12.2011 by Bochkanov Sergey
 *************************************************************************/
-void rbfcalc(const rbfmodel &s, const real_1d_array &x, real_1d_array &y);
+DllExport void rbfcalc(const rbfmodel &s, const real_1d_array &x, real_1d_array &y);
 
 
 /*************************************************************************
@@ -4428,7 +4440,7 @@ OUTPUT PARAMETERS:
   -- ALGLIB --
      Copyright 13.12.2011 by Bochkanov Sergey
 *************************************************************************/
-void rbfcalcbuf(const rbfmodel &s, const real_1d_array &x, real_1d_array &y);
+DllExport void rbfcalcbuf(const rbfmodel &s, const real_1d_array &x, real_1d_array &y);
 
 
 /*************************************************************************
@@ -4455,7 +4467,7 @@ OUTPUT PARAMETERS:
   -- ALGLIB --
      Copyright 13.12.2011 by Bochkanov Sergey
 *************************************************************************/
-void rbfgridcalc2(const rbfmodel &s, const real_1d_array &x0, const ae_int_t n0, const real_1d_array &x1, const ae_int_t n1, real_2d_array &y);
+DllExport void rbfgridcalc2(const rbfmodel &s, const real_1d_array &x0, const ae_int_t n0, const real_1d_array &x1, const ae_int_t n1, real_2d_array &y);
 
 
 /*************************************************************************
@@ -4483,7 +4495,7 @@ OUTPUT PARAMETERS:
   -- ALGLIB --
      Copyright 13.12.2011 by Bochkanov Sergey
 *************************************************************************/
-void rbfunpack(const rbfmodel &s, ae_int_t &nx, ae_int_t &ny, real_2d_array &xwr, ae_int_t &nc, real_2d_array &v);
+DllExport void rbfunpack(const rbfmodel &s, ae_int_t &nx, ae_int_t &ny, real_2d_array &xwr, ae_int_t &nc, real_2d_array &v);
 
 /*************************************************************************
 This subroutine calculates the value of the bilinear or bicubic spline  at
@@ -4500,7 +4512,7 @@ Result:
   -- ALGLIB PROJECT --
      Copyright 05.07.2007 by Bochkanov Sergey
 *************************************************************************/
-double spline2dcalc(const spline2dinterpolant &c, const double x, const double y);
+DllExport double spline2dcalc(const spline2dinterpolant &c, const double x, const double y);
 
 
 /*************************************************************************
@@ -4520,7 +4532,7 @@ Output parameters:
   -- ALGLIB PROJECT --
      Copyright 05.07.2007 by Bochkanov Sergey
 *************************************************************************/
-void spline2ddiff(const spline2dinterpolant &c, const double x, const double y, double &f, double &fx, double &fy, double &fxy);
+DllExport void spline2ddiff(const spline2dinterpolant &c, const double x, const double y, double &f, double &fx, double &fy, double &fxy);
 
 
 /*************************************************************************
@@ -4536,7 +4548,7 @@ Result:
   -- ALGLIB PROJECT --
      Copyright 30.06.2007 by Bochkanov Sergey
 *************************************************************************/
-void spline2dlintransxy(const spline2dinterpolant &c, const double ax, const double bx, const double ay, const double by);
+DllExport void spline2dlintransxy(const spline2dinterpolant &c, const double ax, const double bx, const double ay, const double by);
 
 
 /*************************************************************************

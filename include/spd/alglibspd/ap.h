@@ -130,6 +130,18 @@ http://www.fsf.org/licensing/licenses
 #endif
 
 
+// mark all exported classes/functions with DllExport to have
+// them exported by Visual Studio
+#undef DllExport
+#ifdef _MSC_VER
+    #ifdef libspdalg_EXPORTS
+        #define DllExport   __declspec( dllexport )
+    #else
+        #define DllExport   __declspec( dllimport )
+    #endif
+#else
+    #define DllExport
+#endif
 
 /////////////////////////////////////////////////////////////////////////
 //
@@ -1051,7 +1063,7 @@ string conversion functions !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 /********************************************************************
 1- and 2-dimensional arrays
 ********************************************************************/
-class ae_vector_wrapper
+class DllExport ae_vector_wrapper
 {
 public:
     ae_vector_wrapper();
@@ -1104,7 +1116,7 @@ protected:
     spd_alglib_impl::ae_vector vec;
 };
 
-class boolean_1d_array : public ae_vector_wrapper
+class DllExport boolean_1d_array : public ae_vector_wrapper
 {
 public:
     boolean_1d_array();
@@ -1127,7 +1139,7 @@ public:
     std::string tostring() const;
 };
 
-class integer_1d_array : public ae_vector_wrapper
+class DllExport integer_1d_array : public ae_vector_wrapper
 {
 public:
     integer_1d_array();
@@ -1151,7 +1163,7 @@ public:
     std::string tostring() const;
 };
 
-class real_1d_array : public ae_vector_wrapper
+class DllExport real_1d_array : public ae_vector_wrapper
 {
 public:
     real_1d_array();
@@ -1174,7 +1186,7 @@ public:
     std::string tostring(int dps) const;
 };
 
-class complex_1d_array : public ae_vector_wrapper
+class DllExport complex_1d_array : public ae_vector_wrapper
 {
 public:
     complex_1d_array();
@@ -1197,7 +1209,7 @@ public:
     std::string tostring(int dps) const;
 };
 
-class ae_matrix_wrapper
+class DllExport ae_matrix_wrapper
 {
 public:
     ae_matrix_wrapper();
@@ -1253,7 +1265,7 @@ protected:
     spd_alglib_impl::ae_matrix mat;
 };
 
-class boolean_2d_array : public ae_matrix_wrapper
+class DllExport boolean_2d_array : public ae_matrix_wrapper
 {
 public:
     boolean_2d_array();
@@ -1273,7 +1285,7 @@ public:
     std::string tostring() const ;
 };
 
-class integer_2d_array : public ae_matrix_wrapper
+class DllExport integer_2d_array : public ae_matrix_wrapper
 {
 public:
     integer_2d_array();
@@ -1293,7 +1305,7 @@ public:
     std::string tostring() const;
 };
 
-class real_2d_array : public ae_matrix_wrapper
+class DllExport real_2d_array : public ae_matrix_wrapper
 {
 public:
     real_2d_array();
@@ -1313,7 +1325,7 @@ public:
     std::string tostring(int dps) const;
 };
 
-class complex_2d_array : public ae_matrix_wrapper
+class DllExport complex_2d_array : public ae_matrix_wrapper
 {
 public:
     complex_2d_array();

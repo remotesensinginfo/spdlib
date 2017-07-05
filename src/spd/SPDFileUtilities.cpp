@@ -21,6 +21,12 @@
  *  along with SPDLib.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#ifdef _MSC_VER
+    // include it here so it doesn't need to be installed
+    #include "spd/windows/dirent.h"
+#else
+    #include <dirent.h>
+#endif
 #include "spd/SPDFileUtilities.h"
 
 namespace spdlib 
