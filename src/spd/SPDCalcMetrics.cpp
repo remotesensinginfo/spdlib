@@ -370,7 +370,7 @@ namespace spdlib
         double lowThreshold = 0;
         double heightUpThreshold = 0;
         double heightLowThreshold = 0;
-
+/*
         try
         {
             if(metricElement->hasAttribute(metricNameXMLStr))
@@ -1759,7 +1759,7 @@ namespace spdlib
 		catch(SPDProcessingException &e)
 		{
 			throw e;
-		}
+		}*/
 
         xercesc::XMLString::release(&metricadd);
         xercesc::XMLString::release(&metricminus);
