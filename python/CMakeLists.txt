@@ -80,10 +80,10 @@ if(WIN32)
         endif()
 
         if(CMAKE_CXX_FLAGS MATCHES "/W[0-4]")
-            string(REGEX REPLACE "/W[0-4]" "/W4"
+            string(REGEX REPLACE "/W[0-4]" "/W2"
                    CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
         else()
-            set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W4")
+            set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W2")
         endif()
 
         # Generate dot-user file with user-specific settings for Visual Studio project
@@ -95,8 +95,6 @@ if(WIN32)
 
     endif()
 
-    set(CMAKE_INCLUDE_PATH c:/osgeo4w/include;$ENV{CMAKE_INCLUDE_PATH})
-    set(CMAKE_LIBRARY_PATH c:/osgeo4w/lib;$ENV{CMAKE_LIBRARY_PATH})
 else()
   # Recommended C++ compilation flags
   # -Weffc++
@@ -116,18 +114,27 @@ else()
   endif()
 endif(WIN32)
 
-set(CMAKE_SHARED_LIBRARY_SUFFIX .so)
+if (MSVC)
+  set(CMAKE_SHARED_LIBRARY_SUFFIX .pyd)
+else()
+  set(CMAKE_SHARED_LIBRARY_SUFFIX .so)
+endif(MSVC)
 ###############################################################################
 
 ###############################################################################
 # Check the required libraries are present
+SET(Boost_USE_STATIC_LIBS OFF)
+SET(Boost_USE_MULTITHREADED ON)
+SET(Boost_USE_STATIC_RUNTIME OFF)
 FIND_PACKAGE(Boost)
 IF(Boost_FOUND)
   INCLUDE_DIRECTORIES("${Boost_INCLUDE_DIRS}")
-  SET(Boost_USE_STATIC_LIBS OFF)
-  SET(Boost_USE_MULTITHREADED ON)
-  SET(Boost_USE_STATIC_RUNTIME OFF)
   FIND_PACKAGE(Boost COMPONENTS python)
+  IF(Boost_PYTHON_FOUND)
+    MESSAGE("FOUND BoostPython: ${Boost_PYTHON_LIBRARY}")
+  ELSEIF(NOT Boost_PYTHON_FOUND)
+    MESSAGE(FATAL_ERROR "Unable to find correct Boost Python version. Did you set BOOST_ROOT?")
+  ENDIF()
 ELSEIF(NOT Boost_FOUND)
   MESSAGE(FATAL_ERROR "Unable to find correct Boost version. Did you set BOOST_ROOT?")
 ENDIF()
@@ -142,10 +149,18 @@ ELSEIF(NOT PYTHONLIBS_FOUND)
 ENDIF()
 
 include_directories(${SPDLIB_IO_INCLUDE_DIR})
-set(SPDLIB_LIBRARY -L${SPDLIB_IO_LIB_PATH} -lspdio )
+if (MSVC)
+    set(SPDLIB_LIBRARY -LIBPATH:${SPDLIB_IO_LIB_PATH} libspdio.lib)
+else()
+    set(SPDLIB_LIBRARY -L${SPDLIB_IO_LIB_PATH} -lspdio )
+endif(MSVC) 
 
 include_directories(${HDF5_INCLUDE_DIR})
-set(HDF5_LIBRARIES -L${HDF5_LIB_PATH} -lhdf5 -lhdf5_hl -lhdf5_cpp)
+if (MSVC)
+    set(HDF5_LIBRARIES -LIBPATH:${HDF5_LIB_PATH} hdf5.lib hdf5_hl.lib hdf5_cpp.lib)
+else()
+    set(HDF5_LIBRARIES -L${HDF5_LIB_PATH} -lhdf5 -lhdf5_hl -lhdf5_cpp)
+endif(MSVC)
 
 find_package( GDAL 1.6.0 REQUIRED )
 if (GDAL_FOUND)
@@ -164,7 +179,7 @@ source_group("src_spd_python_h" FILES ${SPDPY_H_Python})
 ###############################################################################
 # Build and link library
 add_library(${SPDPY_PY_MODULE_NAME} SHARED ${SPDPY_CPP_Python} ${SPDPY_H_Python})
-target_link_libraries(${SPDPY_PY_MODULE_NAME} ${Boost_LIBRARIES} ${SPDLIB_LIBRARY} ${PYTHON_LIBRARIES})
+target_link_libraries(${SPDPY_PY_MODULE_NAME} ${Boost_LIBRARIES} ${SPDLIB_LIBRARY} ${PYTHON_LIBRARIES} ${GDAL_LIBRARY})
 SET_TARGET_PROPERTIES(${SPDPY_PY_MODULE_NAME} PROPERTIES PREFIX "")
 ###############################################################################
 
