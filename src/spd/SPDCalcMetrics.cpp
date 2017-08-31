@@ -503,8 +503,13 @@ namespace spdlib
                 heightLowThreshold = nan(nanVal);
             }
 
+            /* Create boolean to store if metric has been found.
+             * Avoids implementing as large if/if else which was causing
+             * problems when compiling under Windows.
+             */
+            bool foundMetric = false;
 
-            if(xercesc::XMLString::equals(metricNameStr, metricadd))
+            if(!foundMetric && xercesc::XMLString::equals(metricNameStr, metricadd))
             {
                 unsigned int numMetrics = metricElement->getChildElementCount();
                 if(numMetrics < 2)
@@ -526,8 +531,9 @@ namespace spdlib
                 }
 
                 metric = new SPDMetricAdd(metrics);
+                foundMetric = true;
             }
-            else if(xercesc::XMLString::equals(metricNameStr, metricminus))
+            if(!foundMetric && xercesc::XMLString::equals(metricNameStr, metricminus))
             {
                 unsigned int numMetrics = metricElement->getChildElementCount();
                 if(numMetrics != 2)
@@ -541,8 +547,9 @@ namespace spdlib
                 SPDMetric *metric2 = this->createMetric(metricElementIn);
 
                 metric = new SPDMetricMinus(metric1, metric2);
+                foundMetric = true;
             }
-            else if(xercesc::XMLString::equals(metricNameStr, metricmultiply))
+            if(!foundMetric && xercesc::XMLString::equals(metricNameStr, metricmultiply))
             {
                 unsigned int numMetrics = metricElement->getChildElementCount();
                 if(numMetrics < 2)
@@ -563,8 +570,9 @@ namespace spdlib
                 }
 
                 metric = new SPDMetricMultiply(metrics);
+                foundMetric = true;
             }
-            else if(xercesc::XMLString::equals(metricNameStr, metricdivide))
+            if(!foundMetric && xercesc::XMLString::equals(metricNameStr, metricdivide))
             {
                 unsigned int numMetrics = metricElement->getChildElementCount();
                 if(numMetrics != 2)
@@ -578,8 +586,9 @@ namespace spdlib
                 SPDMetric *metric2 = this->createMetric(metricElementIn);
 
                 metric = new SPDMetricDivide(metric1, metric2);
+                foundMetric = true;
             }
-            else if(xercesc::XMLString::equals(metricNameStr, metricpow))
+            if(!foundMetric && xercesc::XMLString::equals(metricNameStr, metricpow))
             {
                 unsigned int numMetrics = metricElement->getChildElementCount();
                 if(numMetrics != 2)
@@ -593,8 +602,9 @@ namespace spdlib
                 SPDMetric *metric2 = this->createMetric(metricElementIn);
 
                 metric = new SPDMetricPow(metric1, metric2);
+                foundMetric = true;
             }
-            else if(xercesc::XMLString::equals(metricNameStr, metricabs))
+            if(!foundMetric && xercesc::XMLString::equals(metricNameStr, metricabs))
             {
                 unsigned int numMetrics = metricElement->getChildElementCount();
                 if(numMetrics != 1)
@@ -606,8 +616,9 @@ namespace spdlib
                 SPDMetric *metric1 = this->createMetric(metricElementIn);
 
                 metric = new SPDMetricAbs(metric1);
+                foundMetric = true;
             }
-            else if(xercesc::XMLString::equals(metricNameStr, metricsqrt))
+            if(!foundMetric && xercesc::XMLString::equals(metricNameStr, metricsqrt))
             {
                 unsigned int numMetrics = metricElement->getChildElementCount();
                 if(numMetrics != 1)
@@ -619,8 +630,9 @@ namespace spdlib
                 SPDMetric *metric1 = this->createMetric(metricElementIn);
 
                 metric = new SPDMetricSqrt(metric1);
+                foundMetric = true;
             }
-            else if(xercesc::XMLString::equals(metricNameStr, metricsine))
+            if(!foundMetric && xercesc::XMLString::equals(metricNameStr, metricsine))
             {
                 unsigned int numMetrics = metricElement->getChildElementCount();
                 if(numMetrics != 1)
@@ -632,8 +644,9 @@ namespace spdlib
                 SPDMetric *metric1 = this->createMetric(metricElementIn);
 
                 metric = new SPDMetricSine(metric1);
+                foundMetric = true;
             }
-            else if(xercesc::XMLString::equals(metricNameStr, metricabs))
+            if(!foundMetric && xercesc::XMLString::equals(metricNameStr, metricabs))
             {
                 unsigned int numMetrics = metricElement->getChildElementCount();
                 if(numMetrics != 1)
@@ -645,8 +658,9 @@ namespace spdlib
                 SPDMetric *metric1 = this->createMetric(metricElementIn);
 
                 metric = new SPDMetricAbs(metric1);
+                foundMetric = true;
             }
-            else if(xercesc::XMLString::equals(metricNameStr, metriccosine))
+            if(!foundMetric && xercesc::XMLString::equals(metricNameStr, metriccosine))
             {
                 unsigned int numMetrics = metricElement->getChildElementCount();
                 if(numMetrics != 1)
@@ -658,8 +672,9 @@ namespace spdlib
                 SPDMetric *metric1 = this->createMetric(metricElementIn);
 
                 metric = new SPDMetricCosine(metric1);
+                foundMetric = true;
             }
-            else if(xercesc::XMLString::equals(metricNameStr, metrictangent))
+            if(!foundMetric && xercesc::XMLString::equals(metricNameStr, metrictangent))
             {
                 unsigned int numMetrics = metricElement->getChildElementCount();
                 if(numMetrics != 1)
@@ -671,8 +686,9 @@ namespace spdlib
                 SPDMetric *metric1 = this->createMetric(metricElementIn);
 
                 metric = new SPDMetricTangent(metric1);
+                foundMetric = true;
             }
-            else if(xercesc::XMLString::equals(metricNameStr, metricinvsine))
+            if(!foundMetric && xercesc::XMLString::equals(metricNameStr, metricinvsine))
             {
                 unsigned int numMetrics = metricElement->getChildElementCount();
                 if(numMetrics != 1)
@@ -684,8 +700,9 @@ namespace spdlib
                 SPDMetric *metric1 = this->createMetric(metricElementIn);
 
                 metric = new SPDMetricInvSine(metric1);
+                foundMetric = true;
             }
-            else if(xercesc::XMLString::equals(metricNameStr, metricinvcos))
+            if(!foundMetric && xercesc::XMLString::equals(metricNameStr, metricinvcos))
             {
                 unsigned int numMetrics = metricElement->getChildElementCount();
                 if(numMetrics != 1)
@@ -697,8 +714,9 @@ namespace spdlib
                 SPDMetric *metric1 = this->createMetric(metricElementIn);
 
                 metric = new SPDMetricInvCos(metric1);
+                foundMetric = true;
             }
-            else if(xercesc::XMLString::equals(metricNameStr, metricinvtan))
+            if(!foundMetric && xercesc::XMLString::equals(metricNameStr, metricinvtan))
             {
                 unsigned int numMetrics = metricElement->getChildElementCount();
                 if(numMetrics != 1)
@@ -710,8 +728,9 @@ namespace spdlib
                 SPDMetric *metric1 = this->createMetric(metricElementIn);
 
                 metric = new SPDMetricInvTan(metric1);
+                foundMetric = true;
             }
-            else if(xercesc::XMLString::equals(metricNameStr, metriclog10))
+            if(!foundMetric && xercesc::XMLString::equals(metricNameStr, metriclog10))
             {
                 unsigned int numMetrics = metricElement->getChildElementCount();
                 if(numMetrics != 1)
@@ -723,8 +742,9 @@ namespace spdlib
                 SPDMetric *metric1 = this->createMetric(metricElementIn);
 
                 metric = new SPDMetricLog10(metric1);
+                foundMetric = true;
             }
-            else if(xercesc::XMLString::equals(metricNameStr, metricln))
+            if(!foundMetric && xercesc::XMLString::equals(metricNameStr, metricln))
             {
                 unsigned int numMetrics = metricElement->getChildElementCount();
                 if(numMetrics != 1)
@@ -736,8 +756,9 @@ namespace spdlib
                 SPDMetric *metric1 = this->createMetric(metricElementIn);
 
                 metric = new SPDMetricLn(metric1);
+                foundMetric = true;
             }
-            else if(xercesc::XMLString::equals(metricNameStr, metricexp))
+            if(!foundMetric && xercesc::XMLString::equals(metricNameStr, metricexp))
             {
                 unsigned int numMetrics = metricElement->getChildElementCount();
                 if(numMetrics != 1)
@@ -749,8 +770,9 @@ namespace spdlib
                 SPDMetric *metric1 = this->createMetric(metricElementIn);
 
                 metric = new SPDMetricExp(metric1);
+                foundMetric = true;
             }
-            else if(xercesc::XMLString::equals(metricNameStr, metricpercentage))
+            if(!foundMetric && xercesc::XMLString::equals(metricNameStr, metricpercentage))
             {
                 unsigned int numMetrics = metricElement->getChildElementCount();
                 if(numMetrics != 2)
@@ -764,8 +786,9 @@ namespace spdlib
                 SPDMetric *metric2 = this->createMetric(metricElementIn);
 
                 metric = new SPDMetricPercentage(metric1, metric2);
+                foundMetric = true;
             }
-            else if(xercesc::XMLString::equals(metricNameStr, metricaddconst))
+            if(!foundMetric && xercesc::XMLString::equals(metricNameStr, metricaddconst))
             {
                 unsigned int numMetrics = metricElement->getChildElementCount();
                 if(numMetrics != 1)
@@ -791,8 +814,9 @@ namespace spdlib
                 xercesc::XMLString::release(&constXMLStr);
 
                 metric = new SPDMetricAddConst(metric1, constVal);
+                foundMetric = true;
             }
-            else if(xercesc::XMLString::equals(metricNameStr, metricminusconstfrom))
+            if(!foundMetric && xercesc::XMLString::equals(metricNameStr, metricminusconstfrom))
             {
                 unsigned int numMetrics = metricElement->getChildElementCount();
                 if(numMetrics != 1)
@@ -818,8 +842,9 @@ namespace spdlib
                 xercesc::XMLString::release(&constXMLStr);
 
                 metric = new SPDMetricMinusConstFrom(metric1, constVal);
+                foundMetric = true;
             }
-            else if(xercesc::XMLString::equals(metricNameStr, metricminusfromconst))
+            if(!foundMetric && xercesc::XMLString::equals(metricNameStr, metricminusfromconst))
             {
                 unsigned int numMetrics = metricElement->getChildElementCount();
                 if(numMetrics != 1)
@@ -845,8 +870,9 @@ namespace spdlib
                 xercesc::XMLString::release(&constXMLStr);
 
                 metric = new SPDMetricMinusFromConst(metric1, constVal);
+                foundMetric = true;
             }
-            else if(xercesc::XMLString::equals(metricNameStr, metricmultiplyconst))
+            if(!foundMetric && xercesc::XMLString::equals(metricNameStr, metricmultiplyconst))
             {
                 unsigned int numMetrics = metricElement->getChildElementCount();
                 if(numMetrics != 1)
@@ -872,8 +898,9 @@ namespace spdlib
                 xercesc::XMLString::release(&constXMLStr);
 
                 metric = new SPDMetricMultiplyConst(metric1, constVal);
+                foundMetric = true;
             }
-            else if(xercesc::XMLString::equals(metricNameStr, metricdividebyconst))
+            if(!foundMetric && xercesc::XMLString::equals(metricNameStr, metricdividebyconst))
             {
                 unsigned int numMetrics = metricElement->getChildElementCount();
                 if(numMetrics != 1)
@@ -899,8 +926,9 @@ namespace spdlib
                 xercesc::XMLString::release(&constXMLStr);
 
                 metric = new SPDMetricDivideByConst(metric1, constVal);
+                foundMetric = true;
             }
-            else if(xercesc::XMLString::equals(metricNameStr, metricdivideconstby))
+            if(!foundMetric && xercesc::XMLString::equals(metricNameStr, metricdivideconstby))
             {
                 unsigned int numMetrics = metricElement->getChildElementCount();
                 if(numMetrics != 1)
@@ -926,8 +954,9 @@ namespace spdlib
                 xercesc::XMLString::release(&constXMLStr);
 
                 metric = new SPDMetricDivideConstBy(metric1, constVal);
+                foundMetric = true;
             }
-            else if(xercesc::XMLString::equals(metricNameStr, metricpowmetricconst))
+            if(!foundMetric && xercesc::XMLString::equals(metricNameStr, metricpowmetricconst))
             {
                 unsigned int numMetrics = metricElement->getChildElementCount();
                 if(numMetrics != 1)
@@ -953,8 +982,9 @@ namespace spdlib
                 xercesc::XMLString::release(&constXMLStr);
 
                 metric = new SPDMetricPowMetricConst(metric1, constVal);
+                foundMetric = true;
             }
-            else if(xercesc::XMLString::equals(metricNameStr, metricpowconstmetric))
+            if(!foundMetric && xercesc::XMLString::equals(metricNameStr, metricpowconstmetric))
             {
                 unsigned int numMetrics = metricElement->getChildElementCount();
                 if(numMetrics != 1)
@@ -980,12 +1010,13 @@ namespace spdlib
                 xercesc::XMLString::release(&constXMLStr);
 
                 metric = new SPDMetricPowConstMetric(metric1, constVal);
+                foundMetric = true;
             }
-            else if(xercesc::XMLString::equals(metricNameStr, metricnumpulses))
+            if(!foundMetric && xercesc::XMLString::equals(metricNameStr, metricnumpulses))
             {
                 metric = new SPDMetricCalcNumPulses(minNumReturns);
             }
-            else if(xercesc::XMLString::equals(metricNameStr, metriccanopycover))
+            if(!foundMetric && xercesc::XMLString::equals(metricNameStr, metriccanopycover))
             {
                 float resolution = 0;
                 XMLCh *resolutionXMLStr = xercesc::XMLString::transcode("resolution");
@@ -1016,8 +1047,9 @@ namespace spdlib
                 xercesc::XMLString::release(&radiusXMLStr);
 
                 metric = new SPDMetricCalcCanopyCover(resolution, radius, returnID, classID, minNumReturns, upThreshold, lowThreshold);
+                foundMetric = true;
             }
-            else if(xercesc::XMLString::equals(metricNameStr, metriccanopycoverpercent))
+            if(!foundMetric && xercesc::XMLString::equals(metricNameStr, metriccanopycoverpercent))
             {
                 float resolution = 0;
                 XMLCh *resolutionXMLStr = xercesc::XMLString::transcode("resolution");
@@ -1048,8 +1080,9 @@ namespace spdlib
                 xercesc::XMLString::release(&radiusXMLStr);
 
                 metric = new SPDMetricCalcCanopyCoverPercent(resolution, radius, returnID, classID, minNumReturns, upThreshold, lowThreshold);
+                foundMetric = true;
             }
-            else if(xercesc::XMLString::equals(metricNameStr, metricleeopenness))
+            if(!foundMetric && xercesc::XMLString::equals(metricNameStr, metricleeopenness))
             {
                 float vres = 0;
                 XMLCh *vresolutionXMLStr = xercesc::XMLString::transcode("vres");
@@ -1066,24 +1099,29 @@ namespace spdlib
                 xercesc::XMLString::release(&vresolutionXMLStr);
 
                 metric = new SPDMetricCalcLeeOpennessHeight(vres, returnID, classID, minNumReturns, upThreshold, lowThreshold);
+                foundMetric = true;
             }
-            else if(xercesc::XMLString::equals(metricNameStr, metricnumreturnsheight))
+            if(!foundMetric && xercesc::XMLString::equals(metricNameStr, metricnumreturnsheight))
             {
                 metric = new SPDMetricCalcNumReturnsHeight(returnID, classID, minNumReturns, upThreshold, lowThreshold);
+                foundMetric = true;
             }
-            else if(xercesc::XMLString::equals(metricNameStr, metricsumheight))
+            if(!foundMetric && xercesc::XMLString::equals(metricNameStr, metricsumheight))
             {
                 metric = new SPDMetricCalcSumHeight(returnID, classID, minNumReturns, upThreshold, lowThreshold);
+                foundMetric = true;
             }
-            else if(xercesc::XMLString::equals(metricNameStr, metricmeanheight))
+            if(!foundMetric && xercesc::XMLString::equals(metricNameStr, metricmeanheight))
             {
                 metric = new SPDMetricCalcMeanHeight(returnID, classID, minNumReturns, upThreshold, lowThreshold);
+                foundMetric = true;
             }
-            else if(xercesc::XMLString::equals(metricNameStr, metricmedianheight))
+            if(!foundMetric && xercesc::XMLString::equals(metricNameStr, metricmedianheight))
             {
                 metric = new SPDMetricCalcMedianHeight(returnID, classID, minNumReturns, upThreshold, lowThreshold);
+                foundMetric = true;
             }
-            else if(xercesc::XMLString::equals(metricNameStr, metricmodeheight))
+            if(!foundMetric && xercesc::XMLString::equals(metricNameStr, metricmodeheight))
             {
                 double resolution = 0;
                 XMLCh *resolutionXMLStr = xercesc::XMLString::transcode("resolution");
@@ -1100,16 +1138,19 @@ namespace spdlib
                 xercesc::XMLString::release(&resolutionXMLStr);
 
                 metric = new SPDMetricCalcModeHeight(resolution, returnID, classID, minNumReturns, upThreshold, lowThreshold);
+                foundMetric = true;
             }
-            else if(xercesc::XMLString::equals(metricNameStr, metricminheight))
+            if(!foundMetric && xercesc::XMLString::equals(metricNameStr, metricminheight))
             {
                 metric = new SPDMetricCalcMinHeight(returnID, classID, minNumReturns, upThreshold, lowThreshold);
+                foundMetric = true;
             }
-            else if(xercesc::XMLString::equals(metricNameStr, metricmaxheight))
+            if(!foundMetric && xercesc::XMLString::equals(metricNameStr, metricmaxheight))
             {
                 metric = new SPDMetricCalcMaxHeight(returnID, classID, minNumReturns, upThreshold, lowThreshold);
+                foundMetric = true;
             }
-            else if(xercesc::XMLString::equals(metricNameStr, metricmaxdominant))
+            if(!foundMetric && xercesc::XMLString::equals(metricNameStr, metricmaxdominant))
             {
                 double resolution = 0;
                 XMLCh *resolutionXMLStr = xercesc::XMLString::transcode("resolution");
@@ -1126,24 +1167,29 @@ namespace spdlib
                 xercesc::XMLString::release(&resolutionXMLStr);
 
                 metric = new SPDMetricCalcDominantHeight(resolution, returnID, classID, minNumReturns, upThreshold, lowThreshold);
+                foundMetric = true;
             }
-            else if(xercesc::XMLString::equals(metricNameStr, metricstddevheight))
+            if(!foundMetric && xercesc::XMLString::equals(metricNameStr, metricstddevheight))
             {
                 metric = new SPDMetricCalcStdDevHeight(returnID, classID, minNumReturns, upThreshold, lowThreshold);
+                foundMetric = true;
             }
-            else if(xercesc::XMLString::equals(metricNameStr, metricvarianceheight))
+            if(!foundMetric && xercesc::XMLString::equals(metricNameStr, metricvarianceheight))
             {
                 metric = new SPDMetricCalcVarianceHeight(returnID, classID, minNumReturns, upThreshold, lowThreshold);
+                foundMetric = true;
             }
-            else if(xercesc::XMLString::equals(metricNameStr, metricabsdeviationheight))
+            if(!foundMetric && xercesc::XMLString::equals(metricNameStr, metricabsdeviationheight))
             {
                 metric = new SPDMetricCalcAbsDeviationHeight(returnID, classID, minNumReturns, upThreshold, lowThreshold);
+                foundMetric = true;
             }
-            else if(xercesc::XMLString::equals(metricNameStr, metriccoefficientofvariationheight))
+            if(!foundMetric && xercesc::XMLString::equals(metricNameStr, metriccoefficientofvariationheight))
             {
                 metric = new SPDMetricCalcCoefficientOfVariationHeight(returnID, classID, minNumReturns, upThreshold, lowThreshold);
+                foundMetric = true;
             }
-            else if(xercesc::XMLString::equals(metricNameStr, metricpercentileheight))
+            if(!foundMetric && xercesc::XMLString::equals(metricNameStr, metricpercentileheight))
             {
                 boost::uint_fast32_t percentileVal = 0;
                 XMLCh *percentileXMLStr = xercesc::XMLString::transcode("percentile");
@@ -1159,12 +1205,14 @@ namespace spdlib
                 }
                 xercesc::XMLString::release(&percentileXMLStr);
                 metric = new SPDMetricCalcPercentileHeight(percentileVal,returnID, classID, minNumReturns, upThreshold, lowThreshold);
+                foundMetric = true;
             }
-            else if(xercesc::XMLString::equals(metricNameStr, metricskewnessheight))
+            if(!foundMetric && xercesc::XMLString::equals(metricNameStr, metricskewnessheight))
             {
                 metric = new SPDMetricCalcSkewnessHeight(returnID, classID, minNumReturns, upThreshold, lowThreshold);
+                foundMetric = true;
             }
-            else if(xercesc::XMLString::equals(metricNameStr, metricpersonmodeheight))
+            if(!foundMetric && xercesc::XMLString::equals(metricNameStr, metricpersonmodeheight))
             {
                 double resolution = 0;
                 XMLCh *resolutionXMLStr = xercesc::XMLString::transcode("resolution");
@@ -1180,16 +1228,19 @@ namespace spdlib
                 }
                 xercesc::XMLString::release(&resolutionXMLStr);
                 metric = new SPDMetricCalcPersonModeSkewnessHeight(resolution, returnID, classID, minNumReturns, upThreshold, lowThreshold);
+                foundMetric = true;
             }
-            else if(xercesc::XMLString::equals(metricNameStr, metricpersonmedianheight))
+            if(!foundMetric && xercesc::XMLString::equals(metricNameStr, metricpersonmedianheight))
             {
                 metric = new SPDMetricCalcPersonMedianSkewnessHeight(returnID, classID, minNumReturns, upThreshold, lowThreshold);
+                foundMetric = true;
             }
-            else if(xercesc::XMLString::equals(metricNameStr, metrickurtosisheight))
+            if(!foundMetric && xercesc::XMLString::equals(metricNameStr, metrickurtosisheight))
             {
                 metric = new SPDMetricCalcKurtosisHeight(returnID, classID, minNumReturns, upThreshold, lowThreshold);
+                foundMetric = true;
             }
-            else if(xercesc::XMLString::equals(metricNameStr, metricreturnsaboveheightmetric))
+            if(!foundMetric && xercesc::XMLString::equals(metricNameStr, metricreturnsaboveheightmetric))
             {
                 unsigned int numMetrics = metricElement->getChildElementCount();
                 if(numMetrics != 1)
@@ -1201,8 +1252,9 @@ namespace spdlib
                 SPDMetric *metric1 = this->createMetric(metricElementIn);
 
                 metric = new SPDMetricCalcNumReturnsAboveMetricHeight(metric1, returnID, classID, minNumReturns, upThreshold, lowThreshold);
+                foundMetric = true;
             }
-            else if(xercesc::XMLString::equals(metricNameStr, metricreturnsbelowheightmetric))
+            if(!foundMetric && xercesc::XMLString::equals(metricNameStr, metricreturnsbelowheightmetric))
             {
                 unsigned int numMetrics = metricElement->getChildElementCount();
                 if(numMetrics != 1)
@@ -1214,24 +1266,29 @@ namespace spdlib
                 SPDMetric *metric1 = this->createMetric(metricElementIn);
 
                 metric = new SPDMetricCalcNumReturnsBelowMetricHeight(metric1, returnID, classID, minNumReturns, upThreshold, lowThreshold);
+                foundMetric = true;
             }
-            else if(xercesc::XMLString::equals(metricNameStr, metricnumreturnsz))
+            if(!foundMetric && xercesc::XMLString::equals(metricNameStr, metricnumreturnsz))
             {
                 metric = new SPDMetricCalcNumReturnsZ(returnID, classID, minNumReturns, upThreshold, lowThreshold);
+                foundMetric = true;
             }
-            else if(xercesc::XMLString::equals(metricNameStr, metricsumz))
+            if(!foundMetric && xercesc::XMLString::equals(metricNameStr, metricsumz))
             {
                 metric = new SPDMetricCalcSumZ(returnID, classID, minNumReturns, upThreshold, lowThreshold);
+                foundMetric = true;
             }
-            else if(xercesc::XMLString::equals(metricNameStr, metricmeanz))
+            if(!foundMetric && xercesc::XMLString::equals(metricNameStr, metricmeanz))
             {
                 metric = new SPDMetricCalcMeanZ(returnID, classID, minNumReturns, upThreshold, lowThreshold);
+                foundMetric = true;
             }
-            else if(xercesc::XMLString::equals(metricNameStr, metricmedianz))
+            if(!foundMetric && xercesc::XMLString::equals(metricNameStr, metricmedianz))
             {
                 metric = new SPDMetricCalcMedianZ(returnID, classID, minNumReturns, upThreshold, lowThreshold);
+                foundMetric = true;
             }
-            else if(xercesc::XMLString::equals(metricNameStr, metricmodez))
+            if(!foundMetric && xercesc::XMLString::equals(metricNameStr, metricmodez))
             {
                 double resolution = 0;
                 XMLCh *resolutionXMLStr = xercesc::XMLString::transcode("resolution");
@@ -1248,32 +1305,39 @@ namespace spdlib
                 xercesc::XMLString::release(&resolutionXMLStr);
 
                 metric = new SPDMetricCalcModeZ(resolution, returnID, classID, minNumReturns, upThreshold, lowThreshold);
+                foundMetric = true;
             }
-            else if(xercesc::XMLString::equals(metricNameStr, metricminz))
+            if(!foundMetric && xercesc::XMLString::equals(metricNameStr, metricminz))
             {
                 metric = new SPDMetricCalcMinZ(returnID, classID, minNumReturns, upThreshold, lowThreshold);
+                foundMetric = true;
             }
-            else if(xercesc::XMLString::equals(metricNameStr, metricmaxz))
+            if(!foundMetric && xercesc::XMLString::equals(metricNameStr, metricmaxz))
             {
                 metric = new SPDMetricCalcMaxZ(returnID, classID, minNumReturns, upThreshold, lowThreshold);
+                foundMetric = true;
             }
-            else if(xercesc::XMLString::equals(metricNameStr, metricstddevz))
+            if(!foundMetric && xercesc::XMLString::equals(metricNameStr, metricstddevz))
             {
                 metric = new SPDMetricCalcStdDevZ(returnID, classID, minNumReturns, upThreshold, lowThreshold);
+                foundMetric = true;
             }
-            else if(xercesc::XMLString::equals(metricNameStr, metricvariancez))
+            if(!foundMetric && xercesc::XMLString::equals(metricNameStr, metricvariancez))
             {
                 metric = new SPDMetricCalcVarianceZ(returnID, classID, minNumReturns, upThreshold, lowThreshold);
+                foundMetric = true;
             }
-            else if(xercesc::XMLString::equals(metricNameStr, metricabsdeviationz))
+            if(!foundMetric && xercesc::XMLString::equals(metricNameStr, metricabsdeviationz))
             {
                 metric = new SPDMetricCalcAbsDeviationZ(returnID, classID, minNumReturns, upThreshold, lowThreshold);
+                foundMetric = true;
             }
-            else if(xercesc::XMLString::equals(metricNameStr, metriccoefficientofvariationz))
+            if(!foundMetric && xercesc::XMLString::equals(metricNameStr, metriccoefficientofvariationz))
             {
                 metric = new SPDMetricCalcCoefficientOfVariationZ(returnID, classID, minNumReturns, upThreshold, lowThreshold);
+                foundMetric = true;
             }
-            else if(xercesc::XMLString::equals(metricNameStr, metricpercentilez))
+            if(!foundMetric && xercesc::XMLString::equals(metricNameStr, metricpercentilez))
             {
                 boost::uint_fast32_t percentileVal = 0;
                 XMLCh *percentileXMLStr = xercesc::XMLString::transcode("percentile");
@@ -1289,12 +1353,14 @@ namespace spdlib
                 }
                 xercesc::XMLString::release(&percentileXMLStr);
                 metric = new SPDMetricCalcPercentileZ(percentileVal,returnID, classID, minNumReturns, upThreshold, lowThreshold);
+                foundMetric = true;
             }
-            else if(xercesc::XMLString::equals(metricNameStr, metricskewnessz))
+            if(!foundMetric && xercesc::XMLString::equals(metricNameStr, metricskewnessz))
             {
                 metric = new SPDMetricCalcSkewnessZ(returnID, classID, minNumReturns, upThreshold, lowThreshold);
+                foundMetric = true;
             }
-            else if(xercesc::XMLString::equals(metricNameStr, metricpersonmodez))
+            if(!foundMetric && xercesc::XMLString::equals(metricNameStr, metricpersonmodez))
             {
                 double resolution = 0;
                 XMLCh *resolutionXMLStr = xercesc::XMLString::transcode("resolution");
@@ -1310,16 +1376,19 @@ namespace spdlib
                 }
                 xercesc::XMLString::release(&resolutionXMLStr);
                 metric = new SPDMetricCalcPersonModeSkewnessZ(resolution, returnID, classID, minNumReturns, upThreshold, lowThreshold);
+                foundMetric = true;
             }
-            else if(xercesc::XMLString::equals(metricNameStr, metricpersonmedianz))
+            if(!foundMetric && xercesc::XMLString::equals(metricNameStr, metricpersonmedianz))
             {
                 metric = new SPDMetricCalcPersonMedianSkewnessZ(returnID, classID, minNumReturns, upThreshold, lowThreshold);
+                foundMetric = true;
             }
-            else if(xercesc::XMLString::equals(metricNameStr, metrickurtosisz))
+            if(!foundMetric && xercesc::XMLString::equals(metricNameStr, metrickurtosisz))
             {
                 metric = new SPDMetricCalcKurtosisZ(returnID, classID, minNumReturns, upThreshold, lowThreshold);
+                foundMetric = true;
             }
-            else if(xercesc::XMLString::equals(metricNameStr, metricreturnsabovezmetric))
+            if(!foundMetric && xercesc::XMLString::equals(metricNameStr, metricreturnsabovezmetric))
             {
                 unsigned int numMetrics = metricElement->getChildElementCount();
                 if(numMetrics != 1)
@@ -1331,8 +1400,9 @@ namespace spdlib
                 SPDMetric *metric1 = this->createMetric(metricElementIn);
 
                 metric = new SPDMetricCalcNumReturnsAboveMetricZ(metric1, returnID, classID, minNumReturns, upThreshold, lowThreshold);
+                foundMetric = true;
             }
-            else if(xercesc::XMLString::equals(metricNameStr, metricreturnsbelowzmetric))
+            if(!foundMetric && xercesc::XMLString::equals(metricNameStr, metricreturnsbelowzmetric))
             {
                 unsigned int numMetrics = metricElement->getChildElementCount();
                 if(numMetrics != 1)
@@ -1344,24 +1414,29 @@ namespace spdlib
                 SPDMetric *metric1 = this->createMetric(metricElementIn);
 
                 metric = new SPDMetricCalcNumReturnsBelowMetricZ(metric1, returnID, classID, minNumReturns, upThreshold, lowThreshold);
+                foundMetric = true;
             }
-            else if(xercesc::XMLString::equals(metricNameStr, metricnumreturnsamplitude))
+            if(!foundMetric && xercesc::XMLString::equals(metricNameStr, metricnumreturnsamplitude))
             {
                 metric = new SPDMetricCalcNumReturnsAmplitude(returnID, classID, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold);
+                foundMetric = true;
             }
-            else if(xercesc::XMLString::equals(metricNameStr, metricsumamplitude))
+            if(!foundMetric && xercesc::XMLString::equals(metricNameStr, metricsumamplitude))
             {
                 metric = new SPDMetricCalcSumAmplitude(returnID, classID, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold);
+                foundMetric = true;
             }
-            else if(xercesc::XMLString::equals(metricNameStr, metricmeanamplitude))
+            if(!foundMetric && xercesc::XMLString::equals(metricNameStr, metricmeanamplitude))
             {
                 metric = new SPDMetricCalcMeanAmplitude(returnID, classID, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold);
+                foundMetric = true;
             }
-            else if(xercesc::XMLString::equals(metricNameStr, metricmedianamplitude))
+            if(!foundMetric && xercesc::XMLString::equals(metricNameStr, metricmedianamplitude))
             {
                 metric = new SPDMetricCalcMedianAmplitude(returnID, classID, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold);
+                foundMetric = true;
             }
-            else if(xercesc::XMLString::equals(metricNameStr, metricmodeamplitude))
+            if(!foundMetric && xercesc::XMLString::equals(metricNameStr, metricmodeamplitude))
             {
                 double resolution = 0;
                 XMLCh *resolutionXMLStr = xercesc::XMLString::transcode("resolution");
@@ -1377,32 +1452,39 @@ namespace spdlib
                 }
                 xercesc::XMLString::release(&resolutionXMLStr);
                 metric = new SPDMetricCalcModeAmplitude(resolution, returnID, classID, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold);
+                foundMetric = true;
             }
-            else if(xercesc::XMLString::equals(metricNameStr, metricminamplitude))
+            if(!foundMetric && xercesc::XMLString::equals(metricNameStr, metricminamplitude))
             {
                 metric = new SPDMetricCalcMinAmplitude(returnID, classID, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold);
+                foundMetric = true;
             }
-            else if(xercesc::XMLString::equals(metricNameStr, metricmaxamplitude))
+            if(!foundMetric && xercesc::XMLString::equals(metricNameStr, metricmaxamplitude))
             {
                 metric = new SPDMetricCalcMaxAmplitude(returnID, classID, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold);
+                foundMetric = true;
             }
-            else if(xercesc::XMLString::equals(metricNameStr, metricstddevamplitude))
+            if(!foundMetric && xercesc::XMLString::equals(metricNameStr, metricstddevamplitude))
             {
                 metric = new SPDMetricCalcStdDevAmplitude(returnID, classID, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold);
+                foundMetric = true;
             }
-            else if(xercesc::XMLString::equals(metricNameStr, metricvarianceamplitude))
+            if(!foundMetric && xercesc::XMLString::equals(metricNameStr, metricvarianceamplitude))
             {
                 metric = new SPDMetricCalcVarianceAmplitude(returnID, classID, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold);
+                foundMetric = true;
             }
-            else if(xercesc::XMLString::equals(metricNameStr, metricabsdeviationamplitude))
+            if(!foundMetric && xercesc::XMLString::equals(metricNameStr, metricabsdeviationamplitude))
             {
                 metric = new SPDMetricCalcAbsDeviationAmplitude(returnID, classID, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold);
+                foundMetric = true;
             }
-            else if(xercesc::XMLString::equals(metricNameStr, metriccoefficientofvariationamplitude))
+            if(!foundMetric && xercesc::XMLString::equals(metricNameStr, metriccoefficientofvariationamplitude))
             {
                 metric = new SPDMetricCalcCoefficientOfVariationAmplitude(returnID, classID, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold);
+                foundMetric = true;
             }
-            else if(xercesc::XMLString::equals(metricNameStr, metricpercentileamplitude))
+            if(!foundMetric && xercesc::XMLString::equals(metricNameStr, metricpercentileamplitude))
             {
                 boost::uint_fast32_t percentileVal = 0;
                 XMLCh *percentileXMLStr = xercesc::XMLString::transcode("percentile");
@@ -1418,12 +1500,14 @@ namespace spdlib
                 }
                 xercesc::XMLString::release(&percentileXMLStr);
                 metric = new SPDMetricCalcPercentileAmplitude(percentileVal,returnID, classID, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold);
+                foundMetric = true;
             }
-            else if(xercesc::XMLString::equals(metricNameStr, metricskewnessamplitude))
+            if(!foundMetric && xercesc::XMLString::equals(metricNameStr, metricskewnessamplitude))
             {
                 metric = new SPDMetricCalcSkewnessAmplitude(returnID, classID, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold);
+                foundMetric = true;
             }
-            else if(xercesc::XMLString::equals(metricNameStr, metricpersonmodeamplitude))
+            if(!foundMetric && xercesc::XMLString::equals(metricNameStr, metricpersonmodeamplitude))
             {
                 double resolution = 0;
                 XMLCh *resolutionXMLStr = xercesc::XMLString::transcode("resolution");
@@ -1439,16 +1523,19 @@ namespace spdlib
                 }
                 xercesc::XMLString::release(&resolutionXMLStr);
                 metric = new SPDMetricCalcPersonModeSkewnessAmplitude(resolution, returnID, classID, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold);
+                foundMetric = true;
             }
-            else if(xercesc::XMLString::equals(metricNameStr, metricpersonmedianamplitude))
+            if(!foundMetric && xercesc::XMLString::equals(metricNameStr, metricpersonmedianamplitude))
             {
                 metric = new SPDMetricCalcPersonMedianSkewnessAmplitude(returnID, classID, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold);
+                foundMetric = true;
             }
-            else if(xercesc::XMLString::equals(metricNameStr, metrickurtosisamplitude))
+            if(!foundMetric && xercesc::XMLString::equals(metricNameStr, metrickurtosisamplitude))
             {
                 metric = new SPDMetricCalcKurtosisAmplitude(returnID, classID, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold);
+                foundMetric = true;
             }
-            else if(xercesc::XMLString::equals(metricNameStr, metricreturnsaboveamplitudemetric))
+            if(!foundMetric && xercesc::XMLString::equals(metricNameStr, metricreturnsaboveamplitudemetric))
             {
                 unsigned int numMetrics = metricElement->getChildElementCount();
                 if(numMetrics != 1)
@@ -1460,8 +1547,9 @@ namespace spdlib
                 SPDMetric *metric1 = this->createMetric(metricElementIn);
 
                 metric = new SPDMetricCalcNumReturnsAboveMetricAmplitude(metric1, returnID, classID, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold);
+                foundMetric = true;
             }
-            else if(xercesc::XMLString::equals(metricNameStr, metricreturnsbelowamplitudemetric))
+            if(!foundMetric && xercesc::XMLString::equals(metricNameStr, metricreturnsbelowamplitudemetric))
             {
                 unsigned int numMetrics = metricElement->getChildElementCount();
                 if(numMetrics != 1)
@@ -1473,24 +1561,28 @@ namespace spdlib
                 SPDMetric *metric1 = this->createMetric(metricElementIn);
 
                 metric = new SPDMetricCalcNumReturnsBelowMetricAmplitude(metric1, returnID, classID, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold);
+                foundMetric = true;
             }
-            else if(xercesc::XMLString::equals(metricNameStr, metricnumreturnsrange))
+            if(!foundMetric && xercesc::XMLString::equals(metricNameStr, metricnumreturnsrange))
             {
                 metric = new SPDMetricCalcNumReturnsRange(returnID, classID, minNumReturns, upThreshold, lowThreshold);
             }
-            else if(xercesc::XMLString::equals(metricNameStr, metricsumrange))
+            if(!foundMetric && xercesc::XMLString::equals(metricNameStr, metricsumrange))
             {
                 metric = new SPDMetricCalcSumRange(returnID, classID, minNumReturns, upThreshold, lowThreshold);
+                foundMetric = true;
             }
-            else if(xercesc::XMLString::equals(metricNameStr, metricmeanrange))
+            if(!foundMetric && xercesc::XMLString::equals(metricNameStr, metricmeanrange))
             {
                 metric = new SPDMetricCalcMeanRange(returnID, classID, minNumReturns, upThreshold, lowThreshold);
+                foundMetric = true;
             }
-            else if(xercesc::XMLString::equals(metricNameStr, metricmedianrange))
+            if(!foundMetric && xercesc::XMLString::equals(metricNameStr, metricmedianrange))
             {
                 metric = new SPDMetricCalcMedianRange(returnID, classID, minNumReturns, upThreshold, lowThreshold);
+                foundMetric = true;
             }
-            else if(xercesc::XMLString::equals(metricNameStr, metricmoderange))
+            if(!foundMetric && xercesc::XMLString::equals(metricNameStr, metricmoderange))
             {
                 double resolution = 0;
                 XMLCh *resolutionXMLStr = xercesc::XMLString::transcode("resolution");
@@ -1506,32 +1598,39 @@ namespace spdlib
                 }
                 xercesc::XMLString::release(&resolutionXMLStr);
                 metric = new SPDMetricCalcModeRange(resolution, returnID, classID, minNumReturns, upThreshold, lowThreshold);
+                foundMetric = true;
             }
-            else if(xercesc::XMLString::equals(metricNameStr, metricminrange))
+            if(!foundMetric && xercesc::XMLString::equals(metricNameStr, metricminrange))
             {
                 metric = new SPDMetricCalcMinRange(returnID, classID, minNumReturns, upThreshold, lowThreshold);
+                foundMetric = true;
             }
-            else if(xercesc::XMLString::equals(metricNameStr, metricmaxrange))
+            if(!foundMetric && xercesc::XMLString::equals(metricNameStr, metricmaxrange))
             {
                 metric = new SPDMetricCalcMaxRange(returnID, classID, minNumReturns, upThreshold, lowThreshold);
+                foundMetric = true;
             }
-            else if(xercesc::XMLString::equals(metricNameStr, metricstddevrange))
+            if(!foundMetric && xercesc::XMLString::equals(metricNameStr, metricstddevrange))
             {
                 metric = new SPDMetricCalcStdDevRange(returnID, classID, minNumReturns, upThreshold, lowThreshold);
+                foundMetric = true;
             }
-            else if(xercesc::XMLString::equals(metricNameStr, metricvariancerange))
+            if(!foundMetric && xercesc::XMLString::equals(metricNameStr, metricvariancerange))
             {
                 metric = new SPDMetricCalcVarianceRange(returnID, classID, minNumReturns, upThreshold, lowThreshold);
+                foundMetric = true;
             }
-            else if(xercesc::XMLString::equals(metricNameStr, metricabsdeviationrange))
+            if(!foundMetric && xercesc::XMLString::equals(metricNameStr, metricabsdeviationrange))
             {
                 metric = new SPDMetricCalcAbsDeviationRange(returnID, classID, minNumReturns, upThreshold, lowThreshold);
+                foundMetric = true;
             }
-            else if(xercesc::XMLString::equals(metricNameStr, metriccoefficientofvariationrange))
+            if(!foundMetric && xercesc::XMLString::equals(metricNameStr, metriccoefficientofvariationrange))
             {
                 metric = new SPDMetricCalcCoefficientOfVariationRange(returnID, classID, minNumReturns, upThreshold, lowThreshold);
+                foundMetric = true;
             }
-            else if(xercesc::XMLString::equals(metricNameStr, metricpercentilerange))
+            if(!foundMetric && xercesc::XMLString::equals(metricNameStr, metricpercentilerange))
             {
                 boost::uint_fast32_t percentileVal = 0;
                 XMLCh *percentileXMLStr = xercesc::XMLString::transcode("percentile");
@@ -1547,12 +1646,14 @@ namespace spdlib
                 }
                 xercesc::XMLString::release(&percentileXMLStr);
                 metric = new SPDMetricCalcPercentileRange(percentileVal,returnID, classID, minNumReturns, upThreshold, lowThreshold);
+                foundMetric = true;
             }
-            else if(xercesc::XMLString::equals(metricNameStr, metricskewnessrange))
+            if(!foundMetric && xercesc::XMLString::equals(metricNameStr, metricskewnessrange))
             {
                 metric = new SPDMetricCalcSkewnessRange(returnID, classID, minNumReturns, upThreshold, lowThreshold);
+                foundMetric = true;
             }
-            else if(xercesc::XMLString::equals(metricNameStr, metricpersonmoderange))
+            if(!foundMetric && xercesc::XMLString::equals(metricNameStr, metricpersonmoderange))
             {
                 double resolution = 0;
                 XMLCh *resolutionXMLStr = xercesc::XMLString::transcode("resolution");
@@ -1568,16 +1669,19 @@ namespace spdlib
                 }
                 xercesc::XMLString::release(&resolutionXMLStr);
                 metric = new SPDMetricCalcPersonModeSkewnessRange(resolution, returnID, classID, minNumReturns, upThreshold, lowThreshold);
+                foundMetric = true;
             }
-            else if(xercesc::XMLString::equals(metricNameStr, metricpersonmedianrange))
+            if(!foundMetric && xercesc::XMLString::equals(metricNameStr, metricpersonmedianrange))
             {
                 metric = new SPDMetricCalcPersonMedianSkewnessRange(returnID, classID, minNumReturns, upThreshold, lowThreshold);
+                foundMetric = true;
             }
-            else if(xercesc::XMLString::equals(metricNameStr, metrickurtosisrange))
+            if(!foundMetric && xercesc::XMLString::equals(metricNameStr, metrickurtosisrange))
             {
                 metric = new SPDMetricCalcKurtosisRange(returnID, classID, minNumReturns, upThreshold, lowThreshold);
+                foundMetric = true;
             }
-            else if(xercesc::XMLString::equals(metricNameStr, metricreturnsaboverangemetric))
+            if(!foundMetric && xercesc::XMLString::equals(metricNameStr, metricreturnsaboverangemetric))
             {
                 unsigned int numMetrics = metricElement->getChildElementCount();
                 if(numMetrics != 1)
@@ -1589,8 +1693,9 @@ namespace spdlib
                 SPDMetric *metric1 = this->createMetric(metricElementIn);
 
                 metric = new SPDMetricCalcNumReturnsAboveMetricRange(metric1, returnID, classID, minNumReturns, upThreshold, lowThreshold);
+                foundMetric = true;
             }
-            else if(xercesc::XMLString::equals(metricNameStr, metricreturnsbelowrangemetric))
+            if(!foundMetric && xercesc::XMLString::equals(metricNameStr, metricreturnsbelowrangemetric))
             {
                 unsigned int numMetrics = metricElement->getChildElementCount();
                 if(numMetrics != 1)
@@ -1602,24 +1707,29 @@ namespace spdlib
                 SPDMetric *metric1 = this->createMetric(metricElementIn);
 
                 metric = new SPDMetricCalcNumReturnsBelowMetricRange(metric1, returnID, classID, minNumReturns, upThreshold, lowThreshold);
+                foundMetric = true;
             }
-            else if(xercesc::XMLString::equals(metricNameStr, metricnumreturnswidth))
+            if(!foundMetric && xercesc::XMLString::equals(metricNameStr, metricnumreturnswidth))
             {
                 metric = new SPDMetricCalcNumReturnsWidth(returnID, classID, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold);
+                foundMetric = true;
             }
-            else if(xercesc::XMLString::equals(metricNameStr, metricsumwidth))
+            if(!foundMetric && xercesc::XMLString::equals(metricNameStr, metricsumwidth))
             {
                 metric = new SPDMetricCalcSumWidth(returnID, classID, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold);
+                foundMetric = true;
             }
-            else if(xercesc::XMLString::equals(metricNameStr, metricmeanwidth))
+            if(!foundMetric && xercesc::XMLString::equals(metricNameStr, metricmeanwidth))
             {
                 metric = new SPDMetricCalcMeanWidth(returnID, classID, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold);
+                foundMetric = true;
             }
-            else if(xercesc::XMLString::equals(metricNameStr, metricmedianwidth))
+            if(!foundMetric && xercesc::XMLString::equals(metricNameStr, metricmedianwidth))
             {
                 metric = new SPDMetricCalcMedianWidth(returnID, classID, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold);
+                foundMetric = true;
             }
-            else if(xercesc::XMLString::equals(metricNameStr, metricmodewidth))
+            if(!foundMetric && xercesc::XMLString::equals(metricNameStr, metricmodewidth))
             {
                 double resolution = 0;
                 XMLCh *resolutionXMLStr = xercesc::XMLString::transcode("resolution");
@@ -1635,32 +1745,39 @@ namespace spdlib
                 }
                 xercesc::XMLString::release(&resolutionXMLStr);
                 metric = new SPDMetricCalcModeWidth(resolution, returnID, classID, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold);
+                foundMetric = true;
             }
-            else if(xercesc::XMLString::equals(metricNameStr, metricminwidth))
+            if(!foundMetric && xercesc::XMLString::equals(metricNameStr, metricminwidth))
             {
                 metric = new SPDMetricCalcMinWidth(returnID, classID, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold);
+                foundMetric = true;
             }
-            else if(xercesc::XMLString::equals(metricNameStr, metricmaxwidth))
+            if(!foundMetric && xercesc::XMLString::equals(metricNameStr, metricmaxwidth))
             {
                 metric = new SPDMetricCalcMaxWidth(returnID, classID, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold);
+                foundMetric = true;
             }
-            else if(xercesc::XMLString::equals(metricNameStr, metricstddevwidth))
+            if(!foundMetric && xercesc::XMLString::equals(metricNameStr, metricstddevwidth))
             {
                 metric = new SPDMetricCalcStdDevWidth(returnID, classID, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold);
+                foundMetric = true;
             }
-            else if(xercesc::XMLString::equals(metricNameStr, metricvariancewidth))
+            if(!foundMetric && xercesc::XMLString::equals(metricNameStr, metricvariancewidth))
             {
                 metric = new SPDMetricCalcVarianceWidth(returnID, classID, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold);
+                foundMetric = true;
             }
-            else if(xercesc::XMLString::equals(metricNameStr, metricabsdeviationwidth))
+            if(!foundMetric && xercesc::XMLString::equals(metricNameStr, metricabsdeviationwidth))
             {
                 metric = new SPDMetricCalcAbsDeviationWidth(returnID, classID, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold);
+                foundMetric = true;
             }
-            else if(xercesc::XMLString::equals(metricNameStr, metriccoefficientofvariationwidth))
+            if(!foundMetric && xercesc::XMLString::equals(metricNameStr, metriccoefficientofvariationwidth))
             {
                 metric = new SPDMetricCalcCoefficientOfVariationWidth(returnID, classID, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold);
+                foundMetric = true;
             }
-            else if(xercesc::XMLString::equals(metricNameStr, metricpercentilewidth))
+            if(!foundMetric && xercesc::XMLString::equals(metricNameStr, metricpercentilewidth))
             {
                 boost::uint_fast32_t percentileVal = 0;
                 XMLCh *percentileXMLStr = xercesc::XMLString::transcode("percentile");
@@ -1676,12 +1793,14 @@ namespace spdlib
                 }
                 xercesc::XMLString::release(&percentileXMLStr);
                 metric = new SPDMetricCalcPercentileWidth(percentileVal,returnID, classID, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold);
+                foundMetric = true;
             }
-            else if(xercesc::XMLString::equals(metricNameStr, metricskewnesswidth))
+            if(!foundMetric && xercesc::XMLString::equals(metricNameStr, metricskewnesswidth))
             {
                 metric = new SPDMetricCalcSkewnessWidth(returnID, classID, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold);
+                foundMetric = true;
             }
-            else if(xercesc::XMLString::equals(metricNameStr, metricpersonmodewidth))
+            if(!foundMetric && xercesc::XMLString::equals(metricNameStr, metricpersonmodewidth))
             {
                 double resolution = 0;
                 XMLCh *resolutionXMLStr = xercesc::XMLString::transcode("resolution");
@@ -1697,16 +1816,19 @@ namespace spdlib
                 }
                 xercesc::XMLString::release(&resolutionXMLStr);
                 metric = new SPDMetricCalcPersonModeSkewnessWidth(resolution, returnID, classID, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold);
+                foundMetric = true;
             }
-            else if(xercesc::XMLString::equals(metricNameStr, metricpersonmedianwidth))
+            if(!foundMetric && xercesc::XMLString::equals(metricNameStr, metricpersonmedianwidth))
             {
                 metric = new SPDMetricCalcPersonMedianSkewnessWidth(returnID, classID, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold);
+                foundMetric = true;
             }
-            else if(xercesc::XMLString::equals(metricNameStr, metrickurtosiswidth))
+            if(!foundMetric && xercesc::XMLString::equals(metricNameStr, metrickurtosiswidth))
             {
                 metric = new SPDMetricCalcKurtosisWidth(returnID, classID, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold);
+                foundMetric = true;
             }
-            else if(xercesc::XMLString::equals(metricNameStr, metricreturnsabovewidthmetric))
+            if(!foundMetric && xercesc::XMLString::equals(metricNameStr, metricreturnsabovewidthmetric))
             {
                 unsigned int numMetrics = metricElement->getChildElementCount();
                 if(numMetrics != 1)
@@ -1718,8 +1840,9 @@ namespace spdlib
                 SPDMetric *metric1 = this->createMetric(metricElementIn);
 
                 metric = new SPDMetricCalcNumReturnsAboveMetricWidth(metric1, returnID, classID, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold);
+                foundMetric = true;
             }
-            else if(xercesc::XMLString::equals(metricNameStr, metricreturnsbelowwidthmetric))
+            if(!foundMetric && xercesc::XMLString::equals(metricNameStr, metricreturnsbelowwidthmetric))
             {
                 unsigned int numMetrics = metricElement->getChildElementCount();
                 if(numMetrics != 1)
@@ -1731,14 +1854,16 @@ namespace spdlib
                 SPDMetric *metric1 = this->createMetric(metricElementIn);
 
                 metric = new SPDMetricCalcNumReturnsBelowMetricWidth(metric1, returnID, classID, minNumReturns, upThreshold, lowThreshold, heightUpThreshold, heightLowThreshold);
+                foundMetric = true;
             }
-            else if(xercesc::XMLString::equals(metricNameStr, metrichome))
+            if(!foundMetric && xercesc::XMLString::equals(metricNameStr, metrichome))
             {
                 // Number of returns is set to 0 as only using waveform data
                 // The lower threshold is fixed at 0 so only above ground returns are considered.
                 metric = new SPDMetricCalcHeightOfMedianEnergy(returnID, classID, 0, upThreshold, 0);
+                foundMetric = true;
             }
-            else
+            if(!foundMetric)
             {
                 std::string message = "Metric \'" + std::string(xercesc::XMLString::transcode(metricNameStr)) + "\' has not been recognised.";
                 throw SPDProcessingException(message);
