@@ -187,12 +187,12 @@ void PulsePointConverter::convertCPPPulseArrayToRecArrays(std::vector<spdlib::SP
                 npy_intp nStartPoint = nPointCount;
                 for(std::vector<spdlib::SPDPoint*>::iterator iterPts = (*iterPls)->pts->begin(); iterPts != (*iterPls)->pts->end(); ++iterPts)
                 {
-                    pRecord = PyArray_GETPTR1(*pPointArray, nPointCount);
+                    pRecord = PyArray_GETPTR1((PyArrayObject*)*pPointArray, nPointCount);
                     copyPointToRecord(pRecord, (*iterPts), m_ppointIndices);
                     nPointCount++;
                 }
                 // now we know the start and end indices of the points we can add the pulse
-                pRecord = PyArray_GETPTR1(*pPulseArray, nPulseCount);
+                pRecord = PyArray_GETPTR1((PyArrayObject*)*pPulseArray, nPulseCount);
                 if( nPointCount > nStartPoint )
                 {
                     copyPulseToRecord(pRecord, (*iterPls), m_ppulseIndices, nStartPoint, nPointCount - nStartPoint, j, i, thisPulseIdx);
@@ -208,7 +208,7 @@ void PulsePointConverter::convertCPPPulseArrayToRecArrays(std::vector<spdlib::SP
                     npy_intp nStartTransmitted = nTransmittedCount;
                     for( boost::uint_fast16_t n = 0; n < (*iterPls)->numOfTransmittedBins; n++ )
                     {
-                        *(npy_int32*)PyArray_GETPTR1(*pTransmittedArray, nTransmittedCount) = (*iterPls)->transmitted[n];
+                        *(npy_int32*)PyArray_GETPTR1((PyArrayObject*)*pTransmittedArray, nTransmittedCount) = (*iterPls)->transmitted[n];
                         nTransmittedCount++;
                     }
                     m_ppulseIndices->startTransmittedIdx.setValue(pRecord, nStartTransmitted);
@@ -225,7 +225,7 @@ void PulsePointConverter::convertCPPPulseArrayToRecArrays(std::vector<spdlib::SP
                     npy_intp nStartReceived = nReceivedCount;
                     for( boost::uint_fast16_t n = 0; n < (*iterPls)->numOfReceivedBins; n++ )
                     {
-                        *(npy_int32*)PyArray_GETPTR1(*pReceivedArray, nReceivedCount) = (*iterPls)->received[n];
+                        *(npy_int32*)PyArray_GETPTR1((PyArrayObject*)*pReceivedArray, nReceivedCount) = (*iterPls)->received[n];
                         nReceivedCount++;
                     }
                     m_ppulseIndices->startReceivedIdx.setValue(pRecord, nStartReceived);
@@ -252,10 +252,10 @@ void PulsePointConverter::convertRecArraysToCPPPulseArray(PyObject *pPulseArray,
     assert(m_ppointIndices != NULL );
 
     void *pRecord;
-    npy_intp nNumPulses = PyArray_DIM(pPulseArray, 0);
+    npy_intp nNumPulses = PyArray_DIM((PyArrayObject*)pPulseArray, 0);
     for( npy_intp nPulseCount = 0; nPulseCount < nNumPulses; nPulseCount++ )
     {
-        pRecord = PyArray_GETPTR1(pPulseArray, nPulseCount);
+        pRecord = PyArray_GETPTR1((PyArrayObject*)pPulseArray, nPulseCount);
         npy_uint startPtsIdx = GetPulseStartPtsIdx(pRecord);
         npy_uint nNumberOfReturns = GetPulseNumberOfReturns(pRecord);
         npy_uint thisPulseIdx = GetPulseThisPulseIdx(pRecord);
@@ -271,7 +271,7 @@ void PulsePointConverter::convertRecArraysToCPPPulseArray(PyObject *pPulseArray,
             npy_uint nNewNumberOfReturns = 0; // they may have deleted some
             for( npy_uint i = 0; i < nNumberOfReturns; i++ )
             {
-                pRecord = PyArray_GETPTR1(pPointArray, startPtsIdx + i );
+                pRecord = PyArray_GETPTR1((PyArrayObject*)pPointArray, startPtsIdx + i );
                 if( !getPointRecordDeleteMe(pRecord,  m_ppointIndices) )
                 {
                     copyRecordToPoint(pCurrPulse->pts->at(nNewNumberOfReturns), pRecord, m_ppointIndices);

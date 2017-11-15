@@ -204,7 +204,7 @@ void getFieldDescription(PyObject *pArray, const char *pszName, int *pnOffset, c
         throw RecArrayException("Must pass array type");
     }
 
-    PyArray_Descr *pDescr = PyArray_DESCR(pArray);
+    PyArray_Descr *pDescr = PyArray_DESCR((PyArrayObject*)pArray);
     if( pDescr == NULL )
     {
         throw RecArrayException("Cannot get array description");
