@@ -180,7 +180,7 @@ PyObject* ConvertFloatCPPArrayToNumpy(float ***imageDataBlock, boost::uint_fast3
         {
             for(boost::uint_fast32_t z = 0; z < numImgBands; ++z)
             {
-                *((float*)PyArray_GETPTR3(pImageData, i, j, z)) = imageDataBlock[i][j][z];
+                *((float*)PyArray_GETPTR3((PyArrayObject*)pImageData, i, j, z)) = imageDataBlock[i][j][z];
             }
         }
     }
@@ -198,7 +198,7 @@ void ConvertNumpyToFloatCPPArray(float ***imageDataBlock, boost::uint_fast32_t x
         {
             for(boost::uint_fast32_t z = 0; z < numImgBands; ++z)
             {
-                 imageDataBlock[i][j][z] = *((float*)PyArray_GETPTR3(pImageData, i, j, z));
+                 imageDataBlock[i][j][z] = *((float*)PyArray_GETPTR3((PyArrayObject*)pImageData, i, j, z));
             }
         }
     }
@@ -214,8 +214,8 @@ PyObject *ConvertCenPtsCPPArrayToNumpy(spdlib::SPDXYPoint ***cenPts, boost::uint
     {
         for(boost::uint_fast32_t j = 0; j < xSize; ++j)
         {
-            *((double*)PyArray_GETPTR3(pCenData, 0, i, j)) = cenPts[i][j]->x;
-            *((double*)PyArray_GETPTR3(pCenData, 1, i, j)) = cenPts[i][j]->y;
+            *((double*)PyArray_GETPTR3((PyArrayObject*)pCenData, 0, i, j)) = cenPts[i][j]->x;
+            *((double*)PyArray_GETPTR3((PyArrayObject*)pCenData, 1, i, j)) = cenPts[i][j]->y;
         }
     }
 

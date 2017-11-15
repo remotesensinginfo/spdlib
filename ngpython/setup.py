@@ -55,12 +55,13 @@ spdpy2module = Extension(name="spdpy2._spdpy2",
                             "src/pulsearray.cpp", "src/pointarray.cpp"],
                 library_dirs=libdirs,
                 libraries=spdlibs,
+                define_macros=[('NPY_NO_DEPRECATED_API', 'NPY_1_7_API_VERSION')],
                 include_dirs=[os.path.join("..","include")] + extraincludes)
 
 setup(name="spdpy2",
         version="0.1",
         ext_modules=[spdpy2module],
-        description="Python Bindings for SPDLib using structred numpy arrays",
+        description="Python Bindings for SPDLib using structured numpy arrays",
         packages=['spdpy2'],
         author="Sam Gillingham",
         author_email="gillingham.sam@gmail.com")

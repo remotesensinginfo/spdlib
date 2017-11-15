@@ -925,7 +925,7 @@ PyObject* createSPDFileArray(spdlib::SPDFile *pFile, float binSize)
     SPDFileArrayIndices *pIndices = getSPDFileIndices(pArray);
 
     // get the first element 
-    void *pRecord = PyArray_GETPTR1(pArray, 0);
+    void *pRecord = PyArray_GETPTR1((PyArrayObject*)pArray, 0);
 
     //pIndices->FilePath.setValueArray(pRecord, pFile->getFilePath().c_str());
     //pIndices->SpatialReference.setValueArray(pRecord, pFile->getSpatialReference().c_str());
