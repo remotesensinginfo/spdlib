@@ -86,10 +86,10 @@ class BuildSPDMerge (object):
 
     def buildCmd(self, fileList, outClass, classProvided, spdInput, outputSPD, ignoreChecks):
         outStr = "spdmerge -f " + spdInput
-        
+
         if ignoreChecks:
             outStr = outStr + " --ignorechecks"
-        
+
         if classProvided:
             for file in fileList:
                 outStr = outStr + " --classes " + outClass
@@ -98,7 +98,7 @@ class BuildSPDMerge (object):
 
         for file in fileList:
            outStr = outStr + " " + file
-            
+
         print(outStr)
 
 

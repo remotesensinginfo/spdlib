@@ -30,36 +30,36 @@ namespace spdlib
 
     SPDCalcFileStats::SPDCalcFileStats()
     {
-        
+
     }
-    
+
     void SPDCalcFileStats::calcImagePulsePointDensity(std::string inputSPDFile, std::string outputImageFile, boost::uint_fast32_t blockXSize, boost::uint_fast32_t blockYSize, float processingResolution, std::string gdalFormat) throw(SPDProcessingException)
     {
-        try 
+        try
         {
             SPDFile *spdInFile = new SPDFile(inputSPDFile);
-            SPDPulseProcessor *pulseStatsProcessor = new SPDPulseProcessorCalcStats();            
+            SPDPulseProcessor *pulseStatsProcessor = new SPDPulseProcessorCalcStats();
             SPDSetupProcessPulses processPulses = SPDSetupProcessPulses(blockXSize, blockYSize, true);
             processPulses.processPulsesWithOutputImage(pulseStatsProcessor, spdInFile, outputImageFile, 2, processingResolution, gdalFormat, false, 0);
-            
+
             delete spdInFile;
             delete pulseStatsProcessor;
         }
-        catch (SPDProcessingException &e) 
+        catch (SPDProcessingException &e)
         {
             throw e;
         }
     }
-    
+
     void SPDCalcFileStats::calcOverallPulsePointDensityStats(std::string inputSPDFile, std::string outputTextFile, boost::uint_fast32_t blockXSize, boost::uint_fast32_t blockYSize, float processingResolution) throw(SPDProcessingException)
     {
-        try 
+        try
         {
             SPDFile *spdInFile = new SPDFile(inputSPDFile);
             SPDPulseProcessorCalcStats *pulseStatsProcessor = new SPDPulseProcessorCalcStats();
             SPDSetupProcessPulses processPulses = SPDSetupProcessPulses(blockXSize, blockYSize, true);
             processPulses.processPulses(pulseStatsProcessor, spdInFile, processingResolution, false, 0);
-            
+
             boost::uint_fast32_t binCount = pulseStatsProcessor->getBinCount();
             float meanPulses = pulseStatsProcessor->getMeanPulses();
             boost::uint_fast32_t minPulses = pulseStatsProcessor->getMinPulses();
@@ -67,15 +67,15 @@ namespace spdlib
             float meanPoints = pulseStatsProcessor->getMeanPoints();
             boost::uint_fast32_t minPoints = pulseStatsProcessor->getMinPoints();
             boost::uint_fast32_t maxPoints = pulseStatsProcessor->getMaxPoints();
-            
+
             pulseStatsProcessor->setCalcStdDev(meanPulses, meanPoints);
             processPulses.processPulses(pulseStatsProcessor, spdInFile, processingResolution, false, 0);
             float stdDevPulses = pulseStatsProcessor->getStdDevPulses();
             float stdDevPoints = pulseStatsProcessor->getStdDevPoints();
-            
+
             delete spdInFile;
             delete pulseStatsProcessor;
-            
+
             std::ofstream outTxtFile;
             outTxtFile.open(outputTextFile.c_str(), std::ios::out | std::ios::trunc);
             outTxtFile << "Num Bins: " << binCount << std::endl;
@@ -92,7 +92,7 @@ namespace spdlib
             outTxtFile.flush();
             outTxtFile.close();
         }
-        catch (SPDProcessingException &e) 
+        catch (SPDProcessingException &e)
         {
             throw e;
         }
@@ -100,31 +100,31 @@ namespace spdlib
 		
     SPDCalcFileStats::~SPDCalcFileStats()
     {
-        
+
     }
-    
-    
-    
-    
+
+
+
+
     SPDPulseProcessorCalcStats::SPDPulseProcessorCalcStats():SPDPulseProcessor()
     {
         calcStdDevVals = false;
         first = true;
         countBins = 0;
-        
+
         sumPulses = 0;
         minPulses = 0;
         maxPulses = 0;
         meanPulses = 0;
         sqDiffPulses = 0;
-        
+
         sumPoints = 0;
         minPoints = 0;
         maxPoints = 0;
         meanPoints = 0;
         sqDiffPoints = 0;
     }
-        
+
     void SPDPulseProcessorCalcStats::processDataColumnImage(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses, float *imageData, SPDXYPoint *cenPts, boost::uint_fast32_t numImgBands, float binSize) throw(SPDProcessingException)
     {
         try
@@ -133,15 +133,15 @@ namespace spdlib
             {
                 throw SPDProcessingException("Processing requires at least 2 image bands.");
             }
-            
+
             imageData[0] = pulses->size();
-            
+
             boost::uint_fast32_t ptsCount = 0;
             for(std::vector<SPDPulse*>::iterator iterPulses = pulses->begin(); iterPulses != pulses->end(); ++iterPulses)
             {
                 ptsCount += (*iterPulses)->numberOfReturns;
             }
-            
+
             imageData[1] = ptsCount;
         }
         catch(SPDProcessingException &e)
@@ -161,7 +161,7 @@ namespace spdlib
                 {
                     ptsCount += (*iterPulses)->numberOfReturns;
                 }
-                
+
                 if(!calcStdDevVals)
                 {
                     if(first)
@@ -169,7 +169,7 @@ namespace spdlib
                         minPulses = pulses->size();
                         maxPulses = pulses->size();
                         sumPulses = pulses->size();
-                        
+
                         minPoints = ptsCount;
                         maxPoints = ptsCount;
                         sumPoints = ptsCount;
@@ -186,7 +186,7 @@ namespace spdlib
                             maxPulses = pulses->size();
                         }
                         sumPulses += pulses->size();
-                        
+
                         if(ptsCount < minPoints)
                         {
                             minPoints = ptsCount;
@@ -214,32 +214,32 @@ namespace spdlib
                     }
                 }
             }
-            
+
         }
         catch(SPDProcessingException &e)
         {
             throw e;
         }
     }
-        
+
     std::vector<std::string> SPDPulseProcessorCalcStats::getImageBandDescriptions() throw(SPDProcessingException)
     {
         std::vector<std::string> bandNames;
         bandNames.push_back("Pulse Density");
         bandNames.push_back("Point Density");
-        
+
         return bandNames;
     }
-    
+
     void SPDPulseProcessorCalcStats::setHeaderValues(SPDFile *spdFile) throw(SPDProcessingException)
     {
         // NOTHING TO DO HERE...
     }
-        
+
     SPDPulseProcessorCalcStats::~SPDPulseProcessorCalcStats()
     {
-        
-    }    
+
+    }
 
 }
 

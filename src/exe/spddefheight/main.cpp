@@ -4,7 +4,7 @@
  *
  *  Created by Pete Bunting on 05/03/2012.
  *  Copyright 2012 SPDLib. All rights reserved.
- * 
+ *
  *  This file is part of SPDLib.
  *
  *  SPDLib is free software: you can redistribute it and/or modify
@@ -38,41 +38,41 @@
 
 #include "spd/spd-config.h"
 
-int main (int argc, char * const argv[]) 
+int main (int argc, char * const argv[])
 {
     std::cout.precision(12);
-    
+
     std::cout << "spddefheight " << SPDLIB_PACKAGE_STRING << ", Copyright (C) " << SPDLIB_COPYRIGHT_YEAR << " Sorted Pulse Library (SPD)\n";
 	std::cout << "This program comes with ABSOLUTELY NO WARRANTY. This is free software,\n";
 	std::cout << "and you are welcome to redistribute it under certain conditions; See\n";
 	std::cout << "website (http://www.spdlib.org). Bugs are to be reported on the trac\n";
 	std::cout << "or directly to " << SPDLIB_PACKAGE_BUGREPORT << std::endl;
 	
-	try 
+	try
 	{
         TCLAP::CmdLine cmd("Define the height field within pulses and points: spddefheight", ' ', "1.1.0");
 		
         TCLAP::ValueArg<boost::uint_fast32_t> numOfRowsBlockArg("r","blockrows","Number of rows within a block (Default 100)",false,100,"unsigned int");
 		cmd.add( numOfRowsBlockArg );
-        
+
         TCLAP::ValueArg<boost::uint_fast32_t> numOfColsBlockArg("c","blockcols","Number of columns within a block (Default 0) - Note values greater than 1 result in a non-sequencial SPD file.",false,0,"unsigned int");
 		cmd.add( numOfColsBlockArg );
-        
+
         TCLAP::ValueArg<uint_fast16_t> overlapArg("","overlap","Size (in bins) of the overlap between processing blocks (Default 10)",false,10,"uint_fast16_t");
 		cmd.add( overlapArg );
-        
+
         TCLAP::ValueArg<float> binSizeArg("b","binsize","Bin size for processing and output image (Default 0) - Note 0 will use the native SPD file bin size.",false,0,"float");
 		cmd.add( binSizeArg );
-        
-        
+
+
         TCLAP::SwitchArg interpSwitch("","interp","Use interpolation of the ground returns to calculate ground elevation", false);		
 		TCLAP::SwitchArg imageSwitch("","image","Use an image which defines the ground elevation.", false);
-        
+
         std::vector<TCLAP::Arg*> argumentsElev;
         argumentsElev.push_back(&interpSwitch);
         argumentsElev.push_back(&imageSwitch);
         cmd.xorAdd(argumentsElev);
-        
+
 		std::vector<std::string> interpolators;
 		interpolators.push_back("TIN_PLANE");
 		interpolators.push_back("NEAREST_NEIGHBOR");
@@ -100,31 +100,31 @@ int main (int argc, char * const argv[])
 		
 		TCLAP::ValueArg<float> tpsRadiusArg("","tpsRadius","TPS: (TPS_PTNO - maximum) Radius used to retrieve data in TPS algorithm",false,1,"float");
 		cmd.add( tpsRadiusArg );
-        
+
         TCLAP::ValueArg<uint_fast16_t> tpsNoPtsArg("","tpsnopts","TPS: (TPS_RAD - minimum) Number of points to be used by TPS algorithm",false,12,"uint_fast16_t");
 		cmd.add( tpsNoPtsArg );
-        
+
         TCLAP::SwitchArg thinSwitch("","thin","Thin the point cloud when interpolating", false);		
         cmd.add( thinSwitch );
-        
+
         TCLAP::ValueArg<uint_fast16_t> noPtsPerBinArg("","ptsperbin","The number of point allowed within a grid cell following thinning",false,1,"uint_fast16_t");
 		cmd.add( noPtsPerBinArg );
-        
+
         TCLAP::ValueArg<float> thinGridResArg("","thinres","Resolution of the grid used to thin the point cloud",false,0.5,"float");
 		cmd.add( thinGridResArg );
-        
+
         TCLAP::ValueArg<float> gridIdxResolutionArg("","idxres","Resolution of the grid index used for some interpolates",false,0.5,"float");
 		cmd.add( gridIdxResolutionArg );
 		
         TCLAP::ValueArg<std::string> inputFileArg("i","input","The input SPD file.",true,"","String");
 		cmd.add( inputFileArg );
-        
+
         TCLAP::ValueArg<std::string> elevationFileArg("e","elevation","The input elevation image.",false,"","String");
 		cmd.add( elevationFileArg );
-        
+
         TCLAP::ValueArg<std::string> outputFileArg("o","output","The output file.",true,"","String");
 		cmd.add( outputFileArg );
-        
+
 		cmd.parse( argc, argv );
 		
         std::cout.precision(12);
@@ -132,12 +132,12 @@ int main (int argc, char * const argv[])
 		{
             std::string inSPDFilePath = inputFileArg.getValue();
             std::string outFilePath = outputFileArg.getValue();
-                        
+
             float stdDevThreshold = stddevThresholdArg.getValue();
             float lowDist = smallRadiusArg.getValue();
             float highDist = largeRadiusArg.getValue();
             float stdDevDist = stdDevRadiusArg.getValue();	
-            
+
             std::string interpolatorStr = interpolatorsArg.getValue();
             spdlib::SPDPointInterpolator *interpolator = NULL;
             if(interpolatorStr == "NEAREST_NEIGHBOR")
@@ -162,41 +162,41 @@ int main (int argc, char * const argv[])
             }
             else if(interpolatorStr == "TPS_RAD")
             {
-                interpolator = new spdlib::SPDTPSRadiusInterpolator( tpsRadiusArg.getValue(), tpsNoPtsArg.getValue(), gridIdxResolutionArg.getValue(), spdlib::SPD_USE_Z, thinGridResArg.getValue(), thinSwitch.getValue(), spdlib::SPD_SELECT_LOWEST, noPtsPerBinArg.getValue()); 
+                interpolator = new spdlib::SPDTPSRadiusInterpolator( tpsRadiusArg.getValue(), tpsNoPtsArg.getValue(), gridIdxResolutionArg.getValue(), spdlib::SPD_USE_Z, thinGridResArg.getValue(), thinSwitch.getValue(), spdlib::SPD_SELECT_LOWEST, noPtsPerBinArg.getValue());
             }
             else if(interpolatorStr == "TPS_PTNO")
             {
-                interpolator = new spdlib::SPDTPSNumPtsInterpolator( tpsRadiusArg.getValue(), tpsNoPtsArg.getValue(), gridIdxResolutionArg.getValue(), spdlib::SPD_USE_Z, thinGridResArg.getValue(), thinSwitch.getValue(), spdlib::SPD_SELECT_LOWEST, noPtsPerBinArg.getValue());  
+                interpolator = new spdlib::SPDTPSNumPtsInterpolator( tpsRadiusArg.getValue(), tpsNoPtsArg.getValue(), gridIdxResolutionArg.getValue(), spdlib::SPD_USE_Z, thinGridResArg.getValue(), thinSwitch.getValue(), spdlib::SPD_SELECT_LOWEST, noPtsPerBinArg.getValue());
             }
-            else 
+            else
             {
                 throw spdlib::SPDException("Interpolator was not recognised.");
             }
-            
+
             spdlib::SPDFile *spdInFile = new spdlib::SPDFile(inSPDFilePath);
-            
+
             spdlib::SPDDataBlockProcessor *blockProcessor = new spdlib::SPDDefinePulseHeights(interpolator);
             spdlib::SPDProcessDataBlocks processBlocks = spdlib::SPDProcessDataBlocks(blockProcessor, overlapArg.getValue(), numOfColsBlockArg.getValue(), numOfRowsBlockArg.getValue(), true);
             processBlocks.processDataBlocksGridPulsesOutputSPD(spdInFile, outFilePath, binSizeArg.getValue());
-            
+
             delete blockProcessor;
             delete interpolator;
-            delete spdInFile; 
+            delete spdInFile;
         }
         else if(imageSwitch.getValue())
         {
             std::string inSPDFilePath = inputFileArg.getValue();
             std::string inElevRasterPath = elevationFileArg.getValue();
             std::string outFilePath = outputFileArg.getValue();
-            
+
             spdlib::SPDFile *spdInFile = new spdlib::SPDFile(inSPDFilePath);
-            
+
             spdlib::SPDDataBlockProcessor *blockProcessor = new spdlib::SPDDefinePulseHeights(NULL);
             spdlib::SPDProcessDataBlocks processBlocks = spdlib::SPDProcessDataBlocks(blockProcessor, 0, numOfColsBlockArg.getValue(), numOfRowsBlockArg.getValue(), true);
             processBlocks.processDataBlocksGridPulsesInputImage(spdInFile, outFilePath, inElevRasterPath);
-            
+
             delete blockProcessor;
-            delete spdInFile; 
+            delete spdInFile;
         }
         else
         {
@@ -204,7 +204,7 @@ int main (int argc, char * const argv[])
         }
 		
 	}
-	catch (TCLAP::ArgException &e) 
+	catch (TCLAP::ArgException &e)
 	{
 		std::cerr << "Parse Error: " << e.what() << std::endl;
 	}

@@ -173,7 +173,7 @@ if (MSVC)
     set(SPDLIB_LIBRARY -LIBPATH:${SPDLIB_IO_LIB_PATH} libspdio.lib)
 else()
     set(SPDLIB_LIBRARY -L${SPDLIB_IO_LIB_PATH} -lspdio )
-endif(MSVC) 
+endif(MSVC)
 
 include_directories(${HDF5_INCLUDE_DIR})
 if (MSVC)

@@ -11,7 +11,7 @@
 # furnished to do so, subject to the following conditions:
 # The above copyright notice and this permission notice shall be included in
 # all copies or substantial portions of the Software.
-# 
+#
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 # IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 # FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -21,7 +21,7 @@
 # THE SOFTWARE.
 #
 #
-# Purpose:  Write the standard Riegl RiScan Pro ASCII export file format to UPD 
+# Purpose:  Write the standard Riegl RiScan Pro ASCII export file format to UPD
 #
 # Author: John Armston
 # Email: j.armston@uq.edu.au
@@ -42,7 +42,7 @@ import spdpy
 
 
 def parseLine(header,line):
-    
+
     asciiData = {}
     lparts = line.split(',')
     for i,item in enumerate(header):
@@ -50,13 +50,13 @@ def parseLine(header,line):
         if (item == "ID"):
             asciiData[item] = int(lparts[i])
         else:
-            asciiData[itemParts[0]] = float(lparts[i])    
+            asciiData[itemParts[0]] = float(lparts[i])
     return asciiData
 
 
 def main(cmdargs):
-    
-    # Open UPD file 
+
+    # Open UPD file
     spdOutFile = spdpy.createSPDFile(cmdargs.outputFile);
     updWriter = spdpy.UPDWriter()
     updWriter.open(spdOutFile,cmdargs.outputFile)
@@ -91,17 +91,17 @@ def main(cmdargs):
     outPulses = list()
     pulsesInBuffer = 0
     for i in range(nPoints):
-        
+
         # Read and parse line
         line = asciiObj.readline().strip('\r\n')
         asciiData = parseLine(header,line)
-        
+
         # Create pulse and add attributes
-        pulse = spdpy.createSPDPulsePy()    
-        pulse.pulseID = asciiData["ID"] 
-        pulse.x0 = cmdargs.x0 
+        pulse = spdpy.createSPDPulsePy()
+        pulse.pulseID = asciiData["ID"]
+        pulse.x0 = cmdargs.x0
         pulse.y0 = cmdargs.y0
-        pulse.z0 = cmdargs.z0    
+        pulse.z0 = cmdargs.z0
         pulse.azimuth = asciiData["Phi"]
         pulse.zenith = asciiData["Theta"]
 
@@ -122,41 +122,41 @@ def main(cmdargs):
         if asciiData.has_key("Red"):
             point.red = asciiData["Red"]
             point.green = asciiData["Green"]
-            point.blue = asciiData["Blue"]   
-            
+            point.blue = asciiData["Blue"]
+
         # Add point data to the pulse
         pulse.pts.append(point)
         pulse.numberOfReturns = 1
-        pulse.pts_start_idx = i    
-        
+        pulse.pts_start_idx = i
+
         # Update global statistics
         if i > 0:
             spdOutFile.setXMin(min(spdOutFile.xMin,asciiData["X"]))
             spdOutFile.setXMax(max(spdOutFile.xMax,asciiData["X"]))
             spdOutFile.setYMin(min(spdOutFile.yMin,asciiData["Y"]))
-            spdOutFile.setYMax(max(spdOutFile.yMax,asciiData["Y"]))   
+            spdOutFile.setYMax(max(spdOutFile.yMax,asciiData["Y"]))
             spdOutFile.setZMin(min(spdOutFile.zMin,asciiData["Z"]))
-            spdOutFile.setZMax(max(spdOutFile.zMax,asciiData["Z"])) 
+            spdOutFile.setZMax(max(spdOutFile.zMax,asciiData["Z"]))
             spdOutFile.setZenithMin(min(spdOutFile.zenithMin,asciiData["Theta"]))
-            spdOutFile.setZenithMax(max(spdOutFile.zenithMax,asciiData["Theta"])) 
+            spdOutFile.setZenithMax(max(spdOutFile.zenithMax,asciiData["Theta"]))
             spdOutFile.setAzimuthMin(min(spdOutFile.azimuthMin,asciiData["Phi"]))
-            spdOutFile.setAzimuthMax(max(spdOutFile.azimuthMax,asciiData["Phi"])) 
+            spdOutFile.setAzimuthMax(max(spdOutFile.azimuthMax,asciiData["Phi"]))
             spdOutFile.setRangeMin(min(spdOutFile.rangeMin,asciiData["Range"]))
             spdOutFile.setRangeMax(max(spdOutFile.rangeMax,asciiData["Range"]))
         else:
             spdOutFile.setXMin(asciiData["X"])
             spdOutFile.setXMax(asciiData["X"])
             spdOutFile.setYMin(asciiData["Y"])
-            spdOutFile.setYMax(asciiData["Y"])   
+            spdOutFile.setYMax(asciiData["Y"])
             spdOutFile.setZMin(asciiData["Z"])
-            spdOutFile.setZMax(asciiData["Z"]) 
+            spdOutFile.setZMax(asciiData["Z"])
             spdOutFile.setZenithMin(asciiData["Theta"])
-            spdOutFile.setZenithMax(asciiData["Theta"]) 
+            spdOutFile.setZenithMax(asciiData["Theta"])
             spdOutFile.setAzimuthMin(asciiData["Phi"])
-            spdOutFile.setAzimuthMax(asciiData["Phi"]) 
+            spdOutFile.setAzimuthMax(asciiData["Phi"])
             spdOutFile.setRangeMin(asciiData["Range"])
-            spdOutFile.setRangeMax(asciiData["Range"])            
-        
+            spdOutFile.setRangeMax(asciiData["Range"])
+
         # If buffer size is reached, write out pulses
         outPulses.append(pulse)
         pulsesInBuffer += 1
@@ -164,10 +164,10 @@ def main(cmdargs):
             try:
                 updWriter.writeData(outPulses)
             except:
-                raise IOError, "Error writing UPD File."    
+                raise IOError, "Error writing UPD File."
             pulsesInBuffer = 0
             outPulses = list()
-            
+
         # Let's monitor progress
         sys.stdout.write("Writing UPD file %s (%i%%)\r" % (cmdargs.outputFile, int((i+1) / float(nPoints) * 100.0)))
 
@@ -188,7 +188,7 @@ class CmdArgs:
     p.add_option("--z0", dest="z0", type="float", default=0.0, help='Sensor optical centre Z.')
     (options, args) = p.parse_args()
     self.__dict__.update(options.__dict__)
-    
+
     if logical_or(self.inputFile is None, self.outputFile is None):
         p.print_help()
         print "Input and output filenames must be set."

@@ -51,7 +51,7 @@ namespace spdlib
 		this->outputFile = dataExporter.outputFile;
 		return *this;
 	}
-    
+
     SPDDataExporter* SPDGeneralASCIIFileWriter::getInstance()
     {
         return new SPDGeneralASCIIFileWriter();
@@ -97,7 +97,7 @@ namespace spdlib
 		
 		return fileOpened;
 	}
-    
+
     bool SPDGeneralASCIIFileWriter::reopen(SPDFile *spdFile, std::string outputFile) throw(SPDIOException)
     {
         throw SPDIOException("No reopen option available.");
@@ -113,7 +113,7 @@ namespace spdlib
 			throw SPDIOException("Output file not open, cannot write to the file.");
 		}
 		
-		try 
+		try
 		{			
 			std::vector<SPDPoint*>::iterator iterPts;
 			std::list<SPDPulse*>::iterator iterInPls;
@@ -121,14 +121,14 @@ namespace spdlib
 			{
 				if(fileType == SPD_WAVEFORM_PT)
 				{
-					(*outASCIIFile) << (*iterInPls)->pulseID << " " << (*iterInPls)->gpsTime << " " << (*iterInPls)->x0 << " " << (*iterInPls)->y0 << " " << (*iterInPls)->z0 << " " << (*iterInPls)->azimuth << " " << (*iterInPls)->zenith << " " << (*iterInPls)->rangeToWaveformStart << " 0 " << (*iterInPls)->numOfTransmittedBins << " "; 
+					(*outASCIIFile) << (*iterInPls)->pulseID << " " << (*iterInPls)->gpsTime << " " << (*iterInPls)->x0 << " " << (*iterInPls)->y0 << " " << (*iterInPls)->z0 << " " << (*iterInPls)->azimuth << " " << (*iterInPls)->zenith << " " << (*iterInPls)->rangeToWaveformStart << " 0 " << (*iterInPls)->numOfTransmittedBins << " ";
 					for(boost::uint_fast16_t i = 0; i < (*iterInPls)->numOfTransmittedBins; ++i)
 					{
 						if(i == 0)
 						{
 							(*outASCIIFile) << (*iterInPls)->transmitted[i];
 						}
-						else 
+						else
 						{
 							(*outASCIIFile) << " " << (*iterInPls)->transmitted[i];
 						}
@@ -142,7 +142,7 @@ namespace spdlib
 						{
 							(*outASCIIFile) << (*iterInPls)->received[i];
 						}
-						else 
+						else
 						{
 							(*outASCIIFile) << " " << (*iterInPls)->received[i];
 						}
@@ -189,7 +189,7 @@ namespace spdlib
 			throw SPDIOException("Output file not open, cannot write to the file.");
 		}
 		
-		try 
+		try
 		{			
 			std::vector<SPDPoint*>::iterator iterPts;
 			std::vector<SPDPulse*>::iterator iterInPls;
@@ -197,14 +197,14 @@ namespace spdlib
 			{
 				if(fileType == SPD_WAVEFORM_PT)
 				{
-					(*outASCIIFile) << (*iterInPls)->pulseID << " " << (*iterInPls)->gpsTime << " " << (*iterInPls)->x0 << " " << (*iterInPls)->y0 << " " << (*iterInPls)->z0 << " " << (*iterInPls)->azimuth << " " << (*iterInPls)->zenith << " " << (*iterInPls)->rangeToWaveformStart << " 0 " << (*iterInPls)->numOfTransmittedBins << " "; 
+					(*outASCIIFile) << (*iterInPls)->pulseID << " " << (*iterInPls)->gpsTime << " " << (*iterInPls)->x0 << " " << (*iterInPls)->y0 << " " << (*iterInPls)->z0 << " " << (*iterInPls)->azimuth << " " << (*iterInPls)->zenith << " " << (*iterInPls)->rangeToWaveformStart << " 0 " << (*iterInPls)->numOfTransmittedBins << " ";
 					for(boost::uint_fast16_t i = 0; i < (*iterInPls)->numOfTransmittedBins; ++i)
 					{
 						if(i == 0)
 						{
 							(*outASCIIFile) << (*iterInPls)->transmitted[i];
 						}
-						else 
+						else
 						{
 							(*outASCIIFile) << " " << (*iterInPls)->transmitted[i];
 						}
@@ -218,7 +218,7 @@ namespace spdlib
 						{
 							(*outASCIIFile) << (*iterInPls)->received[i];
 						}
-						else 
+						else
 						{
 							(*outASCIIFile) << " " << (*iterInPls)->received[i];
 						}
@@ -279,11 +279,11 @@ namespace spdlib
 	{
 		if(fileOpened)
 		{
-			try 
+			try
 			{
 				this->finaliseClose();
 			}
-			catch (SPDIOException &e) 
+			catch (SPDIOException &e)
 			{
                 std::cerr << "WARNING: " << e.what() << std::endl;
 			}

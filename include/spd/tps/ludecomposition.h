@@ -22,7 +22,7 @@
 inline bool LUDECOMPOSITION_compare_double(double d1, double d2)
 {
     double precision = 0.000000000000000000000001;
-    if (((d1 - precision) < d2) && 
+    if (((d1 - precision) < d2) &&
         ((d1 + precision) > d2))
     {
         return true;
@@ -52,18 +52,18 @@ template <typename T> int LU_Solve(
 {
     // This routine is originally based on the public domain draft for JAMA,
     // Java matrix package available at http://math.nist.gov/javanumerics/jama/
-    
+
     typedef boost::numeric::ublas::matrix<T> Matrix;
     typedef boost::numeric::ublas::matrix_row<Matrix> Matrix_Row;
     typedef boost::numeric::ublas::matrix_column<Matrix> Matrix_Col;
-    
+
     if (a.size1() != b.size1())
         return 2;
-    
+
     int m = a.size1(), n = a.size2();
     int pivsign = 0;
     int* piv = (int*)alloca( sizeof(int) * m);
-    
+
     // PART 1: DECOMPOSITION
     //
     // For an m-by-n matrix A with m >= n, the LU decomposition is an m-by-n
@@ -75,18 +75,18 @@ template <typename T> int LU_Solve(
         for (int i = 0; i < m; ++i)
             piv[i] = i;
         pivsign = 1;
-        
+
         // Outer loop.
         for (int j=0; j<n; ++j)
         {
             // Make a copy of the j-th column to localize references.
             Matrix_Col LUcolj(a,j);
-            
+
             // Apply previous transformations.
             for (int i = 0; i < m; ++i)
             {
                 Matrix_Row LUrowi(a,i);
-                
+
                 // This dot product is very expensive.
                 // Optimize for SSE2?
                 int kmax = (i<=j)?i:j;
@@ -97,7 +97,7 @@ template <typename T> int LU_Solve(
                     sum += (*(ri_ite++)) * (*(cj_ite++));
                 LUrowi[j] = LUcolj[i] -= sum;
             }
-            
+
             // Find pivot and exchange if necessary.
             //
             // Slightly optimized version of:
@@ -119,32 +119,32 @@ template <typename T> int LU_Solve(
                     coljp_abs = fabs(LUcolj[p]);
                 }
             }
-            
+
             if (p != j)
             {
                 Matrix_Row raj(a,j);
                 Matrix_Row(a,p).swap(raj);
-                
+
                 int tmp = piv[p];
                 piv[p] = piv[j];
                 piv[j] = tmp;
                 pivsign = -pivsign;
             }
-            
+
             // Compute multipliers.
             if (j < m && (!LUDECOMPOSITION_compare_double(a(j,j), 0.0)))
                 for (int i = j+1; i < m; ++i)
                     LUcolj[i] /= LUcolj[j];
         }
     }
-    
+
     // PART 2: SOLVE
-    
+
     // Check singluarity
     for (int j = 0; j < n; ++j)
         if (LUDECOMPOSITION_compare_double(a(j,j), 0))
             return 1;
-    
+
     // Reorder b according to pivotting
     for (int i=0; i<m; ++i)
     {
@@ -160,7 +160,7 @@ template <typename T> int LU_Solve(
                 }
         }
     }
-    
+
     // Solve L*Y = B(piv,:)
     for (int k=0; k<n; ++k)
     {
@@ -171,12 +171,12 @@ template <typename T> int LU_Solve(
             Matrix_Row( b, i ) -= b_rk * aik;
         }
     }
-    
+
     // Solve U*X = Y;
     for (int k=n-1; k>=0; --k)
     {
         Matrix_Row(b,k) *= 1.0/a(k,k);
-        
+
         const Matrix_Row& b_rk = Matrix_Row(b, k );
         for (int i=0; i<k; ++i)
         {
@@ -184,7 +184,7 @@ template <typename T> int LU_Solve(
             Matrix_Row(b,i) -= b_rk * aik;
         }
     }
-    
+
     return 0;
 }
 

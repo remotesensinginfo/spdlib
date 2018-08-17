@@ -35,9 +35,9 @@ namespace spdlib
 	
 	void SPDApplyElevationChange::applyConstantElevationChangeUnsorted(std::string inputFile, std::string outputFile, double elevConstant, bool addOffset) throw(SPDException)
 	{
-		try 
+		try
 		{
-            SPDFileReader spdReader = SPDFileReader();            
+            SPDFileReader spdReader = SPDFileReader();
 			SPDDataExporter *exporter = new SPDNoIdxFileWriter();
 			
 			SPDFile *spdInFile = new SPDFile(inputFile);
@@ -46,13 +46,13 @@ namespace spdlib
 			SPDApplyUnsortedElevChangeConstant *processData = new SPDApplyUnsortedElevChangeConstant(elevConstant, addOffset, exporter, spdOutFile);
 			spdReader.readAndProcessAllData(inputFile, spdInFile, processData);
 			processData->completeFileAndClose(spdInFile);
-            
+
             delete exporter;
             delete spdInFile;
             delete spdOutFile;
             delete processData;
 		}
-		catch (SPDException &e) 
+		catch (SPDException &e)
 		{
 			throw e;
 		}
@@ -60,18 +60,18 @@ namespace spdlib
 	
 	void SPDApplyElevationChange::applyConstantElevationChangeSPD(std::string inputSPDFile, std::string outputSPDFile, double elevConstant, bool addOffset, boost::uint_fast32_t blockXSize, boost::uint_fast32_t blockYSize) throw(SPDException)
 	{
-		try 
+		try
 		{
-            
+
             SPDFile *spdInFile = new SPDFile(inputSPDFile);
-            SPDPulseProcessor *pulseStatsProcessor = new SPDApplySPDElevChangeConstant(elevConstant, addOffset);            
+            SPDPulseProcessor *pulseStatsProcessor = new SPDApplySPDElevChangeConstant(elevConstant, addOffset);
             SPDSetupProcessPulses processPulses = SPDSetupProcessPulses(blockXSize, blockYSize, true);
             processPulses.processPulsesWithOutputSPD(pulseStatsProcessor, spdInFile, outputSPDFile);
-            
+
             delete spdInFile;
             delete pulseStatsProcessor;
 		}
-		catch (SPDException &e) 
+		catch (SPDException &e)
 		{
 			throw e;
 		}
@@ -79,7 +79,7 @@ namespace spdlib
 	
 	void SPDApplyElevationChange::applyVariableElevationChangeUnsorted(std::string inputFile, std::string outputFile, std::string elevImage, bool addOffset) throw(SPDException)
 	{
-		try 
+		try
 		{
 			GDALAllRegister();
 			
@@ -91,7 +91,7 @@ namespace spdlib
 				throw SPDException("Image could not be openned.");
 			}
 			
-			SPDFileReader spdReader = SPDFileReader();            
+			SPDFileReader spdReader = SPDFileReader();
 			SPDDataExporter *exporter = new SPDNoIdxFileWriter();
 			
 			SPDFile *spdInFile = new SPDFile(inputFile);
@@ -108,7 +108,7 @@ namespace spdlib
 			GDALClose(inGDALImage);
 			GDALDestroyDriverManager();
 		}
-		catch (SPDException &e) 
+		catch (SPDException &e)
 		{
 			throw e;
 		}
@@ -116,7 +116,7 @@ namespace spdlib
 	
 	void SPDApplyElevationChange::applyVariableElevationChangeSPD(std::string inputSPDFile, std::string outputSPDFile, std::string elevImage, bool addOffset, boost::uint_fast32_t blockXSize, boost::uint_fast32_t blockYSize) throw(SPDException)
 	{
-		try 
+		try
 		{
 			GDALAllRegister();
 			
@@ -128,18 +128,18 @@ namespace spdlib
 				throw SPDException("Image could not be openned.");
 			}
 			
-            
+
             SPDFile *spdInFile = new SPDFile(inputSPDFile);
-            SPDPulseProcessor *pulseStatsProcessor = new SPDApplySPDElevChangeVariable(inGDALImage, addOffset);            
+            SPDPulseProcessor *pulseStatsProcessor = new SPDApplySPDElevChangeVariable(inGDALImage, addOffset);
             SPDSetupProcessPulses processPulses = SPDSetupProcessPulses(blockXSize, blockYSize, true);
             processPulses.processPulsesWithOutputSPD(pulseStatsProcessor, spdInFile, outputSPDFile);
-            
+
             delete spdInFile;
             delete pulseStatsProcessor;
             GDALClose(inGDALImage);
 			GDALDestroyDriverManager();
 		}
-		catch (SPDException &e) 
+		catch (SPDException &e)
 		{
 			throw e;
 		}
@@ -168,7 +168,7 @@ namespace spdlib
 	
 	void SPDApplyUnsortedElevChangeConstant::processImportedPulse(SPDFile *spdFile, SPDPulse *pulse) throw(SPDIOException)
 	{
-		try 
+		try
 		{
 			// Edit pulse - Using constant elevation value
 			if(spdFile->getOriginDefined() == SPD_TRUE)
@@ -177,7 +177,7 @@ namespace spdlib
 				{
 					pulse->z0 += this->elevConstant;
 				}
-				else 
+				else
 				{
 					pulse->z0 -= this->elevConstant;
 				}
@@ -191,7 +191,7 @@ namespace spdlib
 					{
 						(*iterPts)->z += this->elevConstant;
 					}
-					else 
+					else
 					{
 						(*iterPts)->z -= this->elevConstant;
 					}
@@ -202,7 +202,7 @@ namespace spdlib
 			this->pulses->push_back(pulse);
 			this->exporter->writeDataColumn(pulses, 0, 0);
 		}
-		catch (SPDException &e) 
+		catch (SPDException &e)
 		{
 			throw SPDIOException(e.what());
 		}
@@ -210,12 +210,12 @@ namespace spdlib
 	
 	void SPDApplyUnsortedElevChangeConstant::completeFileAndClose(SPDFile *spdFile)throw(SPDIOException)
 	{
-		try 
+		try
 		{
 			spdFileOut->copyAttributesFrom(spdFile);
 			exporter->finaliseClose();
 		}
-		catch (SPDIOException &e) 
+		catch (SPDIOException &e)
 		{
 			throw e;
 		}
@@ -249,7 +249,7 @@ namespace spdlib
 	
 	void SPDApplyUnsortedElevChangeVariable::processImportedPulse(SPDFile *spdFile, SPDPulse *pulse) throw(SPDIOException)
 	{
-		try 
+		try
 		{
 			SPDImageUtils imgUtils;
 			// Get elevation Value
@@ -259,7 +259,7 @@ namespace spdlib
 			float xOff = 0;
 			float yOff = 0;
 			imgUtils.getPixelPointLocations(elevImage, pulse->xIdx, pulse->yIdx, spdFile->getSpatialReference(), imgX, imgY, &xOff, &yOff);
-			if(this->first | 
+			if(this->first |
 			   (prevImgX[0] != imgX[0]) | (prevImgY[0] != imgY[0]) |
 			   (prevImgX[1] != imgX[1]) | (prevImgY[1] != imgY[1]) |
 			   (prevImgX[2] != imgX[2]) | (prevImgY[2] != imgY[2]) |
@@ -286,7 +286,7 @@ namespace spdlib
 				{
 					pulse->z0 += elevationVal;
 				}
-				else 
+				else
 				{
 					pulse->z0 -= elevationVal;
 				}
@@ -300,7 +300,7 @@ namespace spdlib
 					{
 						(*iterPts)->z += elevationVal;
 					}
-					else 
+					else
 					{
 						(*iterPts)->z -= elevationVal;
 					}
@@ -311,7 +311,7 @@ namespace spdlib
 			this->pulses->push_back(pulse);
 			this->exporter->writeDataColumn(pulses, 0, 0);
 		}
-		catch (SPDException &e) 
+		catch (SPDException &e)
 		{
 			throw SPDIOException(e.what());
 		}
@@ -319,12 +319,12 @@ namespace spdlib
 	
 	void SPDApplyUnsortedElevChangeVariable::completeFileAndClose(SPDFile *spdFile)throw(SPDIOException)
 	{
-		try 
+		try
 		{
 			spdFileOut->copyAttributesFrom(spdFile);
 			exporter->finaliseClose();
 		}
-		catch (SPDIOException &e) 
+		catch (SPDIOException &e)
 		{
 			throw e;
 		}
@@ -347,10 +347,10 @@ namespace spdlib
         this->elevConstant = elevConstant;
         this->addOffset = addOffset;
     }
-        
+
     void SPDApplySPDElevChangeConstant::processDataColumn(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses, SPDXYPoint *cenPts) throw(SPDProcessingException)
     {
-        try 
+        try
 		{
 			for(std::vector<SPDPulse*>::iterator iterPulses = pulses->begin(); iterPulses != pulses->end(); ++iterPulses)
 			{
@@ -361,7 +361,7 @@ namespace spdlib
 					{
 						(*iterPulses)->z0 += this->elevConstant;
 					}
-					else 
+					else
 					{
 						(*iterPulses)->z0 -= this->elevConstant;
 					}
@@ -375,7 +375,7 @@ namespace spdlib
 						{
 							(*iterPts)->z += this->elevConstant;
 						}
-						else 
+						else
 						{
 							(*iterPts)->z -= this->elevConstant;
 						}
@@ -384,19 +384,19 @@ namespace spdlib
 			}
 			
 		}
-		catch (SPDException &e) 
+		catch (SPDException &e)
 		{
 			throw SPDProcessingException(e.what());
 		}
 
     }
-        
+
     SPDApplySPDElevChangeConstant::~SPDApplySPDElevChangeConstant()
     {
-        
+
     }
 	
-    
+
 	
     SPDApplySPDElevChangeVariable::SPDApplySPDElevChangeVariable(GDALDataset *elevImage, bool addOffset)
     {
@@ -411,11 +411,11 @@ namespace spdlib
 		prevImgY = new boost::int_fast32_t[4];
 		first = true;
     }
-  
+
     void SPDApplySPDElevChangeVariable::processDataColumn(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses, SPDXYPoint *cenPts) throw(SPDProcessingException)
     {
         SPDImageUtils imgUtils;
-		try 
+		try
 		{
 			double elevationVal = 0;
 			for(std::vector<SPDPulse*>::iterator iterPulses = pulses->begin(); iterPulses != pulses->end(); ++iterPulses)
@@ -428,7 +428,7 @@ namespace spdlib
 				float yOff = 0;
 				imgUtils.getPixelPointLocations(elevImage, (*iterPulses)->xIdx, (*iterPulses)->yIdx, inSPDFile->getSpatialReference(), imgX, imgY, &xOff, &yOff);
 				
-				if(this->first | 
+				if(this->first |
 				   (prevImgX[0] != imgX[0]) | (prevImgY[0] != imgY[0]) |
 				   (prevImgX[1] != imgX[1]) | (prevImgY[1] != imgY[1]) |
 				   (prevImgX[2] != imgX[2]) | (prevImgY[2] != imgY[2]) |
@@ -455,7 +455,7 @@ namespace spdlib
 					{
 						(*iterPulses)->z0 += elevationVal;
 					}
-					else 
+					else
 					{
 						(*iterPulses)->z0 -= elevationVal;
 					}
@@ -469,7 +469,7 @@ namespace spdlib
 						{
 							(*iterPts)->z += elevationVal;
 						}
-						else 
+						else
 						{
 							(*iterPts)->z -= elevationVal;
 						}
@@ -478,7 +478,7 @@ namespace spdlib
 			}
 			
 		}
-		catch (SPDException &e) 
+		catch (SPDException &e)
 		{
 			throw SPDProcessingException(e.what());
 		}

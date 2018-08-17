@@ -43,12 +43,12 @@ set(TCLAP_H
 	${TCLAP_HEADERS_DIR}/ZshCompletionOutput.h)
 	
 set(TPS_H
-	${TPS_HEADERS_DIR}/linalg3d.h 
+	${TPS_HEADERS_DIR}/linalg3d.h
 	${TPS_HEADERS_DIR}/ludecomposition.h
 	${TPS_HEADERS_DIR}/spline.h )
 
 set(NN_H
-	${NN_HEADERS_DIR}/config.h 
+	${NN_HEADERS_DIR}/config.h
 	${NN_HEADERS_DIR}/delaunay.h
 	${NN_HEADERS_DIR}/hash.h
 	${NN_HEADERS_DIR}/istack.h
@@ -61,7 +61,7 @@ set(NN_H
 	${NN_HEADERS_DIR}/version.h)
 	
 set(ALGLIB_H
-	${ALGLIB_HEADERS_DIR}/alglibinternal.h 
+	${ALGLIB_HEADERS_DIR}/alglibinternal.h
 	${ALGLIB_HEADERS_DIR}/alglibmisc.h
 	${ALGLIB_HEADERS_DIR}/ap.h
 	${ALGLIB_HEADERS_DIR}/integration.h
@@ -111,7 +111,7 @@ set(SPDLIB_H_Processing_Interfaces
 	${SPDLIB_HEADERS_DIR}/SPDMergeFiles.h
 	${SPDLIB_HEADERS_DIR}/SPDCalcFileStats.h
 	${SPDLIB_HEADERS_DIR}/SPDGenBinaryMask.h
-	${SPDLIB_HEADERS_DIR}/SPDSubsetSPDFile.h 
+	${SPDLIB_HEADERS_DIR}/SPDSubsetSPDFile.h
 	${SPDLIB_HEADERS_DIR}/SPDExportProcessorSubset.h )
 	
 set(SPDLIB_H_Processing_Algorithms
@@ -133,7 +133,7 @@ set(SPDLIB_H_Processing_Algorithms
 	${SPDLIB_HEADERS_DIR}/SPDPointInterpolation.h
 	${SPDLIB_HEADERS_DIR}/SPDPolyGroundFilter.h
 	${SPDLIB_HEADERS_DIR}/SPDProgressiveMophologicalGrdFilter.h
-	${SPDLIB_HEADERS_DIR}/SPDRasterInterpolation.h 
+	${SPDLIB_HEADERS_DIR}/SPDRasterInterpolation.h
 	${SPDLIB_HEADERS_DIR}/SPDRemoveVerticalNoise.h
 	${SPDLIB_HEADERS_DIR}/SPDSampleInTime.h
 	${SPDLIB_HEADERS_DIR}/SPDSplit.h
@@ -182,7 +182,7 @@ set(NN_C
 	${NN_SRC_DIR}/triangle.c)
 
 set(ALGLIB_CPP
-	${ALGLIB_SRC_DIR}/alglibinternal.cpp 
+	${ALGLIB_SRC_DIR}/alglibinternal.cpp
 	${ALGLIB_SRC_DIR}/alglibmisc.cpp
 	${ALGLIB_SRC_DIR}/ap.cpp
 	${ALGLIB_SRC_DIR}/integration.cpp
@@ -227,8 +227,8 @@ set(SPDLIB_CPP_Processing_Interfaces
 	${SPDLIB_SRC_DIR}/SPDConvertFormats.cpp
 	${SPDLIB_SRC_DIR}/SPDMergeFiles.cpp
 	${SPDLIB_SRC_DIR}/SPDCalcFileStats.cpp
-	${SPDLIB_SRC_DIR}/SPDGenBinaryMask.cpp 
-	${SPDLIB_SRC_DIR}/SPDSubsetSPDFile.cpp 
+	${SPDLIB_SRC_DIR}/SPDGenBinaryMask.cpp
+	${SPDLIB_SRC_DIR}/SPDSubsetSPDFile.cpp
 	${SPDLIB_SRC_DIR}/SPDExportProcessorSubset.cpp)
 	
 set(SPDLIB_CPP_Processing_Algorithms
@@ -250,7 +250,7 @@ set(SPDLIB_CPP_Processing_Algorithms
 	${SPDLIB_SRC_DIR}/SPDPointInterpolation.cpp
 	${SPDLIB_SRC_DIR}/SPDPolyGroundFilter.cpp
 	${SPDLIB_SRC_DIR}/SPDProgressiveMophologicalGrdFilter.cpp
-	${SPDLIB_SRC_DIR}/SPDRasterInterpolation.cpp 
+	${SPDLIB_SRC_DIR}/SPDRasterInterpolation.cpp
 	${SPDLIB_SRC_DIR}/SPDRemoveVerticalNoise.cpp
 	${SPDLIB_SRC_DIR}/SPDSampleInTime.cpp
     ${SPDLIB_SRC_DIR}/SPDSplit.cpp
@@ -290,7 +290,7 @@ source_group("src_spd_frameworks" FILES ${SPDLIB_CPP_Frameworks})
 source_group("src_cmpfit" FILES ${CMPFIT_C})
 source_group("src_tps" FILES ${TPS_CPP})
 source_group("src_nn" FILES ${NN_C})
-source_group("src_alglib" FILES ${ALGLIB_CPP}) 
+source_group("src_alglib" FILES ${ALGLIB_CPP})
 source_group("include_spd_MIT" FILES ${SPDLIB_MIT_H})
 source_group("include_spd_io" FILES ${SPDLIB_H_IO})
 source_group("include_spd_interface" FILES ${SPDLIB_H_Processing_Interfaces})
@@ -299,8 +299,8 @@ source_group("include_spd_utils" FILES ${SPDLIB_H_Utils})
 source_group("include_spd_frameworks" FILES ${SPDLIB_H_Frameworks})
 source_group("include_cmpfit" FILES ${CMPFIT_H})
 source_group("include_tclap" FILES ${TCLAP_H})
-source_group("include_tps" FILES ${TPS_H}) 
-source_group("include_nn" FILES ${NN_H}) 
+source_group("include_tps" FILES ${TPS_H})
+source_group("include_nn" FILES ${NN_H})
 source_group("include_alglib" FILES ${ALGLIB_H})
 ###############################################################################
 
@@ -347,7 +347,7 @@ PROPERTIES
 ###############################################################################
 
 ###############################################################################
-# Installation 
+# Installation
 install (TARGETS ${SPDLIB_MITLIB_NAME} RUNTIME DESTINATION bin
             LIBRARY DESTINATION lib
             ARCHIVE DESTINATION lib)

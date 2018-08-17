@@ -34,17 +34,17 @@ namespace spdlib
         this->selectHighOrLow = selectHighOrLow;
         this->maxNumPtsPerBin = maxNumPtsPerBin;
 	}
-    
+
     std::vector<SPDPoint*>* SPDPointInterpolator::findPoints(std::list<SPDPulse*> ***pulses, boost::uint_fast32_t numXBins, boost::uint_fast32_t numYBins, boost::uint_fast16_t ptClass) throw(SPDProcessingException)
     {
         std::vector<SPDPoint*> *points = new std::vector<SPDPoint*>();
         std::list<SPDPulse*>::iterator iterPulses;
         std::vector<SPDPoint*>::iterator iterPts;
-        
+
         bool firstPt = true;
         double maxZ = 0;
         SPDPoint *maxPt = NULL;
-        
+
         if((ptClass == SPD_VEGETATION_TOP) || (ptClass == SPD_ALL_CLASSES_TOP))
         {
             for(boost::uint_fast32_t i = 0; i < numYBins; ++i)
@@ -150,30 +150,30 @@ namespace spdlib
                 }
             }
         }
-        
-        
+
+
         totalNumPoints = points->size();
-        
+
         if(totalNumPoints < 1)
         {
             throw SPDProcessingException("Not enough points for interpolation.");
         }
-        
+
         return points;
     }
-    
+
     std::vector<SPDPoint*>* SPDPointInterpolator::findPoints(std::vector<SPDPulse*> ***pulses, boost::uint_fast32_t numXBins, boost::uint_fast32_t numYBins, boost::uint_fast16_t ptClass) throw(SPDProcessingException)
     {
         std::vector<SPDPoint*> *points = new std::vector<SPDPoint*>();
         std::vector<SPDPulse*>::iterator iterPulses;
         std::vector<SPDPoint*>::iterator iterPts;
-        
+
         if((ptClass == SPD_VEGETATION_TOP) || (ptClass == SPD_ALL_CLASSES_TOP))
         {
             bool firstPt = true;
             double maxZ = 0;
             SPDPoint *maxPt = NULL;
-            
+
             for(boost::uint_fast32_t i = 0; i < numYBins; ++i)
             {
                 for(boost::uint_fast32_t j = 0; j < numXBins; ++j)
@@ -241,7 +241,7 @@ namespace spdlib
                                         maxZ = (*iterPts)->height;
                                     }
                                 }
-                            } 
+                            }
                         }
                     }
                     if(!firstPt)
@@ -277,19 +277,19 @@ namespace spdlib
                 }
             }
         }
-        
+
         totalNumPoints = points->size();
-        
+
         //std::cout << "totalNumPoints = " << totalNumPoints << std::endl;
-        
+
         if(totalNumPoints < 1)
         {
             throw SPDProcessingException("Not enough points for interpolation.");
         }
-        
+
         return points;
     }
-    
+
     std::vector<SPDPoint*>* SPDPointInterpolator::findPoints(std::list<SPDPulse*> *pulses, boost::uint_fast16_t ptClass) throw(SPDProcessingException)
     {
         std::vector<SPDPoint*> *points = new std::vector<SPDPoint*>();
@@ -331,15 +331,15 @@ namespace spdlib
 			}
 		}
         totalNumPoints = points->size();
-        
+
         if(totalNumPoints < 1)
         {
             throw SPDProcessingException("Not enough points for interpolation.");
         }
-        
+
         return points;
     }
-    
+
     std::vector<SPDPoint*>* SPDPointInterpolator::findPoints(std::vector<SPDPulse*> *pulses, boost::uint_fast16_t ptClass) throw(SPDProcessingException)
     {
         std::vector<SPDPoint*> *points = new std::vector<SPDPoint*>();
@@ -382,15 +382,15 @@ namespace spdlib
 			}
 		}
         totalNumPoints = points->size();
-        
+
         if(totalNumPoints < 1)
         {
             throw SPDProcessingException("Not enough points for interpolation.");
         }
-        
+
         return points;
     }
-    
+
     void SPDPointInterpolator::thinPoints(std::vector<SPDPoint*> *points) throw(SPDProcessingException)
     {
         try
@@ -410,7 +410,7 @@ namespace spdlib
             throw e;
         }
     }
-	 
+	
 	
 	SPDTriangulationPointInterpolator::SPDTriangulationPointInterpolator(boost::uint_fast16_t elevVal, float thinGridRes, bool thinData, boost::uint_fast16_t selectHighOrLow, boost::uint_fast16_t maxNumPtsPerBin): SPDPointInterpolator(elevVal, thinGridRes, thinData, selectHighOrLow, maxNumPtsPerBin)
 	{
@@ -431,34 +431,34 @@ namespace spdlib
             {
                 double meanX = 0;
                 double meanY = 0;
-                
+
                 double varX = 0;
                 double varY = 0;
-                
+
                 for(std::vector<SPDPoint*>::iterator iterPts = points->begin(); iterPts != points->end(); ++iterPts)
                 {
                     meanX += (*iterPts)->x;
                     meanY += (*iterPts)->y;
                 }
-                
+
                 meanX = meanX / points->size();
                 meanY = meanY / points->size();
-                
+
                 //std::cout << "meanX = " << meanX << std::endl;
                 //std::cout << "meanY = " << meanY << std::endl;
-                
+
                 for(std::vector<SPDPoint*>::iterator iterPts = points->begin(); iterPts != points->end(); ++iterPts)
                 {
                     varX += (*iterPts)->x - meanX;
                     varY += (*iterPts)->y - meanY;
                 }
-                
+
                 varX = fabs(varX / points->size());
                 varY = fabs(varY / points->size());
-                
+
                 //std::cout << "varX = " << varX << std::endl;
                 //std::cout << "varY = " << varX << std::endl;
-                
+
                 if((varX < 4) | (varY < 4))
                 {
                     delete points;
@@ -469,11 +469,11 @@ namespace spdlib
             {
                 this->thinPoints(points);
             }
-            
+
             dt = new DelaunayTriangulation();
             values = new PointValueMap();
             fh = Face_handle();
-            
+
             std::vector<SPDPoint*>::iterator iterPts;
             for(iterPts = points->begin(); iterPts != points->end(); ++iterPts)
             {
@@ -510,7 +510,7 @@ namespace spdlib
         }
         initialised = true;
     }
-    
+
     void SPDTriangulationPointInterpolator::initInterpolator(std::vector<SPDPulse*> ***pulses, boost::uint_fast32_t numXBins, boost::uint_fast32_t numYBins, boost::uint_fast16_t ptClass) throw(SPDProcessingException)
     {
         try
@@ -525,34 +525,34 @@ namespace spdlib
             {
                 double meanX = 0;
                 double meanY = 0;
-                
+
                 double varX = 0;
                 double varY = 0;
-                
+
                 for(std::vector<SPDPoint*>::iterator iterPts = points->begin(); iterPts != points->end(); ++iterPts)
                 {
                     meanX += (*iterPts)->x;
                     meanY += (*iterPts)->y;
                 }
-                
+
                 meanX = meanX / points->size();
                 meanY = meanY / points->size();
-                
+
                 //std::cout << "meanX = " << meanX << std::endl;
                 //std::cout << "meanY = " << meanY << std::endl;
-                
+
                 for(std::vector<SPDPoint*>::iterator iterPts = points->begin(); iterPts != points->end(); ++iterPts)
                 {
                     varX += (*iterPts)->x - meanX;
                     varY += (*iterPts)->y - meanY;
                 }
-                
+
                 varX = fabs(varX / points->size());
                 varY = fabs(varY / points->size());
-                
+
                 //std::cout << "varX = " << varX << std::endl;
                 //std::cout << "varY = " << varX << std::endl;
-                
+
                 if((varX < 4) | (varY < 4))
                 {
                     delete points;
@@ -563,11 +563,11 @@ namespace spdlib
             {
                 this->thinPoints(points);
             }
-            
+
             dt = new DelaunayTriangulation();
             values = new PointValueMap();
             fh = Face_handle();
-                        
+
             std::vector<SPDPoint*>::iterator iterPts;
             for(iterPts = points->begin(); iterPts != points->end(); ++iterPts)
             {
@@ -604,7 +604,7 @@ namespace spdlib
         }
         initialised = true;
     }
-    
+
     void SPDTriangulationPointInterpolator::initInterpolator(std::list<SPDPulse*> *pulses, boost::uint_fast16_t ptClass) throw(SPDProcessingException)
     {
         try
@@ -619,34 +619,34 @@ namespace spdlib
             {
                 double meanX = 0;
                 double meanY = 0;
-                
+
                 double varX = 0;
                 double varY = 0;
-                
+
                 for(std::vector<SPDPoint*>::iterator iterPts = points->begin(); iterPts != points->end(); ++iterPts)
                 {
                     meanX += (*iterPts)->x;
                     meanY += (*iterPts)->y;
                 }
-                
+
                 meanX = meanX / points->size();
                 meanY = meanY / points->size();
-                
+
                 //std::cout << "meanX = " << meanX << std::endl;
                 //std::cout << "meanY = " << meanY << std::endl;
-                
+
                 for(std::vector<SPDPoint*>::iterator iterPts = points->begin(); iterPts != points->end(); ++iterPts)
                 {
                     varX += (*iterPts)->x - meanX;
                     varY += (*iterPts)->y - meanY;
                 }
-                
+
                 varX = fabs(varX / points->size());
                 varY = fabs(varY / points->size());
-                
+
                 //std::cout << "varX = " << varX << std::endl;
                 //std::cout << "varY = " << varX << std::endl;
-                
+
                 if((varX < 4) | (varY < 4))
                 {
                     delete points;
@@ -657,11 +657,11 @@ namespace spdlib
             {
                 this->thinPoints(points);
             }
-            
+
             dt = new DelaunayTriangulation();
             values = new PointValueMap();
             fh = Face_handle();
-            
+
             std::vector<SPDPoint*>::iterator iterPts;
             for(iterPts = points->begin(); iterPts != points->end(); ++iterPts)
             {
@@ -698,7 +698,7 @@ namespace spdlib
         }
         initialised = true;
     }
-    
+
     void SPDTriangulationPointInterpolator::initInterpolator(std::vector<SPDPulse*> *pulses, boost::uint_fast16_t ptClass) throw(SPDProcessingException)
     {
         try
@@ -713,34 +713,34 @@ namespace spdlib
             {
                 double meanX = 0;
                 double meanY = 0;
-                
+
                 double varX = 0;
                 double varY = 0;
-                
+
                 for(std::vector<SPDPoint*>::iterator iterPts = points->begin(); iterPts != points->end(); ++iterPts)
                 {
                     meanX += (*iterPts)->x;
                     meanY += (*iterPts)->y;
                 }
-                
+
                 meanX = meanX / points->size();
                 meanY = meanY / points->size();
-                
+
                 //std::cout << "meanX = " << meanX << std::endl;
                 //std::cout << "meanY = " << meanY << std::endl;
-                
+
                 for(std::vector<SPDPoint*>::iterator iterPts = points->begin(); iterPts != points->end(); ++iterPts)
                 {
                     varX += (*iterPts)->x - meanX;
                     varY += (*iterPts)->y - meanY;
                 }
-                
+
                 varX = fabs(varX / points->size());
                 varY = fabs(varY / points->size());
-                
+
                 //std::cout << "varX = " << varX << std::endl;
                 //std::cout << "varY = " << varX << std::endl;
-                
+
                 if((varX < 4) | (varY < 4))
                 {
                     delete points;
@@ -751,11 +751,11 @@ namespace spdlib
             {
                 this->thinPoints(points);
             }
-            
+
             dt = new DelaunayTriangulation();
             values = new PointValueMap();
             fh = Face_handle();
-            
+
             std::vector<SPDPoint*>::iterator iterPts;
             for(iterPts = points->begin(); iterPts != points->end(); ++iterPts)
             {
@@ -814,10 +814,10 @@ namespace spdlib
         }
 		initialised = false;
 	}
-    
-    
-    
-    
+
+
+
+
 	
 	
 
@@ -835,7 +835,7 @@ namespace spdlib
             {
                 this->thinPoints(points);
             }
-            
+
             idx = new SPDPointGridIndex();
 			idx->buildIndex(points, this->gridResolution);
             delete points;
@@ -856,7 +856,7 @@ namespace spdlib
             {
                 this->thinPoints(points);
             }
-            
+
             idx = new SPDPointGridIndex();
 			idx->buildIndex(points, this->gridResolution);
             delete points;
@@ -877,7 +877,7 @@ namespace spdlib
             {
                 this->thinPoints(points);
             }
-            
+
             idx = new SPDPointGridIndex();
 			idx->buildIndex(points, this->gridResolution);
             delete points;
@@ -898,7 +898,7 @@ namespace spdlib
             {
                 this->thinPoints(points);
             }
-            
+
             idx = new SPDPointGridIndex();
 			idx->buildIndex(points, this->gridResolution);
             delete points;
@@ -933,7 +933,7 @@ namespace spdlib
 	
 	
 	
-    
+
     SPDRFBPointInterpolator::SPDRFBPointInterpolator(double radius, boost::uint_fast16_t numLayers, boost::uint_fast16_t elevVal, float thinGridRes, bool thinData, boost::uint_fast16_t selectHighOrLow, boost::uint_fast16_t maxNumPtsPerBin):SPDPointInterpolator(elevVal, thinGridRes, thinData, selectHighOrLow, maxNumPtsPerBin)
     {
         this->radius = radius;
@@ -949,9 +949,9 @@ namespace spdlib
             {
                 this->thinPoints(points);
             }
-            
+
             throw SPDProcessingException("RFB Interpolator has not been initialised - list grid.");
-            
+
             delete points;
         }
         catch(SPDProcessingException &e)
@@ -960,7 +960,7 @@ namespace spdlib
         }
         initialised = true;
     }
-    
+
     void SPDRFBPointInterpolator::initInterpolator(std::vector<SPDPulse*> ***pulses, boost::uint_fast32_t numXBins, boost::uint_fast32_t numYBins, boost::uint_fast16_t ptClass) throw(SPDProcessingException)
     {
         try
@@ -972,13 +972,13 @@ namespace spdlib
                 std::cout << "thinning that data\n";
                 this->thinPoints(points);
             }
-            
+
             rbfModel = new spd_alglib::rbfmodel();
             spd_alglib::rbfcreate(2, 1, *rbfModel);
-            
+
             size_t numPts = points->size();
             std::cout << numPts << " are being used for the interpolation." << std::endl;
-            
+
             double minX = 0;
             double minY = 0;
             this->minZ = 0;
@@ -993,7 +993,7 @@ namespace spdlib
                     maxX = (*iterPts)->x;
                     minY = (*iterPts)->y;
                     maxY = (*iterPts)->y;
-                    
+
                     if(elevVal == SPD_USE_Z)
                     {
                         minZ = (*iterPts)->z;
@@ -1006,7 +1006,7 @@ namespace spdlib
                     {
                         throw SPDProcessingException("Elevation type not recognised.");
                     }
-                    
+
                     first = false;
                 }
                 else
@@ -1027,7 +1027,7 @@ namespace spdlib
                     {
                         maxY = (*iterPts)->y;
                     }
-                    
+
                     if(elevVal == SPD_USE_Z)
                     {
                         if((*iterPts)->z < minZ)
@@ -1046,28 +1046,28 @@ namespace spdlib
                     {
                         throw SPDProcessingException("Elevation type not recognised.");
                     }
-                    
-                    
+
+
                 }
             }
             this->midX = minX + ((maxX-minX)/2);
             this->midY = minY + ((maxY-minY)/2);
-            
+
             double xVal = 0;
             double yVal = 0;
             double zVal = 0;
             spd_alglib::ae_int_t row = 0;
-            
+
             spd_alglib::real_2d_array dataPts;
             dataPts.setlength(numPts, 3);
-            
+
             for(std::vector<SPDPoint*>::iterator iterPts = points->begin(); iterPts != points->end(); ++iterPts)
             {
                 xVal = round(((*iterPts)->x - midX));
                 dataPts(row,0) = xVal;
                 yVal = round(((*iterPts)->y - midY));
                 dataPts(row,1) = yVal;
-                
+
                 if(elevVal == SPD_USE_Z)
                 {
                     zVal = (*iterPts)->z - minZ;
@@ -1081,17 +1081,17 @@ namespace spdlib
                     throw SPDProcessingException("Elevation type not recognised.");
                 }
                 dataPts(row,2) = zVal;
-                
+
                 ++row;
             }
-            
+
             //std::cout << "Data:\n" << dataPts.tostring(3) << std::endl;
             spd_alglib::rbfsetpoints(*rbfModel, dataPts);
             spd_alglib::rbfsetalgomultilayer(*rbfModel, radius, numLayers);
             std::cout << "Building Model\n";
             spd_alglib::rbfreport rep;
             spd_alglib::rbfbuildmodel(*rbfModel, rep);
-            
+
             std::cout << "Initialised...\n";
             delete points;
         }
@@ -1106,7 +1106,7 @@ namespace spdlib
         }
         initialised = true;
     }
-    
+
 	void SPDRFBPointInterpolator::initInterpolator(std::list<SPDPulse*> *pulses, boost::uint_fast16_t ptClass) throw(SPDProcessingException)
     {
         try
@@ -1116,12 +1116,12 @@ namespace spdlib
             {
                 this->thinPoints(points);
             }
-            
-            
-            
-            
+
+
+
+
             throw SPDProcessingException("RFB Interpolator has not been initialised - list.");
-            
+
             delete points;
         }
         catch(SPDProcessingException &e)
@@ -1130,7 +1130,7 @@ namespace spdlib
         }
         initialised = true;
     }
-    
+
 	void SPDRFBPointInterpolator::initInterpolator(std::vector<SPDPulse*> *pulses, boost::uint_fast16_t ptClass) throw(SPDProcessingException)
     {
         try
@@ -1140,9 +1140,9 @@ namespace spdlib
             {
                 this->thinPoints(points);
             }
-            
+
             throw SPDProcessingException("RFB Interpolator has not been initialised - vector.");
-            
+
             delete points;
         }
         catch(SPDProcessingException &e)
@@ -1151,7 +1151,7 @@ namespace spdlib
         }
         initialised = true;
     }
-    
+
 	float SPDRFBPointInterpolator::getValue(double eastings, double northings) throw(SPDProcessingException)
     {
         float val = 0.0;
@@ -1165,7 +1165,7 @@ namespace spdlib
         }
         return val;
     }
-    
+
 	void SPDRFBPointInterpolator::resetInterpolator() throw(SPDProcessingException)
     {
         if(initialised)
@@ -1177,7 +1177,7 @@ namespace spdlib
             initialised = false;
 		}
     }
-    
+
     SPDRFBPointInterpolator::~SPDRFBPointInterpolator()
     {
         if(initialised)
@@ -1189,10 +1189,10 @@ namespace spdlib
             initialised = false;
 		}
     }
-    
-    
-    
-    
+
+
+
+
 	
 	
 	
@@ -1217,7 +1217,7 @@ namespace spdlib
             PointValueMap::iterator iterVal = values->find(nearestPt);
             outElevation = (*iterVal).second;
 		}
-		else 
+		else
 		{
 			throw SPDProcessingException("Interpolated needs to be initialised before values can be retrieved.");
 		}
@@ -1268,7 +1268,7 @@ namespace spdlib
             cPt->y = (*iterVal).first.y();
             cPt->z = (*iterVal).second;
             //std::cout << "C [" << cPt->x << ", " << cPt->y << "] = " << cPt->z << std::endl;
-            
+
             try
             {
                 /*if((eastings > aPt->x) & (eastings > bPt->x) & (eastings > cPt->x))
@@ -1289,7 +1289,7 @@ namespace spdlib
                 */
                 if(false)
                 {
-                    
+
                 }
                 else
                 {
@@ -1306,7 +1306,7 @@ namespace spdlib
                 outElevation = std::numeric_limits<float>::signaling_NaN();
             }
 		}
-		else 
+		else
 		{
 			throw SPDProcessingException("Interpolated needs to be initialised before values can be retrieved.");
 		}
@@ -1338,7 +1338,7 @@ namespace spdlib
 	float SPDStdDevFilterInterpolator::getValue(double eastings, double northings) throw(SPDProcessingException)
 	{
 		float returnZVal = std::numeric_limits<float>::signaling_NaN();
-		try 
+		try
 		{
 			std::vector<SPDPoint*> *pts = new std::vector<SPDPoint*>();
 			if(idx->getPointsInRadius(pts, eastings, northings, stdDevDist))
@@ -1352,9 +1352,9 @@ namespace spdlib
                     bool firstHigh = true;
                     double dist = 0;
                     double elev = 0;
-                    
+
                     SPDPointUtils ptUtils;
-                    
+
                     std::vector<SPDPoint*>::iterator iterPts;
                     for(iterPts = pts->begin(); iterPts != pts->end(); ++iterPts)
                     {
@@ -1383,7 +1383,7 @@ namespace spdlib
                             {
                                 minHigh = elev;
                             }
-                            
+
                             if(dist < this->lowDist)
                             {
                                 if(firstLow)
@@ -1398,10 +1398,10 @@ namespace spdlib
                             }
                         }
                     }
-                    
+
                     double mean = sum / pts->size();
                     double sumSq = 0;
-                    
+
                     for(iterPts = pts->begin(); iterPts != pts->end(); ++iterPts)
                     {
                         if(elevVal == SPD_USE_Z)
@@ -1416,12 +1416,12 @@ namespace spdlib
                         {
                             throw SPDProcessingException("Elevation type not recognised.");
                         }
-                        
+
                         sumSq += (elev - mean) * (elev - mean);
                     }
-                    
+
                     double stdDev = sqrt(sumSq);
-                    
+
                     if(stdDev < this->stdDevThreshold)
                     {
                         returnZVal = minHigh;
@@ -1432,7 +1432,7 @@ namespace spdlib
                         {
                             returnZVal = minHigh;
                         }
-                        else 
+                        else
                         {
                             returnZVal = minLow;
                         }
@@ -1448,9 +1448,9 @@ namespace spdlib
                     bool firstHigh = true;
                     double dist = 0;
                     double elev = 0;
-                    
+
                     SPDPointUtils ptUtils;
-                    
+
                     std::vector<SPDPoint*>::iterator iterPts;
                     for(iterPts = pts->begin(); iterPts != pts->end(); ++iterPts)
                     {
@@ -1479,7 +1479,7 @@ namespace spdlib
                             {
                                 maxHigh = elev;
                             }
-                            
+
                             if(dist < this->lowDist)
                             {
                                 if(firstLow)
@@ -1494,10 +1494,10 @@ namespace spdlib
                             }
                         }
                     }
-                    
+
                     double mean = sum / pts->size();
                     double sumSq = 0;
-                    
+
                     for(iterPts = pts->begin(); iterPts != pts->end(); ++iterPts)
                     {
                         if(elevVal == SPD_USE_Z)
@@ -1512,12 +1512,12 @@ namespace spdlib
                         {
                             throw SPDProcessingException("Elevation type not recognised.");
                         }
-                        
+
                         sumSq += (elev - mean) * (elev - mean);
                     }
-                    
+
                     double stdDev = sqrt(sumSq);
-                    
+
                     if(stdDev < this->stdDevThreshold)
                     {
                         returnZVal = maxHigh;
@@ -1532,22 +1532,22 @@ namespace spdlib
                         {
                             returnZVal = maxLow;
                         }
-                        
+
                     }
                 }
 			}
-			else 
+			else
 			{
 				returnZVal = std::numeric_limits<float>::signaling_NaN();
 			}
 			
 			delete pts;
 		}
-		catch (SPDProcessingException &e) 
+		catch (SPDProcessingException &e)
 		{
 			throw e;
 		}
-        
+
         //std::cout << "returnZVal " << returnZVal << std::endl;
 		return returnZVal;
 	}
@@ -1582,7 +1582,7 @@ namespace spdlib
                     int ptIdx = 0;
                     for(std::vector<SPDPoint*>::iterator iterPts = splinePts->begin(); iterPts != splinePts->end(); ++iterPts)
                     {
-                        // Please note that Z and Y and been switch around as the TPS code (tpsdemo) 
+                        // Please note that Z and Y and been switch around as the TPS code (tpsdemo)
                         // interpolates for Y rather than Z.
                         if(elevVal == SPD_USE_Z)
                         {
@@ -1597,7 +1597,7 @@ namespace spdlib
                             throw SPDProcessingException("Elevation type not recognised.");
                         }
                     }
-                    
+
                     spdlib::tps::Spline splineFunc = spdlib::tps::Spline(cntrlPts, 0.0);
                     newZValue = splineFunc.interpolate_height(eastings, northings);
                 }
@@ -1612,12 +1612,12 @@ namespace spdlib
             //throw SPDProcessingException(e.what());
             newZValue = std::numeric_limits<float>::signaling_NaN();
         }
-        catch (SPDProcessingException &e) 
+        catch (SPDProcessingException &e)
         {
             throw e;
         }
         delete splinePts;
-        
+
         return newZValue;
 	}
 	
@@ -1626,7 +1626,7 @@ namespace spdlib
 		
 	}
 
-    
+
     SPDTPSNumPtsInterpolator::SPDTPSNumPtsInterpolator(float radius, boost::uint_fast16_t numPoints, double gridResolution, boost::uint_fast16_t elevVal, float thinGridRes, bool thinData, boost::uint_fast16_t selectHighOrLow, boost::uint_fast16_t maxNumPtsPerBin):SPDGridIndexPointInterpolator(gridResolution, elevVal, thinGridRes, thinData, selectHighOrLow, maxNumPtsPerBin),radius(0), numPoints(12)
 	{
 		this->radius = radius;
@@ -1637,7 +1637,7 @@ namespace spdlib
 	{
         float newZValue = std::numeric_limits<float>::signaling_NaN();
         std::vector<SPDPoint*> *splinePts = new std::vector<SPDPoint*>();
-		try 
+		try
         {
             if(idx->getSetNumOfPoints(splinePts, eastings, northings, numPoints, radius))
             {
@@ -1645,7 +1645,7 @@ namespace spdlib
                 int ptIdx = 0;
                 for(std::vector<SPDPoint*>::iterator iterPts = splinePts->begin(); iterPts != splinePts->end(); ++iterPts)
                 {
-                    // Please note that Z and Y and been switch around as the TPS code (tpsdemo) 
+                    // Please note that Z and Y and been switch around as the TPS code (tpsdemo)
                     // interpolates for Y rather than Z.
                     if(elevVal == SPD_USE_Z)
                     {
@@ -1673,12 +1673,12 @@ namespace spdlib
             //throw SPDProcessingException(e.what());
             newZValue = std::numeric_limits<float>::signaling_NaN();
         }
-        catch (SPDProcessingException &e) 
+        catch (SPDProcessingException &e)
         {
             throw e;
         }
         delete splinePts;
-        
+
         return newZValue;
 	}
 	
@@ -1687,15 +1687,15 @@ namespace spdlib
 		
 	}
 
-    
+
     SPDNaturalNeighborCGALPointInterpolator::SPDNaturalNeighborCGALPointInterpolator(boost::uint_fast16_t elevVal, float thinGridRes, bool thinData, boost::uint_fast16_t selectHighOrLow, boost::uint_fast16_t maxNumPtsPerBin):SPDTriangulationPointInterpolator(elevVal, thinGridRes, thinData, selectHighOrLow, maxNumPtsPerBin)
     {
 
     }
-    
+
     float SPDNaturalNeighborCGALPointInterpolator::getValue(double eastings, double northings) throw(SPDProcessingException)
     {
-        float newZValue = std::numeric_limits<float>::signaling_NaN(); 
+        float newZValue = std::numeric_limits<float>::signaling_NaN();
         if(initialised)
         {
             try
@@ -1712,11 +1712,11 @@ namespace spdlib
                     newZValue = std::numeric_limits<float>::signaling_NaN();
                 }
                 else
-                {                    
+                {
                     CGALCoordType norm = result.second;
-                    
+
                     CGALCoordType outValue = CGAL::linear_interpolation(coords.begin(), coords.end(), norm, CGAL::Data_access<PointValueMap>(*this->values));
-                    
+
                     newZValue = outValue;
                 }
             }
@@ -1730,12 +1730,12 @@ namespace spdlib
 
     SPDNaturalNeighborCGALPointInterpolator::~SPDNaturalNeighborCGALPointInterpolator()
     {
-        
+
     }
-    
-    
-    
-    
+
+
+
+
     SPDSphericalPointInterpolator::SPDSphericalPointInterpolator(boost::uint_fast16_t elevVal, float thinGridRes, bool thinData, boost::uint_fast16_t selectHighOrLow, boost::uint_fast16_t maxNumPtsPerBin): initialised(false), elevVal(0), thinGridRes(0.5), thinData(false), selectHighOrLow(0), maxNumPtsPerBin(0), totalNumPoints(0)
 	{
         this->elevVal = elevVal;
@@ -1744,7 +1744,7 @@ namespace spdlib
         this->selectHighOrLow = selectHighOrLow;
         this->maxNumPtsPerBin = maxNumPtsPerBin;
 	}
-    
+
     std::vector<SPDPoint*>* SPDSphericalPointInterpolator::findPoints(std::list<SPDPulse*> ***pulses, boost::uint_fast32_t numXBins, boost::uint_fast32_t numYBins, boost::uint_fast16_t ptClass) throw(SPDProcessingException)
     {
         std::vector<SPDPoint*> *points = new std::vector<SPDPoint*>();
@@ -1810,10 +1810,10 @@ namespace spdlib
             }
         }
         totalNumPoints = points->size();
-        
+
         return points;
     }
-    
+
     std::vector<SPDPoint*>* SPDSphericalPointInterpolator::findPoints(std::vector<SPDPulse*> ***pulses, boost::uint_fast32_t numXBins, boost::uint_fast32_t numYBins, boost::uint_fast16_t ptClass) throw(SPDProcessingException)
     {
         std::vector<SPDPoint*> *points = new std::vector<SPDPoint*>();
@@ -1879,10 +1879,10 @@ namespace spdlib
             }
         }
         totalNumPoints = points->size();
-        
+
         return points;
     }
-    
+
     std::vector<SPDPoint*>* SPDSphericalPointInterpolator::findPoints(std::list<SPDPulse*> *pulses, boost::uint_fast16_t ptClass) throw(SPDProcessingException)
     {
         std::vector<SPDPoint*> *points = new std::vector<SPDPoint*>();
@@ -1942,10 +1942,10 @@ namespace spdlib
 			}
 		}
         totalNumPoints = points->size();
-        
+
         return points;
     }
-    
+
     std::vector<SPDPoint*>* SPDSphericalPointInterpolator::findPoints(std::vector<SPDPulse*> *pulses, boost::uint_fast16_t ptClass) throw(SPDProcessingException)
     {
         std::vector<SPDPoint*> *points = new std::vector<SPDPoint*>();
@@ -2005,10 +2005,10 @@ namespace spdlib
 			}
 		}
         totalNumPoints = points->size();
-        
+
         return points;
     }
-    
+
     void SPDSphericalPointInterpolator::thinPoints(std::vector<SPDPoint*> *points) throw(SPDProcessingException)
     {
         try
@@ -2028,11 +2028,11 @@ namespace spdlib
             throw e;
         }
     }
-    
-    
-    
-    
-    
+
+
+
+
+
     SPDTriangulationSphericalPointInterpolator::SPDTriangulationSphericalPointInterpolator(boost::uint_fast16_t elevVal, float thinGridRes, bool thinData, boost::uint_fast16_t selectHighOrLow, boost::uint_fast16_t maxNumPtsPerBin): SPDSphericalPointInterpolator(elevVal, thinGridRes, thinData, selectHighOrLow, maxNumPtsPerBin)
 	{
         returnNaNValue = false;
@@ -2047,7 +2047,7 @@ namespace spdlib
             {
                 this->thinPoints(points);
             }
-            
+
             dt = new DelaunayTriangulation();
             values = new PointValueMap();
             if(points->size() > 2)
@@ -2073,7 +2073,7 @@ namespace spdlib
         }
         initialised = true;
     }
-    
+
     void SPDTriangulationSphericalPointInterpolator::initInterpolator(std::vector<SPDPulse*> ***pulses, boost::uint_fast32_t numXBins, boost::uint_fast32_t numYBins, boost::uint_fast16_t ptClass) throw(SPDProcessingException)
     {
         try
@@ -2084,11 +2084,11 @@ namespace spdlib
             {
                 this->thinPoints(points);
             }
-            
-            
+
+
             dt = new DelaunayTriangulation();
             values = new PointValueMap();
-            
+
             if(points->size() > 2)
             {
                 returnNaNValue = false;
@@ -2105,7 +2105,7 @@ namespace spdlib
             {
                 returnNaNValue = true;
             }
-            
+
         }
         catch(SPDProcessingException &e)
         {
@@ -2113,22 +2113,22 @@ namespace spdlib
         }
         initialised = true;
     }
-    
+
     void SPDTriangulationSphericalPointInterpolator::initInterpolator(std::list<SPDPulse*> *pulses, boost::uint_fast16_t ptClass) throw(SPDProcessingException)
     {
         try
         {
             points = this->findPoints(pulses, ptClass);
-            
+
             if(thinData & (points->size() > 2))
             {
                 this->thinPoints(points);
             }
 
-            
+
             dt = new DelaunayTriangulation();
             values = new PointValueMap();
-            
+
             if(points->size() > 2)
             {
                 returnNaNValue = false;
@@ -2152,7 +2152,7 @@ namespace spdlib
         }
         initialised = true;
     }
-    
+
     void SPDTriangulationSphericalPointInterpolator::initInterpolator(std::vector<SPDPulse*> *pulses, boost::uint_fast16_t ptClass) throw(SPDProcessingException)
     {
         try
@@ -2164,10 +2164,10 @@ namespace spdlib
                 this->thinPoints(points);
             }
 
-            
+
             dt = new DelaunayTriangulation();
             values = new PointValueMap();
-            
+
             if(points->size() > 2)
             {
                 returnNaNValue = false;
@@ -2226,13 +2226,13 @@ namespace spdlib
 		initialised = false;
         returnNaNValue = false;
 	}
-    
-    
-    
-    
-    
-    
-    
+
+
+
+
+
+
+
 	SPDGridIndexSphericalPointInterpolator::SPDGridIndexSphericalPointInterpolator(double gridResolution, boost::uint_fast16_t elevVal, float thinGridRes, bool thinData, boost::uint_fast16_t selectHighOrLow, boost::uint_fast16_t maxNumPtsPerBin): SPDSphericalPointInterpolator(elevVal, thinGridRes, thinData, selectHighOrLow, maxNumPtsPerBin), idx(NULL), gridResolution(0)
 	{
 		this->gridResolution = gridResolution;
@@ -2247,7 +2247,7 @@ namespace spdlib
             {
                 this->thinPoints(points);
             }
-            
+
             idx = new SPDPointGridIndex();
 			idx->buildIndex(points, this->gridResolution);
         }
@@ -2268,7 +2268,7 @@ namespace spdlib
             {
                 this->thinPoints(points);
             }
-            
+
             idx = new SPDPointGridIndex();
 			idx->buildIndex(points, this->gridResolution);
         }
@@ -2288,7 +2288,7 @@ namespace spdlib
             {
                 this->thinPoints(points);
             }
-            
+
             idx = new SPDPointGridIndex();
 			idx->buildIndex(points, this->gridResolution);
         }
@@ -2308,7 +2308,7 @@ namespace spdlib
             {
                 this->thinPoints(points);
             }
-            
+
             idx = new SPDPointGridIndex();
 			idx->buildIndex(points, this->gridResolution);
         }
@@ -2318,7 +2318,7 @@ namespace spdlib
         }
         initialised = true;
 	}
-    
+
 	void SPDGridIndexSphericalPointInterpolator::resetInterpolator() throw(SPDProcessingException)
 	{
 		if(initialised)
@@ -2350,17 +2350,17 @@ namespace spdlib
         initialised = false;
 	}
 	
-    
-    
-    
+
+
+
     SPDNaturalNeighborSphericalPointInterpolator::SPDNaturalNeighborSphericalPointInterpolator(boost::uint_fast16_t elevVal, float thinGridRes, bool thinData, boost::uint_fast16_t selectHighOrLow, boost::uint_fast16_t maxNumPtsPerBin):SPDTriangulationSphericalPointInterpolator(elevVal, thinGridRes, thinData, selectHighOrLow, maxNumPtsPerBin)
     {
-        
+
     }
-    
+
     float SPDNaturalNeighborSphericalPointInterpolator::getValue(double azimuth, double zenith) throw(SPDProcessingException)
     {
-        float newRangeValue = std::numeric_limits<float>::signaling_NaN(); 
+        float newRangeValue = std::numeric_limits<float>::signaling_NaN();
         if(initialised)
         {
             if(!returnNaNValue)
@@ -2377,9 +2377,9 @@ namespace spdlib
                     else
                     {
                         CGALCoordType norm = result.second;
-                        
+
                         CGALCoordType outValue = CGAL::linear_interpolation(coords.begin(), coords.end(), norm, CGAL::Data_access<PointValueMap>(*this->values));
-                        
+
                         newRangeValue = outValue;
                     }
                 }
@@ -2391,14 +2391,14 @@ namespace spdlib
         }
         return newRangeValue;
     }
-    
+
     SPDNaturalNeighborSphericalPointInterpolator::~SPDNaturalNeighborSphericalPointInterpolator()
     {
-        
+
     }
-    
-    
-    
+
+
+
     SPDNearestNeighborSphericalPointInterpolator::SPDNearestNeighborSphericalPointInterpolator(boost::uint_fast16_t elevVal, float thinGridRes, bool thinData, boost::uint_fast16_t selectHighOrLow, boost::uint_fast16_t maxNumPtsPerBin, float distanceThreshold):SPDTriangulationSphericalPointInterpolator(elevVal, thinGridRes, thinData, selectHighOrLow, maxNumPtsPerBin)
 	{
 		this->distanceThreshold = distanceThreshold;
@@ -2414,9 +2414,9 @@ namespace spdlib
                 CGALPoint p(azimuth, zenith);
                 Vertex_handle vh = dt->nearest_vertex(p);
                 CGALPoint nearestPt = vh->point();
-                
+
                 double distance = CGAL::squared_distance(p, nearestPt);
-                
+
                 if(distance < distanceThreshold)
                 {
                     PointValueMap::iterator iterVal = values->find(nearestPt);
@@ -2428,21 +2428,21 @@ namespace spdlib
                 }
             }
 		}
-		else 
+		else
 		{
 			throw SPDProcessingException("Interpolated needs to be initialised before values can be retrieved.");
 		}
 		return newRangeValue;
-        
+
     }
 	
 	SPDNearestNeighborSphericalPointInterpolator::~SPDNearestNeighborSphericalPointInterpolator()
 	{
 		
 	}
-    
-    
-    
+
+
+
     SPDTPSRadiusSphericalInterpolator::SPDTPSRadiusSphericalInterpolator(float radius, boost::uint_fast16_t minNumPoints, double gridResolution, boost::uint_fast16_t elevVal, float thinGridRes, bool thinData, boost::uint_fast16_t selectHighOrLow, boost::uint_fast16_t maxNumPtsPerBin):SPDGridIndexSphericalPointInterpolator(gridResolution, elevVal, thinGridRes, thinData, selectHighOrLow, maxNumPtsPerBin),radius(0), minNumPoints(12)
 	{
 		this->radius = radius;
@@ -2456,7 +2456,7 @@ namespace spdlib
 		try
         {
             if(idx->getPointsInRadius(splinePts, azimuth, zenith, radius))
-            {                
+            {
                 if(splinePts->size() < minNumPoints)
                 {
                     newRangeValue = std::numeric_limits<float>::signaling_NaN();
@@ -2467,11 +2467,11 @@ namespace spdlib
                     int ptIdx = 0;
                     for(std::vector<SPDPoint*>::iterator iterPts = splinePts->begin(); iterPts != splinePts->end(); ++iterPts)
                     {
-                        // Please note that Z and Y and been switch around as the TPS code (tpsdemo) 
+                        // Please note that Z and Y and been switch around as the TPS code (tpsdemo)
                         // interpolates for Y rather than Z.
                         cntrlPts[ptIdx++] = spdlib::tps::Vec((*iterPts)->x, (*iterPts)->z, (*iterPts)->y);
                     }
-                    
+
                     spdlib::tps::Spline splineFunc = spdlib::tps::Spline(cntrlPts, 0.0);
                     newRangeValue = splineFunc.interpolate_height(azimuth, zenith);
                 }
@@ -2486,12 +2486,12 @@ namespace spdlib
             //throw SPDProcessingException(e.what());
             newRangeValue = std::numeric_limits<float>::signaling_NaN();
         }
-        catch (SPDProcessingException &e) 
+        catch (SPDProcessingException &e)
         {
             throw e;
         }
         delete splinePts;
-        
+
         return newRangeValue;
 	}
 	
@@ -2499,9 +2499,9 @@ namespace spdlib
 	{
 		
 	}
-    
-    
-    
+
+
+
     SPDTPSNumPtsSphericalInterpolator::SPDTPSNumPtsSphericalInterpolator(float radius, boost::uint_fast16_t numPoints, double gridResolution, boost::uint_fast16_t elevVal, float thinGridRes, bool thinData, boost::uint_fast16_t selectHighOrLow, boost::uint_fast16_t maxNumPtsPerBin):SPDGridIndexSphericalPointInterpolator(gridResolution, elevVal, thinGridRes, thinData, selectHighOrLow, maxNumPtsPerBin),radius(0), numPoints(12)
 	{
 		this->radius = radius;
@@ -2512,15 +2512,15 @@ namespace spdlib
 	{
         float newRangeValue = std::numeric_limits<float>::signaling_NaN();
         std::vector<SPDPoint*> *splinePts = new std::vector<SPDPoint*>();
-		try 
+		try
         {
             if(idx->getSetNumOfPoints(splinePts, azimuth, zenith, numPoints, radius))
-            {                
+            {
                 std::vector<spdlib::tps::Vec> cntrlPts(splinePts->size());
                 int ptIdx = 0;
                 for(std::vector<SPDPoint*>::iterator iterPts = splinePts->begin(); iterPts != splinePts->end(); ++iterPts)
                 {
-                    // Please note that Z and Y and been switch around as the TPS code (tpsdemo) 
+                    // Please note that Z and Y and been switch around as the TPS code (tpsdemo)
                     // interpolates for Y rather than Z.
                     cntrlPts[ptIdx++] = spdlib::tps::Vec((*iterPts)->x, (*iterPts)->z, (*iterPts)->y);
                 }
@@ -2537,12 +2537,12 @@ namespace spdlib
             //throw SPDProcessingException(e.what());
             newRangeValue = std::numeric_limits<float>::signaling_NaN();
         }
-        catch (SPDProcessingException &e) 
+        catch (SPDProcessingException &e)
         {
             throw e;
         }
         delete splinePts;
-        
+
         return newRangeValue;
 	}
 	
@@ -2550,7 +2550,7 @@ namespace spdlib
 	{
 		
 	}
-    
+
 }
 
 

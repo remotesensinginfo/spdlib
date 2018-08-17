@@ -27,43 +27,43 @@
 
 namespace spdlib
 {	
-    
+
     SPDGenBinaryMask::SPDGenBinaryMask()
     {
-        
+
     }
-    
+
     void SPDGenBinaryMask::generateBinaryMask(boost::uint_fast32_t numPulses, std::string inputSPDFile, std::string outputImageFile, boost::uint_fast32_t blockXSize, boost::uint_fast32_t blockYSize, float processingResolution, std::string gdalFormat) throw(SPDProcessingException)
     {
-        try 
+        try
         {
             SPDFile *spdInFile = new SPDFile(inputSPDFile);
-            SPDPulseProcessor *pulseStatsProcessor = new SPDPulseProcessorCalcMask(numPulses);            
+            SPDPulseProcessor *pulseStatsProcessor = new SPDPulseProcessorCalcMask(numPulses);
             SPDSetupProcessPulses processPulses = SPDSetupProcessPulses(blockXSize, blockYSize, true);
             processPulses.processPulsesWithOutputImage(pulseStatsProcessor, spdInFile, outputImageFile, 1, processingResolution, gdalFormat, false, 0);
-            
+
             delete spdInFile;
             delete pulseStatsProcessor;
         }
-        catch (SPDProcessingException &e) 
+        catch (SPDProcessingException &e)
         {
             throw e;
         }
     }
-    
+
     SPDGenBinaryMask::~SPDGenBinaryMask()
     {
-        
+
     }
-    
-    
-    
-    
+
+
+
+
     SPDPulseProcessorCalcMask::SPDPulseProcessorCalcMask(boost::uint_fast32_t numPulses):SPDPulseProcessor()
     {
         this->numPulses = numPulses;
     }
-    
+
     void SPDPulseProcessorCalcMask::processDataColumnImage(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses, float *imageData, SPDXYPoint *cenPts, boost::uint_fast32_t numImgBands, float binSize) throw(SPDProcessingException)
     {
         try
@@ -72,7 +72,7 @@ namespace spdlib
             {
                 throw SPDProcessingException("Processing requires at least 1 image band.");
             }
-            
+
             if(pulses->size() >= this->numPulses)
             {
                 imageData[0] = 1;
@@ -87,25 +87,25 @@ namespace spdlib
             throw e;
         }
     }
-    
+
     std::vector<std::string> SPDPulseProcessorCalcMask::getImageBandDescriptions() throw(SPDProcessingException)
     {
         std::vector<std::string> bandNames;
         bandNames.push_back("Mask");
-        
+
         return bandNames;
     }
-    
+
     void SPDPulseProcessorCalcMask::setHeaderValues(SPDFile *spdFile) throw(SPDProcessingException)
     {
         // NOTHING TO DO HERE...
     }
-    
+
     SPDPulseProcessorCalcMask::~SPDPulseProcessorCalcMask()
     {
-        
-    }    
-    
+
+    }
+
 }
 
 

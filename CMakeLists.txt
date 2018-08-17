@@ -1,7 +1,7 @@
 ###############################################################################
 #
 # CMake build scripts for SPDlib
-# 
+#
 # Created 2010/12/14 by Peter Bunting
 #
 # These scripts were initial based on those used for libLAS (http://liblas.org/)
@@ -148,7 +148,7 @@ if(WIN32)
             add_definitions(-D_CRT_NONSTDC_NO_WARNING)
             add_definitions(-D_SCL_SECURE_NO_WARNINGS)
         endif()
-        
+
         if(CMAKE_CXX_FLAGS MATCHES "/W[0-4]")
             string(REGEX REPLACE "/W[0-4]" "/W2"
                    CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
@@ -163,7 +163,7 @@ if(WIN32)
         set(VCPROJ_USER_ENVIRONMENT_PATH_DEBUG "${ENVIRONMENT_PATH}")
         mark_as_advanced(VCPROJ_USER_ENVIRONMENT_PATH_DEBUG)
 
-        # Use cmake's MSVC_VERSION to work out the name of the Boost/CGAL DLL's 
+        # Use cmake's MSVC_VERSION to work out the name of the Boost/CGAL DLL's
         # to use (they use a different numbering scheme from cmake)
         set(MSVC_STRING_1500 "vc90")
         set(MSVC_STRING_1600 "vc100")
@@ -172,11 +172,11 @@ if(WIN32)
         set(MSVC_STRING_1900 "vc140")
         set(MSVC_STRING ${MSVC_STRING_${MSVC_VERSION}})
         message(STATUS "Using MSVC String " ${MSVC_STRING})
-        
+
         # get GSL functions
         add_definitions(-DGSL_DLL)
         # HDF5 functions/classes
-        add_definitions(-DH5_BUILT_AS_DYNAMIC_LIB) 
+        add_definitions(-DH5_BUILT_AS_DYNAMIC_LIB)
         # this seems to be required otherwise OGRGeometry::IsEmpty is not found
         add_definitions(-DHAVE_GEOS)
     endif()
@@ -186,18 +186,18 @@ endif(WIN32)
 if(APPLE)
     # use, i.e. don't skip the full RPATH for the build tree
     SET(CMAKE_SKIP_BUILD_RPATH  FALSE)
-    
+
     # when building, don't use the install RPATH already
     # (but later on when installing)
-    SET(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE) 
-    
+    SET(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE)
+
     # the RPATH to be used when installing
     SET(CMAKE_INSTALL_RPATH "")
-    
+
     # don't add the automatically determined parts of the RPATH
     # which point to directories outside the build tree to the install RPATH
     SET(CMAKE_INSTALL_RPATH_USE_LINK_PATH FALSE)
-        
+
     SET(CMAKE_MACOSX_RPATH TRUE)
 endif(APPLE)
 
@@ -293,7 +293,7 @@ if (MSVC)
 else()
     set(MPFR_LIBRARIES -L${MPFR_LIB_PATH} -lmpfr)
 endif(MSVC)
-    
+
 ###############################################################################
 
 ###############################################################################
@@ -378,7 +378,7 @@ if (SPDLIB_WITH_UTILITIES)
  	add_executable(spdsplit ${PROJECT_SOURCE_DIR}/exe/spdsplit/main.cpp)
 	target_link_libraries (spdsplit ${SPDLIB_MITLIB_NAME} ${SPDLIB_LIB_NAME} )
 	add_executable(spdclassimg ${PROJECT_SOURCE_DIR}/exe/spdclassimg/main.cpp)
-	target_link_libraries (spdclassimg ${SPDLIB_MITLIB_NAME} ${SPDLIB_LIB_NAME} )  
+	target_link_libraries (spdclassimg ${SPDLIB_MITLIB_NAME} ${SPDLIB_LIB_NAME} )
 endif(SPDLIB_WITH_UTILITIES)
 ###############################################################################
 

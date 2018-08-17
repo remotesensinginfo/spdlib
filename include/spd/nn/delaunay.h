@@ -80,7 +80,7 @@ struct delaunay {
     /*
      * Work data for delaunay_circles_find(). Placed here for efficiency
      * reasons. Should be moved to the procedure if parallelizable code
-     * needed. 
+     * needed.
      */
     int* flags;
     int first_id;               /* last search result, used in start up of a

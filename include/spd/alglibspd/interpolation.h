@@ -3987,17 +3987,17 @@ Important properties of s_out:
 * it contains alphanumeric characters, dots, underscores, minus signs
 * these symbols are grouped into words, which are separated by spaces
   and Windows-style (CR+LF) newlines
-* although  serializer  uses  spaces and CR+LF as separators, you can 
+* although  serializer  uses  spaces and CR+LF as separators, you can
   replace any separator character by arbitrary combination of spaces,
   tabs, Windows or Unix newlines. It allows flexible reformatting  of
-  the  string  in  case you want to include it into text or XML file. 
+  the  string  in  case you want to include it into text or XML file.
   But you should not insert separators into the middle of the "words"
   nor you should change case of letters.
 * s_out can be freely moved between 32-bit and 64-bit systems, little
   and big endian machines, and so on. You can serialize structure  on
   32-bit machine and unserialize it on 64-bit one (or vice versa), or
-  serialize  it  on  SPARC  and  unserialize  on  x86.  You  can also 
-  serialize  it  in  C++ version of ALGLIB and unserialize in C# one, 
+  serialize  it  on  SPARC  and  unserialize  on  x86.  You  can also
+  serialize  it  in  C++ version of ALGLIB and unserialize in C# one,
   and vice versa.
 *************************************************************************/
 void rbfserialize(rbfmodel &obj, std::string &s_out);

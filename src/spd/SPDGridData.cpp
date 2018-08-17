@@ -27,7 +27,7 @@
 namespace spdlib
 {
 	/* Public functions */
-	 
+	
 	SPDGridData::SPDGridData()
 	{
 		
@@ -35,7 +35,7 @@ namespace spdlib
 	
 	std::list<SPDPulse*>*** SPDGridData::gridData(std::list<SPDPulse*>* pls, SPDFile *spdFile) throw(SPDProcessingException)
 	{
-		try 
+		try
 		{
 			if(pls->size() < 1)
 			{
@@ -62,12 +62,12 @@ namespace spdlib
             {
                 return this->gridDataScan(pls, spdFile);
             }
-			else 
+			else
 			{
 				throw SPDProcessingException("Index type is not recognised");
 			}
 		}
-		catch (SPDProcessingException &e) 
+		catch (SPDProcessingException &e)
 		{
 			throw e;
 		}
@@ -75,7 +75,7 @@ namespace spdlib
 	
 	std::list<SPDPulse*>*** SPDGridData::gridData(std::vector<SPDPulse*>* pls, SPDFile *spdFile) throw(SPDProcessingException)
 	{
-		try 
+		try
 		{
 			if(pls->size() < 1)
 			{
@@ -102,12 +102,12 @@ namespace spdlib
             {
                 return this->gridDataScan(pls, spdFile);
             }
-			else 
+			else
 			{
 				throw SPDProcessingException("Index type is not recognised");
 			}
 		}
-		catch (SPDProcessingException &e) 
+		catch (SPDProcessingException &e)
 		{
 			throw e;
 		}
@@ -115,7 +115,7 @@ namespace spdlib
 
     void SPDGridData::gridData(std::list<SPDPulse*>* pls, SPDFile *spdFile, std::list<SPDPulse*>*** grid, OGREnvelope *env, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, float binsize) throw(SPDProcessingException)
     {
-        try 
+        try
 		{
 			if(spdFile->getIndexType() == SPD_CARTESIAN_IDX)
 			{
@@ -137,20 +137,20 @@ namespace spdlib
 			{
 				this->gridDataScan(pls, grid, env, xSize, ySize, binsize);
 			}
-			else 
+			else
 			{
 				throw SPDProcessingException("Index type is not recognised");
 			}
 		}
-		catch (SPDProcessingException &e) 
+		catch (SPDProcessingException &e)
 		{
 			throw e;
 		}
     }
-    
+
     void SPDGridData::gridData(std::vector<SPDPulse*>* pls, SPDFile *spdFile, std::list<SPDPulse*>*** grid, OGREnvelope *env, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, float binsize) throw(SPDProcessingException)
     {
-        try 
+        try
 		{
 			if(spdFile->getIndexType() == SPD_CARTESIAN_IDX)
 			{
@@ -172,20 +172,20 @@ namespace spdlib
 			{
 				this->gridDataScan(pls, grid, env, xSize, ySize, binsize);
 			}
-			else 
+			else
 			{
 				throw SPDProcessingException("Index type is not recognised");
 			}
 		}
-		catch (SPDProcessingException &e) 
+		catch (SPDProcessingException &e)
 		{
 			throw e;
 		}
     }
-    
+
     void SPDGridData::reGridData(boost::uint_fast16_t indexType, std::vector<SPDPulse*> ***inGridPls, boost::uint_fast32_t inXSize, boost::uint_fast32_t inYSize, std::vector<SPDPulse*> ***outGridPls, boost::uint_fast32_t outXSize, boost::uint_fast32_t outYSize, double originX, double originY, float outBinSize) throw(SPDProcessingException)
     {
-        try 
+        try
 		{
 			if(indexType == SPD_CARTESIAN_IDX)
 			{
@@ -207,24 +207,24 @@ namespace spdlib
 			{
                 this->reGridDataScan(inGridPls, inXSize, inYSize, outGridPls, outXSize, outYSize, originX, originY, outBinSize);
 			}
-			else 
+			else
 			{
 				throw SPDProcessingException("Index type is not recognised");
 			}
 		}
-		catch (SPDProcessingException &e) 
+		catch (SPDProcessingException &e)
 		{
 			throw e;
 		}
     }
-    
+
     void SPDGridData::cartGridDataIgnoringOutGrid(std::vector<SPDPulse*>* pls, std::vector<SPDPulse*>*** grid, OGREnvelope *env, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, float binsize) throw(SPDProcessingException)
     {
         if((xSize < 1) | (ySize < 1))
 		{
 			throw SPDProcessingException("There insufficent number of bins for binning (try reducing resolution).");
 		}
-        
+
         try
 		{
 			double xDiff = 0;
@@ -233,7 +233,7 @@ namespace spdlib
 			boost::uint_fast32_t yIdx = 0;
 			
             std::cout << "Started (Grid " << pls->size() << " Pulses) ." << std::flush;
-            
+
 			boost::uint_fast32_t feedback = pls->size()/10;
 			boost::uint_fast32_t feedbackCounter = 0;
 			
@@ -250,7 +250,7 @@ namespace spdlib
                 ignorePls = false;
 				xDiff = ((*iterPls)->xIdx - env->MinX)/binsize;
 				yDiff = (env->MaxY - (*iterPls)->yIdx)/binsize;
-                
+
 				try
 				{
 					xIdx = boost::numeric_cast<boost::uint_fast32_t>(xDiff);
@@ -270,19 +270,19 @@ namespace spdlib
 				}
 				
                 //std::cout << "Index [" << xIdx << "," << yIdx << "]\n";
-                
+
 				if((xIdx > ((xSize)-1)) | (yIdx > ((ySize)-1)))
 				{
 					ignorePls = true;
 				}
-                
+
                 if(!ignorePls)
                 {
                     //std::cout << "pushing back to the grid\n";
                     grid[yIdx][xIdx]->push_back((*iterPls));
                     //std::cout << "added to grid\n";
                 }
-                
+
                 ++i;
 			}
 			
@@ -294,7 +294,7 @@ namespace spdlib
 			throw e;
 		}
     }
-    
+
 	/* Private functions */
 	
 	std::list<SPDPulse*>*** SPDGridData::gridDataCartesian(std::list<SPDPulse*>* pls, SPDFile *spdFile) throw(SPDProcessingException)
@@ -308,7 +308,7 @@ namespace spdlib
 			{
 				roundingAddition = boost::numeric_cast<boost::uint_fast32_t>(1/spdFile->getBinSize());
 			}
-			else 
+			else
 			{
 				roundingAddition = 2;
 			}
@@ -319,15 +319,15 @@ namespace spdlib
 			spdFile->setNumberBinsX(xSize);
 			spdFile->setNumberBinsY(ySize);
 		}
-		catch(boost::numeric::negative_overflow& e) 
+		catch(boost::numeric::negative_overflow& e)
 		{
 			throw SPDProcessingException(e.what());
 		}
-		catch(boost::numeric::positive_overflow& e) 
+		catch(boost::numeric::positive_overflow& e)
 		{
 			throw SPDProcessingException(e.what());
 		}
-		catch(boost::numeric::bad_numeric_cast& e) 
+		catch(boost::numeric::bad_numeric_cast& e)
 		{
 			throw SPDProcessingException(e.what());
 		}
@@ -347,7 +347,7 @@ namespace spdlib
 			}
 		}
 		
-		try 
+		try
 		{	
 			double xDiff = 0;
 			double yDiff = 0;
@@ -375,20 +375,20 @@ namespace spdlib
 				xDiff = (pl->xIdx - spdFile->getXMin())/spdFile->getBinSize();
 				yDiff = (spdFile->getYMax() - pl->yIdx)/spdFile->getBinSize();				
 				
-				try 
+				try
 				{
 					xIdx = boost::numeric_cast<boost::uint_fast32_t>(xDiff);
 					yIdx = boost::numeric_cast<boost::uint_fast32_t>(yDiff);
 				}
-				catch(boost::numeric::negative_overflow& e) 
+				catch(boost::numeric::negative_overflow& e)
 				{
 					throw SPDProcessingException(e.what());
 				}
-				catch(boost::numeric::positive_overflow& e) 
+				catch(boost::numeric::positive_overflow& e)
 				{
 					throw SPDProcessingException(e.what());
 				}
-				catch(boost::numeric::bad_numeric_cast& e) 
+				catch(boost::numeric::bad_numeric_cast& e)
 				{
 					throw SPDProcessingException(e.what());
 				}
@@ -416,7 +416,7 @@ namespace spdlib
 			
 			std::cout << " Complete.\n";
 		}
-		catch (SPDProcessingException &e) 
+		catch (SPDProcessingException &e)
 		{
 			std::list<SPDPulse*>::iterator iterPls;
 			for(boost::uint_fast32_t i = 0; i < ySize; ++i)
@@ -451,26 +451,26 @@ namespace spdlib
 			{
 				roundingAddition = 2;//boost::numeric_cast<boost::uint_fast32_t>(1/spdFile->getBinSize());
 			}
-			else 
+			else
 			{
 				roundingAddition = 1;
 			}
             			
 			xSize = boost::numeric_cast<boost::uint_fast32_t>(((spdFile->getAzimuthMax()-spdFile->getAzimuthMin())/spdFile->getBinSize())+roundingAddition);
 			ySize = boost::numeric_cast<boost::uint_fast32_t>(((spdFile->getZenithMax()-spdFile->getZenithMin())/spdFile->getBinSize())+roundingAddition);
-			            
+			
 			spdFile->setNumberBinsX(xSize);
 			spdFile->setNumberBinsY(ySize);
 		}
-		catch(boost::numeric::negative_overflow& e) 
+		catch(boost::numeric::negative_overflow& e)
 		{
 			throw SPDProcessingException(e.what());
 		}
-		catch(boost::numeric::positive_overflow& e) 
+		catch(boost::numeric::positive_overflow& e)
 		{
 			throw SPDProcessingException(e.what());
 		}
-		catch(boost::numeric::bad_numeric_cast& e) 
+		catch(boost::numeric::bad_numeric_cast& e)
 		{
 			throw SPDProcessingException(e.what());
 		}
@@ -490,7 +490,7 @@ namespace spdlib
 			}
 		}
 		
-		try 
+		try
 		{	
 			double xDiff = 0;
 			double yDiff = 0;
@@ -543,7 +543,7 @@ namespace spdlib
 			
 			std::cout << " Complete.\n";
 		}
-		catch (SPDProcessingException &e) 
+		catch (SPDProcessingException &e)
 		{
 			std::list<SPDPulse*>::iterator iterPls;
 			for(boost::uint_fast32_t i = 0; i < ySize; ++i)
@@ -566,12 +566,12 @@ namespace spdlib
 		
 		return griddedPls;
 	}
-    
+
     std::list<SPDPulse*>*** SPDGridData::gridDataCylindrical(std::list<SPDPulse*>* pls, SPDFile *spdFile) throw(SPDProcessingException)
 	{
-	    throw SPDProcessingException("Cylindrical gridding not implemented yet... gridDataCylindrical");      
-    }  
-      
+	    throw SPDProcessingException("Cylindrical gridding not implemented yet... gridDataCylindrical");
+    }
+
     std::list<SPDPulse*>*** SPDGridData::gridDataPolar(std::list<SPDPulse*>* pls, SPDFile *spdFile) throw(SPDProcessingException)
 	{
 		boost::uint_fast32_t xSize = 0;
@@ -584,28 +584,28 @@ namespace spdlib
 			{
 				roundingAddition = 2;//boost::numeric_cast<boost::uint_fast32_t>(1/spdFile->getBinSize());
 			}
-			else 
+			else
 			{
 				roundingAddition = 1;
 			}
 			
             zenithRadiusInBins = boost::numeric_cast<boost::uint_fast32_t>(((spdFile->getZenithMax()-spdFile->getZenithMin())/spdFile->getBinSize())+roundingAddition);
-            
+
 			xSize = (zenithRadiusInBins+5) * 2;
 			ySize = (zenithRadiusInBins+5) * 2;
 			
 			spdFile->setNumberBinsX(xSize);
 			spdFile->setNumberBinsY(ySize);
 		}
-		catch(boost::numeric::negative_overflow& e) 
+		catch(boost::numeric::negative_overflow& e)
 		{
 			throw SPDProcessingException(e.what());
 		}
-		catch(boost::numeric::positive_overflow& e) 
+		catch(boost::numeric::positive_overflow& e)
 		{
 			throw SPDProcessingException(e.what());
 		}
-		catch(boost::numeric::bad_numeric_cast& e) 
+		catch(boost::numeric::bad_numeric_cast& e)
 		{
 			throw SPDProcessingException(e.what());
 		}
@@ -624,17 +624,17 @@ namespace spdlib
 				griddedPls[i][j] = new std::list<SPDPulse*>();
 			}
 		}
-        
+
         boost::uint_fast32_t xCentre = zenithRadiusInBins+5;
 		boost::uint_fast32_t yCentre = zenithRadiusInBins+5;
         double constRange = (double)zenithRadiusInBins;
-        
-        try 
+
+        try
 		{	
             double xTmp = 0;
 			double yTmp = 0;
             double zTmp = 0;
-            
+
 			boost::uint_fast32_t xIdx = 0;
 			boost::uint_fast32_t yIdx = 0;
 			
@@ -654,12 +654,12 @@ namespace spdlib
 				
 				pl = pls->back();
 				pls->pop_back();
-                
+
                 SPDConvertToCartesian(pl->zenith, pl->azimuth, constRange, 0, 0, 0, &xTmp, &yTmp, &zTmp);
 				
 				xIdx = boost::numeric_cast<boost::uint_fast32_t>(xCentre + xTmp);
 				yIdx = boost::numeric_cast<boost::uint_fast32_t>(yCentre + yTmp);
-                
+
 				if(xIdx > ((xSize)-1))
 				{
 					std::cout << "Point: [" << pl->zenith << "," << pl->azimuth << "]\n";
@@ -685,7 +685,7 @@ namespace spdlib
 			
 			std::cout << " Complete.\n";
 		}
-		catch (SPDProcessingException &e) 
+		catch (SPDProcessingException &e)
 		{
 			std::list<SPDPulse*>::iterator iterPls;
 			for(boost::uint_fast32_t i = 0; i < ySize; ++i)
@@ -705,10 +705,10 @@ namespace spdlib
 			
 			throw e;
 		}
-        
+
         return griddedPls;
 	}
-    
+
     std::list<SPDPulse*>*** SPDGridData::gridDataScan(std::list<SPDPulse*>* pls, SPDFile *spdFile) throw(SPDProcessingException)
 	{
 		boost::uint_fast32_t xSize = 0;
@@ -723,15 +723,15 @@ namespace spdlib
 			spdFile->setNumberBinsX(xSize);
 			spdFile->setNumberBinsY(ySize);
 		}
-		catch(boost::numeric::negative_overflow& e) 
+		catch(boost::numeric::negative_overflow& e)
 		{
 			throw SPDProcessingException(e.what());
 		}
-		catch(boost::numeric::positive_overflow& e) 
+		catch(boost::numeric::positive_overflow& e)
 		{
 			throw SPDProcessingException(e.what());
 		}
-		catch(boost::numeric::bad_numeric_cast& e) 
+		catch(boost::numeric::bad_numeric_cast& e)
 		{
 			throw SPDProcessingException(e.what());
 		}
@@ -751,7 +751,7 @@ namespace spdlib
 			}
 		}
 		
-		try 
+		try
 		{	
 			double xDiff = 0;
 			double yDiff = 0;
@@ -779,20 +779,20 @@ namespace spdlib
 				xDiff = (pl->scanlineIdx - spdFile->getScanlineIdxMin())/spdFile->getBinSize();		
 				yDiff = (pl->scanline - spdFile->getScanlineMin())/spdFile->getBinSize();		
 				
-				try 
+				try
 				{
 					xIdx = boost::numeric_cast<boost::uint_fast32_t>(xDiff);
 					yIdx = boost::numeric_cast<boost::uint_fast32_t>(yDiff);
 				}
-				catch(boost::numeric::negative_overflow& e) 
+				catch(boost::numeric::negative_overflow& e)
 				{
 					throw SPDProcessingException(e.what());
 				}
-				catch(boost::numeric::positive_overflow& e) 
+				catch(boost::numeric::positive_overflow& e)
 				{
 					throw SPDProcessingException(e.what());
 				}
-				catch(boost::numeric::bad_numeric_cast& e) 
+				catch(boost::numeric::bad_numeric_cast& e)
 				{
 					throw SPDProcessingException(e.what());
 				}
@@ -820,7 +820,7 @@ namespace spdlib
 			
 			std::cout << " Complete.\n";
 		}
-		catch (SPDProcessingException &e) 
+		catch (SPDProcessingException &e)
 		{
 			std::list<SPDPulse*>::iterator iterPls;
 			for(boost::uint_fast32_t i = 0; i < ySize; ++i)
@@ -843,8 +843,8 @@ namespace spdlib
 		
 		return griddedPls;
 	}
-    
-    
+
+
 	std::list<SPDPulse*>*** SPDGridData::gridDataCartesian(std::vector<SPDPulse*>* pls, SPDFile *spdFile) throw(SPDProcessingException)
 	{
 		boost::uint_fast32_t xSize = 0;
@@ -856,30 +856,30 @@ namespace spdlib
 			{
 				roundingAddition = boost::numeric_cast<boost::uint_fast32_t>(1/spdFile->getBinSize());
 			}
-			else 
+			else
 			{
 				roundingAddition = 2;
 			}
-            
+
 			xSize = boost::numeric_cast<boost::uint_fast32_t>(((spdFile->getXMax()-spdFile->getXMin())/spdFile->getBinSize())+roundingAddition);
 			ySize = boost::numeric_cast<boost::uint_fast32_t>(((spdFile->getYMax()-spdFile->getYMin())/spdFile->getBinSize())+roundingAddition);
 			
 			spdFile->setNumberBinsX(xSize);
 			spdFile->setNumberBinsY(ySize);
 		}
-		catch(boost::numeric::negative_overflow& e) 
+		catch(boost::numeric::negative_overflow& e)
 		{
 			throw SPDProcessingException(e.what());
 		}
-		catch(boost::numeric::positive_overflow& e) 
+		catch(boost::numeric::positive_overflow& e)
 		{
 			throw SPDProcessingException(e.what());
 		}
-		catch(boost::numeric::bad_numeric_cast& e) 
+		catch(boost::numeric::bad_numeric_cast& e)
 		{
 			throw SPDProcessingException(e.what());
 		}
-        
+
 		if((xSize < 1) | (ySize < 1))
 		{
 			throw SPDProcessingException("There insufficent number of bins for binning (try reducing resolution).");
@@ -895,7 +895,7 @@ namespace spdlib
 			}
 		}
 		
-		try 
+		try
 		{	
 			double xDiff = 0;
 			double yDiff = 0;
@@ -923,20 +923,20 @@ namespace spdlib
 				xDiff = (pl->xIdx - spdFile->getXMin())/spdFile->getBinSize();
 				yDiff = (spdFile->getYMax() - pl->yIdx)/spdFile->getBinSize();				
 				
-				try 
+				try
 				{
 					xIdx = boost::numeric_cast<boost::uint_fast32_t>(xDiff);
 					yIdx = boost::numeric_cast<boost::uint_fast32_t>(yDiff);
 				}
-				catch(boost::numeric::negative_overflow& e) 
+				catch(boost::numeric::negative_overflow& e)
 				{
 					throw SPDProcessingException(e.what());
 				}
-				catch(boost::numeric::positive_overflow& e) 
+				catch(boost::numeric::positive_overflow& e)
 				{
 					throw SPDProcessingException(e.what());
 				}
-				catch(boost::numeric::bad_numeric_cast& e) 
+				catch(boost::numeric::bad_numeric_cast& e)
 				{
 					throw SPDProcessingException(e.what());
 				}
@@ -964,7 +964,7 @@ namespace spdlib
 			
 			std::cout << " Complete.\n";
 		}
-		catch (SPDProcessingException &e) 
+		catch (SPDProcessingException &e)
 		{
 			std::list<SPDPulse*>::iterator iterPls;
 			for(boost::uint_fast32_t i = 0; i < ySize; ++i)
@@ -999,26 +999,26 @@ namespace spdlib
 			{
 				roundingAddition = 2;//boost::numeric_cast<boost::uint_fast32_t>(1/spdFile->getBinSize());
 			}
-			else 
+			else
 			{
 				roundingAddition = 1;
 			}
-            
+
 			xSize = boost::numeric_cast<boost::uint_fast32_t>(((spdFile->getAzimuthMax()-spdFile->getAzimuthMin())/spdFile->getBinSize())+roundingAddition);
 			ySize = boost::numeric_cast<boost::uint_fast32_t>(((spdFile->getZenithMax()-spdFile->getZenithMin())/spdFile->getBinSize())+roundingAddition);
 			
 			spdFile->setNumberBinsX(xSize);
 			spdFile->setNumberBinsY(ySize);
 		}
-		catch(boost::numeric::negative_overflow& e) 
+		catch(boost::numeric::negative_overflow& e)
 		{
 			throw SPDProcessingException(e.what());
 		}
-		catch(boost::numeric::positive_overflow& e) 
+		catch(boost::numeric::positive_overflow& e)
 		{
 			throw SPDProcessingException(e.what());
 		}
-		catch(boost::numeric::bad_numeric_cast& e) 
+		catch(boost::numeric::bad_numeric_cast& e)
 		{
 			throw SPDProcessingException(e.what());
 		}
@@ -1038,7 +1038,7 @@ namespace spdlib
 			}
 		}
 		
-		try 
+		try
 		{	
 			double xDiff = 0;
 			double yDiff = 0;
@@ -1091,7 +1091,7 @@ namespace spdlib
 			
 			std::cout << " Complete.\n";
 		}
-		catch (SPDProcessingException &e) 
+		catch (SPDProcessingException &e)
 		{
 			std::list<SPDPulse*>::iterator iterPls;
 			for(boost::uint_fast32_t i = 0; i < ySize; ++i)
@@ -1114,12 +1114,12 @@ namespace spdlib
 		
 		return griddedPls;
     }
-    
+
     std::list<SPDPulse*>*** SPDGridData::gridDataCylindrical(std::vector<SPDPulse*>* pls, SPDFile *spdFile) throw(SPDProcessingException)
 	{
-	    throw SPDProcessingException("Cylindrical gridding not implemented yet... gridDataCylindrical");    
+	    throw SPDProcessingException("Cylindrical gridding not implemented yet... gridDataCylindrical");
     }
-    
+
     std::list<SPDPulse*>*** SPDGridData::gridDataPolar(std::vector<SPDPulse*>* pls, SPDFile *spdFile) throw(SPDProcessingException)
 	{
 		boost::uint_fast32_t xSize = 0;
@@ -1132,28 +1132,28 @@ namespace spdlib
 			{
 				roundingAddition = 2;//boost::numeric_cast<boost::uint_fast32_t>(1/spdFile->getBinSize());
 			}
-			else 
+			else
 			{
 				roundingAddition = 1;
 			}
 			
             zenithRadiusInBins = boost::numeric_cast<boost::uint_fast32_t>(((spdFile->getZenithMax()-spdFile->getZenithMin())/spdFile->getBinSize())+roundingAddition);
-            
+
 			xSize = (zenithRadiusInBins+5) * 2;
 			ySize = (zenithRadiusInBins+5) * 2;
 			
 			spdFile->setNumberBinsX(xSize);
 			spdFile->setNumberBinsY(ySize);
 		}
-		catch(boost::numeric::negative_overflow& e) 
+		catch(boost::numeric::negative_overflow& e)
 		{
 			throw SPDProcessingException(e.what());
 		}
-		catch(boost::numeric::positive_overflow& e) 
+		catch(boost::numeric::positive_overflow& e)
 		{
 			throw SPDProcessingException(e.what());
 		}
-		catch(boost::numeric::bad_numeric_cast& e) 
+		catch(boost::numeric::bad_numeric_cast& e)
 		{
 			throw SPDProcessingException(e.what());
 		}
@@ -1172,17 +1172,17 @@ namespace spdlib
 				griddedPls[i][j] = new std::list<SPDPulse*>();
 			}
 		}
-        
+
         boost::uint_fast32_t xCentre = zenithRadiusInBins+5;
 		boost::uint_fast32_t yCentre = zenithRadiusInBins+5;
         double constRange = (double)zenithRadiusInBins;
-        
-        try 
+
+        try
 		{	
             double xTmp = 0;
 			double yTmp = 0;
             double zTmp = 0;
-            
+
 			boost::uint_fast32_t xIdx = 0;
 			boost::uint_fast32_t yIdx = 0;
 			
@@ -1202,7 +1202,7 @@ namespace spdlib
 				
 				pl = pls->back();
 				pls->pop_back();
-                
+
                 SPDConvertToCartesian(pl->zenith, pl->azimuth, constRange, 0, 0, 0, &xTmp, &yTmp, &zTmp);
 				
 				xIdx = boost::numeric_cast<boost::uint_fast32_t>(xCentre + xTmp);
@@ -1233,7 +1233,7 @@ namespace spdlib
 			
 			std::cout << " Complete.\n";
 		}
-		catch (SPDProcessingException &e) 
+		catch (SPDProcessingException &e)
 		{
 			std::list<SPDPulse*>::iterator iterPls;
 			for(boost::uint_fast32_t i = 0; i < ySize; ++i)
@@ -1253,7 +1253,7 @@ namespace spdlib
 			
 			throw e;
 		}
-        
+
         return griddedPls;
 	}
 
@@ -1271,15 +1271,15 @@ namespace spdlib
 			spdFile->setNumberBinsX(xSize);
 			spdFile->setNumberBinsY(ySize);
 		}
-		catch(boost::numeric::negative_overflow& e) 
+		catch(boost::numeric::negative_overflow& e)
 		{
 			throw SPDProcessingException(e.what());
 		}
-		catch(boost::numeric::positive_overflow& e) 
+		catch(boost::numeric::positive_overflow& e)
 		{
 			throw SPDProcessingException(e.what());
 		}
-		catch(boost::numeric::bad_numeric_cast& e) 
+		catch(boost::numeric::bad_numeric_cast& e)
 		{
 			throw SPDProcessingException(e.what());
 		}
@@ -1299,7 +1299,7 @@ namespace spdlib
 			}
 		}
 		
-		try 
+		try
 		{	
 			double xDiff = 0;
 			double yDiff = 0;
@@ -1327,20 +1327,20 @@ namespace spdlib
 				xDiff = (pl->scanlineIdx - spdFile->getScanlineIdxMin())/spdFile->getBinSize();	
 				yDiff = (pl->scanline - spdFile->getScanlineMin())/spdFile->getBinSize();			
 				
-				try 
+				try
 				{
 					xIdx = boost::numeric_cast<boost::uint_fast32_t>(xDiff);
 					yIdx = boost::numeric_cast<boost::uint_fast32_t>(yDiff);
 				}
-				catch(boost::numeric::negative_overflow& e) 
+				catch(boost::numeric::negative_overflow& e)
 				{
 					throw SPDProcessingException(e.what());
 				}
-				catch(boost::numeric::positive_overflow& e) 
+				catch(boost::numeric::positive_overflow& e)
 				{
 					throw SPDProcessingException(e.what());
 				}
-				catch(boost::numeric::bad_numeric_cast& e) 
+				catch(boost::numeric::bad_numeric_cast& e)
 				{
 					throw SPDProcessingException(e.what());
 				}
@@ -1368,7 +1368,7 @@ namespace spdlib
 			
 			std::cout << " Complete.\n";
 		}
-		catch (SPDProcessingException &e) 
+		catch (SPDProcessingException &e)
 		{
 			std::list<SPDPulse*>::iterator iterPls;
 			for(boost::uint_fast32_t i = 0; i < ySize; ++i)
@@ -1391,15 +1391,15 @@ namespace spdlib
 		
 		return griddedPls;
 	}
-    
+
     void SPDGridData::gridDataCartesian(std::list<SPDPulse*>* pls, std::list<SPDPulse*>*** grid, OGREnvelope *env, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, float binsize) throw(SPDProcessingException)
     {
         if((xSize < 1) | (ySize < 1))
 		{
 			throw SPDProcessingException("There insufficent number of bins for binning (try reducing resolution).");
 		}
-        
-        try 
+
+        try
 		{	
 			double xDiff = 0;
 			double yDiff = 0;
@@ -1426,22 +1426,22 @@ namespace spdlib
 				xDiff = (pl->xIdx - env->MinX)/binsize;
 				yDiff = (env->MaxY - pl->yIdx)/binsize;				
 				
-				try 
+				try
 				{
 					xIdx = boost::numeric_cast<boost::uint_fast32_t>(xDiff);
 					yIdx = boost::numeric_cast<boost::uint_fast32_t>(yDiff);
 				}
-				catch(boost::numeric::negative_overflow& e) 
+				catch(boost::numeric::negative_overflow& e)
 				{
                     std::cout << "Diff [" << xDiff << "," << yDiff << "]\n";
 					throw SPDProcessingException(e.what());
 				}
-				catch(boost::numeric::positive_overflow& e) 
+				catch(boost::numeric::positive_overflow& e)
 				{
                     std::cout << "Diff [" << xDiff << "," << yDiff << "]\n";
 					throw SPDProcessingException(e.what());
 				}
-				catch(boost::numeric::bad_numeric_cast& e) 
+				catch(boost::numeric::bad_numeric_cast& e)
 				{
                     std::cout << "Diff [" << xDiff << "," << yDiff << "]\n";
 					throw SPDProcessingException(e.what());
@@ -1470,20 +1470,20 @@ namespace spdlib
 			
 			std::cout << " Complete.\n";
 		}
-		catch (SPDProcessingException &e) 
+		catch (SPDProcessingException &e)
 		{			
 			throw e;
 		}
     }
-    
+
     void SPDGridData::gridDataSpherical(std::list<SPDPulse*>* pls, std::list<SPDPulse*>*** grid, OGREnvelope *env, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, float binsize) throw(SPDProcessingException)
     {
         if((xSize < 1) | (ySize < 1))
 		{
 			throw SPDProcessingException("There insufficent number of bins for binning (try reducing resolution).");
 		}
-        
-        try 
+
+        try
 		{	
 			double xDiff = 0;
 			double yDiff = 0;
@@ -1509,23 +1509,23 @@ namespace spdlib
 				
                 yDiff = (pl->zenith - env->MinY)/binsize;
 				xDiff = (pl->azimuth - env->MinX)/binsize;								
-                
-                try 
+
+                try
 				{
 					xIdx = boost::numeric_cast<boost::uint_fast32_t>(xDiff);
 					yIdx = boost::numeric_cast<boost::uint_fast32_t>(yDiff);
 				}
-				catch(boost::numeric::negative_overflow& e) 
+				catch(boost::numeric::negative_overflow& e)
 				{
                     std::cout << "Diff [" << xDiff << "," << yDiff << "]\n";
 					throw SPDProcessingException(e.what());
 				}
-				catch(boost::numeric::positive_overflow& e) 
+				catch(boost::numeric::positive_overflow& e)
 				{
                     std::cout << "Diff [" << xDiff << "," << yDiff << "]\n";
 					throw SPDProcessingException(e.what());
 				}
-				catch(boost::numeric::bad_numeric_cast& e) 
+				catch(boost::numeric::bad_numeric_cast& e)
 				{
                     std::cout << "Diff [" << xDiff << "," << yDiff << "]\n";
 					throw SPDProcessingException(e.what());
@@ -1554,7 +1554,7 @@ namespace spdlib
 			
 			std::cout << " Complete.\n";
 		}
-		catch (SPDProcessingException &e) 
+		catch (SPDProcessingException &e)
 		{
 			throw e;
 		}
@@ -1565,20 +1565,20 @@ namespace spdlib
     {
         throw SPDProcessingException("Cylindrical gridding not implemented yet... gridDataCylindrical");
     }
-    
+
     void SPDGridData::gridDataPolar(std::list<SPDPulse*>* pls, std::list<SPDPulse*>*** grid, OGREnvelope *env, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, float binsize) throw(SPDProcessingException)
     {
         throw SPDProcessingException("Polar gridding not implemented yet... gridDataPolar");
     }
-    
+
     void SPDGridData::gridDataScan(std::list<SPDPulse*>* pls, std::list<SPDPulse*>*** grid, OGREnvelope *env, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, float binsize) throw(SPDProcessingException)
     {
         if((xSize < 1) | (ySize < 1))
 		{
 			throw SPDProcessingException("There insufficent number of bins for binning (try reducing resolution).");
 		}
-        
-        try 
+
+        try
 		{	
 			double xDiff = 0;
 			double yDiff = 0;
@@ -1605,22 +1605,22 @@ namespace spdlib
 				xDiff = (pl->scanlineIdx - env->MinX)/binsize;
 				yDiff = (pl->scanline - env->MinY)/binsize;
 				
-				try 
+				try
 				{
 					xIdx = boost::numeric_cast<boost::uint_fast32_t>(xDiff);
 					yIdx = boost::numeric_cast<boost::uint_fast32_t>(yDiff);
 				}
-				catch(boost::numeric::negative_overflow& e) 
+				catch(boost::numeric::negative_overflow& e)
 				{
                     std::cout << "Diff [" << xDiff << "," << yDiff << "]\n";
 					throw SPDProcessingException(e.what());
 				}
-				catch(boost::numeric::positive_overflow& e) 
+				catch(boost::numeric::positive_overflow& e)
 				{
                     std::cout << "Diff [" << xDiff << "," << yDiff << "]\n";
 					throw SPDProcessingException(e.what());
 				}
-				catch(boost::numeric::bad_numeric_cast& e) 
+				catch(boost::numeric::bad_numeric_cast& e)
 				{
                     std::cout << "Diff [" << xDiff << "," << yDiff << "]\n";
 					throw SPDProcessingException(e.what());
@@ -1649,20 +1649,20 @@ namespace spdlib
 			
 			std::cout << " Complete.\n";
 		}
-		catch (SPDProcessingException &e) 
+		catch (SPDProcessingException &e)
 		{			
 			throw e;
 		}
     }
-    
+
     void SPDGridData::gridDataCartesian(std::vector<SPDPulse*>* pls, std::list<SPDPulse*>*** grid, OGREnvelope *env, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, float binsize) throw(SPDProcessingException)
     {
         if((xSize < 1) | (ySize < 1))
 		{
 			throw SPDProcessingException("There insufficent number of bins for binning (try reducing resolution).");
 		}
-        
-        try 
+
+        try
 		{	
 			double xDiff = 0;
 			double yDiff = 0;
@@ -1670,7 +1670,7 @@ namespace spdlib
 			boost::uint_fast32_t yIdx = 0;
 			
             std::cout << "Started (Grid " << pls->size() << " Pulses) ." << std::flush;
-            
+
 			boost::uint_fast32_t feedback = pls->size()/10;
 			boost::uint_fast32_t feedbackCounter = 0;
 			
@@ -1692,29 +1692,29 @@ namespace spdlib
 				xDiff = (pl->xIdx - env->MinX)/binsize;
 				yDiff = (env->MaxY - pl->yIdx)/binsize;
 								
-				try 
+				try
 				{
 					xIdx = boost::numeric_cast<boost::uint_fast32_t>(xDiff);
 					yIdx = boost::numeric_cast<boost::uint_fast32_t>(yDiff);
 				}
-				catch(boost::numeric::negative_overflow& e) 
+				catch(boost::numeric::negative_overflow& e)
 				{
                     std::cout << "Diff [" << xDiff << "," << yDiff << "]\n";
 					throw SPDProcessingException(e.what());
 				}
-				catch(boost::numeric::positive_overflow& e) 
+				catch(boost::numeric::positive_overflow& e)
 				{
                     std::cout << "Diff [" << xDiff << "," << yDiff << "]\n";
 					throw SPDProcessingException(e.what());
 				}
-				catch(boost::numeric::bad_numeric_cast& e) 
+				catch(boost::numeric::bad_numeric_cast& e)
 				{
                     std::cout << "Diff [" << xDiff << "," << yDiff << "]\n";
 					throw SPDProcessingException(e.what());
 				}
 				
                 //std::cout << "Index [" << xIdx << "," << yIdx << "]\n";
-                
+
 				if(xIdx > ((xSize)-1))
 				{
 					std::cout << "Point: [" << pl->xIdx << "," << pl->yIdx << "]\n";
@@ -1740,21 +1740,21 @@ namespace spdlib
 			
 			std::cout << " Complete.\n";
 		}
-		catch (SPDProcessingException &e) 
+		catch (SPDProcessingException &e)
 		{			
             std::cout << e.what() << std::endl;
 			throw e;
 		}
     }
-    
+
     void SPDGridData::gridDataSpherical(std::vector<SPDPulse*>* pls, std::list<SPDPulse*>*** grid, OGREnvelope *env, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, float binsize) throw(SPDProcessingException)
     {
         if((xSize < 1) | (ySize < 1))
 		{
 			throw SPDProcessingException("There insufficent number of bins for binning (try reducing resolution).");
 		}
-        
-        try 
+
+        try
 		{	
 			double xDiff = 0;
 			double yDiff = 0;
@@ -1780,23 +1780,23 @@ namespace spdlib
 				
                 yDiff = (pl->zenith - env->MinY)/binsize;
 				xDiff = (pl->azimuth - env->MinX)/binsize;								
-                
-                try 
+
+                try
 				{
 					xIdx = boost::numeric_cast<boost::uint_fast32_t>(xDiff);
 					yIdx = boost::numeric_cast<boost::uint_fast32_t>(yDiff);
 				}
-				catch(boost::numeric::negative_overflow& e) 
+				catch(boost::numeric::negative_overflow& e)
 				{
                     std::cout << "Diff [" << xDiff << "," << yDiff << "]\n";
 					throw SPDProcessingException(e.what());
 				}
-				catch(boost::numeric::positive_overflow& e) 
+				catch(boost::numeric::positive_overflow& e)
 				{
                     std::cout << "Diff [" << xDiff << "," << yDiff << "]\n";
 					throw SPDProcessingException(e.what());
 				}
-				catch(boost::numeric::bad_numeric_cast& e) 
+				catch(boost::numeric::bad_numeric_cast& e)
 				{
                     std::cout << "Diff [" << xDiff << "," << yDiff << "]\n";
 					throw SPDProcessingException(e.what());
@@ -1825,7 +1825,7 @@ namespace spdlib
 			
 			std::cout << " Complete.\n";
 		}
-		catch (SPDProcessingException &e) 
+		catch (SPDProcessingException &e)
 		{
 			throw e;
 		}
@@ -1835,20 +1835,20 @@ namespace spdlib
     {
         throw SPDProcessingException("Cylindrical gridding not implemented yet... gridDataCylindrical");
     }
-    
+
     void SPDGridData::gridDataPolar(std::vector<SPDPulse*>* pls, std::list<SPDPulse*>*** grid, OGREnvelope *env, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, float binsize) throw(SPDProcessingException)
     {
         throw SPDProcessingException("Polar gridding not implemented yet... gridDataPolar");
     }
-    
+
     void SPDGridData::gridDataScan(std::vector<SPDPulse*>* pls, std::list<SPDPulse*>*** grid, OGREnvelope *env, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, float binsize) throw(SPDProcessingException)
     {
         if((xSize < 1) | (ySize < 1))
 		{
 			throw SPDProcessingException("There insufficent number of bins for binning (try reducing resolution).");
 		}
-        
-        try 
+
+        try
 		{	
 			double xDiff = 0;
 			double yDiff = 0;
@@ -1875,22 +1875,22 @@ namespace spdlib
 				xDiff = (pl->scanlineIdx - env->MinX)/binsize;
 				yDiff = (pl->scanline - env->MinY)/binsize;				
 				
-				try 
+				try
 				{
 					xIdx = boost::numeric_cast<boost::uint_fast32_t>(xDiff);
 					yIdx = boost::numeric_cast<boost::uint_fast32_t>(yDiff);
 				}
-				catch(boost::numeric::negative_overflow& e) 
+				catch(boost::numeric::negative_overflow& e)
 				{
                     std::cout << "Diff [" << xDiff << "," << yDiff << "]\n";
 					throw SPDProcessingException(e.what());
 				}
-				catch(boost::numeric::positive_overflow& e) 
+				catch(boost::numeric::positive_overflow& e)
 				{
                     std::cout << "Diff [" << xDiff << "," << yDiff << "]\n";
 					throw SPDProcessingException(e.what());
 				}
-				catch(boost::numeric::bad_numeric_cast& e) 
+				catch(boost::numeric::bad_numeric_cast& e)
 				{
                     std::cout << "Diff [" << xDiff << "," << yDiff << "]\n";
 					throw SPDProcessingException(e.what());
@@ -1919,24 +1919,24 @@ namespace spdlib
 			
 			std::cout << " Complete.\n";
 		}
-		catch (SPDProcessingException &e) 
+		catch (SPDProcessingException &e)
 		{			
 			throw e;
 		}
-    }    
-    
-    
-    
-    
-    
+    }
+
+
+
+
+
 	void SPDGridData::reGridDataCartesian(std::vector<SPDPulse*> ***inGridPls, boost::uint_fast32_t inXSize, boost::uint_fast32_t inYSize, std::vector<SPDPulse*> ***outGridPls, boost::uint_fast32_t outXSize, boost::uint_fast32_t outYSize, double originX, double originY, float outBinSize) throw(SPDProcessingException)
     {
         if((outXSize < 1) | (outYSize < 1))
 		{
 			throw SPDProcessingException("There insufficent number of bins for binning (try reducing resolution).");
 		}
-        
-        try 
+
+        try
 		{	
 			double xDiff = 0;
 			double yDiff = 0;
@@ -1955,30 +1955,30 @@ namespace spdlib
 				
                         xDiff = (pl->xIdx - originX)/outBinSize;
                         yDiff = (originY - pl->yIdx)/outBinSize;
-                        
-                        try 
+
+                        try
                         {
                             xIdx = boost::numeric_cast<boost::uint_fast32_t>(xDiff);
                             yIdx = boost::numeric_cast<boost::uint_fast32_t>(yDiff);
                         }
-                        catch(boost::numeric::negative_overflow& e) 
+                        catch(boost::numeric::negative_overflow& e)
                         {
                             std::cout << "Diff [" << xDiff << "," << yDiff << "]\n";
                             throw SPDProcessingException(e.what());
                         }
-                        catch(boost::numeric::positive_overflow& e) 
+                        catch(boost::numeric::positive_overflow& e)
                         {
                             std::cout << "Diff [" << xDiff << "," << yDiff << "]\n";
                             throw SPDProcessingException(e.what());
                         }
-                        catch(boost::numeric::bad_numeric_cast& e) 
+                        catch(boost::numeric::bad_numeric_cast& e)
                         {
                             std::cout << "Diff [" << xDiff << "," << yDiff << "]\n";
                             throw SPDProcessingException(e.what());
                         }
-                        
+
                         //std::cout << "Index [" << xIdx << "," << yIdx << "]\n";
-                        
+
                         if(xIdx > ((outXSize)-1))
                         {
                             std::cout << "Point: [" << pl->xIdx << "," << pl->yIdx << "]\n";
@@ -1987,7 +1987,7 @@ namespace spdlib
                             std::cout << "Size [" << outXSize << "," << outYSize << "]\n";
                             throw SPDProcessingException("Did not find x index within range.");
                         }
-                        
+
                         if(yIdx > ((outYSize)-1))
                         {
                             std::cout << "Point: [" << pl->xIdx << "," << pl->yIdx << "]\n";
@@ -1996,27 +1996,27 @@ namespace spdlib
                             std::cout << "Size [" << outXSize << "," << outYSize << "]\n";
                             throw SPDProcessingException("Did not find y index within range.");
                         }
-                        
+
                         outGridPls[yIdx][xIdx]->push_back(pl);
                     }
                 }
 			}			
 		}
-		catch (SPDProcessingException &e) 
+		catch (SPDProcessingException &e)
 		{			
             std::cout << e.what() << std::endl;
 			throw e;
 		}
     }
-    
+
     void SPDGridData::reGridDataSpherical(std::vector<SPDPulse*> ***inGridPls, boost::uint_fast32_t inXSize, boost::uint_fast32_t inYSize, std::vector<SPDPulse*> ***outGridPls, boost::uint_fast32_t outXSize, boost::uint_fast32_t outYSize, double originX, double originY, float outBinSize) throw(SPDProcessingException)
     {
         if((outXSize < 1) | (outYSize < 1))
 		{
 			throw SPDProcessingException("There insufficent number of bins for binning (try reducing resolution).");
 		}
-        
-        try 
+
+        try
 		{	
 			double xDiff = 0;
 			double yDiff = 0;
@@ -2032,31 +2032,31 @@ namespace spdlib
                     for(std::vector<SPDPulse*>::iterator iterPls = inGridPls[i][j]->begin(); iterPls != inGridPls[i][j]->end(); ++iterPls)
                     {
                         pl = (*iterPls);
-                        
+
                         yDiff = (pl->zenith - originY)/outBinSize;
                         xDiff = (pl->azimuth - originX)/outBinSize;								
-                        
-                        try 
+
+                        try
                         {
                             xIdx = boost::numeric_cast<boost::uint_fast32_t>(xDiff);
                             yIdx = boost::numeric_cast<boost::uint_fast32_t>(yDiff);
                         }
-                        catch(boost::numeric::negative_overflow& e) 
+                        catch(boost::numeric::negative_overflow& e)
                         {
                             std::cout << "Diff [" << xDiff << "," << yDiff << "]\n";
                             throw SPDProcessingException(e.what());
                         }
-                        catch(boost::numeric::positive_overflow& e) 
+                        catch(boost::numeric::positive_overflow& e)
                         {
                             std::cout << "Diff [" << xDiff << "," << yDiff << "]\n";
                             throw SPDProcessingException(e.what());
                         }
-                        catch(boost::numeric::bad_numeric_cast& e) 
+                        catch(boost::numeric::bad_numeric_cast& e)
                         {
                             std::cout << "Diff [" << xDiff << "," << yDiff << "]\n";
                             throw SPDProcessingException(e.what());
                         }
-                        
+
                         if(xIdx > ((outXSize)-1))
                         {
                             std::cout << "Point: [" << pl->zenith << "," << pl->azimuth << "]\n";
@@ -2065,7 +2065,7 @@ namespace spdlib
                             std::cout << "Size [" << outXSize << "," << outYSize << "]\n";
                             throw SPDProcessingException("Did not find x index within range.");
                         }
-                        
+
                         if(yIdx > ((outYSize)-1))
                         {
                             std::cout << "Point: [" << pl->zenith << "," << pl->azimuth << "]\n";
@@ -2075,37 +2075,37 @@ namespace spdlib
                             throw SPDProcessingException("Did not find y index within range.");
                         }
 
-                        
+
                         outGridPls[yIdx][xIdx]->push_back(pl);
                     }
                 }
 			}			
 		}
-		catch (SPDProcessingException &e) 
+		catch (SPDProcessingException &e)
 		{			
             std::cout << e.what() << std::endl;
 			throw e;
 		}
     }
-    
+
     void SPDGridData::reGridDataCylindrical(std::vector<SPDPulse*> ***inGridPls, boost::uint_fast32_t inXSize, boost::uint_fast32_t inYSize, std::vector<SPDPulse*> ***outGridPls, boost::uint_fast32_t outXSize, boost::uint_fast32_t outYSize, double originX, double originY, float outBinSize) throw(SPDProcessingException)
     {
         throw SPDProcessingException("Cylindrical gridding not implemented yet... reGridDataCylindrical");
     }
-    
+
     void SPDGridData::reGridDataPolar(std::vector<SPDPulse*> ***inGridPls, boost::uint_fast32_t inXSize, boost::uint_fast32_t inYSize, std::vector<SPDPulse*> ***outGridPls, boost::uint_fast32_t outXSize, boost::uint_fast32_t outYSize, double originX, double originY, float outBinSize) throw(SPDProcessingException)
     {
         throw SPDProcessingException("Polar gridding not implemented yet... reGridDataPolar");
     }
-        
+
     void SPDGridData::reGridDataScan(std::vector<SPDPulse*> ***inGridPls, boost::uint_fast32_t inXSize, boost::uint_fast32_t inYSize, std::vector<SPDPulse*> ***outGridPls, boost::uint_fast32_t outXSize, boost::uint_fast32_t outYSize, double originX, double originY, float outBinSize) throw(SPDProcessingException)
     {
         if((outXSize < 1) | (outYSize < 1))
 		{
 			throw SPDProcessingException("There insufficent number of bins for binning (try reducing resolution).");
 		}
-        
-        try 
+
+        try
 		{	
 			double xDiff = 0;
 			double yDiff = 0;
@@ -2124,30 +2124,30 @@ namespace spdlib
 				
                         xDiff = (pl->scanlineIdx - originX)/outBinSize;
                         yDiff = (pl->scanline - originY)/outBinSize;
-                        
-                        try 
+
+                        try
                         {
                             xIdx = boost::numeric_cast<boost::uint_fast32_t>(xDiff);
                             yIdx = boost::numeric_cast<boost::uint_fast32_t>(yDiff);
                         }
-                        catch(boost::numeric::negative_overflow& e) 
+                        catch(boost::numeric::negative_overflow& e)
                         {
                             std::cout << "Diff [" << xDiff << "," << yDiff << "]\n";
                             throw SPDProcessingException(e.what());
                         }
-                        catch(boost::numeric::positive_overflow& e) 
+                        catch(boost::numeric::positive_overflow& e)
                         {
                             std::cout << "Diff [" << xDiff << "," << yDiff << "]\n";
                             throw SPDProcessingException(e.what());
                         }
-                        catch(boost::numeric::bad_numeric_cast& e) 
+                        catch(boost::numeric::bad_numeric_cast& e)
                         {
                             std::cout << "Diff [" << xDiff << "," << yDiff << "]\n";
                             throw SPDProcessingException(e.what());
                         }
-                        
+
                         //std::cout << "Index [" << xIdx << "," << yIdx << "]\n";
-                        
+
                         if(xIdx > ((outXSize)-1))
                         {
                             std::cout << "Point: [" << pl->scanlineIdx << "," << pl->scanline << "]\n";
@@ -2156,7 +2156,7 @@ namespace spdlib
                             std::cout << "Size [" << outXSize << "," << outYSize << "]\n";
                             throw SPDProcessingException("Did not find scanlineIdx (x) index within range.");
                         }
-                        
+
                         if(yIdx > ((outYSize)-1))
                         {
                             std::cout << "Point: [" << pl->scanlineIdx << "," << pl->scanline << "]\n";
@@ -2165,20 +2165,20 @@ namespace spdlib
                             std::cout << "Size [" << outXSize << "," << outYSize << "]\n";
                             throw SPDProcessingException("Did not find scanlineIdx (y) index within range.");
                         }
-                        
+
                         outGridPls[yIdx][xIdx]->push_back(pl);
                     }
                 }
 			}			
 		}
-		catch (SPDProcessingException &e) 
+		catch (SPDProcessingException &e)
 		{			
             std::cout << e.what() << std::endl;
 			throw e;
 		}
     }
-    
-    
+
+
 	SPDGridData::~SPDGridData()
 	{
 		

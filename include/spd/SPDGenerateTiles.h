@@ -85,8 +85,8 @@ namespace spdlib
         SPDNoIdxFileWriter *writer;
         bool writerOpen;
     };
-    
-    
+
+
 	class DllExport SPDTilesUtils
 	{
 	public:
@@ -117,9 +117,9 @@ namespace spdlib
         void generateTileCoresShpFile(std::vector<SPDTile*> *tiles, std::string shpFile, std::string projWKTStr, bool deleteShp) throw(SPDProcessingException);
         ~SPDTilesUtils();
 	};
-    
-    
-    
+
+
+
     class DllExport SPDWrite2OverlapTiles : public SPDImporterProcessor
 	{
 	public:
@@ -134,8 +134,8 @@ namespace spdlib
         std::vector<SPDPulse*> *pls;
         boost::uint_fast16_t numOpenFiles;
 	};
-    
-    
+
+
     class DllExport SPDWrite2TilesCore : public SPDImporterProcessor
 	{
 	public:
@@ -149,8 +149,8 @@ namespace spdlib
         std::vector<SPDTile*> *tiles;
         std::vector<SPDPulse*> *pls;
 	};
-    
-    
+
+
 }
 
 #endif

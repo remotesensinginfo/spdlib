@@ -46,7 +46,7 @@
  *              Computational Geometry, pages 430-432, 1997.  [GS97b]
  *              http://www.inf.fu-berlin.de/~sven/own_work/
  *                     smell2exact_socg97.ps.gz
- * 
+ *
  *              See also
  *              http://geometryalgorithms.com/Archive/algorithm_0107
  *
@@ -93,12 +93,12 @@ struct minell {
     point* points[5];
 
     /*
-     * Center form representation. A point p belongs to minimal ellipse if 
+     * Center form representation. A point p belongs to minimal ellipse if
      *
      * (p - c)^T M (p - c) - 1 <= 0,
      *
      * M = || r t ||
-     *     || t s || 
+     *     || t s ||
      */
     point c;                    /* ellipsoid center */
     double r;
@@ -190,7 +190,7 @@ static int isellipse(minell* me, point* p)
     return (me->alpha * me->lambda0 + me->beta * me->mu0) * me->lambda0 + me->gamma * me->mu0 * me->mu0 > 0.0;
 }
 
-/* For a given point, calculates a value correlated with the distance to the 
+/* For a given point, calculates a value correlated with the distance to the
  * minimal ellipse boundary. Applicable in the case if there are 4 support
  * points AND the conic through these and the tested point is an ellipse only.
  * The fifth point is inside the minimal ellipse if the calculated value <= 0.
@@ -844,7 +844,7 @@ static void minell_calc_welzl(minell* me, int n, point* points[], int nb, point*
         /*
          * This is the only location where the ellipse (`me') gets
          * calculated. It then is passed up the stack of resursive
-         * procedures to check that all data points do belong to it. 
+         * procedures to check that all data points do belong to it.
          */
         minell_calcb(me, nb, pointsb);
 
@@ -888,7 +888,7 @@ static void minell_calc_welzl(minell* me, int n, point* points[], int nb, point*
 
         /*
          * OK, the point does not belong to the ellipse. Add it to the list
-         * of boundary points and recalculate the ellipse. 
+         * of boundary points and recalculate the ellipse.
          */
 
         pointsb[nb] = p;

@@ -7,23 +7,23 @@
  *
  *  This file is part of SPDLib.
  *
- *  Permission is hereby granted, free of charge, to any person 
- *  obtaining a copy of this software and associated documentation 
- *  files (the "Software"), to deal in the Software without restriction, 
- *  including without limitation the rights to use, copy, modify, 
- *  merge, publish, distribute, sublicense, and/or sell copies of the 
- *  Software, and to permit persons to whom the Software is furnished 
+ *  Permission is hereby granted, free of charge, to any person
+ *  obtaining a copy of this software and associated documentation
+ *  files (the "Software"), to deal in the Software without restriction,
+ *  including without limitation the rights to use, copy, modify,
+ *  merge, publish, distribute, sublicense, and/or sell copies of the
+ *  Software, and to permit persons to whom the Software is furnished
  *  to do so, subject to the following conditions:
  *
- *  The above copyright notice and this permission notice shall be 
+ *  The above copyright notice and this permission notice shall be
  *  included in all copies or substantial portions of the Software.
  *
- *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, 
- *  EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES 
- *  OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. 
- *  IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR 
- *  ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF 
- *  CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION 
+ *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+ *  EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+ *  OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+ *  IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR
+ *  ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF
+ *  CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
  *  WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  *
  */
@@ -54,12 +54,12 @@ namespace spdlib
     #ifndef NAN
         #define NAN nan("")
     #endif
-    
+
     /**
      * Compression deflate parameter for SPD Writers.
      */
-    static const boost::int_fast16_t SPD_DEFLATE( 1 );    
-    
+    static const boost::int_fast16_t SPD_DEFLATE( 1 );
+
 	static const boost::int_fast16_t SPD_FALSE( 0 );
 	static const boost::int_fast16_t SPD_TRUE( 1 );
 	
@@ -83,7 +83,7 @@ namespace spdlib
 	static const boost::uint_fast16_t SPD_FOILAGE( 10 );
 	static const boost::uint_fast16_t SPD_BRANCH( 11 );
 	static const boost::uint_fast16_t SPD_WALL( 12 );
-    
+
     static const boost::uint_fast16_t SPD_ALL_CLASSES( 100 );
     static const boost::uint_fast16_t SPD_ALL_CLASSES_TOP( 101 );
     static const boost::uint_fast16_t SPD_VEGETATION_TOP( 102 );
@@ -99,7 +99,7 @@ namespace spdlib
     static const boost::uint_fast16_t SPD_LAST_RETURNS( 102 );
     static const boost::uint_fast16_t SPD_NOTFIRST_RETURNS( 103 );
     static const boost::uint_fast16_t SPD_FIRSTLAST_RETURNS( 104 );
-    
+
 	/**
 	 * Define the flight line edge parameters.
 	 */
@@ -129,34 +129,34 @@ namespace spdlib
 	static const boost::uint_fast16_t SPD_DISCRETE_PT( 1 );
 	static const boost::uint_fast16_t SPD_DECOMPOSED_PT( 2 );
 	static const boost::uint_fast16_t SPD_WAVEFORM_PT( 3 );
-    
+
     /**
 	 * Define the File type (SPD_SEQ SPD_NONSEQ UPD)
 	 */
 	static const boost::uint_fast16_t SPD_SEQ_TYPE( 1 );
 	static const boost::uint_fast16_t SPD_NONSEQ_TYPE( 2 );
 	static const boost::uint_fast16_t SPD_UPD_TYPE( 3 );
-    
+
     /**
      * Define values to differiciate between Height and Z
      */
     static const boost::uint_fast16_t SPD_USE_Z( 1 );
 	static const boost::uint_fast16_t SPD_USE_HEIGHT( 2 );
     static const boost::uint_fast16_t SPD_USE_AMP( 3 );
-    
+
     /**
      * Define values to differiciate between selecting the lowest or highest point
      */
     static const boost::uint_fast16_t SPD_SELECT_LOWEST( 1 );
 	static const boost::uint_fast16_t SPD_SELECT_HIGHEST( 2 );
-    
+
     /**
      * Define the available options for the number of bytes used to store the waveform
      */
     static const boost::uint_fast16_t SPD_8_BIT_WAVE( 8 );
     static const boost::uint_fast16_t SPD_16_BIT_WAVE( 16 );
     static const boost::uint_fast16_t SPD_32_BIT_WAVE( 32 );
-    
+
     enum SPDDataType
     {
         spd_int,
@@ -166,15 +166,15 @@ namespace spdlib
     };
 	
 	/**
-	 Speed of light used for calculated (Metres per nano-second)     
+	 Speed of light used for calculated (Metres per nano-second)
      Nominal refractive index calculated from http://emtoolbox.nist.gov/Wavelength/Ciddor.asp
-        Vacuum Wavelength: 1550 Nanometers [nm] 
-        Air Temperature: 20 Degrees Celsius 
-        Atmospheric Pressure: 101.325 Kilopascals [kPa] 
-        Air Humidity: 66 Relative Humidity, Percent 
-        Carbon Dioxide Content: 450 Micromole per Mole [parts per million, ppm] 
-        Wavelength in Ambient Air: 1549.584698 Nanometers [nm] 
-        Refractive Index of Air: 1.000268008 
+        Vacuum Wavelength: 1550 Nanometers [nm]
+        Air Temperature: 20 Degrees Celsius
+        Atmospheric Pressure: 101.325 Kilopascals [kPa]
+        Air Humidity: 66 Relative Humidity, Percent
+        Carbon Dioxide Content: 450 Micromole per Mole [parts per million, ppm]
+        Wavelength in Ambient Air: 1549.584698 Nanometers [nm]
+        Refractive Index of Air: 1.000268008
         Uncertainty of Calculated Index: 0.000000024
 	 */
 	static const double SPD_REFRACTIVE_INDEX_AIR(1.000268008);
@@ -186,7 +186,7 @@ namespace spdlib
 	static const double E(M_E);
 	
 	/**
-	 * Methods for deciding what values are used for indexing 
+	 * Methods for deciding what values are used for indexing
 	 * the points using cartesian coordinate system.
 	 */
 	static const boost::uint_fast16_t SPD_FIRST_RETURN( 1 );
@@ -196,7 +196,7 @@ namespace spdlib
 	static const boost::uint_fast16_t SPD_ORIGIN(5);
 	static const boost::uint_fast16_t SPD_MAX_INTENSITY(6);
 	static const boost::uint_fast16_t SPD_IDX_UNCHANGED(7);
-    
+
 	
 	inline void SPDConvertToSpherical(double origX, double origY, double origZ, double ptX, double ptY, double ptZ, double *zenith, double *azimuth, double *range)
 	{
@@ -210,7 +210,7 @@ namespace spdlib
 		*zenith = acos(tempZ/(*range));
 		*azimuth = atan2(tempY, tempX);
         */
-        
+
         /**
         r >= 0
         0 <= theta < pi
@@ -228,7 +228,7 @@ namespace spdlib
         }
         else
         {
-            *azimuth = tempAzimuth; 
+            *azimuth = tempAzimuth;
         }
 	}
 	
@@ -240,16 +240,16 @@ namespace spdlib
 		*ptY = origY + (range * sin(zenith) * sin(azimuth));
 		*ptZ = origZ + (range * cos(zenith));
         */
-        
+
         /**
         We're using a positive, or "right-handed" cartesian coordinate system
         y is positive looking true north, x is positive looking east, z is "up"
         TLS will typically have positive z, and ALS negative z (from 0,0,0 origin)
-        */        
+        */
         *ptX = origX + (range * sin(zenith) * sin(azimuth));
 		*ptY = origY + (range * sin(zenith) * cos(azimuth));
-		*ptZ = origZ + (range * cos(zenith));        
-                
+		*ptZ = origZ + (range * cos(zenith));
+
 	}
 	
     struct DllExport WeibullFitVals
@@ -258,7 +258,7 @@ namespace spdlib
         double *binVals;
         double *error;
     };
-    
+
     /*
 	 * int m     - number of data points
 	 * int n     - number of parameters
@@ -270,38 +270,38 @@ namespace spdlib
     inline int weibullFit(int m, int n, double *p, double *deviates, double **derivs, void *data)
     {
         WeibullFitVals *fitData = (WeibullFitVals*) data;
-        
+
         if(n != 2) // input parameters could be just beta and alpha
         {
             return -1;
         }
-        
+
         /*
          * p[0] = alpha
          * p[1] = beta
          */
-        
+
         double part1 = p[0]/pow(p[1], p[0]);
         double part2 = 0;
         double part3 = 0;
-        
+
 		float predVal = 0;
 		for(int i = 0; i < m; ++i)
 		{
 			predVal = 0;
 			
             part2 = pow(fitData->heights[i], p[0]-1);
-            
+
             part3 = exp((-1)*(pow((fitData->heights[i]/p[1]),p[0])));
-            
+
             predVal = part1 * part2 * part3;
-            
+
 			deviates[i] = (fitData->binVals[i] - predVal) / fitData->error[i];
 		}
 		
 		return 0;
     }
-    
+
 	struct DllExport PulseWaveform
 	{
 		double *time;
@@ -407,7 +407,7 @@ namespace spdlib
 	inline bool compare_float(float f1, float f2)
 	{
 		double precision = 0.000000000000000000000001;
-		if (((f1 - precision) < f2) && 
+		if (((f1 - precision) < f2) &&
 			((f1 + precision) > f2))
 		{
 			return true;
@@ -421,7 +421,7 @@ namespace spdlib
 	inline bool compare_double(double d1, double d2)
 	{
 		double precision = 0.000000000000000000000001;
-		if (((d1 - precision) < d2) && 
+		if (((d1 - precision) < d2) &&
 			((d1 + precision) > d2))
 		{
 			return true;
@@ -435,7 +435,7 @@ namespace spdlib
 	inline bool compare_doublefloat(double d1, float f2)
 	{
 		double precision = 0.000000000000000000000001;
-		if (((d1 - precision) < f2) && 
+		if (((d1 - precision) < f2) &&
 			((d1 + precision) > f2))
 		{
 			return true;
@@ -445,7 +445,7 @@ namespace spdlib
 			return false;
 		}
 	}
-    
+
     struct DllExport SPD3DTMPPt
     {
         SPD3DTMPPt(){};

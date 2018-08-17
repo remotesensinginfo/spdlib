@@ -104,7 +104,7 @@ namespace spdlib
 		std::list<SPDPulse*> *pulses;
 		double *bbox;
 	};
-    
+
 	class DllExport SPDSubsetNonGriddedFile
 	{
 	public:

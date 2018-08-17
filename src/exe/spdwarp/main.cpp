@@ -37,7 +37,7 @@
 int main (int argc, char * const argv[])
 {
     std::cout.precision(12);
-    
+
 	std::cout << "spdwarp " << SPDLIB_PACKAGE_STRING << ", Copyright (C) " << SPDLIB_COPYRIGHT_YEAR << " Sorted Pulse Library (SPD)\n";
 	std::cout << "This program comes with ABSOLUTELY NO WARRANTY. This is free software,\n";
 	std::cout << "and you are welcome to redistribute it under certain conditions; See\n";
@@ -47,15 +47,15 @@ int main (int argc, char * const argv[])
 	try
 	{
         TCLAP::CmdLine cmd("Interpolate a raster elevation surface: spdwarp", ' ', "1.0.0");
-		        
+		
         TCLAP::SwitchArg shiftSwitch("","shift","Apply a linear shift to the SPD file.", false);
 		TCLAP::SwitchArg warpSwitch("","warp","Apply a nonlinear warp to the SPD file defined by a set of GCPs.", false);
-        
+
         std::vector<TCLAP::Arg*> arguments;
         arguments.push_back(&shiftSwitch);
         arguments.push_back(&warpSwitch);
         cmd.xorAdd(arguments);
-        
+
 		std::vector<std::string> transformations;
 		transformations.push_back("POLYNOMIAL");
 		transformations.push_back("NEAREST_NEIGHBOR");
@@ -64,8 +64,8 @@ int main (int argc, char * const argv[])
 		
 		TCLAP::ValueArg<std::string> transformationsArg("t","transform","WARP (Default=POLYNOMIAL): The transformation model to be fitted to the GPCs and used to warp the data.",false,"POLYNOMIAL", &allowedTransformVals);
 		cmd.add( transformationsArg );
-        
-        
+
+
         std::vector<std::string> pulseWarpOptions;
 		transformations.push_back("ALL_RETURNS");
 		transformations.push_back("PULSE_IDX");
@@ -74,51 +74,51 @@ int main (int argc, char * const argv[])
 		
 		TCLAP::ValueArg<std::string> pulseWarpArg("p","pulsewarp","WARP (Default=PULSE_IDX): The eastings and northings used to calculate the warp. ALL_RETURNS recalculates the offsets for each X,Y while PULSE_IDX and PULSE_ORIGIN use a single offset for the whole pulse.",false,"PULSE_IDX", &allowedPulseWarpVals);
 		cmd.add( pulseWarpArg );
-        
+
 		
 		TCLAP::ValueArg<boost::uint_fast32_t> polyOrderArg("","order","POLY TRANSFORM (Default=3): The order of the polynomial fitted.",false,3,"unsigned int");
 		cmd.add( polyOrderArg );
-        
+
         TCLAP::ValueArg<std::string> gcpsFileArg("g","gcps","WARP: The path and file name of the gcps file.",false,"","std::string");
 		cmd.add( gcpsFileArg );
-        
+
         TCLAP::ValueArg<float> xShiftArg("x","xshift","SHIFT: The x shift in the units of the dataset (probably metres).",false,0,"float");
 		cmd.add( xShiftArg );
 		
 		TCLAP::ValueArg<float> yShiftArg("y","yshift","SHIFT: The y shift in the units of the dataset (probably metres).",false,0,"float");
 		cmd.add( yShiftArg );
-        
+
         TCLAP::ValueArg<boost::uint_fast32_t> numOfRowsBlockArg("r","blockrows","Number of rows within a block (Default 100)",false,100,"unsigned int");
 		cmd.add( numOfRowsBlockArg );
-        
+
         TCLAP::ValueArg<boost::uint_fast32_t> numOfColsBlockArg("c","blockcols","Number of columns within a block (Default 0) - Note values greater than 1 result in a non-sequencial SPD file.",false,0,"unsigned int");
 		cmd.add( numOfColsBlockArg );
-        
+
         TCLAP::ValueArg<std::string> inputFileArg("i","input","The input SPD file.",true,"","String");
 		cmd.add( inputFileArg );
-        
+
         TCLAP::ValueArg<std::string> outputFileArg("o","output","The output SPD file.",true,"","String");
 		cmd.add( outputFileArg );
-        
+
 		cmd.parse( argc, argv );
 		
         std::string inSPDFilePath = inputFileArg.getValue();
         std::string outFilePath = outputFileArg.getValue();
-        
+
         boost::uint_fast32_t blockXSize = numOfColsBlockArg.getValue();
         boost::uint_fast32_t blockYSize = numOfRowsBlockArg.getValue();
-        
+
         if(shiftSwitch.getValue())
         {
             float xShift = xShiftArg.getValue();
             float yShift = yShiftArg.getValue();
-            
+
             spdlib::SPDFile *spdInFile = new spdlib::SPDFile(inSPDFilePath);
-            
+
             spdlib::SPDShiftData *shiftData = new spdlib::SPDShiftData(xShift, yShift);
             spdlib::SPDProcessDataBlocks processBlocks = spdlib::SPDProcessDataBlocks(shiftData, 0, blockXSize, blockYSize, true);
             processBlocks.processDataBlocksGridPulsesOutputSPD(spdInFile, outFilePath, 0);
-            
+
             delete spdInFile;
             delete shiftData;
         }
@@ -126,7 +126,7 @@ int main (int argc, char * const argv[])
         {
             std::string warpLocStr = pulseWarpArg.getValue();
             spdlib::SPDWarpLocation warpLoc = spdlib::spdwarppulseidx;
-            
+
             if(warpLocStr == "ALL_RETURNS")
             {
                 warpLoc = spdlib::spdwarpfromall;
@@ -143,10 +143,10 @@ int main (int argc, char * const argv[])
             {
                 throw spdlib::SPDException("The warp location has not been recognised.");
             }
-            
+
             std::string transformationStr = transformationsArg.getValue();
             spdlib::SPDWarpPointData *warpData = NULL;
-            
+
             if(transformationStr == "POLYNOMIAL")
             {
                 float polyOrder = polyOrderArg.getValue();
@@ -164,20 +164,20 @@ int main (int argc, char * const argv[])
             {
                 throw spdlib::SPDException("The transformation has not been recognised.");
             }
-            
+
             std::string gcpsFile = gcpsFileArg.getValue();
             warpData->initWarp(gcpsFile);
-            
+
             spdlib::SPDFile *inSPDFile = new spdlib::SPDFile(inSPDFilePath);
             spdlib::SPDFile *spdFileOut = new spdlib::SPDFile(outFilePath);
             spdlib::SPDDataExporter *exporter = new spdlib::SPDNoIdxFileWriter();
-            
+
             spdlib::SPDNonLinearWarp *warpProcessor = new spdlib::SPDNonLinearWarp(exporter, spdFileOut, warpData, warpLoc);
-            
+
             spdlib::SPDFileReader spdReader;
             spdReader.readAndProcessAllData(inSPDFilePath, inSPDFile, warpProcessor);
             warpProcessor->completeFileAndClose(inSPDFile);
-            
+
             delete exporter;
             delete warpProcessor;
             delete spdFileOut;
@@ -197,7 +197,7 @@ int main (int argc, char * const argv[])
 	{
 		std::cerr << "Error: " << e.what() << std::endl;
 	}
-    
+
     std::cout << "spdwarp - end\n";
 }
 

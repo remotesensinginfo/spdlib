@@ -79,7 +79,7 @@ public:
 
 void addPulseFields(RecArrayCreator *pCreator);
 PulseArrayIndices* getPulseIndices(PyObject *pArray);
-inline void copyPulseToRecord(void *pRecord, spdlib::SPDPulse *pulse, PulseArrayIndices *indices, 
+inline void copyPulseToRecord(void *pRecord, spdlib::SPDPulse *pulse, PulseArrayIndices *indices,
         npy_uint startPtsIdx, npy_uint nPoints, npy_uint blockX, npy_uint blockY, npy_uint thisPulseIdx)
 {
     indices->pulseID.setValue(pRecord, pulse->pulseID);
@@ -188,7 +188,7 @@ public:
         return m_ppulseIndices->blockY.getValue(pRecord);
     }
 
-    // methods to convert to/from C++ arrays    
+    // methods to convert to/from C++ arrays
     void convertCPPPulseArrayToRecArrays(std::vector<spdlib::SPDPulse*> ***pulses, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize,
         PyObject **pPulseArray, PyObject **pPointArray, PyObject **pTransmittedArray=NULL, PyObject **pReceivedArray=NULL);
 

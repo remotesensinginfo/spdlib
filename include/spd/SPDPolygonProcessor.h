@@ -69,9 +69,9 @@ namespace spdlib
         virtual ~SPDPolygonProcessor(){};
 	};
 }
-							 
+							
 #endif
-							 
-							 
-							 
+							
+							
+							
 

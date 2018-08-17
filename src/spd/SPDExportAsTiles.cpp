@@ -36,7 +36,7 @@ namespace spdlib
 		this->tileHeight = tileHeight;
         this->useSphericIdx = useSphericIdx;
 		this->useScanIdx = useScanIdx;
-        
+
 		for(boost::uint_fast32_t i = 0; i < this->numOfTiles; ++i)
 		{
 			this->tiles[i].exporter->open(this->tiles[i].spdFile, this->tiles[i].spdFile->getFilePath());
@@ -48,11 +48,11 @@ namespace spdlib
 	{
         double yDiff = 0.0;
         if(useSphericIdx)
-        {          
+        {
             yDiff = pulse->zenith - overallSPD->getZenithMin();
         }
         else if(useScanIdx)
-        {          
+        {
             yDiff = pulse->scanline - overallSPD->getScanlineMin();
         }
         else
@@ -61,19 +61,19 @@ namespace spdlib
         }
 		
         boost::uint_fast32_t tileIdx = 0;
-		try 
+		try
 		{
             tileIdx = boost::numeric_cast<boost::uint_fast32_t>(yDiff/tileHeight);
 		}
-		catch(boost::numeric::negative_overflow& e) 
+		catch(boost::numeric::negative_overflow& e)
 		{
 			throw SPDIOException(e.what());
 		}
-		catch(boost::numeric::positive_overflow& e) 
+		catch(boost::numeric::positive_overflow& e)
 		{
 			throw SPDIOException(e.what());
 		}
-		catch(boost::numeric::bad_numeric_cast& e) 
+		catch(boost::numeric::bad_numeric_cast& e)
 		{
 			throw SPDIOException(e.what());
 		}
@@ -85,12 +85,12 @@ namespace spdlib
 			std::cerr << "Pulse: " << pulse << std::endl;
 		}
 		
-		try 
+		try
 		{
 			this->tiles[tileIdx].pulses->push_back(pulse);
 			this->tiles[tileIdx].exporter->writeDataColumn(this->tiles[tileIdx].pulses, 0, 0);
 		}
-		catch (SPDIOException &e) 
+		catch (SPDIOException &e)
 		{
 			throw e;
 		}
@@ -98,7 +98,7 @@ namespace spdlib
 	
 	void SPDExportAsRowTiles::completeFileAndClose()throw(SPDIOException)
 	{
-		try 
+		try
 		{
 			std::list<SPDPulse*>::iterator iterPulses;
 			for(boost::uint_fast32_t i = 0; i < this->numOfTiles; ++i)
@@ -106,7 +106,7 @@ namespace spdlib
 				this->tiles[i].exporter->finaliseClose();
 			}
 		}
-		catch (SPDIOException &e) 
+		catch (SPDIOException &e)
 		{
 			throw e;
 		}
@@ -116,8 +116,8 @@ namespace spdlib
 	{
 		
 	}
-    
-    
+
+
     SPDExportAsBlockTiles::SPDExportAsBlockTiles(PointDataTileFile *tiles, boost::uint_fast32_t numOfTiles, boost::uint_fast32_t numOfXTiles, boost::uint_fast32_t numOfYTiles, SPDFile *overallSPD, double tileHeight, double tileWidth, bool useSphericIdx, bool useScanIdx) throw(SPDException)
     {
         this->tiles = tiles;
@@ -129,25 +129,25 @@ namespace spdlib
         this->tileWidth = tileWidth;
         this->useSphericIdx = useSphericIdx;
         this->useScanIdx = useScanIdx;
-        
+
 		for(boost::uint_fast32_t i = 0; i < this->numOfTiles; ++i)
 		{
 			this->tiles[i].exporter->open(this->tiles[i].spdFile, this->tiles[i].spdFile->getFilePath());
 		}
 		filesOpen = true;
     }
-    
+
     void SPDExportAsBlockTiles::processImportedPulse(SPDFile *spdFile, SPDPulse *pulse) throw(SPDIOException)
     {
         double yDiff = 0.0;
         double xDiff = 0.0;
         if(useSphericIdx)
-        {          
+        {
             yDiff = pulse->zenith - overallSPD->getZenithMin();
             xDiff = pulse->azimuth - overallSPD->getAzimuthMin();
         }
         else if(useScanIdx)
-        {          
+        {
             yDiff = pulse->scanline - overallSPD->getScanlineMin();
             xDiff = pulse->scanlineIdx - overallSPD->getScanlineIdxMin();
         }
@@ -159,20 +159,20 @@ namespace spdlib
 		
         boost::uint_fast32_t tileXIdx = 0;
         boost::uint_fast32_t tileYIdx = 0;
-		try 
+		try
 		{
             tileYIdx = boost::numeric_cast<boost::uint_fast32_t>(yDiff/tileHeight);
             tileXIdx = boost::numeric_cast<boost::uint_fast32_t>(xDiff/tileWidth);
 		}
-		catch(boost::numeric::negative_overflow& e) 
+		catch(boost::numeric::negative_overflow& e)
 		{
 			throw SPDIOException(e.what());
 		}
-		catch(boost::numeric::positive_overflow& e) 
+		catch(boost::numeric::positive_overflow& e)
 		{
 			throw SPDIOException(e.what());
 		}
-		catch(boost::numeric::bad_numeric_cast& e) 
+		catch(boost::numeric::bad_numeric_cast& e)
 		{
 			throw SPDIOException(e.what());
 		}
@@ -183,7 +183,7 @@ namespace spdlib
 			std::cerr << "Array Index is greater equal than = " << tileYIdx << " of "<< numOfYTiles << std::endl;
 			std::cerr << "Pulse: " << pulse << std::endl;
 		}
-        
+
         if(tileXIdx >= numOfXTiles)
 		{
 			std::cerr.precision(15);
@@ -191,21 +191,21 @@ namespace spdlib
 			std::cerr << "Pulse: " << pulse << std::endl;
 		}
 		
-		try 
+		try
 		{
             boost::uint_fast32_t tileIdx = (tileYIdx * numOfXTiles) + tileXIdx;
 			this->tiles[tileIdx].pulses->push_back(pulse);
 			this->tiles[tileIdx].exporter->writeDataColumn(this->tiles[tileIdx].pulses, 0, 0);
 		}
-		catch (SPDIOException &e) 
+		catch (SPDIOException &e)
 		{
 			throw e;
 		}
     }
-    
+
     void SPDExportAsBlockTiles::completeFileAndClose()throw(SPDIOException)
     {
-        try 
+        try
 		{
 			std::list<SPDPulse*>::iterator iterPulses;
 			for(boost::uint_fast32_t i = 0; i < this->numOfTiles; ++i)
@@ -213,18 +213,18 @@ namespace spdlib
 				this->tiles[i].exporter->finaliseClose();
 			}
 		}
-		catch (SPDIOException &e) 
+		catch (SPDIOException &e)
 		{
 			throw e;
 		}
     }
-    
+
     SPDExportAsBlockTiles::~SPDExportAsBlockTiles()
     {
-        
+
     }
-    
-    
+
+
 }
 
 

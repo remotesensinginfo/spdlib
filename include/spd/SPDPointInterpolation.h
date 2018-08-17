@@ -87,7 +87,7 @@ typedef std::map<CGALPoint, CGALCoordType, K::Less_xy_2>     PointValueMap;
 namespace spdlib
 {	
 	/**
-	 * SPDPointInterpolation is an abstract interface for the interpolation of 
+	 * SPDPointInterpolation is an abstract interface for the interpolation of
 	 * SPDPoint/SPDPulse data.
 	 *
 	 */
@@ -127,10 +127,10 @@ namespace spdlib
 	
 	
 	/**
-	 * SPDTriangulationPointInterpolation is an abstract interface for the interpolation 
+	 * SPDTriangulationPointInterpolation is an abstract interface for the interpolation
 	 * of SPDPoint/SPDPulse data using a triangulation.
-	 * 
-	 * The 'init' functions initialise a triangulation (Using CGAL) and the desctructor 
+	 *
+	 * The 'init' functions initialise a triangulation (Using CGAL) and the desctructor
 	 * cleans up the triangulation.
 	 *
 	 */
@@ -151,7 +151,7 @@ namespace spdlib
         Face_handle fh;
 
 	};
-    
+
     /**
      * SPDTriangulationNNPointInterpolator is an abstract interface for the interpolation
      * of SPDPoint/SPDPulse data using a triangulation.
@@ -180,14 +180,14 @@ namespace spdlib
         unsigned long nPts;
     };
     */
-    
+
 	
 	/**
-	 * SPDGridIndexPointInterpolator is an abstract interface for the interpolation 
-	 * of SPDPoint/SPDPulse data using a spatial index (index is in the form of a 
+	 * SPDGridIndexPointInterpolator is an abstract interface for the interpolation
+	 * of SPDPoint/SPDPulse data using a spatial index (index is in the form of a
 	 * regular grid).
-	 * 
-	 * The 'init' functions initialise the index and the desctructor 
+	 *
+	 * The 'init' functions initialise the index and the desctructor
 	 * cleans up the index.
 	 *
 	 */
@@ -206,8 +206,8 @@ namespace spdlib
 		SPDPointGridIndex *idx;
 		double gridResolution;
 	};
-    
-    
+
+
     /**
 	 * SPDRFBPointInterpolator is an abstract interface for the interpolation
 	 * of SPDPoint/SPDPulse data using a spatial index (index is in the form of a
@@ -241,7 +241,7 @@ namespace spdlib
 	/**
 	 *
 	 * An implementation of a nearest neighbour interpolator which uses a triangulation
-	 * to define the nearest neighbor. 
+	 * to define the nearest neighbor.
 	 *
 	 */
 	class DllExport SPDNearestNeighbourInterpolator : public SPDTriangulationPointInterpolator
@@ -255,7 +255,7 @@ namespace spdlib
 	/**
 	 *
 	 * An implementation of a TIN plane fitting interpolator which uses a triangulation
-	 * to define the three neighboring points. 
+	 * to define the three neighboring points.
 	 *
 	 */
 	class DllExport SPDTINPlaneFitInterpolator : public SPDTriangulationPointInterpolator
@@ -299,7 +299,7 @@ namespace spdlib
 		float radius;
         boost::uint_fast16_t minNumPoints;
 	};
-    
+
     class DllExport SPDTPSNumPtsInterpolator : public SPDGridIndexPointInterpolator
 	{
 	public:
@@ -310,7 +310,7 @@ namespace spdlib
         float radius;
         boost::uint_fast16_t numPoints;
 	};
-    
+
 	class DllExport SPDNaturalNeighborCGALPointInterpolator :public SPDTriangulationPointInterpolator
 	{
 	public:
@@ -318,8 +318,8 @@ namespace spdlib
 		float getValue(double eastings, double northings) throw(SPDProcessingException);
 		~SPDNaturalNeighborCGALPointInterpolator();
 	};
-    
-    
+
+
     // not currently implemented?
     /*class DllExport SPDNaturalNeighborNNPointInterpolator :public SPDTriangulationNNPointInterpolator
     {
@@ -328,36 +328,36 @@ namespace spdlib
         void getValues(double *eastings, double *northings, float *zVals, unsigned long nPts) throw(SPDProcessingException);
         ~SPDNaturalNeighborNNPointInterpolator();
     };*/
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     /**
-	 * SPDSphericalPointInterpolator is an abstract interface for the interpolation of 
+	 * SPDSphericalPointInterpolator is an abstract interface for the interpolation of
 	 * SPDPoint/SPDPulse data projected spherically.
 	 *
 	 */
@@ -386,12 +386,12 @@ namespace spdlib
         boost::uint_fast16_t maxNumPtsPerBin;
         boost::uint_fast64_t totalNumPoints;
 	};
-    
+
     /**
-	 * SPDTriangulationSphericalPointInterpolator is an abstract interface for the interpolation 
+	 * SPDTriangulationSphericalPointInterpolator is an abstract interface for the interpolation
 	 * of SPDPoint/SPDPulse data using a triangulation.
-	 * 
-	 * The 'init' functions initialise a triangulation (Using CGAL) and the desctructor 
+	 *
+	 * The 'init' functions initialise a triangulation (Using CGAL) and the desctructor
 	 * cleans up the triangulation.
 	 *
 	 */
@@ -412,13 +412,13 @@ namespace spdlib
         std::vector<SPDPoint*> *points;
         bool returnNaNValue;
 	};
-    
+
     /**
-	 * SPDGridIndexSphericalPointInterpolator is an abstract interface for the interpolation 
-	 * of SPDPoint/SPDPulse data using a spatial index (index is in the form of a 
+	 * SPDGridIndexSphericalPointInterpolator is an abstract interface for the interpolation
+	 * of SPDPoint/SPDPulse data using a spatial index (index is in the form of a
 	 * regular grid).
-	 * 
-	 * The 'init' functions initialise the index and the desctructor 
+	 *
+	 * The 'init' functions initialise the index and the desctructor
 	 * cleans up the index.
 	 *
 	 */
@@ -439,7 +439,7 @@ namespace spdlib
         std::vector<SPDPoint*> *points;
 	};
 
-    
+
     class DllExport SPDNaturalNeighborSphericalPointInterpolator :public SPDTriangulationSphericalPointInterpolator
 	{
 	public:
@@ -447,7 +447,7 @@ namespace spdlib
 		float getValue(double azimuth, double zenith) throw(SPDProcessingException);
 		~SPDNaturalNeighborSphericalPointInterpolator();
 	};
-    
+
     class DllExport SPDNearestNeighborSphericalPointInterpolator :public SPDTriangulationSphericalPointInterpolator
 	{
 	public:
@@ -457,7 +457,7 @@ namespace spdlib
     protected:
         float distanceThreshold;
 	};
-    
+
     class DllExport SPDTPSRadiusSphericalInterpolator : public SPDGridIndexSphericalPointInterpolator
 	{
 	public:
@@ -468,7 +468,7 @@ namespace spdlib
 		float radius;
         boost::uint_fast16_t minNumPoints;
 	};
-    
+
     class DllExport SPDTPSNumPtsSphericalInterpolator : public SPDGridIndexSphericalPointInterpolator
 	{
 	public:
@@ -480,7 +480,7 @@ namespace spdlib
         boost::uint_fast16_t numPoints;
 	};
 
-    
+
 }
 
 #endif

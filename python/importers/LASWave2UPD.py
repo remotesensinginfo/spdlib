@@ -31,7 +31,7 @@
 #
 # History:
 # 2011/07/21: Version 1.0 - Created using a script from PML as the basis.
-#                           PML scrit available from: 
+#                           PML scrit available from:
 #                           https://github.com/pmlrsg/arsf_tools
 # 2014/08/27: Version 1.1 - Updated for Python 3 (Dan Clewley).
 #
@@ -472,7 +472,7 @@ class LASWave2UPD (object):
             countAllPoints+=1
             #end if
         #end for
-        
+
         sys.stdout.write('Complete.\n')
         sys.stdout.flush()
 

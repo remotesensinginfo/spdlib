@@ -23,7 +23,7 @@
 #
 
 """
-Test for the Python spdapplier module. 
+Test for the Python spdapplier module.
 Mirrors the functionality of the inSPDinImageoutSPD program
 under examples/BlockProcessor.
 """
@@ -38,7 +38,7 @@ except ImportError:
         def wrapper(*args, **kwargs):
             return func(*args, **kwargs)
         return wrapper
-        
+
 
 infile = sys.argv[1]
 inimage = sys.argv[2]

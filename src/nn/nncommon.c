@@ -71,7 +71,7 @@ int circle_contains(circle* c, point* p)
  * for each cell within virtual rectangular nx by ny grid. The corners of the
  * grid are created from min and max values of the input array. It also frees
  * the original array and returns results and new dimension via original
- * data and size pointers. 
+ * data and size pointers.
  *
  * @param pn Pointer to number of points (input/output)
  * @param ppoints Pointer to array of points (input/output) [*pn]
@@ -203,7 +203,7 @@ void points_thingrid(int* pn, point** ppoints, int nx, int ny)
 /* Smoothes the input point array by averaging the input data (X,Y and Z
  * values) until the sum of the distances between points does not exceed the
  * specified maximum value. It also frees the original array and returns
- * results and new dimension via original data and size pointers. 
+ * results and new dimension via original data and size pointers.
  *
  * @param pn Pointer to number of points (input/output)
  * @param ppoints Pointer to array of points (input/output) [*pn]
@@ -229,7 +229,7 @@ void points_thinlin(int* nin, point** pin, double rmax)
         if (isnan(p->x) || isnan(p->y) || isnan(p->z)) {
             if (pprev != NULL) {
                 /*
-                 * write point 
+                 * write point
                  */
                 if (nout == nallocated) {
                     nallocated = nallocated * 2;
@@ -240,7 +240,7 @@ void points_thinlin(int* nin, point** pin, double rmax)
                 pout[nout].z = sum_z / (double) n;
                 nout++;
                 /*
-                 * reset cluster 
+                 * reset cluster
                  */
                 pprev = NULL;
             }
@@ -248,7 +248,7 @@ void points_thinlin(int* nin, point** pin, double rmax)
         }
 
         /*
-         * init cluster 
+         * init cluster
          */
         if (pprev == NULL) {
             sum_x = p->x;
@@ -263,7 +263,7 @@ void points_thinlin(int* nin, point** pin, double rmax)
         dist = hypot(p->x - pprev->x, p->y - pprev->y);
         if (sum_r + dist > rmax) {
             /*
-             * write point 
+             * write point
              */
             if (nout == nallocated) {
                 nallocated = nallocated * 2;
@@ -274,12 +274,12 @@ void points_thinlin(int* nin, point** pin, double rmax)
             pout[nout].z = sum_z / (double) n;
             nout++;
             /*
-             * reset cluster 
+             * reset cluster
              */
             pprev = NULL;
         } else {
             /*
-             * add to cluster 
+             * add to cluster
              */
             sum_x += p->x;
             sum_y += p->y;
@@ -366,7 +366,7 @@ void points_getrange(int n, point points[], double zoom, double* xmin, double* x
     }
 }
 
-/* Generates rectangular grid nx by ny using specified min and max x and y 
+/* Generates rectangular grid nx by ny using specified min and max x and y
  * values. Allocates space for the output point array, be sure to free it
  * when necessary!
  *

@@ -37,7 +37,7 @@ namespace spdlib
 	{
 		this->lineParser = textFileImporter.lineParser;
 	}
-    
+
     SPDDataImporter* SPDTextFileImporter::getInstance(bool convertCoords, std::string outputProjWKT, std::string schema, boost::uint_fast16_t indexCoords, bool defineOrigin, double originX, double originY, float originZ, float waveNoiseThreshold)
     {
         return new SPDTextFileImporter(this->lineParser, convertCoords, outputProjWKT, schema, indexCoords, defineOrigin, originX, originY, originZ, waveNoiseThreshold);
@@ -56,11 +56,11 @@ namespace spdlib
 		boost::uint_fast64_t numPoints = 0;
 		
 		boost::uint_fast64_t numOfLines = 0;
-		try 
+		try
 		{
 			numOfLines = textUtils.countLines(inputFile);
 		}
-		catch (SPDIOException &e) 
+		catch (SPDIOException &e)
 		{
 			throw e;
 		}
@@ -86,7 +86,7 @@ namespace spdlib
 		
 		std::cout << "Started (Read Data) ." << std::flush;
 		
-		try 
+		try
 		{
 			std::ifstream inputFileStream;
 			inputFileStream.open(inputFile.c_str(), std::ios_base::in);
@@ -98,17 +98,17 @@ namespace spdlib
 				char ch = ' ';
 				char lastch = ' ';
 				inputFileStream.get(ch);
-				while (!inputFileStream.eof()) 
+				while (!inputFileStream.eof())
 				{					
 					if ((ch == 0x0a) && (lastch == 0x0d))
 					{
 						lineEnding = true; // Windows Line Ending
 					}
-					else if ((lastch == 0x0d) && (ch != 0x0a)) 
+					else if ((lastch == 0x0d) && (ch != 0x0a))
 					{
 						lineEnding = true; // Mac Line Ending
-					} 
-					else if (ch == 0x0a) 
+					}
+					else if (ch == 0x0a)
 					{
 						lineEnding = true; // UNIX Line Ending
 					}
@@ -124,14 +124,14 @@ namespace spdlib
                             }
                         }
 						
-						try 
+						try
 						{
                             boost::algorithm::trim(strLine);
 							if(!lineParser->haveReadheader())
 							{
 								lineParser->parseHeader(strLine);
 							}
-							else 
+							else
 							{
 								SPDPulse *pl = new SPDPulse();
 								pulseUtils.initSPDPulse(pl);
@@ -139,17 +139,17 @@ namespace spdlib
 								if(lineParser->parseLine(strLine, pl, indexCoords))
 								{
 									pl->pulseID = numPulses++;
-                                    
+
                                     if(defineOrigin)
                                     {
                                         pl->x0 = this->originX;
                                         pl->y0 = this->originY;
                                         pl->z0 = this->originZ;
-                                        
+
                                         double zenith = 0;
                                         double azimuth = 0;
                                         double range = 0;
-                                        
+
                                         for(std::vector<SPDPoint*>::iterator iterPts = pl->pts->begin(); iterPts != pl->pts->end(); ++iterPts)
                                         {
                                             SPDConvertToSpherical(pl->x0, pl->y0, pl->z0, (*iterPts)->x, (*iterPts)->y, (*iterPts)->z, &zenith, &azimuth, &range);
@@ -174,7 +174,7 @@ namespace spdlib
                                                 {
                                                     maxAzimuth = azimuth;
                                                 }
-                                                
+
                                                 if(zenith < minZenith)
                                                 {
                                                     minZenith = zenith;
@@ -183,7 +183,7 @@ namespace spdlib
                                                 {
                                                     maxZenith = zenith;
                                                 }
-                                                
+
                                                 if(range < minRange)
                                                 {
                                                     minRange = range;
@@ -194,10 +194,10 @@ namespace spdlib
                                                 }
                                             }
                                         }
-                                        
+
                                         pl->zenith = zenith;
                                         pl->azimuth = azimuth;
-                                        
+
                                     }
 									allPulses->push_back(pl);
 									numPoints += pl->numberOfReturns;
@@ -245,14 +245,14 @@ namespace spdlib
 										}
 									}
 								}
-								else 
+								else
 								{
 									pulseUtils.deleteSPDPulse(pl);
 								}
 							}
 							
 						}
-						catch (SPDIOException &e) 
+						catch (SPDIOException &e)
 						{
 							inputFileStream.close();
 							throw e;
@@ -261,13 +261,13 @@ namespace spdlib
 						strLine = "";
 						lineEnding = false;
 					}
-					else 
+					else
 					{
 						strLine += ch;
 					}
 					
 					lastch = ch;
-					inputFileStream.get(ch);      
+					inputFileStream.get(ch);
 				}
 				inputFileStream.close();
 				
@@ -280,7 +280,7 @@ namespace spdlib
 			}
 			
 		}
-		catch (SPDIOException &e) 
+		catch (SPDIOException &e)
 		{
 			throw e;
 		}
@@ -307,11 +307,11 @@ namespace spdlib
 		boost::uint_fast64_t numPoints = 0;
 		
 		boost::uint_fast64_t numOfLines = 0;
-		try 
+		try
 		{
 			numOfLines = textUtils.countLines(inputFile);
 		}
-		catch (SPDIOException &e) 
+		catch (SPDIOException &e)
 		{
 			throw e;
 		}
@@ -339,7 +339,7 @@ namespace spdlib
 		
 		std::cout << "Started (Read Data) ." << std::flush;
 		
-		try 
+		try
 		{
 			std::ifstream inputFileStream;
 			inputFileStream.open(inputFile.c_str(), std::ios_base::in);
@@ -351,17 +351,17 @@ namespace spdlib
 				char ch = ' ';
 				char lastch = ' ';
 				inputFileStream.get(ch);
-				while (!inputFileStream.eof()) 
+				while (!inputFileStream.eof())
 				{					
 					if ((ch == 0x0a) && (lastch == 0x0d))
 					{
 						lineEnding = true; // Windows Line Ending
 					}
-					else if ((lastch == 0x0d) && (ch != 0x0a)) 
+					else if ((lastch == 0x0d) && (ch != 0x0a))
 					{
 						lineEnding = true; // Mac Line Ending
-					} 
-					else if (ch == 0x0a) 
+					}
+					else if (ch == 0x0a)
 					{
 						lineEnding = true; // UNIX Line Ending
 					}
@@ -377,14 +377,14 @@ namespace spdlib
                             }
                         }
 						
-						try 
+						try
 						{
                             boost::algorithm::trim(strLine);
 							if(!lineParser->haveReadheader())
 							{
 								lineParser->parseHeader(strLine);
 							}
-							else 
+							else
 							{
 								SPDPulse *pl = new SPDPulse();
 								pulseUtils.initSPDPulse(pl);
@@ -397,11 +397,11 @@ namespace spdlib
                                         pl->x0 = this->originX;
                                         pl->y0 = this->originY;
                                         pl->z0 = this->originZ;
-                                        
+
                                         double zenith = 0;
                                         double azimuth = 0;
                                         double range = 0;
-                                        
+
                                         for(std::vector<SPDPoint*>::iterator iterPts = pl->pts->begin(); iterPts != pl->pts->end(); ++iterPts)
                                         {
                                             SPDConvertToSpherical(pl->x0, pl->y0, pl->z0, (*iterPts)->x, (*iterPts)->y, (*iterPts)->z, &zenith, &azimuth, &range);
@@ -426,7 +426,7 @@ namespace spdlib
                                                 {
                                                     maxAzimuth = azimuth;
                                                 }
-                                                
+
                                                 if(zenith < minZenith)
                                                 {
                                                     minZenith = zenith;
@@ -435,7 +435,7 @@ namespace spdlib
                                                 {
                                                     maxZenith = zenith;
                                                 }
-                                                
+
                                                 if(range < minRange)
                                                 {
                                                     minRange = range;
@@ -446,7 +446,7 @@ namespace spdlib
                                                 }
                                             }
                                         }
-                                        
+
                                         pl->zenith = zenith;
                                         pl->azimuth = azimuth;
                                     }
@@ -496,14 +496,14 @@ namespace spdlib
 										}
 									}
 								}
-								else 
+								else
 								{
 									pulseUtils.deleteSPDPulse(pl);
 								}
 							}
 							
 						}
-						catch (SPDIOException &e) 
+						catch (SPDIOException &e)
 						{
 							inputFileStream.close();
 							throw e;
@@ -512,13 +512,13 @@ namespace spdlib
 						strLine = "";
 						lineEnding = false;
 					}
-					else 
+					else
 					{
 						strLine += ch;
 					}
 					
 					lastch = ch;
-					inputFileStream.get(ch);      
+					inputFileStream.get(ch);
 				}
 				inputFileStream.close();
 				
@@ -531,7 +531,7 @@ namespace spdlib
 			}
 			
 		}
-		catch (SPDIOException &e) 
+		catch (SPDIOException &e)
 		{
 			throw e;
 		}
@@ -546,7 +546,7 @@ namespace spdlib
 	}
 	
 	void SPDTextFileImporter::readAndProcessAllData(std::string inputFile, SPDFile *spdFile, SPDImporterProcessor *processor)throw(SPDIOException)
-	{        
+	{
 		if(convertCoords)
 		{
 			throw SPDIOException("Coordinate Convertion is not implmented for this importer.");
@@ -557,11 +557,11 @@ namespace spdlib
 		boost::uint_fast64_t numPoints = 0;
 		
 		boost::uint_fast64_t numOfLines = 0;
-		try 
+		try
 		{
 			numOfLines = textUtils.countLines(inputFile);
 		}
-		catch (SPDIOException &e) 
+		catch (SPDIOException &e)
 		{
 			throw e;
 		}
@@ -587,7 +587,7 @@ namespace spdlib
 		
 		std::cout << "Started (Read Data) ." << std::flush;
 		
-		try 
+		try
 		{
 			std::ifstream inputFileStream;
 			inputFileStream.open(inputFile.c_str(), std::ios_base::in);
@@ -599,17 +599,17 @@ namespace spdlib
 				char ch = ' ';
 				char lastch = ' ';
 				inputFileStream.get(ch);
-				while (!inputFileStream.eof()) 
+				while (!inputFileStream.eof())
 				{					
 					if ((ch == 0x0a) && (lastch == 0x0d))
 					{
 						lineEnding = true; // Windows Line Ending
 					}
-					else if ((lastch == 0x0d) && (ch != 0x0a)) 
+					else if ((lastch == 0x0d) && (ch != 0x0a))
 					{
 						lineEnding = true; // Mac Line Ending
-					} 
-					else if (ch == 0x0a) 
+					}
+					else if (ch == 0x0a)
 					{
 						lineEnding = true; // UNIX Line Ending
 					}
@@ -625,14 +625,14 @@ namespace spdlib
                             }
                         }
 						
-						try 
+						try
 						{
 							boost::algorithm::trim(strLine);
 							if(!lineParser->haveReadheader())
 							{
 								lineParser->parseHeader(strLine);
 							}
-							else 
+							else
 							{
 								SPDPulse *pl = new SPDPulse();
 								pulseUtils.initSPDPulse(pl);
@@ -644,11 +644,11 @@ namespace spdlib
                                         pl->x0 = this->originX;
                                         pl->y0 = this->originY;
                                         pl->z0 = this->originZ;
-                                        
+
                                         double zenith = 0;
                                         double azimuth = 0;
                                         double range = 0;
-                                        
+
                                         for(std::vector<SPDPoint*>::iterator iterPts = pl->pts->begin(); iterPts != pl->pts->end(); ++iterPts)
                                         {
                                             SPDConvertToSpherical(pl->x0, pl->y0, pl->z0, (*iterPts)->x, (*iterPts)->y, (*iterPts)->z, &zenith, &azimuth, &range);
@@ -673,7 +673,7 @@ namespace spdlib
                                                 {
                                                     maxAzimuth = azimuth;
                                                 }
-                                                
+
                                                 if(zenith < minZenith)
                                                 {
                                                     minZenith = zenith;
@@ -682,7 +682,7 @@ namespace spdlib
                                                 {
                                                     maxZenith = zenith;
                                                 }
-                                                
+
                                                 if(range < minRange)
                                                 {
                                                     minRange = range;
@@ -693,7 +693,7 @@ namespace spdlib
                                                 }
                                             }
                                         }
-                                        
+
                                         pl->zenith = zenith;
                                         pl->azimuth = azimuth;
                                     }
@@ -742,14 +742,14 @@ namespace spdlib
 									}
 									processor->processImportedPulse(spdFile, pl);
 								}
-								else 
+								else
 								{
 									pulseUtils.deleteSPDPulse(pl);
 								}								
 							}
 							
 						}
-						catch (SPDIOException &e) 
+						catch (SPDIOException &e)
 						{
 							inputFileStream.close();
 							throw e;
@@ -758,13 +758,13 @@ namespace spdlib
 						strLine = "";
 						lineEnding = false;
 					}
-					else 
+					else
 					{
 						strLine += ch;
 					}
 					
 					lastch = ch;
-					inputFileStream.get(ch);      
+					inputFileStream.get(ch);
 				}
 				inputFileStream.close();
 				
@@ -777,7 +777,7 @@ namespace spdlib
 			}
 			
 		}
-		catch (SPDIOException &e) 
+		catch (SPDIOException &e)
 		{
 			throw e;
 		}
@@ -793,19 +793,19 @@ namespace spdlib
 	{
 		return lineParser->isFileType(fileType);
 	}
-    
+
     void SPDTextFileImporter::readHeaderInfo(std::string, SPDFile*) throw(SPDIOException)
     {
         // No Header to Read..
     }
-    
+
     void SPDTextFileImporter::readSchema()throw(SPDIOException)
     {
-        try 
+        try
         {
             this->lineParser->parseSchema(this->schema);
-        } 
-        catch (SPDIOException &e) 
+        }
+        catch (SPDIOException &e)
         {
             throw e;
         }

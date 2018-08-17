@@ -322,7 +322,7 @@ namespace spdlib_py
             // Delete SPD pulse from memory (i.e., the C++ version!)
             SPDPulseUtils::deleteSPDPulse(*iterPulses);
         }
-        
+
         pulses->clear();
     };
 

@@ -116,16 +116,16 @@ namespace spdlib
 
     void SPDCalcMetrics::parseMetricsXML(std::string inXMLFilePath, std::vector<SPDMetric*> *metrics, std::vector<std::string> *fieldNames) throw(SPDProcessingException)
     {
-        
+
         // Check file exists
         struct stat stFileInfo;
         if (stat(inXMLFilePath.c_str(), &stFileInfo) != 0)
         {
             throw SPDProcessingException("XML file provided does not exist.");
         }
-        
+
         std::cout << "Reading XML file: " << inXMLFilePath << std::endl;
-        
+
         xercesc::DOMLSParser* parser = NULL;
 		try
 		{
@@ -2195,22 +2195,22 @@ namespace spdlib
 
     }
 
-    
-    
-    
-    
-    
+
+
+
+
+
     SPDCalcZMedianVal::SPDCalcZMedianVal()
     {
         this->colMedianVals = new std::vector<double>();
     }
-    
+
     void SPDCalcZMedianVal::processDataColumn(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses, SPDXYPoint *cenPts) throw(SPDProcessingException)
     {
         if(pulses->size() > 0)
         {
             std::vector<double> ptVals;
-            
+
             for(std::vector<SPDPulse*>::iterator iterPulses = pulses->begin(); iterPulses != pulses->end(); ++iterPulses)
             {
                 if((*iterPulses)->numberOfReturns > 0)
@@ -2221,7 +2221,7 @@ namespace spdlib
                     }
                 }
             }
-            
+
             if(ptVals.size() > 0)
             {
                 gsl_sort(&ptVals[0], 1, ptVals.size());
@@ -2231,29 +2231,29 @@ namespace spdlib
             }
         }
     }
-    
+
     double SPDCalcZMedianVal::getMedianMedianVal()
     {
         gsl_sort(&(*colMedianVals)[0], 1, colMedianVals->size());
         double median = gsl_stats_median_from_sorted_data(&(*colMedianVals)[0], 1, colMedianVals->size());
         return median;
     }
-    
+
     SPDCalcZMedianVal::~SPDCalcZMedianVal()
     {
         delete this->colMedianVals;
     }
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+
+
+
+
+
+
+
+
+
+
+
 
 }
 

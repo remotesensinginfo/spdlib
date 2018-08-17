@@ -32,7 +32,7 @@ typedef struct ht_bucket {
     struct ht_bucket* next;
 } ht_bucket;
 
-/** Hash table structure. 
+/** Hash table structure.
  * Note that more nodes than `size' can be inserted in the table,
  * but performance degrades as this happens.
  */
@@ -84,7 +84,7 @@ hashtable* ht_create(int size, ht_keycp cp, ht_keyeq eq, ht_key2hash hash)
     return table;
 }
 
-/* Destroys a hash table. 
+/* Destroys a hash table.
  * (Take care of deallocating data by ht_process() prior to destroying the
  * table if necessary.)
  *
@@ -129,7 +129,7 @@ void* ht_insert(hashtable* table, void* key, void* data)
     /*
      * NULL means this bucket hasn't been used yet.  We'll simply allocate
      * space for our new bucket and put our data there, with the table
-     * pointing at it. 
+     * pointing at it.
      */
     if ((table->table)[val] == NULL) {
         bucket = malloc(sizeof(ht_bucket));
@@ -150,7 +150,7 @@ void* ht_insert(hashtable* table, void* key, void* data)
 
     /*
      * This spot in the table is already in use.  See if the current string
-     * has already been inserted, and if so, return corresponding data. 
+     * has already been inserted, and if so, return corresponding data.
      */
     for (bucket = (table->table)[val]; bucket != NULL; bucket = bucket->next)
         if (table->eq(key, bucket->key) == 1) {
@@ -167,9 +167,9 @@ void* ht_insert(hashtable* table, void* key, void* data)
      * This key must not be in the table yet.  We'll add it to the head of
      * the list at this spot in the hash table.  Speed would be slightly
      * improved if the list was kept sorted instead.  In this case, this
-     * code would be moved into the loop above, and the insertion would take 
+     * code would be moved into the loop above, and the insertion would take
      * place as soon as it was determined that the present key in the list
-     * was larger than this one. 
+     * was larger than this one.
      */
     bucket = (ht_bucket*) malloc(sizeof(ht_bucket));
     assert(bucket != NULL);
@@ -230,7 +230,7 @@ void* ht_delete(hashtable* table, void* key)
      * When we find the node to delete, we set the previous node's next
      * pointer to point to the node after ourself instead.  We then delete
      * the key from the present node, and return a pointer to the data it
-     * contains. 
+     * contains.
      */
     for (prev = NULL, bucket = (table->table)[val]; bucket != NULL; prev = bucket, bucket = bucket->next) {
         if (table->eq(key, bucket->key) == 1) {
@@ -243,7 +243,7 @@ void* ht_delete(hashtable* table, void* key)
                  * delete the first node in the list. This simply consists
                  * of putting our own 'next' pointer in the array holding
                  * the head of the list.  We then dispose of the current
-                 * node as above. 
+                 * node as above.
                  */
                 (table->table)[val] = bucket->next;
                 table->nhash--;
@@ -257,8 +257,8 @@ void* ht_delete(hashtable* table, void* key)
     }
 
     /*
-     * If we get here, it means we didn't find the item in the table. Signal 
-     * this by returning NULL. 
+     * If we get here, it means we didn't find the item in the table. Signal
+     * this by returning NULL.
      */
     return NULL;
 }
@@ -282,8 +282,8 @@ void ht_process(hashtable* table, void (*func) (void*))
         }
 }
 
-/* 
- * functions for for string keys 
+/*
+ * functions for for string keys
  */
 
 static unsigned int strhash(void* key)
@@ -337,8 +337,8 @@ static int d1eq(void* key1, void* key2)
     return *(double*) key1 == *(double*) key2;
 }
 
-/* 
- * functions for for double[2] keys 
+/*
+ * functions for for double[2] keys
  */
 
 static unsigned int d2hash(void* key)
@@ -348,7 +348,7 @@ static unsigned int d2hash(void* key)
 #if INT_PER_DOUBLE == 2
     /*
      * PS: here multiplications suppose to make (a,b) and (b,a) generate
-     * different hash values 
+     * different hash values
      */
     return v[0] + v[1] + v[2] * 3 + v[3] * 7;
 #else
@@ -371,8 +371,8 @@ static int d2eq(void* key1, void* key2)
     return (((double*) key1)[0] == ((double*) key2)[0]) && (((double*) key1)[1] == ((double*) key2)[1]);
 }
 
-/* 
- * functions for for int[1] keys 
+/*
+ * functions for for int[1] keys
  */
 
 static unsigned int i1hash(void* key)
@@ -394,8 +394,8 @@ static int i1eq(void* key1, void* key2)
     return (((int*) key1)[0] == ((int*) key2)[0]);
 }
 
-/* 
- * functions for for int[2] keys 
+/*
+ * functions for for int[2] keys
  */
 
 static unsigned int i2hash(void* key)
@@ -615,7 +615,7 @@ int main()
     int i;
 
     /*
-     * double[2] key 
+     * double[2] key
      */
 
     printf("\n1. Testing a table with key of double[2] type\n\n");
@@ -674,7 +674,7 @@ int main()
     printf("done\n");
 
     /*
-     * char* key 
+     * char* key
      */
 
     printf("\n2. Testing a table with key of char* type\n\n");

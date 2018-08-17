@@ -33,7 +33,7 @@ namespace spdlib
     {
         this->classBand = classBand;
     }
-    
+
     void SPDDefineClassesFromImg::processDataColumnImage(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses, float *imageData, SPDXYPoint *cenPts, boost::uint_fast32_t numImgBands, float binSize) throw(SPDProcessingException)
     {
         if((inSPDFile->getDecomposedPtDefined() == SPD_TRUE) | (inSPDFile->getDiscretePtDefined() == SPD_TRUE))
@@ -42,9 +42,9 @@ namespace spdlib
             {
                 throw SPDProcessingException("Defined classes band is not in the dataset");
             }
-            
+
             if(imageData[classBand] > 0)
-            {            
+            {
                 std::vector<SPDPulse*>::iterator iterPulses;
                 std::vector<SPDPoint*>::iterator iterPoints;
                 for(iterPulses = pulses->begin(); iterPulses != pulses->end(); ++iterPulses)
@@ -64,10 +64,10 @@ namespace spdlib
             throw SPDProcessingException("You can only define a classification on to points (i.e., not waveform data), decompose the data first.");
         }
     }
-		        
+		
     SPDDefineClassesFromImg::~SPDDefineClassesFromImg()
     {
-        
+
     }
 
 }

@@ -26,12 +26,12 @@
 namespace spdlib
 {
 	
-    
+
 	SPDASCIIMultiLineReader::SPDASCIIMultiLineReader(bool convertCoords, std::string outputProjWKT, std::string schema, boost::uint_fast16_t indexCoords, bool defineOrigin, double originX, double originY, float originZ, float waveNoiseThreshold):SPDDataImporter(convertCoords, outputProjWKT, schema, indexCoords, defineOrigin, originX, originY, originZ, waveNoiseThreshold)
 	{
 		
 	}
-    
+
     SPDDataImporter* SPDASCIIMultiLineReader::getInstance(bool convertCoords, std::string outputProjWKT, std::string schema, boost::uint_fast16_t indexCoords, bool defineOrigin, double originX, double originY, float originZ, float waveNoiseThreshold)
     {
         return new SPDASCIIMultiLineReader(convertCoords, outputProjWKT, schema, indexCoords, defineOrigin, originX, originY, originZ, waveNoiseThreshold);
@@ -59,13 +59,13 @@ namespace spdlib
 		
 		classWarningGiven = false;
 		
-		try 
+		try
 		{
             if(convertCoords)
 			{
 				this->initCoordinateSystemTransformation(spdFile);
 			}
-            
+
             SPDPulse *pulse = NULL;
 			SPDPoint *point = NULL;
 			
@@ -80,7 +80,7 @@ namespace spdlib
 				{
 					std::cout << "." << numPulses << "." << std::flush;
 				}
-                
+
                 pointLine = lineReader.readLine();
 				
 				if(!textFileUtils.blankline(pointLine))
@@ -92,10 +92,10 @@ namespace spdlib
                         std::cout << "Line: " << pointLine << std::endl;
                         throw SPDIOException("Expected 8 tokens in line.");
                     }
-                    
+
                     point = this->convertLineToPoint(lineTokens);
                     ++totalNumPoints;
-                    
+
                     if(firstZ)
 					{
 						zMin = point->z;
@@ -113,7 +113,7 @@ namespace spdlib
 							zMax = point->z;
 						}
 					}
-                    
+
                     if(point->returnID == 1)
                     {
                         if(!first)
@@ -132,7 +132,7 @@ namespace spdlib
                             {
                                 throw SPDIOException("Indexing type unsupported");
                             }
-                            
+
                             if(firstXY)
                             {
                                 xMin = pulse->xIdx;
@@ -151,7 +151,7 @@ namespace spdlib
                                 {
                                     xMax = pulse->xIdx;
                                 }
-                                
+
                                 if(pulse->yIdx < yMin)
                                 {
                                     yMin = pulse->yIdx;
@@ -160,7 +160,7 @@ namespace spdlib
                                 {
                                     yMax = pulse->yIdx;
                                 }
-                            }                            
+                            }
                             pulses->push_back(pulse);
                         }
                         else
@@ -184,10 +184,10 @@ namespace spdlib
                         pulse->pts->push_back(point);
                         pulse->numberOfReturns += 1;
                     }
-                    
+
                 }
             }
-            
+
             if(indexCoords == SPD_FIRST_RETURN)
             {
                 pulse->xIdx = pulse->pts->front()->x;
@@ -202,7 +202,7 @@ namespace spdlib
             {
                 throw SPDIOException("Indexing type unsupported");
             }
-            
+
             if(firstXY)
             {
                 xMin = pulse->xIdx;
@@ -221,7 +221,7 @@ namespace spdlib
                 {
                     xMax = pulse->xIdx;
                 }
-                
+
                 if(pulse->yIdx < yMin)
                 {
                     yMin = pulse->yIdx;
@@ -247,7 +247,7 @@ namespace spdlib
             spdFile->setTransWaveformDefined(SPD_FALSE);
             spdFile->setReceiveWaveformDefined(SPD_FALSE);
 		}
-		catch (SPDIOException &e) 
+		catch (SPDIOException &e)
 		{
 			throw e;
 		}
@@ -285,13 +285,13 @@ namespace spdlib
 		
 		classWarningGiven = false;
 		
-		try 
+		try
 		{
             if(convertCoords)
 			{
 				this->initCoordinateSystemTransformation(spdFile);
 			}
-            
+
             SPDPulse *pulse = NULL;
 			SPDPoint *point = NULL;
 			
@@ -306,7 +306,7 @@ namespace spdlib
 				{
 					std::cout << "." << numPulses << "." << std::flush;
 				}
-                
+
                 pointLine = lineReader.readLine();
 				
 				if(!textFileUtils.blankline(pointLine))
@@ -318,10 +318,10 @@ namespace spdlib
                         std::cout << "Line: " << pointLine << std::endl;
                         throw SPDIOException("Expected 8 tokens in line.");
                     }
-                    
+
                     point = this->convertLineToPoint(lineTokens);
                     ++totalNumPoints;
-                    
+
                     if(firstZ)
 					{
 						zMin = point->z;
@@ -339,7 +339,7 @@ namespace spdlib
 							zMax = point->z;
 						}
 					}
-                    
+
                     if(point->returnID == 1)
                     {
                         if(!first)
@@ -358,7 +358,7 @@ namespace spdlib
                             {
                                 throw SPDIOException("Indexing type unsupported");
                             }
-                            
+
                             if(firstXY)
                             {
                                 xMin = pulse->xIdx;
@@ -377,7 +377,7 @@ namespace spdlib
                                 {
                                     xMax = pulse->xIdx;
                                 }
-                                
+
                                 if(pulse->yIdx < yMin)
                                 {
                                     yMin = pulse->yIdx;
@@ -386,7 +386,7 @@ namespace spdlib
                                 {
                                     yMax = pulse->yIdx;
                                 }
-                            }                            
+                            }
                             pulses->push_back(pulse);
                         }
                         else
@@ -410,10 +410,10 @@ namespace spdlib
                         pulse->pts->push_back(point);
                         pulse->numberOfReturns += 1;
                     }
-                    
+
                 }
             }
-            
+
             if(indexCoords == SPD_FIRST_RETURN)
             {
                 pulse->xIdx = pulse->pts->front()->x;
@@ -428,7 +428,7 @@ namespace spdlib
             {
                 throw SPDIOException("Indexing type unsupported");
             }
-            
+
             if(firstXY)
             {
                 xMin = pulse->xIdx;
@@ -447,7 +447,7 @@ namespace spdlib
                 {
                     xMax = pulse->xIdx;
                 }
-                
+
                 if(pulse->yIdx < yMin)
                 {
                     yMin = pulse->yIdx;
@@ -459,7 +459,7 @@ namespace spdlib
             }
             pulses->push_back(pulse);
             std::cout << ". Complete\n";
-            
+
             spdFile->setBoundingVolume(xMin, xMax, yMin, yMax, zMin, zMax);
             if(convertCoords)
             {
@@ -473,7 +473,7 @@ namespace spdlib
             spdFile->setTransWaveformDefined(SPD_FALSE);
             spdFile->setReceiveWaveformDefined(SPD_FALSE);
 		}
-		catch (SPDIOException &e) 
+		catch (SPDIOException &e)
 		{
 			throw e;
 		}
@@ -510,13 +510,13 @@ namespace spdlib
 		
 		classWarningGiven = false;
 		
-		try 
+		try
 		{
             if(convertCoords)
 			{
 				this->initCoordinateSystemTransformation(spdFile);
 			}
-            
+
             SPDPulse *pulse = NULL;
 			SPDPoint *point = NULL;
 			
@@ -531,7 +531,7 @@ namespace spdlib
 				{
 					std::cout << "." << numPulses << "." << std::flush;
 				}
-                
+
                 pointLine = lineReader.readLine();
 				
 				if(!textFileUtils.blankline(pointLine))
@@ -544,10 +544,10 @@ namespace spdlib
                         std::cout << "Line: " << pointLine << std::endl;
                         throw SPDIOException("Expected 8 tokens in line.");
                     }
-                    
+
                     point = this->convertLineToPoint(lineTokens);
                     ++totalNumPoints;
-                    
+
                     if(firstZ)
 					{
 						zMin = point->z;
@@ -565,7 +565,7 @@ namespace spdlib
 							zMax = point->z;
 						}
 					}
-                    
+
                     if(point->returnID == 1)
                     {
                         if(!first)
@@ -584,7 +584,7 @@ namespace spdlib
                             {
                                 throw SPDIOException("Indexing type unsupported");
                             }
-                            
+
                             if(firstXY)
                             {
                                 xMin = pulse->xIdx;
@@ -603,7 +603,7 @@ namespace spdlib
                                 {
                                     xMax = pulse->xIdx;
                                 }
-                                
+
                                 if(pulse->yIdx < yMin)
                                 {
                                     yMin = pulse->yIdx;
@@ -612,7 +612,7 @@ namespace spdlib
                                 {
                                     yMax = pulse->yIdx;
                                 }
-                            }                            
+                            }
                             processor->processImportedPulse(spdFile, pulse);
                         }
                         else
@@ -636,10 +636,10 @@ namespace spdlib
                         pulse->pts->push_back(point);
                         pulse->numberOfReturns += 1;
                     }
-                    
+
                 }
             }
-            
+
             if(indexCoords == SPD_FIRST_RETURN)
             {
                 pulse->xIdx = pulse->pts->front()->x;
@@ -654,7 +654,7 @@ namespace spdlib
             {
                 throw SPDIOException("Indexing type unsupported");
             }
-            
+
             if(firstXY)
             {
                 xMin = pulse->xIdx;
@@ -673,7 +673,7 @@ namespace spdlib
                 {
                     xMax = pulse->xIdx;
                 }
-                
+
                 if(pulse->yIdx < yMin)
                 {
                     yMin = pulse->yIdx;
@@ -685,7 +685,7 @@ namespace spdlib
             }
             processor->processImportedPulse(spdFile, pulse);
             std::cout << ". Complete\n";
-            
+
             spdFile->setBoundingVolume(xMin, xMax, yMin, yMax, zMin, zMax);
             if(convertCoords)
             {
@@ -699,7 +699,7 @@ namespace spdlib
             spdFile->setTransWaveformDefined(SPD_FALSE);
             spdFile->setReceiveWaveformDefined(SPD_FALSE);
 		}
-		catch (SPDIOException &e) 
+		catch (SPDIOException &e)
 		{
 			throw e;
 		}
@@ -721,7 +721,7 @@ namespace spdlib
 		}
 		return false;
 	}
-    
+
     void SPDASCIIMultiLineReader::readHeaderInfo(std::string, SPDFile*) throw(SPDIOException)
     {
         // No Header to Read..
@@ -729,13 +729,13 @@ namespace spdlib
 	
 	SPDPoint* SPDASCIIMultiLineReader::convertLineToPoint(std::vector<std::string> *lineTokens)throw(SPDIOException)
 	{
-		try 
+		try
 		{
             SPDTextFileUtilities textFileUtils;
 			SPDPointUtils spdPtUtils;
 			SPDPoint *spdPt = new SPDPoint();
 			spdPtUtils.initSPDPoint(spdPt);
-			            
+			
             double x = textFileUtils.strtodouble(lineTokens->at(1));
 			double y = textFileUtils.strtodouble(lineTokens->at(2));
 			double z = textFileUtils.strtodouble(lineTokens->at(3));
@@ -752,10 +752,10 @@ namespace spdlib
 			spdPt->returnID = textFileUtils.strto16bitUInt(lineTokens->at(6));
             spdPt->gpsTime = (textFileUtils.strtodouble(lineTokens->at(0))*1000000000);
             spdPt->classification = textFileUtils.strto16bitUInt(lineTokens->at(5));
-            
+
 			return spdPt;
 		}
-		catch (SPDIOException &e) 
+		catch (SPDIOException &e)
 		{
 			throw e;
 		}

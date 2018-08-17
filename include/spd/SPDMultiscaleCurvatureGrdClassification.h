@@ -48,28 +48,28 @@
 
 
 namespace spdlib
-{    
+{
     enum SPDSmoothFilterType
     {
         meanFilter = 0,
         medianFilter = 1
     };
-    
+
     class DllExport SPDMultiscaleCurvatureGrdClassification : public SPDDataBlockProcessor
 	{
 	public:
         SPDMultiscaleCurvatureGrdClassification(float initScale,boost::uint_fast16_t numOfScalesAbove,boost::uint_fast16_t numOfScalesBelow, float scaleGaps, float initCurveTolerance, float minCurveTolerance, float stepCurveTolerance, float interpMaxRadius,boost::uint_fast16_t interpNumPoints, SPDSmoothFilterType filterType,boost::uint_fast16_t smoothFilterHSize, float thresOfChange, bool multiReturnPulsesOnly,boost::uint_fast16_t classParameters);
         void processDataBlockImage(SPDFile *inSPDFile, std::vector<SPDPulse*> ***pulses, float ***imageDataBlock, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast32_t numImgBands, float binSize) throw(SPDProcessingException)
 		{throw SPDProcessingException("SPDMultiscaleCurvatureGrdClassification cannot output an image layer.");};
-        
+
         void processDataBlock(SPDFile *inSPDFile, std::vector<SPDPulse*> ***pulses, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, float binSize) throw(SPDProcessingException);
-        
+
         void processDataBlockImage(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses, float ***imageDataBlock, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast32_t numImgBands) throw(SPDProcessingException)
 		{throw SPDProcessingException("SPDMultiscaleCurvatureGrdClassification requires processing with a grid.");};
-        
+
         void processDataBlock(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses) throw(SPDProcessingException)
         {throw SPDProcessingException("SPDMultiscaleCurvatureGrdClassification requires processing with a grid.");};
-        
+
         std::vector<std::string> getImageBandDescriptions() throw(SPDProcessingException)
         {
             std::vector<std::string> bandNames;
@@ -82,7 +82,7 @@ namespace spdlib
         }
 
         ~SPDMultiscaleCurvatureGrdClassification();
-        
+
     protected:
         std::pair<double*,size_t> findDataExtentAndClassifyAllPtsAsGrd(std::vector<SPDPulse*> ***pulses,boost::uint_fast32_t xSizePulses,boost::uint_fast32_t ySizePulses) throw(SPDProcessingException);
         void assignToUnclassified(std::vector<SPDPulse*> ***pulses,boost::uint_fast32_t xSizePulses,boost::uint_fast32_t ySizePulses) throw(SPDProcessingException);
@@ -105,9 +105,9 @@ namespace spdlib
         bool multiReturnPulsesOnly;
         boost::uint_fast16_t classParameters;
 	};
-    
-    
-    
+
+
+
     class DllExport SPDTPSNumPtsUseAvThinInterpolator
 	{
 	public:
@@ -129,8 +129,8 @@ namespace spdlib
         boost::uint_fast16_t numPoints;
         boost::uint_fast16_t elevVal;
 	};
-    
-    
+
+
 }
 
 

@@ -4,7 +4,7 @@
  *
  *  Created by Pete Bunting on 03/11/2016.
  *  Copyright 2016 SPDLib. All rights reserved.
- * 
+ *
  *  This file is part of SPDLib.
  *
  *  SPDLib is free software: you can redistribute it and/or modify
@@ -35,53 +35,53 @@
 
 #include "spd/spd-config.h"
 
-int main (int argc, char * const argv[]) 
+int main (int argc, char * const argv[])
 {
     std::cout.precision(12);
-    
+
     std::cout << "spdclassimg " << SPDLIB_PACKAGE_STRING << ", Copyright (C) " << SPDLIB_COPYRIGHT_YEAR << " Sorted Pulse Library (SPD)\n";
 	std::cout << "This program comes with ABSOLUTELY NO WARRANTY. This is free software,\n";
 	std::cout << "and you are welcome to redistribute it under certain conditions; See\n";
 	std::cout << "website (http://www.spdlib.org). Bugs are to be reported on the trac\n";
 	std::cout << "or directly to " << SPDLIB_PACKAGE_BUGREPORT << std::endl;
 	
-	try 
+	try
 	{
         TCLAP::CmdLine cmd("Define point class from an image file: spdclassimg", ' ', "1.0.0");
-        
+
         TCLAP::ValueArg<boost::uint_fast32_t> numOfRowsBlockArg("r","blockrows","Number of rows within a block (Default 100)",false,100,"unsigned int");
 		cmd.add( numOfRowsBlockArg );
-        
+
         TCLAP::ValueArg<boost::uint_fast32_t> numOfColsBlockArg("c","blockcols","Number of columns within a block (Default 0) - Note values greater than 1 result in a non-sequencial SPD file.",false,0,"unsigned int");
 		cmd.add( numOfColsBlockArg );
 		
 		TCLAP::ValueArg<uint_fast16_t> classBandArg("","band","Image band for class image band",false,1,"uint_fast16_t");
 		cmd.add( classBandArg );
-        
+
 		TCLAP::ValueArg<std::string> inputFileArg("i","input","The input SPD file.",true,"","String");
 		cmd.add( inputFileArg );
-        
+
         TCLAP::ValueArg<std::string> imageFileArg("","image","The input image file.",false,"","String");
 		cmd.add( imageFileArg );
-        
+
         TCLAP::ValueArg<std::string> outputFileArg("o","output","The output SPD file.",true,"","String");
 		cmd.add( outputFileArg );
-        
+
 		cmd.parse( argc, argv );
-		        
+		
         std::cout << "Use image values (0 ignored) to reclassify points intersecting with a image pixel.\n";
-        
+
         std::string inputSPDFile = inputFileArg.getValue();
         std::string inputImageFile = imageFileArg.getValue();
         std::string outputSPDFile = outputFileArg.getValue();
-        
+
         uint_fast16_t classBand = classBandArg.getValue()-1;
-        
+
         spdlib::SPDFile *spdInFile = new spdlib::SPDFile(inputSPDFile);
         spdlib::SPDPulseProcessor *pulseProcessor = new spdlib::SPDDefineClassesFromImg(classBand);
         spdlib::SPDSetupProcessPulses processPulses = spdlib::SPDSetupProcessPulses(numOfColsBlockArg.getValue(), numOfRowsBlockArg.getValue(), true);
         processPulses.processPulsesWithInputImage(pulseProcessor, spdInFile, outputSPDFile, inputImageFile);
-        
+
         delete spdInFile;
         delete pulseProcessor;
 	}

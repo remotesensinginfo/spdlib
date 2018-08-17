@@ -58,36 +58,36 @@ namespace spdlib
 {
     static double currentCmpEastings = 0;
     static double currentCmpNorthings = 0;
-    
+
     inline bool compareFuncSortByDistanceTo(SPDPoint *pt1, SPDPoint *pt2)
     {
         SPDPointUtils ptUtils;
         double dist2Pt1 = ptUtils.distanceXY(currentCmpEastings, currentCmpNorthings, pt1);
         double dist2Pt2 = ptUtils.distanceXY(currentCmpEastings, currentCmpNorthings, pt2);
-        
+
         return dist2Pt1 > dist2Pt2;
     };
-    
+
     inline bool compareFuncSortByZLargestFirst(SPDPoint *pt1, SPDPoint *pt2)
-    {       
+    {
         return pt1->z > pt2->z;
     };
-    
+
     inline bool compareFuncSortByZSmallestFirst(SPDPoint *pt1, SPDPoint *pt2)
-    {       
+    {
         return pt1->z < pt2->z;
     };
-    
+
     inline bool compareFuncSortByHeightLargestFirst(SPDPoint *pt1, SPDPoint *pt2)
-    {       
+    {
         return pt1->height > pt2->height;
     };
-    
+
     inline bool compareFuncSortByHeightSmallestFirst(SPDPoint *pt1, SPDPoint *pt2)
-    {       
+    {
         return pt1->height < pt2->height;
     };
-    
+
 	class DllExport SPDPointGridIndex
 	{
 	public:

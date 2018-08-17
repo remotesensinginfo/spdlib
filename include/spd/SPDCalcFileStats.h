@@ -63,24 +63,24 @@ namespace spdlib
         void calcOverallPulsePointDensityStats(std::string inputSPDFile, std::string outputTextFile, boost::uint_fast32_t blockXSize=250, boost::uint_fast32_t blockYSize=250, float processingResolution=0) throw(SPDProcessingException);
 		~SPDCalcFileStats();
 	};
-    
-    
+
+
     class DllExport SPDPulseProcessorCalcStats : public SPDPulseProcessor
 	{
 	public:
         SPDPulseProcessorCalcStats();
-        
+
         void processDataColumnImage(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses, float *imageData, SPDXYPoint *cenPts, boost::uint_fast32_t numImgBands, float binSize) throw(SPDProcessingException);
 		void processDataColumn(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses, SPDXYPoint *cenPts) throw(SPDProcessingException);
-        
+
         void processDataWindowImage(SPDFile *inSPDFile, bool **validBins, std::vector<SPDPulse*> ***pulses, float ***imageData, SPDXYPoint ***cenPts, boost::uint_fast32_t numImgBands, float binSize, boost::uint_fast16_t winSize) throw(SPDProcessingException)
         {throw SPDProcessingException("Processing using a window is not implemented.");};
 		void processDataWindow(SPDFile *inSPDFile, bool **validBins, std::vector<SPDPulse*> ***pulses, SPDXYPoint ***cenPts, boost::uint_fast16_t winSize) throw(SPDProcessingException)
         {throw SPDProcessingException("Processing using a window is not implemented.");};
-        
+
         std::vector<std::string> getImageBandDescriptions() throw(SPDProcessingException);
         void setHeaderValues(SPDFile *spdFile) throw(SPDProcessingException);
-        
+
         void setCalcStdDev(float meanPulses, float meanPoints)
         {
             first = true;
@@ -88,7 +88,7 @@ namespace spdlib
             this->meanPulses = meanPulses;
             this->meanPoints = meanPoints;
         };
-        
+
         boost::uint_fast64_t getBinCount(){return countBins;};
         boost::uint_fast64_t getMinPulses(){return minPulses;};
         boost::uint_fast64_t getMaxPulses(){return maxPulses;};
@@ -98,26 +98,26 @@ namespace spdlib
         boost::uint_fast64_t getMaxPoints(){return maxPoints;};
         float getMeanPoints(){return ((double)sumPoints)/(double(countBins));};
         float getStdDevPoints(){return sqrt(sqDiffPoints/(double(countBins)));};
-        
+
         ~SPDPulseProcessorCalcStats();
     protected:
         bool calcStdDevVals;
         bool first;
         boost::uint_fast32_t countBins;
-        
+
         boost::uint_fast64_t sumPulses;
         boost::uint_fast32_t minPulses;
         boost::uint_fast32_t maxPulses;
         float meanPulses;
         double sqDiffPulses;
-        
+
         boost::uint_fast64_t sumPoints;
         boost::uint_fast32_t minPoints;
         boost::uint_fast32_t maxPoints;
         float meanPoints;
         double sqDiffPoints;
 	};
-    
+
 }
 
 #endif
