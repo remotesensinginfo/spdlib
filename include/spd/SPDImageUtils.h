@@ -67,9 +67,9 @@ namespace spdlib
 		void getPixelPointLocations(GDALDataset *dataset, double x, double y, std::string wktStrBBox,boost::int_fast32_t *imgX,boost::int_fast32_t *imgY, float *xOff, float *yOff) throw(SPDImageException);
 		/**
 		 * For a cubic interpolation 4 data values are required. Therefore, winSize must equal 4.
-		 */ 
+		 */
 		float cubicInterpValue(float xShift, float yShift, float **pixels,boost::uint_fast32_t winSize) throw(SPDImageException);
-        
+
         void getImageOverlapCut2Env(GDALDataset **datasets, int numDS,  int **dsOffsets, int *width, int *height, double *gdalTransform, OGREnvelope *env, int *maxBlockX, int *maxBlockY) throw(SPDImageException);
         bool closeResTest(double baseRes, double targetRes, double resDiffThresh=0.0001);
         void copyInDatasetIntoOutDataset(GDALDataset *dataset, GDALDataset *outputImageDS, OGREnvelope *env) throw(SPDImageException);
@@ -79,7 +79,7 @@ namespace spdlib
 	private:
 		/**
 		 * For a cubic interpolation 4 data values are required. Therefore, pixels must have length 4.
-		 */ 
+		 */
 		float cubicEstValueFromCurve(float *pixels, float shift);
 	};
 }

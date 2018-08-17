@@ -551,7 +551,7 @@ namespace spdlib{
 
                             // Get the height of the digitised value using the height of the origin
                             // and the time offset within the pulse.
-                            SPDConvertToCartesian((*iterPulses)->zenith, (*iterPulses)->azimuth, 
+                            SPDConvertToCartesian((*iterPulses)->zenith, (*iterPulses)->azimuth,
                                                 (SPD_SPEED_OF_LIGHT_NS * timeOffset), (*iterPulses)->x0, (*iterPulses)->y0, (*iterPulses)->h0, &tmpX, &tmpY, &tmpH);
 
                             if((boost::math::isnan(this->upThreshold)) & (boost::math::isnan(this->lowThreshold)))
@@ -1337,7 +1337,7 @@ namespace spdlib{
 
                             // Get the height of the digitised value using the height of the origin
                             // and the time offset within the pulse.
-                            SPDConvertToCartesian((*iterPulses)->zenith, (*iterPulses)->azimuth, 
+                            SPDConvertToCartesian((*iterPulses)->zenith, (*iterPulses)->azimuth,
                                                 (SPD_SPEED_OF_LIGHT_NS * timeOffset), (*iterPulses)->x0, (*iterPulses)->y0, (*iterPulses)->z0, &tmpX, &tmpY, &tmpZ);
 
                             if((boost::math::isnan(this->upThreshold)) & (boost::math::isnan(this->lowThreshold)))
@@ -16411,11 +16411,11 @@ namespace spdlib{
                  | X           X
               0  |_X___________X_________X_________X___
                    10m         5m        0m       -5m
-            
+
             a vector would be returned containing:
 
             10,10,10,5,5,0
-            
+
             */
             std::vector<double> *points = new std::vector<double>();
             // If there is waveform data and the minimum number of returns has been set to 0
@@ -16440,9 +16440,9 @@ namespace spdlib{
 
                             // Get the height of the digitised value using the height of the origin
                             // and the time offset within the pulse.
-                            SPDConvertToCartesian((*iterPulses)->zenith, (*iterPulses)->azimuth, 
+                            SPDConvertToCartesian((*iterPulses)->zenith, (*iterPulses)->azimuth,
                                                 (SPD_SPEED_OF_LIGHT_NS * timeOffset), (*iterPulses)->x0, (*iterPulses)->y0, (*iterPulses)->h0, &tmpX, &tmpY, &tmpH);
-                            
+
                             bool addVals = false;
                             if((boost::math::isnan(this->upThreshold)) & (boost::math::isnan(this->lowThreshold)))
                             {

@@ -44,7 +44,7 @@ namespace spdlib
 		
 		std::vector<SPDPulse*> *pulses = new std::vector<SPDPulse*>();
 		std::vector<SPDPulse*>::iterator iterPulses;
-        
+
 		try
 		{
 			inFeatureDefn = inputLayer->GetLayerDefn();
@@ -71,7 +71,7 @@ namespace spdlib
 			while( (inFeature = inputLayer->GetNextFeature()) != NULL )
 			{
                 fid = inFeature->GetFID();
-                
+
 				if((numFeatures > 10) && (i % feedback) == 0)
 				{
 					std::cout << ".." << feedbackCounter << ".." << std::flush;
@@ -91,7 +91,7 @@ namespace spdlib
 				{
 					OGRPolygon *polygon = (OGRPolygon *) geometry;
 					outFeature->SetGeometry(polygon);
-				} 
+				}
 				else if( geometry != NULL && wkbFlatten(geometry->getGeometryType()) == wkbMultiPolygon )
 				{
 					OGRMultiPolygon *multiPolygon = (OGRMultiPolygon *) geometry;
@@ -110,7 +110,7 @@ namespace spdlib
 					std::string message = std::string("Unsupport data type: ") + std::string(geometry->getGeometryName());
 					throw SPDProcessingException(message);
 				}
-				else 
+				else
 				{
 					nullGeometry = true;
 					std::cerr << "WARNING: NULL Geometry Present within input file - IGNORED\n";
@@ -120,7 +120,7 @@ namespace spdlib
 				{
 					// Get Pulses within a Geometry..
                     spdReader->readPulseDataInGeom(pulses, geometry);
-                    
+
 					// Process pulses to attribute feature
 					processor->processFeature(inFeature, outFeature, fid, pulses, spdFile);
 										
@@ -137,7 +137,7 @@ namespace spdlib
 					}
 					
 					OGRFeature::DestroyFeature(outFeature);
-                    
+
                     for(iterPulses = pulses->begin(); iterPulses != pulses->end(); ++iterPulses)
                     {
                         SPDPulseUtils::deleteSPDPulse(*iterPulses);
@@ -154,7 +154,7 @@ namespace spdlib
 			throw e;
 		}
 	}
-    
+
     void SPDProcessPolygons::processPolygons(SPDFile *spdFile, SPDFileIncrementalReader *spdReader, OGRLayer *inputLayer, std::ofstream *outASCIIFile)throw(SPDProcessingException)
 	{
 		OGRGeometry *geometry = NULL;
@@ -166,7 +166,7 @@ namespace spdlib
 		
 		std::vector<SPDPulse*> *pulses = new std::vector<SPDPulse*>();
 		std::vector<SPDPulse*>::iterator iterPulses;
-        
+
 		try
 		{
 			inFeatureDefn = inputLayer->GetLayerDefn();
@@ -187,7 +187,7 @@ namespace spdlib
 			while( (inFeature = inputLayer->GetNextFeature()) != NULL )
 			{
                 fid = inFeature->GetFID();
-                
+
 				if((numFeatures > 10) && (i % feedback) == 0)
 				{
 					std::cout << ".." << feedbackCounter << ".." << std::flush;
@@ -206,16 +206,16 @@ namespace spdlib
 					
                     // Get Pulses within a Geometry..
                     spdReader->readPulseDataInGeom(pulses, geometry);
-                    
+
 					// Process pulses to attribute feature
 					processor->processFeature(inFeature, outASCIIFile, fid, pulses, spdFile);
-                    
+
                     for(iterPulses = pulses->begin(); iterPulses != pulses->end(); ++iterPulses)
                     {
                         SPDPulseUtils::deleteSPDPulse(*iterPulses);
                     }
                     pulses->clear();
-                
+
                 }
 				else if( geometry != NULL && wkbFlatten(geometry->getGeometryType()) == wkbPoint )
 				{
@@ -230,12 +230,12 @@ namespace spdlib
 					std::string message = std::string("Unsupport data type: ") + std::string(geometry->getGeometryName());
 					throw SPDProcessingException(message);
 				}
-				else 
+				else
 				{
 					nullGeometry = true;
 					std::cerr << "WARNING: NULL Geometry Present within input file - IGNORED\n";
 				}
-                
+
 				OGRFeature::DestroyFeature(inFeature);
 				i++;
 			}

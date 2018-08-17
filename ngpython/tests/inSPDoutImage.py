@@ -23,7 +23,7 @@
 #
 
 """
-Test for the Python spdapplier module. 
+Test for the Python spdapplier module.
 Mirrors the functionality of the inSPDoutImage program
 under examples/BlockProcessor.
 """
@@ -58,10 +58,10 @@ def meanZImg(spdfile, pulses, points, imagedata):
                 # note: imagedata indexing is: y, x, z
                 sums[y, x, 0] += points[startPoint+npoint]['z']
                 counts[y, x, 0] += 1
-                
+
     # important to do operations 'in place' on imagedata
     # since we not creating a new array unlike RIOS
     numpy.divide(sums, counts, out=imagedata)
-            
+
 
 spdapplier.apply(meanZImg, infile, outputImageFile=outimage)

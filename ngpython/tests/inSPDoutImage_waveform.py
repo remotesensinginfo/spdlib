@@ -23,7 +23,7 @@
 #
 
 """
-Test for the Python spdapplier module. 
+Test for the Python spdapplier module.
 
 Writes out an image that has the max received waveform for each pulse.
 """
@@ -56,5 +56,5 @@ def maxReceivedImg(spdfile, pulses, points, imagedata, transmitted, received):
             imagedata[y, x, 0] = received[startPoint:startPoint+nBins].max()
         else:
             imagedata[y, x, 0] = 0
-                
+
 spdapplier.apply(maxReceivedImg, infile, outputImageFile=outimage, passWaveforms=True)

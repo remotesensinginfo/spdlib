@@ -59,35 +59,35 @@ public:
                 }
             }
         }
-        
+
     };
-    
+
     void processDataBlock(spdlib::SPDFile *inSPDFile, std::vector<spdlib::SPDPulse*> ***pulses, spdlib::SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, float binSize) throw(spdlib::SPDProcessingException)
     {
         throw spdlib::SPDProcessingException("Not implemented as not required.");
     };
-    
+
     void processDataBlockImage(spdlib::SPDFile *inSPDFile, std::vector<spdlib::SPDPulse*> *pulses, float ***imageDataBlock, spdlib::SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast32_t numImgBands) throw(spdlib::SPDProcessingException)
     {
         throw spdlib::SPDProcessingException("Not implemented as not required.");
     };
-    
+
     void processDataBlock(spdlib::SPDFile *inSPDFile, std::vector<spdlib::SPDPulse*> *pulses) throw(spdlib::SPDProcessingException)
     {
         throw spdlib::SPDProcessingException("Not implemented as not required.");
     };
-    
+
     std::vector<std::string> getImageBandDescriptions() throw(spdlib::SPDProcessingException)
     {
         // There is no image output so band names are just returned as a empty vector.
         return std::vector<std::string>();
     };
-    
+
     void setHeaderValues(spdlib::SPDFile *spdFile) throw(spdlib::SPDProcessingException)
     {
         // There are no header values within the spd file to altered.
     };
-    
+
     ~SPDDataBlockProcessorRemoveMeanZ()
     {
         // There is nothing for the deconstructor to do...
@@ -107,12 +107,12 @@ int main (int argc, char * const argv[])
         boost::uint_fast32_t blockYSize=10;
         bool printProgress=true;
         bool keepMinExtent=true;
-        
+
         spdlib::SPDFile *spdInFile = new spdlib::SPDFile(inputSPDFile);
         spdlib::SPDDataBlockProcessor *blockProcessor = new SPDDataBlockProcessorRemoveMeanZ();
         spdlib::SPDProcessDataBlocks processBlocks = spdlib::SPDProcessDataBlocks(blockProcessor, overlap, blockXSize, blockYSize, printProgress, keepMinExtent);
         processBlocks.processDataBlocksGridPulsesInputImage(spdInFile, outputSPDFile, inputImageFile);
-        
+
         delete blockProcessor;
         delete spdInFile;
     }
@@ -124,6 +124,6 @@ int main (int argc, char * const argv[])
     {
         std::cout << "Error: " << e.what() << std::endl;
     }
-    
+
 
 }

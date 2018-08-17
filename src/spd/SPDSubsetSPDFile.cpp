@@ -34,7 +34,7 @@ namespace spdlib
 	
 	void SPDSubsetSPDFile::subsetSPDFile(std::string inputFile, std::string outputFile, double *bbox, bool *bboxDefined) throw(SPDException)
 	{
-		try 
+		try
 		{
 			SPDFile *spdFile = new SPDFile(inputFile);
 			SPDFile *spdOutFile = new SPDFile(outputFile);
@@ -143,15 +143,15 @@ namespace spdlib
 					spdOutFile->setYMin(spdFile->getYMin() + (((float)numRows) * spdFile->getBinSize()));
 				}
 			}
-			catch(boost::numeric::negative_overflow& e) 
+			catch(boost::numeric::negative_overflow& e)
 			{
 				throw SPDProcessingException(e.what());
 			}
-			catch(boost::numeric::positive_overflow& e) 
+			catch(boost::numeric::positive_overflow& e)
 			{
 				throw SPDProcessingException(e.what());
 			}
-			catch(boost::numeric::bad_numeric_cast& e) 
+			catch(boost::numeric::bad_numeric_cast& e)
 			{
 				throw SPDProcessingException(e.what());
 			}
@@ -247,7 +247,7 @@ namespace spdlib
 							{
 								++iterPulses; // Next Pulse...
 							}
-							else 
+							else
 							{
 								SPDPulseUtils::deleteSPDPulse(*iterPulses);
 								iterPulses = pulses[cols]->erase(iterPulses);
@@ -273,7 +273,7 @@ namespace spdlib
 			spdIncReader.close();
 			spdWriter.finaliseClose();
 		}
-		catch (SPDException *e) 
+		catch (SPDException *e)
 		{
 			throw e;
 		}
@@ -284,18 +284,18 @@ namespace spdlib
         try
         {
             // Get Vector Geometry
-            SPDVectorUtils vecUtils; 
+            SPDVectorUtils vecUtils;
             OGRGeometryCollection *geomCollect = vecUtils.getGeometryCollection(shapefile);
             OGREnvelope geomEnv;
             geomCollect->getEnvelope(&geomEnv);
-            
+
             SPDFile *spdFile = new SPDFile(inputFile);
 			SPDFile *spdOutFile = new SPDFile(outputFile);
 			
 			SPDFileReader reader;
 			reader.readHeaderInfo(spdFile->getFilePath(), spdFile);
 			spdOutFile->copyAttributesFrom(spdFile);
-            
+
             boost::uint_fast32_t startCol = 0;
 			boost::uint_fast32_t endCol = 0;
 			boost::uint_fast32_t startRow = 0;
@@ -358,15 +358,15 @@ namespace spdlib
 					spdOutFile->setYMin(spdFile->getYMin() + (((float)numRows) * spdFile->getBinSize()));
 				}
 			}
-			catch(boost::numeric::negative_overflow& e) 
+			catch(boost::numeric::negative_overflow& e)
 			{
 				throw SPDProcessingException(e.what());
 			}
-			catch(boost::numeric::positive_overflow& e) 
+			catch(boost::numeric::positive_overflow& e)
 			{
 				throw SPDProcessingException(e.what());
 			}
-			catch(boost::numeric::bad_numeric_cast& e) 
+			catch(boost::numeric::bad_numeric_cast& e)
 			{
 				throw SPDProcessingException(e.what());
 			}
@@ -386,7 +386,7 @@ namespace spdlib
 			
 			std::cout << "Subset To: X[" << geomEnv.MinX << "," << geomEnv.MaxX << "] Y[" << geomEnv.MinY << "," <<geomEnv.MaxY << "]\n";
 			std::cout << "New SPD file has " << spdOutFile->getNumberBinsX() << " columns and " << spdOutFile->getNumberBinsY() << " rows\n";
-            
+
             std::list<SPDPulse*> **pulses = new std::list<SPDPulse*>*[spdFile->getNumberBinsX()];
 			for(boost::uint_fast32_t i = 0; i < spdFile->getNumberBinsX(); ++i)
 			{
@@ -400,7 +400,7 @@ namespace spdlib
 			
 			int feedback = spdOutFile->getNumberBinsY()/10;
 			int feedbackCounter = 0;
-            
+
             OGRPoint *pt = new OGRPoint();
 			
 			numRows = 0;
@@ -422,18 +422,18 @@ namespace spdlib
                     {
                         pt->setX((*iterPulses)->xIdx);
                         pt->setY((*iterPulses)->yIdx);
-                        
+
                         if(geomCollect->Contains(pt))
                         {
                             ++iterPulses; // Next Pulse...
                         }
-                        else 
+                        else
                         {
                             SPDPulseUtils::deleteSPDPulse(*iterPulses);
                             iterPulses = pulses[cols]->erase(iterPulses);
                         }
                     }
-                                        
+
 					spdWriter.writeDataColumn(pulses[cols], numCols, numRows);
 					++numCols;
 				}
@@ -449,33 +449,33 @@ namespace spdlib
 				++numRows;
 			}
             delete pt;
-            
+
 			std::cout << ". Complete.\n";
 			spdIncReader.close();
 			spdWriter.finaliseClose();
-            
+
         }
         catch(SPDException &e)
         {
             throw e;
         }
     }
-    
-    
+
+
     void SPDSubsetSPDFile::subsetSPDFile2Img(std::string inputFile, std::string outputFile, std::string imgfile, boost::uint_fast32_t blockXSize, boost::uint_fast32_t blockYSize) throw(SPDException)
     {
         try
         {
             SPDDataBlockProcessor *dataBlockProcessor = new SPDDataSubsetWithImgBlockProcessor();
             SPDProcessDataBlocks blockProcessor = SPDProcessDataBlocks(dataBlockProcessor, 0, blockXSize, blockYSize, true, false);
-            
+
             SPDFile *spdFile = new SPDFile(inputFile);
 			
 			SPDFileReader reader;
 			reader.readHeaderInfo(spdFile->getFilePath(), spdFile);
-            
+
             blockProcessor.processDataBlocksGridPulsesInputImage(spdFile, outputFile, imgfile);
-            
+
             delete dataBlockProcessor;
         }
         catch(SPDException &e)
@@ -483,10 +483,10 @@ namespace spdlib
             throw e;
         }
     }
-    
+
     void SPDSubsetSPDFile::subsetSPDFileHeightOnly(std::string inputFile, std::string outputFile, double lowHeight, double upperHeight) throw(SPDException)
     {
-        try 
+        try
 		{
 			SPDFile *spdFile = new SPDFile(inputFile);
 			SPDFile *spdOutFile = new SPDFile(outputFile);
@@ -564,27 +564,27 @@ namespace spdlib
 			spdIncReader.close();
 			spdWriter.finaliseClose();
 		}
-		catch (SPDException *e) 
+		catch (SPDException *e)
 		{
 			throw e;
 		}
     }
-    
+
     void SPDSubsetSPDFile::subsetSphericalSPDFile(std::string inputFile, std::string outputFile, double *bbox, bool *bboxDefined) throw(SPDException)
     {
-        try 
+        try
 		{
 			SPDFile *spdFile = new SPDFile(inputFile);
 			SPDFile *spdOutFile = new SPDFile(outputFile);
 			
 			SPDFileReader reader;
 			reader.readHeaderInfo(spdFile->getFilePath(), spdFile);
-            
+
             if(spdFile->getIndexType() != SPD_SPHERICAL_IDX)
             {
                 throw SPDException("This function only supports subsetting spherically indexed SPD files.");
             }
-            
+
 			spdOutFile->copyAttributesFrom(spdFile);
 			
 			if(!bboxDefined[0] |
@@ -626,7 +626,7 @@ namespace spdlib
 			}
 			
             std::cout << "Input SPD File has " << spdFile->getNumberBinsX() << " columns and " << spdFile->getNumberBinsY() << " rows\n";
-            
+
 			boost::uint_fast32_t startCol = 0;
 			boost::uint_fast32_t endCol = 0;
 			boost::uint_fast32_t startRow = 0;
@@ -654,7 +654,7 @@ namespace spdlib
 				tmpDist = bbox[1] - bbox[0];
 				numCols = boost::numeric_cast<boost::uint_fast32_t>(tmpDist/spdFile->getBinSize());
                 endCol = startCol + numCols;
-                
+
                 spdOutFile->setAzimuthMax(spdFile->getAzimuthMin() + (((float)endCol) * spdFile->getBinSize()));
 				
 				// Define Starting Row
@@ -674,31 +674,31 @@ namespace spdlib
 				tmpDist = bbox[3] - bbox[2];
 				numRows = boost::numeric_cast<boost::uint_fast32_t>(tmpDist/spdFile->getBinSize());
                 endRow = startRow + numRows;
-                
+
                 if(endRow > spdFile->getNumberBinsY())
                 {
                     endRow = spdFile->getNumberBinsY();
                 }
-                
+
                 spdOutFile->setZenithMax(spdFile->getZenithMin() + (((float)endRow) * spdFile->getBinSize()));
-                
+
 			}
-			catch(boost::numeric::negative_overflow& e) 
+			catch(boost::numeric::negative_overflow& e)
 			{
 				throw SPDProcessingException(e.what());
 			}
-			catch(boost::numeric::positive_overflow& e) 
+			catch(boost::numeric::positive_overflow& e)
 			{
 				throw SPDProcessingException(e.what());
 			}
-			catch(boost::numeric::bad_numeric_cast& e) 
+			catch(boost::numeric::bad_numeric_cast& e)
 			{
 				throw SPDProcessingException(e.what());
 			}
 			
             //std::cout << "Cols: [" << startCol << "," << endCol << "]\n";
             //std::cout << "Rows: [" << startRow << "," << endRow << "]\n";
-            
+
 			if(endCol <= startCol)
 			{
 				throw SPDProcessingException("Define subset is not within the input file (X Axis).");
@@ -769,7 +769,7 @@ namespace spdlib
 							{
 								++iterPulses; // Next Pulse...
 							}
-							else 
+							else
 							{
 								SPDPulseUtils::deleteSPDPulse(*iterPulses);
 								iterPulses = pulses[cols]->erase(iterPulses);
@@ -795,27 +795,27 @@ namespace spdlib
 			spdIncReader.close();
 			spdWriter.finaliseClose();
 		}
-		catch (SPDException *e) 
+		catch (SPDException *e)
 		{
 			throw e;
 		}
     }
-    
+
     void SPDSubsetSPDFile::subsetScanSPDFile(std::string inputFile, std::string outputFile, double *bbox, bool *bboxDefined) throw(SPDException)
     {
-        try 
+        try
 		{
 			SPDFile *spdFile = new SPDFile(inputFile);
 			SPDFile *spdOutFile = new SPDFile(outputFile);
 			
 			SPDFileReader reader;
 			reader.readHeaderInfo(spdFile->getFilePath(), spdFile);
-            
+
             if(spdFile->getIndexType() != SPD_SCAN_IDX)
             {
                 throw SPDException("This function only supports subsetting scan indexed SPD files.");
             }
-            
+
 			spdOutFile->copyAttributesFrom(spdFile);
 			
 			if(!bboxDefined[0] |
@@ -857,7 +857,7 @@ namespace spdlib
 			}
 			
             std::cout << "Input SPD File has " << spdFile->getNumberBinsX() << " columns and " << spdFile->getNumberBinsY() << " rows\n";
-            
+
 			boost::uint_fast32_t startCol = 0;
 			boost::uint_fast32_t endCol = 0;
 			boost::uint_fast32_t startRow = 0;
@@ -885,7 +885,7 @@ namespace spdlib
 				tmpDist = bbox[1] - bbox[0];
 				numCols = boost::numeric_cast<boost::uint_fast32_t>(tmpDist/spdFile->getBinSize());
                 endCol = startCol + numCols;
-                
+
                 spdOutFile->setScanlineIdxMax(spdFile->getAzimuthMin() + (((float)endCol) * spdFile->getBinSize()));
 				
 				// Define Starting Row
@@ -905,31 +905,31 @@ namespace spdlib
 				tmpDist = bbox[3] - bbox[2];
 				numRows = boost::numeric_cast<boost::uint_fast32_t>(tmpDist/spdFile->getBinSize());
                 endRow = startRow + numRows;
-                
+
                 if(endRow > spdFile->getNumberBinsY())
                 {
                     endRow = spdFile->getNumberBinsY();
                 }
-                
+
                 spdOutFile->setScanlineMax(spdFile->getScanlineMin() + (((float)endRow) * spdFile->getBinSize()));
-                
+
 			}
-			catch(boost::numeric::negative_overflow& e) 
+			catch(boost::numeric::negative_overflow& e)
 			{
 				throw SPDProcessingException(e.what());
 			}
-			catch(boost::numeric::positive_overflow& e) 
+			catch(boost::numeric::positive_overflow& e)
 			{
 				throw SPDProcessingException(e.what());
 			}
-			catch(boost::numeric::bad_numeric_cast& e) 
+			catch(boost::numeric::bad_numeric_cast& e)
 			{
 				throw SPDProcessingException(e.what());
 			}
 			
             //std::cout << "Cols: [" << startCol << "," << endCol << "]\n";
             //std::cout << "Rows: [" << startRow << "," << endRow << "]\n";
-            
+
 			if(endCol <= startCol)
 			{
 				throw SPDProcessingException("Define subset is not within the input file (X Axis).");
@@ -1000,7 +1000,7 @@ namespace spdlib
 							{
 								++iterPulses; // Next Pulse...
 							}
-							else 
+							else
 							{
 								SPDPulseUtils::deleteSPDPulse(*iterPulses);
 								iterPulses = pulses[cols]->erase(iterPulses);
@@ -1026,7 +1026,7 @@ namespace spdlib
 			spdIncReader.close();
 			spdWriter.finaliseClose();
 		}
-		catch (SPDException *e) 
+		catch (SPDException *e)
 		{
 			throw e;
 		}
@@ -1037,9 +1037,9 @@ namespace spdlib
 	{
 		
 	}
-    
-    
-    
+
+
+
     SPDUPDPulseSubset::SPDUPDPulseSubset()
 	{
 		
@@ -1047,7 +1047,7 @@ namespace spdlib
 	
 	void SPDUPDPulseSubset::subsetUPD(std::string inputFile, std::string outputFile, boost::uint_fast32_t startPulse, boost::uint_fast32_t numOfPulses)throw(SPDIOException)
 	{
-		try 
+		try
 		{
 			std::list<SPDPulse*> *pulses = new std::list<SPDPulse*>();
 			
@@ -1066,7 +1066,7 @@ namespace spdlib
 			updWriter.finaliseClose();
 			
 		}
-		catch (SPDIOException &e) 
+		catch (SPDIOException &e)
 		{
 			throw e;
 		}
@@ -1077,15 +1077,15 @@ namespace spdlib
 	{
 		
 	}
-    
-    
-    
-    
+
+
+
+
     SPDDataSubsetWithImgBlockProcessor::SPDDataSubsetWithImgBlockProcessor()
     {
-        
+
     }
-    
+
     void SPDDataSubsetWithImgBlockProcessor::processDataBlockImage(SPDFile *inSPDFile, std::vector<SPDPulse*> ***pulses, float ***imageDataBlock, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast32_t numImgBands, float binSize) throw(SPDProcessingException)
     {
         try
@@ -1094,7 +1094,7 @@ namespace spdlib
             {
                 throw SPDProcessingException("The input image needs to have at least 1 image band.");
             }
-            
+
             SPDPulseUtils plsUtils;
 
             for(boost::uint_fast32_t i = 0; i < ySize; ++i)
@@ -1118,12 +1118,12 @@ namespace spdlib
 			throw SPDProcessingException(e.what());
 		}
     }
-    
+
     SPDDataSubsetWithImgBlockProcessor::~SPDDataSubsetWithImgBlockProcessor()
     {
-        
+
     }
-    
-    
-    
+
+
+
 }

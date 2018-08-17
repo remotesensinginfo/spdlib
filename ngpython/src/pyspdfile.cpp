@@ -521,23 +521,23 @@ PySPDFile_readBlock(PySPDFile *self, PyObject *args)
     boost::uint_fast32_t bboxArr[4];
     for( int n = 0; n < 4; n++ )
     {
-        PyObject *o = PySequence_GetItem(pSeq, n); 
+        PyObject *o = PySequence_GetItem(pSeq, n);
 #if PY_MAJOR_VERSION >= 3
-        if( !PyLong_Check(o) ) 
+        if( !PyLong_Check(o) )
 #else
-        if( !PyInt_Check(o) ) 
+        if( !PyInt_Check(o) )
 #endif
-        { 
-            PyErr_SetString(PySPDError, "Must be a sequence of ints" ); 
-            Py_DECREF(o); 
+        {
+            PyErr_SetString(PySPDError, "Must be a sequence of ints" );
+            Py_DECREF(o);
             return NULL;
-        } 
+        }
 #if PY_MAJOR_VERSION >= 3
         bboxArr[n] = PyLong_AsLong(o);
 #else
-        bboxArr[n] = PyInt_AsLong(o); 
+        bboxArr[n] = PyInt_AsLong(o);
 #endif
-        Py_DECREF(o); 
+        Py_DECREF(o);
     }
 
     boost::uint_fast32_t xBlockSize = bboxArr[2] - bboxArr[0];
@@ -692,7 +692,7 @@ static PyTypeObject PySPDFileType = {
 PyMODINIT_FUNC pyspdfile_init(PyObject *module, PyObject *error)
 {
     import_array();
-    
+
     PySPDError = error;
 
     PySPDFileType.tp_new = PyType_GenericNew;
@@ -921,10 +921,10 @@ PyObject* createSPDFileArray(spdlib::SPDFile *pFile, float binSize)
 
     // length 1
     PyObject *pArray = spdfileCreator.createArray(1);
-    
+
     SPDFileArrayIndices *pIndices = getSPDFileIndices(pArray);
 
-    // get the first element 
+    // get the first element
     void *pRecord = PyArray_GETPTR1((PyArrayObject*)pArray, 0);
 
     //pIndices->FilePath.setValueArray(pRecord, pFile->getFilePath().c_str());

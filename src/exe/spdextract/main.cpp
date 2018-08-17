@@ -41,7 +41,7 @@
 int main (int argc, char * const argv[])
 {
     std::cout.precision(12);
-    
+
     std::cout << "spdextract " << SPDLIB_PACKAGE_STRING << ", Copyright (C) " << SPDLIB_COPYRIGHT_YEAR << " Sorted Pulse Library (SPD)\n";
 	std::cout << "This program comes with ABSOLUTELY NO WARRANTY. This is free software,\n";
 	std::cout << "and you are welcome to redistribute it under certain conditions; See\n";
@@ -51,19 +51,19 @@ int main (int argc, char * const argv[])
 	try
 	{
         TCLAP::CmdLine cmd("Extract returns and pulses which meet a set of criteria: spdextract", ' ', "1.0.0");
-        
+
         TCLAP::ValueArg<boost::uint_fast32_t> numOfRowsBlockArg("r","blockrows","Number of rows within a block (Default 100)",false,100,"unsigned int");
 		cmd.add( numOfRowsBlockArg );
-        
+
         TCLAP::ValueArg<boost::uint_fast32_t> numOfColsBlockArg("c","blockcols","Number of columns within a block (Default 0) - Note values greater than 1 result in a non-sequencial SPD file.",false,0,"unsigned int");
 		cmd.add( numOfColsBlockArg );
-        
+
         TCLAP::ValueArg<float> binSizeArg("b","binsize","Bin size for processing and output image (Default 0) - Note 0 will use the native SPD file bin size.",false,0,"float");
 		cmd.add( binSizeArg );
-        
+
         TCLAP::ValueArg<boost::uint_fast16_t> classOfInterestArg("", "class", "Class of interest (Ground == 3; Not Ground == 104)", false, spdlib::SPD_ALL_CLASSES, "unsigned int");
 		cmd.add( classOfInterestArg );
-        
+
         std::vector<std::string> allowedReturns;
 		allowedReturns.push_back("ALL");
 		allowedReturns.push_back("FIRST");
@@ -74,24 +74,24 @@ int main (int argc, char * const argv[])
 		
 		TCLAP::ValueArg<std::string> returnOfInterestArg("", "return", "The return(s) of interest", false, "ALL", &allowedReturnVals);
 		cmd.add( returnOfInterestArg );
-        
+
         TCLAP::SwitchArg minSwitch("","min","Extract only the minimum returns (within the bin and therefore only available for SPD file, not UPD).", false);
         cmd.add( minSwitch );
-        
+
         TCLAP::SwitchArg maxSwitch("","max","Extract only the maximum returns (within the bin and therefore only available for SPD file, not UPD).", false);
         cmd.add( maxSwitch );
-        
+
 		TCLAP::ValueArg<std::string> inputFileArg("i","input","The input SPD file.",true,"","String");
 		cmd.add( inputFileArg );
-        
+
         TCLAP::ValueArg<std::string> outputFileArg("o","output","The output SPD file.",true,"","String");
 		cmd.add( outputFileArg );
-        
+
 		cmd.parse( argc, argv );
-        
+
 		std::string inputFile = inputFileArg.getValue();
 		std::string outputFile = outputFileArg.getValue();
-        
+
         bool classValSet = false;
         boost::uint_fast16_t classVal = 0;
         if(classOfInterestArg.isSet())
@@ -105,7 +105,7 @@ int main (int argc, char * const argv[])
         if(returnOfInterestArg.isSet())
         {
             returnValSet = true;
-            
+
             if(returnOfInterestArg.getValue() == "ALL")
             {
                 returnVal = spdlib::SPD_ALL_RETURNS;
@@ -132,12 +132,12 @@ int main (int argc, char * const argv[])
                 returnVal = spdlib::SPD_ALL_RETURNS;
             }
         }
-        
+
         if(minSwitch.getValue() & maxSwitch.getValue())
         {
             throw spdlib::SPDException("The --min and --max option cannot both be selected.");
         }
-        
+
         bool minMaxSet = false;
         boost::uint_fast16_t highOrLow = spdlib::SPD_SELECT_LOWEST;
         if(minSwitch.getValue())
@@ -150,16 +150,16 @@ int main (int argc, char * const argv[])
             minMaxSet = true;
             highOrLow = spdlib::SPD_SELECT_HIGHEST;
         }
-        
-        
+
+
         spdlib::SPDFile *spdInFile = new spdlib::SPDFile(inputFile);
         spdlib::SPDFileReader reader;
         reader.readHeaderInfo(spdInFile->getFilePath(), spdInFile);
-        
+
         if(spdInFile->getFileType() == spdlib::SPD_UPD_TYPE)
         {
             spdlib::SPDExtractReturnsImportProcess *importProcessor = new spdlib::SPDExtractReturnsImportProcess(outputFile, classValSet, classVal, returnValSet, returnVal);
-            
+
             reader.readAndProcessAllData(spdInFile->getFilePath(), spdInFile, importProcessor);
             importProcessor->completeFileAndClose(spdInFile);
             delete importProcessor;

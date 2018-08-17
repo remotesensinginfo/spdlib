@@ -28,12 +28,12 @@ namespace spdlib
 
     SPDIOUtils::SPDIOUtils()
     {
-            
+
     }
-    
+
 	void SPDIOUtils::gridAndWriteData(SPDDataExporter *exporter, std::list<SPDPulse*> *pls, SPDFile *spdFile, std::string outputFile)throw(SPDIOException)
 	{
-		try 
+		try
 		{
 			SPDGridData gridData;
 			std::list<SPDPulse*> ***griddedPts = gridData.gridData(pls, spdFile);
@@ -67,11 +67,11 @@ namespace spdlib
 			
 			exporter->finaliseClose();
 		}
-		catch (SPDProcessingException &e) 
+		catch (SPDProcessingException &e)
 		{
 			throw SPDIOException(e.what());
 		}
-		catch (SPDIOException &e) 
+		catch (SPDIOException &e)
 		{
 			throw e;
 		}
@@ -79,7 +79,7 @@ namespace spdlib
 	
 	void SPDIOUtils::gridAndWriteData(SPDDataExporter *exporter, std::vector<SPDPulse*> *pls, SPDFile *spdFile, std::string outputFile)throw(SPDIOException)
 	{
-		try 
+		try
 		{
 			SPDGridData gridData;
 			std::list<SPDPulse*> ***griddedPts = gridData.gridData(pls, spdFile);
@@ -113,19 +113,19 @@ namespace spdlib
 			
 			exporter->finaliseClose();
 		}
-		catch (SPDProcessingException &e) 
+		catch (SPDProcessingException &e)
 		{
 			throw SPDIOException(e.what());
 		}
-		catch (SPDIOException &e) 
+		catch (SPDIOException &e)
 		{
 			throw e;
 		}
 	}
-    
+
     SPDIOUtils::~SPDIOUtils()
     {
-           
+
     }
 }
 

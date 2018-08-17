@@ -7,23 +7,23 @@
   *
   *  This file is part of SPDLib.
   *
-  *  Permission is hereby granted, free of charge, to any person 
-  *  obtaining a copy of this software and associated documentation 
-  *  files (the "Software"), to deal in the Software without restriction, 
-  *  including without limitation the rights to use, copy, modify, 
-  *  merge, publish, distribute, sublicense, and/or sell copies of the 
-  *  Software, and to permit persons to whom the Software is furnished 
+  *  Permission is hereby granted, free of charge, to any person
+  *  obtaining a copy of this software and associated documentation
+  *  files (the "Software"), to deal in the Software without restriction,
+  *  including without limitation the rights to use, copy, modify,
+  *  merge, publish, distribute, sublicense, and/or sell copies of the
+  *  Software, and to permit persons to whom the Software is furnished
   *  to do so, subject to the following conditions:
   *
-  *  The above copyright notice and this permission notice shall be 
+  *  The above copyright notice and this permission notice shall be
   *  included in all copies or substantial portions of the Software.
   *
-  *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, 
-  *  EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES 
-  *  OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. 
-  *  IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR 
-  *  ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF 
-  *  CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION 
+  *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+  *  EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+  *  OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+  *  IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR
+  *  ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF
+  *  CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
   *  WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
   *
   */
@@ -84,7 +84,7 @@ namespace spdlib
 	struct DllExport SPDPoint
 	{
 		/**
-		 * The return ID - A unique ID for each point within a pulse. 
+		 * The return ID - A unique ID for each point within a pulse.
 		 * (In order recieved)
 		 */
         boost::uint_fast16_t returnID;
@@ -159,12 +159,12 @@ namespace spdlib
 		 */
         boost::int_fast16_t ignore;
 		/**
-		 * This value indicates a user defined record that describes the waveform packet. 
+		 * This value indicates a user defined record that describes the waveform packet.
 		 * A value of zero indicates that there is no waveform data associated with the lidar return
 		 */
         boost::int_fast16_t wavePacketDescIdx;
 		/**
-		 * Offset in picoseconds from the first digitized value to the location with the waveform 
+		 * Offset in picoseconds from the first digitized value to the location with the waveform
 		 * packet that the associated return was detected
 		 */
         boost::uint_fast32_t waveformOffset;
@@ -272,12 +272,12 @@ namespace spdlib
 		 */
 		unsigned int ignore;
 		/**
-		 * This value indicates a user defined record that describes the waveform packet. 
+		 * This value indicates a user defined record that describes the waveform packet.
 		 * A value of zero indicates that there is no waveform data associated with the lidar return
 		 */
 		unsigned int wavePacketDescIdx;
 		/**
-		 * Offset in picoseconds from the first digitized value to the location with the waveform 
+		 * Offset in picoseconds from the first digitized value to the location with the waveform
 		 * packet that the associated return was detected
 		 */
 		unsigned long waveformOffset;
@@ -373,12 +373,12 @@ namespace spdlib
 		 */
 		unsigned int ignore;
 		/**
-		 * This value indicates a user defined record that describes the waveform packet. 
+		 * This value indicates a user defined record that describes the waveform packet.
 		 * A value of zero indicates that there is no waveform data associated with the lidar return
 		 */
 		unsigned int wavePacketDescIdx;
 		/**
-		 * Offset in picoseconds from the first digitized value to the location with the waveform 
+		 * Offset in picoseconds from the first digitized value to the location with the waveform
 		 * packet that the associated return was detected
 		 */
 		unsigned long waveformOffset;
@@ -411,7 +411,7 @@ namespace spdlib
 			return stream;
 		};
 	};
-    
+
 	/**
 	 * Provides useful utilities for manipulating an SPDPoint.
 	 */
@@ -426,13 +426,13 @@ namespace spdlib
 		H5::CompType* createSPDPointV1DataTypeDisk();
 		H5::CompType* createSPDPointV1DataTypeMemory();
         H5::CompType* createSPDPointV2DataTypeDisk();
-		H5::CompType* createSPDPointV2DataTypeMemory();        
+		H5::CompType* createSPDPointV2DataTypeMemory();
 		void initSPDPoint(SPDPoint *pt);
 		void initSPDPoint(SPDPointH5V1 *pt);
         void initSPDPoint(SPDPointH5V2 *pt);
 		SPDPoint* createSPDPointCopy(SPDPoint *pt);
         void copySPDPointTo(SPDPoint *pt, SPDPoint *pt_out);
-        
+
         /* For Point Version 1 */
 		SPDPoint* createSPDPointCopy(SPDPointH5V1 *pt);
 		SPDPointH5V1* createSPDPointH5Copy(SPDPointH5V1 *pt);
@@ -440,7 +440,7 @@ namespace spdlib
 		void copySPDPointTo(SPDPoint *pt, SPDPointH5V1 *pt_out);
 		void copySPDPointH5To(SPDPointH5V1 *pt, SPDPointH5V1 *pt_out);
 		void copySPDPointH5To(SPDPointH5V1 *pt, SPDPoint *pt_out);
-        
+
         /* For Point Version 2 */
 		SPDPoint* createSPDPointCopy(SPDPointH5V2 *pt);
 		SPDPointH5V2* createSPDPointH5Copy(SPDPointH5V2 *pt);
@@ -448,13 +448,13 @@ namespace spdlib
 		void copySPDPointTo(SPDPoint *pt, SPDPointH5V2 *pt_out);
 		void copySPDPointH5To(SPDPointH5V2 *pt, SPDPointH5V2 *pt_out);
 		void copySPDPointH5To(SPDPointH5V2 *pt, SPDPoint *pt_out);
-        
+
         void verticalHeightBinPoints(std::vector<SPDPoint*> *pts, std::vector<SPDPoint*> **bins,boost::uint_fast32_t numBins, float min, float max, bool ignorePtsOverMax, bool ignoreGrd, float minHeightThres)throw(SPDProcessingException);
         void verticalElevationBinPoints(std::vector<SPDPoint*> *pts, std::vector<SPDPoint*> **bins,boost::uint_fast32_t numBins, float min, float max)throw(SPDProcessingException);
 		~SPDPointUtils();		
 	};
 	
-	inline bool cmpSPDPointTime(SPDPoint *pt1, SPDPoint *pt2) 
+	inline bool cmpSPDPointTime(SPDPoint *pt1, SPDPoint *pt2)
 	{
 		return pt1->gpsTime > pt2->gpsTime;
 	}

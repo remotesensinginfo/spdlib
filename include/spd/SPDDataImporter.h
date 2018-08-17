@@ -7,23 +7,23 @@
  *
  *  This file is part of SPDLib.
  *
- *  Permission is hereby granted, free of charge, to any person 
- *  obtaining a copy of this software and associated documentation 
- *  files (the "Software"), to deal in the Software without restriction, 
- *  including without limitation the rights to use, copy, modify, 
- *  merge, publish, distribute, sublicense, and/or sell copies of the 
- *  Software, and to permit persons to whom the Software is furnished 
+ *  Permission is hereby granted, free of charge, to any person
+ *  obtaining a copy of this software and associated documentation
+ *  files (the "Software"), to deal in the Software without restriction,
+ *  including without limitation the rights to use, copy, modify,
+ *  merge, publish, distribute, sublicense, and/or sell copies of the
+ *  Software, and to permit persons to whom the Software is furnished
  *  to do so, subject to the following conditions:
  *
- *  The above copyright notice and this permission notice shall be 
+ *  The above copyright notice and this permission notice shall be
  *  included in all copies or substantial portions of the Software.
  *
- *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, 
- *  EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES 
- *  OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. 
- *  IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR 
- *  ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF 
- *  CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION 
+ *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+ *  EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+ *  OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+ *  IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR
+ *  ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF
+ *  CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
  *  WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
@@ -127,14 +127,14 @@ namespace spdlib
 				throw SPDIOException("Coordinate systems have not been initialised.");
 			}
 			
-			try 
+			try
 			{
 				if( (coordTransform == NULL) || !coordTransform->Transform( 1, x, y, z ) )
 				{
 					throw SPDIOException("Transformation of coordinates failed.");
 				}
 			}
-			catch (SPDIOException &e) 
+			catch (SPDIOException &e)
 			{
 				throw e;
 			}
@@ -146,7 +146,7 @@ namespace spdlib
 				throw SPDIOException("Coordinate systems have not been initialised.");
 			}
 			
-			try 
+			try
 			{
                 double val = *z;
 				if( (coordTransform == NULL) || !coordTransform->Transform( 1, x, y, &val ) )
@@ -155,7 +155,7 @@ namespace spdlib
 				}
                 *z = val;
 			}
-			catch (SPDIOException &e) 
+			catch (SPDIOException &e)
 			{
 				throw e;
 			}
@@ -167,14 +167,14 @@ namespace spdlib
 				throw SPDIOException("Coordinate systems have not been initialised.");
 			}
 			
-			try 
+			try
 			{
 				if( (coordTransform == NULL) || !coordTransform->Transform( 1, x, y ) )
 				{
 					throw SPDIOException("Transformation of coordinates failed.");
 				}
 			}
-			catch (SPDIOException &e) 
+			catch (SPDIOException &e)
 			{
 				throw e;
 			}
@@ -389,7 +389,7 @@ namespace spdlib
 				}
 				
 				pulse->xIdx = pulse->x0;
-				pulse->yIdx = pulse->y0; 
+				pulse->yIdx = pulse->y0;
 			}
 			else
 			{
@@ -398,7 +398,7 @@ namespace spdlib
 		};
 		void transformPulseCoords(SPDFile *spdFile, SPDPulse *pulse) throw(SPDIOException)
 		{
-			try 
+			try
 			{
 				if(spdFile->getOriginDefined() == SPD_TRUE)
 				{
@@ -418,7 +418,7 @@ namespace spdlib
 					}
 				}
 			}
-			catch (SPDIOException &e) 
+			catch (SPDIOException &e)
 			{
 				throw e;
 			}

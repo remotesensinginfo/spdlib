@@ -34,7 +34,7 @@ namespace spdlib
 	
 	void SPDMergeFiles::mergeToUPD(std::vector<std::string> inputFiles, std::string output, std::string inFormat,  std::string schema, std::string inSpatialRef, bool convertCoords, std::string outputProj4, boost::uint_fast16_t indexCoords, bool setSourceID, bool setReturnIDs, std::vector<boost::uint_fast16_t> returnID, bool setClasses, std::vector<boost::uint_fast16_t> classValues, bool ignoreChecks, boost::uint_fast16_t waveBinRes, bool keepMinExtent) throw(SPDException)
 	{
-		try 
+		try
 		{
 			SPDIOFactory ioFactory;
 			
@@ -50,7 +50,7 @@ namespace spdlib
 			
             boost::uint_fast16_t sourceID = 0;
             boost::uint_fast16_t fileCount = 0;
-            
+
 			for(std::vector<std::string>::iterator iterInFiles = inputFiles.begin(); iterInFiles != inputFiles.end(); ++iterInFiles)
 			{
 				SPDFile *spdFile = new SPDFile(*iterInFiles);
@@ -59,7 +59,7 @@ namespace spdlib
                 {
                     spdFile->setSpatialReference(inSpatialRef);
                 }
-                
+
                 if(setSourceID)
                 {
                     exportAsRead->setSourceID(sourceID++);
@@ -73,15 +73,15 @@ namespace spdlib
                     exportAsRead->setClassValue(classValues.at(fileCount));
                 }
 				importer->readAndProcessAllData(*iterInFiles, spdFile, exportAsRead);
-                
+
                 //std::cout << "SPDFile Input [" << spdFile->getXMin() << ", " << spdFile->getXMax() << "][" << spdFile->getYMin() << ", " << spdFile->getYMax() << "]\n";
-                
+
                 if(first)
 				{
 					spdFileMerged->copyAttributesFrom(spdFile);
 					first = false;
 				}
-				else 
+				else
 				{
 					if(ignoreChecks)
                     {
@@ -101,7 +101,7 @@ namespace spdlib
 			delete spdFileOut;
 			delete exportAsRead;
 		}
-		catch (SPDException &e) 
+		catch (SPDException &e)
 		{
 			throw e;
 		}

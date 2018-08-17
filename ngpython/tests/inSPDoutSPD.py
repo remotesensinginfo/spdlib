@@ -23,7 +23,7 @@
 #
 
 """
-Test for the Python spdapplier module. 
+Test for the Python spdapplier module.
 Mirrors the functionality of the inSPDoutSPD program
 under examples/BlockProcessor.
 """
@@ -46,12 +46,12 @@ outfile = sys.argv[2]
 def setRandomColours(spdfile, pulses, points):
     """
     Since this is a bit of a contrived example, the following code works
-    well since all the points are now in one array and you don't have to 
+    well since all the points are now in one array and you don't have to
     iterate through the pulses:
     points['red'] = numpy.random.randint(0, 255, points.shape[0])
     points['green'] = numpy.random.randint(0, 255, points.shape[0])
     points['blue'] = numpy.random.randint(0, 255, points.shape[0])
-    
+
     However, in the spirit of the example, here is some numba code that
     performs the much same thing as the C++
     Note: with numba you can access the fields like pulses[npulse].numberOfReturns

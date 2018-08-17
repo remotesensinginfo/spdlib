@@ -26,12 +26,12 @@
 
 namespace spdlib {
 	
-    
+
     SPDMathsUtils::SPDMathsUtils()
     {
-        
+
     }
-    
+
     void SPDMathsUtils::applySavitzkyGolaySmoothing(float *dataValuesY, float *dataValuesX, boost::uint_fast32_t numValues, boost::uint_fast16_t winHSize, boost::uint_fast16_t order, bool removeLTZeros) throw(SPDProcessingException)
     {
         int numCols = 2;
@@ -41,7 +41,7 @@ namespace spdlib {
 		SPDPolyFit polyFit;
 		gsl_vector *coefficients = NULL;
 		gsl_matrix *inputValues = NULL;
-        
+
         float *outputValues = new float[numValues];
 		
 		for(boost::uint_fast32_t i = 0; i < numValues; ++i)
@@ -56,12 +56,12 @@ namespace spdlib {
 				numRows = (winHSize + 1) + (numValues - i);
 				startVal = i - winHSize;
 			}
-			else 
+			else
 			{
 				numRows = (winHSize * 2) + 1;
 				startVal = i - winHSize;
 			}
-            
+
 			inputValues = gsl_matrix_alloc (numRows,numCols);
 			for(int j = 0; j < numRows; ++j)
 			{
@@ -91,7 +91,7 @@ namespace spdlib {
 			gsl_matrix_free(inputValues);
 			gsl_vector_free(coefficients);
 		}
-        
+
         for(boost::uint_fast32_t i = 0; i < numValues; ++i)
 		{
             if(removeLTZeros)
@@ -106,16 +106,16 @@ namespace spdlib {
         delete[] outputValues;
 
     }
-    
+
     std::vector<GaussianDecompReturnType*>* SPDMathsUtils::fitGaussianMixture(SPDInitDecomposition *initDecomp, float minimumGaussianGap, float *dataValues, float *dataIntervals, boost::uint_fast32_t nVals, float intThreshold) throw(SPDProcessingException)
     {
         if(nVals < 5)
         {
             throw SPDProcessingException("Less than 5 values were passed to the fitGaussianMixture function, insuficiant for fitting.");
         }
-        
+
         std::vector<GaussianDecompReturnType*> *gaussianPeaks = new std::vector<GaussianDecompReturnType*>();
-        
+
         /*for(boost::uint_fast32_t i = 0; i < nVals; ++i)
         {
             if(i == 0)
@@ -128,7 +128,7 @@ namespace spdlib {
             }
         }
         std::cout << std::endl;
-        
+
         for(boost::uint_fast32_t i = 0; i < nVals; ++i)
         {
             if(i == 0)
@@ -141,19 +141,19 @@ namespace spdlib {
             }
         }
         std::cout << std::endl;*/
-        
-        try 
+
+        try
         {
             std::vector<boost::uint_fast32_t> *peaks = new std::vector<boost::uint_fast32_t>();
             std::vector<boost::uint_fast32_t> *initPeaks = initDecomp->findInitPoints(dataValues, nVals, intThreshold);
-                        
+
             //std::cout << "There are " << initPeaks->size() << " initial peaks.\n";
-            
+
             /*for(unsigned int i = 0; i < initPeaks->size(); ++i)
             {
                 peaks->push_back(initPeaks->at(i));
             }*/
-            
+
             if(initPeaks->size() == 1)
             {
                 for(unsigned int i = 0; i < initPeaks->size(); ++i)
@@ -206,9 +206,9 @@ namespace spdlib {
                     }
                 }
             }
-            
+
             //std::cout << "There are " << peaks->size() << " peaks.\n";
-            
+
             if(peaks->size() > 0)
             {
                 mp_config *mpConfigValues = new mp_config();
@@ -224,9 +224,9 @@ namespace spdlib {
                 mpConfigValues->douserscale = 0;
                 mpConfigValues->nofinitecheck = 0;
                 mpConfigValues->iterproc = 0;
-                
+
                 mp_result *mpResultsValues = new mp_result();
-                
+
 				int numOfParams = peaks->size() * 3;
 				/*
 				 * p[0] = amplitude
@@ -283,8 +283,8 @@ namespace spdlib {
 					paramConstraints[idx+2].relstep = 0;
 					paramConstraints[idx+2].side = 0;
 					paramConstraints[idx+2].deriv_debug = 0;
-                    
-                    
+
+
                     //std::cout << "Peak: " << i << std::endl;
                     //std::cout << "Amp: " << parameters[idx] << std::endl;
                     //std::cout << "Height: " << parameters[idx+1] << std::endl;
@@ -334,7 +334,7 @@ namespace spdlib {
                    | (returnCode == MP_XTOL) | (returnCode == MP_XTOL))
 				{
 					// MP Fit completed..
-                    
+
                     /* DEBUG INFO...
                      if(returnCode == MP_OK_CHI)
                      {
@@ -368,12 +368,12 @@ namespace spdlib {
                      {
                      std::cout << "mpfit - gtol is too small; cannot make further improvements.\n";
                      }
-                     else 
+                     else
                      {
                      std::cout << "An error has probably occurred - wait for exception...\n";
                      }
-                     
-                     
+
+
                      std::cout << "Run Results (MPFIT version: " << mpResultsValues->version << "):\n";
                      std::cout << "Final Chi-Squaured = " << mpResultsValues->bestnorm << std::endl;
                      std::cout << "Start Chi-Squaured = " << mpResultsValues->orignorm << std::endl;
@@ -422,12 +422,12 @@ namespace spdlib {
 				{
 					throw SPDException("mpfit - Not enough degrees of freedom.");
 				}
-				else 
+				else
 				{
                     std::cout << "Returned values may have errors associated with...\n";
 					std::cout << "Return code was :" << returnCode << " - this can not been defined!\n";
 				}
-                
+
                 for(unsigned int i = 0; i < peaks->size(); ++i)
 				{
                     idx = i*3;
@@ -440,7 +440,7 @@ namespace spdlib {
                     //std::cout << "Height: " << parameters[idx+1] << std::endl;
                     //std::cout << "Width: " << parameters[idx+2] << std::endl;
                     //std::cout << "FWHM: " << gausReturn->gaussianWidth << std::endl;
-                    
+
                     gaussianPeaks->push_back(gausReturn);
                 }
                 			
@@ -448,37 +448,37 @@ namespace spdlib {
 				delete[] waveformData->intensity;
 				delete[] waveformData->error;
 				delete waveformData;
-                
+
                 delete mpConfigValues;
                 delete mpResultsValues;
 				
 				delete[] parameters;
 				delete[] paramConstraints;
 			}
-            
+
 			delete peaks;
             delete initPeaks;
-            
-        } 
-        catch (SPDProcessingException &e) 
+
+        }
+        catch (SPDProcessingException &e)
         {
             throw e;
         }
-        catch (SPDException &e) 
+        catch (SPDException &e)
         {
             throw SPDProcessingException(e.what());
         }
-        
+
         return gaussianPeaks;
     }
-    
+
     void SPDMathsUtils::decomposeSingleGaussian(boost::uint_fast32_t *waveform, boost::uint_fast16_t waveformLength, boost::uint_fast16_t waveFitWindow, float waveformTimeInterval, float *transAmp, float *transWidth, float *peakTime) throw(SPDProcessingException)
     {
-        try 
+        try
         {
             boost::uint_fast32_t maxInt = 0;
             boost::uint_fast16_t maxIdx = 0;
-            
+
             // Find max intensity - this will be the starting point of the decomposition.
             for(boost::uint_fast16_t i = 0; i < waveformLength; ++i)
             {
@@ -493,35 +493,35 @@ namespace spdlib {
                     maxIdx = i;
                 }
             }
-            
+
             boost::uint_fast16_t waveformIdxStart = 0;
             boost::uint_fast16_t waveformIdxEnd = 0;
             boost::uint_fast16_t waveformPeakIdx = 0;
-            
+
             if(((int_fast32_t)maxIdx) - ((int_fast32_t)waveFitWindow) < 0)
             {
                 waveformIdxStart = 0;
                 waveformPeakIdx = waveFitWindow - maxIdx;
             }
-            else 
+            else
             {
                 waveformIdxStart = maxIdx - waveFitWindow;
                 waveformPeakIdx = waveFitWindow;
             }
-            
+
             if(((int_fast32_t)maxIdx) + ((int_fast32_t)waveFitWindow+1) >= waveformLength)
             {
                 waveformIdxEnd = waveformLength-1;
                 waveformPeakIdx = waveFitWindow;
             }
-            else 
+            else
             {
                 waveformIdxEnd = maxIdx + waveFitWindow + 1;
                 waveformPeakIdx = waveFitWindow;
             }
-            
+
             boost::uint_fast16_t waveformSampleLength = waveformIdxEnd - waveformIdxStart;
-            
+
             int numOfParams = 3; // i.e., 1 peak
             /*
              * p[0] = amplitude
@@ -530,7 +530,7 @@ namespace spdlib {
              */
             double *parameters = new double[numOfParams];
             mp_par *paramConstraints = new mp_par[numOfParams];
-            
+
             parameters[0] = maxInt; // Amplitude / Intensity
             double ampVar = parameters[0] * 0.1;
             if(ampVar > 10)
@@ -551,7 +551,7 @@ namespace spdlib {
             paramConstraints[0].relstep = 0;
             paramConstraints[0].side = 0;
             paramConstraints[0].deriv_debug = 0;
-            
+
             parameters[1] = waveformPeakIdx; // Time
                                              //std::cout << "Peak Time (Full): " << maxIdx << std::endl;
                                              //std::cout << "Peak Time (Local): " << waveformPeakIdx << std::endl;
@@ -565,7 +565,7 @@ namespace spdlib {
             paramConstraints[1].relstep = 0;
             paramConstraints[1].side = 0;
             paramConstraints[1].deriv_debug = 0;
-            
+
             parameters[2] = 0.5;
             paramConstraints[2].fixed = false;
             paramConstraints[2].limited[0] = true;
@@ -577,7 +577,7 @@ namespace spdlib {
             paramConstraints[2].relstep = 0;
             paramConstraints[2].side = 0;
             paramConstraints[2].deriv_debug = 0;
-            
+
             PulseWaveform *waveformData = new PulseWaveform();
             waveformData->time = new double[waveformSampleLength];
             waveformData->intensity = new double[waveformSampleLength];
@@ -588,7 +588,7 @@ namespace spdlib {
                 waveformData->intensity[i] = waveform[waveIdx];
                 waveformData->error[i] = 1;
             }
-            
+
             // Create and initise configure and results structures...			
             mp_config *mpConfigValues = new mp_config();
             mpConfigValues->ftol = 1e-10;
@@ -603,7 +603,7 @@ namespace spdlib {
             mpConfigValues->douserscale = 0;
             mpConfigValues->nofinitecheck = 0;
             mpConfigValues->iterproc = 0;
-            
+
             mp_result *mpResultsValues = new mp_result();
             mpResultsValues->bestnorm = 0;
             mpResultsValues->orignorm = 0;
@@ -617,7 +617,7 @@ namespace spdlib {
             mpResultsValues->resid = 0;
             mpResultsValues->xerror = 0;
             mpResultsValues->covar = 0; // Not being retrieved
-            
+
             /*
              * int m     - number of data points
              * int npar  - number of parameters
@@ -633,7 +633,7 @@ namespace spdlib {
                (returnCode == MP_MAXITER) | (returnCode == MP_FTOL)
                | (returnCode == MP_XTOL) | (returnCode == MP_XTOL))
             {
-                // MP Fit completed.. On on debug_info for more information. 
+                // MP Fit completed.. On on debug_info for more information.
             }
             else if(returnCode == MP_ERR_INPUT)
             {
@@ -671,47 +671,47 @@ namespace spdlib {
             {
                 throw SPDException("mpfit - Not enough degrees of freedom.");
             }
-            else 
+            else
             {
                 std::cout << "Return code is :" << returnCode << " - this can not been defined!\n";
             }
-            
+
             float timeDiff = ((float)parameters[1]) - ((float)waveformPeakIdx);
-            
+
             *transAmp = parameters[0];
             *peakTime = (((float)maxIdx) + timeDiff) * waveformTimeInterval;
             *transWidth = (parameters[2] * 10) * (2.0*sqrt(2.0*log(2.0)));
-            
+
             //std::cout << "Output peak time (local): " << parameters[1] << std::endl;
             //std::cout << "Output peak time (Global): " << *peakTime << std::endl << std::endl;
-            
+
             delete mpConfigValues;
             delete mpResultsValues;
-            
+
             delete[] waveformData->time;
             delete[] waveformData->intensity;
             delete[] waveformData->error;
             delete waveformData;
-            
+
             delete[] parameters;
             delete[] paramConstraints;
         }
-        catch (SPDException &e) 
+        catch (SPDException &e)
         {
             throw e;
         }
     }
-    
+
     bool SPDMathsUtils::rectangleIntersection(double xMin1, double xMax1, double yMin1, double yMax1, double xMin2, double xMax2, double yMin2, double yMax2)
     {
         //std::cout << "1 = [" << xMin1 << ", " << xMax1 << "][" << yMin1 << ", " << yMax1 << "]" << std::endl;
         //std::cout << "2 = [" << xMin2 << ", " << xMax2 << "][" << yMin2 << ", " << yMax2 << "]" << std::endl;
-        
+
         double xMin = 0;
         double xMax = 0;
         double yMin = 0;
         double yMax = 0;
-        
+
         if(xMin1 > xMin2)
         {
             xMin = xMin1;
@@ -720,7 +720,7 @@ namespace spdlib {
         {
             xMin = xMin2;
         }
-        
+
         if(yMin1 > yMin2)
         {
             yMin = yMin1;
@@ -729,7 +729,7 @@ namespace spdlib {
         {
             yMin = yMin2;
         }
-        
+
         if(xMax1 < xMax2)
         {
             xMax = xMax1;
@@ -738,7 +738,7 @@ namespace spdlib {
         {
             xMax = xMax2;
         }
-        
+
         if(yMax1 < yMax2)
         {
             yMax = yMax1;
@@ -747,28 +747,28 @@ namespace spdlib {
         {
             yMax = yMax2;
         }
-        
+
         //std::cout << "X = " << xMin << ", " << xMax << ":\t" << xMax - xMin << std::endl;
         //std::cout << "Y = " << yMin << ", " << yMax << ":\t" << yMax - yMin << std::endl << std::endl;
-        
+
         bool intersect = true;
         if(xMax - xMin <= 0)
         {
             intersect = false;
         }
-        
+
         if(yMax - yMin <= 0)
         {
             intersect = false;
         }
-        
+
         return intersect;
     }
-    
+
     bool SPDMathsUtils::rectangle1Contains2(double xMin1, double xMax1, double yMin1, double yMax1, double xMin2, double xMax2, double yMin2, double yMax2)
     {
         bool contained = true;
-        
+
         if(xMin2 < xMin1)
         {
             contained = false;
@@ -785,17 +785,17 @@ namespace spdlib {
         {
             contained = false;
         }
-        
+
         return contained;
     }
-    
+
     double SPDMathsUtils::calcRectangleIntersection(double xMin1, double xMax1, double yMin1, double yMax1, double xMin2, double xMax2, double yMin2, double yMax2)
     {
         double xMin = 0;
         double xMax = 0;
         double yMin = 0;
         double yMax = 0;
-        
+
         if(xMin1 > xMin2)
         {
             xMin = xMin1;
@@ -804,7 +804,7 @@ namespace spdlib {
         {
             xMin = xMin2;
         }
-        
+
         if(yMin1 > yMin2)
         {
             yMin = yMin1;
@@ -813,7 +813,7 @@ namespace spdlib {
         {
             yMin = yMin2;
         }
-        
+
         if(xMax1 < xMax2)
         {
             xMax = xMax1;
@@ -822,7 +822,7 @@ namespace spdlib {
         {
             xMax = xMax2;
         }
-        
+
         if(yMax1 < yMax2)
         {
             yMax = yMax1;
@@ -831,30 +831,30 @@ namespace spdlib {
         {
             yMax = yMax2;
         }
-        
+
         //std::cout << "X = " << xMin << ", " << xMax << ":\t" << xMax - xMin << std::endl;
         //std::cout << "Y = " << yMin << ", " << yMax << ":\t" << yMax - yMin << std::endl << std::endl;
-        
+
         bool isIntersected = true;
         if(xMax - xMin <= 0)
         {
             isIntersected = false;
         }
-        
+
         if(yMax - yMin <= 0)
         {
             isIntersected = false;
         }
-        
+
         double intersection = 0;
         if(isIntersected)
         {
             intersection = (xMax - xMin)*(yMax - yMin);
         }
-        
+
         return intersection;
     }
-    
+
     double SPDMathsUtils::calcValueViaPlaneFitting(SPD3DDataPt *a, SPD3DDataPt *b, SPD3DDataPt *c, double x, double y) throw(SPDProcessingException)
     {
         double outVal = 0.0;
@@ -882,7 +882,7 @@ namespace spdlib {
             double sXZ = 0;
             double sYZ = 0;
             double sZ = 0;
-            
+
             // A
             sXY = a->x * a->y;
             sX = a->x;
@@ -892,7 +892,7 @@ namespace spdlib {
             sXZ = (a->x * a->z);
             sYZ = (a->y * a->z);
             sZ = a->z;
-            
+
             // B
             sXY += b->x * b->y;
             sX += b->x;
@@ -902,7 +902,7 @@ namespace spdlib {
             sXZ += (b->x * b->z);
             sYZ += (b->y * b->z);
             sZ += b->z;
-            
+
             // C
             sXY += c->x * c->y;
             sX += c->x;
@@ -912,7 +912,7 @@ namespace spdlib {
             sXZ += (c->x * c->z);
             sYZ += (c->y * c->z);
             sZ += c->z;
-            
+
             spdlib::Matrix *matrixA = matrices.createMatrix(3, 3);
             matrixA->matrix[0] = sXSqu;
             matrixA->matrix[1] = sXY;
@@ -927,19 +927,19 @@ namespace spdlib {
             matrixB->matrix[0] = sXZ;
             matrixB->matrix[1] = sYZ;
             matrixB->matrix[2] = sZ;
-            
+
             double determinantA = matrices.determinant(matrixA);
             spdlib::Matrix *matrixCoFactors = matrices.cofactors(matrixA);
             spdlib::Matrix *matrixCoFactorsT = matrices.transpose(matrixCoFactors);
             double multiplier = 1/determinantA;
             matrices.multipleSingle(matrixCoFactorsT, multiplier);
             spdlib::Matrix *outputs = matrices.multiplication(matrixCoFactorsT, matrixB);
-            
+
             //double aCoeff = outputs->matrix[0];
             //double bCoeff = outputs->matrix[1];
             //double cCoeff = outputs->matrix[2];
             outVal = outputs->matrix[2];
-            
+
             matrices.freeMatrix(matrixA);
             matrices.freeMatrix(matrixB);
             matrices.freeMatrix(matrixCoFactors);
@@ -954,10 +954,10 @@ namespace spdlib {
         {
             throw SPDProcessingException(e.what());
         }
-        
+
         return outVal;
     }
-    
+
     void SPDMathsUtils::fitPlane(double *x, double *y, double *z, boost::uint_fast32_t numValues, double normX, double normY, double *a, double *b, double *c) throw(SPDProcessingException)
     {
         SPDMatrixUtils matrices;
@@ -1051,7 +1051,7 @@ namespace spdlib {
         try
         {
             // Plane is aX + bY + cZ = d
-            
+
             double *diffs = new double[numValues];
             for(boost::uint_fast32_t i = 0; i < numValues; ++i)
             {
@@ -1064,16 +1064,16 @@ namespace spdlib {
         {
             throw e;
         }
-        
+
         return 0.0;
     }
-    
+
     SPDMathsUtils::~SPDMathsUtils()
     {
-        
+
     }
-    
-    
+
+
     SPDInitDecompositionZeroCrossingSimple::SPDInitDecompositionZeroCrossingSimple(float decay):SPDInitDecomposition()
 	{
 		this->decay = decay;
@@ -1107,7 +1107,7 @@ namespace spdlib {
 							peakTime = i;
 							firstPeak = false;
 						}
-						else 
+						else
 						{
 							timeDiff = i - peakTime;
 							calcThreshold = (peakInt-intThreshold) * pow(E, ((double)((timeDiff/decay)*(-1)))) + intThreshold;
@@ -1118,7 +1118,7 @@ namespace spdlib {
 								peakTime = i;
 							}
 						}
-                        
+
 					}
 				}
 			}
@@ -1126,7 +1126,7 @@ namespace spdlib {
 		
 		return pts;
 	}
-    
+
     std::vector<boost::uint_fast32_t>* SPDInitDecompositionZeroCrossingSimple::findInitPoints(float *waveform, boost::uint_fast16_t waveformLength, float intThreshold) throw(SPDException)
 	{
 		std::vector<boost::uint_fast32_t> *pts = new std::vector<boost::uint_fast32_t>();
@@ -1155,7 +1155,7 @@ namespace spdlib {
 							peakTime = i;
 							firstPeak = false;
 						}
-						else 
+						else
 						{
 							timeDiff = i - peakTime;
 							calcThreshold = (peakInt-intThreshold) * pow(E, ((double)((timeDiff/decay)*(-1)))) + intThreshold;
@@ -1166,7 +1166,7 @@ namespace spdlib {
 								peakTime = i;
 							}
 						}
-                        
+
 					}
 				}
 			}
@@ -1201,7 +1201,7 @@ namespace spdlib {
                 {
                     std::cout << ((((float)waveform[i])*gain)+offset);
                 }
-                else 
+                else
                 {
                     std::cout << "," << ((((float)waveform[i])*gain)+offset);
                 }
@@ -1215,7 +1215,7 @@ namespace spdlib {
                 {
                     std::cout << gradients[i];
                 }
-                else 
+                else
                 {
                     std::cout << "," << gradients[i];
                 }*/
@@ -1246,14 +1246,14 @@ namespace spdlib {
 								peakTime = i+1;
 								firstPeak = false;
 							}
-							else 
+							else
 							{
 								timeDiff = i - peakTime;
 								if(peakInt < intDecayThres)
 								{
 									calcThreshold = 0;
 								}
-								else 
+								else
 								{
 									calcThreshold = peakInt * pow(E, ((double)((timeDiff/decay)*(-1))));
 									//std::cout << "calcThreshold = " << calcThreshold << std::endl;
@@ -1285,16 +1285,16 @@ namespace spdlib {
 					{
 						break;
 					}
-                    
+
 				}
 			}
-            
+
             delete[] gradients;
 		}
 		
 		return pts;
 	}
-    
+
     std::vector<boost::uint_fast32_t>* SPDInitDecompositionZeroCrossing::findInitPoints(float *waveform, boost::uint_fast16_t waveformLength, float intThreshold) throw(SPDException)
 	{
 		std::vector<boost::uint_fast32_t> *pts = new std::vector<boost::uint_fast32_t>();
@@ -1309,7 +1309,7 @@ namespace spdlib {
              {
              std::cout << waveform[i];
              }
-             else 
+             else
              {
              std::cout << "," << waveform[i];
              }
@@ -1323,7 +1323,7 @@ namespace spdlib {
                  {
                  std::cout << gradients[i];
                  }
-                 else 
+                 else
                  {
                  std::cout << "," << gradients[i];
                  }*/
@@ -1354,14 +1354,14 @@ namespace spdlib {
 								peakTime = i+1;
 								firstPeak = false;
 							}
-							else 
+							else
 							{
 								timeDiff = i - peakTime;
 								if(peakInt < intDecayThres)
 								{
 									calcThreshold = 0;
 								}
-								else 
+								else
 								{
 									calcThreshold = peakInt * pow(E, ((double)((timeDiff/decay)*(-1))));
 									//std::cout << "calcThreshold = " << calcThreshold << std::endl;
@@ -1393,10 +1393,10 @@ namespace spdlib {
 					{
 						break;
 					}
-                    
+
 				}
 			}
-            
+
             delete[] gradients;
 		}
 		
@@ -1411,13 +1411,13 @@ namespace spdlib {
 		}
 		return false;
 	}
-    
+
 	SPDInitDecompositionZeroCrossing::~SPDInitDecompositionZeroCrossing()
 	{
 		
 	}
-    
-    
+
+
     SPDInitDecompositionZeroCrossingNoRinging::SPDInitDecompositionZeroCrossingNoRinging()
 	{
 
@@ -1452,7 +1452,7 @@ namespace spdlib {
 					{
 						break;
 					}
-                    
+
 				}
 			}
             delete[] gradients;
@@ -1460,7 +1460,7 @@ namespace spdlib {
 		
 		return pts;
 	}
-    
+
     std::vector<boost::uint_fast32_t>* SPDInitDecompositionZeroCrossingNoRinging::findInitPoints(float *waveform, boost::uint_fast16_t waveformLength, float intThreshold) throw(SPDException)
 	{
 		std::vector<boost::uint_fast32_t> *pts = new std::vector<boost::uint_fast32_t>();
@@ -1490,7 +1490,7 @@ namespace spdlib {
 					{
 						break;
 					}
-                    
+
 				}
 			}
             delete[] gradients;
@@ -1507,14 +1507,14 @@ namespace spdlib {
 		}
 		return false;
 	}
-    
+
 	SPDInitDecompositionZeroCrossingNoRinging::~SPDInitDecompositionZeroCrossingNoRinging()
 	{
 		
 	}
-    
-    
-    
+
+
+
     SPDSingularValueDecomposition::SPDSingularValueDecomposition()
 	{
 		
@@ -1535,10 +1535,10 @@ namespace spdlib {
 	void SPDSingularValueDecomposition::SVDLinSolve(gsl_vector *outX, gsl_vector *inB)
 	{
 		// Solves linear equation using SVD
-		/** This uses the gsl_linalg_SV_solve function to calculate the coefficients 
+		/** This uses the gsl_linalg_SV_solve function to calculate the coefficients
 		 for a linear equation. The number of coefficients are determined by the output
 		 gsl_vector outX.
-		 */ 
+		 */
 		this->inA = inA;
 		this->outV = outV;
 		this->outS = outS;
@@ -1546,14 +1546,14 @@ namespace spdlib {
 		gsl_matrix_free(outV);
 		gsl_vector_free(outS);
 	}
-    
+
     SPDSingularValueDecomposition::~SPDSingularValueDecomposition()
 	{
 		
 	}
-    
-    
-    
+
+
+
 	SPDPolyFit::SPDPolyFit()
 	{
 	}
@@ -1566,7 +1566,7 @@ namespace spdlib {
 		 * x, y. \n
 		 * A gsl_vector is returned containing the coeffients. \n
 		 * Polynomial coefficients are obtained using a least squares fit. \n
-		 */ 
+		 */
 		
 		// Set up matrix of powers
 		gsl_matrix *indVarPow;
@@ -1603,7 +1603,7 @@ namespace spdlib {
 		/*
          std::cout << "----------------------------------------------------------------------------" << std::endl;
          std::cout << "coefficients are : ";
-         vectorUtils.printGSLVector(outCoefficients); 
+         vectorUtils.printGSLVector(outCoefficients);
          std::cout << " chisq = " << chisq << std::endl;
          std::cout << "----------------------------------------------------------------------------" << std::endl;
          std::cout << std::endl;
@@ -1626,7 +1626,7 @@ namespace spdlib {
 		 * x, y. \n
 		 * A gsl_vector is returned containing the coeffients. \n
 		 * Polynomial coefficients are obtained using a least squares fit. \n
-		 */ 
+		 */
 		
 		// Set up matrix of powers
 		gsl_matrix *indVarPow;
@@ -1662,12 +1662,12 @@ namespace spdlib {
 		/*
         std::cout << "----------------------------------------------------------------------------" << std::endl;
 		std::cout << "coefficients are : ";
-		vectorUtils.printGSLVector(outCoefficients); 
+		vectorUtils.printGSLVector(outCoefficients);
 		std::cout << " chisq = " << chisq << std::endl;
 		std::cout << "----------------------------------------------------------------------------" << std::endl;
 		std::cout << std::endl;
 		*/
-        
+
 		// Clean up
 		gsl_multifit_linear_free(workspace);
 		gsl_matrix_free(indVarPow);
@@ -1805,7 +1805,7 @@ namespace spdlib {
 		
 		double errorA = 0;
 		int indexY = 0;
-        
+
 		for(int y = 0; y < numY; y++)
 		{
 			// Populate matrix
@@ -1955,11 +1955,11 @@ namespace spdlib {
 			yVal = gsl_matrix_get(inData, i, 1); // Get y value
 			zMeasured = gsl_matrix_get(inData, i, 2); // Get measured z value.
 			zPredicted = 0;
-			for(int x = 0; x < orderX; x ++) 
+			for(int x = 0; x < orderX; x ++)
 			{
 				double xPow = pow(xVal, x); // x^n;
 				
-				double aCoeff = 0.0; 
+				double aCoeff = 0.0;
 				
 				for(int y = 0; y < orderY ; y++) // Calculate a_n(y)
 				{
@@ -2015,7 +2015,7 @@ namespace spdlib {
 		gsl_vector *depVarX, *depVarY, *depVarZ;
 		gsl_vector *tempAcoeff, *tempBcoeff, *tempCcoeff;
 		gsl_vector *indVarY, *indVarZ;
-		gsl_matrix *indVarYPow, *indVarZPow; 
+		gsl_matrix *indVarYPow, *indVarZPow;
 		
 		aCoeff = gsl_matrix_alloc(numY, orderX+1); // Set up matrix to hold a coefficients (and chi squared)
 		bCoeff = gsl_matrix_alloc(orderX * numZ, orderY+1); // Set up matrix to hold b coefficients (and chi squared)
@@ -2180,19 +2180,19 @@ namespace spdlib {
 		 std::cout << std::endl;*/
 		
 		/***************************************************
-		 * PERFORM THIRD SET OF FITS                       
-		 * 
+		 * PERFORM THIRD SET OF FITS
+		 *
 		 * Coefficients are in the form:
-		 * z1: 
+		 * z1:
 		 * b0_0 b0_1 b0_2 ... b0_n
 		 * b1_0 b1_1 b1_2 ... b0_n
 		 *  .    .     .        .
 		 * bn_0 bn_1 bn_2 ... bn_n
-		 * z2 
+		 * z2
 		 * b0_0 b0_1 b0_2 ... b0_n
 		 * b1_0 b1_1 b1_2 ... b0_n
 		 *  .    .     .        .
-		 * bn_0 bn_1 bn_2 ... bn_n 
+		 * bn_0 bn_1 bn_2 ... bn_n
 		 *
 		 *
 		 ***************************************************/
@@ -2273,12 +2273,12 @@ namespace spdlib {
 		gsl_vector_free(indVarZ);
 		
 		gsl_matrix_free(indVarYPow);
-		gsl_vector_free(depVarY); 
-		gsl_vector_free(tempBcoeff); 
+		gsl_vector_free(depVarY);
+		gsl_vector_free(tempBcoeff);
 		
-		gsl_matrix_free(indVarZPow); 
-		gsl_vector_free(depVarZ); 
-		gsl_vector_free(tempCcoeff); 
+		gsl_matrix_free(indVarZPow);
+		gsl_vector_free(depVarZ);
+		gsl_vector_free(tempCcoeff);
 		
 		//matrixUtils.printGSLMatrix(cCoeff);
 		
@@ -2291,7 +2291,7 @@ namespace spdlib {
 		
 		gsl_matrix *measuredVpredictted;
 		measuredVpredictted = gsl_matrix_alloc(inData->size1, 2); // Set up matrix to hold measured and predicted y values.
-        
+
 		for(unsigned int i = 0; i < inData->size1; i++) // Loop through inData
 		{
 			double xVal, yVal, zVal;
@@ -2306,15 +2306,15 @@ namespace spdlib {
 			
 			fMeasured = gsl_matrix_get(inData, i, 3); // Get measured f value.
 			fPredicted = 0.0;
-			for(int x = 0; x < orderX; x ++) 
+			for(int x = 0; x < orderX; x ++)
 			{
-				bcoeffPowY = 0.0; 
+				bcoeffPowY = 0.0;
 				for(int y = 0; y < orderY; y++)
 				{
 					cCoeffPowZ = 0.0;
 					//std::cout << "cCoeff = ";
 					for(int z = 0; z < orderZ; z++)
-					{     
+					{
 						zPow = pow(zVal, z);
 						//cCoeff = gsl_matrix_get(coefficients, c, z);
 						cCoeff = gsl_matrix_get(coefficients, y + (x * orderX), z);

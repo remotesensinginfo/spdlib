@@ -10,10 +10,10 @@
 -->
 
 <spdlib:metrics xmlns:spdlib="http://www.spdlib.org/xml/">
-    
+
     <spdlib:metric metric="divide" field="GapFraction" >
         <spdlib:metric metric="numreturnsheight" field="Out_Name" return="First" class="Grd" />
         <spdlib:metric metric="numreturnsheight" field="Out_Name" return="All" class="All"  />
     </spdlib:metric>
-    
+
 </spdlib:metrics>

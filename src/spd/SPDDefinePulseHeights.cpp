@@ -30,14 +30,14 @@ namespace spdlib
     {
         this->interpolator = interpolator;
     }
-        
+
     void SPDDefinePulseHeights::processDataBlockImage(SPDFile *inSPDFile, std::vector<SPDPulse*> ***pulses, float ***imageDataBlock, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast32_t numImgBands, float binSize) throw(SPDProcessingException)
     {
         if(numImgBands == 0)
         {
             throw SPDProcessingException("The input image needs to have at least 1 image band.");
         }
-        
+
         int feedback = ySize/10.0;
         int feedbackCounter = 0;
         std::cout << "Started" << std::flush;
@@ -52,7 +52,7 @@ namespace spdlib
                 std::cout << "." << feedbackCounter << "." << std::flush;
                 feedbackCounter = feedbackCounter + 10;
             }
-            
+
             for(boost::uint_fast32_t j = 0; j < xSize; ++j)
             {
                 for(std::vector<SPDPulse*>::iterator iterPulses = pulses[i][j]->begin(); iterPulses != pulses[i][j]->end(); ++iterPulses)
@@ -73,26 +73,26 @@ namespace spdlib
 		
     void SPDDefinePulseHeights::processDataBlock(SPDFile *inSPDFile, std::vector<SPDPulse*> ***pulses, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, float binSize) throw(SPDProcessingException)
     {
-        try 
+        try
 		{
             bool ptsAvail = true;
-            try 
+            try
             {
                 interpolator->initInterpolator(pulses, xSize, ySize, SPD_GROUND);
             }
-            catch (SPDException &e) 
+            catch (SPDException &e)
             {
                 ptsAvail = false;
             }
-            
+
             if(ptsAvail)
             {
                 double elevVal = 0;
-                
+
                 int feedback = ySize/10.0;
                 int feedbackCounter = 0;
                 std::cout << "Started" << std::flush;
-                
+
                 for(boost::uint_fast32_t i = 0; i < ySize; ++i)
                 {
                     if(ySize < 10)
@@ -104,7 +104,7 @@ namespace spdlib
                         std::cout << "." << feedbackCounter << "." << std::flush;
                         feedbackCounter = feedbackCounter + 10;
                     }
-                    
+
                     for(boost::uint_fast32_t j = 0; j < xSize; ++j)
                     {
                         for(std::vector<SPDPulse*>::iterator iterPulses = pulses[i][j]->begin(); iterPulses != pulses[i][j]->end(); ++iterPulses)
@@ -124,20 +124,20 @@ namespace spdlib
                 }
                 std::cout << " Complete.\n";
             }
-            
+
             interpolator->resetInterpolator();
         }
-        catch (SPDProcessingException &e) 
+        catch (SPDProcessingException &e)
         {
             throw e;
         }
     }
-             
+
     SPDDefinePulseHeights::~SPDDefinePulseHeights()
     {
-        
+
     }
-    
+
 }
 
 

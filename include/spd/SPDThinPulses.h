@@ -58,20 +58,20 @@ namespace spdlib
 	{
 	public:
         SPDThinPulses(boost::uint_fast16_t numPulses);
-        
+
         void processDataColumnImage(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses, float *imageData, SPDXYPoint *cenPts, boost::uint_fast32_t numImgBands, float binSize) throw(SPDProcessingException)
         {throw SPDProcessingException("Processing is not implemented for processDataColumn().");};
-        
+
 		void processDataColumn(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses, SPDXYPoint *cenPts) throw(SPDProcessingException);
-        
+
         void processDataWindowImage(SPDFile *inSPDFile, bool **validBins, std::vector<SPDPulse*> ***pulses, float ***imageData, SPDXYPoint ***cenPts, boost::uint_fast32_t numImgBands, float binSize, boost::uint_fast16_t winSize) throw(SPDProcessingException)
         {throw SPDProcessingException("Processing using a window is not implemented.");};
 		void processDataWindow(SPDFile *inSPDFile, bool **validBins, std::vector<SPDPulse*> ***pulses, SPDXYPoint ***cenPts, boost::uint_fast16_t winSize) throw(SPDProcessingException)
         {throw SPDProcessingException("Processing using a window is not implemented.");};
-        
+
         std::vector<std::string> getImageBandDescriptions() throw(SPDProcessingException){return std::vector<std::string>();};
         void setHeaderValues(SPDFile *spdFile) throw(SPDProcessingException){};
-        
+
         ~SPDThinPulses();
     protected:
         boost::uint_fast16_t numPulses;

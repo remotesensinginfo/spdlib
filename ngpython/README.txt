@@ -13,7 +13,7 @@ python setup.py build --gdalinclude=$GDAL_INCLUDE_PATH --boostinclude=$BOOST_INC
         --lasinclude=$LIBLAS_INCLUDE_PATH --hdf5include=$HDF5_INCLUDE_PATH
 python setup.py install
 
-Obviously, $GDAL_INCLUDE_PATH must be set properly for your install. If these packages are 
+Obviously, $GDAL_INCLUDE_PATH must be set properly for your install. If these packages are
 installed in default locations then you may be able to get away with just 'python setup.py build'
 
 I would recommend using the --prefix to the install command and specifying the location

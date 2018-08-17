@@ -48,7 +48,7 @@ namespace spdlib
             std::vector<double> ptVals;
             bool firstPt = true;
             bool removedFirst = false;
-            
+
             for(iterPulses = pulses->begin(); iterPulses != pulses->end(); ++iterPulses)
             {
                 if((*iterPulses)->numberOfReturns > 0)
@@ -63,7 +63,7 @@ namespace spdlib
                             (*iterPulses)->yIdx = (*iterPoints)->y;
                             removedFirst = false;
                         }
-                        
+
                         if(absUpSet && ((*iterPoints)->z > absUpThres))
                         {
                             delete *iterPoints;
@@ -93,7 +93,7 @@ namespace spdlib
                     }
                 }
             }
-            
+
             if(ptVals.size() > 0)
             {
                 if(relUpSet | relLowSet)
@@ -104,9 +104,9 @@ namespace spdlib
                     double median = gsl_stats_median_from_sorted_data(&ptVals[0], 1, ptVals.size());
                     double upThres = median + relUpThres;
                     double lowThres = median - relLowThres;
-                    
+
                     //std::cout << "Thresholds: " << lowThres << ", " << upThres << std::endl;
-                    
+
                     for(iterPulses = pulses->begin(); iterPulses != pulses->end(); ++iterPulses)
                     {
                         if((*iterPulses)->numberOfReturns > 0)
@@ -121,7 +121,7 @@ namespace spdlib
                                     (*iterPulses)->yIdx = (*iterPoints)->y;
                                     removedFirst = false;
                                 }
-                                
+
                                 if(relUpSet && ((*iterPoints)->z > upThres))
                                 {
                                     delete *iterPoints;
@@ -150,17 +150,17 @@ namespace spdlib
                             }
                         }
                     }
-                    
+
                 }
             }
         }
     }
-        
+
     SPDRemoveVerticalNoise::~SPDRemoveVerticalNoise()
     {
-        
+
     }
-    
+
 }
 
 

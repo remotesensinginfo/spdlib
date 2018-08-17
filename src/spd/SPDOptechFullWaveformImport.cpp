@@ -36,27 +36,27 @@ namespace spdlib
 	
     SPDOptechFullWaveformASCIIImport::SPDOptechFullWaveformASCIIImport(bool convertCoords, std::string outputProjWKT, std::string schema, boost::uint_fast16_t indexCoords, bool defineOrigin, double originX, double originY, float originZ, float waveNoiseThreshold):SPDDataImporter(convertCoords, outputProjWKT, schema, indexCoords, defineOrigin, originX, originY, originZ, waveNoiseThreshold)
     {
-        
+
     }
-    
+
     SPDDataImporter* SPDOptechFullWaveformASCIIImport::getInstance(bool convertCoords, std::string outputProjWKT,std::string schema,boost::uint_fast16_t indexCoords, bool defineOrigin, double originX, double originY, float originZ, float waveNoiseThreshold)
     {
         return new SPDOptechFullWaveformASCIIImport(convertCoords, outputProjWKT, schema, indexCoords, defineOrigin, originX, originY, originZ, waveNoiseThreshold);
     }
-    
+
     std::list<SPDPulse*>* SPDOptechFullWaveformASCIIImport::readAllDataToList(std::string inputFile, SPDFile *spdFile)throw(SPDIOException)
     {
         std::list<SPDPulse*> *pulses = new std::list<SPDPulse*>();
-        
+
         try
         {
             std::string sensorFile = "";
             std::string waveformsFile = "";
-            
+
             this->readSPDOPTHeader(inputFile, spdFile, &sensorFile, &waveformsFile);
-            
-            
-            
+
+
+
         }
         catch(SPDIOException &e)
         {
@@ -70,34 +70,34 @@ namespace spdlib
         {
             throw SPDIOException(e.what());
         }
-        
+
         return pulses;
     }
-    
+
     std::vector<SPDPulse*>* SPDOptechFullWaveformASCIIImport::readAllDataToVector(std::string inputFile, SPDFile *spdFile)throw(SPDIOException)
     {
         std::vector<SPDPulse*> *pulses = new std::vector<SPDPulse*>();
-        
+
         try
         {
             SPDTextFileUtilities txtUtils;
             SPDPulseUtils plsUtils;
             std::string sensorFile = "";
             std::string waveformsFile = "";
-            
+
             this->readSPDOPTHeader(inputFile, spdFile, &sensorFile, &waveformsFile);
-            
+
             if(boost::filesystem::exists(sensorFile) & boost::filesystem::exists(waveformsFile))
             {
                 SPDTextFileLineReader lineSensorReader;
                 SPDTextFileLineReader lineWavesReader;
-                
+
                 lineSensorReader.openFile(sensorFile);
                 lineWavesReader.openFile(waveformsFile);
-                
+
                 size_t maxNumOfWaveforms = txtUtils.countLines(waveformsFile);
                 pulses->reserve(maxNumOfWaveforms/2); // There is most likely be a transmitted and recieved waveform for each pulse.
-                
+
                 SPDPulse *pulse = NULL;
                 std::string waveLine = "";
                 std::string waveLineTiming = "";
@@ -112,7 +112,7 @@ namespace spdlib
                 double sensorHeading = 0.0;
                 double shotAngle = 0.0;
                 double shotDirect = 0.0;
-                
+
                 std::vector<std::string> *tokens = new std::vector<std::string>();
                 bool transmitted = false;
                 bool received = false;
@@ -133,13 +133,13 @@ namespace spdlib
                             std::cout << "LINE: " << waveLine << std::endl;
                             throw SPDIOException("Could not parse the waveform line.");
                         }
-                        
+
                         waveLineTiming = tokens->at(0);
                         boost::algorithm::trim(waveLineTiming);
                         waveLineBins = tokens->at(1);
                         waveLineBins = txtUtils.removeChar(waveLineBins, ']');
                         boost::algorithm::trim(waveLineBins);
-                        
+
                         tokens->clear();
                         txtUtils.tokenizeString(waveLineTiming, ' ', tokens, true);
                         if(tokens->size() != 3)
@@ -153,7 +153,7 @@ namespace spdlib
                         boost::algorithm::trim(waveformTorR);
                         waveformDist2Start = tokens->at(2);
                         boost::algorithm::trim(waveformDist2Start);
-                        
+
                         if(waveformTorR == "0")
                         {
                             if(transmitted & parseSensor)
@@ -171,7 +171,7 @@ namespace spdlib
                             parseSensor = false;
                             pulse = new SPDPulse();
                             plsUtils.initSPDPulse(pulse);
-                            
+
                             pulse->pulseID = plCount++;
                             pulse->gpsTime = static_cast<boost::uint_fast64_t>(txtUtils.strtodouble(waveformTime) * 1000000);
                             pulse->receiveWaveNoiseThreshold = receivedWaveformThershold;
@@ -181,7 +181,7 @@ namespace spdlib
                             pulse->transWaveOffset = transWaveformOffset;
                             pulse->transWaveGain = transWaveformGain;
                             pulse->wavelength = laserWavelength;
-                            
+
                             tokens->clear();
                             txtUtils.tokenizeString(waveLineBins, ' ', tokens, true);
                             pulse->numOfTransmittedBins = tokens->size();
@@ -193,7 +193,7 @@ namespace spdlib
                                 //std::cout << pulse->transmitted[idx-1] << ", ";
                             }
                             //std::cout << std::endl;
-                            
+
                             while(!lineSensorReader.endOfFile())
                             {
                                 sensorLine = lineSensorReader.readLine();
@@ -217,26 +217,26 @@ namespace spdlib
                             {
                                 throw SPDIOException("Could not find the sensor line.");
                             }
-                            
+
                             pulse->x0 = txtUtils.strtodouble(tokens->at(0));
                             pulse->y0 = txtUtils.strtodouble(tokens->at(1));
                             pulse->z0 = txtUtils.strtodouble(tokens->at(2));
-                            
+
                             sensorRoll = txtUtils.strtodouble(tokens->at(3));
                             sensorPitch = txtUtils.strtodouble(tokens->at(4));
                             sensorHeading = txtUtils.strtodouble(tokens->at(5));
                             shotAngle = txtUtils.strtodouble(tokens->at(8));
                             shotDirect = txtUtils.strtodouble(tokens->at(9));
-                            
+
                             std::cout << "Roll: " << sensorRoll << std::endl;
                             std::cout << "Pitch: " << sensorPitch << std::endl;
                             std::cout << "Heading: " << sensorHeading << std::endl;
                             std::cout << "Shot Angle: " << shotAngle << std::endl;
                             std::cout << "Shot Direction: " << shotDirect << std::endl;
-                            
+
                             pulse->zenith = 0.0;
                             pulse->azimuth = 0.0;
-                            
+
                             parseSensor = true;
                         }
                         else if(waveformTorR == "1")
@@ -247,9 +247,9 @@ namespace spdlib
                                 throw SPDIOException("Recieved waveform was not preceeded by a Transmitted waveform");
                             }
                             received = true;
-                            
+
                             pulse->rangeToWaveformStart = txtUtils.strtofloat(waveformDist2Start)/100.0;
-                            
+
                             tokens->clear();
                             txtUtils.tokenizeString(waveLineBins, ' ', tokens, true);
                             pulse->numOfReceivedBins = tokens->size();
@@ -268,9 +268,9 @@ namespace spdlib
                         break;
                     }
                 }
-                
-                
-                
+
+
+
 
 
             }
@@ -293,7 +293,7 @@ namespace spdlib
         {
             throw SPDIOException(e.what());
         }
-        
+
         return pulses;
     }
 		
@@ -303,11 +303,11 @@ namespace spdlib
         {
             std::string sensorFile = "";
             std::string waveformsFile = "";
-            
+
             this->readSPDOPTHeader(inputFile, spdFile, &sensorFile, &waveformsFile);
-            
-            
-            
+
+
+
         }
         catch(SPDIOException &e)
         {
@@ -322,7 +322,7 @@ namespace spdlib
             throw SPDIOException(e.what());
         }
     }
-    
+
     bool SPDOptechFullWaveformASCIIImport::isFileType(std::string fileType)
     {
         if(fileType == "OPTECH_WFASCII")
@@ -331,14 +331,14 @@ namespace spdlib
 		}
 		return false;
     }
-    
+
     void SPDOptechFullWaveformASCIIImport::readHeaderInfo(std::string inputFile, SPDFile *spdFile) throw(SPDIOException)
     {
         try
         {
             std::string sensorFile = "";
             std::string waveformsFile = "";
-            
+
             this->readSPDOPTHeader(inputFile, spdFile, &sensorFile, &waveformsFile);
         }
         catch(SPDIOException &e)
@@ -346,7 +346,7 @@ namespace spdlib
             throw e;
         }
     }
-    
+
     void SPDOptechFullWaveformASCIIImport::readSPDOPTHeader(std::string inputHDRFile, SPDFile *spdFile, std::string *sensorFile, std::string *waveformsFile)throw(SPDIOException)
     {
         try
@@ -356,8 +356,8 @@ namespace spdlib
                 boost::filesystem::path filePath = boost::filesystem::path(inputHDRFile);
                 filePath = boost::filesystem::absolute(filePath).parent_path();
                 boost::filesystem::path tmpFilePath;
-                
-                
+
+
                 SPDTextFileLineReader lineReader;
                 SPDTextFileUtilities txtUtils;
                 std::vector<std::string> *tokens = new std::vector<std::string>();
@@ -377,13 +377,13 @@ namespace spdlib
                 bool haveROffset = false;
                 bool haveAquDate = false;
                 bool haveAquTime = false;
-                
-                
+
+
                 while(!lineReader.endOfFile())
                 {
                     line = lineReader.readLine();
                     boost::algorithm::trim(line);
-                    
+
                     if((line != "") && (!txtUtils.lineStartWithHash(line)))
                     {
                         tokens->clear();
@@ -396,7 +396,7 @@ namespace spdlib
                             }
                             tmpFilePath = filePath;
                             tmpFilePath /= boost::filesystem::path(tokens->at(1));
-                            
+
                             *sensorFile = tmpFilePath.string();
                             haveSensorFile = true;
                         }
@@ -408,7 +408,7 @@ namespace spdlib
                             }
                             tmpFilePath = filePath;
                             tmpFilePath /= boost::filesystem::path(tokens->at(1));
-                            
+
                             *waveformsFile = tmpFilePath.string();
                             haveWaveformFile = true;
                         }
@@ -427,7 +427,7 @@ namespace spdlib
                             {
                                 throw SPDIOException("Failed to parser header line \'laser_wavelength(ns)\'.");
                             }
-                            
+
                             laserWavelength = txtUtils.strtofloat(tokens->at(1));
                             std::vector<float> wavelengths;
                             wavelengths.push_back(laserWavelength);
@@ -441,7 +441,7 @@ namespace spdlib
                             {
                                 throw SPDIOException("Failed to parser header line \'laser_bandwidth(ns)\'.");
                             }
-                            
+
                             std::vector<float> bandWidths;
                             bandWidths.push_back(txtUtils.strtofloat(tokens->at(1)));
                             spdFile->setBandwidths(bandWidths);
@@ -507,25 +507,25 @@ namespace spdlib
                             {
                                 throw SPDIOException("Failed to parser header line \'aquasition_date\'.");
                             }
-                            
+
                             std::string dateStr = tokens->at(1);
-                            
+
                             tokens->clear();
                             txtUtils.tokenizeString(dateStr, '-', tokens, true);
-                            
+
                             if(tokens->size() != 3)
                             {
                                 std::cout << dateStr << std::endl;
                                 throw SPDIOException("Failed to parser header line \'aquasition_date\', must have format YYYY-MM-DD.");
                             }
-                            
+
                             spdFile->setYearOfCapture(txtUtils.strto16bitUInt(tokens->at(0)));
                             spdFile->setMonthOfCapture(txtUtils.strto16bitUInt(tokens->at(1)));
                             spdFile->setDayOfCapture(txtUtils.strto16bitUInt(tokens->at(2)));
-                            
+
                             haveAquDate = true;
                         }
-                        
+
                         else if(tokens->at(0) == "aquasition_time")
                         {
                             if(tokens->size() != 2)
@@ -535,30 +535,30 @@ namespace spdlib
                             std::string timeStr = tokens->at(1);
                             tokens->clear();
                             txtUtils.tokenizeString(timeStr, ':', tokens, true);
-                            
+
                             if(tokens->size() != 3)
                             {
                                 std::cout << timeStr << std::endl;
                                 throw SPDIOException("Failed to parser header line \'aquasition_time\', must have format HH:MM:SS.");
                             }
-                            
+
                             spdFile->setHourOfCapture(txtUtils.strto16bitUInt(tokens->at(0)));
                             spdFile->setMinuteOfCapture(txtUtils.strto16bitUInt(tokens->at(1)));
                             spdFile->setSecondOfCapture(txtUtils.strto16bitUInt(tokens->at(2)));
-                            
+
                             haveAquTime = true;
                         }
                         else
                         {
                             std::cout << line << std::endl;
-                            
+
                             throw SPDIOException("Could not parser the header.");
                         }
                     }
                 }
                 delete tokens;
                 lineReader.closeFile();
-                
+
                 if(!haveSensorFile)
                 {
                     throw SPDIOException("The 'sensor' file must be specified.");
@@ -567,7 +567,7 @@ namespace spdlib
                 {
                     throw SPDIOException("The 'waveforms' file must be specified.");
                 }
-                
+
                 if(!haveTimeInterval)
                 {
                     spdFile->setTemporalBinSpacing(1.0);
@@ -629,11 +629,11 @@ namespace spdlib
             throw SPDIOException(e.what());
         }
     }
-    
+
     SPDOptechFullWaveformASCIIImport::~SPDOptechFullWaveformASCIIImport()
     {
-        
+
     }
-    
+
 }
 

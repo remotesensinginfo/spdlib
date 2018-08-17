@@ -4,7 +4,7 @@
  *
  *  Created by Pete Bunting on 28/03/2012.
  *  Copyright 2012 SPDLib. All rights reserved.
- * 
+ *
  *  This file is part of SPDLib.
  *
  *  SPDLib is free software: you can redistribute it and/or modify
@@ -33,51 +33,51 @@
 
 #include "spd/spd-config.h"
 
-int main (int argc, char * const argv[]) 
+int main (int argc, char * const argv[])
 {
     std::cout.precision(12);
-    
+
     std::cout << "spdstats " << SPDLIB_PACKAGE_STRING << ", Copyright (C) " << SPDLIB_COPYRIGHT_YEAR << " Sorted Pulse Library (SPD)\n";
 	std::cout << "This program comes with ABSOLUTELY NO WARRANTY. This is free software,\n";
 	std::cout << "and you are welcome to redistribute it under certain conditions; See\n";
 	std::cout << "website (http://www.spdlib.org). Bugs are to be reported on the trac\n";
 	std::cout << "or directly to " << SPDLIB_PACKAGE_BUGREPORT << std::endl;
 	
-	try 
+	try
 	{
         TCLAP::CmdLine cmd("Generate a binary mask for the an input SPD File: spdmaskgen", ' ', "1.0.0");
-        
+
         TCLAP::ValueArg<boost::uint_fast32_t> numOfPulsesArg("p","numpulses","Number of pulses for a bin to be included in mask (Default 1)",false,1,"unsigned int");
 		cmd.add( numOfPulsesArg );
-        
+
         TCLAP::ValueArg<boost::uint_fast32_t> numOfRowsBlockArg("r","blockrows","Number of rows within a block (Default 100)",false,100,"unsigned int");
 		cmd.add( numOfRowsBlockArg );
-        
+
         TCLAP::ValueArg<boost::uint_fast32_t> numOfColsBlockArg("c","blockcols","Number of columns within a block (Default 0) - Note values greater than 1 result in a non-sequencial SPD file.",false,0,"unsigned int");
 		cmd.add( numOfColsBlockArg );
-        
+
         TCLAP::ValueArg<float> binSizeArg("b","binsize","Bin size for processing and output image (Default 0) - Note 0 will use the native SPD file bin size.",false,0,"float");
 		cmd.add( binSizeArg );
-        
+
         TCLAP::ValueArg<std::string> imgFormatArg("f","format","Image format (GDAL driver string), Default is ENVI.",false,"ENVI","string");
 		cmd.add( imgFormatArg );
-        
+
 		TCLAP::ValueArg<std::string> inputFileArg("i","input","The input SPD file.",true,"","String");
 		cmd.add( inputFileArg );
-        
+
         TCLAP::ValueArg<std::string> outputFileArg("o","output","The output SPD file.",true,"","String");
 		cmd.add( outputFileArg );
-        
+
 		cmd.parse( argc, argv );
-        
+
         std::string inSPDFilePath = inputFileArg.getValue();
         std::string outFilePath = outputFileArg.getValue();
-        
+
         spdlib::SPDGenBinaryMask genSPDMask;
         genSPDMask.generateBinaryMask(numOfPulsesArg.getValue(), inSPDFilePath, outFilePath, numOfColsBlockArg.getValue(), numOfRowsBlockArg.getValue(), binSizeArg.getValue(), imgFormatArg.getValue());
 		
 	}
-	catch (TCLAP::ArgException &e) 
+	catch (TCLAP::ArgException &e)
 	{
 		std::cerr << "Parse Error: " << e.what() << std::endl;
 	}

@@ -38,7 +38,7 @@
 int main (int argc, char * const argv[])
 {
     std::cout.precision(12);
-    
+
 	std::cout << "spdmerge " << SPDLIB_PACKAGE_STRING << ", Copyright (C) " << SPDLIB_COPYRIGHT_YEAR << " Sorted Pulse Library (SPD)\n";
 	std::cout << "This program comes with ABSOLUTELY NO WARRANTY. This is free software,\n";
 	std::cout << "and you are welcome to redistribute it under certain conditions; See\n";
@@ -110,10 +110,10 @@ int main (int argc, char * const argv[])
 
         TCLAP::ValueArg<std::string> schemaArg("s","schema","A schema for the format of the file being imported (Note, most importers do not require a schema)",false,"", "std::string");
 		cmd.add( schemaArg );
-        
+
         TCLAP::SwitchArg keepExtentSwitch("","keepextent","When indexing the file use the extent of the input file as the minimum extent of the output file.", false);
 		cmd.add( keepExtentSwitch );
-        
+
         TCLAP::ValueArg<std::string> outputFileArg("o","output","The output SPD file.",true,"","std::string");
 		cmd.add( outputFileArg );
 

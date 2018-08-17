@@ -7,23 +7,23 @@
  *
  *  This file is part of SPDLib.
  *
- *  Permission is hereby granted, free of charge, to any person 
- *  obtaining a copy of this software and associated documentation 
- *  files (the "Software"), to deal in the Software without restriction, 
- *  including without limitation the rights to use, copy, modify, 
- *  merge, publish, distribute, sublicense, and/or sell copies of the 
- *  Software, and to permit persons to whom the Software is furnished 
+ *  Permission is hereby granted, free of charge, to any person
+ *  obtaining a copy of this software and associated documentation
+ *  files (the "Software"), to deal in the Software without restriction,
+ *  including without limitation the rights to use, copy, modify,
+ *  merge, publish, distribute, sublicense, and/or sell copies of the
+ *  Software, and to permit persons to whom the Software is furnished
  *  to do so, subject to the following conditions:
  *
- *  The above copyright notice and this permission notice shall be 
+ *  The above copyright notice and this permission notice shall be
  *  included in all copies or substantial portions of the Software.
  *
- *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, 
- *  EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES 
- *  OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. 
- *  IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR 
- *  ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF 
- *  CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION 
+ *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+ *  EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+ *  OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+ *  IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR
+ *  ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF
+ *  CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
  *  WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  *
  */
@@ -145,7 +145,7 @@ namespace spdlib
     static const std::string SPDFILE_DATASETNAME_SENSOR_APERTURE_SIZE( "/HEADER/SENSOR_APERTURE_SIZE" );
     static const std::string SPDFILE_DATASETNAME_PULSE_ENERGY( "/HEADER/PULSE_ENERGY" );
     static const std::string SPDFILE_DATASETNAME_FIELD_OF_VIEW( "/HEADER/FIELD_OF_VIEW" );
-    
+
 	static const std::string SPDFILE_DATASETNAME_PLS_PER_BIN( "/INDEX/PLS_PER_BIN" );
 	static const std::string SPDFILE_DATASETNAME_BIN_OFFSETS( "/INDEX/BIN_OFFSETS" );
 	
@@ -158,7 +158,7 @@ namespace spdlib
 	
 	static const std::string ATTRIBUTENAME_CLASS( "CLASS" );
 	static const std::string ATTRIBUTENAME_IMAGE_VERSION( "IMAGE_VERSION" );
-    
+
 	class DllExport SPDFile
 	{		
 	public:
@@ -180,7 +180,7 @@ namespace spdlib
 		
 		void setIndexType(boost::uint_fast16_t indexType){this->indexType = indexType;};
         boost::uint_fast16_t getIndexType(){return indexType;};
-        
+
         void setFileType(boost::uint_fast16_t fileType){this->fileType = fileType;};
         boost::uint_fast16_t getFileType(){return fileType;};
 		
@@ -192,19 +192,19 @@ namespace spdlib
 		
 		void setTransWaveformDefined(boost::int_fast16_t transWaveformDefined){this->transWaveformDefined = transWaveformDefined;};
         boost::int_fast16_t getTransWaveformDefined(){return transWaveformDefined;};
-        
+
 		void setReceiveWaveformDefined(boost::int_fast16_t receiveWaveformDefined){this->receiveWaveformDefined = receiveWaveformDefined;};
         boost::int_fast16_t getReceiveWaveformDefined(){return receiveWaveformDefined;};
-        
+
 		void setMajorSPDVersion(boost::uint_fast16_t majorSPDVersion){this->majorSPDVersion = majorSPDVersion;};
         boost::uint_fast16_t getMajorSPDVersion(){return majorSPDVersion;};
 		
 		void setMinorSPDVersion(boost::uint_fast16_t minorSPDVersion){this->minorSPDVersion = minorSPDVersion;};
         boost::uint_fast16_t getMinorSPDVersion(){return minorSPDVersion;};
-        
+
         void setPointVersion(boost::uint_fast16_t pointVersion){this->pointVersion = pointVersion;};
         boost::uint_fast16_t getPointVersion(){return pointVersion;};
-        
+
         void setPulseVersion(boost::uint_fast16_t pulseVersion){this->pulseVersion = pulseVersion;};
         boost::uint_fast16_t getPulseVersion(){return pulseVersion;};
 		
@@ -333,7 +333,7 @@ namespace spdlib
 			this->rangeMin = rangeMin;
 			this->rangeMax = rangeMax;
 		};
-        
+
         void setScanlineMin(double scanline){this->scanlineMin = scanline;};
 		double getScanlineMin(){return scanlineMin;};
 		
@@ -345,7 +345,7 @@ namespace spdlib
 		
 		void setScanlineIdxMax(double scanlineIdx){this->scanlineIdxMax = scanlineIdx;};
 		double getScanlineIdxMax(){return scanlineIdxMax;};
-        
+
         void setBoundingBoxScanline(double scanlineMin, double scanlineMax, double scanlineIdxMin, double scanlineIdxMax)
 		{
 			this->scanlineMin = scanlineMin;
@@ -365,10 +365,10 @@ namespace spdlib
 		
 		void setWavelengths(std::vector<float> wavelengths){this->wavelengths = wavelengths;};
 		std::vector<float>* getWavelengths(){return &wavelengths;};
-        
+
         void setBandwidths(std::vector<float> bandwidths){this->bandwidths = bandwidths;};
 		std::vector<float>* getBandwidths(){return &bandwidths;};
-        
+
         void setNumOfWavelengths(boost::uint_fast16_t numOfWavelengths){this->numOfWavelengths = numOfWavelengths;};
 		boost::uint_fast16_t getNumOfWavelengths(){return numOfWavelengths;};
 		
@@ -401,7 +401,7 @@ namespace spdlib
 		
 		void setTransmittedBlockSize(boost::uint_fast16_t transmittedBlockSize){this->transmittedBlockSize = transmittedBlockSize;};
         boost::uint_fast16_t getTransmittedBlockSize(){return transmittedBlockSize;};
-        
+
         void setWaveformBitRes(boost::uint_fast16_t waveformBitRes){this->waveformBitRes = waveformBitRes;};
         boost::uint_fast16_t getWaveformBitRes(){return waveformBitRes;};
 		
@@ -416,13 +416,13 @@ namespace spdlib
 		
 		void setSensorSpeed(float sensorSpeed){this->sensorSpeed = sensorSpeed;};
 		float getSensorSpeed(){return sensorSpeed;};
-        
+
 		void setSensorScanRate(float sensorScanRate){this->sensorScanRate = sensorScanRate;};
 		float getSensorScanRate(){return sensorScanRate;};
-        
+
 		void setPointDensity(float pointDensity){this->pointDensity = pointDensity;};
 		float getPointDensity(){return pointDensity;};
-        
+
 		void setPulseDensity(float pulseDensity){this->pulseDensity = pulseDensity;};
 		float getPulseDensity(){return pulseDensity;};
 		
@@ -443,13 +443,13 @@ namespace spdlib
 		
 		void setPulseIdxMethod(boost::int_fast16_t pulseIdxMethod){this->pulseIdxMethod = pulseIdxMethod;};
         boost::int_fast16_t getPulseIdxMethod(){return pulseIdxMethod;};
-        
+
         void setSensorApertureSize(float sensorApertureSize){this->sensorApertureSize = sensorApertureSize;};
 		float getSensorApertureSize(){return sensorApertureSize;};
-        
+
         void setPulseEnergy(float pulseEnergy){this->pulseEnergy = pulseEnergy;};
 		float getPulseEnergy(){return pulseEnergy;};
-        
+
         void setFieldOfView(float fieldOfView){this->fieldOfView = fieldOfView;};
 		float getFieldOfView(){return fieldOfView;};
 		
@@ -469,11 +469,11 @@ namespace spdlib
 		std::string spatialreference;
 		/**
 		 * Define how the points are indexed.
-		 */ 
+		 */
         boost::uint_fast16_t indexType;
         /**
 		 * Define the file type (SPD_SEQ, SPD_UNSEQ and UPD).
-		 */ 
+		 */
         boost::uint_fast16_t fileType;
 		/**
 		 * Are discrete returns defined within this file.
@@ -516,7 +516,7 @@ namespace spdlib
 		 */
 		std::string systemIdentifier;
 		/**
-		 * The file signature of the file type ('SPDFile'). 
+		 * The file signature of the file type ('SPDFile').
 		 */
 		std::string fileSignature;
 		/**
@@ -525,22 +525,22 @@ namespace spdlib
         boost::uint_fast16_t yearOfCreation;
 		/**
 		 * The month of creation
-		 */ 
+		 */
         boost::uint_fast16_t monthOfCreation;
 		/**
 		 * The day of creation
 		 */
         boost::uint_fast16_t dayOfCreation;
 		/**
-		 * The hour of creation 
+		 * The hour of creation
 		 */
         boost::uint_fast16_t hourOfCreation;
 		/**
-		 * The minute of creation 
+		 * The minute of creation
 		 */
         boost::uint_fast16_t minuteOfCreation;
 		/**
-		 * The second of creation 
+		 * The second of creation
 		 */
         boost::uint_fast16_t secondOfCreation;
 		/**
@@ -549,22 +549,22 @@ namespace spdlib
         boost::uint_fast16_t yearOfCapture;
 		/**
 		 * The month of capture
-		 */ 
+		 */
         boost::uint_fast16_t monthOfCapture;
 		/**
 		 * The day of capture
 		 */
         boost::uint_fast16_t dayOfCapture;
 		/**
-		 * The hour of capture 
+		 * The hour of capture
 		 */
         boost::uint_fast16_t hourOfCapture;
 		/**
-		 * The minute of capture 
+		 * The minute of capture
 		 */
         boost::uint_fast16_t minuteOfCapture;
 		/**
-		 * The second of capture 
+		 * The second of capture
 		 */
         boost::uint_fast16_t secondOfCapture;		
 		/**
@@ -761,10 +761,10 @@ namespace spdlib
 		 */
 		float pulseAngularSpacingZenith;
 		/**
-		 * The method by which the points are indexed 
+		 * The method by which the points are indexed
 		 * (i.e., first return or last return etc).
 		 */
-        boost::int_fast16_t pulseIdxMethod;        
+        boost::int_fast16_t pulseIdxMethod;
         /**
          * Sensor Aperture size
          */
@@ -778,8 +778,8 @@ namespace spdlib
          */
         float fieldOfView;
 	};
-    
-    
+
+
     class DllExport SPDFileProcessingUtilities
     {
     public:

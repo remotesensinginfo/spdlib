@@ -7,23 +7,23 @@
  *
  *  This file is part of SPDLib.
  *
- *  Permission is hereby granted, free of charge, to any person 
- *  obtaining a copy of this software and associated documentation 
- *  files (the "Software"), to deal in the Software without restriction, 
- *  including without limitation the rights to use, copy, modify, 
- *  merge, publish, distribute, sublicense, and/or sell copies of the 
- *  Software, and to permit persons to whom the Software is furnished 
+ *  Permission is hereby granted, free of charge, to any person
+ *  obtaining a copy of this software and associated documentation
+ *  files (the "Software"), to deal in the Software without restriction,
+ *  including without limitation the rights to use, copy, modify,
+ *  merge, publish, distribute, sublicense, and/or sell copies of the
+ *  Software, and to permit persons to whom the Software is furnished
  *  to do so, subject to the following conditions:
  *
- *  The above copyright notice and this permission notice shall be 
+ *  The above copyright notice and this permission notice shall be
  *  included in all copies or substantial portions of the Software.
  *
- *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, 
- *  EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES 
- *  OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. 
- *  IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR 
- *  ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF 
- *  CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION 
+ *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+ *  EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+ *  OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+ *  IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR
+ *  ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF
+ *  CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
  *  WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  *
  */
@@ -38,7 +38,7 @@ namespace spdlib
 		this->filetype = filetype;
 	}
 	
-	SPDDataExporter::SPDDataExporter(const SPDDataExporter &dataExporter) throw(SPDException): spdFile(NULL), outputFile(""), fileOpened(false), filetype(""), numOutPts(0), numOutPtsDefined(false) 
+	SPDDataExporter::SPDDataExporter(const SPDDataExporter &dataExporter) throw(SPDException): spdFile(NULL), outputFile(""), fileOpened(false), filetype(""), numOutPts(0), numOutPtsDefined(false)
 	{
 		if(fileOpened)
 		{
@@ -69,7 +69,7 @@ namespace spdlib
 		{
 			throw SPDIOException("File has not been opened.");
 		}
-		try 
+		try
 		{
 			for(boost::uint_fast32_t i = 0; i < ySize; ++i)
 			{
@@ -79,7 +79,7 @@ namespace spdlib
 				}
 			}
 		}
-		catch (SPDIOException &e) 
+		catch (SPDIOException &e)
 		{
 			throw e;
 		}
@@ -91,7 +91,7 @@ namespace spdlib
 		{
 			throw SPDIOException("File has not been opened.");
 		}
-		try 
+		try
 		{
 			for(boost::uint_fast32_t i = 0; i < ySize; ++i)
 			{
@@ -101,26 +101,26 @@ namespace spdlib
 				}
 			}
 		}
-		catch (SPDIOException &e) 
+		catch (SPDIOException &e)
 		{
 			throw e;
 		}
 	}
-    
+
     void SPDDataExporter::writeData(std::list<SPDPulse*> ***griddedPls, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast32_t startBinX, boost::uint_fast32_t startBinY, boost::uint_fast32_t startIdxX, boost::uint_fast32_t startIdxY)throw(SPDIOException)
     {
         if(!fileOpened)
 		{
 			throw SPDIOException("File has not been opened.");
 		}
-		try 
+		try
 		{
             boost::uint_fast32_t endBinX = startBinX + xSize;
             boost::uint_fast32_t endBinY = startBinY + ySize;
-            
+
             boost::uint_fast32_t x = 0;
             boost::uint_fast32_t y = 0;
-            
+
 			for(boost::uint_fast32_t i = startBinY; i < endBinY; ++i)
 			{
                 x = 0;
@@ -132,26 +132,26 @@ namespace spdlib
                 ++y;
 			}
 		}
-		catch (SPDIOException &e) 
+		catch (SPDIOException &e)
 		{
 			throw e;
 		}
     }
-    
+
     void SPDDataExporter::writeData(std::vector<SPDPulse*> ***griddedPls, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast32_t startBinX, boost::uint_fast32_t startBinY, boost::uint_fast32_t startIdxX, boost::uint_fast32_t startIdxY)throw(SPDIOException)
     {
         if(!fileOpened)
 		{
 			throw SPDIOException("File has not been opened.");
 		}
-		try 
+		try
 		{
             boost::uint_fast32_t endBinX = startBinX + xSize;
             boost::uint_fast32_t endBinY = startBinY + ySize;
-            
+
             boost::uint_fast32_t x = 0;
             boost::uint_fast32_t y = 0;
-            
+
 			for(boost::uint_fast32_t i = startBinY; i < endBinY; ++i)
 			{
                 x = 0;
@@ -163,7 +163,7 @@ namespace spdlib
                 ++y;
 			}
 		}
-		catch (SPDIOException &e) 
+		catch (SPDIOException &e)
 		{
 			throw e;
 		}
@@ -183,13 +183,13 @@ namespace spdlib
 		this->numOutPts = numOutPts;
 		this->numOutPtsDefined = true;
 	}
-   
+
 	bool SPDDataExporter::opened()
     {
 		return fileOpened;
     }
-		   
-		   
+		
+		
 	SPDDataExporter::~SPDDataExporter()
 	{
 		

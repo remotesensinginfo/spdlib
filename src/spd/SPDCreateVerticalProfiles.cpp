@@ -86,7 +86,7 @@ namespace spdlib
 
                         // Get the height of the digitised value using the height of the origin
                         // and the time offset within the pulse.
-                        SPDConvertToCartesian((*iterPulses)->zenith, (*iterPulses)->azimuth, 
+                        SPDConvertToCartesian((*iterPulses)->zenith, (*iterPulses)->azimuth,
                                             (SPD_SPEED_OF_LIGHT_NS * timeOffset), (*iterPulses)->x0, (*iterPulses)->y0, (*iterPulses)->h0, &tmpX, &tmpY, &tmpH);
 
                         // Identify the bin.

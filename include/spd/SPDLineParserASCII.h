@@ -78,8 +78,8 @@ namespace spdlib
             SPDDataType dataType;
             boost::uint_fast16_t idx;
         };
-        
-        
+
+
 	public:
 		SPDLineParserASCII();
 		bool haveReadheader();
@@ -93,7 +93,7 @@ namespace spdlib
 	private:
         boost::uint_fast16_t numLinesIgnore;
         char commentChar;
-        char delimiter; 
+        char delimiter;
         std::vector<ASCIIField> fields;
         boost::uint_fast16_t sourceID;
         boost::uint_fast64_t ptCount;

@@ -41,7 +41,7 @@
 int main (int argc, char * const argv[])
 {
     std::cout.precision(12);
-    
+
     std::cout << "spdclassify " << SPDLIB_PACKAGE_STRING << ", Copyright (C) " << SPDLIB_COPYRIGHT_YEAR << " Sorted Pulse Library (SPD)\n";
 	std::cout << "This program comes with ABSOLUTELY NO WARRANTY. This is free software,\n";
 	std::cout << "and you are welcome to redistribute it under certain conditions; See\n";
@@ -54,29 +54,29 @@ int main (int argc, char * const argv[])
 		
         TCLAP::ValueArg<boost::uint_fast32_t> numOfRowsBlockArg("r","blockrows","Number of rows within a block (Default 100)",false,25,"unsigned int");
 		cmd.add( numOfRowsBlockArg );
-        
+
         TCLAP::ValueArg<boost::uint_fast32_t> numOfColsBlockArg("c","blockcols","Number of columns within a block (Default 0) - Note values greater than 1 result in a non-sequencial SPD file.",false,0,"unsigned int");
 		cmd.add( numOfColsBlockArg );
-        
+
         TCLAP::ValueArg<float> binSizeArg("b","binsize","Bin size for processing and output image (Default 0) - Note 0 will use the native SPD file bin size.",false,0,"float");
 		cmd.add( binSizeArg );
-        
+
 		TCLAP::ValueArg<std::string> inputFileArg("i","input","The input file.",true,"","String");
 		cmd.add( inputFileArg );
-        
+
         TCLAP::ValueArg<std::string> outputFileArg("o","output","The output file.",true,"","String");
 		cmd.add( outputFileArg );
-        
+
 		cmd.parse( argc, argv );
 		
-        
+
 		std::string inSPDFilePath = inputFileArg.getValue();
         std::string outSPDFilePath = outputFileArg.getValue();
-        
+
         spdlib::SPDFile *spdInFile = new spdlib::SPDFile(inSPDFilePath);
         spdlib::SPDFileReader reader;
         reader.readHeaderInfo(spdInFile->getFilePath(), spdInFile);
-        
+
         if(spdInFile->getHeightDefined() == spdlib::SPD_TRUE)
         {
             spdlib::SPDClassifyPtsNumReturns *classifyReturnsProcessor = new spdlib::SPDClassifyPtsNumReturns();
@@ -88,8 +88,8 @@ int main (int argc, char * const argv[])
         {
             throw spdlib::SPDException("The height field needs to be defined before spdclassify can be used.");
         }
-        
-        
+
+
         delete spdInFile;
 		
 	}

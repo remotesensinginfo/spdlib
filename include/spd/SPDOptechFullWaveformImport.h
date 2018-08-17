@@ -85,8 +85,8 @@ namespace spdlib
         float receivedWaveformOffset;
         float laserWavelength;
 	};
-    
-    
+
+
 }
 
 #endif

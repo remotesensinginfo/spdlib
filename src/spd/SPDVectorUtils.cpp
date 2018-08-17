@@ -29,14 +29,14 @@ namespace spdlib
 
     SPDVectorUtils::SPDVectorUtils()
     {
-        
+
     }
-    
+
     std::string SPDVectorUtils::getLayerName(std::string filepath)
 	{
         return boost::filesystem::path(filepath).stem().string();
 	}
-    
+
 	OGRGeometryCollection* SPDVectorUtils::getGeometryCollection(std::string inputVector) throw(SPDIOException)
     {
         OGRRegisterAll();
@@ -49,7 +49,7 @@ namespace spdlib
         OGRGeometryCollection *geomCollection = new OGRGeometryCollection();
         OGRGeometry *geometry = NULL;
         OGRFeature *inFeature = NULL;
-        
+
 		try
 		{
 			/////////////////////////////////////
@@ -76,7 +76,7 @@ namespace spdlib
                 geometry = inFeature->GetGeometryRef();
                 if(geometry != NULL)
                 {
-                   geomCollection->addGeometryDirectly(geometry); 
+                   geomCollection->addGeometryDirectly(geometry);
                 }
             }
         }
@@ -88,10 +88,10 @@ namespace spdlib
 		GDALClose(inputSHPDS);
 		
 		OGRCleanupAll();
-        
+
         return geomCollection;
     }
-    
+
     OGRPolygon* SPDVectorUtils::createPolygon(double xMin, double xMax, double yMin, double yMax) throw(SPDIOException)
     {
         OGRPolygon *ogrPoly = new OGRPolygon();
@@ -105,14 +105,14 @@ namespace spdlib
         ogrRing->addPoint(xMin, yMin, 0);
 		ogrPoly->addRing(ogrRing);
         delete ogrRing;
-        
+
         return ogrPoly;
     }
-    
-    
+
+
     SPDVectorUtils::~SPDVectorUtils()
     {
-        
+
     }
 }
 

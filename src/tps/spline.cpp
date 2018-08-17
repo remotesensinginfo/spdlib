@@ -12,7 +12,7 @@
  *  about the suitability of this software for any purpose.
  *  It is provided "as is" without express or implied warranty.
  *
- *  
+ *
  *  April 2010: This file was subsequentely included within the MCC-LiDAR
  *              project version 1.0 rc3.
  *

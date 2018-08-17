@@ -7,23 +7,23 @@
   *
   *  This file is part of SPDLib.
   *
-  *  Permission is hereby granted, free of charge, to any person 
-  *  obtaining a copy of this software and associated documentation 
-  *  files (the "Software"), to deal in the Software without restriction, 
-  *  including without limitation the rights to use, copy, modify, 
-  *  merge, publish, distribute, sublicense, and/or sell copies of the 
-  *  Software, and to permit persons to whom the Software is furnished 
+  *  Permission is hereby granted, free of charge, to any person
+  *  obtaining a copy of this software and associated documentation
+  *  files (the "Software"), to deal in the Software without restriction,
+  *  including without limitation the rights to use, copy, modify,
+  *  merge, publish, distribute, sublicense, and/or sell copies of the
+  *  Software, and to permit persons to whom the Software is furnished
   *  to do so, subject to the following conditions:
   *
-  *  The above copyright notice and this permission notice shall be 
+  *  The above copyright notice and this permission notice shall be
   *  included in all copies or substantial portions of the Software.
   *
-  *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, 
-  *  EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES 
-  *  OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. 
-  *  IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR 
-  *  ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF 
-  *  CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION 
+  *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+  *  EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+  *  OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+  *  IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR
+  *  ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF
+  *  CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
   *  WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
   *
   */
@@ -80,7 +80,7 @@ namespace spdlib
 	static const std::string PULSEMEMBERNAME_SCAN_DIRECTION_FLAG( "SCAN_DIRECTION_FLAG" );
 	static const std::string PULSEMEMBERNAME_SCAN_ANGLE_RANK( "SCAN_ANGLE_RANK" );
     static const std::string PULSEMEMBERNAME_SCANLINE( "SCANLINE" );
-    static const std::string PULSEMEMBERNAME_SCANLINE_IDX( "SCANLINE_IDX" );    
+    static const std::string PULSEMEMBERNAME_SCANLINE_IDX( "SCANLINE_IDX" );
     static const std::string PULSEMEMBERNAME_WAVE_NOISE_THRES( "WAVE_NOISE_THRES" );
     static const std::string PULSEMEMBERNAME_RECEIVE_WAVE_NOISE_THRES( "RECEIVE_WAVE_NOISE_THRES" );
     static const std::string PULSEMEMBERNAME_TRANS_WAVE_NOISE_THRES( "TRANS_WAVE_NOISE_THRES" );
@@ -180,14 +180,14 @@ namespace spdlib
 		 */
         boost::uint_fast16_t sourceID;
 		/**
-		 * A variable to identify whether the point was on the edge of the scan 
+		 * A variable to identify whether the point was on the edge of the scan
 		 * (i.e., the laser was changing direction)
 		 */
         boost::uint_fast16_t edgeFlightLineFlag;
 		/**
 		 * A variable to identify the direction the scanner is moving in.
-		 * 
-		 * Note: A positive scan direction is a scan moving from the left side 
+		 *
+		 * Note: A positive scan direction is a scan moving from the left side
 		 * of the in-track direction to the right side and negative the opposite
 		 */
         boost::uint_fast16_t scanDirectionFlag;
@@ -195,7 +195,7 @@ namespace spdlib
 		 * The angle of the laser (including aircraft roll) when the pulse was
 		 * emitted. Values can range from -90 to +90.
 		 *
-		 * Note: The scan angle is an angle based on 0 degrees being nadir, and –90 
+		 * Note: The scan angle is an angle based on 0 degrees being nadir, and –90
 		 * degrees to the left side of the aircraft in the direction of flight.
 		 */
 		float scanAngleRank;
@@ -241,7 +241,7 @@ namespace spdlib
          * the transmitted waveform associated with this pulse.
          */
         float transWaveOffset;
-        
+
 		friend std::ostream& operator<<(std::ostream& stream, SPDPulse &obj)
 		{
 			stream << "Pulse ID: " << obj.pulseID << " from time " << obj.gpsTime << std::endl;
@@ -432,14 +432,14 @@ namespace spdlib
 		 */
 		unsigned int sourceID;
 		/**
-		 * A variable to identify whether the point was on the edge of the scan 
+		 * A variable to identify whether the point was on the edge of the scan
 		 * (i.e., the laser was changing direction)
 		 */
 		unsigned int edgeFlightLineFlag;
 		/**
 		 * A variable to identify the direction the scanner is moving in.
-		 * 
-		 * Note: A positive scan direction is a scan moving from the left side 
+		 *
+		 * Note: A positive scan direction is a scan moving from the left side
 		 * of the in-track direction to the right side and negative the opposite
 		 */
 		unsigned int scanDirectionFlag;
@@ -447,7 +447,7 @@ namespace spdlib
 		 * The angle of the laser (including aircraft roll) when the pulse was
 		 * emitted. Values can range from -90 to +90.
 		 *
-		 * Note: The scan angle is an angle based on 0 degrees being nadir, and –90 
+		 * Note: The scan angle is an angle based on 0 degrees being nadir, and –90
 		 * degrees to the left side of the aircraft in the direction of flight.
 		 */
 		float scanAngleRank;
@@ -545,7 +545,7 @@ namespace spdlib
 			return stream;
 		};
 	};
-    
+
     struct DllExport SPDPulseH5V2
 	{
         /**
@@ -749,13 +749,13 @@ namespace spdlib
 		void copySPDPulseTo(SPDPulse *pl, SPDPulse *pl_out);
 		SPDPulse* createSPDPulseDeepCopy(SPDPulse *pl);
 		void deepCopySPDPulseTo(SPDPulse *pl, SPDPulse *pl_out);
-        
+
         /* For Pulse Version 1 */
 		SPDPulseH5V1* createSPDPulseH5V1Copy(SPDPulse *pl);
 		void copySPDPulseToSPDPulseH5(SPDPulse *pl, SPDPulseH5V1 *pl_out);
 		SPDPulse* createSPDPulseCopyFromH5(SPDPulseH5V1 *pl);
 		void copySPDPulseH5ToSPDPulse(SPDPulseH5V1 *pl, SPDPulse *pl_out);
-        
+
         /* For Pulse Version 2 */
         SPDPulseH5V2* createSPDPulseH5V2Copy(SPDPulse *pl);
 		void copySPDPulseToSPDPulseH5(SPDPulse *pl, SPDPulseH5V2 *pl_out);

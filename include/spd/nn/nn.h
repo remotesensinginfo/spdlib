@@ -74,7 +74,7 @@ void points_thingrid(int* n, point** p, int nx, int ny);
 /** Smoothes the input point array by averaging the input data (X,Y and Z
  ** values) until the sum of the distances between points does not exceed the
  ** specified maximum value. It also frees the original array and returns
- ** results and new dimension via original data and size pointers. 
+ ** results and new dimension via original data and size pointers.
  *
  * @param n Pointer to number of points (input/output)
  * @param p Pointer to array of points (input/output) [*n]
@@ -94,7 +94,7 @@ void points_thinlin(int* n, point** p, double rmax);
  */
 void points_getrange(int n, point points[], double zoom, double* xmin, double* xmax, double* ymin, double* ymax);
 
-/** Generates rectangular grid nx by ny using specified min and max x and y 
+/** Generates rectangular grid nx by ny using specified min and max x and y
  ** values. Allocates space for the output point array, be sure to free it
  ** when necessary!
  *
@@ -179,7 +179,7 @@ void lpi_interpolate_points(int nin, point pin[], int nout, point pout[]);
  ** Natural Neighbours interpolation of data on a "point-to-point" basis.
  *
  * Because it involves weight calculation for each output point, it is not
- * designed to take advantage of consequitive interpolations on the same 
+ * designed to take advantage of consequitive interpolations on the same
  * sets of input and output points -- use `nnhpi' or `nnai' in these cases.
  */
 struct nnpi;
@@ -304,7 +304,7 @@ nnai* nnai_build(delaunay* d, int n, double* x, double* y);
  */
 void nnai_destroy(nnai* nn);
 
-/** Conducts NN interpolation in a fixed array of output points using 
+/** Conducts NN interpolation in a fixed array of output points using
  ** data specified in a fixed array of input points. Uses pre-calculated
  ** weights.
  *
@@ -334,7 +334,7 @@ extern int nn_verbose;
 /* Switches between different formulations for NN weights.
  * SIBSON -- classic formulation by Sibson
  * NON_SIBSONIAN -- alternative formulation by Belikov & Semenov
- *                  
+ *
  */
 extern NN_RULE nn_rule;
 

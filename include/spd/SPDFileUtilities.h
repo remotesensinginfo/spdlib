@@ -53,11 +53,11 @@
     #define DllExport
 #endif
 
-namespace spdlib 
+namespace spdlib
 {
     class DllExport SPDFileUtilities
     {
-    public: 
+    public:
         SPDFileUtilities();
         static boost::uint_fast16_t getDIRCount(std::string dir) throw(SPDException);
         static void getDIRList(std::string dir, std::list<std::string> *files) throw(SPDException);
