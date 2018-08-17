@@ -121,7 +121,7 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ./cmake/modules/)
 
 ###############################################################################
 # Setup configure file
-configure_file ( "${PROJECT_HEADER_DIR}/spd-config.h.in" "${PROJECT_HEADER_DIR}/spd/spd-config.h" )
+configure_file ( "${PROJECT_HEADER_DIR}/spd-config.h.in" "${CMAKE_SOURCE_DIR}/${PROJECT_HEADER_DIR}/spd/spd-config.h" )
 configure_file ( "${PROJECT_TOOLS_DIR}/spd-config.in" "${PROJECT_BINARY_DIR}/spd-config" )
 configure_file ( "${PROJECT_TOOLS_DIR}/spdbatchgen.py.in" "${PROJECT_BINARY_DIR}/spdbatchgen.py" )
 configure_file ( "${PROJECT_TOOLS_DIR}/spdbuildmergecmd.py.in" "${PROJECT_BINARY_DIR}/spdbuildmergecmd.py" )
@@ -405,11 +405,11 @@ if (SPDLIB_WITH_UTILITIES)
 	install (TARGETS spdtranslate spdversion spdcopy spdstats spdmaskgen spdpmfgrd spdmccgrd spdpolygrd spdinterp spddefheight spddecomp spdlastest spdmetrics spdmerge spdsubset spdoverlap spddefrgb spdelevation spdproj spdrmnoise spdclearclass spdpffgrd spdinfo spdthin spdextract spdwarp spdprofile spddeftiles spdtileimg spdtiling spdgrdtidy spdclassify spdtsample spdsplit spdclassimg DESTINATION bin PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE)
 endif(SPDLIB_WITH_UTILITIES)
 
-install (FILES "${PROJECT_BINARY_DIR}/spd-config" DESTINATION bin PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE)
-install (FILES "${PROJECT_BINARY_DIR}/spdbatchgen.py" DESTINATION bin PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE)
-install (FILES "${PROJECT_BINARY_DIR}/spdbuildmergecmd.py" DESTINATION bin PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE)
-install (FILES "${PROJECT_BINARY_DIR}/spdcmdgen.py" DESTINATION bin PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE)
-install (FILES "${PROJECT_BINARY_DIR}/spdbuildtileextractcmd.py" DESTINATION bin PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE)
+install (FILES "${CMAKE_BINARY_DIR}/${PROJECT_BINARY_DIR}/spd-config" DESTINATION bin PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE)
+install (FILES "${CMAKE_BINARY_DIR}/${PROJECT_BINARY_DIR}/spdbatchgen.py" DESTINATION bin PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE)
+install (FILES "${CMAKE_BINARY_DIR}/${PROJECT_BINARY_DIR}/spdbuildmergecmd.py" DESTINATION bin PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE)
+install (FILES "${CMAKE_BINARY_DIR}/${PROJECT_BINARY_DIR}/spdcmdgen.py" DESTINATION bin PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE)
+install (FILES "${CMAKE_BINARY_DIR}/${PROJECT_BINARY_DIR}/spdbuildtileextractcmd.py" DESTINATION bin PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE)
 ###############################################################################
 
 ###############################################################################
