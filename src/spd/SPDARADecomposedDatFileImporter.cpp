@@ -37,7 +37,7 @@ namespace spdlib
     {
         return new SPDARADecomposedDatFileImporter(convertCoords, outputProjWKT, schema, indexCoords, defineOrigin, originX, originY, originZ, waveNoiseThreshold);
     }
-
+    
 	std::list<SPDPulse*>* SPDARADecomposedDatFileImporter::readAllDataToList(std::string inputFile, SPDFile *spdFile)throw(SPDIOException)
 	{
 		SPDTextFileUtilities textFileUtils;
@@ -56,7 +56,7 @@ namespace spdlib
 		double zenithMin = 0;
 		double zenithMax = 0;
 		double rangeMin = 0;
-		double rangeMax = 0;
+		double rangeMax = 0;               
 		bool first = true;
 		bool firstZ = true;
         double azimuth = 0;
@@ -67,13 +67,13 @@ namespace spdlib
         double z0 = 0;
         double x1 = 0;
         double y1 = 0;
-        double z1 = 0;
+        double z1 = 0;         
 		std::string pointLine = "";
 		
 		boost::uint_fast64_t numPulses = 0;
 		boost::uint_fast64_t totalNumPoints = 0;
 		std::list<SPDPulse*> *pulses = new std::list<SPDPulse*>();
-		try
+		try 
 		{
 			if(convertCoords)
 			{
@@ -100,7 +100,7 @@ namespace spdlib
 				    pointLine = lineReader.readLine();
 				}
 				
-
+                
 				if(!textFileUtils.blankline(pointLine))
 				{
 					textFileUtils.tokenizeString(pointLine, ',', lineTokens);
@@ -114,7 +114,7 @@ namespace spdlib
                     }
                     gpsTime = (textFileUtils.strtodouble(lineTokens->at(0))*1000000);
 					pulse->gpsTime = gpsTime;
-
+                    
                     /* Retain the info on scan direction */
                     range = (textFileUtils.strtodouble(lineTokens->at(12)));
                     x0 = (textFileUtils.strtodouble(lineTokens->at(1)));
@@ -122,7 +122,7 @@ namespace spdlib
                     z0 = (textFileUtils.strtodouble(lineTokens->at(3)));
                     x1 = (textFileUtils.strtodouble(lineTokens->at(4)));
                     y1 = (textFileUtils.strtodouble(lineTokens->at(5)));
-                    z1 = (textFileUtils.strtodouble(lineTokens->at(6)));
+                    z1 = (textFileUtils.strtodouble(lineTokens->at(6)));                   
                     pulse->zenith = std::acos((z1-z0)/range);
                     azimuth = std::atan((x1-x0)/(y1-y0));
                     if(azimuth < 0)
@@ -133,7 +133,7 @@ namespace spdlib
                     {
                         pulse->azimuth = azimuth;
                     }
-
+                    
                     // Create point
 					point = this->createSPDPoint(pointLine, pulse);
 					
@@ -197,7 +197,7 @@ namespace spdlib
 										}
 										pulse->pts->push_back(point);
 									}
-									else
+									else 
 									{
 										std::cout << "\'" << pointLine << "\'\n";
 										std::cout << "Warning: Could not create a point from line.\n";
@@ -205,7 +205,7 @@ namespace spdlib
 									}
 
 								}
-								else
+								else 
 								{
 									//throw SPDIOException("Blank line found when expecting point.");
                                     std::cout << "\nWarning: Blank line found when expecting point.\n";
@@ -213,7 +213,7 @@ namespace spdlib
 								}
 								
 							}
-							else
+							else 
 							{
 								//throw SPDIOException("Unexpected end to the file.");
                                 std::cout << "Warning: Unexpected end to the file.\n";
@@ -328,7 +328,7 @@ namespace spdlib
 							pulse->pulseID = numPulses++;
 							pulses->push_back(pulse);
 						}
-						else
+						else 
 						{
 							++countIgnoredPulses;
 							++numPulses;
@@ -386,7 +386,7 @@ namespace spdlib
 			std::cout << "\'" << pointLine << "\'\n";
 			throw SPDIOException(e.what());
 		}
-		catch (SPDIOException &e)
+		catch (SPDIOException &e) 
 		{
 			throw e;
 		}
@@ -411,7 +411,7 @@ namespace spdlib
 		double zenithMin = 0;
 		double zenithMax = 0;
 		double rangeMin = 0;
-		double rangeMax = 0;		
+		double rangeMax = 0;		    
 		bool first = true;
 		bool firstZ = true;
         double azimuth = 0;
@@ -428,7 +428,7 @@ namespace spdlib
 		boost::uint_fast64_t numPulses = 0;
 		boost::uint_fast64_t totalNumPoints = 0;
 		std::vector<SPDPulse*> *pulses = new std::vector<SPDPulse*>();
-		try
+		try 
 		{
 			if(convertCoords)
 			{
@@ -462,14 +462,14 @@ namespace spdlib
 					pulse = new SPDPulse();
 					pulseUtils.initSPDPulse(pulse);
 					pulse->numberOfReturns = textFileUtils.strto16bitUInt(lineTokens->at(9));
-
+                    
                     if(pulse->numberOfReturns > 0)
                     {
                         pulse->pts->reserve(pulse->numberOfReturns);
                     }
                     gpsTime = (textFileUtils.strtodouble(lineTokens->at(0))*1000000);
 					pulse->gpsTime = gpsTime;
-
+                    
                     /* Retain the info on scan direction */
                     range = (textFileUtils.strtodouble(lineTokens->at(12)));
                     x0 = (textFileUtils.strtodouble(lineTokens->at(1)));
@@ -477,7 +477,7 @@ namespace spdlib
                     z0 = (textFileUtils.strtodouble(lineTokens->at(3)));
                     x1 = (textFileUtils.strtodouble(lineTokens->at(4)));
                     y1 = (textFileUtils.strtodouble(lineTokens->at(5)));
-                    z1 = (textFileUtils.strtodouble(lineTokens->at(6)));
+                    z1 = (textFileUtils.strtodouble(lineTokens->at(6)));                   
                     pulse->zenith = std::acos((z1-z0)/range);
                     azimuth = std::atan((x1-x0)/(y1-y0));
                     if(azimuth < 0)
@@ -488,7 +488,7 @@ namespace spdlib
                     {
                         pulse->azimuth = azimuth;
                     }
-
+                    
                     // Create point					
 					point = this->createSPDPoint(pointLine, pulse);
 					
@@ -551,14 +551,14 @@ namespace spdlib
 										}
 										pulse->pts->push_back(point);
 									}
-									else
+									else 
 									{
 										std::cout << "\'" << pointLine << "\'\n";
 										std::cout << "Warning: Could not create a point from line.\n";
 										incompletePulse = true;
 									}
 								}
-								else
+								else 
 								{
 									//throw SPDIOException("Blank line found when expecting point.");
                                     std::cout << "Warning: Blank line found when expecting point.\n";
@@ -566,7 +566,7 @@ namespace spdlib
 								}
 								
 							}
-							else
+							else 
 							{
 								//throw SPDIOException("Unexpected end to the file.");
                                 std::cout << "Warning: Unexpected end to the file.\n";
@@ -681,7 +681,7 @@ namespace spdlib
 							pulse->pulseID = numPulses++;
 							pulses->push_back(pulse);
 						}
-						else
+						else 
 						{
 							++countIgnoredPulses;
 							++numPulses;
@@ -708,7 +708,7 @@ namespace spdlib
 			spdFile->setBoundingVolume(xMin, xMax, yMin, yMax, zMin, zMax);
 			spdFile->setBoundingBoxSpherical(zenithMin, zenithMax, azimuthMin, azimuthMax);
 			spdFile->setRangeMin(rangeMin);
-			spdFile->setRangeMax(rangeMax);
+			spdFile->setRangeMax(rangeMax);           
 			if(convertCoords)
 			{
 				spdFile->setSpatialReference(outputProjWKT);
@@ -739,7 +739,7 @@ namespace spdlib
 			std::cout << "\'" << pointLine << "\'\n";
 			throw SPDIOException(e.what());
 		}
-		catch (SPDIOException &e)
+		catch (SPDIOException &e) 
 		{
 			throw e;
 		}
@@ -764,7 +764,7 @@ namespace spdlib
 		double zenithMin = 0;
 		double zenithMax = 0;
 		double rangeMin = 0;
-		double rangeMax = 0;
+		double rangeMax = 0;                       
 		bool first = true;
 		bool firstZ = true;
         double azimuth = 0;
@@ -780,7 +780,7 @@ namespace spdlib
 		
 		boost::uint_fast64_t numPulses = 0;
 		boost::uint_fast64_t totalNumPoints = 0;
-		try
+		try 
 		{
 			if(convertCoords)
 			{
@@ -814,14 +814,14 @@ namespace spdlib
 					pulse = new SPDPulse();
 					pulseUtils.initSPDPulse(pulse);
 					pulse->numberOfReturns = textFileUtils.strto16bitUInt(lineTokens->at(9));
-
+                    
                     if(pulse->numberOfReturns > 0)
                     {
                         pulse->pts->reserve(pulse->numberOfReturns);
                     }
                     gpsTime = (textFileUtils.strtodouble(lineTokens->at(0))*1000000);
 					pulse->gpsTime = gpsTime;
-
+                    
                     /* Retain the info on scan direction */
                     range = (textFileUtils.strtodouble(lineTokens->at(12)));
                     x0 = (textFileUtils.strtodouble(lineTokens->at(1)));
@@ -829,7 +829,7 @@ namespace spdlib
                     z0 = (textFileUtils.strtodouble(lineTokens->at(3)));
                     x1 = (textFileUtils.strtodouble(lineTokens->at(4)));
                     y1 = (textFileUtils.strtodouble(lineTokens->at(5)));
-                    z1 = (textFileUtils.strtodouble(lineTokens->at(6)));
+                    z1 = (textFileUtils.strtodouble(lineTokens->at(6)));                   
                     pulse->zenith = std::acos((z1-z0)/range);
                     azimuth = std::atan((x1-x0)/(y1-y0));
                     if(azimuth < 0)
@@ -905,7 +905,7 @@ namespace spdlib
 										}
 										pulse->pts->push_back(point);
 									}
-									else
+									else 
 									{
 										//std::cout << "\'" << pointLine << "\'\n";
 										std::cout << "Warning: Could not create a point from line.\n";
@@ -913,15 +913,15 @@ namespace spdlib
 									}
 
 								}
-								else
+								else 
 								{
 									//throw SPDIOException("Blank line found when expecting point.");
-                                    std::cout << "Warning: Blank line found when expecting point.\n";
+                                    std::cout << "Warning: Blank line found when expecting point.\n";                                  
 									incompletePulse = true;
 								}
 								
 							}
-							else
+							else 
 							{
 								//throw SPDIOException("Unexpected end to the file.");
                                 std::cout << "Warning: Unexpected end to the file.\n";
@@ -1036,7 +1036,7 @@ namespace spdlib
 							pulse->pulseID = numPulses++;
 							processor->processImportedPulse(spdFile, pulse);
 						}
-						else
+						else 
 						{
 							++countIgnoredPulses;
 							++numPulses;
@@ -1094,7 +1094,7 @@ namespace spdlib
 			std::cout << "\'" << pointLine << "\'\n";
 			throw SPDIOException(e.what());
 		}
-		catch (SPDIOException &e)
+		catch (SPDIOException &e) 
 		{
 			throw e;
 		}
@@ -1108,7 +1108,7 @@ namespace spdlib
 		}
 		return false;
 	}
-
+    
     void SPDARADecomposedDatFileImporter::readHeaderInfo(std::string, SPDFile*) throw(SPDIOException)
     {
         // No Header to Read..
@@ -1119,7 +1119,7 @@ namespace spdlib
 		SPDTextFileUtilities textFileUtils;
 		SPDPointUtils pointUtils;
 		SPDPoint *point = new SPDPoint();
-		try
+		try 
 		{
 			pointUtils.initSPDPoint(point);
 			std::vector<std::string> *lineTokens = new std::vector<std::string>();
@@ -1138,7 +1138,7 @@ namespace spdlib
 			point->z = z;
 			point->range = textFileUtils.strtofloat(lineTokens->at(12));
 			point->amplitudeReturn = textFileUtils.strtofloat(lineTokens->at(10));
-			point->returnID = textFileUtils.strto16bitUInt(lineTokens->at(8));
+			point->returnID = textFileUtils.strto16bitUInt(lineTokens->at(8));           
 			point->widthReturn = textFileUtils.strtofloat(lineTokens->at(11));
 			point->classification = textFileUtils.strto16bitUInt(lineTokens->at(7));
 			
@@ -1194,7 +1194,7 @@ namespace spdlib
 				point->classification = SPD_CREATED;
 				point->overlap = SPD_TRUE;
 			}
-			else
+			else 
 			{
 				if(!classWarningGiven)
 				{

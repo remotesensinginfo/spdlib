@@ -78,8 +78,8 @@ namespace spdlib
         float *azOff;     /*azimuth offset*/
         float omega;      /*mirror slope angle*/
     } SalcaHDRParams;
-
-
+    
+    
     class DllExport SPDSALCADataBinaryImporter : public SPDDataImporter
 	{
 	public:
@@ -99,8 +99,8 @@ namespace spdlib
         void findWaveformsBinIdxes(int *data, unsigned int dataLen, unsigned int maxRNBins, unsigned int prevWl2End, unsigned int *wl1StartIdxTrans, unsigned int *wl2StartIdxTrans, unsigned int *wl1EndIdxTrans, unsigned int *wl2EndIdxTrans, unsigned int *wl1StartIdxRec, unsigned int *wl2StartIdxRec, unsigned int *wl1EndIdxRec, unsigned int *wl2EndIdxRec) throw(SPDIOException);
         bool zeroCrossing(int *data, unsigned int startIdx, unsigned int endIdx, unsigned int idx) throw(SPDIOException);
 	};
-
-
+    
+    
 }
 
 #endif

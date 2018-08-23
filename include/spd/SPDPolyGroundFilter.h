@@ -69,16 +69,16 @@ namespace spdlib
             this->minPts = minPts;
             this->ptSelectClass = ptSelectClass;
         };
-
+        
         void processDataColumnImage(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses, float *imageData, SPDXYPoint *cenPts, boost::uint_fast32_t numImgBands, float binSize) throw(SPDProcessingException)
 		{throw SPDProcessingException("Processing with an output image is not implemented.");};
-
+        
         void processDataColumn(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses, SPDXYPoint *cenPts) throw(SPDProcessingException)
         {
             SPDPoint *minPt = NULL;
             float minZ = 0;
             bool first = true;
-
+            
             for(std::vector<SPDPulse*>::iterator iterPulses = pulses->begin(); iterPulses != pulses->end(); ++iterPulses)
             {
                 if((*iterPulses)->numberOfReturns > 0)
@@ -116,7 +116,7 @@ namespace spdlib
                     }
                 }
             }
-
+            
             if(!first)
             {
                 SPDPoint *pt = new SPDPoint();
@@ -125,28 +125,28 @@ namespace spdlib
                 minPts->push_back(pt);
             }
         };
-
+        
         void processDataWindowImage(SPDFile *inSPDFile, bool **validBins, std::vector<SPDPulse*> ***pulses, float ***imageData, SPDXYPoint ***cenPts, boost::uint_fast32_t numImgBands, float binSize, boost::uint_fast16_t winSize) throw(SPDProcessingException)
         {throw SPDProcessingException("Processing using a window is not implemented.");};
-
+        
 		void processDataWindow(SPDFile *inSPDFile, bool **validBins, std::vector<SPDPulse*> ***pulses, SPDXYPoint ***cenPts, boost::uint_fast16_t winSize) throw(SPDProcessingException)
         {throw SPDProcessingException("Processing using a window is not implemented.");};
-
+        
         std::vector<std::string> getImageBandDescriptions() throw(SPDProcessingException)
         {
             return std::vector<std::string>();
         };
-
+        
         void setHeaderValues(SPDFile *spdFile) throw(SPDProcessingException)
         {};
-
+        
         ~SPDFindMinReturnsProcessor(){};
     protected:
         std::vector<SPDPoint*> *minPts;
         boost::uint_fast16_t ptSelectClass;
 	};
 
-
+    
     class DllExport SPDClassifyGrdReturnsFromSurfaceCoefficientsProcessor : public SPDPulseProcessor
 	{
 	public:
@@ -158,10 +158,10 @@ namespace spdlib
             this->coefficients = coefficients;
             this->ptSelectClass = ptSelectClass;
         };
-
+        
         void processDataColumnImage(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses, float *imageData, SPDXYPoint *cenPts, boost::uint_fast32_t numImgBands, float binSize) throw(SPDProcessingException)
 		{throw SPDProcessingException("Processing with an output image is not implemented.");};
-
+        
         void processDataColumn(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses, SPDXYPoint *cenPts) throw(SPDProcessingException)
         {
             for(std::vector<SPDPulse*>::iterator iterPulses = pulses->begin(); iterPulses != pulses->end(); ++iterPulses)
@@ -177,14 +177,14 @@ namespace spdlib
                             {
                                 (*iterPoints)->classification = SPD_UNCLASSIFIED;
                             }
-
+                            
                             // Calc surface height for return
                             double xcoord= (*iterPoints)->x;
                             double ycoord= (*iterPoints)->y;
                             double zcoord= (*iterPoints)->z;
                             double surfaceValue=0; // reset z value from surface coefficients
                             boost::uint_fast32_t l=0;
-
+                            
                             for (boost::uint_fast32_t m = 0; m < coefficients->size ; m++)
                             {
                                 for (boost::uint_fast32_t n=0; n < coefficients->size ; n++)
@@ -194,16 +194,16 @@ namespace spdlib
                                         double xelementtPow = pow(xcoord, ((int)(m)));
                                         double yelementtPow = pow(ycoord, ((int)(n)));
                                         double outm = gsl_vector_get(coefficients, l);
-
+                                        
                                         surfaceValue=surfaceValue+(outm*xelementtPow*yelementtPow);
                                         ++l;
                                     }
                                 }
                             }
-
+                            
                             // Is return height less than surface height + grdThres
                             // sqrt((zcoord-surfaceValue)*(zcoord-surfaceValue)) <= grdThres
-
+                            
                             if ((zcoord-surfaceValue) <= grdThres) {
                                 (*iterPoints)->classification = SPD_GROUND;
                             }
@@ -215,14 +215,14 @@ namespace spdlib
                             {
                                 (*iterPoints)->classification = SPD_UNCLASSIFIED;
                             }
-
+                            
                             // Calc surface height for return
                             double xcoord= (*iterPoints)->x;
                             double ycoord= (*iterPoints)->y;
                             double zcoord= (*iterPoints)->z;
                             double surfaceValue=0; // reset z value from surface coefficients
                             boost::uint_fast32_t l=0;
-
+                            
                             for (boost::uint_fast32_t m = 0; m < coefficients->size ; m++)
                             {
                                 for (boost::uint_fast32_t n=0; n < coefficients->size ; n++)
@@ -232,40 +232,40 @@ namespace spdlib
                                         double xelementtPow = pow(xcoord, ((int)(m)));
                                         double yelementtPow = pow(ycoord, ((int)(n)));
                                         double outm = gsl_vector_get(coefficients, l);
-
+                                        
                                         surfaceValue=surfaceValue+(outm*xelementtPow*yelementtPow);
                                         ++l;
                                     }
                                 }
                             }
-
+                            
                             // Is return height less than surface height + grdThres
                             // sqrt((zcoord-surfaceValue)*(zcoord-surfaceValue)) <= grdThres
-
+                            
                             if ((zcoord-surfaceValue) <= grdThres) {
                                 (*iterPoints)->classification = SPD_GROUND;
                             }
                         }
-
+                        
                     }
                 }
             }
         };
-
+        
         void processDataWindowImage(SPDFile *inSPDFile, bool **validBins, std::vector<SPDPulse*> ***pulses, float ***imageData, SPDXYPoint ***cenPts, boost::uint_fast32_t numImgBands, float binSize, boost::uint_fast16_t winSize) throw(SPDProcessingException)
         {throw SPDProcessingException("Processing using a window is not implemented.");};
-
+        
 		void processDataWindow(SPDFile *inSPDFile, bool **validBins, std::vector<SPDPulse*> ***pulses, SPDXYPoint ***cenPts, boost::uint_fast16_t winSize) throw(SPDProcessingException)
         {throw SPDProcessingException("Processing using a window is not implemented.");};
-
+        
         std::vector<std::string> getImageBandDescriptions() throw(SPDProcessingException)
         {
             return std::vector<std::string>();
         };
-
+        
         void setHeaderValues(SPDFile *spdFile) throw(SPDProcessingException)
         {};
-
+        
         ~SPDClassifyGrdReturnsFromSurfaceCoefficientsProcessor(){};
     protected:
         float grdThres;
@@ -274,14 +274,14 @@ namespace spdlib
         gsl_vector *coefficients;
         boost::uint_fast16_t ptSelectClass;
 	};
-
-
+    
+    
     class DllExport SPDPolyFitGroundLocalFilter : public SPDDataBlockProcessor
 	{
 	public:
         // constructor
         SPDPolyFitGroundLocalFilter(float grdThres, boost::uint_fast16_t degree, boost::uint_fast16_t iters, boost::uint_fast16_t ptSelectClass, float binWidth);
-
+        
         // public functions
         void processDataBlockImage(SPDFile *inSPDFile, std::vector<SPDPulse*> ***pulses, float ***imageDataBlock, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast32_t numImgBands, float binSize) throw(SPDProcessingException)
 		{throw SPDProcessingException("SPDPolyFitGroundLocalFilter processDataBlockImage not implemented.");};
@@ -290,7 +290,7 @@ namespace spdlib
 		{throw SPDProcessingException("SPDPolyFitGroundLocalFilter requires processing with a grid.");};
         void processDataBlock(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses) throw(SPDProcessingException)
         {throw SPDProcessingException("SPDPolyFitGroundLocalFilter requires processing with a grid.");};
-
+        
         std::vector<std::string> getImageBandDescriptions() throw(SPDProcessingException)
         {
             std::vector<std::string> bandNames;
@@ -300,7 +300,7 @@ namespace spdlib
         {
             // Nothing to do...
         }
-
+        
         ~SPDPolyFitGroundLocalFilter();
     protected:
         float grdThres;
@@ -311,7 +311,7 @@ namespace spdlib
 	};
 
 
-
+    
     class DllExport SPDPolyFitGroundFilter
 	{
 	public:
@@ -322,8 +322,8 @@ namespace spdlib
     private:
         void buildMinGrid(SPDFile *spdFile, std::vector<SPDPoint*> *minPts, std::vector<SPDPoint*> ***minPtGrid)throw(SPDProcessingException);
 	};
-
-
+    
+    
 }
 
 

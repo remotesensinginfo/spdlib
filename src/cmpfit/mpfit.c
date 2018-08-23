@@ -1,22 +1,22 @@
-/*
+/* 
  * MINPACK-1 Least Squares Fitting Library
  *
  * Original public domain version by B. Garbow, K. Hillstrom, J. More'
  *   (Argonne National Laboratory, MINPACK project, March 1980)
  * See the file DISCLAIMER for copyright information.
- *
+ * 
  * Tranlation to C Language by S. Moshier (moshier.net)
- *
+ * 
  * Enhancements and packaging by C. Markwardt
  *   (comparable to IDL fitting routine MPFIT
  *    see http://cow.physics.wisc.edu/~craigm/idl/idl.html)
  */
-
+ 
  /*
  * Minpack Copyright Notice (1999) University of Chicago.  All rights reserved
  */
 
-/* Main mpfit library routines (double precision)
+/* Main mpfit library routines (double precision) 
    $Id: mpfit.c,v 1.20 2010/11/13 08:15:35 craigm Exp $
  */
 
@@ -34,7 +34,7 @@ static int mp_fdjac2(mp_func funct,
 	      double *step, double *dstep, int *dside,
 	      int *qulimited, double *ulimit,
 	      int *ddebug, double *ddrtol, double *ddatol);
-static void mp_qrfac(int m, int n, double *a, int lda,
+static void mp_qrfac(int m, int n, double *a, int lda, 
 	      int pivot, int *ipvt, int lipvt,
 	      double *rdiag, double *acnorm, double *wa);
 static void mp_qrsolv(int n, double *r, int ldr, int *ipvt, double *diag,
@@ -60,7 +60,7 @@ static int mp_covar(int n, double *r, int ldr, int *ipvt, double tol, double *wa
   } else { \
     int _k; \
     for (_k=0; _k<(size); _k++) dest[_k] = 0; \
-  }
+  } 
 
 /*
 *     **********
@@ -90,7 +90,7 @@ static int mp_covar(int n, double *r, int ldr, int *ipvt, double tol, double *wa
 *                      to funct without modification by mpfit().
 *     mp_result *result - pointer to structure, which upon return, contains
 *                      the results of the fit.  The user should zero this
-*                      structure.  If any of the array values are to be
+*                      structure.  If any of the array values are to be 
 *                      returned, the user should allocate storage for them
 *                      and assign the corresponding pointer in *result.
 *                      Upon return, *result will be updated, and
@@ -273,7 +273,7 @@ static int mp_covar(int n, double *r, int ldr, int *ipvt, double tol, double *wa
 
 
 int mpfit(mp_func funct, int m, int npar,
-	  double *xall, mp_par *pars, mp_config *config, void *private_data,
+	  double *xall, mp_par *pars, mp_config *config, void *private_data, 
 	  mp_result *result)
 {
   mp_config conf;
@@ -317,7 +317,7 @@ int mpfit(mp_func funct, int m, int npar,
   conf.maxfev = 0;
   conf.covtol = 1e-14;
   conf.nofinitecheck = 0;
-
+  
   if (config) {
     /* Transfer any user-specified configurations */
     if (config->ftol > 0) conf.ftol = config->ftol;
@@ -345,7 +345,7 @@ int mpfit(mp_func funct, int m, int npar,
   if ((m <= 0) || (xall == 0)) {
     return MP_ERR_NPOINTS;
   }
-
+  
   if (npar <= 0) {
     return MP_ERR_NFREE;
   }
@@ -376,7 +376,7 @@ int mpfit(mp_func funct, int m, int npar,
     ddrtol[i] = pars[i].deriv_reltol;
     ddatol[i] = pars[i].deriv_abstol;
   }
-
+    
   /* Finish up the free parameters */
   nfree = 0;
   mp_malloc(ifree, int, npar);
@@ -390,7 +390,7 @@ int mpfit(mp_func funct, int m, int npar,
     info = MP_ERR_NFREE;
     goto CLEANUP;
   }
-
+  
   if (pars) {
     for (i=0; i<npar; i++) {
       if ( (pars[i].limited[0] && (xall[i] < pars[i].limits[0])) ||
@@ -480,7 +480,7 @@ int mpfit(mp_func funct, int m, int npar,
   for (i=0; i<nfree; i++) {
     xnew[ifree[i]] = x[i];
   }
-
+  
   /* XXX call iterproc */
 
   /* Calculate the jacobian matrix */
@@ -499,7 +499,7 @@ int mpfit(mp_func funct, int m, int npar,
       int lpegged = (qllim[j] && (x[j] == llim[j]));
       int upegged = (qulim[j] && (x[j] == ulim[j]));
       sum = 0;
-
+      
       if (lpegged || upegged) {
 	qanypegged = 1;
 	ij = j*ldfjac;
@@ -516,7 +516,7 @@ int mpfit(mp_func funct, int m, int npar,
 	for (i=0; i<m; i++, ij++) fjac[ij] = 0;
       }
     }
-  }
+  } 
 
   /* Compute the QR factorization of the jacobian */
   mp_qrfac(m,nfree,fjac,ldfjac,1,ipvt,nfree,wa1,wa2,wa3);
@@ -542,7 +542,7 @@ int mpfit(mp_func funct, int m, int npar,
     for (j=0; j<nfree; j++ ) {
       wa3[j] = diag[ifree[j]] * x[j];
     }
-
+    
     xnorm = mp_enorm(nfree, wa3);
     delta = conf.stepfactor*xnorm;
     if (delta == zero) delta = conf.stepfactor;
@@ -581,7 +581,7 @@ int mpfit(mp_func funct, int m, int npar,
   /* ( From this point on, only the square matrix, consisting of the
      triangle of R, is needed.) */
 
-
+  
   if (conf.nofinitecheck) {
     /* Check for overflow.  This should be a cheap test here since FJAC
        has been reduced to a (small) square matrix, and the test is
@@ -662,7 +662,7 @@ int mpfit(mp_func funct, int m, int npar,
     }
 
   } else {
-    /* Respect the limits.  If a step were to go out of bounds, then
+    /* Respect the limits.  If a step were to go out of bounds, then 
      * we should take a step in the same direction but shorter distance.
      * The step should take us right to the limit in that case.
      */
@@ -670,7 +670,7 @@ int mpfit(mp_func funct, int m, int npar,
       int lpegged = (qllim[j] && (x[j] <= llim[j]));
       int upegged = (qulim[j] && (x[j] >= ulim[j]));
       int dwa1 = fabs(wa1[j]) > MP_MACHEP0;
-
+      
       if (lpegged && (wa1[j] < 0)) wa1[j] = 0;
       if (upegged && (wa1[j] > 0)) wa1[j] = 0;
 
@@ -681,7 +681,7 @@ int mpfit(mp_func funct, int m, int npar,
 	alpha = mp_dmin1(alpha, (ulim[j]-x[j])/wa1[j]);
       }
     }
-
+    
     /* Scale the resulting vector, advance to the next position */
     for (j=0; j<nfree; j++) {
       double sgnu, sgnl;
@@ -713,7 +713,7 @@ int mpfit(mp_func funct, int m, int npar,
   }
 
   pnorm = mp_enorm(nfree,wa3);
-
+  
   /*
    *	    on the first iteration, adjust the initial step bound.
    */
@@ -781,10 +781,10 @@ int mpfit(mp_func funct, int m, int npar,
   /*
    *	    update the step bound.
    */
-
+  
   if (ratio <= p25) {
     if (actred >= zero) {
-      temp = p5;
+      temp = p5; 
     } else {
       temp = p5*dirder/(dirder + p5*actred);
     }
@@ -805,7 +805,7 @@ int mpfit(mp_func funct, int m, int npar,
    *	    test for successful iteration.
    */
   if (ratio >= p0001) {
-
+    
     /*
      *	    successful iteration. update x, fvec, and their norms.
      */
@@ -820,11 +820,11 @@ int mpfit(mp_func funct, int m, int npar,
     fnorm = fnorm1;
     iter += 1;
   }
-
+  
   /*
    *	    tests for convergence.
    */
-  if ((fabs(actred) <= conf.ftol) && (prered <= conf.ftol) &&
+  if ((fabs(actred) <= conf.ftol) && (prered <= conf.ftol) && 
       (p5*ratio <= one) ) {
     info = MP_OK_CHI;
   }
@@ -838,7 +838,7 @@ int mpfit(mp_func funct, int m, int npar,
   if (info != 0) {
     goto L300;
   }
-
+  
   /*
    *	    tests for termination and stringent tolerances.
    */
@@ -862,7 +862,7 @@ int mpfit(mp_func funct, int m, int npar,
   if (info != 0) {
     goto L300;
   }
-
+  
   /*
    *	    end of the inner loop. repeat if iteration unsuccessful.
    */
@@ -884,7 +884,7 @@ int mpfit(mp_func funct, int m, int npar,
   for (i=0; i<nfree; i++) {
     xall[ifree[i]] = x[i];
   }
-
+  
   if ((conf.nprint > 0) && (info > 0)) {
     iflag = mp_call(funct, m, npar, xall, fvec, 0, private_data);
     nfev += 1;
@@ -902,11 +902,11 @@ int mpfit(mp_func funct, int m, int npar,
   /* Compute and return the covariance matrix and/or parameter errors */
   if (result && (result->covar || result->xerror)) {
     mp_covar(nfree, fjac, ldfjac, ipvt, conf.covtol, wa2);
-
+    
     if (result->covar) {
       /* Zero the destination covariance array */
       for (j=0; j<(npar*npar); j++) result->covar[j] = 0;
-
+      
       /* Transfer the covariance array */
       for (j=0; j<nfree; j++) {
 	for (i=0; i<nfree; i++) {
@@ -923,7 +923,7 @@ int mpfit(mp_func funct, int m, int npar,
 	if (cc > 0) result->xerror[ifree[j]] = sqrt(cc);
       }
     }
-  }
+  }      
 
   if (result) {
     strcpy(result->version, MPFIT_VERSION);
@@ -937,7 +937,7 @@ int mpfit(mp_func funct, int m, int npar,
     result->nfree    = nfree;
     result->npegged  = npegged;
     result->nfunc    = m;
-
+    
     /* Copy residuals if requested */
     if (result->resid) {
       for (j=0; j<m; j++) result->resid[j] = fvec[j];
@@ -977,7 +977,7 @@ int mpfit(mp_func funct, int m, int npar,
 
 /************************fdjac2.c*************************/
 
-static
+static 
 int mp_fdjac2(mp_func funct,
 	      int m, int n, int *ifree, int npar, double *x, double *fvec,
 	      double *fjac, int ldfjac, double epsfcn,
@@ -1070,7 +1070,7 @@ int mp_fdjac2(mp_func funct,
   double **dvec = 0;
   int has_analytical_deriv = 0, has_numerical_deriv = 0;
   int has_debug_deriv = 0;
-
+  
   temp = mp_dmax1(epsfcn,MP_MACHEP0);
   eps = sqrt(temp);
   ij = 0;
@@ -1111,7 +1111,7 @@ int mp_fdjac2(mp_func funct,
 
   if (has_debug_deriv) {
     printf("FJAC DEBUG BEGIN\n");
-    printf("#  %10s %10s %10s %10s %10s %10s\n",
+    printf("#  %10s %10s %10s %10s %10s %10s\n", 
 	   "IPNT", "FUNC", "DERIV_U", "DERIV_N", "DIFF_ABS", "DIFF_REL");
   }
 
@@ -1120,7 +1120,7 @@ int mp_fdjac2(mp_func funct,
     int dsidei = (dside)?(dside[ifree[j]]):(0);
     int debug  = ddebug[ifree[j]];
     double dr = ddrtol[ifree[j]], da = ddatol[ifree[j]];
-
+    
     /* Check for debugging */
     if (debug) {
       printf("FJAC PARM %d\n", ifree[j]);
@@ -1136,9 +1136,9 @@ int mp_fdjac2(mp_func funct,
     if (h == zero)                    h = eps;
 
     /* If negative step requested, or we are against the upper limit */
-    if ((dside && dsidei == -1) ||
-	(dside && dsidei == 0 &&
-	 qulimited && ulimit && qulimited[j] &&
+    if ((dside && dsidei == -1) || 
+	(dside && dsidei == 0 && 
+	 qulimited && ulimit && qulimited[j] && 
 	 (temp > (ulimit[j]-h)))) {
       h = -h;
     }
@@ -1163,8 +1163,8 @@ int mp_fdjac2(mp_func funct,
 	  fjac[ij] = (wa[i] - fvec[i])/h; /* fjac[i+m*j] */
 	  if ((da == 0 && dr == 0 && (fjold != 0 || fjac[ij] != 0)) ||
 	      ((da != 0 || dr != 0) && (fabs(fjold-fjac[ij]) > da + fabs(fjold)*dr))) {
-	    printf("   %10d %10.4g %10.4g %10.4g %10.4g %10.4g\n",
-		   i, fvec[i], fjold, fjac[ij], fjold-fjac[ij],
+	    printf("   %10d %10.4g %10.4g %10.4g %10.4g %10.4g\n", 
+		   i, fvec[i], fjold, fjac[ij], fjold-fjac[ij], 
 		   (fjold == 0)?(0):((fjold-fjac[ij])/fjold));
 	  }
 	}
@@ -1195,13 +1195,13 @@ int mp_fdjac2(mp_func funct,
 	  fjac[ij] = (fjac[ij] - wa[i])/(2*h); /* fjac[i+m*j] */
 	  if ((da == 0 && dr == 0 && (fjold != 0 || fjac[ij] != 0)) ||
 	      ((da != 0 || dr != 0) && (fabs(fjold-fjac[ij]) > da + fabs(fjold)*dr))) {
-	    printf("   %10d %10.4g %10.4g %10.4g %10.4g %10.4g\n",
-		   i, fvec[i], fjold, fjac[ij], fjold-fjac[ij],
+	    printf("   %10d %10.4g %10.4g %10.4g %10.4g %10.4g\n", 
+		   i, fvec[i], fjold, fjac[ij], fjold-fjac[ij], 
 		   (fjold == 0)?(0):((fjold-fjac[ij])/fjold));
 	  }
 	}
       }	
-
+      
     }
   }
 
@@ -1212,7 +1212,7 @@ int mp_fdjac2(mp_func funct,
  DONE:
   if (dvec) free(dvec);
   if (iflag < 0) return iflag;
-  return 0;
+  return 0; 
   /*
    *     last card of subroutine fdjac2.
    */
@@ -1220,9 +1220,9 @@ int mp_fdjac2(mp_func funct,
 
 
 /************************qrfac.c*************************/
-
-static
-void mp_qrfac(int m, int n, double *a, int lda,
+ 
+static 
+void mp_qrfac(int m, int n, double *a, int lda, 
 	      int pivot, int *ipvt, int lipvt,
 	      double *rdiag, double *acnorm, double *wa)
 {
@@ -1342,7 +1342,7 @@ void mp_qrfac(int m, int n, double *a, int lda,
       }
     if (kmax == j)
       goto L40;
-
+      
     ij = m * j;
     jj = m * kmax;
     for (i=0; i<m; i++)
@@ -1358,7 +1358,7 @@ void mp_qrfac(int m, int n, double *a, int lda,
     k = ipvt[j];
     ipvt[j] = ipvt[kmax];
     ipvt[kmax] = k;
-
+      
   L40:
     /*
      *	 compute the householder transformation to reduce the
@@ -1418,7 +1418,7 @@ void mp_qrfac(int m, int n, double *a, int lda,
 	      }
 	  }
       }
-
+      
   L100:
     rdiag[j] = -ajnorm;
   }
@@ -1429,7 +1429,7 @@ void mp_qrfac(int m, int n, double *a, int lda,
 
 /************************qrsolv.c*************************/
 
-static
+static 
 void mp_qrsolv(int n, double *r, int ldr, int *ipvt, double *diag,
 	       double *qtb, double *x, double *sdiag, double *wa)
 {
@@ -1517,7 +1517,7 @@ void mp_qrsolv(int n, double *r, int ldr, int *ipvt, double *diag,
   static double zero = 0.0;
   static double p25 = 0.25;
   static double p5 = 0.5;
-
+  
   /*
    *     copy r and (q transpose)*b to preserve input and initialize s.
    *     in particular, save the diagonal elements of r in x.
@@ -1624,7 +1624,7 @@ void mp_qrsolv(int n, double *r, int ldr, int *ipvt, double *diag,
   }
   if (nsing < 1)
     goto L150;
-
+  
   for (k=0; k<nsing; k++) {
     j = nsing - k - 1;
     sum = zero;
@@ -1655,10 +1655,10 @@ void mp_qrsolv(int n, double *r, int ldr, int *ipvt, double *diag,
 
 /************************lmpar.c*************************/
 
-static
+static 
 void mp_lmpar(int n, double *r, int ldr, int *ipvt, int *ifree, double *diag,
 	      double *qtb, double delta, double *par, double *x,
-	      double *sdiag, double *wa1, double *wa2)
+	      double *sdiag, double *wa1, double *wa2) 
 {
   /*     **********
    *
@@ -1762,7 +1762,7 @@ void mp_lmpar(int n, double *r, int ldr, int *ipvt, int *ifree, double *diag,
   /* static double one = 1.0; */
   static double p1 = 0.1;
   static double p001 = 0.001;
-
+  
   /*
    *     compute and store in x the gauss-newton direction. if the
    *     jacobian is rank-deficient, obtain a least squares solution.
@@ -1796,7 +1796,7 @@ void mp_lmpar(int n, double *r, int ldr, int *ipvt, int *ifree, double *diag,
 	  }
       }
   }
-
+  
   for (j=0; j<n; j++) {
     l = ipvt[j];
     x[l] = wa1[j];
@@ -1943,7 +1943,7 @@ void mp_lmpar(int n, double *r, int ldr, int *ipvt, int *ifree, double *diag,
    *	 end of an iteration.
    */
   goto L150;
-
+  
  L220:
   /*
    *     termination.
@@ -1957,9 +1957,9 @@ void mp_lmpar(int n, double *r, int ldr, int *ipvt, int *ifree, double *diag,
 
 
 /************************enorm.c*************************/
-
-static
-double mp_enorm(int n, double *x)
+ 
+static 
+double mp_enorm(int n, double *x) 
 {
   /*
    *     **********
@@ -2007,7 +2007,7 @@ double mp_enorm(int n, double *x)
   double rgiant = MP_RGIANT;
   static double zero = 0.0;
   static double one = 1.0;
-
+  
   s1 = zero;
   s2 = zero;
   s3 = zero;
@@ -2015,7 +2015,7 @@ double mp_enorm(int n, double *x)
   x3max = zero;
   floatn = n;
   agiant = rgiant/floatn;
-
+  
   for (i=0; i<n; i++) {
     xabs = fabs(x[i]);
     if ((xabs > rdwarf) && (xabs < agiant))
@@ -2026,7 +2026,7 @@ double mp_enorm(int n, double *x)
 	s2 += xabs*xabs;
 	continue;
       }
-
+      
     if (xabs > rdwarf)
       {
 	/*
@@ -2090,8 +2090,8 @@ double mp_enorm(int n, double *x)
 
 /************************lmmisc.c*************************/
 
-static
-double mp_dmax1(double a, double b)
+static 
+double mp_dmax1(double a, double b) 
 {
   if (a >= b)
     return(a);
@@ -2099,7 +2099,7 @@ double mp_dmax1(double a, double b)
     return(b);
 }
 
-static
+static 
 double mp_dmin1(double a, double b)
 {
   if (a <= b)
@@ -2108,7 +2108,7 @@ double mp_dmin1(double a, double b)
     return(b);
 }
 
-static
+static 
 int mp_min0(int a, int b)
 {
   if (a <= b)
@@ -2186,7 +2186,7 @@ c
 c     **********
 */
 
-static
+static 
 int mp_covar(int n, double *r, int ldr, int *ipvt, double tol, double *wa)
 {
   int i, ii, j, jj, k, l;
@@ -2227,14 +2227,14 @@ int mp_covar(int n, double *r, int ldr, int *ipvt, double tol, double *wa)
     l = k;
   }
 
-  /*
+  /* 
    * Form the full upper triangle of the inverse of (r transpose)*r
    * in the full upper triangle of r
    */
 
   if (l >= 0) {
     for (k=0; k <= l; k++) {
-      k0 = k*ldr;
+      k0 = k*ldr; 
 
       for (j=0; j<k; j++) {
 	temp = r[k*ldr+j];
@@ -2244,7 +2244,7 @@ int mp_covar(int n, double *r, int ldr, int *ipvt, double tol, double *wa)
 	  r[j0+i] += temp*r[k0+i];
 	}
       }
-
+      
       temp = r[k0+k];
       for (i=0; i<=k; i++) {
 	r[k0+i] *= temp;

@@ -52,13 +52,13 @@
 
 namespace spdlib
 {
-	
+	   
     class DllExport SPDClassifyPtsNumReturns : public SPDDataBlockProcessor
 	{
 	public:
 
         SPDClassifyPtsNumReturns();
-
+        
         void processDataBlockImage(SPDFile *inSPDFile, std::vector<SPDPulse*> ***pulses, float ***imageDataBlock, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast32_t numImgBands, float binSize) throw(SPDProcessingException)
 		{throw SPDProcessingException("SPDClassifyPts processDataBlockImage not implemented.");};
         void processDataBlock(SPDFile *inSPDFile, std::vector<SPDPulse*> ***pulses, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, float binSize) throw(SPDProcessingException);
@@ -66,7 +66,7 @@ namespace spdlib
 		{throw SPDProcessingException("SPDClassifyPts requires processing with a grid.");};
         void processDataBlock(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses) throw(SPDProcessingException)
         {throw SPDProcessingException("SPDClassifyPts requires processing with a grid.");};
-
+        
         std::vector<std::string> getImageBandDescriptions() throw(SPDProcessingException)
         {
             std::vector<std::string> bandNames;
@@ -76,13 +76,13 @@ namespace spdlib
         {
             // Nothing to do...
         }
-
+        
         ~SPDClassifyPtsNumReturns();
 	};
-
-
-
-
+    
+    
+    
+    
 }
 
 

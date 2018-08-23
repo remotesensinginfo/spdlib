@@ -66,14 +66,14 @@ namespace spdlib
         double y;
         double z;
     };
-
+    
     struct DllExport GaussianDecompReturnType
     {
         float gaussianAmplitude;
         float gaussianWidth;
         float axisInterval;
     };
-
+    
     class DllExport SPDInitDecomposition
 	{
 	public:
@@ -106,7 +106,7 @@ namespace spdlib
 		float decay;
 	boost::uint_fast32_t intDecayThres;
 	};
-
+    
     class DllExport SPDInitDecompositionZeroCrossingNoRinging : public SPDInitDecomposition
 	{
 	public:
@@ -117,10 +117,10 @@ namespace spdlib
 	private:
 		bool zeroCrossing(float grad1, float grad2);
 	};
-
+    
     class DllExport SPDMathsUtils
     {
-    public:
+    public: 
         SPDMathsUtils();
         /// dataValuesY is the list to be smoothed while dataValuesX are the corresponding
         /// values for the other axis (e.g., height).
@@ -128,7 +128,7 @@ namespace spdlib
         /// fitGaussianMixture is a function which fits are number of Gaussians (the number and starting points are defined
         /// by the SPDInitDecomposition class passed to the function) to the dataValues.
         std::vector<GaussianDecompReturnType*>* fitGaussianMixture(SPDInitDecomposition *initDecomp, float minimumGaussianGap, float *dataValues, float *dataIntervals,boost::uint_fast32_t nVals, float intThreshold) throw(SPDProcessingException);
-        /// decomposeSingleGaussian is a function which fits a Gaussian to the inputted data values using
+        /// decomposeSingleGaussian is a function which fits a Gaussian to the inputted data values using 
         /// the maximum peak as the starting point.
         void decomposeSingleGaussian(boost::uint_fast32_t *waveform,boost::uint_fast16_t waveformLength,boost::uint_fast16_t waveFitWindow, float waveformTimeInterval, float *transAmp, float *transWidth, float *peakTime) throw(SPDProcessingException);
         /// Do two rectangles intersect with one another.
@@ -140,9 +140,9 @@ namespace spdlib
         double devFromPlane(double *x, double *y, double *z, boost::uint_fast32_t numValues, double normX, double normY, double a, double b, double c) throw(SPDProcessingException);
         ~SPDMathsUtils();
     };
-
-    /// This class has been copied from RSGISLib (RSGISSingularValueDecomposition)
-    /// and was originally created by Daniel Clewely.
+    
+    /// This class has been copied from RSGISLib (RSGISSingularValueDecomposition) 
+    /// and was originally created by Daniel Clewely. 
     class DllExport SPDSingularValueDecomposition
     {
     public:
@@ -159,11 +159,11 @@ namespace spdlib
         gsl_matrix *outV;
         gsl_vector *outS;
     };
-
-
+    
+    
 	/// Class to perform polynomaial fitting
-    /// This class has been copied from RSGISLib (RSGISPolyFit)
-    /// and was originally created by Daniel Clewely.
+    /// This class has been copied from RSGISLib (RSGISPolyFit) 
+    /// and was originally created by Daniel Clewely. 
 	class DllExport SPDPolyFit
     {
     public:

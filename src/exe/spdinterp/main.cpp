@@ -4,7 +4,7 @@
  *
  *  Created by Pete Bunting on 05/03/2012.
  *  Copyright 2012 SPDLib. All rights reserved.
- *
+ * 
  *  This file is part of SPDLib.
  *
  *  SPDLib is free software: you can redistribute it and/or modify
@@ -40,57 +40,57 @@
 
 #include "spd/spd-config.h"
 
-int main (int argc, char * const argv[])
+int main (int argc, char * const argv[]) 
 {
     std::cout.precision(12);
-
+    
     std::cout << "spdinterp " << SPDLIB_PACKAGE_STRING << ", Copyright (C) " << SPDLIB_COPYRIGHT_YEAR << " Sorted Pulse Library (SPD)\n";
 	std::cout << "This program comes with ABSOLUTELY NO WARRANTY. This is free software,\n";
 	std::cout << "and you are welcome to redistribute it under certain conditions; See\n";
 	std::cout << "website (http://www.spdlib.org). Bugs are to be reported on the trac\n";
 	std::cout << "or directly to " << SPDLIB_PACKAGE_BUGREPORT << std::endl;
 	
-	try
+	try 
 	{
         TCLAP::CmdLine cmd("Interpolate a raster elevation surface: spdinterp", ' ', "1.0.0");
 		
         TCLAP::ValueArg<boost::uint_fast32_t> numOfRowsBlockArg("r","blockrows","Number of rows within a block (Default 100)",false,100,"unsigned int");
 		cmd.add( numOfRowsBlockArg );
-
+        
         TCLAP::ValueArg<boost::uint_fast32_t> numOfColsBlockArg("c","blockcols","Number of columns within a block (Default 0) - Note values greater than 1 result in a non-sequencial SPD file.",false,0,"unsigned int");
 		cmd.add( numOfColsBlockArg );
-
+        
         TCLAP::ValueArg<uint_fast16_t> overlapArg("","overlap","Size (in bins) of the overlap between processing blocks (Default 10)",false,10,"uint_fast16_t");
 		cmd.add( overlapArg );
-
+        
         TCLAP::ValueArg<float> binSizeArg("b","binsize","Bin size for processing and output image (Default 0) - Note 0 will use the native SPD file bin size.",false,0,"float");
 		cmd.add( binSizeArg );
-
+        
         TCLAP::ValueArg<std::string> imgFormatArg("f","format","Image format (GDAL driver string), Default is ENVI.",false,"ENVI","string");
 		cmd.add( imgFormatArg );
-
+        
         TCLAP::SwitchArg dtmSwitch("","dtm","Interpolate a DTM image", false);		
 		TCLAP::SwitchArg chmSwitch("","chm","Interpolate a CHM image.", false);
         TCLAP::SwitchArg dsmSwitch("","dsm","Interpolate a DSM image.", false);
         TCLAP::SwitchArg ampSwitch("","amp","Interpolate an amplitude image.", false);
-
+        
         std::vector<TCLAP::Arg*> arguments;
         arguments.push_back(&dtmSwitch);
         arguments.push_back(&chmSwitch);
         arguments.push_back(&dsmSwitch);
         arguments.push_back(&ampSwitch);
         cmd.xorAdd(arguments);
-
+        
         TCLAP::SwitchArg zSwitch("","topo","Use topographic elevation", false);		
 		TCLAP::SwitchArg hSwitch("","height","Use height above ground elevation.", false);
         TCLAP::SwitchArg otherSwitch("","other","Interpolator is not using height.", false);
-
+        
         std::vector<TCLAP::Arg*> argumentsElev;
         argumentsElev.push_back(&zSwitch);
         argumentsElev.push_back(&hSwitch);
         argumentsElev.push_back(&otherSwitch);
         cmd.xorAdd(argumentsElev);
-
+        
 		std::vector<std::string> interpolators;
 		interpolators.push_back("TIN_PLANE");
 		interpolators.push_back("NEAREST_NEIGHBOR");
@@ -106,7 +106,7 @@ int main (int argc, char * const argv[])
 		
 		TCLAP::ValueArg<float> stddevThresholdArg("","stddevThreshold","STDEV_MULTISCALE: Standard Deviation threshold",false,3,"float");
 		cmd.add( stddevThresholdArg );
-
+        
 		TCLAP::ValueArg<float> smallRadiusArg("","smallRadius","STDEV_MULTISCALE: Smaller radius to be used when standard deviation is high",false,1,"float");
 		cmd.add( smallRadiusArg );
 		
@@ -118,47 +118,47 @@ int main (int argc, char * const argv[])
 		
 		TCLAP::ValueArg<float> tpsRadiusArg("","tpsRadius","TPS: (TPS_PTNO - maximum) Radius used to retrieve data in TPS algorithm",false,1,"float");
 		cmd.add( tpsRadiusArg );
-
+        
         TCLAP::ValueArg<uint_fast16_t> tpsNoPtsArg("","tpsnopts","TPS: (TPS_RAD - minimum) Number of points to be used by TPS algorithm",false,12,"uint_fast16_t");
 		cmd.add( tpsNoPtsArg );
-
+        
         TCLAP::SwitchArg thinSwitch("","thin","Thin the point cloud when interpolating", false);		
         cmd.add( thinSwitch );
-
+        
         TCLAP::ValueArg<uint_fast16_t> noPtsPerBinArg("","ptsperbin","The number of point allowed within a grid cell following thinning",false,1,"uint_fast16_t");
 		cmd.add( noPtsPerBinArg );
-
+        
         TCLAP::ValueArg<float> thinGridResArg("","thinres","Resolution of the grid used to thin the point cloud",false,0.5,"float");
 		cmd.add( thinGridResArg );
-
+        
         TCLAP::ValueArg<float> gridIdxResolutionArg("","idxres","Resolution of the grid index used for some interpolaters",false,0.5,"float");
 		cmd.add( gridIdxResolutionArg );
-
-
+        
+        
         TCLAP::ValueArg<double> rbfRadiusArg("","rbfradius","The radius used within the RBF interpolator",false,5,"double");
 		cmd.add( rbfRadiusArg );
-
+        
         TCLAP::ValueArg<unsigned int> rbfLayersArg("","rbflayers","The number of layers used within the RBF interpolator",false,3,"unsigned int");
 		cmd.add( rbfLayersArg );
-
+        
         TCLAP::SwitchArg useOnlyVegReturnsSwitch("","usevegreturns","An option when the CHM interpolation is being applied, where only returns classified as vegetation will be used for the interpolation.", false);
         cmd.add( useOnlyVegReturnsSwitch );
 		
 		TCLAP::SwitchArg useOnlyGroundReturnsSwitch("","usegroundreturns","An option when the Amplitude interpolation is being applied, where only returns classified as ground be used for the interpolation.", false);
         cmd.add( useOnlyGroundReturnsSwitch );
-
+        
         TCLAP::ValueArg<double> minCHMHeightArg("","minchmthres","A threshold for the CHM after which all values are set to zero.",false,0.25,"double");
 		cmd.add( minCHMHeightArg );
-
+        
 		TCLAP::ValueArg<std::string> inputFileArg("i","input","The input SPD file.",true,"","String");
 		cmd.add( inputFileArg );
-
+        
         TCLAP::ValueArg<std::string> outputFileArg("o","output","The output image file.",false,"","String");
 		cmd.add( outputFileArg );
-
+        
         TCLAP::ValueArg<std::string> outputImageFileArg("","outimg","The output pre-exiting image file.",false,"","String");
 		cmd.add( outputImageFileArg );
-
+        
 		cmd.parse( argc, argv );
 		
         if(!outputFileArg.isSet() & !outputImageFileArg.isSet())
@@ -169,12 +169,12 @@ int main (int argc, char * const argv[])
         {
             throw spdlib::SPDException("Either an output image path or pre-existing output image need to be provided - i.e., not both!");
         }
-
+        
 		std::string inSPDFilePath = inputFileArg.getValue();
         std::string outFilePath = "";
         std::string outImgFilePath = "";
         bool usePreExistingImg = false;
-
+        
         if(outputFileArg.isSet())
         {
             outFilePath = outputFileArg.getValue();
@@ -184,16 +184,16 @@ int main (int argc, char * const argv[])
             outImgFilePath = outputImageFileArg.getValue();
             usePreExistingImg = true;
         }
-
+        
         std::string interpolatorStr = interpolatorsArg.getValue();
-
+        
         float stdDevThreshold = stddevThresholdArg.getValue();
         float lowDist = smallRadiusArg.getValue();
         float highDist = largeRadiusArg.getValue();
         float stdDevDist = stdDevRadiusArg.getValue();
-
+        
         uint_fast16_t elevVal = spdlib::SPD_USE_Z;
-
+        
         if(ampSwitch.getValue())
         {
             elevVal = spdlib::SPD_USE_AMP;
@@ -210,7 +210,7 @@ int main (int argc, char * const argv[])
         {
             throw spdlib::SPDException("Elevation (height or Z) parameter has not been defined.");
         }
-
+        
         uint_fast16_t thinPtSelectLowHigh = spdlib::SPD_SELECT_LOWEST;
         if(dtmSwitch.getValue())
         {
@@ -232,7 +232,7 @@ int main (int argc, char * const argv[])
         {
             throw spdlib::SPDException("Error do not know whether to generate a CHM or DTM.");
         }
-
+        
         spdlib::SPDPointInterpolator *interpolator = NULL;
         if(interpolatorStr == "NEAREST_NEIGHBOR")
         {
@@ -268,7 +268,7 @@ int main (int argc, char * const argv[])
         {
             throw spdlib::SPDException("Interpolator was not recognised.");
         }
-
+        
         spdlib::SPDDataBlockProcessor *blockProcessor = NULL;
         if(dtmSwitch.getValue())
         {
@@ -283,7 +283,7 @@ int main (int argc, char * const argv[])
                 useMinThres = true;
                 minThresVal = minCHMHeightArg.getValue();
             }
-
+            
             blockProcessor = new spdlib::SPDCHMInterpolation(interpolator, useOnlyVegReturnsSwitch.getValue(), useMinThres, minThresVal);
         }
         else if(dsmSwitch.getValue())
@@ -298,10 +298,10 @@ int main (int argc, char * const argv[])
         {
             throw spdlib::SPDException("Error do not know whether to generate a CHM, DSM or DTM or amplitude image.");
         }
-
+        
         spdlib::SPDFile *spdInFile = new spdlib::SPDFile(inSPDFilePath);
         spdlib::SPDProcessDataBlocks processBlocks = spdlib::SPDProcessDataBlocks(blockProcessor, overlapArg.getValue(), numOfColsBlockArg.getValue(), numOfRowsBlockArg.getValue(), true);
-
+        
         if(usePreExistingImg)
         {
             GDALAllRegister();
@@ -311,7 +311,7 @@ int main (int argc, char * const argv[])
                 std::string message = std::string("Could not open image ") + outImgFilePath;
                 throw spdlib::SPDException(message.c_str());
             }
-
+            
             processBlocks.processDataBlocksGridPulsesOutputImage(spdInFile, outImgDataset);
             GDALClose(outImgDataset);
         }
@@ -319,7 +319,7 @@ int main (int argc, char * const argv[])
         {
             processBlocks.processDataBlocksGridPulsesOutputImage(spdInFile, outFilePath, binSizeArg.getValue(), 1, imgFormatArg.getValue());
         }
-
+        
         delete spdInFile;
         delete blockProcessor;
         delete interpolator;
@@ -333,7 +333,7 @@ int main (int argc, char * const argv[])
 	{
 		std::cerr << "Error: " << e.what() << std::endl;
 	}
-
+    
     std::cout << "spdinterp - end\n";
 }
 

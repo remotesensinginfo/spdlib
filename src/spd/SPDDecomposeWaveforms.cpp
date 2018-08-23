@@ -28,19 +28,19 @@ namespace spdlib
 
     SPDDecomposeWaveforms::SPDDecomposeWaveforms()
     {
-
+        
     }
-
+        
     void SPDDecomposeWaveforms::decomposeWaveforms(std::string inFilePath, std::string outFilePath, boost::uint_fast32_t blockXSize, boost::uint_fast32_t blockYSize, SPDDecompOption decompOption, boost::uint_fast32_t intThreshold, bool thresholdSet, bool noiseSet, uint_fast32_t window, boost::uint_fast32_t decayThres, float decayVal) throw(SPDException)
     {
-        try
+        try 
         {
             SPDFileReader spdReader;
             SPDFile *inSPDFile = new SPDFile(inFilePath);
             spdReader.readHeaderInfo(inFilePath, inSPDFile);
-
+                        
             SPDInitDecomposition *zeroCrossingInit = new SPDInitDecompositionZeroCrossing(decayVal, decayThres);
-
+            
             SPDDecomposePulse *decomp = NULL;
             if(decompOption == spd_decomp_all)
             {
@@ -54,43 +54,43 @@ namespace spdlib
             {
                 throw SPDException("Decomposition option is unknown");
             }
-
+            
             if(inSPDFile->getFileType() == SPD_UPD_TYPE)
             {
                 SPDFile *spdFileOut = new SPDFile(outFilePath);
                 SPDDataExporter *exporter = new SPDNoIdxFileWriter();
                 SPDDecomposePulseImportProcessor *processor = new SPDDecomposePulseImportProcessor(decomp, exporter, spdFileOut);
-
+                
                 spdReader.readAndProcessAllData(inFilePath, inSPDFile, processor);
-
+                
                 processor->completeFileAndClose(inSPDFile);
                 delete spdFileOut;
             }
             else
             {
-                SPDPulseProcessor *pulseDecompProcessor = new SPDDecomposePulseColumnProcessor(decomp);
+                SPDPulseProcessor *pulseDecompProcessor = new SPDDecomposePulseColumnProcessor(decomp);            
                 SPDSetupProcessPulses processPulses = SPDSetupProcessPulses(blockXSize, blockYSize, true);
                 processPulses.processPulsesWithOutputSPD(pulseDecompProcessor, inSPDFile, outFilePath);
                 delete pulseDecompProcessor;
             }
-
+            
             delete decomp;
             delete zeroCrossingInit;
             delete inSPDFile;
-        }
-        catch (SPDException &e)
+        } 
+        catch (SPDException &e) 
         {
             throw e;
         }
     }
-
+    
     SPDDecomposeWaveforms::~SPDDecomposeWaveforms()
     {
-
+        
     }
-
-
-
+    
+    
+    
 
     SPDDecomposePulseAll::SPDDecomposePulseAll(SPDInitDecomposition *findInitPts, boost::uint_fast32_t intThreshold, bool thresholdSet, bool noiseSet):SPDDecomposePulse()
     {
@@ -115,7 +115,7 @@ namespace spdlib
 		
 		this->mpResultsValues = new mp_result();
     }
-
+        
     void SPDDecomposePulseAll::decompose(SPDPulse *pulse, SPDFile *spdFile) throw(SPDProcessingException)
     {
         bool debug_info = false;
@@ -126,7 +126,7 @@ namespace spdlib
             {
                 pulse->receiveWaveNoiseThreshold = intThreshold;
             }
-
+            
             // Find init peaks
 			std::vector<boost::uint_fast32_t> *peaks = findInitPts->findInitPoints(pulse->received, pulse->numOfReceivedBins, pulse->receiveWaveNoiseThreshold);
 			if(debug_info)
@@ -147,7 +147,7 @@ namespace spdlib
 				 */
 				double *parameters = new double[numOfParams];
 				mp_par *paramConstraints = new mp_par[numOfParams];
-
+                
                 parameters[0] = pulse->receiveWaveNoiseThreshold;
                 if(noiseSet)
                 {
@@ -165,8 +165,8 @@ namespace spdlib
 				paramConstraints[0].step = 0.01;
 				paramConstraints[0].relstep = 0;
 				paramConstraints[0].side = 0;
-				paramConstraints[0].deriv_debug = 0;
-
+				paramConstraints[0].deriv_debug = 0;                
+                
 				int idx = 0;
 				for(unsigned int i = 0; i < peaks->size(); ++i)
 				{
@@ -215,7 +215,7 @@ namespace spdlib
 					paramConstraints[idx+2].relstep = 0;
 					paramConstraints[idx+2].side = 0;
 					paramConstraints[idx+2].deriv_debug = 0;
-
+                    
 				}
 				
 				if(debug_info)
@@ -239,7 +239,7 @@ namespace spdlib
                         rCount += 1;
                     }
 				}
-
+                
                 // Contruct waveform for decomposition
                 PulseWaveform *waveformData = new PulseWaveform();
 				/*waveformData->time = new double[pulse->numOfReceivedBins];
@@ -247,7 +247,7 @@ namespace spdlib
                  waveformData->error = new double[pulse->numOfReceivedBins];*/
 				waveformData->time = new double[rCount];
 				waveformData->intensity = new double[rCount];
-				waveformData->error = new double[rCount];
+				waveformData->error = new double[rCount];                
 				boost::uint_fast16_t j = 0;
                 for(boost::uint_fast16_t i = 0; i < pulse->numOfReceivedBins; ++i)
 				{
@@ -321,11 +321,11 @@ namespace spdlib
 					{
 						std::cout << "mpfit - gtol is too small; cannot make further improvements.\n";
 					}
-					else
+					else 
 					{
 						std::cout << "An error has probably occurred - wait for exception...\n";
 					}
-
+                    
 					
 					std::cout << "Run Results (MPFIT version: " << this->mpResultsValues->version << "):\n";
 					std::cout << "Final Chi-Squaured = " << this->mpResultsValues->bestnorm << std::endl;
@@ -344,7 +344,7 @@ namespace spdlib
                    (returnCode == MP_MAXITER) | (returnCode == MP_FTOL)
                    | (returnCode == MP_XTOL) | (returnCode == MP_XTOL))
 				{
-					// MP Fit completed.. On on debug_info for more information.
+					// MP Fit completed.. On on debug_info for more information. 
 				}
 				else if(returnCode == MP_ERR_INPUT)
 				{
@@ -382,7 +382,7 @@ namespace spdlib
 				{
 					throw SPDException("mpfit - Not enough degrees of freedom.");
 				}
-				else
+				else 
 				{
 					std::cout << "Return code is :" << returnCode << " - this can not been defined!\n";
 				}
@@ -409,7 +409,7 @@ namespace spdlib
 				pulse->pts->reserve(peaks->size());
 				pulse->numberOfReturns = peaks->size();
                 pulse->receiveWaveNoiseThreshold = parameters[0];
-
+                
 				for(unsigned int i = 0; i < peaks->size(); ++i)
 				{
 					idx = (i*3)+1;
@@ -426,31 +426,31 @@ namespace spdlib
 					pt->amplitudeReturn = parameters[idx];
 					pt->widthReturn = ((parameters[idx+2] * spdFile->getTemporalBinSpacing()) * 10.0) * (2.0*sqrt(2.0*log(2.0)));
 					pt->classification = SPD_UNCLASSIFIED;
-
+                    
                     if(peakTime < 0)
                     {
                         pt->waveformOffset = 0;
                     }
                     else
                     {
-                        try
+                        try 
                         {
                             pt->waveformOffset = boost::numeric_cast<boost::uint_fast32_t>(peakTime * 1000.0);
                         }
-                        catch(boost::numeric::negative_overflow& e)
+                        catch(boost::numeric::negative_overflow& e) 
                         {
                             throw SPDIOException(e.what());
                         }
-                        catch(boost::numeric::positive_overflow& e)
+                        catch(boost::numeric::positive_overflow& e) 
                         {
                             throw SPDIOException(e.what());
                         }
-                        catch(boost::numeric::bad_numeric_cast& e)
+                        catch(boost::numeric::bad_numeric_cast& e) 
                         {
                             throw SPDIOException(e.what());
                         }
 					}
-
+                    
 					pulse->pts->push_back(pt);
 				}
 				
@@ -465,26 +465,26 @@ namespace spdlib
 			
 			delete peaks;
 		}
-		catch (SPDIOException &e)
+		catch (SPDIOException &e) 
 		{
 			throw e;
 		}
-		catch (SPDException &e)
+		catch (SPDException &e) 
 		{
 			throw SPDIOException(e.what());
 		}
     }
-
+    
     SPDDecomposePulseAll::~SPDDecomposePulseAll()
     {
         delete this->mpConfigValues;
         delete this->mpResultsValues;
     }
-
-
-
-
-
+    
+    
+    
+    
+    
     SPDDecomposePulseIndividually::SPDDecomposePulseIndividually(SPDInitDecomposition *findInitPts, boost::uint_fast16_t waveFitWindow, boost::uint_fast32_t intThreshold, bool thresholdSet)
     {
         this->findInitPts = findInitPts;
@@ -508,7 +508,7 @@ namespace spdlib
 		
 		this->mpResultsValues = new mp_result();
     }
-
+    
     void SPDDecomposePulseIndividually::decompose(SPDPulse *pulse, SPDFile *spdFile) throw(SPDProcessingException)
     {
         bool debug_info = false;
@@ -519,7 +519,7 @@ namespace spdlib
             {
                 pulse->receiveWaveNoiseThreshold = intThreshold;
             }
-
+            
             // Find init peaks
 			std::vector<boost::uint_fast32_t> *peaks = findInitPts->findInitPoints(pulse->received, pulse->numOfReceivedBins, pulse->receiveWaveNoiseThreshold);
             if(debug_info)
@@ -584,7 +584,7 @@ namespace spdlib
 							maxPeaksVectIdx = i;
 						}
 					}
-
+                    
                     //std::cout << "maxPeakInt = " << maxPeakInt << std::endl;
 					
 					// Remove peak from list
@@ -598,7 +598,7 @@ namespace spdlib
 						waveformIdxStart = 0;
 						waveformPeakIdx = waveFitWindow - maxPeakIdx;
 					}
-					else
+					else 
 					{
 						waveformIdxStart = maxPeakIdx - waveFitWindow;
 						waveformPeakIdx = waveFitWindow;
@@ -609,7 +609,7 @@ namespace spdlib
 						waveformIdxEnd = pulse->numOfReceivedBins-1;
 						waveformPeakIdx = waveFitWindow;
 					}
-					else
+					else 
 					{
 						waveformIdxEnd = maxPeakIdx + waveFitWindow + 1;
 						waveformPeakIdx = waveFitWindow;
@@ -620,8 +620,8 @@ namespace spdlib
 					parameters[1] = maxPeakInt - pulse->receiveWaveNoiseThreshold; // Amplitude / Intensity
 					double ampVar = parameters[1] * 0.1;
 					
-
-
+                    
+                    
 					if(ampVar < 1)
 					{
 						ampVar = 1;
@@ -638,7 +638,7 @@ namespace spdlib
 					paramConstraints[0].relstep = 0;
 					paramConstraints[0].side = 0;
 					paramConstraints[0].deriv_debug = 0;
-
+                    
                     paramConstraints[1].fixed = false;
 					paramConstraints[1].limited[0] = true;
 					paramConstraints[1].limited[1] = true;
@@ -673,7 +673,7 @@ namespace spdlib
 					paramConstraints[3].relstep = 0;
 					paramConstraints[3].side = 0;
 					paramConstraints[3].deriv_debug = 0;
-
+                    
 					
 					waveformData = new PulseWaveform();
 					waveformData->time = new double[waveformSampleLength];
@@ -714,7 +714,7 @@ namespace spdlib
 					   (returnCode == MP_MAXITER) | (returnCode == MP_FTOL)
 					   | (returnCode == MP_XTOL) | (returnCode == MP_XTOL))
 					{
-						// MP Fit completed.. On on debug_info for more information.
+						// MP Fit completed.. On on debug_info for more information. 
                         if(debug_info)
                         {
                             if(returnCode == MP_OK_CHI)
@@ -749,12 +749,12 @@ namespace spdlib
                             {
                                 std::cout << "mpfit - gtol is too small; cannot make further improvements.\n";
                             }
-                            else
+                            else 
                             {
                                 std::cout << "An error has probably occurred - wait for exception...\n";
                             }
-
-
+                            
+                            
                             std::cout << "Run Results (MPFIT version: " << this->mpResultsValues->version << "):\n";
                             std::cout << "Final Chi-Squaured = " << this->mpResultsValues->bestnorm << std::endl;
                             std::cout << "Start Chi-Squaured = " << this->mpResultsValues->orignorm << std::endl;
@@ -803,7 +803,7 @@ namespace spdlib
 					{
 						throw SPDException("mpfit - Not enough degrees of freedom.");
 					}
-					else
+					else 
 					{
 						std::cout << "Return code is :" << returnCode << " - this can not been defined!\n";
 					}
@@ -815,11 +815,11 @@ namespace spdlib
                         std::cout << "Fitted Time: " << parameters[2] << std::endl;
                         std::cout << "Fitted Width: " << parameters[3] << std::endl << std::endl;
                     }
-
+                    
 					// Create Point
 					timeDiff = ((float)parameters[2]) - ((float)waveformPeakIdx);
 					peakTime = (((float)maxPeakIdx) + timeDiff) * spdFile->getTemporalBinSpacing();
-
+                    
                     if(debug_info)
                     {
                         std::cout << "Time Diff: " << timeDiff << std::endl;
@@ -830,19 +830,19 @@ namespace spdlib
 					ptUtils.initSPDPoint(pt);
 					pt->returnID = peakCount++;
 					pt->gpsTime = pulse->gpsTime + peakTime;
-
+                    
                     if(debug_info)
                     {
                         std::cout << "pulse->zenith = " << pulse->zenith << std::endl;
                         std::cout << "pulse->azimuth = " << pulse->azimuth << std::endl;
-
+                        
                         std::cout << "pulse->rangeToWaveformStart = " << pulse->rangeToWaveformStart << std::endl;
                         std::cout << "peakTime = " << peakTime << std::endl;
                         std::cout << "pulse->x0 = " << pulse->x0 << std::endl;
                         std::cout << "pulse->y0 = " << pulse->y0 << std::endl;
                         std::cout << "pulse->z0 = " << pulse->z0 << std::endl;
                     }
-
+                    
 					SPDConvertToCartesian(pulse->zenith, pulse->azimuth, (pulse->rangeToWaveformStart + (SPD_SPEED_OF_LIGHT_NS * (peakTime/2.0))), pulse->x0, pulse->y0, pulse->z0, &tmpX, &tmpY, &tmpZ);
 					if(debug_info)
                     {
@@ -862,7 +862,7 @@ namespace spdlib
 					{
 						pt->amplitudeReturn = 0;
 					}
-					else
+					else 
 					{
 						/*if(waveform[maxPeakIdx] < 0)
                          {
@@ -872,7 +872,7 @@ namespace spdlib
 						
 						pt->amplitudeReturn = parameters[1];
 					}
-
+                    
 					pt->widthReturn = ((parameters[3] * spdFile->getTemporalBinSpacing()) * 10.0) * (2.0*sqrt(2.0*log(2.0)));
 					
                     if(peakTime < 0)
@@ -881,19 +881,19 @@ namespace spdlib
                     }
                     else
                     {
-                        try
+                        try 
                         {
                             pt->waveformOffset = boost::numeric_cast<boost::uint_fast32_t>(peakTime * 1000.0);
                         }
-                        catch(boost::numeric::negative_overflow& e)
+                        catch(boost::numeric::negative_overflow& e) 
                         {
                             throw SPDIOException(e.what());
                         }
-                        catch(boost::numeric::positive_overflow& e)
+                        catch(boost::numeric::positive_overflow& e) 
                         {
                             throw SPDIOException(e.what());
                         }
-                        catch(boost::numeric::bad_numeric_cast& e)
+                        catch(boost::numeric::bad_numeric_cast& e) 
                         {
                             throw SPDIOException(e.what());
                         }
@@ -942,16 +942,16 @@ namespace spdlib
 			
 			delete peaks;
 		}
-		catch (SPDIOException &e)
+		catch (SPDIOException &e) 
 		{
 			throw e;
 		}
-		catch (SPDException &e)
+		catch (SPDException &e) 
 		{
 			throw SPDIOException(e.what());
 		}
     }
-
+        
     SPDDecomposePulseIndividually::~SPDDecomposePulseIndividually()
     {
         delete this->mpConfigValues;

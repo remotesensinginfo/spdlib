@@ -37,7 +37,7 @@
 int main (int argc, char * const argv[])
 {
     std::cout.precision(12);
-
+    
 	std::cout << "spdprofile " << SPDLIB_PACKAGE_STRING << ", Copyright (C) " << SPDLIB_COPYRIGHT_YEAR << " Sorted Pulse Library (SPD)\n";
 	std::cout << "This program comes with ABSOLUTELY NO WARRANTY. This is free software,\n";
 	std::cout << "and you are welcome to redistribute it under certain conditions; See\n";
@@ -52,75 +52,75 @@ int main (int argc, char * const argv[])
                            "If a return waveform is defined all digitised values above the nose threshold are used to generate the profile."
                            " If a waveform isn't defined the returns are used"
                             , ' ', "1.1.0");
-
+        
         TCLAP::SwitchArg smoothSwitch("","smooth","Apply a Savitzky Golay smoothing to the profiles.", false);
 		cmd.add( smoothSwitch );
-
+        
 		TCLAP::ValueArg<boost::uint_fast32_t> smoothPolyOrderArg("","order","The order of the polynomial used to smooth the profile (Default: 3).",false,3,"unsigned int");
 		cmd.add( smoothPolyOrderArg );
 		
 		TCLAP::ValueArg<boost::uint_fast32_t> smoothWindowArg("w","window","The window size ((w*2)+1) used for the smoothing filter (Default: 3).",false,3,"unsigned int");
 		cmd.add( smoothWindowArg );
-
+        
         TCLAP::ValueArg<float> minHeightArg("m","minheight","The the height below which points are ignored (Default: 0).",false,0,"float");
 		cmd.add( minHeightArg );
-
+        
         TCLAP::ValueArg<boost::uint_fast32_t> maxHeightArg("t","topheight","The highest bin of the profile (Default: 40).",false,40,"unsigned int");
 		cmd.add( maxHeightArg );
-
+        
         TCLAP::ValueArg<boost::uint_fast32_t> numOfBinsArg("n","numbins","The number of bins within the profile (Default: 20).",false,20,"unsigned int");
-		cmd.add( numOfBinsArg );
-
+		cmd.add( numOfBinsArg );        
+        
         TCLAP::ValueArg<boost::uint_fast32_t> numOfRowsBlockArg("r","blockrows","Number of rows within a block (Default 100)",false,100,"unsigned int");
 		cmd.add( numOfRowsBlockArg );
-
+        
         TCLAP::ValueArg<boost::uint_fast32_t> numOfColsBlockArg("c","blockcols","Number of columns within a block (Default 0) - Note values greater than 1 result in a non-sequencial SPD file.",false,0,"unsigned int");
 		cmd.add( numOfColsBlockArg );
-
+        
         TCLAP::ValueArg<float> binSizeArg("b","binsize","Bin size for processing and output image (Default 0) - Note 0 will use the native SPD file bin size.",false,0,"float");
 		cmd.add( binSizeArg );
-
+        
         TCLAP::ValueArg<std::string> imgFormatArg("f","format","Image format (GDAL driver string), Default is ENVI.",false,"ENVI","std::string");
 		cmd.add( imgFormatArg );
-
+        
 		TCLAP::ValueArg<std::string> inputFileArg("i","input","The input SPD file.",true,"","String");
 		cmd.add( inputFileArg );
-
+        
         TCLAP::ValueArg<std::string> outputFileArg("o","output","The output file.",true,"","String");
 		cmd.add( outputFileArg );
-
+        
 		cmd.parse( argc, argv );
 		
 		std::cout.precision(12);
         std::string inSPDFilePath = inputFileArg.getValue();
         std::string outFilePath = outputFileArg.getValue();
-
+        
         bool useSmoothing = false;
         boost::uint_fast32_t smoothWindowSize = 0;
         boost::uint_fast32_t smoothPolyOrder = 0;
-
+        
         boost::uint_fast32_t maxProfileHeight = maxHeightArg.getValue();
         boost::uint_fast32_t numOfBins = numOfBinsArg.getValue();
         float minPtHeight = minHeightArg.getValue();
-
+        
         if(smoothSwitch.getValue())
         {
             useSmoothing = true;
             smoothWindowSize = smoothWindowArg.getValue();
             smoothPolyOrder = smoothPolyOrderArg.getValue();
-
+            
             if(smoothPolyOrder > smoothWindowSize)
             {
                 throw spdlib::SPDException("The smoothing window size must be larger or equal to the polynomial order.");
             }
         }
-
+        
         spdlib::SPDFile *spdInFile = new spdlib::SPDFile(inSPDFilePath);
-
+        
         spdlib::SPDCreateVerticalProfiles *createProfiles = new spdlib::SPDCreateVerticalProfiles(useSmoothing, smoothWindowSize, smoothPolyOrder, maxProfileHeight, numOfBins, minPtHeight);
         spdlib::SPDSetupProcessPulses processPulses = spdlib::SPDSetupProcessPulses(numOfColsBlockArg.getValue(), numOfRowsBlockArg.getValue(), true);
         processPulses.processPulsesWithOutputImage(createProfiles, spdInFile, outFilePath, numOfBins, binSizeArg.getValue(), imgFormatArg.getValue());
-
+        
         delete spdInFile;
         delete createProfiles;
 		

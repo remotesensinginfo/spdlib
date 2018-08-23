@@ -76,8 +76,8 @@ namespace spdlib
         bool useScanIdx;
 		bool filesOpen;
 	};
-
-
+    
+    
     class DllExport SPDExportAsBlockTiles : public SPDImporterProcessor
 	{
 	public:

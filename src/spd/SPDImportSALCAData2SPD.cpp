@@ -5,9 +5,9 @@
  *  Created by Pete Bunting on 04/12/2013.
  *  Copyright 2013 SPDLib. All rights reserved.
  *
- *  Code within this file has been provided by
+ *  Code within this file has been provided by 
  *  Steven Hancock for reading the SALCA data
- *  and sorting out the geometry. This has been
+ *  and sorting out the geometry. This has been 
  *  adapted and brought across into the SPD
  *  importer interface.
  *
@@ -32,31 +32,31 @@
 
 namespace spdlib
 {
-
+    
     SPDSALCADataBinaryImporter::SPDSALCADataBinaryImporter(bool convertCoords, std::string outputProjWKT, std::string schema, boost::uint_fast16_t indexCoords, bool defineOrigin, double originX, double originY, float originZ, float waveNoiseThreshold):SPDDataImporter(convertCoords, outputProjWKT, schema, indexCoords, defineOrigin, originX, originY, originZ, waveNoiseThreshold)
     {
-
+        
     }
 		
     SPDDataImporter* SPDSALCADataBinaryImporter::getInstance(bool convertCoords, std::string outputProjWKT,std::string schema,boost::uint_fast16_t indexCoords, bool defineOrigin, double originX, double originY, float originZ, float waveNoiseThreshold)
     {
         return new SPDSALCADataBinaryImporter(convertCoords, outputProjWKT, schema, indexCoords, defineOrigin, originX, originY, originZ, waveNoiseThreshold);
     }
-
+    
     std::list<SPDPulse*>* SPDSALCADataBinaryImporter::readAllDataToList(std::string, SPDFile *spdFile)throw(SPDIOException)
     {
         std::list<SPDPulse*> *pulses = new std::list<SPDPulse*>();
-
+        
         return pulses;
     }
-
+    
     std::vector<SPDPulse*>* SPDSALCADataBinaryImporter::readAllDataToVector(std::string inputFile, SPDFile *spdFile)throw(SPDIOException)
     {
         std::vector<SPDPulse*> *pulses = new std::vector<SPDPulse*>();
-
+        
         return pulses;
     }
-
+    
     void SPDSALCADataBinaryImporter::readAndProcessAllData(std::string inputFile, SPDFile *spdFile, SPDImporterProcessor *processor) throw(SPDIOException)
     {
         try
@@ -75,7 +75,7 @@ namespace spdlib
             std::cout << "\tazSquint = " << inParams->azSquint << std::endl;
             std::cout << "\tzenSquint = " << inParams->zenSquint << std::endl;
             std::cout << "\tomega = " << inParams->omega << std::endl;
-
+            
             if(inputBinFiles->size() != inParams->nAz)
             {
                 throw SPDIOException("The number of specified azimuth values is not equal to the number of input files.");
@@ -91,8 +91,8 @@ namespace spdlib
             spdFile->setNumOfWavelengths(2);
             spdFile->setReceiveWaveformDefined(SPD_TRUE);
             spdFile->setTemporalBinSpacing(0.5);
-
-
+            
+            
             unsigned int numb = 0;           // Number of zenith steps
             unsigned int nBins = 0;          // Range bins per file (one file per azimuth)
             unsigned int length = 0;         // Total file length
@@ -106,30 +106,30 @@ namespace spdlib
             size_t pulseID = 0;
             boost::uint_fast32_t scanline = 0;
             boost::uint_fast16_t scanlineIdx = 0;
-
+            
             //sOffset=7;   // 1.05 m
-
+            
             maxRangeNBins = inParams->maxR / 0.15;
-
+            
             numb=(int)(inParams->maxZen/0.059375); // Number of zenith steps. Zenith res is hard wired for SALCA
             nBins=(int)((150.0+inParams->maxR)/0.15);
-
+            
             for(std::vector<std::pair<float, std::string> >::iterator iterFiles = inputBinFiles->begin(); iterFiles != inputBinFiles->end(); ++iterFiles)
             {
                 std::cout << (*iterFiles).second << " with azimuth = " << (*iterFiles).first << std::endl;
-
+                
                 az = (float)(*iterFiles).first;
-
+                
                 // Read binary data into an array
                 data=this->readData((*iterFiles).second, (*iterFiles).first, numb, nBins, &length);
-
-
+                
+                
                 std::cout << "Number = " << numb << std::endl;
                 std::cout << "nBins = " << nBins << std::endl;
                 std::cout << "Length = " << length << std::endl;
                 std::cout << "Max Range (nBins) = " << maxRangeNBins << std::endl;
-
-
+                
+                
                 if(data)
                 {
                     zen = 0.0;
@@ -137,41 +137,41 @@ namespace spdlib
                     unsigned int wl1EndIdxRec = 0;
                     unsigned int wl2StartIdxRec = 0;
                     unsigned int wl2EndIdxRec = 0;
-
+                    
                     unsigned int wl1StartIdxTrans = 0;
                     unsigned int wl1EndIdxTrans = 0;
                     unsigned int wl2StartIdxTrans = 0;
                     unsigned int wl2EndIdxTrans = 0;
-
+                    
                     unsigned int prevWL2EndIdx = 0;
-
+                    
                     for(unsigned int z = 0; z < numb; ++z)
                     {
                         //std::cout << z << ") Zenith = " << zen << std::endl;
-
+                        
                         wl1StartIdxRec = 0;
                         wl1EndIdxRec = 0;
-
+                        
                         wl2StartIdxRec = 0;
                         wl2EndIdxRec = 0;
-
+                        
                         wl1StartIdxTrans = 0;
                         wl1EndIdxTrans = 0;
-
+                        
                         wl2StartIdxTrans = 0;
                         wl2EndIdxTrans = 0;
-
+                        
                         this->findWaveformsBinIdxes(data, length, maxRangeNBins, prevWL2EndIdx, &wl1StartIdxTrans, &wl2StartIdxTrans, &wl1EndIdxTrans, &wl2EndIdxTrans, &wl1StartIdxRec, &wl2StartIdxRec, &wl1EndIdxRec, &wl2EndIdxRec);
                         /*
                         std::cout << "Wavelength #1: Trans = [" << wl1StartIdxTrans << ", " << wl1EndIdxTrans << "] (" << wl1EndIdxTrans - wl1StartIdxTrans << ") Rec = [" << wl1StartIdxRec << ", " << wl1EndIdxRec << "] (" << wl1EndIdxRec - wl1StartIdxRec << ")\n";
-
+                        
                         std::cout << "Wavelength #2: Trans = [" << wl2StartIdxTrans << ", " << wl2EndIdxTrans << "] (" << wl2EndIdxTrans - wl2StartIdxTrans << ") Rec = [" << wl2StartIdxRec << ", " << wl2EndIdxRec << "] (" << wl2EndIdxRec - wl2StartIdxRec << ")\n";
                           */
                         // WAVELENGTH #1
                         pulse = new SPDPulse();
                         plsUtils.initSPDPulse(pulse);
                         pulse->pulseID = pulseID++;
-
+                        
                         pulse->wavelength = 1063;
                         pulse->numOfReceivedBins = wl1EndIdxRec - wl1StartIdxRec;
                         pulse->received = new uint_fast32_t[pulse->numOfReceivedBins];
@@ -179,14 +179,14 @@ namespace spdlib
                         {
                             pulse->received[n] = data[i];
                         }
-
+                        
                         pulse->numOfTransmittedBins = wl1EndIdxTrans - wl1StartIdxTrans;
                         pulse->transmitted = new uint_fast32_t[pulse->numOfTransmittedBins];
                         for(unsigned int i = wl1StartIdxTrans, n = 0; i < wl1EndIdxTrans; ++i, ++n)
                         {
                             pulse->transmitted[n] = data[i];
                         }
-
+                        
                         if(this->defineOrigin)
                         {
                             pulse->x0 = this->originX;
@@ -199,7 +199,7 @@ namespace spdlib
                             pulse->y0 = 0;
                             pulse->z0 = 0;
                         }
-
+                        
                         pulse->azimuth = ((*iterFiles).first/180.0)*M_PI;
                         pulse->zenith = ((zen/180.0)*M_PI)+(M_PI/2);
                         pulse->scanline = scanlineIdx;
@@ -207,16 +207,16 @@ namespace spdlib
                         pulse->receiveWaveNoiseThreshold = 30;
                         pulse->rangeToWaveformStart = 0;
                         pulse->sourceID = 1;
-
+                        
                         processor->processImportedPulse(spdFile, pulse);
-
-
-
+                        
+                        
+                        
                         // WAVELENGTH #2
                         pulse = new SPDPulse();
                         plsUtils.initSPDPulse(pulse);
                         pulse->pulseID = pulseID++;
-
+                        
                         pulse->wavelength = 1545;
                         pulse->numOfReceivedBins = wl2EndIdxRec - wl2StartIdxRec;
                         pulse->received = new uint_fast32_t[pulse->numOfReceivedBins];
@@ -224,14 +224,14 @@ namespace spdlib
                         {
                             pulse->received[n] = data[i];
                         }
-
+                        
                         pulse->numOfTransmittedBins = wl2EndIdxTrans - wl2StartIdxTrans;
                         pulse->transmitted = new uint_fast32_t[pulse->numOfTransmittedBins];
                         for(unsigned int i = wl2StartIdxTrans, n = 0; i < wl2EndIdxTrans; ++i, ++n)
                         {
                             pulse->transmitted[n] = data[i];
                         }
-
+                        
                         if(this->defineOrigin)
                         {
                             pulse->x0 = this->originX;
@@ -244,7 +244,7 @@ namespace spdlib
                             pulse->y0 = 0;
                             pulse->z0 = 0;
                         }
-
+                        
                         pulse->azimuth = ((*iterFiles).first/180.0)*M_PI;
                         pulse->zenith = ((zen/180.0)*M_PI)+(M_PI/2);
                         pulse->scanline = scanlineIdx;
@@ -252,10 +252,10 @@ namespace spdlib
                         pulse->receiveWaveNoiseThreshold = 30;
                         pulse->rangeToWaveformStart = 0;
                         pulse->sourceID = 2;
-
+                        
                         processor->processImportedPulse(spdFile, pulse);
-
-
+                        
+                        
                         prevWL2EndIdx = wl2EndIdxRec;
                         zen += 0.059375;
                         ++scanlineIdx;
@@ -266,11 +266,11 @@ namespace spdlib
                 {
                     throw SPDIOException("The data file was not opened or data was not read in correctly.");
                 }
-
+                
                 ++scanline;
                 scanlineIdx = 0;
             }
-
+            
             if(inParams->azOff != NULL)
             {
                 delete[] inParams->azOff;
@@ -279,7 +279,7 @@ namespace spdlib
             {
                 delete[] inParams->zen;
             }
-
+            
             delete inParams;
             delete inputBinFiles;
         }
@@ -292,7 +292,7 @@ namespace spdlib
             throw SPDIOException(e.what());
         }
     }
-
+    
     bool SPDSALCADataBinaryImporter::isFileType(std::string fileType)
     {
         if(fileType == "SALCA")
@@ -301,12 +301,12 @@ namespace spdlib
 		}
 		return false;
     }
-
+    
     void SPDSALCADataBinaryImporter::readHeaderInfo(std::string inputFile, SPDFile *spdFile) throw(SPDIOException)
     {
-
+        
     }
-
+    
     SalcaHDRParams* SPDSALCADataBinaryImporter::readHeaderParameters(std::string headerFilePath, std::vector<std::pair<float,std::string> > *fileList)throw(SPDIOException)
     {
         SalcaHDRParams *hdrParams = new SalcaHDRParams();
@@ -317,8 +317,8 @@ namespace spdlib
                 boost::filesystem::path filePath = boost::filesystem::path(headerFilePath);
                 filePath = boost::filesystem::absolute(filePath).parent_path();
                 boost::filesystem::path tmpFilePath;
-
-
+                
+                
                 SPDTextFileLineReader lineReader;
                 SPDTextFileUtilities txtUtils;
                 std::vector<std::string> *tokens = new std::vector<std::string>();
@@ -326,15 +326,15 @@ namespace spdlib
                 std::string line = "";
                 std::string filePathStr = "";
                 float azimuthVal = 0.0;
-
+                
                 bool readingHeader = false;
                 bool readingFileList = false;
-
+                
                 while(!lineReader.endOfFile())
                 {
                     line = lineReader.readLine();
                     boost::algorithm::trim(line);
-
+                    
                     if((line != "") && (!txtUtils.lineStartWithHash(line)))
                     {
                         if(line == "[START HEADER]")
@@ -354,12 +354,12 @@ namespace spdlib
                         {
                             readingFileList = false;
                         }
-
+                        
                         if(readingHeader & (line != "[START HEADER]"))
                         {
                             tokens->clear();
                             txtUtils.tokenizeString(line, '=', tokens, true);
-
+                            
                             if(tokens->size() >= 2)
                             {
                                 if(txtUtils.lineContainsChar(tokens->at(1), '#'))
@@ -442,10 +442,10 @@ namespace spdlib
                             else
                             {
                                 std::cout << line << std::endl;
-
+                                
                                 throw SPDIOException("Could not parser the header.");
                             }
-
+                            
                         }
                         else if(readingFileList & (line != "[FILE LIST START]"))
                         {
@@ -456,17 +456,17 @@ namespace spdlib
                                 throw SPDIOException("Failed to parser file list (Structure should be \'azimuth:filename\').");
                             }
                             azimuthVal = txtUtils.strtofloat(tokens->at(0));
-
+                            
                             tmpFilePath = filePath;
                             tmpFilePath /= boost::filesystem::path(tokens->at(1));
-
+                            
                             fileList->push_back(std::pair<float, std::string>(azimuthVal, tmpFilePath.string()));
                         }
                     }
                 }
                 delete tokens;
                 lineReader.closeFile();
-
+                
             }
         }
         catch (SPDIOException &e)
@@ -479,11 +479,11 @@ namespace spdlib
             delete hdrParams;
             throw SPDIOException(e.what());
         }
-
+        
         return hdrParams;
     }
-
-
+ 
+    
     /** Read data into array */
     int* SPDSALCADataBinaryImporter::readData(std::string inFilePath, int i, unsigned int numb, unsigned int nBins, unsigned int *length) throw(SPDIOException)
     {
@@ -492,21 +492,21 @@ namespace spdlib
         {
             char *data = NULL;
             FILE *ipoo = NULL;
-
+            
             // Open the input file
             if((ipoo=fopen(inFilePath.c_str(),"rb"))==NULL)
             {
                 std::string message = std::string("Could not open file: \'") + inFilePath + std::string("\'");
                 throw SPDIOException(message);
             }
-
+            
             // Determine the file length
             if(fseek(ipoo,(long)0,SEEK_END))
             {
                 throw SPDIOException("Could not determine the length of the file.");
             }
             *length=ftell(ipoo);
-
+            
             if((nBins*numb)>(*length))
             {
                 std::string message = std::string("File size mismatch: \'") + inFilePath + std::string("\'");
@@ -515,32 +515,32 @@ namespace spdlib
                 throw SPDIOException(message);
             }
             data = new char[*length];
-
+            
             // Now we know how long, read the file
             if(fseek(ipoo,(long)0,SEEK_SET))
             {
                 throw SPDIOException("Could not restart the seek read to the beginning of the file.");
             }
-
+            
             // Read the data into the data array
             if(fread(&(data[0]),sizeof(char),*length,ipoo)!=*length)
             {
                 throw SPDIOException("Failed to read the data - reason unknown.");
             }
-
+            
             if(ipoo)
             {
                 fclose(ipoo);
                 ipoo=NULL;
             }
-
+            
             outData = new int[*length];
             for(int i = 0; i < (*length); ++i)
             {
                 outData[i] = ((int)data[i])+128;
             }
             delete[] data;
-
+            
         }
         catch(std::exception &e)
         {
@@ -554,7 +554,7 @@ namespace spdlib
         {
             throw SPDIOException(e.what());
         }
-
+    
         return(outData);
     }
 
@@ -582,7 +582,7 @@ namespace spdlib
                     else
                     {
                         bool zeroCross = false;
-
+                        
                         if(i == 1)
                         {
                             zeroCross = this->zeroCrossing(data, i-1, i+2, i);
@@ -599,7 +599,7 @@ namespace spdlib
                         {
                             zeroCross = this->zeroCrossing(data, i-2, i+2, i);
                         }
-
+                        
                         if(zeroCross)
                         {
                             if(!foundWl1Trans)
@@ -642,12 +642,12 @@ namespace spdlib
                     }
                 }
             }
-
+            
             std::cout << "Start W1 Trans Idx = " << *wl1StartIdxTrans << std::endl;
             std::cout << "Start W2 Trans Idx = " << *wl2StartIdxTrans << std::endl;
             std::cout << "Start Next Trans Idx = " << nextWl1TransIdx << std::endl;
-
-
+            
+            
             if((foundWl1Trans & foundWl2Trans) & (!foundNextWl1Trans))
             {
                 nextWl1TransIdx = dataLen;
@@ -656,7 +656,7 @@ namespace spdlib
             {
                 throw SPDIOException("Did not find all the required transmitted waveforms...");
             }
-
+            
             *wl1EndIdxTrans = (*wl1StartIdxTrans) + 2;
             *wl1StartIdxRec = (*wl1EndIdxTrans) + 1;
             *wl1EndIdxRec = (*wl2StartIdxTrans) - 1;
@@ -668,7 +668,7 @@ namespace spdlib
             {
                 std::cout << "(*wl1StartIdxRec) = " << (*wl1StartIdxRec) << std::endl;
                 std::cout << "(*wl1EndIdxRec) = " << (*wl1EndIdxRec) << std::endl;
-
+                
                 for(unsigned int i = (*wl1StartIdxRec); i < (*wl1EndIdxRec)+10; ++i)
                 {
                     if(i == (*wl1StartIdxRec))
@@ -681,11 +681,11 @@ namespace spdlib
                     }
                 }
                 std::cout << std::endl;
-
+                
                 throw SPDIOException("Number of bins too long for a single pulse error occurred.");
                 //(*wl1EndIdxRec) = (*wl1StartIdxRec) + maxRNBins;
             }
-
+            
             *wl2EndIdxTrans = (*wl2StartIdxTrans) + 2;
             *wl2StartIdxRec = (*wl2EndIdxTrans) + 1;
             *wl2EndIdxRec = nextWl1TransIdx-1;
@@ -697,7 +697,7 @@ namespace spdlib
             {
                 std::cout << "(*wl2StartIdxRec) = " << (*wl2StartIdxRec) << std::endl;
                 std::cout << "(*wl2EndIdxRec) = " << (*wl2EndIdxRec) << std::endl;
-
+                
                 for(unsigned int i = (*wl2StartIdxRec)-15; i < (*wl2EndIdxRec)+10; ++i)
                 {
                     if(i == (*wl2StartIdxRec))
@@ -710,11 +710,11 @@ namespace spdlib
                     }
                 }
                 std::cout << std::endl;
-
+                
                 throw SPDIOException("Number of bins too long for a single pulse error occurred.");
                 //(*wl2EndIdxRec) = (*wl2StartIdxRec) + maxRNBins;
             }
-
+            
         }
         catch(std::exception &e)
         {
@@ -729,11 +729,11 @@ namespace spdlib
             throw SPDIOException(e.what());
         }
     }
-
+    
     bool SPDSALCADataBinaryImporter::zeroCrossing(int *data, unsigned int startIdx, unsigned int endIdx, unsigned int idx) throw(SPDIOException)
     {
         //std::cout << "Idx = " << idx << " [" << startIdx << ", " << endIdx << "]\n";
-
+        
         bool foundCrossing = false;
         try
         {
@@ -743,7 +743,7 @@ namespace spdlib
                 {
                     throw SPDIOException("For a length of 3 the index needs to be the centre");
                 }
-
+                
                 if((data[idx] > data[startIdx]) & (data[idx] > data[endIdx]))
                 {
                     foundCrossing = true;
@@ -845,10 +845,10 @@ namespace spdlib
         }
         return foundCrossing;
     }
-
+    
     SPDSALCADataBinaryImporter::~SPDSALCADataBinaryImporter()
     {
-
+        
     }
 
 }

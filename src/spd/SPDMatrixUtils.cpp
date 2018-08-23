@@ -544,14 +544,14 @@ namespace spdlib{
 						matrix->n = number;
 						//std::cout << "rows = " << number << std::endl;
 					}
-					else
+					else 
 					{
 						if(first)
 						{
 							wholeline = strLine;
 							first = false;
 						}
-						else
+						else 
 						{
 							wholeline = wholeline + std::string(",") + strLine;
 						}

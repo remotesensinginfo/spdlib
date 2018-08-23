@@ -3393,7 +3393,7 @@ struct behavior *b;
   b->goodangle = cos(b->minangle * PI / 180.0);
   b->goodangle *= b->goodangle;
   if (b->refine && b->noiterationnum) {
-    fprintf(stderr,
+    fprintf(stderr, 
       "Error:  You cannot use the -I switch when refining a triangulation.\n");
     exit(1);
   }
@@ -6248,7 +6248,7 @@ REAL dheight;
   adxbdy = adx * bdy;
   bdxady = bdx * ady;
 
-  det = adheight * (bdxcdy - cdxbdy)
+  det = adheight * (bdxcdy - cdxbdy) 
       + bdheight * (cdxady - adxcdy)
       + cdheight * (adxbdy - bdxady);
 
@@ -6371,8 +6371,8 @@ REAL *minedge;
     /* Don't count the above as an orientation test. */
     m->counterclockcount--;
   }
-  circumcenter[0] = torg[0] - (ydo * aodist - yao * dodist) * denominator;
-  circumcenter[1] = torg[1] + (xdo * aodist - xao * dodist) * denominator;
+  circumcenter[0] = torg[0] - (ydo * aodist - yao * dodist) * denominator;  
+  circumcenter[1] = torg[1] + (xdo * aodist - xao * dodist) * denominator;  
 
   /* To interpolate vertex attributes for the new vertex inserted at */
   /*   the circumcenter, define a coordinate system with a xi-axis,  */
@@ -6644,11 +6644,11 @@ struct behavior *b;
   }
   if (horrors == 0) {
     if (!b->quiet) {
-      fprintf(stderr,
+      fprintf(stderr, 
   "  By virtue of my perceptive intelligence, I declare the mesh Delaunay.\n");
     }
   } else if (horrors == 1) {
-    fprintf(stderr,
+    fprintf(stderr, 
          "  !! !! !! !! Precisely one terrifying transgression identified.\n");
   } else {
     fprintf(stderr, "  !! !! !! !! %d obscenities viewed with horror.\n", horrors);
@@ -7208,7 +7208,7 @@ REAL iradius;
     }
     if (enq) {
       if (b->verbose > 2) {
-        fprintf(stderr,
+        fprintf(stderr, 
           "  Queueing encroached subsegment (%.12g, %.12g) (%.12g, %.12g).\n",
           eorg[0], eorg[1], edest[0], edest[1]);
       }
@@ -8266,7 +8266,7 @@ REAL iradius;
             sorg(brokensubseg, encroached->subsegorg);
             sdest(brokensubseg, encroached->subsegdest);
             if (b->verbose > 2) {
-              fprintf(stderr,
+              fprintf(stderr, 
           "  Queueing encroached subsegment (%.12g, %.12g) (%.12g, %.12g).\n",
                      encroached->subsegorg[0], encroached->subsegorg[1],
                      encroached->subsegdest[0], encroached->subsegdest[1]);
@@ -8388,7 +8388,7 @@ REAL iradius;
 #ifdef SELF_CHECK
     if (counterclockwise(m, b, rightvertex, leftvertex, botvertex) < 0.0) {
       fprintf(stderr, "Internal error in insertvertex():\n");
-      fprintf(stderr,
+      fprintf(stderr, 
             "  Clockwise triangle prior to edge vertex insertion (bottom).\n");
     }
     if (mirrorflag) {
@@ -8398,23 +8398,23 @@ REAL iradius;
       }
       if (counterclockwise(m, b, rightvertex, topvertex, newvertex) < 0.0) {
         fprintf(stderr, "Internal error in insertvertex():\n");
-        fprintf(stderr,
+        fprintf(stderr, 
             "  Clockwise triangle after edge vertex insertion (top right).\n");
       }
       if (counterclockwise(m, b, topvertex, leftvertex, newvertex) < 0.0) {
         fprintf(stderr, "Internal error in insertvertex():\n");
-        fprintf(stderr,
+        fprintf(stderr, 
             "  Clockwise triangle after edge vertex insertion (top left).\n");
       }
     }
     if (counterclockwise(m, b, leftvertex, botvertex, newvertex) < 0.0) {
       fprintf(stderr, "Internal error in insertvertex():\n");
-      fprintf(stderr,
+      fprintf(stderr, 
           "  Clockwise triangle after edge vertex insertion (bottom left).\n");
     }
     if (counterclockwise(m, b, botvertex, rightvertex, newvertex) < 0.0) {
       fprintf(stderr, "Internal error in insertvertex():\n");
-      fprintf(stderr,
+      fprintf(stderr, 
         "  Clockwise triangle after edge vertex insertion (bottom right).\n");
     }
 #endif /* SELF_CHECK */
@@ -9966,7 +9966,7 @@ struct behavior *b;
     if ((sortarray[i][0] == sortarray[j][0])
         && (sortarray[i][1] == sortarray[j][1])) {
       if (!b->quiet) {
-        fprintf(stderr,
+        fprintf(stderr, 
 "Warning:  A duplicate vertex at (%.12g, %.12g) appeared and was ignored.\n",
                sortarray[j][0], sortarray[j][1]);
       }
@@ -10210,7 +10210,7 @@ struct behavior *b;
     if (insertvertex(m, b, vertexloop, &starttri, (struct osub *) NULL, 0, 0,
                      0.0) == DUPLICATEVERTEX) {
       if (!b->quiet) {
-        fprintf(stderr,
+        fprintf(stderr, 
 "Warning:  A duplicate vertex at (%.12g, %.12g) appeared and was ignored.\n",
                vertexloop[0], vertexloop[1]);
       }
@@ -10818,7 +10818,7 @@ struct behavior *b;
     if ((firstvertex[0] == secondvertex[0]) &&
         (firstvertex[1] == secondvertex[1])) {
       if (!b->quiet) {
-        fprintf(stderr,
+        fprintf(stderr, 
 "Warning:  A duplicate vertex at (%.12g, %.12g) appeared and was ignored.\n",
                secondvertex[0], secondvertex[1]);
       }
@@ -10867,7 +10867,7 @@ struct behavior *b;
       if ((nextvertex[0] == lastvertex[0]) &&
           (nextvertex[1] == lastvertex[1])) {
         if (!b->quiet) {
-          fprintf(stderr,
+          fprintf(stderr, 
 "Warning:  A duplicate vertex at (%.12g, %.12g) appeared and was ignored.\n",
                  nextvertex[0], nextvertex[1]);
         }
@@ -10993,7 +10993,7 @@ struct behavior *b;
 
 #ifdef REDUCED
   if (!b->quiet) {
-    fprintf(stderr,
+    fprintf(stderr, 
       "Constructing Delaunay triangulation by divide-and-conquer method.\n");
   }
   hulledges = divconqdelaunay(m, b);
@@ -11439,7 +11439,7 @@ FILE *polyfile;
       for (j = 0; j < 2; j++) {
         if ((end[j] < b->firstnumber) ||
             (end[j] >= b->firstnumber + m->invertices)) {
-          fprintf(stderr, "Error:  Segment %ld has an invalid vertex index.\n",
+          fprintf(stderr, "Error:  Segment %ld has an invalid vertex index.\n", 
                  segmentnumber);
           exit(1);
         }
@@ -11698,7 +11698,7 @@ vertex endpoint2;
   setvertexmark(newvertex, mark(*splitsubseg));
   setvertextype(newvertex, INPUTVERTEX);
   if (b->verbose > 1) {
-    fprintf(stderr,
+    fprintf(stderr, 
   "  Splitting subsegment (%.12g, %.12g) (%.12g, %.12g) at (%.12g, %.12g).\n",
            torg[0], torg[1], tdest[0], tdest[1], newvertex[0], newvertex[1]);
   }
@@ -12225,7 +12225,7 @@ int newmark;
     symself(searchtri1);
     /* Search for the segment's first endpoint by point location. */
     if (locate(m, b, endpoint1, &searchtri1) != ONVERTEX) {
-      fprintf(stderr,
+      fprintf(stderr, 
         "Internal error in insertsegment():  Unable to locate PSLG vertex\n");
       fprintf(stderr, "  (%.12g, %.12g) in triangulation.\n",
              endpoint1[0], endpoint1[1]);
@@ -12258,7 +12258,7 @@ int newmark;
     symself(searchtri2);
     /* Search for the segment's second endpoint by point location. */
     if (locate(m, b, endpoint2, &searchtri2) != ONVERTEX) {
-      fprintf(stderr,
+      fprintf(stderr, 
         "Internal error in insertsegment():  Unable to locate PSLG vertex\n");
       fprintf(stderr, "  (%.12g, %.12g) in triangulation.\n",
              endpoint2[0], endpoint2[1]);
@@ -12669,7 +12669,7 @@ struct behavior *b;
             org(neighbor, deadorg);
             dest(neighbor, deaddest);
             apex(neighbor, deadapex);
-            fprintf(stderr,
+            fprintf(stderr, 
               "    Marking (%.12g, %.12g) (%.12g, %.12g) (%.12g, %.12g)\n",
                    deadorg[0], deadorg[1], deaddest[0], deaddest[1],
                    deadapex[0], deadapex[1]);
@@ -13047,7 +13047,7 @@ int regions;
         } else {
           fprintf(stderr, "Spreading regional attributes.\n");
         }
-      } else {
+      } else { 
         fprintf(stderr, "Spreading regional area constraints.\n");
       }
     }
@@ -13332,7 +13332,7 @@ int triflaws;
         setvertexmark(newvertex, mark(currentenc));
         setvertextype(newvertex, SEGMENTVERTEX);
         if (b->verbose > 1) {
-          fprintf(stderr,
+          fprintf(stderr, 
   "  Splitting subsegment (%.12g, %.12g) (%.12g, %.12g) at (%.12g, %.12g).\n",
                  eorg[0], eorg[1], edest[0], edest[1],
                  newvertex[0], newvertex[1]);
@@ -13462,7 +13462,7 @@ struct badtriang *badtri;
         ((newvertex[0] == bdest[0]) && (newvertex[1] == bdest[1])) ||
         ((newvertex[0] == bapex[0]) && (newvertex[1] == bapex[1]))) {
       if (!b->quiet) {
-        fprintf(stderr,
+        fprintf(stderr, 
             "Warning:  New vertex (%.12g, %.12g) falls on existing vertex.\n",
                newvertex[0], newvertex[1]);
         errorflag = 1;
@@ -13513,7 +13513,7 @@ struct badtriang *badtri;
       } else {                                 /* success == DUPLICATEVERTEX */
         /* Couldn't insert the new vertex because a vertex is already there. */
         if (!b->quiet) {
-          fprintf(stderr,
+          fprintf(stderr, 
             "Warning:  New vertex (%.12g, %.12g) falls on existing vertex.\n",
                  newvertex[0], newvertex[1]);
           errorflag = 1;
@@ -14184,7 +14184,7 @@ int *regions;
         }
         stringptr = findfield(stringptr);
         if (*stringptr == '\0') {
-          fprintf(stderr,
+          fprintf(stderr, 
             "Error:  Region %d has no region attribute or area constraint.\n",
                  b->firstnumber + i);
           exit(1);

@@ -4,26 +4,26 @@
  *
  *  Created by Pete Bunting on 27/11/2010.
  *  Copyright 2010 SPDLib. All rights reserved.
- *
+ * 
  *  This file is part of SPDLib.
  *
- *  Permission is hereby granted, free of charge, to any person
- *  obtaining a copy of this software and associated documentation
- *  files (the "Software"), to deal in the Software without restriction,
- *  including without limitation the rights to use, copy, modify,
- *  merge, publish, distribute, sublicense, and/or sell copies of the
- *  Software, and to permit persons to whom the Software is furnished
+ *  Permission is hereby granted, free of charge, to any person 
+ *  obtaining a copy of this software and associated documentation 
+ *  files (the "Software"), to deal in the Software without restriction, 
+ *  including without limitation the rights to use, copy, modify, 
+ *  merge, publish, distribute, sublicense, and/or sell copies of the 
+ *  Software, and to permit persons to whom the Software is furnished 
  *  to do so, subject to the following conditions:
  *
- *  The above copyright notice and this permission notice shall be
+ *  The above copyright notice and this permission notice shall be 
  *  included in all copies or substantial portions of the Software.
  *
- *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
- *  EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
- *  OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
- *  IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR
- *  ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF
- *  CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+ *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, 
+ *  EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES 
+ *  OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. 
+ *  IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR 
+ *  ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF 
+ *  CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION 
  *  WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  *
  */
@@ -110,7 +110,7 @@ namespace spdlib
 		
 		return spdPulseDataType;
 	}
-
+    
     H5::CompType* SPDPulseUtils::createSPDPulseH5V2DataTypeDisk()
 	{
 		H5::CompType *spdPulseDataType = new H5::CompType( sizeof(SPDPulseH5V2) );
@@ -221,7 +221,7 @@ namespace spdlib
 		pl->transmitted = NULL;
 		pl->received = NULL;
 	}
-
+    
 	void SPDPulseUtils::initSPDPulseH5(SPDPulseH5V1 *pl)
 	{		
 		pl->x0 = 0;
@@ -254,7 +254,7 @@ namespace spdlib
 		pl->receivedStartIdx = 0;
 		pl->transmittedStartIdx = 0;
 	}
-
+    
     void SPDPulseUtils::initSPDPulseH5(SPDPulseH5V2 *pl)
 	{		
 		pl->x0 = 0;
@@ -301,21 +301,21 @@ namespace spdlib
                 }
             }
             delete pl->pts;
-
+            
             if(pl->numOfTransmittedBins > 0)
             {
                 delete[] pl->transmitted;
             }
-
+            
             if(pl->numOfReceivedBins > 0)
             {
                 delete[] pl->received;
             }
-
+            
             delete pl;
         }
 	}
-
+    
 	SPDPulse* SPDPulseUtils::createSPDPulseCopy(SPDPulse *pl)
 	{
 		SPDPulse *pl_out = new SPDPulse();
@@ -641,7 +641,7 @@ namespace spdlib
         pl_out->transWaveOffset = pl->transWaveOffset;
         pl_out->pts = new std::vector<SPDPoint*>();
 	}
-
+    
     SPDPulseH5V2* SPDPulseUtils::createSPDPulseH5V2Copy(SPDPulse *pl)
 	{
 		SPDPulseH5V2 *pl_out = new SPDPulseH5V2();

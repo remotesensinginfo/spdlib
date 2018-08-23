@@ -11,7 +11,7 @@
 # furnished to do so, subject to the following conditions:
 # The above copyright notice and this permission notice shall be included in
 # all copies or substantial portions of the Software.
-#
+# 
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 # IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 # FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -43,7 +43,7 @@ import matplotlib.pyplot as plt
 speedLightNS = 0.299792458
 
 class SPDPlotPulses (object):
-
+    
     def plotReceivedPulse(self, pulse, ampAxis, temporalBinSpacing):
         rangeVals = list()
         timeVals = list()
@@ -79,7 +79,7 @@ class SPDPlotPulses (object):
         xlabel("Received Signal")
         ylabel("Range from Sensor (m)")
         show()
-
+    
     def plotTransmittedPulse(self, pulse, ampAxis, temporalBinSpacing):
         timeVals = list()
         gaussianVals = zeros(len(pulse.transmitted))
@@ -95,7 +95,7 @@ class SPDPlotPulses (object):
                 maxIdx = i
             elif pulse.transmitted[i] > pulse.transmitted[maxIdx]:
                 maxIdx = i
-
+        
         for i in range(len(pulse.transmitted)):
             timeVals.append(i*temporalBinSpacing)
             ampVals.append(((pulse.transmitted[i])*pulse.transWaveGain)+pulse.transWaveOffset)
@@ -108,7 +108,7 @@ class SPDPlotPulses (object):
         xlabel("Time (ns)")
         ylabel("Transmitted Signal")
         show()
-
+    
     def plotSPDFilePulses(self, inputFile, ampAxis, row, startCol, endCol):
         print("SPD File: " + inputFile)
         spdFile = spdpy.openSPDFileHeader(inputFile)
@@ -131,7 +131,7 @@ class SPDPlotPulses (object):
         for pulse in pulses:
             if pulse.numOfReceivedBins > 0 and pulse.numberOfReturns >= 0:
                 self.plotReceivedPulse(pulse, ampAxis, spdFile.temporalBinSpacing)
-
+                
     def plotSPDFileTransPulses(self, inputFile, ampAxis, row, startCol, endCol):
         print("SPD File: " + inputFile)
         spdFile = spdpy.openSPDFileHeader(inputFile)
@@ -193,7 +193,7 @@ class SPDPlotPulses (object):
                 self.help()
         else:
             self.help()
-
+    
     def help(self):
         print('spdPlotPulses.py script generates plots from SPD/UPD files ')
         print('')

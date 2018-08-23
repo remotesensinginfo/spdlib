@@ -33,15 +33,15 @@ namespace spdlib
         this->classID = classID;
         this->returnValSet = returnValSet;
         this->returnVal = returnVal;
-
+        
         this->outSPDFile = new SPDFile(outputFilePath);
         this->exporter = new SPDNoIdxFileWriter();
-
+        
         this->exporter->open(this->outSPDFile, outputFilePath);
-
+        
         this->pulses = new std::vector<SPDPulse*>();
     }
-
+    
     void SPDExtractReturnsImportProcess::processImportedPulse(SPDFile *spdFile, SPDPulse *pulse) throw(SPDIOException)
     {
         if(pulse->pts->size() > 0)
@@ -72,7 +72,7 @@ namespace spdlib
                         if(pulse->pts->size() > 1)
                         {
                             delete *iterPts;
-                            pulse->pts->erase(iterPts);
+                            pulse->pts->erase(iterPts);                            
                         }
                         else
                         {
@@ -134,7 +134,7 @@ namespace spdlib
                     }
                 }
             }
-
+            
             if(classValSet && (classID != SPD_ALL_CLASSES))
             {
                 if(classID == SPD_ALL_CLASSES_TOP)
@@ -221,16 +221,16 @@ namespace spdlib
                     }
                 }
             }
-
-
+            
+            
         }
-
+        
         pulse->numberOfReturns = pulse->pts->size();
         pulses->push_back(pulse);
         this->exporter->writeDataColumn(pulses, 0, 0);
         pulses->clear();
     }
-
+    
     void SPDExtractReturnsImportProcess::completeFileAndClose(SPDFile *spdFile)throw(SPDIOException)
     {
         try
@@ -247,12 +247,12 @@ namespace spdlib
 		
     SPDExtractReturnsImportProcess::~SPDExtractReturnsImportProcess()
     {
-
+        
     }
-
-
-
-
+    
+    
+    
+    
     SPDExtractReturnsBlockProcess::SPDExtractReturnsBlockProcess(bool classValSet, boost::uint_fast16_t classID, bool returnValSet, boost::uint_fast16_t returnVal, bool minMaxSet, boost::uint_fast16_t highOrLow)
     {
         this->classValSet = classValSet;
@@ -262,7 +262,7 @@ namespace spdlib
         this->minMaxSet = minMaxSet;
         this->highOrLow = highOrLow;
     }
-
+    
     void SPDExtractReturnsBlockProcess::processDataColumn(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses, SPDXYPoint *cenPts) throw(SPDProcessingException)
     {
         try
@@ -363,7 +363,7 @@ namespace spdlib
                             }
                         }
                     }
-
+                    
                     if(classValSet && (classID != SPD_ALL_CLASSES))
                     {
                         if(classID == SPD_ALL_CLASSES_TOP)
@@ -450,10 +450,10 @@ namespace spdlib
                             }
                         }
                     }
-
+                
                     pulse->numberOfReturns = pulse->pts->size();
                 }
-
+                
                 if(minMaxSet)
                 {
                     boost::uint_fast64_t minPulseID = 0;
@@ -488,13 +488,13 @@ namespace spdlib
                             }
                         }
                     }
-
+                    
                     //std::cout << "Min = " << minZ << "\t Pulse ID = " << minPulseID << std::endl;
                     //std::cout << "Max = " << maxZ << "\t Pulse ID = " << maxPulseID << std::endl;
-
+                    
                     for(std::vector<SPDPulse*>::iterator iterPulse = pulses->begin(); iterPulse != pulses->end(); ++iterPulse)
                     {
-
+                        
                         if((minPulseID == (*iterPulse)->pulseID) && (highOrLow == spdlib::SPD_SELECT_LOWEST))
                         {
                             if((*iterPulse)->pts->size() > 1)
@@ -511,7 +511,7 @@ namespace spdlib
                                         ++iterPts;
                                     }
                                 }
-
+                                
                                 (*iterPulse)->numberOfReturns = (*iterPulse)->pts->size();
                             }
                         }
@@ -533,7 +533,7 @@ namespace spdlib
                                 }
                                 (*iterPulse)->numberOfReturns = (*iterPulse)->pts->size();
                             }
-
+                            
                         }
                         else
                         {
@@ -558,13 +558,13 @@ namespace spdlib
         {
             throw SPDProcessingException(e.what());
         }
-
+        
     }
-
+    
     SPDExtractReturnsBlockProcess::~SPDExtractReturnsBlockProcess()
     {
-
+        
     }
-
+    
 }
 

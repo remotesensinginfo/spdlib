@@ -24,17 +24,17 @@
 #include "spd/SPDProcessPulses.h"
 
 namespace spdlib
-{
+{    
     SPDSetupProcessPulses::SPDSetupProcessPulses(boost::uint_fast32_t blockXSize, boost::uint_fast32_t blockYSize, bool printProgress)
     {
         this->blockXSize = blockXSize;
         this->blockYSize = blockYSize;
         this->printProgress = printProgress;
     }
-
+        
     void SPDSetupProcessPulses::processPulsesWithInputImage(SPDPulseProcessor *pulseProcessor, SPDFile *spdInFile, std::string outFile, std::string imageFilePath, bool usingWindow, boost::uint_fast16_t winHSize) throw(SPDProcessingException)
     {
-        try
+        try 
         {
             SPDProcessPulses *processPulses = new SPDProcessPulses(pulseProcessor, usingWindow, winHSize);
             if(!usingWindow)
@@ -43,19 +43,19 @@ namespace spdlib
             }
             SPDProcessDataBlocks *processDataBlocks = new SPDProcessDataBlocks(processPulses, winHSize, blockXSize, blockYSize, printProgress);
             processDataBlocks->processDataBlocksGridPulsesInputImage(spdInFile, outFile, imageFilePath);
-
+            
             delete processDataBlocks;
             delete processPulses;
-        }
-        catch (SPDProcessingException &e)
+        } 
+        catch (SPDProcessingException &e) 
         {
             throw e;
         }
     }
-
+    
     void SPDSetupProcessPulses::processPulsesWithOutputImage(SPDPulseProcessor *pulseProcessor, SPDFile *spdInFile, std::string outImagePath, boost::uint_fast16_t numImgBands, float processingResolution, std::string gdalFormat, bool usingWindow, boost::uint_fast16_t winHSize) throw(SPDProcessingException)
     {
-        try
+        try 
         {
             SPDProcessPulses *processPulses = new SPDProcessPulses(pulseProcessor, usingWindow, winHSize);
             if(!usingWindow)
@@ -64,19 +64,19 @@ namespace spdlib
             }
             SPDProcessDataBlocks *processDataBlocks = new SPDProcessDataBlocks(processPulses, winHSize, blockXSize, blockYSize, printProgress);
             processDataBlocks->processDataBlocksGridPulsesOutputImage(spdInFile, outImagePath, processingResolution, numImgBands, gdalFormat);
-
+            
             delete processDataBlocks;
             delete processPulses;
-        }
-        catch (SPDProcessingException &e)
+        } 
+        catch (SPDProcessingException &e) 
         {
             throw e;
         }
     }
-
+    
     void SPDSetupProcessPulses::processPulsesWithOutputSPD(SPDPulseProcessor *pulseProcessor, SPDFile *spdInFile, std::string outFile, float processingResolution, bool usingWindow, boost::uint_fast16_t winHSize) throw(SPDProcessingException)
     {
-        try
+        try 
         {
             SPDProcessPulses *processPulses = new SPDProcessPulses(pulseProcessor, usingWindow, winHSize);
             if(!usingWindow)
@@ -85,19 +85,19 @@ namespace spdlib
             }
             SPDProcessDataBlocks *processDataBlocks = new SPDProcessDataBlocks(processPulses, winHSize, blockXSize, blockYSize, printProgress);
             processDataBlocks->processDataBlocksGridPulsesOutputSPD(spdInFile, outFile, processingResolution);
-
+            
             delete processDataBlocks;
             delete processPulses;
-        }
-        catch (SPDProcessingException &e)
+        } 
+        catch (SPDProcessingException &e) 
         {
             throw e;
         }
     }
-
+        
     void SPDSetupProcessPulses::processPulses(SPDPulseProcessor *pulseProcessor, SPDFile *spdInFile, float processingResolution, bool usingWindow, boost::uint_fast16_t winHSize) throw(SPDProcessingException)
     {
-        try
+        try 
         {
             SPDProcessPulses *processPulses = new SPDProcessPulses(pulseProcessor, usingWindow, winHSize);
             if(!usingWindow)
@@ -106,25 +106,25 @@ namespace spdlib
             }
             SPDProcessDataBlocks *processDataBlocks = new SPDProcessDataBlocks(processPulses, winHSize, blockXSize, blockYSize, printProgress);
             processDataBlocks->processDataBlocksGridPulses(spdInFile, processingResolution);
-
+            
             delete processDataBlocks;
             delete processPulses;
-        }
-        catch (SPDProcessingException &e)
+        } 
+        catch (SPDProcessingException &e) 
         {
             throw e;
         }
     }
-
+     
     SPDSetupProcessPulses::~SPDSetupProcessPulses()
     {
-
+        
     }
-
-
-
-
-
+    
+    
+    
+    
+    
 
     SPDProcessPulses::SPDProcessPulses(SPDPulseProcessor *pulseProcessor, bool usingWindow, boost::uint_fast16_t winHSize):SPDDataBlockProcessor()
     {
@@ -132,11 +132,11 @@ namespace spdlib
         this->usingWindow = usingWindow;
         this->winHSize = winHSize;
     }
-
-
+    
+        
     void SPDProcessPulses::processDataBlockImage(SPDFile *inSPDFile, std::vector<SPDPulse*> ***pulses, float ***imageDataBlock, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast32_t numImgBands, float binSize) throw(SPDProcessingException)
     {
-        try
+        try 
         {
             if(!usingWindow)
             {
@@ -151,7 +151,7 @@ namespace spdlib
             else
             {
                 boost::uint_fast16_t winSize = (winHSize * 2) + 1;
-
+                
                 bool **validBins = new bool*[winSize];
                 float ***winImgDataBlock = new float**[winSize];
                 SPDXYPoint ***winCenPts = new SPDXYPoint**[winSize];
@@ -163,15 +163,15 @@ namespace spdlib
                     winImgDataBlock[i] = new float*[winSize];
                     validBins[i] = new bool[winSize];
                 }
-
+                
                 boost::int_fast32_t xMinPos = 0;
                 boost::int_fast32_t yMinPos = 0;
                 boost::int_fast32_t xMaxPos = 0;
                 boost::int_fast32_t yMaxPos = 0;
-
+                
                 boost::uint_fast32_t idxIOff = 0; // i index (i.e., Y)
                 boost::uint_fast32_t idxJOff = 0; // j index (i.e., X)
-
+                
                 for(boost::uint_fast32_t y = 0; y < ySize; ++y)
                 {
                     for(boost::uint_fast32_t x = 0; x < xSize; ++x)
@@ -191,7 +191,7 @@ namespace spdlib
                         yMinPos = y - winHSize;
                         xMaxPos = x + winHSize;
                         yMaxPos = y + winHSize;
-
+                        
                         if(xMinPos < 0)
                         {
                             xMinPos = 0;
@@ -210,7 +210,7 @@ namespace spdlib
                         {
                             yMaxPos = ySize-1;
                         }
-
+                        
                         for(boost::uint_fast32_t yIdx = yMinPos, i = idxIOff; yIdx < yMaxPos; ++yIdx, ++i)
                         {
                             for(boost::uint_fast32_t xIdx = xMinPos, j = idxJOff; xIdx < xMaxPos; ++xIdx, ++j)
@@ -221,13 +221,13 @@ namespace spdlib
                                 validBins[i][j] = true;
                             }
                         }
-
-
+                        
+                        
                         pulseProcessor->processDataWindowImage(inSPDFile, validBins, winPulses, winImgDataBlock, winCenPts, numImgBands, binSize, winSize);
                     }
                 }
-
-
+                
+                
                 for(boost::uint_fast32_t i = 0; i < winSize; ++i)
                 {
                     delete[] winPulses[i];
@@ -240,16 +240,16 @@ namespace spdlib
                 delete[] winPulses;
                 delete[] validBins;
             }
-        }
-        catch (SPDProcessingException &e)
+        } 
+        catch (SPDProcessingException &e) 
         {
             throw e;
         }
     }
-
+    
     void SPDProcessPulses::processDataBlock(SPDFile *inSPDFile, std::vector<SPDPulse*> ***pulses, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, float binSize) throw(SPDProcessingException)
     {
-        try
+        try 
         {
             if(!usingWindow)
             {
@@ -264,7 +264,7 @@ namespace spdlib
             else
             {
                 boost::int_fast16_t winSize = (winHSize * 2) + 1;
-
+                
                 bool **validBins = new bool*[winSize];
                 SPDXYPoint ***winCenPts = new SPDXYPoint**[winSize];
                 std::vector<SPDPulse*> ***winPulses = new std::vector<SPDPulse*>**[winSize];
@@ -274,15 +274,15 @@ namespace spdlib
                     winCenPts[i] = new SPDXYPoint*[winSize];
                     validBins[i] = new bool[winSize];
                 }
-
+                
                 boost::int_fast32_t xMinPos = 0;
                 boost::int_fast32_t yMinPos = 0;
                 boost::int_fast32_t xMaxPos = 0;
                 boost::int_fast32_t yMaxPos = 0;
-
+                
                 boost::uint_fast32_t idxIOff = 0; // i index (i.e., Y)
                 boost::uint_fast32_t idxJOff = 0; // j index (i.e., X)
-
+                
                 for(boost::int_fast32_t y = 0; y < ySize; ++y)
                 {
                     for(boost::int_fast32_t x = 0; x < xSize; ++x)
@@ -324,11 +324,11 @@ namespace spdlib
                         {
                             yMaxPos = ySize;
                         }
-
+                        
                         //std::cout << "Array Off: [" << idxJOff << " , " << idxIOff << "]\n";
                         //std::cout << "Min Pos: [" << xMinPos << " , " << yMinPos << "]\n";
                         //std::cout << "Max Pos: [" << xMaxPos << " , " << yMaxPos << "]\n";
-
+                        
                         for(boost::uint_fast32_t yIdx = yMinPos, i = idxIOff; yIdx < yMaxPos; ++yIdx, ++i)
                         {
                             for(boost::uint_fast32_t xIdx = xMinPos, j = idxJOff; xIdx < xMaxPos; ++xIdx, ++j)
@@ -338,12 +338,12 @@ namespace spdlib
                                 validBins[i][j] = true;
                             }
                         }
-
+                        
                         pulseProcessor->processDataWindow(inSPDFile, validBins, winPulses, winCenPts, winSize);
                     }
                 }
-
-
+                
+                
                 for(boost::uint_fast32_t i = 0; i < winSize; ++i)
                 {
                     delete[] winPulses[i];
@@ -354,50 +354,50 @@ namespace spdlib
                 delete[] winPulses;
                 delete[] validBins;
             }
-        }
-        catch (SPDProcessingException &e)
+        } 
+        catch (SPDProcessingException &e) 
         {
             throw e;
         }
     }
-
+        
     void SPDProcessPulses::processDataBlockImage(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses, float ***imageDataBlock, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast32_t numImgBands) throw(SPDProcessingException)
     {
         throw SPDProcessingException("processDataBlockImage without pulses grid is not implemented.");
     }
-
+    
     void SPDProcessPulses::processDataBlock(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses) throw(SPDProcessingException)
     {
         throw SPDProcessingException("processDataBlock without pulses grid is not implemented.");
     }
-
+        
     std::vector<std::string> SPDProcessPulses::getImageBandDescriptions() throw(SPDProcessingException)
     {
-        try
+        try 
         {
             return pulseProcessor->getImageBandDescriptions();
-        }
-        catch (SPDProcessingException &e)
+        } 
+        catch (SPDProcessingException &e) 
         {
             throw e;
         }
     }
-
+    
     void SPDProcessPulses::setHeaderValues(SPDFile *spdFile) throw(SPDProcessingException)
     {
-        try
+        try 
         {
             pulseProcessor->setHeaderValues(spdFile);
-        }
-        catch (SPDProcessingException &e)
+        } 
+        catch (SPDProcessingException &e) 
         {
             throw e;
         }
     }
-
+        
     SPDProcessPulses::~SPDProcessPulses()
     {
-
+        
     }
 
 }

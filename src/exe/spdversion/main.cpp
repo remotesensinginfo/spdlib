@@ -4,7 +4,7 @@
  *
  *  Created by Pete Bunting on 21/03/2012.
  *  Copyright 2012 SPDLib. All rights reserved.
- *
+ * 
  *  This file is part of SPDLib.
  *
  *  SPDLib is free software: you can redistribute it and/or modify
@@ -34,17 +34,17 @@
 
 #include "spd/spd-config.h"
 
-int main (int argc, char * const argv[])
+int main (int argc, char * const argv[]) 
 {
     std::cout.precision(12);
-
+    
     std::cout << "spdversion " << SPDLIB_PACKAGE_STRING << ", Copyright (C) " << SPDLIB_COPYRIGHT_YEAR << " Sorted Pulse Library (SPD)\n";
 	std::cout << "This program comes with ABSOLUTELY NO WARRANTY. This is free software,\n";
 	std::cout << "and you are welcome to redistribute it under certain conditions; See\n";
 	std::cout << "website (http://www.spdlib.org). Bugs are to be reported on the trac\n";
 	std::cout << "or directly to " << SPDLIB_PACKAGE_BUGREPORT << std::endl;
 	
-	try
+	try 
 	{
         TCLAP::CmdLine cmd("Prints version information: spdversion", ' ', "1.0.0");
 		
@@ -56,7 +56,7 @@ int main (int argc, char * const argv[])
 		if(fileNames.size() > 0)
 		{
             spdlib::SPDFileReader spdReader;
-            spdlib::SPDFile *spdFile;
+            spdlib::SPDFile *spdFile; 
 			for(unsigned int i = 0; i < fileNames.size(); ++i)
 			{
                 spdFile = new spdlib::SPDFile(fileNames.at(i));
@@ -75,7 +75,7 @@ int main (int argc, char * const argv[])
         }
 		
 	}
-	catch (TCLAP::ArgException &e)
+	catch (TCLAP::ArgException &e) 
 	{
 		std::cerr << "Parse Error: " << e.what() << std::endl;
 	}

@@ -116,7 +116,7 @@ void RecArrayCreator::addField(const char *pszName, NPY_TYPES eType, int nLength
 }
 
 // Adds a field to our list for creation of array
-// takes kind and bytes description.
+// takes kind and bytes description. 
 // see http://docs.scipy.org/doc/numpy/reference/arrays.dtypes.html "Array-protocol type strings"
 // set nLength to values greater than 1 for sub arrays
 void RecArrayCreator::addField(const char *pszName, char cKind, int nBytes, int nLength) throw(RecArrayException)
@@ -222,7 +222,7 @@ void getFieldDescription(PyObject *pArray, const char *pszName, int *pnOffset, c
 
     // go through each of the fields looking for the right name
     // see http://docs.scipy.org/doc/numpy/reference/c-api.types-and-structures.html
-    // "this data-type-descriptor has fields described by a Python dictionary whose keys
+    // "this data-type-descriptor has fields described by a Python dictionary whose keys 
     // are names (and also titles if given) and whose values are tuples that describe the fields."
     // "A field is described by a tuple composed of another data- type-descriptor and a byte offset"
     PyObject *pKey, *pValue;

@@ -42,11 +42,11 @@ namespace spdlib
 			throw SPDException("This class does not support the export of gridded formats.");
 		}
 		
-		try
+		try 
 		{
 			this->exporter->open(this->spdFileOut, this->spdFileOut->getFilePath());
 		}
-		catch (SPDException &e)
+		catch (SPDException &e) 
 		{
 			throw e;
 		}
@@ -89,7 +89,7 @@ namespace spdlib
 			this->pulses->push_back(pulse);
 			this->exporter->writeDataColumn(pulses, 0, 0);
 		}
-		catch (SPDIOException &e)
+		catch (SPDIOException &e) 
 		{
 			throw e;
 		}
@@ -97,27 +97,27 @@ namespace spdlib
 		
 	void SPDExportAsReadUnGridded::completeFileAndClose(SPDFile *spdFile)throw(SPDIOException)
 	{
-		try
+		try 
 		{
 			spdFileOut->copyAttributesFrom(spdFile);
 			exporter->finaliseClose();
 		}
-		catch (SPDIOException &e)
+		catch (SPDIOException &e) 
 		{
 			throw e;
 		}
 	}
-
+    
     void SPDExportAsReadUnGridded::setSourceID(boost::uint_fast16_t sourceID)
     {
         this->sourceID = sourceID;
     }
-
+    
     void SPDExportAsReadUnGridded::setReturnID(boost::uint_fast16_t returnID)
     {
         this->returnID = returnID;
     }
-
+    
     void SPDExportAsReadUnGridded::setClassValue(boost::uint_fast16_t classValue)
     {
         this->classValue = classValue;

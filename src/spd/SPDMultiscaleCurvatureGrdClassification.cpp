@@ -25,7 +25,7 @@
 
 namespace spdlib
 {
-
+    
 
     SPDMultiscaleCurvatureGrdClassification::SPDMultiscaleCurvatureGrdClassification(float initScale,boost::uint_fast16_t numOfScalesAbove,boost::uint_fast16_t numOfScalesBelow, float scaleGaps, float initCurveTolerance, float minCurveTolerance, float stepCurveTolerance, float interpMaxRadius,boost::uint_fast16_t interpNumPoints, SPDSmoothFilterType filterType,boost::uint_fast16_t smoothFilterHSize, float thresOfChange, bool multiReturnPulsesOnly,boost::uint_fast16_t classParameters)
     {
@@ -36,7 +36,7 @@ namespace spdlib
         this->initCurveTolerance = initCurveTolerance;
         this->minCurveTolerance = minCurveTolerance;
         this->stepCurveTolerance = stepCurveTolerance;
-        this->interpMaxRadius = interpMaxRadius;
+        this->interpMaxRadius = interpMaxRadius; 
         this->interpNumPoints = interpNumPoints;
         this->filterType = filterType;
         this->smoothFilterHSize = smoothFilterHSize;
@@ -44,7 +44,7 @@ namespace spdlib
         this->multiReturnPulsesOnly = multiReturnPulsesOnly;
         this->classParameters = classParameters;
     }
-
+    
     void SPDMultiscaleCurvatureGrdClassification::processDataBlock(SPDFile *inSPDFile, std::vector<SPDPulse*> ***pulses, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, float binSize) throw(SPDProcessingException)
     {
         try
@@ -55,9 +55,9 @@ namespace spdlib
             // Initialise point classification (all classified to ground) and find point cloud dimensions
             std::pair<double*,size_t> data = this->findDataExtentAndClassifyAllPtsAsGrd(pulses, xSize, ySize);
             double *bbox = data.first;
-
+            
             std::cout << "Number of points in block: " << data.second << std::endl;
-
+            
             if(data.second < 20)
             {
                 std::cout << "Too few points in block, assigned to unclassified\n";
@@ -65,16 +65,16 @@ namespace spdlib
                 delete[] bbox;
                 return;
             }
-
+            
             std::cout.precision(12);
             std::cout << "BBOX: [" << bbox[0] << "," << bbox[1] << "," << bbox[2] << "," << bbox[3] << "]\n";
-
+            
             boost::uint_fast32_t xSizeRaster = 0;
             boost::uint_fast32_t ySizeRaster = 0;
             float **raster = NULL;
             float proportionOfChange = 1;
             float curveTolerance = this->initCurveTolerance;
-
+            
             for(boost::uint_fast32_t scaleCounter = 0; scaleCounter < numScales; ++scaleCounter)
             {
                 std::cout << "Scale (" << scale << ") " << scaleCounter+1 << " of " << numScales << std::endl;
@@ -99,9 +99,9 @@ namespace spdlib
                                 throw SPDProcessingException("Filter type is not recognised.");
                             }
                         }
-
+                        
                         proportionOfChange = this->classifyNonGrdPoints(curveTolerance, bbox, scale, raster, xSizeRaster, ySizeRaster, pulses, xSize, ySize);
-
+                        
                         for(boost::uint_fast32_t i = 0; i < ySizeRaster; ++i)
                         {
                             delete[] raster[i];
@@ -115,7 +115,7 @@ namespace spdlib
                             delete[] raster[i];
                         }
                         delete[] raster;
-
+                        
                         throw e;
                     }
                     std::cout << "Change:\t" << proportionOfChange << std::endl;
@@ -125,7 +125,7 @@ namespace spdlib
                         return;
                     }
                 }while(proportionOfChange > thresOfChange);
-
+                
                 scale -= scaleGaps; // decrement the scale parameter
                 curveTolerance -= stepCurveTolerance;
                 if(curveTolerance < minCurveTolerance)
@@ -133,7 +133,7 @@ namespace spdlib
                     curveTolerance = minCurveTolerance;
                 }
             }
-
+            
             delete[] bbox;
         }
         catch(SPDProcessingException &e)
@@ -141,8 +141,8 @@ namespace spdlib
             throw e;
         }
     }
-
-
+    
+    
     std::pair<double*,size_t> SPDMultiscaleCurvatureGrdClassification::findDataExtentAndClassifyAllPtsAsGrd(std::vector<SPDPulse*> ***pulses, boost::uint_fast32_t xSizePulses, boost::uint_fast32_t ySizePulses) throw(SPDProcessingException)
     {
         // bbox - TLX TLY BRX BRY
@@ -155,7 +155,7 @@ namespace spdlib
         try
         {
             bool first = true;
-
+            
             std::vector<SPDPulse*>::iterator iterPulses;
             std::vector<SPDPoint*>::iterator iterPoints;
             for(boost::uint_fast32_t i = 0; i < ySizePulses; ++i)
@@ -180,30 +180,30 @@ namespace spdlib
                                 {
                                     if((*iterPoints)->x < bbox[0])
                                     {
-                                        bbox[0] = (*iterPoints)->x;
+                                        bbox[0] = (*iterPoints)->x; 
                                     }
                                     else if((*iterPoints)->x > bbox[2])
                                     {
-                                        bbox[2] = (*iterPoints)->x;
+                                        bbox[2] = (*iterPoints)->x; 
                                     }
-
+                                    
                                     if((*iterPoints)->y > bbox[1])
                                     {
-                                        bbox[1] = (*iterPoints)->y;
+                                        bbox[1] = (*iterPoints)->y; 
                                     }
                                     else if((*iterPoints)->y < bbox[3])
                                     {
-                                        bbox[3] = (*iterPoints)->y;
+                                        bbox[3] = (*iterPoints)->y; 
                                     }
                                 }
-
+                                
                                 ++numPoints;
-
+                                
                                 if((classParameters != SPD_GROUND) && ((*iterPoints)->classification == SPD_GROUND))
                                 {
                                     (*iterPoints)->classification = SPD_UNCLASSIFIED;
                                 }
-
+                                
                                 if(classParameters == SPD_ALL_CLASSES)
                                 {
                                     (*iterPoints)->classification = SPD_GROUND;
@@ -222,10 +222,10 @@ namespace spdlib
         {
             throw e;
         }
-
+        
         return std::pair<double*,size_t>(bbox, numPoints);
     }
-
+    
     void SPDMultiscaleCurvatureGrdClassification::assignToUnclassified(std::vector<SPDPulse*> ***pulses,boost::uint_fast32_t xSizePulses,boost::uint_fast32_t ySizePulses) throw(SPDProcessingException)
     {
         try
@@ -254,11 +254,11 @@ namespace spdlib
             throw e;
         }
     }
-
+    
     float** SPDMultiscaleCurvatureGrdClassification::createElevationRaster(double *bbox, float rasterScale, boost::uint_fast32_t *xSizeRaster, boost::uint_fast32_t *ySizeRaster, std::vector<SPDPulse*> ***pulses, boost::uint_fast32_t xSizePulses, boost::uint_fast32_t ySizePulses) throw(SPDProcessingException)
     {
         float **raster = NULL;
-        try
+        try 
         {
             boost::uint_fast32_t roundingAddition = 0;
             try
@@ -267,46 +267,46 @@ namespace spdlib
                 {
                     roundingAddition = boost::numeric_cast<boost::uint_fast32_t>(1/rasterScale);
                 }
-                else
+                else 
                 {
                     roundingAddition = 1;
                 }
-
+                
                 *xSizeRaster = boost::numeric_cast<boost::uint_fast32_t>(((bbox[2] - bbox[0])/rasterScale)+roundingAddition);
                 *ySizeRaster = boost::numeric_cast<boost::uint_fast32_t>(((bbox[1] - bbox[3])/rasterScale)+roundingAddition);
             }
-            catch(boost::numeric::negative_overflow& e)
+            catch(boost::numeric::negative_overflow& e) 
             {
                 throw SPDProcessingException(e.what());
             }
-            catch(boost::numeric::positive_overflow& e)
+            catch(boost::numeric::positive_overflow& e) 
             {
                 throw SPDProcessingException(e.what());
             }
-            catch(boost::numeric::bad_numeric_cast& e)
+            catch(boost::numeric::bad_numeric_cast& e) 
             {
                 throw SPDProcessingException(e.what());
             }
-
+            
             if((*xSizeRaster < 1) | (*ySizeRaster < 1))
             {
                 throw SPDProcessingException("The raster has a size less than 1 'pixel' in one of the axis' (try reducing resolution).");
             }
-
+            
             //std::cout << "Size Raster [" << *xSizeRaster << "," << *ySizeRaster << "]\n";
-
+            
             SPDTPSNumPtsUseAvThinInterpolator *interpolator = new SPDTPSNumPtsUseAvThinInterpolator((interpMaxRadius*rasterScale), interpNumPoints, SPD_USE_Z, rasterScale, true);
-
-
+            
+            
             raster = new float*[(*ySizeRaster)];
-
+            
             try
             {
                 interpolator->initInterpolator(pulses, xSizePulses, ySizePulses, SPD_GROUND);
-
+                
                 double currentX = bbox[0] + (rasterScale/2);
                 double currentY = bbox[1] - (rasterScale/2);
-
+                
                 boost::uint_fast32_t feedback = (*ySizeRaster)/10;
                 boost::uint_fast32_t feedbackCounter = 0;
                 std::cout << "Started " << std::flush;
@@ -352,17 +352,17 @@ namespace spdlib
                 }
                 std::cout << " Complete.\n";
             }
-
+            
             delete interpolator;
-        }
-        catch (SPDProcessingException &e)
+        } 
+        catch (SPDProcessingException &e) 
         {
             throw e;
         }
-
+        
         return raster;
     }
-
+    
     void SPDMultiscaleCurvatureGrdClassification::smoothMeanRaster(float **raster, boost::uint_fast32_t xSizeRaster, boost::uint_fast32_t ySizeRaster, boost::uint_fast16_t filterHSize) throw(SPDProcessingException)
     {
         try
@@ -371,7 +371,7 @@ namespace spdlib
             boost::uint_fast32_t filterPxlEndX = 0;
             boost::uint_fast32_t filterPxlStartY = 0;
             boost::uint_fast32_t filterPxlEndY = 0;
-
+            
             float **rasterMedian = new float*[ySizeRaster];
             for(boost::uint_fast32_t i = 0; i < ySizeRaster; ++i)
             {
@@ -381,10 +381,10 @@ namespace spdlib
                     rasterMedian[i][j] = 0;
                 }
             }
-
+            
             double sumValues = 0;
             boost::uint_fast32_t valCount = 0;
-
+            
             for(boost::uint_fast32_t i = 0; i < ySizeRaster; ++i)
             {
                 for(boost::uint_fast32_t j = 0; j < xSizeRaster; ++j)
@@ -404,12 +404,12 @@ namespace spdlib
                         filterPxlStartY = i - filterHSize;
                         filterPxlEndY = i + filterHSize;
                     }
-
+                    
                     if((((int_fast64_t)j) - ((int_fast64_t)filterHSize)) < 0)
                     {
                         filterPxlStartX = 0;
                         filterPxlEndX = j + filterHSize;
-
+                        
                     }
                     else if((j+filterHSize) >= xSizeRaster)
                     {
@@ -421,10 +421,10 @@ namespace spdlib
                         filterPxlStartX = j - filterHSize;
                         filterPxlEndX = j + filterHSize;
                     }
-
+                    
                     sumValues = 0;
                     valCount = 0;
-
+                    
                     for(boost::uint_fast32_t n = filterPxlStartY; n <= filterPxlEndY; ++n)
                     {
                         for(boost::uint_fast32_t m = filterPxlStartX; m <= filterPxlEndX; ++m)
@@ -436,7 +436,7 @@ namespace spdlib
                             }
                         }
                     }
-
+                    
                     if(valCount == 1)
                     {
                         rasterMedian[i][j] = sumValues;
@@ -451,7 +451,7 @@ namespace spdlib
                     }
                 }
             }
-
+            
             for(boost::uint_fast32_t i = 0; i < ySizeRaster; ++i)
             {
                 for(boost::uint_fast32_t j = 0; j < xSizeRaster; ++j)
@@ -467,7 +467,7 @@ namespace spdlib
             throw e;
         }
     }
-
+    
     void SPDMultiscaleCurvatureGrdClassification::smoothMedianRaster(float **raster, boost::uint_fast32_t xSizeRaster, boost::uint_fast32_t ySizeRaster, boost::uint_fast16_t filterHSize) throw(SPDProcessingException)
     {
         try
@@ -476,9 +476,9 @@ namespace spdlib
             boost::uint_fast32_t filterPxlEndX = 0;
             boost::uint_fast32_t filterPxlStartY = 0;
             boost::uint_fast32_t filterPxlEndY = 0;
-
+            
             boost::uint_fast32_t maxNumFilterValues = ((filterHSize * 2)+1)*((filterHSize * 2)+1);
-
+            
             float **rasterMedian = new float*[ySizeRaster];
             for(boost::uint_fast32_t i = 0; i < ySizeRaster; ++i)
             {
@@ -488,7 +488,7 @@ namespace spdlib
                     rasterMedian[i][j] = 0;
                 }
             }
-
+            
             std::vector<float> *elevValues = new std::vector<float>();
             elevValues->reserve(maxNumFilterValues);
             for(boost::uint_fast32_t i = 0; i < ySizeRaster; ++i)
@@ -510,12 +510,12 @@ namespace spdlib
                         filterPxlStartY = i - filterHSize;
                         filterPxlEndY = i + filterHSize;
                     }
-
+                    
                     if((((int_fast64_t)j) - ((int_fast64_t)filterHSize)) < 0)
                     {
                         filterPxlStartX = 0;
                         filterPxlEndX = j + filterHSize;
-
+                        
                     }
                     else if((j+filterHSize) >= xSizeRaster)
                     {
@@ -527,9 +527,9 @@ namespace spdlib
                         filterPxlStartX = j - filterHSize;
                         filterPxlEndX = j + filterHSize;
                     }
-
+                    
                     elevValues->clear();
-
+                    
                     for(boost::uint_fast32_t n = filterPxlStartY; n <= filterPxlEndY; ++n)
                     {
                         for(boost::uint_fast32_t m = filterPxlStartX; m <= filterPxlEndX; ++m)
@@ -540,7 +540,7 @@ namespace spdlib
                             }
                         }
                     }
-
+                    
                     if(elevValues->size() == 1)
                     {
                         rasterMedian[i][j] = elevValues->at(0);
@@ -556,7 +556,7 @@ namespace spdlib
                     }
                 }
             }
-
+            
             for(boost::uint_fast32_t i = 0; i < ySizeRaster; ++i)
             {
                 for(boost::uint_fast32_t j = 0; j < xSizeRaster; ++j)
@@ -566,7 +566,7 @@ namespace spdlib
                 delete[] rasterMedian[i];
             }
             delete[] rasterMedian;
-
+            
             delete elevValues;
         }
         catch(SPDProcessingException &e)
@@ -574,13 +574,13 @@ namespace spdlib
             throw e;
         }
     }
-
+    
     float SPDMultiscaleCurvatureGrdClassification::classifyNonGrdPoints(float curveTolerance, double *bbox, float rasterScale, float **raster, boost::uint_fast32_t xSizeRaster, boost::uint_fast32_t ySizeRaster, std::vector<SPDPulse*> ***pulses, boost::uint_fast32_t xSizePulses, boost::uint_fast32_t ySizePulses) throw(SPDProcessingException)
     {
         boost::uint_fast64_t totalNumPoints = 0;
         boost::uint_fast64_t numPointsChanged = 0;
-
-        try
+        
+        try 
 		{
             boost::uint_fast32_t xIdx = 0;
 			boost::uint_fast32_t yIdx = 0;
@@ -600,24 +600,24 @@ namespace spdlib
                             {
                                 xDiff = ((*iterPoints)->x - bbox[0])/rasterScale;
                                 yDiff = (bbox[1] - (*iterPoints)->y)/rasterScale;
-                                try
+                                try 
                                 {
                                     xIdx = boost::numeric_cast<boost::uint_fast32_t>(xDiff);
                                     yIdx = boost::numeric_cast<boost::uint_fast32_t>(yDiff);
                                 }
-                                catch(boost::numeric::negative_overflow& e)
+                                catch(boost::numeric::negative_overflow& e) 
                                 {
                                     throw SPDProcessingException(e.what());
                                 }
-                                catch(boost::numeric::positive_overflow& e)
+                                catch(boost::numeric::positive_overflow& e) 
                                 {
                                     throw SPDProcessingException(e.what());
                                 }
-                                catch(boost::numeric::bad_numeric_cast& e)
+                                catch(boost::numeric::bad_numeric_cast& e) 
                                 {
                                     throw SPDProcessingException(e.what());
                                 }
-
+                                
                                 if(xIdx > (xSizeRaster-1))
                                 {
                                     std::cout << "Point: [" << (*iterPoints)->x << "," << (*iterPoints)->y << "]\n";
@@ -626,7 +626,7 @@ namespace spdlib
                                     std::cout << "Size [" << xSizeRaster << "," << ySizeRaster << "]\n";
                                     throw SPDProcessingException("Point did not fit within raster (X Axis).");
                                 }
-
+                                
                                 if(yIdx > (ySizeRaster-1))
                                 {
                                     std::cout << "Point: [" << (*iterPoints)->x << "," << (*iterPoints)->y << "]\n";
@@ -635,7 +635,7 @@ namespace spdlib
                                     std::cout << "Size [" << xSizeRaster << "," << ySizeRaster << "]\n";
                                     throw SPDProcessingException("Point did not fit within raster (Y Axis).");
                                 }
-
+                                
                                 if(((*iterPoints)->z > (raster[yIdx][xIdx] + curveTolerance)) & ((*iterPoints)->classification == SPD_GROUND))
                                 {
                                     (*iterPoints)->classification = SPD_UNCLASSIFIED;
@@ -668,25 +668,25 @@ namespace spdlib
                 }
             }
         }
-        catch (SPDProcessingException &e)
+        catch (SPDProcessingException &e) 
         {
             throw e;
         }
-
+        
         return ((double)numPointsChanged)/((double)totalNumPoints);
     }
-
-
+    
+    
     SPDMultiscaleCurvatureGrdClassification::~SPDMultiscaleCurvatureGrdClassification()
     {
-
+        
     }
-
-
-
-
-
-
+    
+    
+    
+    
+    
+    
     SPDTPSNumPtsUseAvThinInterpolator::SPDTPSNumPtsUseAvThinInterpolator(float radius, boost::uint_fast16_t numPoints, boost::uint_fast16_t elevVal, double gridResolution, bool thinGrid): initialised(false), idx(NULL), pts(NULL), gridResolution(0), thinGrid(false), radius(0), numPoints(12), elevVal(0)
 	{
 		this->radius = radius;
@@ -695,10 +695,10 @@ namespace spdlib
         this->gridResolution = gridResolution;
         this->thinGrid = thinGrid;
 	}
-
+    
     void SPDTPSNumPtsUseAvThinInterpolator::initInterpolator(std::list<SPDPulse*> ***pulses, boost::uint_fast32_t numXBins, boost::uint_fast32_t numYBins, boost::uint_fast16_t ptClass) throw(SPDProcessingException)
 	{
-		try
+		try 
 		{
 			pts = new std::vector<SPDPoint*>();
 			std::list<SPDPulse*>::iterator iterPulses;
@@ -750,7 +750,7 @@ namespace spdlib
             if(pts->size() > 10)
             {
                 idx->buildIndex(pts, this->gridResolution);
-
+                
                 if(thinGrid)
                 {
                     idx->thinPtsWithAvZ(this->elevVal);
@@ -760,10 +760,10 @@ namespace spdlib
             {
                 throw SPDProcessingException("There are too few points to build the interpolator");
             }
-
+        
             initialised = true;
 		}
-		catch (SPDProcessingException &e)
+		catch (SPDProcessingException &e) 
 		{
 			throw e;
 		}
@@ -771,7 +771,7 @@ namespace spdlib
 	
 	void SPDTPSNumPtsUseAvThinInterpolator::initInterpolator(std::vector<SPDPulse*> ***pulses, boost::uint_fast32_t numXBins, boost::uint_fast32_t numYBins, boost::uint_fast16_t ptClass) throw(SPDProcessingException)
 	{
-		try
+		try 
 		{
 			pts = new std::vector<SPDPoint*>();
 			std::vector<SPDPulse*>::iterator iterPulses;
@@ -823,7 +823,7 @@ namespace spdlib
             if(pts->size() > 10)
             {
                 idx->buildIndex(pts, this->gridResolution);
-
+                
                 if(thinGrid)
                 {
                     idx->thinPtsWithAvZ(this->elevVal);
@@ -833,10 +833,10 @@ namespace spdlib
             {
                 throw SPDProcessingException("There are too few points to build the interpolator");
             }
-
+            
             initialised = true;
 		}
-		catch (SPDProcessingException &e)
+		catch (SPDProcessingException &e) 
 		{
 			throw e;
 		}
@@ -844,10 +844,10 @@ namespace spdlib
 	
 	void SPDTPSNumPtsUseAvThinInterpolator::initInterpolator(std::list<SPDPulse*> *pulses, boost::uint_fast16_t ptClass) throw(SPDProcessingException)
 	{
-        try
+        try 
         {
             pts = new std::vector<SPDPoint*>();
-
+            
             std::list<SPDPulse*>::iterator iterPulses;
             std::vector<SPDPoint*>::iterator iterPts;
             SPDPoint *pt = NULL;
@@ -885,13 +885,13 @@ namespace spdlib
                     }
                 }
             }
-
+            
             idx = new SPDPointGridIndex();
             std::cout << "Building Index with " << pts->size() << " points\n";
             if(pts->size() > 10)
             {
                 idx->buildIndex(pts, this->gridResolution);
-
+                
                 if(thinGrid)
                 {
                     idx->thinPtsWithAvZ(this->elevVal);
@@ -901,10 +901,10 @@ namespace spdlib
             {
                 throw SPDProcessingException("There are too few points to build the interpolator");
             }
-
+            
             initialised = true;
-        }
-        catch (SPDProcessingException &e)
+        } 
+        catch (SPDProcessingException &e) 
         {
             throw e;
         }
@@ -915,7 +915,7 @@ namespace spdlib
         try
         {
             pts = new std::vector<SPDPoint*>();
-
+            
             std::vector<SPDPulse*>::iterator iterPulses;
             std::vector<SPDPoint*>::iterator iterPts;
             SPDPoint *pt = NULL;
@@ -953,13 +953,13 @@ namespace spdlib
                     }
                 }
             }
-
+            
             idx = new SPDPointGridIndex();
             std::cout << "Building Index with " << pts->size() << " points\n";
             if(pts->size() > 10)
             {
                 idx->buildIndex(pts, this->gridResolution);
-
+                
                 if(thinGrid)
                 {
                     idx->thinPtsWithAvZ(this->elevVal);
@@ -969,7 +969,7 @@ namespace spdlib
             {
                 throw SPDProcessingException("There are too few points to build the interpolator");
             }
-
+            
             initialised = true;
         }
         catch(SPDProcessingException &e)
@@ -977,7 +977,7 @@ namespace spdlib
             throw e;
         }
 	}
-
+    
 	void SPDTPSNumPtsUseAvThinInterpolator::resetInterpolator() throw(SPDProcessingException)
 	{
 		if(initialised)
@@ -994,7 +994,7 @@ namespace spdlib
         if(initialised)
 		{
             std::vector<SPDPoint*> *ptsInRadius = new std::vector<SPDPoint*>();
-            try
+            try 
             {
                 if(idx->getSetNumOfPoints(ptsInRadius, eastings, northings, numPoints, radius))
                 {
@@ -1002,7 +1002,7 @@ namespace spdlib
                     int ptIdx = 0;
                     for(std::vector<SPDPoint*>::iterator iterPts = ptsInRadius->begin(); iterPts != ptsInRadius->end(); ++iterPts)
                     {
-                        // Please note that Z and Y and been switch around as the TPS code (tpsdemo)
+                        // Please note that Z and Y and been switch around as the TPS code (tpsdemo) 
                         // interpolates for Y rather than Z.
                         if(elevVal == SPD_USE_Z)
                         {
@@ -1017,13 +1017,13 @@ namespace spdlib
                             throw SPDProcessingException("Elevation type not recognised.");
                         }
                     }
-
+                    
                     //std::cout.precision(12);
                     //for(unsigned int i = 0; i < cntrlPts.size(); ++i)
                     //{
                     //    std::cout << "pt[" << i << "]:\t" << cntrlPts[i].x << ", " << cntrlPts[i].y << ", " << cntrlPts[i].z << std::endl;
                     //}
-
+                    
                     spdlib::tps::Spline splineFunc = spdlib::tps::Spline(cntrlPts, 0.0);
                     newZValue = splineFunc.interpolate_height(eastings, northings);
                     //std::cout << "New Value = " << newZValue << std::endl;
@@ -1039,7 +1039,7 @@ namespace spdlib
                 //throw SPDProcessingException(e.what()); // Ignore and pass an NAN value back.
                 newZValue = std::numeric_limits<float>::signaling_NaN();
             }
-            catch (SPDProcessingException &e)
+            catch (SPDProcessingException &e) 
             {
                 throw e;
             }
@@ -1049,7 +1049,7 @@ namespace spdlib
         {
             throw SPDProcessingException("Interpolator has not been initialised.");
         }
-
+        
         return newZValue;
 	}
 	
@@ -1062,7 +1062,7 @@ namespace spdlib
 			delete pts;
 		}
 	}
-
+    
 }
 
 

@@ -26,18 +26,18 @@
 
 namespace spdlib
 {
-
+    
     SPDShiftData::SPDShiftData(float xShift, float yShift)
     {
         this->xShift = xShift;
         this->yShift = yShift;
     }
-
+    
     void SPDShiftData::processDataBlock(SPDFile *inSPDFile, std::vector<SPDPulse*> ***pulses, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, float binSize) throw(SPDProcessingException)
     {
         std::vector<SPDPulse*>::iterator iterPulses;
         std::vector<SPDPoint*>::iterator iterPoints;
-
+        
         for(boost::uint_fast32_t i = 0; i < ySize; ++i)
         {
             for(boost::uint_fast32_t j = 0; j < xSize; ++j)
@@ -63,13 +63,13 @@ namespace spdlib
             }
         }
     }
-
+    
     SPDShiftData::~SPDShiftData()
     {
-
+        
     }
-
-
+    
+    
 
     SPDGCPImg2MapNode::SPDGCPImg2MapNode(double eastings, double northings, float xOff, float yOff): eastings_(0), northings_(0), xOff_(0), yOff_(0)
 	{
@@ -110,24 +110,24 @@ namespace spdlib
 	{
 		
 	}
-
-
-
-
-
+    
+    
+    
+    
+    
     SPDWarpPointData::SPDWarpPointData()
     {
         gcps = new std::vector<SPDGCPImg2MapNode*>();
     }
-
-
+    
+    
     void SPDWarpPointData::readGCPs(std::string gcpFile) throw(SPDException)
     {
         try
         {
             spdlib::SPDTextFileUtilities textUtils;
             spdlib::SPDTextFileLineReader lineReader;
-
+            
             lineReader.openFile(gcpFile);
             std::vector<std::string> *tokens = new std::vector<std::string>();
             std::string strLine;
@@ -138,7 +138,7 @@ namespace spdlib
                 if((!textUtils.lineStart(strLine, '#')) & (!textUtils.blankline(strLine)))
                 {
                     textUtils.tokenizeString(strLine, ',', tokens, true);
-
+                    
                     if(tokens->size() != 4)
                     {
                         delete tokens;
@@ -146,21 +146,21 @@ namespace spdlib
                         std::string message = "Line should have 4 tokens: \"" + strLine + "\"";
                         throw SPDException(message);
                     }
-
-
+                    
+                    
                     gcp = new SPDGCPImg2MapNode(textUtils.strtodouble(tokens->at(0)),
                                                 textUtils.strtodouble(tokens->at(1)),
                                                 textUtils.strtofloat(tokens->at(2)),
                                                 textUtils.strtofloat(tokens->at(3)));
-
+                    
                     gcps->push_back(gcp);
-
+                    
                     tokens->clear();
                 }
             }
-
+            
             lineReader.closeFile();
-
+            
             delete tokens;
         }
         catch(SPDException &e)
@@ -172,7 +172,7 @@ namespace spdlib
             throw SPDException(e.what());
         }
     }
-
+    
     void SPDWarpPointData::calcOffset(float eastings, float northings, float *xOff, float *yOff)throw(SPDWarpException)
     {
         try
@@ -193,35 +193,35 @@ namespace spdlib
             throw SPDWarpException(e.what());
         }
     }
-
-
+    
+    
     SPDWarpPointData::~SPDWarpPointData()
     {
         delete gcps;
     }
-
-
-
+    
+    
+    
     SPDNearestNeighbourWarp::SPDNearestNeighbourWarp() : SPDWarpPointData()
     {
-
+        
     }
-
+    
     bool SPDNearestNeighbourWarp::initWarp(std::string gcpFile)throw(SPDWarpException)
     {
         try
         {
             this->readGCPs(gcpFile);
-
+            
             dt = new DelaunayTriangulation();
             values = new PointValueMap();
-
+            
             std::vector<SPDGCPImg2MapNode*>::iterator iterGCPs;
             for(iterGCPs = gcps->begin(); iterGCPs != gcps->end(); ++iterGCPs)
             {
                 K::Point_2 cgalPt((*iterGCPs)->eastings(),(*iterGCPs)->northings());
                 dt->insert(cgalPt);
-
+                
                 values->insert(std::make_pair(cgalPt, (*iterGCPs)));
             }
         }
@@ -237,10 +237,10 @@ namespace spdlib
         {
             throw SPDWarpException(e.what());
         }
-
+        
         return true;
     }
-
+    
     float SPDNearestNeighbourWarp::calcXOffset(float eastings, float northings)throw(SPDWarpException)
     {
         CGALPoint p(eastings, northings);
@@ -251,10 +251,10 @@ namespace spdlib
         Vertex_handle pt1Vh = fh->vertex(0);
         iterVal = values->find(pt1Vh->point());
         SPDGCPImg2MapNode *nodeA = (*iterVal).second;
-
+        
         return nodeA->xOff();
     }
-
+    
     float SPDNearestNeighbourWarp::calcYOffset(float eastings, float northings)throw(SPDWarpException)
     {
         CGALPoint p(eastings, northings);
@@ -265,10 +265,10 @@ namespace spdlib
         Vertex_handle pt1Vh = fh->vertex(0);
         iterVal = values->find(pt1Vh->point());
         SPDGCPImg2MapNode *nodeA = (*iterVal).second;
-
+        
         return nodeA->yOff();
     }
-
+    
     void SPDNearestNeighbourWarp::calcOffset(float eastings, float northings, float *xOff, float *yOff)throw(SPDWarpException)
     {
         CGALPoint p(eastings, northings);
@@ -279,47 +279,47 @@ namespace spdlib
         Vertex_handle pt1Vh = fh->vertex(0);
         iterVal = values->find(pt1Vh->point());
         SPDGCPImg2MapNode *nodeA = (*iterVal).second;
-
+        
         *xOff = nodeA->xOff();
         *xOff = nodeA->yOff();
     }
-
+    
     SPDNearestNeighbourWarp::~SPDNearestNeighbourWarp()
     {
         if(dt != NULL)
 		{
 			delete dt;
 		}
-
+        
         if(values != NULL)
         {
             delete values;
         }
     }
-
-
-
-
+    
+    
+    
+    
     SPDTriangulationPlaneFittingWarp::SPDTriangulationPlaneFittingWarp() : SPDWarpPointData()
     {
-
+        
     }
-
+    
     bool SPDTriangulationPlaneFittingWarp::initWarp(std::string gcpFile)throw(SPDWarpException)
     {
         try
         {
             this->readGCPs(gcpFile);
-
+            
             dt = new DelaunayTriangulation();
             values = new PointValueMap();
-
+            
             std::vector<SPDGCPImg2MapNode*>::iterator iterGCPs;
             for(iterGCPs = gcps->begin(); iterGCPs != gcps->end(); ++iterGCPs)
             {
                 K::Point_2 cgalPt((*iterGCPs)->eastings(),(*iterGCPs)->northings());
                 dt->insert(cgalPt);
-
+                
                 values->insert(std::make_pair(cgalPt, (*iterGCPs)));
             }
         }
@@ -335,10 +335,10 @@ namespace spdlib
         {
             throw SPDWarpException(e.what());
         }
-
+        
         return true;
     }
-
+    
     float SPDTriangulationPlaneFittingWarp::calcXOffset(float eastings, float northings)throw(SPDWarpException)
     {
         CGALPoint p(eastings, northings);
@@ -355,12 +355,12 @@ namespace spdlib
         Vertex_handle pt3Vh = fh->vertex(2);
         iterVal = values->find(pt3Vh->point());
         SPDGCPImg2MapNode *nodeC = (*iterVal).second;
-
+        
         std::list<const SPDGCPImg2MapNode*> *triPts = new std::list<const SPDGCPImg2MapNode*>();
 		triPts->push_back(nodeA);
 		triPts->push_back(nodeB);
 		triPts->push_back(nodeC);
-
+                
         std::list<SPDGCPImg2MapNode*> *normTriPts = normGCPs(triPts, eastings, northings);
 		
 		double planeA = 0;
@@ -377,10 +377,10 @@ namespace spdlib
 			normTriPts->erase(iterGCPs++);
 		}
 		delete normTriPts;
-
+        
         return xOff;
     }
-
+    
     float SPDTriangulationPlaneFittingWarp::calcYOffset(float eastings, float northings)throw(SPDWarpException)
     {
         CGALPoint p(eastings, northings);
@@ -397,12 +397,12 @@ namespace spdlib
         Vertex_handle pt3Vh = fh->vertex(2);
         iterVal = values->find(pt3Vh->point());
         SPDGCPImg2MapNode *nodeC = (*iterVal).second;
-
+        
         std::list<const SPDGCPImg2MapNode*> *triPts = new std::list<const SPDGCPImg2MapNode*>();
 		triPts->push_back(nodeA);
 		triPts->push_back(nodeB);
 		triPts->push_back(nodeC);
-
+                
         std::list<SPDGCPImg2MapNode*> *normTriPts = normGCPs(triPts, eastings, northings);
 		
 		double planeA = 0;
@@ -419,10 +419,10 @@ namespace spdlib
 			normTriPts->erase(iterGCPs++);
 		}
 		delete normTriPts;
-
+        
         return yOff;
     }
-
+    
     void SPDTriangulationPlaneFittingWarp::calcOffset(float eastings, float northings, float *xOff, float *yOff)throw(SPDWarpException)
     {
         CGALPoint p(eastings, northings);
@@ -439,12 +439,12 @@ namespace spdlib
         Vertex_handle pt3Vh = fh->vertex(2);
         iterVal = values->find(pt3Vh->point());
         SPDGCPImg2MapNode *nodeC = (*iterVal).second;
-
+        
         std::list<const SPDGCPImg2MapNode*> *triPts = new std::list<const SPDGCPImg2MapNode*>();
 		triPts->push_back(nodeA);
 		triPts->push_back(nodeB);
 		triPts->push_back(nodeC);
-
+                
         std::list<SPDGCPImg2MapNode*> *normTriPts = normGCPs(triPts, eastings, northings);
 		
 		double planeA = 0;
@@ -462,9 +462,9 @@ namespace spdlib
 			delete *iterGCPs;
 			normTriPts->erase(iterGCPs++);
 		}
-		delete normTriPts;
+		delete normTriPts;        
     }
-
+    
     std::list<SPDGCPImg2MapNode*>* SPDTriangulationPlaneFittingWarp::normGCPs(std::list<const SPDGCPImg2MapNode*> *gcps, double eastings, double northings)
 	{
         std::list<SPDGCPImg2MapNode*> *normTriPts = new std::list<SPDGCPImg2MapNode*>();
@@ -615,53 +615,53 @@ namespace spdlib
 			throw SPDWarpException(e.what());
 		}
 	}
-
+    
     SPDTriangulationPlaneFittingWarp::~SPDTriangulationPlaneFittingWarp()
     {
         if(dt != NULL)
 		{
 			delete dt;
 		}
-
+        
         if(values != NULL)
         {
             delete values;
         }
     }
+    
+    
 
-
-
-
-
+    
+    
     SPDPolynomialWarp::SPDPolynomialWarp(int order) : SPDWarpPointData()
     {
         this->polyOrder = order;
     }
-
+    
     bool SPDPolynomialWarp::initWarp(std::string gcpFile)throw(SPDWarpException)
     {
         try
         {
             this->readGCPs(gcpFile);
-
+            
             /** Initialises warp by create polynominal models based on ground countrol points.
              Models are created expressing image pixels as a function of easting and northing, used for warping
              and expressing easting and northing as a function of image pixels to determine the corner location of the
              image to be warped.
              */
-
-
+            
+            
             std::cout << "Fitting polynomial..." << std::endl;
-
+            
             unsigned int coeffSize = 3 * this->polyOrder; // x**N + y**N + xy**(N-1) + 1
-
+                        
             if(gcps->size() < coeffSize)
             {
                 std::cout << "gcps->size() = " << gcps->size() << std::endl;
                 std::cout << "coeffSize = " << coeffSize << std::endl;
                 throw SPDWarpException("Too few gcp's have been provided you, either need to decrease the order of the polynomial or increase the number of GCPs.");
             }
-
+            
             // Set up matrices
             gsl_matrix *eastNorthPow = gsl_matrix_alloc(gcps->size(), coeffSize); // Matrix to hold powers of easting and northing (used for both fits)
             gsl_matrix *xyPow = gsl_matrix_alloc(gcps->size(), coeffSize); // Matrix to hold powers of x and y (used for both fits)
@@ -673,10 +673,10 @@ namespace spdlib
             this->aY = gsl_vector_alloc(coeffSize); // Vector to hold coeffifients of Y (Northing)
             this->aE = gsl_vector_alloc(coeffSize); // Vector to hold coeffifients of Easting (X)
             this->aN = gsl_vector_alloc(coeffSize); // Vector to hold coeffifients of Northing (Y)
-
+            
             unsigned int pointN = 0;
             unsigned int offset = 0;
-
+            
             std::vector<SPDGCPImg2MapNode*>::iterator iterGCPs;
             for(iterGCPs = gcps->begin(); iterGCPs != gcps->end(); ++iterGCPs) // Populate matrices using ground control points.
             {
@@ -685,39 +685,39 @@ namespace spdlib
                 gsl_vector_set(pixValY, pointN, (*iterGCPs)->yOff()); // Offset Y
                 gsl_vector_set(eastingVal, pointN, (*iterGCPs)->eastings()); // Easting
                 gsl_vector_set(northingVal, pointN, (*iterGCPs)->northings()); // Northing
-
+                
                 gsl_matrix_set(eastNorthPow, pointN, 0, 1.);
                 gsl_matrix_set(xyPow, pointN, 0, 1.);
-
+                
                 for(int j = 1; j < polyOrder; ++j)
                 {
                     offset = 1 + (3 * (j - 1));
                     gsl_matrix_set(eastNorthPow, pointN, offset, pow((*iterGCPs)->eastings(), j));
                     gsl_matrix_set(eastNorthPow, pointN, offset+1, pow((*iterGCPs)->northings(), j));
                     gsl_matrix_set(eastNorthPow, pointN, offset+2, pow((*iterGCPs)->eastings()*(*iterGCPs)->northings(), j));
-
+                    
                     gsl_matrix_set(xyPow, pointN, offset, pow((*iterGCPs)->xOff(), j));
                     gsl_matrix_set(xyPow, pointN, offset+1, pow((*iterGCPs)->xOff(), j));
                     gsl_matrix_set(xyPow, pointN, offset+2, pow((*iterGCPs)->xOff()*(*iterGCPs)->yOff(), j));
                 }
-
+                
                 offset = 1 + (3 * (this->polyOrder - 1));
                 gsl_matrix_set(eastNorthPow, pointN, offset, pow((*iterGCPs)->eastings(), this->polyOrder));
                 gsl_matrix_set(eastNorthPow, pointN, offset+1, pow((*iterGCPs)->northings(), this->polyOrder));
-
+                
                 gsl_matrix_set(xyPow, pointN, offset, pow((*iterGCPs)->xOff(), this->polyOrder));
                 gsl_matrix_set(xyPow, pointN, offset+1, pow((*iterGCPs)->yOff(), this->polyOrder));
-
+                
                 ++pointN;
             }
-
+            
             // Set up worksapce for fitting
             gsl_multifit_linear_workspace *workspace;
             workspace = gsl_multifit_linear_alloc(gcps->size(), coeffSize);
             gsl_matrix *cov = gsl_matrix_alloc(coeffSize, coeffSize);
-
+            
             double chisq = 0;
-
+            
             // Fit for X
             gsl_multifit_linear(eastNorthPow, pixValX, this->aX, cov, &chisq, workspace);
             // Fit for Y
@@ -726,52 +726,52 @@ namespace spdlib
             gsl_multifit_linear(xyPow, eastingVal, this->aE, cov, &chisq, workspace);
             // Fit for N
             gsl_multifit_linear(xyPow, northingVal, this->aN, cov, &chisq, workspace);
-
+            
             std::cout << "Fitted polynomial." << std::endl;
-
+            
             // Test polynominal fit and calculate RMSE
             double sqSum = 0;
-
+            
             for(iterGCPs = gcps->begin(); iterGCPs != gcps->end(); ++iterGCPs) // Populate matrices using ground control points.
             {
                 double pX = 0;
                 double pY = 0;
-
+                
                 // Add pixel values into vectors
                 pX = pX + gsl_vector_get(this->aX, 0);
                 pY = pY + gsl_vector_get(this->aY, 0);
-
+                
                 for(int j = 1; j < this->polyOrder; ++j)
                 {
                     offset = 1 + (3 * (j - 1));
-
+                    
                     pX = pX + (gsl_vector_get(aX, offset) * pow((*iterGCPs)->eastings(), j));
                     pX = pX + (gsl_vector_get(aX, offset+1) * pow((*iterGCPs)->northings(), j));
                     pX = pX + (gsl_vector_get(aX, offset+2) * pow((*iterGCPs)->eastings()*(*iterGCPs)->northings(), j));
-
+                    
                     pY = pY + (gsl_vector_get(aY, offset) * pow((*iterGCPs)->eastings(), j));
                     pY = pY + (gsl_vector_get(aY, offset+1) * pow((*iterGCPs)->northings(), j));
                     pY = pY + (gsl_vector_get(aY, offset+2) * pow((*iterGCPs)->eastings()*(*iterGCPs)->northings(), j));
                 }
-
+                
                 offset = 1 + (3 * (this->polyOrder - 1));
                 pX = pX + (gsl_vector_get(aX, offset) * pow((*iterGCPs)->eastings(), this->polyOrder));
                 pX = pX + (gsl_vector_get(aX, offset+1) * pow((*iterGCPs)->northings(), this->polyOrder));
-
+                
                 pY = pY + (gsl_vector_get(aY, offset) * pow((*iterGCPs)->eastings(), this->polyOrder));
                 pY = pY + (gsl_vector_get(aY, offset+1) * pow((*iterGCPs)->northings(), this->polyOrder));
-
+                
                 sqSum = sqSum + (pow((*iterGCPs)->xOff() - pX ,2) + pow((*iterGCPs)->yOff() - pY ,2));
-
+                
                 std::cout << "[" << (*iterGCPs)->eastings() << "," << (*iterGCPs)->northings() << "]: " << (*iterGCPs)->xOff() << "= " << pX << ", " << (*iterGCPs)->yOff() << "= " << pY << std::endl;
             }
-
+            
             double sqMean = sqSum / double(gcps->size());
-
+            
             double rmse = sqrt(sqMean);
-
+            
             std::cout << "RMSE = " << rmse << " metres " << std::endl;
-
+            
             // Tidy up
             gsl_multifit_linear_free(workspace);
             gsl_matrix_free(eastNorthPow);
@@ -794,105 +794,105 @@ namespace spdlib
         {
             throw SPDWarpException(e.what());
         }
-
+        
         return true;
     }
-
+    
     float SPDPolynomialWarp::calcXOffset(float eastings, float northings)throw(SPDWarpException)
     {
         /* Return nearest pixel based on input easting and northing.
          Pixel x coordinate are found from polynominal model */
         double pX = 0;
         unsigned int offset = 0;
-
+        
         // Add pixel values into vectors
         pX = pX + gsl_vector_get(this->aX, 0);
-
+        
         for(int j = 1; j < this->polyOrder; ++j)
         {
             offset = 1 + (3 * (j - 1));
-
+            
             pX = pX + (gsl_vector_get(aX, offset) * pow(eastings, j));
             pX = pX + (gsl_vector_get(aX, offset+1) * pow(northings, j));
             pX = pX + (gsl_vector_get(aX, offset+2) * pow(eastings*northings, j));
         }
-
+        
         offset = 1 + (3 * (this->polyOrder - 1));
         pX = pX + (gsl_vector_get(aX, offset) * pow(eastings, this->polyOrder));
         pX = pX + (gsl_vector_get(aX, offset+1) * pow(northings, this->polyOrder));
-
+        
 		return pX;
     }
-
+    
     float SPDPolynomialWarp::calcYOffset(float eastings, float northings)throw(SPDWarpException)
     {
         /* Return nearest pixel based on input easting and northing.
          Pixel y coordinate are found from polynominal model */
         double pY = 0;
         unsigned int offset = 0;
-
+        
         // Add pixel values into vectors
         pY = pY + gsl_vector_get(this->aY, 0);
-
+        
         for(int j = 1; j < this->polyOrder; ++j)
         {
             offset = 1 + (3 * (j - 1));
-
+            
             pY = pY + (gsl_vector_get(aY, offset) * pow(eastings, j));
             pY = pY + (gsl_vector_get(aY, offset+1) * pow(northings, j));
             pY = pY + (gsl_vector_get(aY, offset+2) * pow(eastings*northings, j));
         }
-
+        
         offset = 1 + (3 * (this->polyOrder - 1));
-
+        
         pY = pY + (gsl_vector_get(aY, offset) * pow(eastings, this->polyOrder));
         pY = pY + (gsl_vector_get(aY, offset+1) * pow(northings, this->polyOrder));
-
+        
 		return pY;
     }
-
+    
     void SPDPolynomialWarp::calcOffset(float eastings, float northings, float *xOff, float *yOff)throw(SPDWarpException)
     {
         std::cout << "Calculating Offset for [" << eastings << "," << northings << "]\n";
-
+        
         /* Return nearest pixel based on input easting and northing.
          Pixel x and y coordinates are found from polynominal model */
-
+        
         double pX = 0;
         double pY = 0;
         unsigned int offset = 0;
-
+        
         // Add values into vectors
         pX = pX + gsl_vector_get(this->aX, 0);
         pY = pY + gsl_vector_get(this->aY, 0);
-
+        
         for(int j = 1; j < this->polyOrder; ++j)
         {
             offset = 1 + (3 * (j - 1));
-
+            
             pX = pX + (gsl_vector_get(aX, offset) * pow(eastings, j));
             pX = pX + (gsl_vector_get(aX, offset+1) * pow(northings, j));
             pX = pX + (gsl_vector_get(aX, offset+2) * pow(eastings*northings, j));
-
+            
             pY = pY + (gsl_vector_get(aY, offset) * pow(eastings, j));
             pY = pY + (gsl_vector_get(aY, offset+1) * pow(northings, j));
             pY = pY + (gsl_vector_get(aY, offset+2) * pow(eastings*northings, j));
         }
-
+        
         offset = 1 + (3 * (this->polyOrder - 1));
         pX = pX + (gsl_vector_get(aX, offset) * pow(eastings, this->polyOrder));
         pX = pX + (gsl_vector_get(aX, offset+1) * pow(northings, this->polyOrder));
-
+        
         pY = pY + (gsl_vector_get(aY, offset) * pow(eastings, this->polyOrder));
         pY = pY + (gsl_vector_get(aY, offset+1) * pow(northings, this->polyOrder));
-
+        
         //sqSum = sqSum + (pow((*iterGCPs)->xOff() - pX ,2) + pow((*iterGCPs)->yOff() - pY ,2));
 		*xOff = pX;
 		*yOff = pY;
-
+        
         std::cout << "Offset is [" << pX << "," << pY << "]\n";
     }
-
+    
     SPDPolynomialWarp::~SPDPolynomialWarp()
     {
         gsl_vector_free(this->aX);
@@ -900,25 +900,25 @@ namespace spdlib
         gsl_vector_free(this->aE);
         gsl_vector_free(this->aN);
     }
-
-
-
-
-
-
-
+    
+    
+    
+    
+    
+    
+    
     SPDNonLinearWarp::SPDNonLinearWarp(SPDDataExporter *exporter, SPDFile *spdFileOut, SPDWarpPointData *calcOffsets, SPDWarpLocation warpLoc) throw(SPDException)
     {
         this->exporter = exporter;
         this->spdFileOut = spdFileOut;
         this->calcOffsets = calcOffsets;
         this->warpLoc = warpLoc;
-
+        
         if(exporter->requireGrid())
         {
             throw SPDException("This class does not support the export of gridded formats.");
         }
-
+        
         try
         {
             this->exporter->open(this->spdFileOut, this->spdFileOut->getFilePath());
@@ -929,21 +929,21 @@ namespace spdlib
         }
         this->pulses = new std::list<SPDPulse*>();
     }
-
-
+    
+    
     void SPDNonLinearWarp::processImportedPulse(SPDFile *spdFile, SPDPulse *pulse) throw(SPDIOException)
     {
         try
         {
             this->pulses->push_back(pulse);
-
+            
             if(warpLoc == spdwarppulseidx)
             {
                 float xOff = 0;
                 float yOff = 0;
                 calcOffsets->calcOffset(pulse->xIdx, pulse->yIdx, &xOff, &yOff);
                 std::cout << "Offset: [" << xOff << "," << yOff << "]\n";
-
+                
                 if(pulse->numberOfReturns > 0)
                 {
                     for(std::vector<SPDPoint*>::iterator iterPoints = pulse->pts->begin(); iterPoints != pulse->pts->end(); ++iterPoints)
@@ -952,13 +952,13 @@ namespace spdlib
                         (*iterPoints)->y += yOff;
                     }
                 }
-
+                
                 pulse->x0 += xOff;
                 pulse->y0 += yOff;
-
+                
                 pulse->xIdx += xOff;
                 pulse->yIdx += yOff;
-
+                
             }
             else if(warpLoc == spdwarpfromall)
             {
@@ -967,11 +967,11 @@ namespace spdlib
                 calcOffsets->calcOffset(pulse->xIdx, pulse->yIdx, &xOff, &yOff);
                 pulse->xIdx += xOff;
                 pulse->yIdx += yOff;
-
+                
                 calcOffsets->calcOffset(pulse->x0, pulse->y0, &xOff, &yOff);
                 pulse->x0 += xOff;
                 pulse->y0 += yOff;
-
+                
                 if(pulse->numberOfReturns > 0)
                 {
                     for(std::vector<SPDPoint*>::iterator iterPoints = pulse->pts->begin(); iterPoints != pulse->pts->end(); ++iterPoints)
@@ -981,14 +981,14 @@ namespace spdlib
                         (*iterPoints)->y += yOff;
                     }
                 }
-
+                
             }
             else if(warpLoc == spdwarppulseorigin)
             {
                 float xOff = 0;
                 float yOff = 0;
                 calcOffsets->calcOffset(pulse->x0, pulse->y0, &xOff, &yOff);
-
+                
                 if(pulse->numberOfReturns > 0)
                 {
                     for(std::vector<SPDPoint*>::iterator iterPoints = pulse->pts->begin(); iterPoints != pulse->pts->end(); ++iterPoints)
@@ -997,10 +997,10 @@ namespace spdlib
                         (*iterPoints)->y += yOff;
                     }
                 }
-
+                
                 pulse->x0 += xOff;
                 pulse->y0 += yOff;
-
+                
                 pulse->xIdx += xOff;
                 pulse->yIdx += yOff;
             }
@@ -1008,7 +1008,7 @@ namespace spdlib
             {
                 throw SPDException("The warp location has not been recognised.");
             }
-
+            
             this->exporter->writeDataColumn(pulses, 0, 0);
         }
         catch (SPDIOException &e)
@@ -1020,7 +1020,7 @@ namespace spdlib
             throw SPDIOException(e.what());
         }
     }
-
+    
     void SPDNonLinearWarp::completeFileAndClose(SPDFile *spdFile)throw(SPDIOException)
     {
         try
@@ -1033,10 +1033,10 @@ namespace spdlib
             throw e;
         }
     }
-
+    
     SPDNonLinearWarp::~SPDNonLinearWarp()
     {
         delete pulses;
     }
-
+    
 }

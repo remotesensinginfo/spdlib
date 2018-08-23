@@ -33,9 +33,9 @@ namespace spdlib
         {
             this->outSPDFile = new SPDFile(outputFilePath);
             this->exporter = new SPDNoIdxFileWriter();
-
+            
             this->exporter->open(this->outSPDFile, outputFilePath);
-
+            
             this->sourceID = sourceID;
             this->pulseCount = 0;
             this->pulseCountOut = 0;
@@ -45,9 +45,9 @@ namespace spdlib
         {
             throw e;
         }
-
+        
     }
-
+    
     void SPDSplit::processImportedPulse(SPDFile *spdFile, SPDPulse *pulse) throw(SPDIOException)
     {
         //std::cout << "pulseCount = " << pulseCount << std::endl;
@@ -65,7 +65,7 @@ namespace spdlib
                 SPDPulseUtils plsUtils;
                 plsUtils.deleteSPDPulse(pulse);
             }
-
+            
             ++pulseCount;
 		}
 		catch (SPDIOException &e)
@@ -73,7 +73,7 @@ namespace spdlib
 			throw e;
 		}
     }
-
+    
     void SPDSplit::completeFileAndClose()throw(SPDIOException)
     {
         try
@@ -87,11 +87,11 @@ namespace spdlib
 			throw e;
 		}
     }
-
+    
     SPDSplit::~SPDSplit()
     {
-
+        
     }
-
+    
 }
 

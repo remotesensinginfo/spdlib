@@ -64,9 +64,9 @@ namespace spdlib
         void gridData(std::list<SPDPulse*>* pls, SPDFile *spdFile, std::list<SPDPulse*>*** grid, OGREnvelope *env, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, float binsize) throw(SPDProcessingException);
         void gridData(std::vector<SPDPulse*>* pls, SPDFile *spdFile, std::list<SPDPulse*>*** grid, OGREnvelope *env, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, float binsize) throw(SPDProcessingException);
 		void reGridData(boost::uint_fast16_t indexType, std::vector<SPDPulse*> ***inGridPls, boost::uint_fast32_t inXSize, boost::uint_fast32_t inYSize, std::vector<SPDPulse*> ***outGridPls, boost::uint_fast32_t outXSize, boost::uint_fast32_t outYSize, double originX, double originY, float outBinSize) throw(SPDProcessingException);
-
+        
         void cartGridDataIgnoringOutGrid(std::vector<SPDPulse*>* pls, std::vector<SPDPulse*>*** grid, OGREnvelope *env, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, float binsize) throw(SPDProcessingException);
-
+        
         ~SPDGridData();
 	private:
 		std::list<SPDPulse*>*** gridDataCartesian(std::list<SPDPulse*>* pls, SPDFile *spdFile) throw(SPDProcessingException);
@@ -79,7 +79,7 @@ namespace spdlib
         std::list<SPDPulse*>*** gridDataCylindrical(std::vector<SPDPulse*>* pls, SPDFile *spdFile) throw(SPDProcessingException);
         std::list<SPDPulse*>*** gridDataPolar(std::vector<SPDPulse*>* pls, SPDFile *spdFile) throw(SPDProcessingException);
         std::list<SPDPulse*>*** gridDataScan(std::vector<SPDPulse*>* pls, SPDFile *spdFile) throw(SPDProcessingException);
-
+        
         void gridDataCartesian(std::list<SPDPulse*>* pls, std::list<SPDPulse*>*** grid, OGREnvelope *env, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, float binsize) throw(SPDProcessingException);
         void gridDataSpherical(std::list<SPDPulse*>* pls, std::list<SPDPulse*>*** grid, OGREnvelope *env, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, float binsize) throw(SPDProcessingException);
         void gridDataCylindrical(std::list<SPDPulse*>* pls, std::list<SPDPulse*>*** grid, OGREnvelope *env, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, float binsize) throw(SPDProcessingException);
@@ -90,13 +90,13 @@ namespace spdlib
         void gridDataCylindrical(std::vector<SPDPulse*>* pls, std::list<SPDPulse*>*** grid, OGREnvelope *env, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, float binsize) throw(SPDProcessingException);
         void gridDataPolar(std::vector<SPDPulse*>* pls, std::list<SPDPulse*>*** grid, OGREnvelope *env, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, float binsize) throw(SPDProcessingException);
         void gridDataScan(std::vector<SPDPulse*>* pls, std::list<SPDPulse*>*** grid, OGREnvelope *env, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, float binsize) throw(SPDProcessingException);
-
+        
         void reGridDataCartesian(std::vector<SPDPulse*> ***inGridPls, boost::uint_fast32_t inXSize, boost::uint_fast32_t inYSize, std::vector<SPDPulse*> ***outGridPls, boost::uint_fast32_t outXSize, boost::uint_fast32_t outYSize, double tlX, double tlY, float outBinSize) throw(SPDProcessingException);
         void reGridDataSpherical(std::vector<SPDPulse*> ***inGridPls, boost::uint_fast32_t inXSize, boost::uint_fast32_t inYSize, std::vector<SPDPulse*> ***outGridPls, boost::uint_fast32_t outXSize, boost::uint_fast32_t outYSize, double tlX, double tlY, float outBinSize) throw(SPDProcessingException);
         void reGridDataCylindrical(std::vector<SPDPulse*> ***inGridPls, boost::uint_fast32_t inXSize, boost::uint_fast32_t inYSize, std::vector<SPDPulse*> ***outGridPls, boost::uint_fast32_t outXSize, boost::uint_fast32_t outYSize, double tlX, double tlY, float outBinSize) throw(SPDProcessingException);
         void reGridDataPolar(std::vector<SPDPulse*> ***inGridPls, boost::uint_fast32_t inXSize, boost::uint_fast32_t inYSize, std::vector<SPDPulse*> ***outGridPls, boost::uint_fast32_t outXSize, boost::uint_fast32_t outYSize, double tlX, double tlY, float outBinSize) throw(SPDProcessingException);
         void reGridDataScan(std::vector<SPDPulse*> ***inGridPls, boost::uint_fast32_t inXSize, boost::uint_fast32_t inYSize, std::vector<SPDPulse*> ***outGridPls, boost::uint_fast32_t outXSize, boost::uint_fast32_t outYSize, double tlX, double tlY, float outBinSize) throw(SPDProcessingException);
-
+        
 	};
 }
 

@@ -30,7 +30,7 @@ case $1 in
     echo @SPDLIB_VERSION@
      ;;
     --cflags)
-    echo -I@CMAKE_INSTALL_PREFIX@/@PROJECT_HEADER_DIR@
+    echo -I@CMAKE_INSTALL_PREFIX@/@PROJECT_HEADER_DIR@ 
       ;;
     --libs)
       echo -L@CMAKE_INSTALL_PREFIX@/@PROJECT_LIBRARY_DIR@ -l@SPDLIB_LIB_NAME@ -l@SPDLIB_MITLIB_NAME@

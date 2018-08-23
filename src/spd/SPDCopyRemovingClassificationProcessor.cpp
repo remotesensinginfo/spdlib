@@ -27,12 +27,12 @@
 
 namespace spdlib
 {
-
+    
     SPDCopyRemovingClassificationProcessor::SPDCopyRemovingClassificationProcessor()
     {
 
     }
-
+    
     void SPDCopyRemovingClassificationProcessor::processDataColumn(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses, SPDXYPoint *cenPts) throw(SPDProcessingException)
     {
         std::vector<SPDPoint*>::iterator iterPoints;
@@ -47,12 +47,12 @@ namespace spdlib
             }
 		}
     }
-
+    
     SPDCopyRemovingClassificationProcessor::~SPDCopyRemovingClassificationProcessor()
     {
-
+        
     }
-
+    
 }
 
 

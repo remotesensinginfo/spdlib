@@ -73,11 +73,11 @@ namespace spdlib
         void processDataBlocksGridPulsesOutputImage(SPDFile *spdInFile, GDALDataset *outImageDS) throw(SPDProcessingException);
         void processDataBlocksGridPulsesOutputSPD(SPDFile *spdInFile, std::string outFile, float processingResolution) throw(SPDProcessingException);
         void processDataBlocksGridPulses(SPDFile *spdInFile, float processingResolution) throw(SPDProcessingException);
-
+        
         void processDataBlocksOutputImage(SPDFile *spdInFile, std::string outImagePath, float processingResolution, boost::uint_fast16_t numImgBands, std::string gdalFormat) throw(SPDProcessingException);
         void processDataBlocks(SPDFile *spdInFile) throw(SPDProcessingException);
-
-
+        
+        
 		SPDProcessDataBlocks& operator=(const SPDProcessDataBlocks& processDataBlock);
 		~SPDProcessDataBlocks();
 	protected:
@@ -89,7 +89,7 @@ namespace spdlib
 		void populateFromImage(float ***imageDataBlock, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast16_t numImgBands, GDALRasterBand **imgBands, double imgXOrigin, double imgYOrigin, float imgRes, double blockXOrigin, double blockYOrigin)throw(SPDProcessingException);
         void resetImageBlock2Zeros(float ***imageDataBlock, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast16_t numImgBands);
         void writeImageData(GDALRasterBand **imageBands, float ***imageDataBlock, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast16_t numImgBands, boost::uint_fast32_t startBinX, boost::uint_fast32_t startBinY, boost::uint_fast32_t startIdxX, boost::uint_fast32_t startIdxY)throw(SPDProcessingException);
-
+        
         SPDDataBlockProcessor *dataBlockProcessor;
         boost::uint_fast32_t overlap;
         boost::uint_fast32_t blockXSize;

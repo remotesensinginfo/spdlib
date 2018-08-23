@@ -4,7 +4,7 @@
  *
  *  Created by Pete Bunting on 30/11/2010.
  *  Copyright 2010 SPDLib. All rights reserved.
- *
+ * 
  *  This file is part of SPDLib.
  *
  *  SPDLib is free software: you can redistribute it and/or modify
@@ -37,17 +37,17 @@
 
 #include "spd/spd-config.h"
 
-int main (int argc, char * const argv[])
+int main (int argc, char * const argv[]) 
 {
     std::cout.precision(12);
-
+    
     std::cout << "spdoverlap " << SPDLIB_PACKAGE_STRING << ", Copyright (C) " << SPDLIB_COPYRIGHT_YEAR << " Sorted Pulse Library (SPD)\n";
 	std::cout << "This program comes with ABSOLUTELY NO WARRANTY. This is free software,\n";
 	std::cout << "and you are welcome to redistribute it under certain conditions; See\n";
 	std::cout << "website (http://www.spdlib.org). Bugs are to be reported on the trac\n";
 	std::cout << "or directly to " << SPDLIB_PACKAGE_BUGREPORT << std::endl;
 	
-	try
+	try 
 	{
         TCLAP::CmdLine cmd("Calculate the overlap between UPD and SPD files: spdoverlap", ' ', "1.0.0");
 		
@@ -57,10 +57,10 @@ int main (int argc, char * const argv[])
         arguments.push_back(&cartesianSwitch);
         arguments.push_back(&sphericalSwitch);
         cmd.xorAdd(arguments);
-
+        
         TCLAP::ValueArg<std::string> outputFileArg("o","output","The output file.",false,"","String");
 		cmd.add( outputFileArg );
-
+        
 		TCLAP::UnlabeledMultiArg<std::string> multiFileNames("Files", "File names for the output (if required) and input files", true, "string");
 		cmd.add( multiFileNames );
 		cmd.parse( argc, argv );
@@ -73,18 +73,18 @@ int main (int argc, char * const argv[])
         std::string outputTextFile = outputFileArg.getValue();
         std::vector<std::string> fileNames = multiFileNames.getValue();
         boost::uint_fast16_t numOfFiles = fileNames.size();
-
+        
         spdlib::SPDFileReader spdReader;
-
+        
         spdlib::SPDFile **spdFiles = new spdlib::SPDFile*[numOfFiles];
         for(boost::uint_fast16_t i = 0; i < fileNames.size(); ++i)
         {
             spdFiles[i] = new spdlib::SPDFile(fileNames.at(i));
             spdReader.readHeaderInfo(fileNames.at(i), spdFiles[i]);
         }
-
+        
         double *overlap = NULL;
-
+        
         spdlib::SPDFileProcessingUtilities spdUtils;
         if(cartesianSwitch.getValue())
         {
@@ -98,13 +98,13 @@ int main (int argc, char * const argv[])
         {
             throw spdlib::SPDProcessingException("Option was not recognised, need to seleted either spherical or cartesian.");
         }
-
+        
         for(boost::uint_fast16_t i = 0; i < numOfFiles; ++i)
         {
             delete spdFiles[i];
         }
         delete[] spdFiles;
-
+        
         // Output:
         /*
          * overlap[0] = min X
@@ -142,14 +142,14 @@ int main (int argc, char * const argv[])
         {
             std::ofstream outASCIIFile;
             outASCIIFile.open(outputTextFile.c_str(), std::ios::out | std::ios::trunc);
-
+            
             if(!outASCIIFile.is_open())
-            {
+            {               
                 std::string message = std::string("Could not open file ") + outputTextFile;
                 throw spdlib::SPDException(message);
-            }
+            }            
             outASCIIFile.precision(12);
-
+            
             if(cartesianSwitch.getValue())
             {
                 outASCIIFile << "#Cartesian" << std::endl;
@@ -169,7 +169,7 @@ int main (int argc, char * const argv[])
         }
         delete[] overlap;
 	}
-	catch (TCLAP::ArgException &e)
+	catch (TCLAP::ArgException &e) 
 	{
 		std::cerr << "Parse Error: " << e.what() << std::endl;
 	}

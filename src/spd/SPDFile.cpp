@@ -4,26 +4,26 @@
  *
  *  Created by Pete Bunting on 27/11/2010.
  *  Copyright 2010 SPDLib. All rights reserved.
- *
+ * 
  *  This file is part of SPDLib.
  *
- *  Permission is hereby granted, free of charge, to any person
- *  obtaining a copy of this software and associated documentation
- *  files (the "Software"), to deal in the Software without restriction,
- *  including without limitation the rights to use, copy, modify,
- *  merge, publish, distribute, sublicense, and/or sell copies of the
- *  Software, and to permit persons to whom the Software is furnished
+ *  Permission is hereby granted, free of charge, to any person 
+ *  obtaining a copy of this software and associated documentation 
+ *  files (the "Software"), to deal in the Software without restriction, 
+ *  including without limitation the rights to use, copy, modify, 
+ *  merge, publish, distribute, sublicense, and/or sell copies of the 
+ *  Software, and to permit persons to whom the Software is furnished 
  *  to do so, subject to the following conditions:
  *
- *  The above copyright notice and this permission notice shall be
+ *  The above copyright notice and this permission notice shall be 
  *  included in all copies or substantial portions of the Software.
  *
- *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
- *  EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
- *  OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
- *  IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR
- *  ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF
- *  CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+ *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, 
+ *  EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES 
+ *  OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. 
+ *  IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR 
+ *  ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF 
+ *  CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION 
  *  WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  *
  */
@@ -33,8 +33,8 @@
 namespace spdlib
 {
 	
-	SPDFile::SPDFile(std::string filepath) : filepath(""),
-	spatialreference(""),
+	SPDFile::SPDFile(std::string filepath) : filepath(""), 
+	spatialreference(""), 
 	indexType(SPD_CARTESIAN_IDX),
 	discretePtDefined(SPD_FALSE),
 	decomposedPtDefined(SPD_FALSE),
@@ -77,7 +77,7 @@ namespace spdlib
     scanlineMin(0),
     scanlineMax(0),
     scanlineIdxMin(0),
-    scanlineIdxMax(0),
+    scanlineIdxMax(0),   
 	binSize(0),
 	numBinsX(0),
 	numBinsY(0),
@@ -137,7 +137,7 @@ namespace spdlib
 		spdFile->majorSPDVersion = this->majorSPDVersion;
 		spdFile->minorSPDVersion = this->minorSPDVersion;
         spdFile->pointVersion = this->pointVersion;
-        spdFile->pulseVersion = this->pulseVersion;
+        spdFile->pulseVersion = this->pulseVersion;        
 		spdFile->generatingSoftware = this->generatingSoftware;
 		spdFile->systemIdentifier = this->systemIdentifier;
 		spdFile->fileSignature = this->fileSignature;
@@ -165,7 +165,7 @@ namespace spdlib
     	spdFile->scanlineMin = this->scanlineMin;
     	spdFile->scanlineMax = this->scanlineMax;
     	spdFile->scanlineIdxMin = this->scanlineIdxMin;
-    	spdFile->scanlineIdxMax =  this->scanlineIdxMax;
+    	spdFile->scanlineIdxMax =  this->scanlineIdxMax;        
         spdFile->binSize = this->binSize;
 		spdFile->numBinsX = this->numBinsX;
 		spdFile->numBinsY = this->numBinsY;
@@ -240,7 +240,7 @@ namespace spdlib
     	this->scanlineMin = spdFile->scanlineMin;
     	this->scanlineMax = spdFile->scanlineMax;
     	this->scanlineIdxMin = spdFile->scanlineIdxMin;
-    	this->scanlineIdxMax =  spdFile->scanlineIdxMax;
+    	this->scanlineIdxMax =  spdFile->scanlineIdxMax;        
 		this->binSize = spdFile->binSize;
 		this->numBinsX = spdFile->numBinsX;
 		this->numBinsY = spdFile->numBinsY;
@@ -275,7 +275,7 @@ namespace spdlib
         this->pulseEnergy = spdFile->pulseEnergy;
         this->fieldOfView = spdFile->fieldOfView;
 	}
-
+    
     void SPDFile::copyAttributesFromTemplate(SPDFile *spdFile)
 	{
 		this->spatialreference = spdFile->spatialreference;
@@ -330,22 +330,22 @@ namespace spdlib
         {
             return false;
         }
-
+        
         if(this->minorSPDVersion != spdFile->minorSPDVersion)
         {
             return false;
         }
-
+        
         if(this->pointVersion != spdFile->pointVersion)
         {
             return false;
         }
-
+        
         if(this->pulseVersion != spdFile->pulseVersion)
         {
             return false;
         }
-
+        
 		if(this->spatialreference != spdFile->spatialreference)
 		{
 			return false;
@@ -370,12 +370,12 @@ namespace spdlib
 		{
 			return false;
 		}
-
+        
         if(this->receiveWaveformDefined != spdFile->receiveWaveformDefined)
 		{
 			return false;
 		}
-
+        
         if(this->numOfWavelengths != spdFile->numOfWavelengths)
 		{
 			return false;
@@ -385,7 +385,7 @@ namespace spdlib
 		{
 			return false;
 		}
-
+        
         for(boost::int_fast16_t i = 0; i < this->wavelengths.size(); ++i)
         {
             if(!compare_double(this->wavelengths[i], spdFile->wavelengths[i]))
@@ -393,12 +393,12 @@ namespace spdlib
                 return false;
             }
         }
-
+        
         if(this->bandwidths.size() != spdFile->bandwidths.size())
 		{
 			return false;
 		}
-
+        
         for(boost::int_fast16_t i = 0; i < this->bandwidths.size(); ++i)
         {
             if(!compare_double(this->bandwidths[i], spdFile->bandwidths[i]))
@@ -527,25 +527,25 @@ namespace spdlib
             std::cout << "SPD Major version is different\n";
             return false;
         }
-
+        
         if(this->minorSPDVersion != spdFile->minorSPDVersion)
         {
             std::cout << "SPD Minor version is different\n";
             return false;
         }
-
+        
         if(this->pointVersion != spdFile->pointVersion)
         {
             std::cout << "Point version is different\n";
             return false;
         }
-
+        
         if(this->pulseVersion != spdFile->pulseVersion)
         {
             std::cout << "Pulse version is different\n";
             return false;
         }
-
+        
 		if(this->spatialreference != spdFile->spatialreference)
 		{
             std::cout << "Spatial Reference is different\n";
@@ -575,13 +575,13 @@ namespace spdlib
             std::cout << "definiation of transmitted waveform is different\n";
 			return false;
 		}
-
+        
         if(this->receiveWaveformDefined != spdFile->receiveWaveformDefined)
 		{
             std::cout << "definiation of received waveform is different\n";
 			return false;
 		}
-
+        
         if(this->numOfWavelengths != spdFile->numOfWavelengths)
 		{
             std::cout << "Number of wavelengths is different\n";
@@ -593,7 +593,7 @@ namespace spdlib
             std::cout << "Number of wavelengths in lists different\n";
 			return false;
 		}
-
+        
         for(boost::int_fast16_t i = 0; i < this->wavelengths.size(); ++i)
         {
             if(!compare_double(this->wavelengths[i], spdFile->wavelengths[i]))
@@ -602,13 +602,13 @@ namespace spdlib
                 return false;
             }
         }
-
+        
         if(this->bandwidths.size() != spdFile->bandwidths.size())
 		{
             std::cout << "Number of bandwidths in lists different\n";
 			return false;
 		}
-
+        
         for(boost::int_fast16_t i = 0; i < this->bandwidths.size(); ++i)
         {
             if(!compare_double(this->bandwidths[i], spdFile->bandwidths[i]))
@@ -820,7 +820,7 @@ namespace spdlib
 		
 		return true;
 	}
-
+    
     bool SPDFile::checkCompatibilityGeneralCheckExpandExtent(SPDFile *spdFile)
 	{
         if(this->majorSPDVersion != spdFile->majorSPDVersion)
@@ -828,25 +828,25 @@ namespace spdlib
             std::cout << "SPD Major version is different\n";
             return false;
         }
-
+        
         if(this->minorSPDVersion != spdFile->minorSPDVersion)
         {
             std::cout << "SPD Minor version is different\n";
             return false;
         }
-
+        
         if(this->pointVersion != spdFile->pointVersion)
         {
             std::cout << "Point version is different\n";
             return false;
         }
-
+        
         if(this->pulseVersion != spdFile->pulseVersion)
         {
             std::cout << "Pulse version is different\n";
             return false;
         }
-
+        
 		if(this->spatialreference != spdFile->spatialreference)
 		{
             std::cout << "Spatial Reference is different\n";
@@ -876,7 +876,7 @@ namespace spdlib
             std::cout << "definiation of transmitted waveform is different\n";
 			return false;
 		}
-
+        
         if(this->receiveWaveformDefined != spdFile->receiveWaveformDefined)
 		{
             std::cout << "definiation of received waveform is different\n";
@@ -894,7 +894,7 @@ namespace spdlib
             std::cout << "Number of wavelengths in lists different\n";
 			return false;
 		}
-
+        
         for(boost::int_fast16_t i = 0; i < this->wavelengths.size(); ++i)
         {
             if(!compare_double(this->wavelengths[i], spdFile->wavelengths[i]))
@@ -903,13 +903,13 @@ namespace spdlib
                 return false;
             }
         }
-
+        
         if(this->bandwidths.size() != spdFile->bandwidths.size())
 		{
             std::cout << "Number of bandwidths in lists different\n";
 			return false;
 		}
-
+        
         for(boost::int_fast16_t i = 0; i < this->bandwidths.size(); ++i)
         {
             if(!compare_double(this->bandwidths[i], spdFile->bandwidths[i]))
@@ -1115,7 +1115,7 @@ namespace spdlib
 		
 		return true;
 	}
-
+    
     void SPDFile::expandExtent(SPDFile *spdFile)
     {
         if(spdFile->xMin < this->xMin)
@@ -1253,7 +1253,7 @@ namespace spdlib
         {
             stream << "Scan\n";
         }
-        else
+        else 
         {
             stream << std::endl;
         }
@@ -1382,7 +1382,7 @@ namespace spdlib
         {
             stream << "Scan\n";
         }
-        else
+        else 
         {
             stream << std::endl;
         }
@@ -1464,8 +1464,8 @@ namespace spdlib
 	{
 		
 	}
-
-
+    
+    
     double* SPDFileProcessingUtilities::calcCartesainOverlap(SPDFile **spdFiles, boost::uint_fast16_t numOfFiles) throw(SPDProcessingException)
     {
         /**
@@ -1496,38 +1496,38 @@ namespace spdlib
                 {
                     overlap[0] = spdFiles[i]->getXMin();
                 }
-
+                
                 if(spdFiles[i]->getXMax() < overlap[1])
                 {
                     overlap[1] = spdFiles[i]->getXMax();
                 }
-
+                
                 if(spdFiles[i]->getYMin() > overlap[2])
                 {
                     overlap[2] = spdFiles[i]->getYMin();
                 }
-
+                
                 if(spdFiles[i]->getYMax() < overlap[3])
                 {
                     overlap[3] = spdFiles[i]->getYMax();
                 }
-
+                
                 if(spdFiles[i]->getZMin() > overlap[4])
                 {
                     overlap[4] = spdFiles[i]->getZMin();
                 }
-
+                
                 if(spdFiles[i]->getZMax() < overlap[5])
                 {
                     overlap[5] = spdFiles[i]->getZMax();
                 }
-
+                
             }
         }
-
+        
         return overlap;
     }
-
+    
     double* SPDFileProcessingUtilities::calcSphericalOverlap(SPDFile **spdFiles, boost::uint_fast16_t numOfFiles) throw(SPDProcessingException)
     {
         /**
@@ -1558,35 +1558,35 @@ namespace spdlib
                 {
                     overlap[0] = spdFiles[i]->getAzimuthMin();
                 }
-
+                
                 if(spdFiles[i]->getAzimuthMax() < overlap[1])
                 {
                     overlap[1] = spdFiles[i]->getAzimuthMax();
                 }
-
+                
                 if(spdFiles[i]->getZenithMin() > overlap[2])
                 {
                     overlap[2] = spdFiles[i]->getZenithMin();
                 }
-
+                
                 if(spdFiles[i]->getZenithMax() < overlap[3])
                 {
                     overlap[3] = spdFiles[i]->getZenithMax();
                 }
-
+                
                 if(spdFiles[i]->getRangeMin() > overlap[4])
                 {
                     overlap[4] = spdFiles[i]->getRangeMin();
                 }
-
+                
                 if(spdFiles[i]->getRangeMax() < overlap[5])
                 {
                     overlap[5] = spdFiles[i]->getRangeMax();
                 }
-
+                
             }
         }
-
+        
         return overlap;
     }
 }

@@ -4,7 +4,7 @@
  *
  *  Created by Pete Bunting on 11/02/2011.
  *  Copyright 2011 SPDLib. All rights reserved.
- *
+ * 
  *  This file is part of SPDLib.
  *
  *  SPDLib is free software: you can redistribute it and/or modify

@@ -77,7 +77,7 @@ namespace spdlib{
         boost::uint_fast16_t strto16bitUInt(std::string inValue)throw(SPDTextFileException);
         boost::uint_fast32_t strto32bitUInt(std::string inValue)throw(SPDTextFileException);
         boost::uint_fast64_t strto64bitUInt(std::string inValue)throw(SPDTextFileException);
-
+            
         boost::int_fast8_t strto8bitInt(std::string inValue)throw(SPDTextFileException);
         boost::int_fast16_t strto16bitInt(std::string inValue)throw(SPDTextFileException);
         boost::int_fast32_t strto32bitInt(std::string inValue)throw(SPDTextFileException);

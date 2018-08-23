@@ -135,7 +135,7 @@ PulsePointConverter::~PulsePointConverter()
         delete m_ppointIndices;
 }
 
-void PulsePointConverter::convertCPPPulseArrayToRecArrays(std::vector<spdlib::SPDPulse*> ***pulses,
+void PulsePointConverter::convertCPPPulseArrayToRecArrays(std::vector<spdlib::SPDPulse*> ***pulses, 
         boost::uint_fast32_t xSize, boost::uint_fast32_t ySize,
         PyObject **pPulseArray, PyObject **pPointArray, PyObject **pTransmittedArray/*=NULL*/, PyObject **pReceivedArray/*=NULL*/)
 {
@@ -154,7 +154,7 @@ void PulsePointConverter::convertCPPPulseArrayToRecArrays(std::vector<spdlib::SP
             }
         }
     }
-
+    
     *pPulseArray = m_pulseCreator.createArray(nPulses);
     *pPointArray = m_pointCreator.createArray(nPoints);
 
@@ -240,7 +240,7 @@ void PulsePointConverter::convertCPPPulseArrayToRecArrays(std::vector<spdlib::SP
                 nPulseCount++;
                 thisPulseIdx++;
             }
-
+            
         }
     }
 }

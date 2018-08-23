@@ -41,7 +41,7 @@
 int main (int argc, char * const argv[])
 {
     std::cout.precision(12);
-
+    
     std::cout << "spdgrdtidy " << SPDLIB_PACKAGE_STRING << ", Copyright (C) " << SPDLIB_COPYRIGHT_YEAR << " Sorted Pulse Library (SPD)\n";
 	std::cout << "This program comes with ABSOLUTELY NO WARRANTY. This is free software,\n";
 	std::cout << "and you are welcome to redistribute it under certain conditions; See\n";
@@ -54,49 +54,49 @@ int main (int argc, char * const argv[])
 		
         TCLAP::SwitchArg negHeightSwitch("","negheights","Classify negative height as ground", false);
         TCLAP::SwitchArg planeFitSwitch("","planefit","Remove falsely classified ground returns using plane fitting", false);
-
+        
         std::vector<TCLAP::Arg*> arguments;
         arguments.push_back(&negHeightSwitch);
         arguments.push_back(&planeFitSwitch);
         cmd.xorAdd(arguments);
-
+        
         TCLAP::ValueArg<boost::uint_fast32_t> numOfRowsBlockArg("r","blockrows","Number of rows within a block (Default 100)",false,100,"unsigned int");
 		cmd.add( numOfRowsBlockArg );
-
+        
         TCLAP::ValueArg<boost::uint_fast32_t> numOfColsBlockArg("c","blockcols","Number of columns within a block (Default 0) - Note values greater than 1 result in a non-sequencial SPD file.",false,0,"unsigned int");
 		cmd.add( numOfColsBlockArg );
-
+        
         TCLAP::ValueArg<float> binSizeArg("b","binsize","Bin size for processing and output image (Default 0) - Note 0 will use the native SPD file bin size.",false,0,"float");
 		cmd.add( binSizeArg );
-
+        
         TCLAP::ValueArg<boost::uint_fast16_t> winHSizeArg("w","winhsize","Half the window size for the processing (Default 3) - Note 3 means a 7 x 7 filter window size (in units of the bin size).",false,3,"int");
 		cmd.add( winHSizeArg );
-
+        
         TCLAP::ValueArg<std::string> inputFileArg("i","input","The input SPD file.",true,"","String");
 		cmd.add( inputFileArg );
-
+        
         TCLAP::ValueArg<std::string> outputFileArg("o","output","The output SPD file.",true,"","String");
 		cmd.add( outputFileArg );
-
+        
 		cmd.parse( argc, argv );
 		
 		std::string inSPDFilePath = inputFileArg.getValue();
         std::string outFilePath = outputFileArg.getValue();
-
+        
         if(negHeightSwitch.getValue())
         {
             spdlib::SPDFile *spdInFile = new spdlib::SPDFile(inSPDFilePath);
             spdlib::SPDFileReader reader;
             reader.readHeaderInfo(inSPDFilePath, spdInFile);
-
+            
             if(spdInFile->getHeightDefined() == spdlib::SPD_TRUE)
             {
                 std::cout << "Ground tidying running...\n";
                 spdlib::SPDTidyGroundReturnNegativeHeights *blockProcessorGrdTidy = new spdlib::SPDTidyGroundReturnNegativeHeights();
-
+                
                 spdlib::SPDProcessDataBlocks processBlocks = spdlib::SPDProcessDataBlocks(blockProcessorGrdTidy, 0, numOfColsBlockArg.getValue(), numOfRowsBlockArg.getValue(), true);
                 processBlocks.processDataBlocksGridPulsesOutputSPD(spdInFile, outFilePath, 0);
-
+                
                 delete blockProcessorGrdTidy;
             }
             else
@@ -119,7 +119,7 @@ int main (int argc, char * const argv[])
         {
             throw spdlib::SPDException("Did not recognised tidy option.");
         }
-
+        
 	}
 	catch (TCLAP::ArgException &e)
 	{
@@ -129,7 +129,7 @@ int main (int argc, char * const argv[])
 	{
 		std::cerr << "Error: " << e.what() << std::endl;
 	}
-
+    
     std::cout << "spdgrdtidy - end\n";
 }
 

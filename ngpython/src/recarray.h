@@ -128,7 +128,7 @@ public:
         memcpy( &val, (char*)pRow + m_nOffset, m_nSize );
         return val;
     }
-    // set an sub array
+    // set an sub array 
     void setValueArray(void *pRow, const T *pData)
     {
         memcpy( (char*)pRow + m_nOffset, pData, m_nSize * m_nLength );

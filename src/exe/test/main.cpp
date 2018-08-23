@@ -4,7 +4,7 @@
  *
  *  Created by Pete Bunting on 22/01/2012.
  *  Copyright 2010 SPDLib. All rights reserved.
- *
+ * 
  *  This file is part of SPDLib.
  *
  *  SPDLib is free software: you can redistribute it and/or modify
@@ -36,10 +36,10 @@
 #include "spd/SPDFileWriter.h"
 #include "spd/SPDIOUtils.h"
 
-int main (int argc, char * const argv[])
+int main (int argc, char * const argv[]) 
 {
     std::cout.precision(12);
-
+    
     try
     {
         srand(20);
@@ -81,7 +81,7 @@ int main (int argc, char * const argv[])
                         point->amplitudeReturn = ((float)rand()/(float)RAND_MAX)*100;
                         pulse->pts->push_back(point);
                     }
-
+                    
                     pulse->receiveWaveGain = 1;
                     pulse->receiveWaveOffset = 0;
                     pulse->numOfReceivedBins = waveformLength;
@@ -98,8 +98,8 @@ int main (int argc, char * const argv[])
             spdFile->setReceiveWaveformDefined(spdlib::SPD_TRUE);
             writer->finaliseClose();
         }
-
-
+        
+        
     }
     catch(spdlib::SPDException &e)
     {

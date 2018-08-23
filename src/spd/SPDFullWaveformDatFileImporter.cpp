@@ -37,14 +37,14 @@ namespace spdlib
     {
         return new SPDFullWaveformDatFileImporter(convertCoords, outputProjWKT, schema, indexCoords, defineOrigin, originX, originY, originZ, waveNoiseThreshold);
     }
-
+    
 	std::list<SPDPulse*>* SPDFullWaveformDatFileImporter::readAllDataToList(std::string inputFile, SPDFile *spdFile)throw(SPDIOException)
 	{
 		SPDTextFileUtilities textFileUtils;
 		SPDTextFileLineReader lineReader;
 		
         std::list<SPDPulse*> *pulses = new std::list<SPDPulse*>();
-
+        
 		double xMin = 0;
 		double xMax = 0;
 		double yMin = 0;
@@ -72,7 +72,7 @@ namespace spdlib
 		std::vector<std::string> *tokensReceivedExtra = new std::vector<std::string>();
 		
 		boost::uint_fast64_t numPulses = 0;
-		try
+		try 
 		{
 			if(convertCoords)
 			{
@@ -103,7 +103,7 @@ namespace spdlib
 						throw SPDIOException("The first line is blank please check your file.");
 					}
 				}
-				else
+				else 
 				{
 					lineTrans = lineReceivedExtra;
 				}
@@ -125,13 +125,13 @@ namespace spdlib
 					 (tokensTrans->at(5) == tokensReceived->at(5)) &&
 					 (tokensTrans->at(6) == tokensReceived->at(6))))
 				{
-					if((textFileUtils.strtodouble(tokensTrans->at(7)) < 500) &&
+					if((textFileUtils.strtodouble(tokensTrans->at(7)) < 500) && 
 					   (textFileUtils.strtodouble(tokensReceived->at(7)) < 500))
 					{
 						lineReceivedExtra = lineReceived;
 						onlyTransmitted = true;
 					}
-					else
+					else 
 					{
 						std::cout << "\nTransmitted Line: " << lineTrans << std::endl;
 						std::cout << "Received Line: " << lineReceived << std::endl;
@@ -143,7 +143,7 @@ namespace spdlib
 				if(!onlyTransmitted)
 				{
 					foundTransmittedLine = false;
-					if((textFileUtils.strtodouble(tokensTrans->at(7)) < 500) &&
+					if((textFileUtils.strtodouble(tokensTrans->at(7)) < 500) && 
 					   (textFileUtils.strtodouble(tokensReceived->at(7)) < 500))
 					{
 						extralinesTrans->push_back(lineReceived);
@@ -172,22 +172,22 @@ namespace spdlib
 									onlyTransmitted = true;
 									lineReceivedExtra = lineReceived;
 								}
-								else
+								else 
 								{
-									if((textFileUtils.strtodouble(tokensTrans->at(7)) < 500) &&
+									if((textFileUtils.strtodouble(tokensTrans->at(7)) < 500) && 
 									   (textFileUtils.strtodouble(tokensReceived->at(7)) < 500))
 									{
 										extralinesTrans->push_back(lineReceived);
 										tokensReceived->clear();
 										foundTransmittedLine = true;
 									}
-									else
+									else 
 									{
 										foundTransmittedLine = false;
 									}
 								}
 							}
-							else
+							else 
 							{
 								foundTransmittedLine = false;
 							}
@@ -226,7 +226,7 @@ namespace spdlib
 								tokensReceivedExtra->clear();
 							}
 						}
-						else
+						else 
 						{
 							foundReceivedLine = false;
 						}
@@ -335,7 +335,7 @@ namespace spdlib
 			lineReader.closeFile();
 			std::cout << "." << numPulses << ".Pulses\n";
 		}
-		catch (SPDIOException &e)
+		catch (SPDIOException &e) 
 		{
 			std::cout << "Pulse = " << numPulses << std::endl;
 			if(onlyTransmitted)
@@ -370,7 +370,7 @@ namespace spdlib
 		SPDTextFileLineReader lineReader;
 		
         std::vector<SPDPulse*> *pulses = new std::vector<SPDPulse*>();
-
+        
 		double xMin = 0;
 		double xMax = 0;
 		double yMin = 0;
@@ -398,7 +398,7 @@ namespace spdlib
 		std::vector<std::string> *tokensReceivedExtra = new std::vector<std::string>();
 		
 		boost::uint_fast64_t numPulses = 0;
-		try
+		try 
 		{
 			if(convertCoords)
 			{
@@ -429,7 +429,7 @@ namespace spdlib
 						throw SPDIOException("The first line is blank please check your file.");
 					}
 				}
-				else
+				else 
 				{
 					lineTrans = lineReceivedExtra;
 				}
@@ -451,13 +451,13 @@ namespace spdlib
 					 (tokensTrans->at(5) == tokensReceived->at(5)) &&
 					 (tokensTrans->at(6) == tokensReceived->at(6))))
 				{
-					if((textFileUtils.strtodouble(tokensTrans->at(7)) < 500) &&
+					if((textFileUtils.strtodouble(tokensTrans->at(7)) < 500) && 
 					   (textFileUtils.strtodouble(tokensReceived->at(7)) < 500))
 					{
 						lineReceivedExtra = lineReceived;
 						onlyTransmitted = true;
 					}
-					else
+					else 
 					{
 						std::cout << "\nTransmitted Line: " << lineTrans << std::endl;
 						std::cout << "Received Line: " << lineReceived << std::endl;
@@ -469,7 +469,7 @@ namespace spdlib
 				if(!onlyTransmitted)
 				{
 					foundTransmittedLine = false;
-					if((textFileUtils.strtodouble(tokensTrans->at(7)) < 500) &&
+					if((textFileUtils.strtodouble(tokensTrans->at(7)) < 500) && 
 					   (textFileUtils.strtodouble(tokensReceived->at(7)) < 500))
 					{
 						extralinesTrans->push_back(lineReceived);
@@ -498,22 +498,22 @@ namespace spdlib
 									onlyTransmitted = true;
 									lineReceivedExtra = lineReceived;
 								}
-								else
+								else 
 								{
-									if((textFileUtils.strtodouble(tokensTrans->at(7)) < 500) &&
+									if((textFileUtils.strtodouble(tokensTrans->at(7)) < 500) && 
 									   (textFileUtils.strtodouble(tokensReceived->at(7)) < 500))
 									{
 										extralinesTrans->push_back(lineReceived);
 										tokensReceived->clear();
 										foundTransmittedLine = true;
 									}
-									else
+									else 
 									{
 										foundTransmittedLine = false;
 									}
 								}
 							}
-							else
+							else 
 							{
 								foundTransmittedLine = false;
 							}
@@ -552,7 +552,7 @@ namespace spdlib
 								tokensReceivedExtra->clear();
 							}
 						}
-						else
+						else 
 						{
 							foundReceivedLine = false;
 						}
@@ -661,7 +661,7 @@ namespace spdlib
 			lineReader.closeFile();
 			std::cout << "." << numPulses << ".Pulses\n";
 		}
-		catch (SPDIOException &e)
+		catch (SPDIOException &e) 
 		{
 			std::cout << "Pulse = " << numPulses << std::endl;
 			if(onlyTransmitted)
@@ -722,7 +722,7 @@ namespace spdlib
 		std::vector<std::string> *tokensReceivedExtra = new std::vector<std::string>();
 		
 		boost::uint_fast64_t numPulses = 0;
-		try
+		try 
 		{
 			if(convertCoords)
 			{
@@ -753,7 +753,7 @@ namespace spdlib
 						throw SPDIOException("The first line is blank please check your file.");
 					}
 				}
-				else
+				else 
 				{
 					lineTrans = lineReceivedExtra;
 				}
@@ -775,13 +775,13 @@ namespace spdlib
 					 (tokensTrans->at(5) == tokensReceived->at(5)) &&
 					 (tokensTrans->at(6) == tokensReceived->at(6))))
 				{
-					if((textFileUtils.strtodouble(tokensTrans->at(7)) < 500) &&
+					if((textFileUtils.strtodouble(tokensTrans->at(7)) < 500) && 
 					   (textFileUtils.strtodouble(tokensReceived->at(7)) < 500))
 					{
 						lineReceivedExtra = lineReceived;
 						onlyTransmitted = true;
 					}
-					else
+					else 
 					{
 						std::cout << "\nTransmitted Line: " << lineTrans << std::endl;
 						std::cout << "Received Line: " << lineReceived << std::endl;
@@ -793,7 +793,7 @@ namespace spdlib
 				if(!onlyTransmitted)
 				{
 					foundTransmittedLine = false;
-					if((textFileUtils.strtodouble(tokensTrans->at(7)) < 500) &&
+					if((textFileUtils.strtodouble(tokensTrans->at(7)) < 500) && 
 					   (textFileUtils.strtodouble(tokensReceived->at(7)) < 500))
 					{
 						extralinesTrans->push_back(lineReceived);
@@ -822,22 +822,22 @@ namespace spdlib
 									onlyTransmitted = true;
 									lineReceivedExtra = lineReceived;
 								}
-								else
+								else 
 								{
-									if((textFileUtils.strtodouble(tokensTrans->at(7)) < 500) &&
+									if((textFileUtils.strtodouble(tokensTrans->at(7)) < 500) && 
 									   (textFileUtils.strtodouble(tokensReceived->at(7)) < 500))
 									{
 										extralinesTrans->push_back(lineReceived);
 										tokensReceived->clear();
 										foundTransmittedLine = true;
 									}
-									else
+									else 
 									{
 										foundTransmittedLine = false;
 									}
 								}
 							}
-							else
+							else 
 							{
 								foundTransmittedLine = false;
 							}
@@ -876,7 +876,7 @@ namespace spdlib
 								tokensReceivedExtra->clear();
 							}
 						}
-						else
+						else 
 						{
 							foundReceivedLine = false;
 						}
@@ -985,7 +985,7 @@ namespace spdlib
 			lineReader.closeFile();
 			std::cout << "." << numPulses << ".Pulses\n";
 		}
-		catch (SPDIOException &e)
+		catch (SPDIOException &e) 
 		{
 			std::cout << "Pulse = " << numPulses << std::endl;
 			if(onlyTransmitted)
@@ -1021,7 +1021,7 @@ namespace spdlib
 		}
 		return false;
 	}
-
+    
     void SPDFullWaveformDatFileImporter::readHeaderInfo(std::string, SPDFile*) throw(SPDIOException)
     {
         // No Header to Read..
@@ -1034,7 +1034,7 @@ namespace spdlib
 		SPDPulse *pulse = new SPDPulse();
 		pulseUtils.initSPDPulse(pulse);
 		
-		try
+		try 
 		{
 			double originX = textFileUtils.strtodouble(transTokens->at(2));
 			double originY = textFileUtils.strtodouble(transTokens->at(1));
@@ -1145,18 +1145,18 @@ namespace spdlib
 				pulse->xIdx = originX;
 				pulse->yIdx = originY;
 			}
-			else
+			else 
 			{
 				throw SPDIOException("Unknown method of calculating the index X and Y coords.");
 			}
 			
 		}
-		catch (SPDIOException &e)
+		catch (SPDIOException &e) 
 		{
 			SPDPulseUtils::deleteSPDPulse(pulse);
 			throw e;
 		}
-        catch (SPDProcessingException &e)
+        catch (SPDProcessingException &e) 
 		{
 			SPDPulseUtils::deleteSPDPulse(pulse);
 			throw SPDIOException(e.what());
@@ -1177,7 +1177,7 @@ namespace spdlib
 		SPDPulse *pulse = new SPDPulse();
 		pulseUtils.initSPDPulse(pulse);
 		
-		try
+		try 
 		{
 			double originX = textFileUtils.strtodouble(transTokens->at(2));
 			double originY = textFileUtils.strtodouble(transTokens->at(1));
@@ -1271,7 +1271,7 @@ namespace spdlib
 				{
 					iterLines = receivedExtraLines->erase(iterLines);
 				}
-				else
+				else 
 				{
 					++iterLines;
 				}
@@ -1299,7 +1299,7 @@ namespace spdlib
 			for(boost::uint_fast16_t i = 9; i < receivedTokens->size(); ++i)
 			{
 				pulse->received[binIdx] = textFileUtils.strto32bitUInt(receivedTokens->at(i));
-                binIdx++;
+                binIdx++;                
 			}
 			boost::uint_fast16_t tmpNumReceivedBins = receivedTokens->size() - 9;
 			for(iterLines = receivedExtraLines->begin(); iterLines != receivedExtraLines->end(); ++iterLines)
@@ -1386,19 +1386,19 @@ namespace spdlib
 				pulse->xIdx = tempX;
 				pulse->yIdx = tempY;
 			}
-			else
+			else 
 			{
 				throw SPDIOException("Unknown method of calculating the index X and Y coords.");
 			}			
 
 			delete tokensReceivedExtra;
 		}
-		catch (SPDIOException &e)
+		catch (SPDIOException &e) 
 		{
 			SPDPulseUtils::deleteSPDPulse(pulse);
 			throw e;
 		}
-        catch (SPDProcessingException &e)
+        catch (SPDProcessingException &e) 
 		{
 			SPDPulseUtils::deleteSPDPulse(pulse);
 			throw SPDIOException(e.what());

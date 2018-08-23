@@ -4,7 +4,7 @@
  *
  *  Created by Pete Bunting on 27/03/2012.
  *  Copyright 2012 SPDLib. All rights reserved.
- *
+ * 
  *  This file is part of SPDLib.
  *
  *  SPDLib is free software: you can redistribute it and/or modify
@@ -34,21 +34,21 @@
 
 #include "spd/spd-config.h"
 
-int main (int argc, char * const argv[])
+int main (int argc, char * const argv[]) 
 {
     std::cout.precision(12);
-
+    
     std::cout << "spdinfo " << SPDLIB_PACKAGE_STRING << ", Copyright (C) " << SPDLIB_COPYRIGHT_YEAR << " Sorted Pulse Library (SPD)\n";
 	std::cout << "This program comes with ABSOLUTELY NO WARRANTY. This is free software,\n";
 	std::cout << "and you are welcome to redistribute it under certain conditions; See\n";
 	std::cout << "website (http://www.spdlib.org). Bugs are to be reported on the trac\n";
 	std::cout << "or directly to " << SPDLIB_PACKAGE_BUGREPORT << std::endl;
 	
-	try
+	try 
 	{
         TCLAP::CmdLine cmd("Print header info for an SPD File: spdinfo", ' ', "1.0.0");
-		
-
+		       
+        
 		TCLAP::UnlabeledMultiArg<std::string> multiFileNames("File", "Input file", false, "string");
 		cmd.add( multiFileNames );
 		cmd.parse( argc, argv );
@@ -63,11 +63,11 @@ int main (int argc, char * const argv[])
 			{
                 spdInFile = new spdlib::SPDFile(fileNames.at(i));
                 reader.readHeaderInfo(fileNames.at(i), spdInFile);
-
+                
                 std::cout << spdInFile << std::endl;
-
+                
                 delete spdInFile;
-            }
+            }           
 		}
         else
         {
@@ -75,7 +75,7 @@ int main (int argc, char * const argv[])
         }
 		
 	}
-	catch (TCLAP::ArgException &e)
+	catch (TCLAP::ArgException &e) 
 	{
 		std::cerr << "Parse Error: " << e.what() << std::endl;
 	}

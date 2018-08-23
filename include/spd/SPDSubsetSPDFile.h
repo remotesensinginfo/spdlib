@@ -77,7 +77,7 @@ namespace spdlib
         void subsetScanSPDFile(std::string inputFile, std::string outputFile, double *bbox, bool *bboxDefined) throw(SPDException);
 		~SPDSubsetSPDFile();
 	};
-
+    
     class DllExport SPDUPDPulseSubset
 	{
 	public:
@@ -85,19 +85,19 @@ namespace spdlib
 		void subsetUPD(std::string inputFile, std::string outputFile, boost::uint_fast32_t startPulse, boost::uint_fast32_t numOfPulses)throw(SPDIOException);
 		~SPDUPDPulseSubset();
 	};
-
-
-
+    
+    
+    
     class DllExport SPDDataSubsetWithImgBlockProcessor: public SPDDataBlockProcessor
 	{
 	public:
         SPDDataSubsetWithImgBlockProcessor();
         void processDataBlockImage(SPDFile *inSPDFile, std::vector<SPDPulse*> ***pulses, float ***imageDataBlock, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast32_t numImgBands, float binSize) throw(SPDProcessingException);
 		void processDataBlock(SPDFile *inSPDFile, std::vector<SPDPulse*> ***pulses, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, float binSize) throw(SPDProcessingException){throw SPDProcessingException("Not Implemented.");};
-
+        
         void processDataBlockImage(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses, float ***imageDataBlock, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast32_t numImgBands) throw(SPDProcessingException){throw SPDProcessingException("Not Implemented.");};
 		void processDataBlock(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses) throw(SPDProcessingException){throw SPDProcessingException("Not Implemented.");};
-
+        
         std::vector<std::string> getImageBandDescriptions() throw(SPDProcessingException){return std::vector<std::string>();};
         void setHeaderValues(SPDFile *spdFile) throw(SPDProcessingException){};
         ~SPDDataSubsetWithImgBlockProcessor();

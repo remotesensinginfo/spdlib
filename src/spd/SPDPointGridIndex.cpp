@@ -51,7 +51,7 @@ namespace spdlib
 					maxY = (*iterPts)->y;
 					first = false;
 				}
-				else
+				else 
 				{
 					if((*iterPts)->x < minX)
 					{
@@ -72,12 +72,12 @@ namespace spdlib
 					}
 				}
 			}
-
+            
             if(env->MinX < minX)
             {
                 this->tlX = env->MinX;
             }
-            else
+            else 
             {
                 this->tlX = minX;
             }
@@ -114,7 +114,7 @@ namespace spdlib
 				{
 					roundingAddition = boost::numeric_cast<boost::uint_fast32_t>(1/this->binSize);
 				}
-				else
+				else 
 				{
 					roundingAddition = 1;
 				}
@@ -122,15 +122,15 @@ namespace spdlib
 				xBins = boost::numeric_cast<boost::uint_fast32_t>(((this->brX-this->tlX)/this->binSize)+roundingAddition);
 				yBins = boost::numeric_cast<boost::uint_fast32_t>(((this->tlY-this->brY)/this->binSize)+roundingAddition);
 			}
-			catch(boost::numeric::negative_overflow& e)
+			catch(boost::numeric::negative_overflow& e) 
 			{
 				throw SPDProcessingException(e.what());
 			}
-			catch(boost::numeric::positive_overflow& e)
+			catch(boost::numeric::positive_overflow& e) 
 			{
 				throw SPDProcessingException(e.what());
 			}
-			catch(boost::numeric::bad_numeric_cast& e)
+			catch(boost::numeric::bad_numeric_cast& e) 
 			{
 				throw SPDProcessingException(e.what());
 			}
@@ -150,7 +150,7 @@ namespace spdlib
 				}
 			}
 			
-			try
+			try 
 			{	
 				double xDiff = 0;
 				double yDiff = 0;
@@ -166,20 +166,20 @@ namespace spdlib
 					xDiff = (pt->x - this->tlX)/this->binSize;
 					yDiff = (this->tlY - pt->y)/this->binSize;				
 					
-					try
+					try 
 					{
 						xIdx = boost::numeric_cast<boost::uint_fast32_t>(xDiff);
 						yIdx = boost::numeric_cast<boost::uint_fast32_t>(yDiff);
 					}
-					catch(boost::numeric::negative_overflow& e)
+					catch(boost::numeric::negative_overflow& e) 
 					{
 						throw SPDProcessingException(e.what());
 					}
-					catch(boost::numeric::positive_overflow& e)
+					catch(boost::numeric::positive_overflow& e) 
 					{
 						throw SPDProcessingException(e.what());
 					}
-					catch(boost::numeric::bad_numeric_cast& e)
+					catch(boost::numeric::bad_numeric_cast& e) 
 					{
 						throw SPDProcessingException(e.what());
 					}
@@ -205,7 +205,7 @@ namespace spdlib
 					this->ptGrid[yIdx][xIdx]->push_back(pt);
 				}
 			}
-			catch (SPDProcessingException &e)
+			catch (SPDProcessingException &e) 
 			{
 				for(boost::uint_fast32_t i = 0; i < yBins; ++i)
 				{
@@ -221,13 +221,13 @@ namespace spdlib
 			}
 			
 		}
-		else
+		else 
 		{
 			throw SPDProcessingException("Inputted list of points was empty.");
 		}
         deletePtsInBins = false;
 	}
-
+    
 	void SPDPointGridIndex::buildIndex(std::vector<SPDPoint*> *pts, double resolution) throw(SPDProcessingException)
 	{
 		if(pts->size() > 0)
@@ -248,7 +248,7 @@ namespace spdlib
 					maxY = (*iterPts)->y;
 					first = false;
 				}
-				else
+				else 
 				{
 					if((*iterPts)->x < minX)
 					{
@@ -275,7 +275,7 @@ namespace spdlib
 			this->brX = maxX;
 			this->brY = minY;
 			this->binSize = resolution;
-
+            
             //std::cout << "Index TL [" << this->tlX << "," << this->tlY << "] BR [" << this->brX << "," << this->brY << "]\n";
 			
 			boost::uint_fast32_t roundingAddition = 0;
@@ -285,7 +285,7 @@ namespace spdlib
 				{
 					roundingAddition = 4;
 				}
-				else
+				else 
 				{
 					roundingAddition = 1;
 				}
@@ -293,15 +293,15 @@ namespace spdlib
 				xBins = boost::numeric_cast<boost::uint_fast32_t>(((maxX-minX)/this->binSize)+roundingAddition);
 				yBins = boost::numeric_cast<boost::uint_fast32_t>(((maxY-minY)/this->binSize)+roundingAddition);
 			}
-			catch(boost::numeric::negative_overflow& e)
+			catch(boost::numeric::negative_overflow& e) 
 			{
 				throw SPDProcessingException(e.what());
 			}
-			catch(boost::numeric::positive_overflow& e)
+			catch(boost::numeric::positive_overflow& e) 
 			{
 				throw SPDProcessingException(e.what());
 			}
-			catch(boost::numeric::bad_numeric_cast& e)
+			catch(boost::numeric::bad_numeric_cast& e) 
 			{
 				throw SPDProcessingException(e.what());
 			}
@@ -321,7 +321,7 @@ namespace spdlib
 				}
 			}
 			
-			try
+			try 
 			{	
 				double xDiff = 0;
 				double yDiff = 0;
@@ -336,20 +336,20 @@ namespace spdlib
 					xDiff = (pt->x - this->tlX)/this->binSize;
 					yDiff = (this->tlY - pt->y)/this->binSize;				
 					
-					try
+					try 
 					{
 						xIdx = boost::numeric_cast<boost::uint_fast32_t>(xDiff);
 						yIdx = boost::numeric_cast<boost::uint_fast32_t>(yDiff);
 					}
-					catch(boost::numeric::negative_overflow& e)
+					catch(boost::numeric::negative_overflow& e) 
 					{
 						throw SPDProcessingException(e.what());
 					}
-					catch(boost::numeric::positive_overflow& e)
+					catch(boost::numeric::positive_overflow& e) 
 					{
 						throw SPDProcessingException(e.what());
 					}
-					catch(boost::numeric::bad_numeric_cast& e)
+					catch(boost::numeric::bad_numeric_cast& e) 
 					{
 						throw SPDProcessingException(e.what());
 					}
@@ -371,11 +371,11 @@ namespace spdlib
 						std::cout << "Size [" << xBins << "," << yBins << "]\n";
 						throw SPDProcessingException("Did not find y index within range.");
 					}
-					
+					                    
 					this->ptGrid[yIdx][xIdx]->push_back(pt);
 				}
 			}
-			catch (SPDProcessingException &e)
+			catch (SPDProcessingException &e) 
 			{
 				for(boost::uint_fast32_t i = 0; i < yBins; ++i)
 				{
@@ -391,7 +391,7 @@ namespace spdlib
 			}
 			
 		}
-		else
+		else 
 		{
 			throw SPDProcessingException("Inputted list of points was empty.");
 		}
@@ -400,7 +400,7 @@ namespace spdlib
 	
 	bool SPDPointGridIndex::getPointsInRadius(std::vector<SPDPoint*> *pts, double eastings, double northings, double radius) throw(SPDProcessingException)
 	{
-		if((eastings < tlX) |
+		if((eastings < tlX) | 
 		   (eastings > brX) |
 		   (northings < brY) |
 		   (northings > tlY))
@@ -414,7 +414,7 @@ namespace spdlib
 		}
 		
 		bool returnVal = false;
-		try
+		try 
 		{
 			boost::uint_fast32_t xIdx = 0;
 			boost::uint_fast32_t yIdx = 0;
@@ -423,21 +423,21 @@ namespace spdlib
 			double xDiff = (eastings - this->tlX)/this->binSize;
 			double yDiff = (this->tlY - northings)/this->binSize;
 			double radiusInBinsFl = radius / this->binSize;
-			try
+			try 
 			{
 				xIdx = boost::numeric_cast<boost::uint_fast32_t>(xDiff);
 				yIdx = boost::numeric_cast<boost::uint_fast32_t>(yDiff);
 				radiusInBins = boost::numeric_cast<boost::uint_fast32_t>(ceil(radiusInBinsFl));
 			}
-			catch(boost::numeric::negative_overflow& e)
+			catch(boost::numeric::negative_overflow& e) 
 			{
 				throw SPDProcessingException(e.what());
 			}
-			catch(boost::numeric::positive_overflow& e)
+			catch(boost::numeric::positive_overflow& e) 
 			{
 				throw SPDProcessingException(e.what());
 			}
-			catch(boost::numeric::bad_numeric_cast& e)
+			catch(boost::numeric::bad_numeric_cast& e) 
 			{
 				throw SPDProcessingException(e.what());
 			}
@@ -514,7 +514,7 @@ namespace spdlib
 			}
 			returnVal = true;
 		}
-		catch (SPDProcessingException &e)
+		catch (SPDProcessingException &e) 
 		{
 			throw e;
 		}
@@ -525,8 +525,8 @@ namespace spdlib
     bool SPDPointGridIndex::getSetNumOfPoints(std::vector<SPDPoint*> *pts, double eastings, double northings, boost::uint_fast16_t numPts, double maxRadius) throw(SPDProcessingException)
     {
         //std::cout << "PT: [" << eastings << "," << northings << "]\n";
-
-        if((eastings < tlX) |
+        
+        if((eastings < tlX) | 
 		   (eastings > brX) |
 		   (northings < brY) |
 		   (northings > tlY))
@@ -538,32 +538,32 @@ namespace spdlib
 		{
 			throw SPDProcessingException("Radius is less than or equal to 0.");
 		}
-
+        
         bool returnVal = false;
-		try
+		try 
 		{
             currentCmpEastings = eastings;
             currentCmpNorthings = northings;
-
+            
 			boost::uint_fast32_t xIdx = 0;
 			boost::uint_fast32_t yIdx = 0;
 			
 			double xDiff = (eastings - this->tlX)/this->binSize;
 			double yDiff = (this->tlY - northings)/this->binSize;
-			try
+			try 
 			{
 				xIdx = boost::numeric_cast<boost::uint_fast32_t>(xDiff);
 				yIdx = boost::numeric_cast<boost::uint_fast32_t>(yDiff);
 			}
-			catch(boost::numeric::negative_overflow& e)
+			catch(boost::numeric::negative_overflow& e) 
 			{
 				throw SPDProcessingException(e.what());
 			}
-			catch(boost::numeric::positive_overflow& e)
+			catch(boost::numeric::positive_overflow& e) 
 			{
 				throw SPDProcessingException(e.what());
 			}
-			catch(boost::numeric::bad_numeric_cast& e)
+			catch(boost::numeric::bad_numeric_cast& e) 
 			{
 				throw SPDProcessingException(e.what());
 			}
@@ -585,13 +585,13 @@ namespace spdlib
 				std::cout << "Size [" << xBins << "," << yBins << "]\n";
 				return false;
 			}
-
+            
             //std::cout << "PT: [yIdx][xIdx] = [" << yIdx<< "][" << xIdx << "]" << std::endl;
-
+            
             if(ptGrid[yIdx][xIdx]->size() >= numPts)
             {
                 std::sort(ptGrid[yIdx][xIdx]->begin(), ptGrid[yIdx][xIdx]->end(), compareFuncSortByDistanceTo);
-
+                
                 for(boost::uint_fast16_t i = 0; i < numPts; ++i)
                 {
                     pts->push_back(ptGrid[yIdx][xIdx]->at(i));
@@ -608,26 +608,26 @@ namespace spdlib
                 boost::uint_fast32_t radiusStartY = 0;
                 boost::uint_fast32_t radiusEndY = 0;
                 boost::uint_fast32_t totalPtsCount = 0;
-
+                
                 do
                 {
-                    try
+                    try 
                     {
                         currRadiusInBins = boost::numeric_cast<boost::uint_fast32_t>(ceil(currentRadius));
                     }
-                    catch(boost::numeric::negative_overflow& e)
+                    catch(boost::numeric::negative_overflow& e) 
                     {
                         throw SPDProcessingException(e.what());
                     }
-                    catch(boost::numeric::positive_overflow& e)
+                    catch(boost::numeric::positive_overflow& e) 
                     {
                         throw SPDProcessingException(e.what());
                     }
-                    catch(boost::numeric::bad_numeric_cast& e)
+                    catch(boost::numeric::bad_numeric_cast& e) 
                     {
                         throw SPDProcessingException(e.what());
                     }
-
+                                       
                     if((((int_fast64_t)xIdx) - ((int_fast64_t)currRadiusInBins)) < 0)
                     {
                         radiusStartX = 0;
@@ -643,7 +643,7 @@ namespace spdlib
                         radiusStartX = xIdx - currRadiusInBins;
                         radiusEndX = xIdx + currRadiusInBins;
                     }
-
+                    
                     if((((int_fast64_t)yIdx) - ((int_fast64_t)currRadiusInBins)) < 0)
                     {
                         radiusStartY = 0;
@@ -659,22 +659,22 @@ namespace spdlib
                         radiusStartY = yIdx - currRadiusInBins;
                         radiusEndY = yIdx + currRadiusInBins;
                     }
-
+                    
                     if(radiusEndX > this->xBins)
                     {
                         radiusEndX = this->xBins;
                     }
-
+                    
                     if(radiusEndY > this->yBins)
                     {
                         radiusEndY = this->yBins;
                     }
-
+                    
                     //std::cout << "radiusStartY = " << radiusStartY << std::endl;
                     //std::cout << "radiusEndY = " << radiusEndY << std::endl;
                     //std::cout << "radiusStartX = " << radiusStartX << std::endl;
                     //std::cout << "radiusEndX = " << radiusEndX << std::endl;
-
+                    
                     totalPtsCount = 0;
                     for(boost::uint_fast32_t i = radiusStartY; i < radiusEndY; ++i)
                     {
@@ -684,26 +684,26 @@ namespace spdlib
                             totalPtsCount += ptGrid[i][j]->size();
                         }
                     }
-
+                    
                     //std::cout << "CurrentRadius = " << currentRadius << std::endl;
                     //std::cout << "totalPtsCount = " << totalPtsCount <<std::endl;
                     //std::cout << "Number of Points Required = " << numPts <<std::endl << std::endl;
-
+                    
                     if(totalPtsCount >= numPts)
                     {
                         foundSufficientPoints = true;
                     }
-
+                    
                     currentRadius += binSize;
                 }while((currentRadius < maxRadius) & !foundSufficientPoints);
-
+                
                 if(foundSufficientPoints)
                 {
                     //std::cout << "X idxs [" << radiusStartX << "," << radiusEndX << "]\n";
                     //std::cout << "Y idxs [" << radiusStartY << "," << radiusEndY << "]\n";
-
+                    
                     std::vector<SPDPoint*> *possPoints = new std::vector<SPDPoint*>();
-
+                    
                     std::vector<SPDPoint*>::iterator iterPts;
                     for(boost::uint_fast32_t i = radiusStartY; i < radiusEndY; ++i)
                     {
@@ -716,16 +716,16 @@ namespace spdlib
                         }
                     }
                     //std::cout << "num poss points (1) = " << possPoints->size() << std::endl;
-
+                    
                     std::sort(possPoints->begin(), possPoints->end(), compareFuncSortByDistanceTo);
-
+                    
                     //std::cout << "num poss points (2) = " << possPoints->size() << std::endl;
-
+                    
                     for(boost::uint_fast16_t i = 0; i < numPts; ++i)
                     {
                         pts->push_back(possPoints->at(i));
                     }
-
+                    
                     delete possPoints;
                     returnVal = true;
                 }
@@ -734,16 +734,16 @@ namespace spdlib
                     returnVal = false;
                 }
             }
-
+            
 		}
-		catch (SPDProcessingException &e)
+		catch (SPDProcessingException &e) 
 		{
 			throw e;
 		}
 		
 		return returnVal;
     }
-
+    
     void SPDPointGridIndex::thinPtsInBins(boost::uint_fast16_t elevVal, boost::uint_fast16_t selectHighOrLow, boost::uint_fast16_t maxNumPtsPerBin) throw(SPDProcessingException)
     {
         boost::uint_fast32_t numPtsToRemove = 0;
@@ -791,7 +791,7 @@ namespace spdlib
                     {
                         throw SPDProcessingException("Do not recognise elevation type (needs to be height or Z).");
                     }
-
+                    
                     numPtsToRemove = ptGrid[i][j]->size() - maxNumPtsPerBin;
                     for(boost::uint_fast32_t n = 0; n < numPtsToRemove; ++n)
                     {
@@ -801,7 +801,7 @@ namespace spdlib
             }
         }
     }
-
+    
     /*
     void SPDPointGridIndex::thinPtsInBinsWithDelete(boost::uint_fast16_t elevVal, boost::uint_fast16_t selectHighOrLow, boost::uint_fast16_t maxNumPtsPerBin) throw(SPDProcessingException)
     {
@@ -846,7 +846,7 @@ namespace spdlib
                     {
                         throw SPDProcessingException("Do not recognise elevation type (needs to be height or Z).");
                     }
-
+                    
                     numPtsToRemove = ptGrid[i][j]->size() - maxNumPtsPerBin;
                     for(boost::uint_fast32_t n = 0; n < numPtsToRemove; ++n)
                     {
@@ -858,7 +858,7 @@ namespace spdlib
         }
     }
     */
-
+    
     void SPDPointGridIndex::thinPtsWithAvZ(boost::uint_fast16_t elevVal) throw(SPDProcessingException)
     {
         std::vector<SPDPoint*>::iterator iterPts;
@@ -879,7 +879,7 @@ namespace spdlib
                     pt->x = currentX;
                     pt->y = currentY;
                     zVal = 0;
-
+                    
                     if(elevVal == SPD_USE_Z)
                     {
                         for(iterPts = ptGrid[i][j]->begin(); iterPts != ptGrid[i][j]->end(); ++iterPts)
@@ -900,9 +900,9 @@ namespace spdlib
                     {
                         throw SPDProcessingException("Do not recognise elevation type (needs to be height or Z).");
                     }
-
+                    
                     //std::cout << "ptGrid[" << i << "][" << j << "] = {" << pt->x << "," << pt->y << "}\n";
-
+                    
                     ptGrid[i][j]->clear();
                     ptGrid[i][j]->push_back(pt);
                 }
@@ -915,10 +915,10 @@ namespace spdlib
             currentY = currentY - binSize;
             //std::cout << std::endl;
         }
-
+        
         deletePtsInBins = true;
     }
-
+    
     void SPDPointGridIndex::getAllPointsInGrid(std::vector<SPDPoint*> *pts) throw(SPDProcessingException)
     {
         std::vector<SPDPoint*>::iterator iterPts;
@@ -933,7 +933,7 @@ namespace spdlib
             }
         }
     }
-
+    
 	SPDPointGridIndex::~SPDPointGridIndex()
 	{
 		if(this->ptGrid != NULL)

@@ -31,7 +31,7 @@
 # History:
 # Version 1.0 - Created.
 # Version 1.1 - Added <PATH> option with the $ template character
-# Version 1.2 - Changed to use argument parser
+# Version 1.2 - Changed to use argument parser 
 # Version 1.3 - Updated to use os.walk if running in recursive mode
 #
 #############################################################################
@@ -60,7 +60,7 @@ class SPDLibBatchGenerator (object):
                         filelist.append(os.path.join(dName, filename))
         else:
             print(directory + ' does not exist!')
-
+    
     def findFiles(self, filelist, directory, extension):
         if os.path.exists(directory):
             if os.path.isdir(directory):
@@ -133,13 +133,13 @@ class SPDLibBatchGenerator (object):
         parser.add_argument("-r", "--recurse", type=str, dest="recurse", default='no', help="Recurse into sub directories within input directory (yes | no).")
         parser.add_argument("-t", "--output_type", type=str, dest="outputtype", default='single', help="Output type (single - single shell file | multiple - separate shell file for each file found).")
 
-        args = parser.parse_args()
+        args = parser.parse_args()    
 
         if args.xmloutlineFile is None:
             print("Input shell template must be set.")
             parser.print_help()
             sys.exit()
-
+            
         if args.outfile is None:
             print("Output shell must be set.")
             parser.print_help()
@@ -149,12 +149,12 @@ class SPDLibBatchGenerator (object):
             print("Extension must be set.")
             parser.print_help()
             sys.exit()
-
+        
         if args.dir is None:
             print("Directory must be set.")
             parser.print_help()
             sys.exit()
-
+        
         if args.path is None:
             print("WARNING: No path set, assuming the same as search directory:")
             print(args.dir)
@@ -186,7 +186,7 @@ class SPDLibBatchGenerator (object):
     def help(self):
         print('spdbatchgen.py script generates the shell commands for the ')
         print('SPD software library from a user defined template')
-
+        
         print('Within shell Template (--input):')
         print('\t$FILEPATH - Replaced with full file path')
         print('\t$FILENAME - Replaced with file name')
