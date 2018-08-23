@@ -25,12 +25,12 @@
 
 namespace spdlib
 {
-
+    
     SPDTidyGroundReturnNegativeHeights::SPDTidyGroundReturnNegativeHeights() : SPDDataBlockProcessor()
     {
 
     }
-
+    
     void SPDTidyGroundReturnNegativeHeights::processDataBlock(SPDFile *inSPDFile, std::vector<SPDPulse*> ***pulses, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, float binSize) throw(SPDProcessingException)
     {
         try
@@ -49,9 +49,9 @@ namespace spdlib
                     std::cout << "." << feedbackCounter << "." << std::flush;
                     feedbackCounter = feedbackCounter + 10;
                 }
-
+                
                 std::vector<SPDPoint*> *grdPts = new std::vector<SPDPoint*>();
-
+                
                 for(boost::uint_fast32_t j = 0; j < xSize; ++j)
                 {
                     for(std::vector<SPDPulse*>::iterator iterPulses = pulses[i][j]->begin(); iterPulses != pulses[i][j]->end(); ++iterPulses)
@@ -64,7 +64,7 @@ namespace spdlib
                                 {
                                     (*iterPts)->classification = SPD_GROUND;
                                 }
-
+                                
                                 if((*iterPts)->classification == SPD_GROUND)
                                 {
                                     grdPts->push_back((*iterPts));
@@ -73,11 +73,11 @@ namespace spdlib
                         }
                     }
                 }
-
+                
                 std::cout << "There are " << grdPts->size() << " ground returns.\n";
-
+                
                 delete grdPts;
-
+                
             }
             std::cout << " Complete.\n";
         }
@@ -86,27 +86,27 @@ namespace spdlib
             throw e;
         }
     }
-
+    
     SPDTidyGroundReturnNegativeHeights::~SPDTidyGroundReturnNegativeHeights()
     {
-
+        
     }
-
-
-
+    
+    
+    
     SPDTidyGroundReturnsPlaneFitting::SPDTidyGroundReturnsPlaneFitting() : SPDPulseProcessor()
     {
-
+        
     }
-
+    
     void SPDTidyGroundReturnsPlaneFitting::processDataWindow(SPDFile *inSPDFile, bool **validBins, std::vector<SPDPulse*> ***pulses, SPDXYPoint ***cenPts, boost::uint_fast16_t winSize) throw(SPDProcessingException)
     {
         try
         {
             SPDMathsUtils mathUtils;
-
+            
             boost::uint_fast16_t winHSize = (winSize-1)/2;
-
+            
             std::vector<SPDPoint*> *grdPts = new std::vector<SPDPoint*>();
             for(boost::uint_fast16_t i = 0; i < winSize; ++i)
             {
@@ -130,7 +130,7 @@ namespace spdlib
                     }
                 }
             }
-
+            
             boost::uint_fast32_t numGrdPts = grdPts->size();
             if(numGrdPts > 3)
             {
@@ -138,14 +138,14 @@ namespace spdlib
                 double *x = new double[numGrdPts];
                 double *y = new double[numGrdPts];
                 double *z = new double[numGrdPts];
-
+                
                 double normX = cenPts[winHSize][winHSize]->x;
                 double normY = cenPts[winHSize][winHSize]->y;
-
+                
                 double a = 0;
                 double b = 0;
                 double c = 0;
-
+                
                 for(boost::uint_fast32_t i = 0; i < numGrdPts; ++i)
                 {
                     x[i] = grdPts->at(i)->x;
@@ -155,13 +155,13 @@ namespace spdlib
                 mathUtils.fitPlane(x, y, z, numGrdPts, normX, normY, &a, &b, &c);
                 std::cout << "Plane: a = " << a << " b = " << b << " c = " << c << std::endl;
                 mathUtils.devFromPlane(x, y, z, numGrdPts, normX, normY, a, b, c);
-
+                
                 std::cout << "WARNING: SPDTidyGroundReturnsPlaneFitting implementation is not COMPLETE!!!!!!!!\n";
-
+                
                 delete[] x;
                 delete[] y;
                 delete[] z;
-
+                
             }
         }
         catch (SPDProcessingException &e)
@@ -169,12 +169,12 @@ namespace spdlib
             throw e;
         }
     }
-
+    
     SPDTidyGroundReturnsPlaneFitting::~SPDTidyGroundReturnsPlaneFitting()
     {
-
+        
     }
-
+    
 }
 
 

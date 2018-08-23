@@ -32,32 +32,32 @@ namespace spdlib
     {
         this->interpolator = interpolator;
     }
-
+        
     void SPDDTMInterpolation::processDataBlockImage(SPDFile *inSPDFile, std::vector<SPDPulse*> ***pulses, float ***imageDataBlock, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast32_t numImgBands, float binSize) throw(SPDProcessingException)
-    {
-        try
-		{
+    {        
+        try 
+		{   
 			if(numImgBands <= 0)
 			{
 				throw SPDProcessingException("The output image needs to have at least 1 image band.");
 			}
-
+            
             bool ptsAvail = true;
-            try
+            try 
             {
                 std::cout << "Init interpolator\n";
                 interpolator->initInterpolator(pulses, xSize, ySize, SPD_GROUND);
             }
-            catch (SPDException &e)
+            catch (SPDException &e) 
             {
                 ptsAvail = false;
             }
-
+            
             int feedback = ySize/10.0;
             int feedbackCounter = 0;
             std::cout << "Started" << std::flush;
             if(ptsAvail)
-            {
+            {                
                 for(boost::uint_fast32_t i = 0; i < ySize; ++i)
                 {
                     if(ySize < 10)
@@ -69,13 +69,13 @@ namespace spdlib
                         std::cout << "." << feedbackCounter << "." << std::flush;
                         feedbackCounter = feedbackCounter + 10;
                     }
-
+                    
                     for(boost::uint_fast32_t j = 0; j < xSize; ++j)
                     {
                         imageDataBlock[i][j][0] = interpolator->getValue(cenPts[i][j]->x, cenPts[i][j]->y);
                     }
                 }
-
+                
             }
             else
             {
@@ -90,7 +90,7 @@ namespace spdlib
                         std::cout << "." << feedbackCounter << "." << std::flush;
                         feedbackCounter = feedbackCounter + 10;
                     }
-
+                    
                     for(boost::uint_fast32_t j = 0; j < xSize; ++j)
                     {
                         imageDataBlock[i][j][0] = std::numeric_limits<float>::signaling_NaN();
@@ -99,15 +99,15 @@ namespace spdlib
             }
 			std::cout << " Complete.\n";
 			interpolator->resetInterpolator();
-
+            
 		}
-		catch (SPDProcessingException &e)
+		catch (SPDProcessingException &e) 
 		{
 			throw e;
 		}
-
+        
     }
-
+    
     void SPDDTMInterpolation::processDataBlockImage(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses, float ***imageDataBlock, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast32_t numImgBands) throw(SPDProcessingException)
     {
         try
@@ -116,7 +116,7 @@ namespace spdlib
 			{
 				throw SPDProcessingException("The output image needs to have at least 1 image band.");
 			}
-
+            
             bool ptsAvail = true;
             try
             {
@@ -127,7 +127,7 @@ namespace spdlib
             {
                 ptsAvail = false;
             }
-
+            
             int feedback = ySize/10.0;
             int feedbackCounter = 0;
             std::cout << "Started" << std::flush;
@@ -144,13 +144,13 @@ namespace spdlib
                         std::cout << "." << feedbackCounter << "." << std::flush;
                         feedbackCounter = feedbackCounter + 10;
                     }
-
+                    
                     for(boost::uint_fast32_t j = 0; j < xSize; ++j)
                     {
                         imageDataBlock[i][j][0] = interpolator->getValue(cenPts[i][j]->x, cenPts[i][j]->y);
                     }
                 }
-
+                
             }
             else
             {
@@ -165,7 +165,7 @@ namespace spdlib
                         std::cout << "." << feedbackCounter << "." << std::flush;
                         feedbackCounter = feedbackCounter + 10;
                     }
-
+                    
                     for(boost::uint_fast32_t j = 0; j < xSize; ++j)
                     {
                         imageDataBlock[i][j][0] = std::numeric_limits<float>::signaling_NaN();
@@ -174,31 +174,31 @@ namespace spdlib
             }
 			std::cout << " Complete.\n";
 			interpolator->resetInterpolator();
-
+            
 		}
 		catch (SPDProcessingException &e)
 		{
 			throw e;
 		}
     }
-
+    
     SPDDTMInterpolation::~SPDDTMInterpolation()
     {
-
+        
     }
-
-
-
-
+    
+    
+    
+    
     SPDDSMInterpolation::SPDDSMInterpolation(SPDPointInterpolator *interpolator)
     {
         this->interpolator = interpolator;
     }
-
+    
     void SPDDSMInterpolation::processDataBlockImage(SPDFile *inSPDFile, std::vector<SPDPulse*> ***pulses, float ***imageDataBlock, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast32_t numImgBands, float binSize) throw(SPDProcessingException)
     {
-        try
-		{
+        try 
+		{            
 			if(numImgBands <= 0)
 			{
 				throw SPDProcessingException("The output image needs to have at least 1 image band.");
@@ -209,7 +209,7 @@ namespace spdlib
             {
                 interpolator->initInterpolator(pulses, xSize, ySize, SPD_ALL_CLASSES_TOP);
             }
-            catch (SPDException &e)
+            catch (SPDException &e) 
             {
                 ptsAvail = false;
             }
@@ -217,10 +217,10 @@ namespace spdlib
             int feedback = ySize/10.0;
             int feedbackCounter = 0;
             std::cout << "Started" << std::flush;
-
+            
             if(ptsAvail)
             {
-
+                
                 for(boost::uint_fast32_t i = 0; i < ySize; ++i)
                 {
                     if(ySize < 10)
@@ -232,7 +232,7 @@ namespace spdlib
                         std::cout << "." << feedbackCounter << "." << std::flush;
                         feedbackCounter = feedbackCounter + 10;
                     }
-
+                    
                     for(boost::uint_fast32_t j = 0; j < xSize; ++j)
                     {
                         imageDataBlock[i][j][0] = interpolator->getValue(cenPts[i][j]->x, cenPts[i][j]->y);
@@ -252,7 +252,7 @@ namespace spdlib
                         std::cout << "." << feedbackCounter << "." << std::flush;
                         feedbackCounter = feedbackCounter + 10;
                     }
-
+                    
                     for(boost::uint_fast32_t j = 0; j < xSize; ++j)
                     {
                         imageDataBlock[i][j][0] = std::numeric_limits<float>::signaling_NaN();
@@ -263,12 +263,12 @@ namespace spdlib
 			
 			interpolator->resetInterpolator();
 		}
-		catch (SPDProcessingException &e)
+		catch (SPDProcessingException &e) 
 		{
 			throw e;
 		}
     }
-
+    
     void SPDDSMInterpolation::processDataBlockImage(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses, float ***imageDataBlock, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast32_t numImgBands) throw(SPDProcessingException)
     {
         try
@@ -291,10 +291,10 @@ namespace spdlib
             int feedback = ySize/10.0;
             int feedbackCounter = 0;
             std::cout << "Started" << std::flush;
-
+            
             if(ptsAvail)
             {
-
+                
                 for(boost::uint_fast32_t i = 0; i < ySize; ++i)
                 {
                     if(ySize < 10)
@@ -306,7 +306,7 @@ namespace spdlib
                         std::cout << "." << feedbackCounter << "." << std::flush;
                         feedbackCounter = feedbackCounter + 10;
                     }
-
+                    
                     for(boost::uint_fast32_t j = 0; j < xSize; ++j)
                     {
                         imageDataBlock[i][j][0] = interpolator->getValue(cenPts[i][j]->x, cenPts[i][j]->y);
@@ -326,7 +326,7 @@ namespace spdlib
                         std::cout << "." << feedbackCounter << "." << std::flush;
                         feedbackCounter = feedbackCounter + 10;
                     }
-
+                    
                     for(boost::uint_fast32_t j = 0; j < xSize; ++j)
                     {
                         imageDataBlock[i][j][0] = std::numeric_limits<float>::signaling_NaN();
@@ -342,16 +342,16 @@ namespace spdlib
 			throw e;
 		}
     }
-
+    
     SPDDSMInterpolation::~SPDDSMInterpolation()
     {
-
+        
     }
-
-
-
-
-
+    
+    
+    
+    
+    
     SPDCHMInterpolation::SPDCHMInterpolation(SPDPointInterpolator *interpolator, bool useVegClassifiedPts, bool useMinThres, double minThresVal)
     {
         this->interpolator = interpolator;
@@ -359,11 +359,11 @@ namespace spdlib
         this->useMinThres = useMinThres;
         this->minThresVal = minThresVal;
     }
-
+    
     void SPDCHMInterpolation::processDataBlockImage(SPDFile *inSPDFile, std::vector<SPDPulse*> ***pulses, float ***imageDataBlock, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast32_t numImgBands, float binSize) throw(SPDProcessingException)
     {
-        try
-		{
+        try 
+		{            
 			if(numImgBands <= 0)
 			{
 				throw SPDProcessingException("The output image needs to have at least 1 image band.");
@@ -381,7 +381,7 @@ namespace spdlib
                     interpolator->initInterpolator(pulses, xSize, ySize, SPD_ALL_CLASSES_TOP);
                 }
 			}
-            catch (SPDException &e)
+            catch (SPDException &e) 
             {
                 ptsAvail = false;
             }
@@ -405,7 +405,7 @@ namespace spdlib
                         std::cout << "." << feedbackCounter << "." << std::flush;
                         feedbackCounter = feedbackCounter + 10;
                     }
-
+                    
                     for(boost::uint_fast32_t j = 0; j < xSize; ++j)
                     {
                         if(pulses[i][j]->size() > 0)
@@ -436,7 +436,7 @@ namespace spdlib
                                     }
                                 }
                             }
-
+                            
                             if(!first)
                             {
                                 imageDataBlock[i][j][0] = maxHeight;
@@ -450,7 +450,7 @@ namespace spdlib
                         {
                             imageDataBlock[i][j][0] = interpolator->getValue(cenPts[i][j]->x, cenPts[i][j]->y);
                         }
-
+                        
                         if(useMinThres)
                         {
                             if(imageDataBlock[i][j][0] < minThresVal)
@@ -474,7 +474,7 @@ namespace spdlib
                         std::cout << "." << feedbackCounter << "." << std::flush;
                         feedbackCounter = feedbackCounter + 10;
                     }
-
+                    
                     for(boost::uint_fast32_t j = 0; j < xSize; ++j)
                     {
                         imageDataBlock[i][j][0] = std::numeric_limits<float>::signaling_NaN();
@@ -485,12 +485,12 @@ namespace spdlib
 			
 			interpolator->resetInterpolator();
 		}
-		catch (SPDProcessingException &e)
+		catch (SPDProcessingException &e) 
 		{
 			throw e;
 		}
     }
-
+    
     void SPDCHMInterpolation::processDataBlockImage(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses, float ***imageDataBlock, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast32_t numImgBands) throw(SPDProcessingException)
     {
         try
@@ -515,7 +515,7 @@ namespace spdlib
             {
                 ptsAvail = false;
             }
-
+            
             float binSize = cenPts[0][0]->x - cenPts[0][1]->x;
             float hBinSize = binSize / 2;
             OGREnvelope *env = new OGREnvelope();
@@ -523,8 +523,8 @@ namespace spdlib
             env->MaxX = cenPts[ySize-1][xSize-1]->x + hBinSize;
             env->MinY = cenPts[ySize-1][xSize-1]->y - hBinSize;
             env->MaxY = cenPts[0][0]->y + hBinSize;
-
-
+            
+            
             std::vector<SPDPulse*> ***pulsesGrid = new std::vector<SPDPulse*>**[ySize];
             for(boost::uint_fast32_t i = 0; i < ySize; ++i)
             {
@@ -534,11 +534,11 @@ namespace spdlib
                     pulsesGrid[i][j] = new std::vector<SPDPulse*>();
                 }
             }
-
+            
             SPDGridData gridData;
             gridData.cartGridDataIgnoringOutGrid(pulses, pulsesGrid, env, xSize, ySize, binSize);
 			delete env;
-
+            
             bool first = true;
             SPDPoint *maxPt = NULL;
             double maxHeight = 0.0;
@@ -558,7 +558,7 @@ namespace spdlib
                         std::cout << "." << feedbackCounter << "." << std::flush;
                         feedbackCounter = feedbackCounter + 10;
                     }
-
+                    
                     for(boost::uint_fast32_t j = 0; j < xSize; ++j)
                     {
                         if(pulsesGrid[i][j]->size() > 0)
@@ -589,7 +589,7 @@ namespace spdlib
                                     }
                                 }
                             }
-
+                            
                             if(!first)
                             {
                                 imageDataBlock[i][j][0] = maxHeight;
@@ -619,7 +619,7 @@ namespace spdlib
                         std::cout << "." << feedbackCounter << "." << std::flush;
                         feedbackCounter = feedbackCounter + 10;
                     }
-
+                    
                     for(boost::uint_fast32_t j = 0; j < xSize; ++j)
                     {
                         imageDataBlock[i][j][0] = std::numeric_limits<float>::signaling_NaN();
@@ -627,7 +627,7 @@ namespace spdlib
                 }
             }
             std::cout << " Complete.\n";
-
+            
             for(boost::uint_fast32_t i = 0; i < ySize; ++i)
             {
                 for(boost::uint_fast32_t j = 0; j < xSize; ++j)
@@ -646,19 +646,19 @@ namespace spdlib
             throw e;
         }
     }
-
+    
     SPDCHMInterpolation::~SPDCHMInterpolation()
     {
-
+        
     }
-
-
+    
+    
     SPDAmplitudeInterpolation::SPDAmplitudeInterpolation(SPDPointInterpolator *interpolator, bool useGroundClassifiedPts)
     {
         this->interpolator = interpolator;
 		this->useGroundClassifiedPts = useGroundClassifiedPts;
     }
-
+    
     void SPDAmplitudeInterpolation::processDataBlockImage(SPDFile *inSPDFile, std::vector<SPDPulse*> ***pulses, float ***imageDataBlock, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast32_t numImgBands, float binSize) throw(SPDProcessingException)
     {
         try
@@ -671,7 +671,7 @@ namespace spdlib
             bool ptsAvail = true;
             try
             {
-				if(useGroundClassifiedPts)
+				if(useGroundClassifiedPts) 
 				{
 					interpolator->initInterpolator(pulses, xSize, ySize, SPD_GROUND);
 				}
@@ -701,7 +701,7 @@ namespace spdlib
                         std::cout << "." << feedbackCounter << "." << std::flush;
                         feedbackCounter = feedbackCounter + 10;
                     }
-
+                    
                     for(boost::uint_fast32_t j = 0; j < xSize; ++j)
                     {
                         imageDataBlock[i][j][0] = interpolator->getValue(cenPts[i][j]->x, cenPts[i][j]->y);
@@ -721,7 +721,7 @@ namespace spdlib
                         std::cout << "." << feedbackCounter << "." << std::flush;
                         feedbackCounter = feedbackCounter + 10;
                     }
-
+                    
                     for(boost::uint_fast32_t j = 0; j < xSize; ++j)
                     {
                         imageDataBlock[i][j][0] = std::numeric_limits<float>::signaling_NaN();
@@ -737,33 +737,33 @@ namespace spdlib
 			throw e;
 		}
     }
-
+    
     SPDAmplitudeInterpolation::~SPDAmplitudeInterpolation()
     {
-
+        
     }
-
-
+    
+    
     SPDRangeInterpolation::SPDRangeInterpolation(SPDPointInterpolator *interpolator)
     {
-
+        
     }
-
+        
     void SPDRangeInterpolation::processDataBlockImage(SPDFile *inSPDFile, std::vector<SPDPulse*> ***pulses, float ***imageDataBlock, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast32_t numImgBands, float binSize) throw(SPDProcessingException)
     {
-        try
+        try 
 		{
 			if(numImgBands != 1)
 			{
 				throw SPDProcessingException("The output image needs to have at least 1 image band.");
 			}
-
+            
             bool ptsAvail = true;
             try
             {
                 interpolator->initInterpolator(pulses, xSize, ySize, SPD_ALL_CLASSES);
             }
-            catch (SPDException &e)
+            catch (SPDException &e) 
             {
                 ptsAvail = false;
             }
@@ -784,7 +784,7 @@ namespace spdlib
                         std::cout << "." << feedbackCounter << "." << std::flush;
                         feedbackCounter = feedbackCounter + 10;
                     }
-
+                    
                     for(boost::uint_fast32_t j = 0; j < xSize; ++j)
                     {
                         imageDataBlock[i][j][0] = interpolator->getValue(cenPts[i][j]->x, cenPts[i][j]->y);
@@ -804,7 +804,7 @@ namespace spdlib
                         std::cout << "." << feedbackCounter << "." << std::flush;
                         feedbackCounter = feedbackCounter + 10;
                     }
-
+                    
                     for(boost::uint_fast32_t j = 0; j < xSize; ++j)
                     {
                         imageDataBlock[i][j][0] = std::numeric_limits<float>::signaling_NaN();
@@ -812,21 +812,21 @@ namespace spdlib
                 }
             }
 			std::cout << " Complete.\n";
-
+            
 			interpolator->resetInterpolator();
 		}
-		catch (SPDProcessingException &e)
+		catch (SPDProcessingException &e) 
 		{
 			throw e;
 		}
     }
-
+    
     SPDRangeInterpolation::~SPDRangeInterpolation()
     {
-
+        
     }
 
-
+    
 }
 
 

@@ -4,7 +4,7 @@
  *
  *  Created by Pete Bunting on 30/11/2010.
  *  Copyright 2010 SPDLib. All rights reserved.
- *
+ * 
  *  This file is part of SPDLib.
  *
  *  SPDLib is free software: you can redistribute it and/or modify
@@ -34,17 +34,17 @@
 
 #include "spd/spd-config.h"
 
-int main (int argc, char * const argv[])
+int main (int argc, char * const argv[]) 
 {
     std::cout.precision(12);
-
+    
     std::cout << "spdtranslate " << SPDLIB_PACKAGE_STRING << ", Copyright (C) " << SPDLIB_COPYRIGHT_YEAR << " Sorted Pulse Library (SPD)\n";
 	std::cout << "This program comes with ABSOLUTELY NO WARRANTY. This is free software,\n";
 	std::cout << "and you are welcome to redistribute it under certain conditions; See\n";
 	std::cout << "website (http://www.spdlib.org). Bugs are to be reported on the trac\n";
 	std::cout << "or directly to " << SPDLIB_PACKAGE_BUGREPORT << std::endl;
 	
-	try
+	try 
 	{
         TCLAP::CmdLine cmd("Convert between file formats: spdtranslate", ' ', "1.1.0");
 		
@@ -99,7 +99,7 @@ int main (int argc, char * const argv[])
 		
 		TCLAP::ValueArg<std::string> waveBitResArg("","wavebitres","The bit resolution used for storing the waveform data (Default: 32BIT)",false,"32BIT", &allowedWaveformBitResTypesVals);
 		cmd.add( waveBitResArg );
-
+        
         TCLAP::SwitchArg defineSphericalSwitch("","spherical","Index the pulses using a spherical coordinate system", false);
         cmd.add( defineSphericalSwitch );
         TCLAP::SwitchArg definePolarSwitch("","polar","Index the pulses using a polar coordinate system", false);
@@ -109,13 +109,13 @@ int main (int argc, char * const argv[])
 		
 		TCLAP::ValueArg<std::string> tempDirPathArg("t","temppath","A path were temporary files can be written too",false,"", "string");
 		cmd.add( tempDirPathArg );
-
+        
         TCLAP::ValueArg<std::string> schemaArg("s","schema","A schema for the format of the file being imported (Note, most importers do not require a schema)",false,"", "string");
 		cmd.add( schemaArg );
 		
 		TCLAP::ValueArg<boost::uint_fast16_t> numOfRowsInTileArg("r","numofrows","Number of rows within a tile (Default 25)",false,25,"unsigned int");
 		cmd.add( numOfRowsInTileArg );
-
+        
         TCLAP::ValueArg<boost::uint_fast16_t> numOfColsInTileArg("c","numofcols","Number of columns within a tile (Default 0), using this option generats a non-sequencial SPD file.",false,0,"unsigned int");
 		cmd.add( numOfColsInTileArg );
 		
@@ -130,52 +130,52 @@ int main (int argc, char * const argv[])
 		
 		TCLAP::SwitchArg convertProjSwitch("","convert_proj","Convert file buffering to disk", false);
 		cmd.add( convertProjSwitch );
-
+        
         TCLAP::SwitchArg keepTmpFilesSwitch("","keeptemp","Keep the tempory files generated during the conversion.", false);
 		cmd.add( keepTmpFilesSwitch );
-
+        
         TCLAP::SwitchArg defineTLSwitch("","defineTL","Define the top left (TL) coordinate for the SPD file index", false);
 		cmd.add( defineTLSwitch );
-
+        
         TCLAP::ValueArg<double> tlXArg("","tlx","Top left X coordinate for defining the SPD file index.",false,0,"double");
 		cmd.add( tlXArg );
-
+        
         TCLAP::ValueArg<double> tlYArg("","tly","Top left Y coordinate for defining the SPD file index.",false,0,"double");
 		cmd.add( tlYArg );
 
 		TCLAP::SwitchArg defineOriginSwitch("","defineOrigin","Define the origin coordinate for the SPD.", false);
 		cmd.add( defineOriginSwitch );
-
+        
         TCLAP::ValueArg<double> originXArg("","Ox","Origin X coordinate.",false,0,"double");
 		cmd.add( originXArg );
-
+        
         TCLAP::ValueArg<double> originYArg("","Oy","Origin Y coordinate",false,0,"double");
 		cmd.add( originYArg );
-
+        
         TCLAP::ValueArg<float> originZArg("","Oz","Origin Z coordinate",false,0,"float");
 		cmd.add( originZArg );
-
+        
         TCLAP::ValueArg<float> waveNoiseThresholdArg("","wavenoise","Waveform noise threshold (Default 0)",false,0,"float");
 		cmd.add( waveNoiseThresholdArg );
-
+        
 		TCLAP::ValueArg<boost::uint_fast16_t> pointVersionArg("","pointversion","Specify the point version to be used within the SPD file (Default: 2)",false ,2 ,"unsigned int");
 		cmd.add( pointVersionArg );
-
+        
         TCLAP::ValueArg<boost::uint_fast16_t> pulseVersionArg("","pulseversion","Specify the pulse version to be used within the SPD file (Default: 2)",false ,2 ,"unsigned int");
 		cmd.add( pulseVersionArg );
 		
 		TCLAP::SwitchArg keepExtentSwitch("","keepextent","When indexing the file use the extent of the input file as the minimum extent of the output file.", false);
 		cmd.add( keepExtentSwitch );
-
+        
         TCLAP::SwitchArg exportZasHSwitch("","exportZasH","Export file with Height used instead of Z (for LAS/LAZ files).", false);
         cmd.add( exportZasHSwitch );
 		
 		TCLAP::ValueArg<std::string> inputFileArg("i","input","The input file.",true,"","String");
 		cmd.add( inputFileArg );
-
+        
         TCLAP::ValueArg<std::string> outputFileArg("o","output","The output file.",true,"","String");
 		cmd.add( outputFileArg );
-
+        
 		cmd.parse( argc, argv );
 		
 		boost::uint_fast16_t indexType = spdlib::SPD_IDX_UNCHANGED;
@@ -209,12 +209,12 @@ int main (int argc, char * const argv[])
 			{
 				indexType = spdlib::SPD_IDX_UNCHANGED;
 			}
-			else
+			else 
 			{
 				throw spdlib::SPDException("Index type from not recognised.");
 			}
 		}
-
+        
         boost::uint_fast16_t waveBitRes = spdlib::SPD_32_BIT_WAVE;
 		if(waveBitResArg.isSet())
 		{
@@ -230,7 +230,7 @@ int main (int argc, char * const argv[])
 			{
 				waveBitRes = spdlib::SPD_32_BIT_WAVE;
 			}
-			else
+			else 
 			{
 				throw spdlib::SPDException("Waveform bit resolution option was not recognised.");
 			}
@@ -253,17 +253,17 @@ int main (int argc, char * const argv[])
         boost::uint_fast16_t pulseVersion = pulseVersionArg.getValue();
         bool useInputFileAsMinimumExtent = keepExtentSwitch.getValue();
         bool exportZasH = exportZasHSwitch.getValue();
-
+        
         if((pointVersion == 0) | (pointVersion > 2))
         {
             throw spdlib::SPDException("Point version can only have a value of 1 or 2.");
         }
-
+        
         if((pulseVersion == 0) | (pulseVersion > 2))
         {
             throw spdlib::SPDException("Pulse version can only have a value of 1 or 2.");
         }
-
+        
 		std::string inProjWKT = "";
 		std::string outProjWKT = "";
 		
@@ -295,12 +295,12 @@ int main (int argc, char * const argv[])
 			{
 				throw spdlib::SPDException("A temporary path needs to be provided.");
 			}
-
+            
             if(numOfRows == 0)
 			{
 				throw spdlib::SPDException("The number of rows within a tile needs to greater than zero.");
 			}
-
+            
             if(numOfCols > 0)
             {
                 convert.convertToSPDUsingBlockTiles(inputFile, outputFile, inputFormat, schema, binSize, inProjWKT, convertCoords, outProjWKT, indexType, tempdir, numOfRows, numOfCols, defineTLSwitch.getValue(), tlXArg.getValue(), tlYArg.getValue(), defineOriginSwitch.getValue(), originXArg.getValue(), originYArg.getValue(), originZArg.getValue(), defineSphericalSwitch.getValue(), definePolarSwitch.getValue(), defineScanSwitch.getValue(), waveNoiseThresholdArg.getValue(), waveBitRes, keepTempFiles, pointVersion, pulseVersion, useInputFileAsMinimumExtent);
@@ -311,7 +311,7 @@ int main (int argc, char * const argv[])
             }
 
 		}
-		else
+		else 
 		{
             if(outputFormat == "SPD")
             {
@@ -320,7 +320,7 @@ int main (int argc, char * const argv[])
 			convert.convertInMemory(inputFile, outputFile, inputFormat, schema, outputFormat, binSize, inProjWKT, convertCoords, outProjWKT, indexType, defineTLSwitch.getValue(), tlXArg.getValue(), tlYArg.getValue(), defineOriginSwitch.getValue(), originXArg.getValue(), originYArg.getValue(), originZArg.getValue(), defineSphericalSwitch.getValue(), definePolarSwitch.getValue(), defineScanSwitch.getValue(), waveNoiseThresholdArg.getValue(), waveBitRes, pointVersion, pulseVersion, useInputFileAsMinimumExtent, exportZasH);
 		}
 	}
-	catch (TCLAP::ArgException &e)
+	catch (TCLAP::ArgException &e) 
 	{
 		std::cerr << "Parse Error: " << e.what() << std::endl;
 	}

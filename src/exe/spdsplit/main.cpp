@@ -4,7 +4,7 @@
  *
  *  Created by Pete Bunting on 31/10/2012.
  *  Copyright 2012 SPDLib. All rights reserved.
- *
+ * 
  *  This file is part of SPDLib.
  *
  *  SPDLib is free software: you can redistribute it and/or modify
@@ -39,7 +39,7 @@ using namespace std;
 using namespace spdlib;
 using namespace TCLAP;
 
-int main (int argc, char * const argv[])
+int main (int argc, char * const argv[]) 
 {
 	cout << "spdsplit " << SPDLIB_PACKAGE_STRING << ", Copyright (C) " << SPDLIB_COPYRIGHT_YEAR << " Sorted Pulse Library (SPD)\n";
 	cout << "This program comes with ABSOLUTELY NO WARRANTY. This is free software,\n";
@@ -47,7 +47,7 @@ int main (int argc, char * const argv[])
 	cout << "website (http://www.spdlib.org). Bugs are to be reported on the trac\n";
 	cout << "or directly to " << SPDLIB_PACKAGE_BUGREPORT << endl;
 	
-	try
+	try 
 	{
 		CmdLine cmd("Split an SPD using the pulse source ID, i.e., to separate flight runs: spdsplit", ' ', "1.0.0");
 
@@ -65,27 +65,27 @@ int main (int argc, char * const argv[])
 			string message = string("Two file paths should have been specified (e.g., Input and Output). ") + textUtils.uInt32bittostring(fileNames.size()) + string(" were provided.");
 			throw SPDException(message);
 		}
-
+        
         boost::uint_fast16_t sourceID = sourceArg.getValue();
-
+        
         string inputFile = fileNames.at(0);
         string outputFile = fileNames.at(1);
-
+        
         SPDFile *inSPDFile = new SPDFile(inputFile);
         SPDFileReader spdReader = SPDFileReader();
         spdReader.readHeaderInfo(inputFile, inSPDFile);
-
+        
         SPDSplit *processor = new SPDSplit(outputFile, sourceID);
-
+        
         SPDFile *spdFile = new SPDFile(inputFile);
         spdReader.readAndProcessAllData(inputFile, spdFile, processor);
         processor->completeFileAndClose();
-
+        
         delete spdFile;
         delete processor;
-
+        
 	}
-	catch (ArgException &e)
+	catch (ArgException &e) 
 	{
 		cerr << "Parse Error: " << e.what() << endl;
 	}

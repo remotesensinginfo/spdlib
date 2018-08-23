@@ -3,7 +3,7 @@ import os
 import sys
 from numpy.distutils.core import setup, Extension
 
-INCLUDE_OPTIONS = ('--gdalinclude=', '--boostinclude=', '--gslinclude=',
+INCLUDE_OPTIONS = ('--gdalinclude=', '--boostinclude=', '--gslinclude=', 
                 '--cgalinclude=', '--lasinclude=', '--hdf5include=')
 LIB_OPTIONS = ('--gdallib=',)
 
@@ -45,13 +45,13 @@ extraincludes, gdalDir = getFlags()
 spdlibs = ['spdio', 'spd', 'gdal']
 if sys.platform == 'win32':
     spdlibs = ['libspdio', 'libspd', 'gdal_i']
-
+    
 libdirs = [os.path.join('..', 'src')]
 if gdalDir is not None:
     libdirs.append(gdalDir)
 
-spdpy2module = Extension(name="spdpy2._spdpy2",
-                sources=["src/spdpy2module.cpp", "src/pyspdfile.cpp", "src/recarray.cpp",
+spdpy2module = Extension(name="spdpy2._spdpy2", 
+                sources=["src/spdpy2module.cpp", "src/pyspdfile.cpp", "src/recarray.cpp", 
                             "src/pulsearray.cpp", "src/pointarray.cpp"],
                 library_dirs=libdirs,
                 libraries=spdlibs,

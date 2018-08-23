@@ -23,7 +23,7 @@
 #
 
 """
-Test for the Python spdapplier module.
+Test for the Python spdapplier module. 
 Mirrors the functionality of the inSPDnoOut program
 under examples/BlockProcessor.
 """
@@ -45,11 +45,11 @@ infile = sys.argv[1]
 def findAverageZ(spdfile, pulses, points, otherin):
     """
     Since this is a bit of a contrived example, the following code works
-    well since all the points are now in one array and you don't have to
+    well since all the points are now in one array and you don't have to 
     iterate through the pulses:
     otherinputs.ptCount += points.shape[0]
     otherinputs.sum += points['z'].sum()
-
+    
     However, in the spirit of the example, here is some numba code that
     performs the much same thing as the C++
     Note: with numba you can access the fields like pulses[npulse].numberOfReturns

@@ -1063,7 +1063,7 @@ void gqgeneraterec(/* Real    */ ae_vector* alpha,
         return;
     }
     *info = 1;
-
+    
     /*
      * Initialize
      */
@@ -1081,7 +1081,7 @@ void gqgeneraterec(/* Real    */ ae_vector* alpha,
         e.ptr.p_double[i-1] = ae_sqrt(beta->ptr.p_double[i], _state);
     }
     d.ptr.p_double[n-1] = alpha->ptr.p_double[n-1];
-
+    
     /*
      * EVD
      */
@@ -1091,7 +1091,7 @@ void gqgeneraterec(/* Real    */ ae_vector* alpha,
         ae_frame_leave(_state);
         return;
     }
-
+    
     /*
      * Generate
      */
@@ -1196,7 +1196,7 @@ void gqgenerategausslobattorec(/* Real    */ ae_vector* alpha,
         return;
     }
     *info = 1;
-
+    
     /*
      * Initialize, D[1:N+1], E[1:N]
      */
@@ -1217,7 +1217,7 @@ void gqgenerategausslobattorec(/* Real    */ ae_vector* alpha,
         }
         e.ptr.p_double[i-1] = ae_sqrt(beta->ptr.p_double[i], _state);
     }
-
+    
     /*
      * Caclulate Pn(a), Pn+1(a), Pn(b), Pn+1(b)
      */
@@ -1228,14 +1228,14 @@ void gqgenerategausslobattorec(/* Real    */ ae_vector* alpha,
     pib = 1;
     for(i=1; i<=n+1; i++)
     {
-
+        
         /*
          * Pi(a)
          */
         t = (a-alpha->ptr.p_double[i-1])*pia-beta->ptr.p_double[i-1]*pim1a;
         pim1a = pia;
         pia = t;
-
+        
         /*
          * Pi(b)
          */
@@ -1243,7 +1243,7 @@ void gqgenerategausslobattorec(/* Real    */ ae_vector* alpha,
         pim1b = pib;
         pib = t;
     }
-
+    
     /*
      * Calculate alpha'(n+1), beta'(n+1)
      */
@@ -1275,7 +1275,7 @@ void gqgenerategausslobattorec(/* Real    */ ae_vector* alpha,
     }
     d.ptr.p_double[n+1] = alph;
     e.ptr.p_double[n] = ae_sqrt(bet, _state);
-
+    
     /*
      * EVD
      */
@@ -1285,7 +1285,7 @@ void gqgenerategausslobattorec(/* Real    */ ae_vector* alpha,
         ae_frame_leave(_state);
         return;
     }
-
+    
     /*
      * Generate
      */
@@ -1379,7 +1379,7 @@ void gqgenerategaussradaurec(/* Real    */ ae_vector* alpha,
         return;
     }
     *info = 1;
-
+    
     /*
      * Initialize, D[1:N], E[1:N]
      */
@@ -1397,7 +1397,7 @@ void gqgenerategaussradaurec(/* Real    */ ae_vector* alpha,
         }
         e.ptr.p_double[i-1] = ae_sqrt(beta->ptr.p_double[i], _state);
     }
-
+    
     /*
      * Caclulate Pn(a), Pn-1(a), and D[N+1]
      */
@@ -1411,7 +1411,7 @@ void gqgenerategaussradaurec(/* Real    */ ae_vector* alpha,
         poli = t;
     }
     d.ptr.p_double[n] = a-beta->ptr.p_double[n]*polim1/poli;
-
+    
     /*
      * EVD
      */
@@ -1421,7 +1421,7 @@ void gqgenerategaussradaurec(/* Real    */ ae_vector* alpha,
         ae_frame_leave(_state);
         return;
     }
-
+    
     /*
      * Generate
      */
@@ -1496,7 +1496,7 @@ void gqgenerategausslegendre(ae_int_t n,
         beta.ptr.p_double[i] = 1/(4-1/ae_sqr(i, _state));
     }
     gqgeneraterec(&alpha, &beta, beta.ptr.p_double[0], n, info, x, w, _state);
-
+    
     /*
      * test basic properties to detect errors
      */
@@ -1601,7 +1601,7 @@ void gqgenerategaussjacobi(ae_int_t n,
         }
     }
     gqgeneraterec(&a, &b, b.ptr.p_double[0], n, info, x, w, _state);
-
+    
     /*
      * test basic properties to detect errors
      */
@@ -1696,7 +1696,7 @@ void gqgenerategausslaguerre(ae_int_t n,
         }
     }
     gqgeneraterec(&a, &b, b.ptr.p_double[0], n, info, x, w, _state);
-
+    
     /*
      * test basic properties to detect errors
      */
@@ -1780,7 +1780,7 @@ void gqgenerategausshermite(ae_int_t n,
         }
     }
     gqgeneraterec(&a, &b, b.ptr.p_double[0], n, info, x, w, _state);
-
+    
     /*
      * test basic properties to detect errors
      */
@@ -1904,13 +1904,13 @@ void gkqgeneraterec(/* Real    */ ae_vector* alpha,
         }
     }
     *info = 1;
-
+    
     /*
      * from external conventions about N/Beta/Mu0 to internal
      */
     n = n/2;
     beta->ptr.p_double[0] = mu0;
-
+    
     /*
      * Calculate Gauss nodes/weights, save them for later processing
      */
@@ -1920,7 +1920,7 @@ void gkqgeneraterec(/* Real    */ ae_vector* alpha,
         ae_frame_leave(_state);
         return;
     }
-
+    
     /*
      * Resize:
      * * A from 0..floor(3*n/2) to 0..2*n
@@ -1942,7 +1942,7 @@ void gkqgeneraterec(/* Real    */ ae_vector* alpha,
     {
         beta->ptr.p_double[i] = 0;
     }
-
+    
     /*
      * Initialize T, S
      */
@@ -1956,7 +1956,7 @@ void gkqgeneraterec(/* Real    */ ae_vector* alpha,
         t.ptr.p_double[i] = 0;
         s.ptr.p_double[i] = 0;
     }
-
+    
     /*
      * Algorithm from Dirk P. Laurie, "Calculation of Gauss-Kronrod quadrature rules", 1997.
      */
@@ -2003,7 +2003,7 @@ void gkqgeneraterec(/* Real    */ ae_vector* alpha,
         ae_v_move(&s.ptr.p_double[0], 1, &ta.ptr.p_double[0], 1, ae_v_len(0,wlen-1));
     }
     alpha->ptr.p_double[2*n] = alpha->ptr.p_double[n-1]-beta->ptr.p_double[2*n]*s.ptr.p_double[woffs+0]/t.ptr.p_double[woffs+0];
-
+    
     /*
      * calculation of Kronrod nodes and weights, unpacking of Gauss weights
      */
@@ -2203,7 +2203,7 @@ void gkqgenerategaussjacobi(ae_int_t n,
         }
     }
     gkqgeneraterec(&a, &b, b.ptr.p_double[0], n, info, x, wkronrod, wgauss, _state);
-
+    
     /*
      * test basic properties to detect errors
      */
@@ -2296,7 +2296,7 @@ void gkqlegendrecalc(ae_int_t n,
         beta.ptr.p_double[k] = 1/(4-1/ae_sqr(k, _state));
     }
     gkqgeneraterec(&alpha, &beta, mu0, n, info, x, wkronrod, wgauss, _state);
-
+    
     /*
      * test basic properties to detect errors
      */
@@ -2362,13 +2362,13 @@ void gkqlegendretbl(ae_int_t n,
     ae_vector_init(&p1, 0, DT_INT, _state, ae_true);
     ae_vector_init(&p2, 0, DT_INT, _state, ae_true);
 
-
+    
     /*
      * these initializers are not really necessary,
      * but without them compiler complains about uninitialized locals
      */
     ng = 0;
-
+    
     /*
      * Process
      */
@@ -2688,7 +2688,7 @@ void gkqlegendretbl(ae_int_t n,
         wkronrod->ptr.p_double[29] = 0.051426128537459025933862879215781;
         wkronrod->ptr.p_double[30] = 0.051494729429451567558340433647099;
     }
-
+    
     /*
      * copy nodes
      */
@@ -2696,7 +2696,7 @@ void gkqlegendretbl(ae_int_t n,
     {
         x->ptr.p_double[i] = -x->ptr.p_double[n-1-i];
     }
-
+    
     /*
      * copy Kronrod weights
      */
@@ -2704,7 +2704,7 @@ void gkqlegendretbl(ae_int_t n,
     {
         wkronrod->ptr.p_double[i] = wkronrod->ptr.p_double[n-1-i];
     }
-
+    
     /*
      * copy Gauss weights
      */
@@ -2717,7 +2717,7 @@ void gkqlegendretbl(ae_int_t n,
     {
         wgauss->ptr.p_double[2*i] = 0;
     }
-
+    
     /*
      * reorder
      */
@@ -2752,13 +2752,13 @@ cases.
 
 INPUT PARAMETERS:
     A, B    -   interval boundaries (A<B, A=B or A>B)
-
+    
 OUTPUT PARAMETERS
     State   -   structure which stores algorithm state
 
 SEE ALSO
     AutoGKSmoothW, AutoGKSingular, AutoGKResults.
-
+    
 
   -- ALGLIB --
      Copyright 06.05.2009 by Bochkanov Sergey
@@ -2901,7 +2901,7 @@ ae_bool autogkiteration(autogkstate* state, ae_state *_state)
     ae_bool result;
 
 
-
+    
     /*
      * Reverse communication preparations
      * I know it looks ugly, but it works the same way
@@ -2952,7 +2952,7 @@ ae_bool autogkiteration(autogkstate* state, ae_state *_state)
     {
         goto lbl_2;
     }
-
+    
     /*
      * Routine body
      */
@@ -2964,7 +2964,7 @@ ae_bool autogkiteration(autogkstate* state, ae_state *_state)
     state->terminationtype = -1;
     state->nfev = 0;
     state->nintervals = 0;
-
+    
     /*
      * smooth function  at a finite interval
      */
@@ -2972,7 +2972,7 @@ ae_bool autogkiteration(autogkstate* state, ae_state *_state)
     {
         goto lbl_3;
     }
-
+    
     /*
      * special case
      */
@@ -2983,7 +2983,7 @@ ae_bool autogkiteration(autogkstate* state, ae_state *_state)
         result = ae_false;
         return result;
     }
-
+    
     /*
      * general case
      */
@@ -3012,7 +3012,7 @@ lbl_6:
     result = ae_false;
     return result;
 lbl_3:
-
+    
     /*
      * function with power-law singularities at the ends of a finite interval
      */
@@ -3020,7 +3020,7 @@ lbl_3:
     {
         goto lbl_7;
     }
-
+    
     /*
      * test coefficients
      */
@@ -3031,7 +3031,7 @@ lbl_3:
         result = ae_false;
         return result;
     }
-
+    
     /*
      * special cases
      */
@@ -3042,7 +3042,7 @@ lbl_3:
         result = ae_false;
         return result;
     }
-
+    
     /*
      * reduction to general form
      */
@@ -3062,7 +3062,7 @@ lbl_3:
     }
     alpha = ae_minreal(alpha, 0, _state);
     beta = ae_minreal(beta, 0, _state);
-
+    
     /*
      * first, integrate left half of [a,b]:
      *     integral(f(x)dx, a, (b+a)/2) =
@@ -3074,7 +3074,7 @@ lbl_9:
     {
         goto lbl_10;
     }
-
+    
     /*
      * Fill State.X, State.XMinusA, State.BMinusX.
      * Latter two are filled correctly even if B<A.
@@ -3110,7 +3110,7 @@ lbl_1:
 lbl_10:
     v1 = state->internalstate.r;
     state->nintervals = state->nintervals+state->internalstate.heapused;
-
+    
     /*
      * then, integrate right half of [a,b]:
      *     integral(f(x)dx, (b+a)/2, b) =
@@ -3122,7 +3122,7 @@ lbl_11:
     {
         goto lbl_12;
     }
-
+    
     /*
      * Fill State.X, State.XMinusA, State.BMinusX.
      * Latter two are filled correctly (X-A, B-X) even if B<A.
@@ -3158,7 +3158,7 @@ lbl_2:
 lbl_12:
     v2 = state->internalstate.r;
     state->nintervals = state->nintervals+state->internalstate.heapused;
-
+    
     /*
      * final result
      */
@@ -3169,7 +3169,7 @@ lbl_12:
 lbl_7:
     result = ae_false;
     return result;
-
+    
     /*
      * Saving state
      */
@@ -3238,7 +3238,7 @@ static void autogk_autogkinternalprepare(double a,
 {
 
 
-
+    
     /*
      * Save settings
      */
@@ -3246,7 +3246,7 @@ static void autogk_autogkinternalprepare(double a,
     state->b = b;
     state->eps = eps;
     state->xwidth = xwidth;
-
+    
     /*
      * Prepare RComm structure
      */
@@ -3278,7 +3278,7 @@ static ae_bool autogk_autogkinternaliteration(autogkinternalstate* state,
     ae_bool result;
 
 
-
+    
     /*
      * Reverse communication preparations
      * I know it looks ugly, but it works the same way
@@ -3333,11 +3333,11 @@ static ae_bool autogk_autogkinternaliteration(autogkinternalstate* state,
     {
         goto lbl_2;
     }
-
+    
     /*
      * Routine body
      */
-
+    
     /*
      * initialize quadratures.
      * use 15-point Gauss-Kronrod formula.
@@ -3366,7 +3366,7 @@ static ae_bool autogk_autogkinternaliteration(autogkinternalstate* state,
         }
         state->wr.ptr.p_double[i] = 0.5*ae_fabs(state->qn.ptr.p_double[i-1]-state->qn.ptr.p_double[i+1], _state);
     }
-
+    
     /*
      * special case
      */
@@ -3377,7 +3377,7 @@ static ae_bool autogk_autogkinternaliteration(autogkinternalstate* state,
         result = ae_false;
         return result;
     }
-
+    
     /*
      * test parameters
      */
@@ -3393,7 +3393,7 @@ static ae_bool autogk_autogkinternaliteration(autogkinternalstate* state,
     {
         state->eps = 100000*ae_machineepsilon;
     }
-
+    
     /*
      * First, prepare heap
      * * column 0   -   absolute error
@@ -3406,7 +3406,7 @@ static ae_bool autogk_autogkinternaliteration(autogkinternalstate* state,
     {
         goto lbl_3;
     }
-
+    
     /*
      * no maximum width requirements
      * start from one big subinterval
@@ -3426,7 +3426,7 @@ lbl_5:
     {
         goto lbl_7;
     }
-
+    
     /*
      * obtain F
      */
@@ -3435,7 +3435,7 @@ lbl_5:
     goto lbl_rcomm;
 lbl_0:
     v = state->f;
-
+    
     /*
      * Gauss-Kronrod formula
      */
@@ -3444,7 +3444,7 @@ lbl_0:
     {
         intg = intg+v*state->wg.ptr.p_double[i];
     }
-
+    
     /*
      * Integral |F(x)|
      * Use rectangles method
@@ -3465,7 +3465,7 @@ lbl_7:
     state->sumabs = ae_fabs(inta, _state);
     goto lbl_4;
 lbl_3:
-
+    
     /*
      * maximum subinterval should be no more than XWidth.
      * so we create Ceil((B-A)/XWidth)+1 small subintervals
@@ -3496,7 +3496,7 @@ lbl_11:
     {
         goto lbl_13;
     }
-
+    
     /*
      * obtain F
      */
@@ -3505,7 +3505,7 @@ lbl_11:
     goto lbl_rcomm;
 lbl_1:
     v = state->f;
-
+    
     /*
      * Gauss-Kronrod formula
      */
@@ -3514,7 +3514,7 @@ lbl_1:
     {
         intg = intg+v*state->wg.ptr.p_double[i];
     }
-
+    
     /*
      * Integral |F(x)|
      * Use rectangles method
@@ -3537,7 +3537,7 @@ lbl_13:
     goto lbl_8;
 lbl_10:
 lbl_4:
-
+    
     /*
      * method iterations
      */
@@ -3546,7 +3546,7 @@ lbl_14:
     {
         goto lbl_15;
     }
-
+    
     /*
      * additional memory if needed
      */
@@ -3554,7 +3554,7 @@ lbl_14:
     {
         autogk_mheapresize(&state->heap, &state->heapsize, 4*state->heapsize, state->heapwidth, _state);
     }
-
+    
     /*
      * TODO: every 20 iterations recalculate errors/sums
      */
@@ -3568,14 +3568,14 @@ lbl_14:
         result = ae_false;
         return result;
     }
-
+    
     /*
      * Exclude interval with maximum absolute error
      */
     autogk_mheappop(&state->heap, state->heapused, state->heapwidth, _state);
     state->sumerr = state->sumerr-state->heap.ptr.pp_double[state->heapused-1][0];
     state->sumabs = state->sumabs-state->heap.ptr.pp_double[state->heapused-1][2];
-
+    
     /*
      * Divide interval, create subintervals
      */
@@ -3602,7 +3602,7 @@ lbl_19:
     {
         goto lbl_21;
     }
-
+    
     /*
      * F(x)
      */
@@ -3611,7 +3611,7 @@ lbl_19:
     goto lbl_rcomm;
 lbl_2:
     v = state->f;
-
+    
     /*
      * Gauss-Kronrod formula
      */
@@ -3620,7 +3620,7 @@ lbl_2:
     {
         intg = intg+v*state->wg.ptr.p_double[i];
     }
-
+    
     /*
      * Integral |F(x)|
      * Use rectangles method
@@ -3647,7 +3647,7 @@ lbl_18:
 lbl_15:
     result = ae_false;
     return result;
-
+    
     /*
      * Saving state
      */

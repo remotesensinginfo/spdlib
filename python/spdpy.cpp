@@ -131,7 +131,7 @@ namespace spdlib_py
             for(boost::uint_fast64_t i = 0; i < spdFile.getNumberBinsX(); ++i)
             {
                 binOffsets.append(binOffsetsArr[i]);
-                numPulsesInBins.append(numPtsInBinArr[i]);
+                numPulsesInBins.append(numPtsInBinArr[i]);              
             }
 
             // Delete pulses list.
@@ -368,7 +368,7 @@ namespace spdlib_py
         spdFile.copyAttributesTo(&spdFileOut);
         return spdFileOut;
     }
-
+    
     boost::python::list getSPDFileWavelengths(SPDFile spdFile)
     {
         boost::python::list wavelengths;
@@ -379,7 +379,7 @@ namespace spdlib_py
         }
         return wavelengths;
     }
-
+    
     boost::python::list getSPDFileBandwidths(SPDFile spdFile)
     {
         boost::python::list bandwidths;
@@ -390,42 +390,42 @@ namespace spdlib_py
         }
         return bandwidths;
     }
-
+    
     void setSPDFileWavelengthsAndBandwidths(SPDFile spdFile, boost::python::list wavelengths, boost::python::list bandwidths) throw(SPDException)
     {
         std::vector<float> *cWavelengths = spdFile.getWavelengths();
         cWavelengths->clear();
         std::vector<float>* cBandwidths = spdFile.getBandwidths();
         cBandwidths->clear();
-
+        
         boost::uint_fast64_t numWavelengths = len(wavelengths);
         boost::uint_fast64_t numBandwidths = len(bandwidths);
-
+        
         if(numWavelengths != numBandwidths)
         {
             throw SPDException("The number of wavelengths and bandwidths needs to be the same.");
         }
-
+        
         float val = 0;
         for(boost::uint_fast64_t i = 0; i < numWavelengths; ++i)
         {
             val = boost::python::extract<float>(wavelengths[i])();
             cWavelengths->push_back(val);
-
+            
             val = boost::python::extract<float>(bandwidths[i])();
             cBandwidths->push_back(val);
         }
     }
 
-
+    
     BOOST_PYTHON_MODULE(spdpy)
     {
         using namespace boost::python;
 
         docstring_options(true);
-
+        
         register_exception_translator<SPDException>(&translate);
-
+        
         def("printSPDFile", printSPDFile, "Print a selection of the SPDFile header parameters.");
         def("copySPDFileAttributes", copySPDFileAttributes, "Copy the SPDFile header file attributes to another SPDFile.");
         def("openSPDFileHeader", openSPDFileHeader, "Read SPDFile header.");
@@ -442,7 +442,7 @@ namespace spdlib_py
         def("getSPDFileBandwidths", getSPDFileBandwidths, "Get bandwidths list from SPDFile header.");
         def("setSPDFileWavelengthsAndBandwidths", setSPDFileWavelengthsAndBandwidths, "Set wavelengths and bandwidths list in SPDFile header.");
 
-
+        
         class_<SPDPointPy>("SPDPointPy")
             .def_readwrite("returnID", &SPDPointPy::returnID)
             .def_readwrite("gpsTime", &SPDPointPy::gpsTime)
@@ -619,7 +619,7 @@ namespace spdlib_py
             .def("setAzimuthMin", &spdlib::SPDFile::setAzimuthMin)
             .def("setAzimuthMax", &spdlib::SPDFile::setAzimuthMax)
             .def("setRangeMin", &spdlib::SPDFile::setRangeMin)
-            .def("setRangeMax", &spdlib::SPDFile::setRangeMax)
+            .def("setRangeMax", &spdlib::SPDFile::setRangeMax)        
             .def("setScanlineMin", &spdlib::SPDFile::setScanlineMin)
             .def("setScanlineMax", &spdlib::SPDFile::setScanlineMax)
             .def("setScanlineIdxMin", &spdlib::SPDFile::setScanlineIdxMin)
@@ -666,7 +666,7 @@ namespace spdlib_py
             .def("writeDataColumn", &SPDPySeqWriter::writeDataColumn, "Write a column of SPDPulses to SPDFile.")
             .def("writeDataRow", &SPDPySeqWriter::writeDataRow, "Write a row of SPDPulses to SPDFile.")
             .def("close", &SPDPySeqWriter::close, "Close SPDFile.");
-
+        
         class_<SPDPyNonSeqWriter>("SPDPyNonSeqWriter", SPDNONSEQIDXWRITER_CLASS_DOC.c_str())
             .def("open", &SPDPyNonSeqWriter::open, "Open writer with SPDFile.")
             .def("writeDataColumn", &SPDPyNonSeqWriter::writeDataColumn, "Write a column of SPDPulses to SPDFile.")

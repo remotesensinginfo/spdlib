@@ -64,22 +64,22 @@ namespace spdlib
             GDALAllRegister();
             SPDFileReader reader;
             reader.readHeaderInfo(spdInFile->getFilePath(), spdInFile);
-
+            
             if(spdInFile->getIndexType() == SPD_UPD_TYPE)
             {
                 throw SPDProcessingException("The SPD file must have a spatial index. Use spdtranslate.");
             }
-
+            
             if(this->blockXSize == 0)
             {
                 this->blockXSize = spdInFile->getNumberBinsX();
             }
-
+            
             if((this->overlap > this->blockXSize) | (this->overlap > this->blockYSize))
             {
                 throw SPDProcessingException("The overlap must be smaller than the block size in both axis\'");
             }
-
+            
             GDALDataset *gdalDataset = (GDALDataset *) GDALOpenShared(imageFilePath.c_str(), GA_ReadOnly);
             if(gdalDataset == NULL)
             {
@@ -101,7 +101,7 @@ namespace spdlib
             }
 
             SPDGridData gridData;
-
+            
             SPDFile *spdOutFile = new SPDFile(outFile);
             spdOutFile->copyAttributesFrom(spdInFile);
 
@@ -267,7 +267,7 @@ namespace spdlib
             }
             fileWriter->open(spdOutFile, outFile);
             fileWriter->setKeepMinExtent(keepMinExtent);
-
+            
             boost::uint_fast32_t pulsesBlockSizeX = this->blockXSize + (2 * this->overlap);
             boost::uint_fast32_t pulsesBlockSizeY = this->blockYSize + (2 * this->overlap);
 
@@ -358,7 +358,7 @@ namespace spdlib
                 blockXOrigin = spdInFile->getScanlineIdxMin() - (overlap * spdInFile->getBinSize());
                 blockYOrigin = spdInFile->getScanlineMin() - (overlap * spdInFile->getBinSize());
             }
-
+            
             for(boost::uint_fast32_t i = 0; i < numYFullBlocks; ++i)
             {
                 blockMinX = 0;
@@ -561,7 +561,7 @@ namespace spdlib
                 {
                     blockYOrigin += blockHeight;
                 }
-
+                
                 blockMinY += blockYSize;
                 blockMaxY += blockYSize;
             }
@@ -585,7 +585,7 @@ namespace spdlib
                 {
                     blockXOrigin = spdInFile->getScanlineIdxMin() - (overlap * spdInFile->getBinSize());
                 }
-
+                
                 for(boost::uint_fast32_t j = 0; j < numXFullBlocks; ++j)
                 {
                     if(this->printProgress)
@@ -757,7 +757,7 @@ namespace spdlib
                 }
             }
             std::cout << "Complete\n";
-
+            
             dataBlockProcessor->setHeaderValues(spdOutFile);
 
             for(boost::uint_fast32_t i = 0; i < pulsesBlockSizeY; ++i)
@@ -841,17 +841,17 @@ namespace spdlib
             SPDGridData gridData;
             SPDFileReader reader;
             reader.readHeaderInfo(spdInFile->getFilePath(), spdInFile);
-
+            
             if(spdInFile->getIndexType() == SPD_UPD_TYPE)
             {
                 throw SPDProcessingException("The SPD file must have a spatial index. Use spdtranslate.");
             }
-
+            
             if(this->blockXSize == 0)
             {
                 this->blockXSize = spdInFile->getNumberBinsX();
             }
-
+            
             if((this->overlap > this->blockXSize) | (this->overlap > this->blockYSize))
             {
                 throw SPDProcessingException("The overlap must be smaller than the block size in both axis\'");
@@ -861,16 +861,16 @@ namespace spdlib
             {
                 processingResolution = spdInFile->getBinSize();
             }
-
+            
             boost::uint_fast64_t nativeXBins = spdInFile->getNumberBinsX();
             boost::uint_fast64_t nativeYBins = spdInFile->getNumberBinsY();
-
+            
             boost::uint_fast64_t procResXBins = 0;
             boost::uint_fast64_t procResYBins = 0;
-
+            
             double geoWidth = 0;
             double geoHeight = 0;
-
+            
             if(spdInFile->getIndexType() == SPD_CARTESIAN_IDX)
             {
                 geoWidth = spdInFile->getXMax() - spdInFile->getXMin();
@@ -886,9 +886,9 @@ namespace spdlib
                 geoWidth = spdInFile->getScanlineIdxMax() - spdInFile->getScanlineIdxMin();
                 geoHeight = spdInFile->getScanlineMax() - spdInFile->getScanlineMin();
             }
-
+                      
             //std::cout << "Geo: [" << geoWidth << "," << geoHeight << "]\n";
-
+            
             bool usingNativeRes = false;
             bool scaleDown = true;
             boost::uint_fast32_t binScaling = 0;
@@ -909,7 +909,7 @@ namespace spdlib
                 usingNativeRes = false;
                 procResXBins = ceil(((double)geoWidth / processingResolution))+1;
                 procResYBins = ceil(((double)geoHeight / processingResolution))+1;
-
+                
                 scaleDown = false;
                 binScaling = boost::numeric_cast<boost::uint_fast32_t>(processingResolution/spdInFile->getBinSize());
             }
@@ -925,14 +925,14 @@ namespace spdlib
                 usingNativeRes = false;
                 procResXBins = ceil(((double)geoWidth / processingResolution))+1;
                 procResYBins = ceil(((double)geoHeight / processingResolution))+1;
-
+                
                 scaleDown = true;
                 binScaling = boost::numeric_cast<boost::uint_fast32_t>(spdInFile->getBinSize()/processingResolution);
             }
-
+            
             //std::cout << "Bin Scaling: " << binScaling << std::endl;
             //std::cout << "Process Bins: [" << procResXBins << "," << procResYBins << "]\n";
-
+                        
             if(usingNativeRes)
             {
                 std::cout << "Using native resolution for processing\n";
@@ -949,28 +949,28 @@ namespace spdlib
                     std::cout << "Scaling up\n";
                 }
             }
-
+            
             boost::uint_fast32_t numXFullBlocks = floor(((double)nativeXBins)/this->blockXSize);
             boost::uint_fast32_t numYFullBlocks = floor(((double)nativeYBins)/this->blockYSize);
-
+            
             //std::cout << "Number of full blocks: [" << numXFullBlocks << "," << numYFullBlocks << "]\n";
-
+            
             boost::uint_fast32_t remainingCols = nativeXBins - (numXFullBlocks * this->blockXSize);
             boost::uint_fast32_t remainingRows = nativeYBins - (numYFullBlocks * this->blockYSize);
-
+            
             //std::cout << "Remainder: [" << remainingCols << "," << remainingRows << "]\n";
-
+            
             double blockMinX = 0;
             double blockMaxX = 0;
             double blockMinY = 0;
             double blockMaxY = 0;
-
+            
             double blockWidth = blockXSize * spdInFile->getBinSize();
             double blockHeight = blockYSize * spdInFile->getBinSize();
-
+            
             boost::uint_fast32_t procResXBlockSize = 0;
             boost::uint_fast32_t procResYBlockSize = 0;
-
+            
             if(binScaling == 0)
             {
                 procResXBlockSize = blockXSize;
@@ -986,11 +986,11 @@ namespace spdlib
                 procResXBlockSize = ceil(((double)blockXSize) / binScaling);
                 procResYBlockSize = ceil(((double)blockYSize) / binScaling);
             }
-
+            
             //std::cout << "Native block size: [" << this->blockXSize << "," << this->blockYSize << "]\n";
             //std::cout << "Process block size: [" << procResXBlockSize << "," << procResYBlockSize << "]\n";
             //std::cout << "Block Size: [" << blockWidth << "," << blockHeight << "]\n";
-
+            
             boost::uint_fast32_t numBlocks = numYFullBlocks * numXFullBlocks;
             if(remainingCols > 0)
             {
@@ -1005,15 +1005,15 @@ namespace spdlib
                 }
             }
             boost::uint_fast32_t cBlocksIdx = 1;
-
+            
             blockMinY = 0;
             blockMaxY = blockYSize;
-
+            
             boost::uint_fast32_t pulsesBlockSizeX = this->blockXSize + (2 * this->overlap);
             boost::uint_fast32_t pulsesBlockSizeY = this->blockYSize + (2 * this->overlap);
             boost::uint_fast32_t remainingColsScaled = remainingCols;
             boost::uint_fast32_t remainingRowsScaled = remainingRows;
-
+            
             boost::uint_fast32_t scaledOverlap = 0;
             if(binScaling != 0)
             {
@@ -1030,17 +1030,17 @@ namespace spdlib
                     remainingRowsScaled = ceil(((double)remainingRows / binScaling));
                 }
             }
-
+            
             boost::uint_fast32_t pulsesScaledBlockSizeX = procResXBlockSize + (2 * scaledOverlap);
             boost::uint_fast32_t pulsesScaledBlockSizeY = procResYBlockSize + (2 * scaledOverlap);
-
+            
             //std::cout << "Pulses Block Size: [" << pulsesBlockSizeX << "," << pulsesBlockSizeY << "]\n";
             //std::cout << "Processing Pulses Block Size: [" << procResXBlockSize << "," << procResYBlockSize << "]\n";
             //std::cout << "Remaining: [" << remainingColsScaled << "," << remainingRowsScaled << "]\n";
-
+            
             boost::uint_fast32_t imageXSize = (procResXBlockSize * numXFullBlocks) + remainingColsScaled;
             boost::uint_fast32_t imageYSize = (procResYBlockSize * numYFullBlocks) + remainingRowsScaled;
-
+            
             /****** CREATE A NEW GDALDATASET *******/
             GDALDriver *gdalDriver = GetGDALDriverManager()->GetDriverByName(gdalFormat.c_str());
 			if(gdalDriver == NULL)
@@ -1057,15 +1057,15 @@ namespace spdlib
             }
 
             GDALDataset *outImage = gdalDriver->Create(outImagePath.c_str(), imageXSize, imageYSize, numImgBands, GDT_Float32, NULL);
-
+            
             if(outImage == NULL)
             {
                 std::string message = std::string("Failed to create image ") + outImagePath;
 				throw SPDProcessingException(message);
             }
-
+            
             //std::cout << spdInFile << std::endl;
-
+            
             double *gdalTransform = new double[6];
             gdalTransform[0] = spdInFile->getXMin();
             gdalTransform[1] = processingResolution;
@@ -1074,19 +1074,19 @@ namespace spdlib
             gdalTransform[4] = 0;
             gdalTransform[5] = processingResolution*(-1);
             outImage->SetGeoTransform(gdalTransform);
-
+            
             if(spdInFile->getSpatialReference() != "")
             {
                 outImage->SetProjection(spdInFile->getSpatialReference().c_str());
             }
             std::vector<std::string> bandNames = this->dataBlockProcessor->getImageBandDescriptions();
-
+            
             GDALRasterBand **imageBands = new GDALRasterBand*[numImgBands];
             for(boost::uint_fast16_t n = 0; n < numImgBands; ++n)
             {
                 imageBands[n] = outImage->GetRasterBand(n+1);
             }
-
+            
             if(bandNames.size() == numImgBands)
             {
                 for(boost::uint_fast16_t n = 0; n < numImgBands; ++n)
@@ -1095,10 +1095,10 @@ namespace spdlib
                 }
             }
             /****** CREATED A NEW GDALDATASET *******/
-
+            
             SPDFileIncrementalReader incReader;
             incReader.open(spdInFile);
-
+                        
             std::vector<SPDPulse*> ***pulses = new std::vector<SPDPulse*>**[pulsesBlockSizeY];
             for(boost::uint_fast32_t i = 0; i < pulsesBlockSizeY; ++i)
             {
@@ -1108,7 +1108,7 @@ namespace spdlib
                     pulses[i][j] = new std::vector<SPDPulse*>();
                 }
             }
-
+            
             SPDXYPoint ***cenPts = NULL;
             std::vector<SPDPulse*> ***pulseScaled = NULL;
             float ***imageBlockVals = NULL;
@@ -1153,18 +1153,18 @@ namespace spdlib
                     }
                 }
             }
-
+            
             boost::uint_fast32_t *bbox = new boost::uint_fast32_t[4];
-
+            
             boost::uint_fast32_t xOffset = 0;
             boost::uint_fast32_t yOffset = 0;
-
+            
             double blockXOrigin = 0;
             double blockYOrigin = 0;
-
+            
             boost::uint_fast32_t blockMinXScaled = 0;
             boost::uint_fast32_t blockMinYScaled = 0;
-
+                        
             if(spdInFile->getIndexType() == SPD_CARTESIAN_IDX)
             {
                 blockXOrigin = spdInFile->getXMin() - (overlap * spdInFile->getBinSize());
@@ -1180,12 +1180,12 @@ namespace spdlib
                 blockXOrigin = spdInFile->getScanlineIdxMin() - (overlap * spdInFile->getBinSize());
                 blockYOrigin = spdInFile->getScanlineMin() - (overlap * spdInFile->getBinSize());
             }
-
+            
             for(boost::uint_fast32_t i = 0; i < numYFullBlocks; ++i)
             {
                 blockMinX = 0;
                 blockMaxX = blockXSize;
-
+                
                 if(spdInFile->getIndexType() == SPD_CARTESIAN_IDX)
                 {
                     blockXOrigin = spdInFile->getXMin() - (overlap * spdInFile->getBinSize());
@@ -1198,22 +1198,22 @@ namespace spdlib
                 {
                     blockXOrigin = spdInFile->getScanlineIdxMin() - (overlap * spdInFile->getBinSize());
                 }
-
+              
                 for(boost::uint_fast32_t j = 0; j < numXFullBlocks; ++j)
                 {
                     if(this->printProgress)
                     {
                         std::cout << "Processing block " << cBlocksIdx++ << " of " << numBlocks << " blocks\n";
                     }
-
+                    
                     bbox[0] = blockMinX;
                     bbox[1] = blockMinY;
                     bbox[2] = blockMaxX;
                     bbox[3] = blockMaxY;
-
+                    
                     xOffset = 0;
                     yOffset = 0;
-
+                    
                     if((((long)blockMinX)-((int)overlap)) < 0)
                     {
                         bbox[0] = 0;
@@ -1234,7 +1234,7 @@ namespace spdlib
                         bbox[1] = blockMinY-overlap;
                         yOffset = 0;
                     }
-
+                    
                     if((blockMaxX + overlap) > nativeXBins)
                     {
                         bbox[2] = nativeXBins;
@@ -1243,7 +1243,7 @@ namespace spdlib
                     {
                         bbox[2] = blockMaxX + overlap;
                     }
-
+                    
                     if((blockMaxY + overlap) > nativeYBins)
                     {
                         bbox[3] = nativeYBins;
@@ -1252,7 +1252,7 @@ namespace spdlib
                     {
                         bbox[3] = blockMaxY + overlap;
                     }
-
+                    
                     //std::cout << "xOffset = " << xOffset << std::endl;
                     //std::cout << "yOffset = " << yOffset << std::endl;
                     incReader.readPulseDataBlock(pulses, bbox, xOffset, yOffset);
@@ -1284,9 +1284,9 @@ namespace spdlib
                         this->clearPulses(pulses, pulsesBlockSizeX, pulsesBlockSizeY);
                         this->clearPulsesNoDelete(pulseScaled, pulsesScaledBlockSizeX, pulsesScaledBlockSizeY);
                     }
-
+                    
                     blockXOrigin += blockWidth;
-
+                    
                     blockMinX += blockXSize;
                     blockMaxX += blockXSize;
                 }
@@ -1297,15 +1297,15 @@ namespace spdlib
                         std::cout << "Processing block " << cBlocksIdx++ << " of " << numBlocks << " blocks\n";
                     }
                     blockMaxX -= (blockXSize-remainingCols);
-
+                    
                     bbox[0] = blockMinX;
                     bbox[1] = blockMinY;
                     bbox[2] = blockMaxX;
                     bbox[3] = blockMaxY;
-
+                    
                     xOffset = 0;
                     yOffset = 0;
-
+                    
                     if((((long)blockMinX)-((int)overlap)) < 0)
                     {
                         bbox[0] = 0;
@@ -1326,7 +1326,7 @@ namespace spdlib
                         bbox[1] = blockMinY-overlap;
                         yOffset = 0;
                     }
-
+                    
                     if((blockMaxX + overlap) > nativeXBins)
                     {
                         bbox[2] = nativeXBins;
@@ -1335,7 +1335,7 @@ namespace spdlib
                     {
                         bbox[2] = blockMaxX + overlap;
                     }
-
+                    
                     if((blockMaxY + overlap) > nativeYBins)
                     {
                         bbox[3] = nativeYBins;
@@ -1344,9 +1344,9 @@ namespace spdlib
                     {
                         bbox[3] = blockMaxY + overlap;
                     }
-
+                    
                     incReader.readPulseDataBlock(pulses, bbox, xOffset, yOffset);
-
+                    
                     if(binScaling == 0)
                     {
                         this->resetImageBlock2Zeros(imageBlockVals, pulsesBlockSizeX, pulsesBlockSizeY, numImgBands);
@@ -1376,7 +1376,7 @@ namespace spdlib
                         this->clearPulsesNoDelete(pulseScaled, pulsesScaledBlockSizeX, pulsesScaledBlockSizeY);
                     }
                 }
-
+                
                 if(spdInFile->getIndexType() == SPD_CARTESIAN_IDX)
                 {
                     blockYOrigin -= blockHeight;
@@ -1388,19 +1388,19 @@ namespace spdlib
                 else if(spdInFile->getIndexType() == SPD_SCAN_IDX)
                 {
                     blockYOrigin += blockHeight;
-                }
-
+                }    
+                            
                 blockMinY += blockYSize;
                 blockMaxY += blockYSize;
             }
-
+            
             if(remainingRows > 0)
             {
                 blockMaxY -= (blockYSize-remainingRows);
-
+                
                 blockMinX = 0;
                 blockMaxX = blockXSize;
-
+                
                 if(spdInFile->getIndexType() == SPD_CARTESIAN_IDX)
                 {
                     blockXOrigin = spdInFile->getXMin() - (overlap * spdInFile->getBinSize());
@@ -1413,22 +1413,22 @@ namespace spdlib
                 {
                     blockXOrigin = spdInFile->getScanlineIdxMin() - (overlap * spdInFile->getBinSize());
                 }
-
+               
                 for(boost::uint_fast32_t j = 0; j < numXFullBlocks; ++j)
                 {
                     if(this->printProgress)
                     {
                         std::cout << "Processing block " << cBlocksIdx++ << " of " << numBlocks << " blocks\n";
                     }
-
+                    
                     bbox[0] = blockMinX;
                     bbox[1] = blockMinY;
                     bbox[2] = blockMaxX;
                     bbox[3] = blockMaxY;
-
+                    
                     xOffset = 0;
                     yOffset = 0;
-
+                    
                     if((((long)blockMinX)-((int)overlap)) < 0)
                     {
                         bbox[0] = 0;
@@ -1449,7 +1449,7 @@ namespace spdlib
                         bbox[1] = blockMinY-overlap;
                         yOffset = 0;
                     }
-
+                    
                     if((blockMaxX + overlap) > nativeXBins)
                     {
                         bbox[2] = nativeXBins;
@@ -1458,7 +1458,7 @@ namespace spdlib
                     {
                         bbox[2] = blockMaxX + overlap;
                     }
-
+                    
                     if((blockMaxY + overlap) > nativeYBins)
                     {
                         bbox[3] = nativeYBins;
@@ -1467,9 +1467,9 @@ namespace spdlib
                     {
                         bbox[3] = blockMaxY + overlap;
                     }
-
+                    
                     incReader.readPulseDataBlock(pulses, bbox, xOffset, yOffset);
-
+                    
                     if(binScaling == 0)
                     {
                         this->resetImageBlock2Zeros(imageBlockVals, pulsesBlockSizeX, pulsesBlockSizeY, numImgBands);
@@ -1498,7 +1498,7 @@ namespace spdlib
                         this->clearPulses(pulses, pulsesBlockSizeX, pulsesBlockSizeY);
                         this->clearPulsesNoDelete(pulseScaled, pulsesScaledBlockSizeX, pulsesScaledBlockSizeY);
                     }
-
+                    
                     blockMinX += blockXSize;
                     blockMaxX += blockXSize;
                     blockXOrigin += blockWidth;
@@ -1509,15 +1509,15 @@ namespace spdlib
                     {
                         std::cout << "Processing block " << cBlocksIdx++ << " of " << numBlocks << " blocks\n";
                     }
-
+                    
                     bbox[0] = blockMinX;
                     bbox[1] = blockMinY;
                     bbox[2] = blockMaxX;
                     bbox[3] = blockMaxY;
-
+                    
                     xOffset = 0;
                     yOffset = 0;
-
+                    
                     if((((long)blockMinX)-((int)overlap)) < 0)
                     {
                         bbox[0] = 0;
@@ -1538,7 +1538,7 @@ namespace spdlib
                         bbox[1] = blockMinY-overlap;
                         yOffset = 0;
                     }
-
+                    
                     if((blockMaxX + overlap) > nativeXBins)
                     {
                         bbox[2] = nativeXBins;
@@ -1547,7 +1547,7 @@ namespace spdlib
                     {
                         bbox[2] = blockMaxX + overlap;
                     }
-
+                    
                     if((blockMaxY + overlap) > nativeYBins)
                     {
                         bbox[3] = nativeYBins;
@@ -1556,9 +1556,9 @@ namespace spdlib
                     {
                         bbox[3] = blockMaxY + overlap;
                     }
-
+                    
                     incReader.readPulseDataBlock(pulses, bbox, xOffset, yOffset);
-
+                    
                     if(binScaling == 0)
                     {
                         this->resetImageBlock2Zeros(imageBlockVals, pulsesBlockSizeX, pulsesBlockSizeY, numImgBands);
@@ -1590,7 +1590,7 @@ namespace spdlib
                 }
             }
             std::cout << "Complete\n";
-
+            
             for(boost::uint_fast32_t i = 0; i < pulsesBlockSizeY; ++i)
             {
                 for(boost::uint_fast32_t j = 0; j < pulsesBlockSizeX; ++j)
@@ -1600,7 +1600,7 @@ namespace spdlib
                 delete[] pulses[i];
             }
             delete[] pulses;
-
+            
             if(binScaling != 0)
             {
                 for(boost::uint_fast32_t i = 0; i < pulsesScaledBlockSizeY; ++i)
@@ -1634,7 +1634,7 @@ namespace spdlib
                 delete[] cenPts;
                 delete[] imageBlockVals;
             }
-
+            
             delete[] bbox;
             delete[] imageBands;
             incReader.close();
@@ -1662,52 +1662,52 @@ namespace spdlib
             throw e;
         }
     }
-
-
+    
+    
     void SPDProcessDataBlocks::processDataBlocksGridPulsesOutputImage(SPDFile *spdInFile, GDALDataset *outImageDS) throw(SPDProcessingException)
     {
         try
         {
             SPDFileReader reader;
             reader.readHeaderInfo(spdInFile->getFilePath(), spdInFile);
-
+            
             if(spdInFile->getIndexType() == SPD_UPD_TYPE)
             {
                 throw SPDProcessingException("The SPD file must have a spatial index. Use spdtranslate.");
             }
-
+            
             if(spdInFile->getIndexType() != SPD_CARTESIAN_IDX)
             {
                 throw SPDProcessingException("The SPD file must be spatially indexed using a cartsian index, no others are supported when an existing image is provided.");
             }
-
+            
             if(this->blockXSize == 0)
             {
                 this->blockXSize = outImageDS->GetRasterXSize();
             }
-
+            
             if((this->overlap > this->blockXSize) | (this->overlap > this->blockYSize))
             {
                 throw SPDProcessingException("The overlap must be smaller than the block size in both axis\'");
             }
-
+            
             if(outImageDS == NULL)
             {
                 throw SPDProcessingException("The GDAL Dataset provided was not open.");
             }
             double *geoTrans = new double[6];
             outImageDS->GetGeoTransform(geoTrans);
-
+            
             double processingResolution = geoTrans[1];
-
+            
             double imgTLX = geoTrans[0];
             double imgTLY = geoTrans[3];
             double imgBRX = geoTrans[0] + (outImageDS->GetRasterXSize() * processingResolution);
             double imgBRY = geoTrans[3] - (outImageDS->GetRasterYSize() * processingResolution);
             delete[] geoTrans;
-
+            
             std::cout << "Image Extent: [" << imgTLX << ", " << imgBRY << "][" << imgBRX << ", " << imgTLY << "]\n";
-
+            
             double blockGeoWidth = this->blockXSize * processingResolution;
             double blockGeoHeight = this->blockYSize * processingResolution;
             double overlapGeo = this->overlap * processingResolution;
@@ -1715,7 +1715,7 @@ namespace spdlib
             boost::uint_fast32_t numXRemain = outImageDS->GetRasterXSize() - (numXBlocks * this->blockXSize);
             boost::uint_fast32_t numYBlocks = floor(((double)outImageDS->GetRasterYSize()/this->blockYSize));
             boost::uint_fast32_t numYRemain = outImageDS->GetRasterYSize() - (numYBlocks * this->blockYSize);
-
+            
             boost::uint_fast32_t numBlocks = numYBlocks * numXBlocks;
             if(numXRemain > 0)
             {
@@ -1729,20 +1729,20 @@ namespace spdlib
                     numBlocks += 1;
                 }
             }
-
+            
             std::cout << "Block Size = [" << this->blockXSize << ", " << this->blockYSize << "]\n";
             std::cout << "Number of X Blocks = " << numXBlocks << " with " << numXRemain << " remaining\n";
             std::cout << "Number of Y Blocks = " << numYBlocks << " with " << numYRemain << " remaining\n";
             std::cout << "Total Number of Blocks = " << numBlocks << std::endl;
-
+            
             boost::uint_fast16_t numImgBands = outImageDS->GetRasterCount();
             GDALRasterBand **imageBands = new GDALRasterBand*[numImgBands];
             for(boost::uint_fast16_t i = 0; i < numImgBands; ++i)
             {
                 imageBands[i] = outImageDS->GetRasterBand(i+1);
             }
-
-
+            
+            
             float ***imageBlockVals = NULL;
             SPDXYPoint ***cenPts = NULL;
             cenPts = new SPDXYPoint**[this->blockYSize];
@@ -1761,18 +1761,18 @@ namespace spdlib
                     }
                 }
             }
-
-
+            
+            
             SPDFileIncrementalReader incReader;
             incReader.open(spdInFile);
             std::vector<SPDPulse*> *pulses = new std::vector<SPDPulse*>();
-
+            
             double blockOriginTLX = imgTLX;
             double blockOriginTLY = imgTLY;
             OGREnvelope *env = new OGREnvelope();
             boost::uint_fast32_t startIdxX = 0;
             boost::uint_fast32_t startIdxY = 0;
-
+                             
             boost::uint_fast32_t cBlocksIdx = 1;
             for(boost::uint_fast32_t i = 0; i < numYBlocks; ++i)
             {
@@ -1784,7 +1784,7 @@ namespace spdlib
                     {
                         std::cout << "Processing block " << cBlocksIdx++ << " of " << numBlocks << " blocks\n";
                     }
-
+                    
                     this->resetImageBlock2Zeros(imageBlockVals, this->blockXSize, this->blockYSize, numImgBands);
                     this->populateCentrePoints(cenPts, this->blockXSize, this->blockYSize, blockOriginTLX, blockOriginTLY, processingResolution);
                     env->MinX = blockOriginTLX - overlapGeo;
@@ -1793,12 +1793,12 @@ namespace spdlib
                     env->MinY = blockOriginTLY - blockGeoHeight - overlapGeo;
                     pulses->clear();
                     incReader.readPulseDataInGeoEnv(pulses, env);
-
+                    
                     dataBlockProcessor->processDataBlockImage(spdInFile, pulses, imageBlockVals, cenPts, this->blockXSize, this->blockYSize, numImgBands);
-
+                    
                     this->clearPulses(pulses);
                     this->writeImageData(imageBands, imageBlockVals, this->blockXSize, this->blockYSize, numImgBands, 0, 0, startIdxX, startIdxY);
-
+                    
                     blockOriginTLX += blockGeoWidth;
                     startIdxX += this->blockXSize;
                 }
@@ -1816,12 +1816,12 @@ namespace spdlib
                     env->MinY = blockOriginTLY - blockGeoHeight - overlapGeo;
                     pulses->clear();
                     incReader.readPulseDataInGeoEnv(pulses, env);
-
+                    
                     dataBlockProcessor->processDataBlockImage(spdInFile, pulses, imageBlockVals, cenPts, this->blockXSize, this->blockYSize, numImgBands);
-
+                    
                     this->clearPulses(pulses);
                     this->writeImageData(imageBands, imageBlockVals, numXRemain, this->blockYSize, numImgBands, 0, 0, startIdxX, startIdxY);
-
+                    
                     blockOriginTLX += blockGeoWidth;
                 }
                 blockOriginTLY -= blockGeoHeight;
@@ -1845,12 +1845,12 @@ namespace spdlib
                     env->MinY = blockOriginTLY - blockGeoHeight - overlapGeo;
                     pulses->clear();
                     incReader.readPulseDataInGeoEnv(pulses, env);
-
+                    
                     dataBlockProcessor->processDataBlockImage(spdInFile, pulses, imageBlockVals, cenPts, this->blockXSize, this->blockYSize, numImgBands);
-
+                    
                     this->clearPulses(pulses);
                     this->writeImageData(imageBands, imageBlockVals, this->blockXSize, numYRemain, numImgBands, 0, 0, startIdxX, startIdxY);
-
+                    
                     blockOriginTLX += blockGeoWidth;
                     startIdxX += this->blockXSize;
                 }
@@ -1868,18 +1868,18 @@ namespace spdlib
                     env->MinY = blockOriginTLY - blockGeoHeight - overlapGeo;
                     pulses->clear();
                     incReader.readPulseDataInGeoEnv(pulses, env);
-
+                    
                     dataBlockProcessor->processDataBlockImage(spdInFile, pulses, imageBlockVals, cenPts, this->blockXSize, this->blockYSize, numImgBands);
-
+                    
                     this->clearPulses(pulses);
                     this->writeImageData(imageBands, imageBlockVals, numXRemain, numYRemain, numImgBands, 0, 0, startIdxX, startIdxY);
-
+                    
                     blockOriginTLX += blockGeoWidth;
                 }
             }
-
+            
             incReader.close();
-
+            
             for(boost::uint_fast32_t i = 0; i < this->blockYSize; ++i)
             {
                 for(boost::uint_fast32_t j = 0; j < this->blockXSize; ++j)
@@ -1892,7 +1892,7 @@ namespace spdlib
             }
             delete[] cenPts;
             delete[] imageBlockVals;
-
+            
             delete[] imageBands;
             delete env;
         }
@@ -1925,22 +1925,22 @@ namespace spdlib
             SPDGridData gridData;
             SPDFileReader reader;
             reader.readHeaderInfo(spdInFile->getFilePath(), spdInFile);
-
+            
             if(spdInFile->getIndexType() == SPD_UPD_TYPE)
             {
                 throw SPDProcessingException("The SPD file must have a spatial index. Use spdtranslate.");
             }
-
+            
             if(this->blockXSize == 0)
             {
                 this->blockXSize = spdInFile->getNumberBinsX();
             }
-
+            
             if((this->overlap > this->blockXSize) | (this->overlap > this->blockYSize))
             {
                 throw SPDProcessingException("The overlap must be smaller than the block size in both axis\'");
             }
-
+            
             if(processingResolution <= 0)
             {
                 processingResolution = spdInFile->getBinSize();
@@ -2216,14 +2216,14 @@ namespace spdlib
                 {
                     blockXOrigin = spdInFile->getScanlineIdxMin() - (overlap * spdInFile->getBinSize());
                 }
-
+                
                 for(boost::uint_fast32_t j = 0; j < numXFullBlocks; ++j)
                 {
                     if(this->printProgress)
                     {
                         std::cout << "Processing block " << cBlocksIdx++ << " of " << numBlocks << " blocks\n";
                     }
-
+                    
                     //std::cout << "Block [" << blockMinX << "," << blockMaxX << "][" << blockMinY << "," << blockMaxY << "]\n";
 
                     //std::cout << "Block Origin [" << blockXOrigin << "," << blockYOrigin <<"]\n";
@@ -2302,7 +2302,7 @@ namespace spdlib
 
                     blockMinX += blockXSize;
                     blockMaxX += blockXSize;
-
+                    
                 }
                 if(remainingCols > 0)
                 {
@@ -2398,7 +2398,7 @@ namespace spdlib
                 {
                     blockYOrigin += blockHeight;
                 }
-
+                
                 blockMinY += blockYSize;
                 blockMaxY += blockYSize;
             }
@@ -2590,7 +2590,7 @@ namespace spdlib
                 }
             }
             std::cout << "Complete\n";
-
+            
             dataBlockProcessor->setHeaderValues(spdOutFile);
 
             for(boost::uint_fast32_t i = 0; i < pulsesBlockSizeY; ++i)
@@ -2665,22 +2665,22 @@ namespace spdlib
             SPDGridData gridData;
             SPDFileReader reader;
             reader.readHeaderInfo(spdInFile->getFilePath(), spdInFile);
-
+            
             if(spdInFile->getIndexType() == SPD_UPD_TYPE)
             {
                 throw SPDProcessingException("The SPD file must have a spatial index. Use spdtranslate.");
             }
-
+            
             if(this->blockXSize == 0)
             {
                 this->blockXSize = spdInFile->getNumberBinsX();
             }
-
+            
             if((this->overlap > this->blockXSize) | (this->overlap > this->blockYSize))
             {
                 throw SPDProcessingException("The overlap must be smaller than the block size in both axis\'");
             }
-
+            
             if(processingResolution <= 0)
             {
                 processingResolution = spdInFile->getBinSize();
@@ -2710,7 +2710,7 @@ namespace spdlib
                 geoWidth = spdInFile->getScanlineIdxMax() - spdInFile->getScanlineIdxMin();
                 geoHeight = spdInFile->getScanlineMax() - spdInFile->getScanlineMin();
             }
-
+            
             bool usingNativeRes = false;
             bool scaleDown = true;
             boost::uint_fast32_t binScaling = 0;
@@ -2906,7 +2906,7 @@ namespace spdlib
                 blockXOrigin = spdInFile->getScanlineIdxMin() - (overlap * spdInFile->getBinSize());
                 blockYOrigin = spdInFile->getScanlineMin() - (overlap * spdInFile->getBinSize());
             }
-
+            
             for(boost::uint_fast32_t i = 0; i < numYFullBlocks; ++i)
             {
                 blockMinX = 0;
@@ -2924,7 +2924,7 @@ namespace spdlib
                 {
                     blockXOrigin = spdInFile->getScanlineIdxMin() - (overlap * spdInFile->getBinSize());
                 }
-
+                
                 for(boost::uint_fast32_t j = 0; j < numXFullBlocks; ++j)
                 {
                     if(this->printProgress)
@@ -3086,7 +3086,7 @@ namespace spdlib
                 {
                     blockYOrigin += blockHeight;
                 }
-
+                
                 blockMinY += blockYSize;
                 blockMaxY += blockYSize;
             }
@@ -3110,7 +3110,7 @@ namespace spdlib
                 {
                     blockXOrigin = spdInFile->getScanlineIdxMin() - (overlap * spdInFile->getBinSize());
                 }
-
+                
                 for(boost::uint_fast32_t j = 0; j < numXFullBlocks; ++j)
                 {
                     if(this->printProgress)
@@ -3335,17 +3335,17 @@ namespace spdlib
         {
             SPDFileReader reader;
             reader.readHeaderInfo(spdInFile->getFilePath(), spdInFile);
-
+            
             if(spdInFile->getIndexType() == SPD_UPD_TYPE)
             {
                 throw SPDProcessingException("The SPD file must have a spatial index. Use spdtranslate.");
             }
-
+            
             if(this->blockXSize == 0)
             {
                 this->blockXSize = spdInFile->getNumberBinsX();
             }
-
+            
             if((this->overlap > this->blockXSize) | (this->overlap > this->blockYSize))
             {
                 throw SPDProcessingException("The overlap must be smaller than the block size in both axis\'");
@@ -3375,7 +3375,7 @@ namespace spdlib
                 geoWidth = spdInFile->getScanlineIdxMax() - spdInFile->getScanlineIdxMin();
                 geoHeight = spdInFile->getScanlineMax() - spdInFile->getScanlineMin();
             }
-
+            
             procResXBins = spdInFile->getNumberBinsX();
             procResYBins = spdInFile->getNumberBinsY();
 
@@ -3440,7 +3440,7 @@ namespace spdlib
                 blockXOrigin = spdInFile->getScanlineIdxMin() - (overlap * spdInFile->getBinSize());
                 blockYOrigin = spdInFile->getScanlineMin() - (overlap * spdInFile->getBinSize());
             }
-
+            
             for(boost::uint_fast32_t i = 0; i < numYFullBlocks; ++i)
             {
                 blockMinX = 0;
@@ -3458,7 +3458,7 @@ namespace spdlib
                 {
                     blockXOrigin = spdInFile->getScanlineIdxMin() - (overlap * spdInFile->getBinSize());
                 }
-
+                
                 for(boost::uint_fast32_t j = 0; j < numXFullBlocks; ++j)
                 {
                     if(this->printProgress)
@@ -3596,7 +3596,7 @@ namespace spdlib
                 {
                     blockYOrigin += blockHeight;
                 }
-
+                
                 blockMinY += blockYSize;
                 blockMaxY += blockYSize;
             }
@@ -3620,7 +3620,7 @@ namespace spdlib
                 {
                     blockXOrigin = spdInFile->getScanlineIdxMin() - (overlap * spdInFile->getBinSize());
                 }
-
+                
                 for(boost::uint_fast32_t j = 0; j < numXFullBlocks; ++j)
                 {
                     if(this->printProgress)
@@ -3851,7 +3851,7 @@ namespace spdlib
             {
                 cenPts[i][j]->x = xVal;
                 cenPts[i][j]->y = yVal;
-
+                
                 xVal += binRes;
             }
             yVal -= binRes;
@@ -3880,8 +3880,8 @@ namespace spdlib
                     }
                 }
             }
-
-
+            
+            
             // Define the bounds of the block and image
             boost::uint_fast32_t imgXSize = imgBands[0]->GetXSize();
             boost::uint_fast32_t imgYSize = imgBands[0]->GetYSize();
@@ -3903,23 +3903,23 @@ namespace spdlib
             std::cout << "imgBRY = " << imgBRY << std::endl;
             */
             // Block and Image offsets - initialised.
-
+            
             boost::uint_fast32_t blockOffsetXTL = 0;
             boost::uint_fast32_t blockOffsetYTL = 0;
             boost::uint_fast32_t blockOffsetXBR = 0;
             boost::uint_fast32_t blockOffsetYBR = 0;
-
+            
             boost::uint_fast32_t imgOffsetXTL = 0;
             boost::uint_fast32_t imgOffsetYTL = 0;
             boost::uint_fast32_t imgOffsetXBR = 0;
             boost::uint_fast32_t imgOffsetYBR = 0;
-
+                        
             // Calc overlap between block and image.
             double tlXDiff = 0;
             double tlYDiff = 0;
             double brXDiff = 0;
             double brYDiff = 0;
-
+            
             if(blockXOrigin > imgXOrigin)
             {
                 tlXDiff = blockXOrigin - imgXOrigin;
@@ -3932,7 +3932,7 @@ namespace spdlib
                 blockOffsetXTL = boost::numeric_cast<boost::uint_fast32_t>(tlXDiff/imgRes);
                 imgOffsetXTL = 0;
             }
-
+            
             if(imgYOrigin > blockYOrigin)
             {
                 tlYDiff = imgYOrigin - blockYOrigin;
@@ -3945,15 +3945,15 @@ namespace spdlib
                 blockOffsetYTL = boost::numeric_cast<boost::uint_fast32_t>(tlYDiff/imgRes);
                 imgOffsetYTL = 0;
             }
-
+            
             /*
             std::cout << "blockOffsetXTL = " << blockOffsetXTL << std::endl;
             std::cout << "blockOffsetYTL = " << blockOffsetYTL << std::endl;
-
+            
             std::cout << "imgOffsetXTL = " << imgOffsetXTL << std::endl;
             std::cout << "imgOffsetYTL = " << imgOffsetYTL << std::endl;
             */
-
+            
             if(imgBRX > blockBRX)
             {
                 brXDiff = imgBRX - blockBRX;
@@ -3963,7 +3963,7 @@ namespace spdlib
                 {
                     imgOffsetXBR = 0;
                 }
-                else
+                else 
                 {
                     imgOffsetXBR = imgXSize - diff;
                 }
@@ -3976,13 +3976,13 @@ namespace spdlib
                 {
                     blockOffsetXBR = 0;
                 }
-                else
+                else 
                 {
                     blockOffsetXBR = xSize - diff;
                 }
                 imgOffsetXBR = imgXSize;
             }
-
+            
             if(blockBRY > imgBRY)
             {
                 brYDiff = blockBRY - imgBRY;
@@ -3992,7 +3992,7 @@ namespace spdlib
                 {
                     imgOffsetYBR = 0;
                 }
-                else
+                else 
                 {
                     imgOffsetYBR = imgYSize - diff;
                 }
@@ -4005,55 +4005,55 @@ namespace spdlib
                 {
                     blockOffsetYBR = 0;
                 }
-                else
+                else 
                 {
                     blockOffsetYBR = ySize - diff;
                 }
                 imgOffsetYBR = imgYSize;
             }
-
+            
             /*
             std::cout << "blockOffsetXBR = " << blockOffsetXBR << std::endl;
             std::cout << "blockOffsetYBR = " << blockOffsetYBR << std::endl;
-
+            
             std::cout << "imgOffsetXBR = " << imgOffsetXBR << std::endl;
             std::cout << "imgOffsetYBR = " << imgOffsetYBR << std::endl;
             */
-
+            
             if(blockOffsetXTL > blockOffsetXBR)
             {
                 return;
             }
-
+            
             if(blockOffsetYTL > blockOffsetYBR)
             {
                 return;
             }
-
+            
             if(imgOffsetXTL > imgOffsetXBR)
             {
                 return;
             }
-
+            
             if(imgOffsetYTL > imgOffsetYBR)
             {
                 return;
             }
-
+            
             boost::uint_fast32_t blockWidth = blockOffsetXBR - blockOffsetXTL;
             boost::uint_fast32_t blockHeight = blockOffsetYBR - blockOffsetYTL;
-
+            
             boost::uint_fast32_t imgWidth = imgOffsetXBR - imgOffsetXTL;
             boost::uint_fast32_t imgHeight = imgOffsetYBR - imgOffsetYTL;
-
+            
             /*
             std::cout << "blockWidth = " << blockWidth << std::endl;
             std::cout << "blockHeight = " << blockHeight << std::endl;
-
+            
             std::cout << "imgWidth = " << imgWidth << std::endl;
             std::cout << "imgHeight = " << imgHeight << std::endl;
             */
-
+            
             if(blockWidth > imgWidth)
             {
                 blockWidth = imgWidth;
@@ -4062,7 +4062,7 @@ namespace spdlib
             {
                 imgWidth = blockWidth;
             }
-
+            
             if(blockHeight > imgHeight)
             {
                 blockHeight = imgHeight;
@@ -4071,23 +4071,23 @@ namespace spdlib
             {
                 imgHeight = blockHeight;
             }
-
+            
             /*
             std::cout << "blockWidth = " << blockWidth << std::endl;
             std::cout << "blockHeight = " << blockHeight << std::endl;
-
+            
             std::cout << "imgWidth = " << imgWidth << std::endl;
             std::cout << "imgHeight = " << imgHeight << std::endl;
             */
-
+            
             float *data = new float[blockWidth];
-
+            
             for(boost::uint_fast32_t i = 0, y = blockOffsetYTL; i < blockHeight; ++i, ++y)
             {
                 for(boost::uint_fast16_t n = 0; n < numImgBands; ++n)
                 {
                     imgBands[n]->RasterIO(GF_Read, imgOffsetXTL, (imgOffsetYTL+i), imgWidth, 1, data, imgWidth, 1, GDT_Float32, 0, 0);
-
+                    
                     for(boost::uint_fast32_t j = 0, x = blockOffsetXTL; j < blockWidth; ++j, ++x)
                     {
                         /*
@@ -4119,7 +4119,7 @@ namespace spdlib
 			throw SPDProcessingException(e.what());
 		}
     }
-
+    
     void SPDProcessDataBlocks::resetImageBlock2Zeros(float ***imageDataBlock, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast16_t numImgBands)
     {
         for(boost::uint_fast32_t i = 0; i < ySize; ++i)
@@ -4133,13 +4133,13 @@ namespace spdlib
             }
         }
     }
-
+    
     void SPDProcessDataBlocks::writeImageData(GDALRasterBand **imageBands, float ***imageDataBlock, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast16_t numImgBands, boost::uint_fast32_t startBinX, boost::uint_fast32_t startBinY, boost::uint_fast32_t startIdxX, boost::uint_fast32_t startIdxY)throw(SPDProcessingException)
     {
         try
         {
             float *imgRowData = new float[xSize];
-
+            
             for(boost::uint_fast32_t i = 0, y = startBinY, imgY = startIdxY; i < ySize; ++i, ++y, ++imgY)
             {
                 for(boost::uint_fast16_t n = 0; n < numImgBands; ++n)
@@ -4149,7 +4149,7 @@ namespace spdlib
                         imgRowData[j] = imageDataBlock[y][x][n];
                     }
                     imageBands[n]->RasterIO(GF_Write, startIdxX, imgY, xSize, 1, imgRowData, xSize, 1, GDT_Float32, 0, 0);
-                }
+                } 
             }
 
         }
@@ -4158,7 +4158,7 @@ namespace spdlib
             throw e;
         }
     }
-
+    
     SPDProcessDataBlocks::~SPDProcessDataBlocks()
     {
 

@@ -116,7 +116,7 @@ void nnai_destroy(nnai* nn)
     free(nn);
 }
 
-/* Conducts NN interpolation in a fixed array of output points using
+/* Conducts NN interpolation in a fixed array of output points using 
  * data specified in a fixed array of input points. Uses pre-calculated
  * weights.
  *
@@ -255,7 +255,7 @@ int main(int argc, char* argv[])
     printf("  %d output points\n", nx * nx);
 
     /*
-     * generate data
+     * generate data 
      */
     printf("  generating data:\n");
     fflush(stdout);
@@ -280,7 +280,7 @@ int main(int argc, char* argv[])
     d = delaunay_build(nin, pin, 0, NULL, 0, NULL);
 
     /*
-     * generate output points
+     * generate output points 
      */
     points_generate2(-0.1, 1.1, -0.1, 1.1, nx, nx, &nout, &pout);
     xout = malloc(nout * sizeof(double));
@@ -298,7 +298,7 @@ int main(int argc, char* argv[])
     gettimeofday(&tv0, &tz);
 
     /*
-     * create interpolator
+     * create interpolator 
      */
     printf("  creating interpolator:\n");
     fflush(stdout);
@@ -313,7 +313,7 @@ int main(int argc, char* argv[])
     }
 
     /*
-     * interpolate
+     * interpolate 
      */
     printf("  interpolating:\n");
     fflush(stdout);

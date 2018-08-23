@@ -4,7 +4,7 @@
  *
  *  Created by Pete Bunting on 30/11/2010.
  *  Copyright 2010 SPDLib. All rights reserved.
- *
+ * 
  *  This file is part of SPDLib.
  *
  *  SPDLib is free software: you can redistribute it and/or modify
@@ -37,70 +37,70 @@
 
 #include "spd/spd-config.h"
 
-int main (int argc, char * const argv[])
+int main (int argc, char * const argv[]) 
 {
     std::cout.precision(12);
-
+    
     std::cout << "spdrmnoise " << SPDLIB_PACKAGE_STRING << ", Copyright (C) " << SPDLIB_COPYRIGHT_YEAR << " Sorted Pulse Library (SPD)\n";
 	std::cout << "This program comes with ABSOLUTELY NO WARRANTY. This is free software,\n";
 	std::cout << "and you are welcome to redistribute it under certain conditions; See\n";
 	std::cout << "website (http://www.spdlib.org). Bugs are to be reported on the trac\n";
 	std::cout << "or directly to " << SPDLIB_PACKAGE_BUGREPORT << std::endl;
 	
-	try
+	try 
 	{
         TCLAP::CmdLine cmd("Remove vertical noise from LiDAR datasets: spdrmnoise", ' ', "1.0.0");
-
+        
         TCLAP::ValueArg<boost::uint_fast32_t> numOfRowsBlockArg("r","blockrows","Number of rows within a block (Default 100)",false,100,"unsigned int");
 		cmd.add( numOfRowsBlockArg );
-
+        
         TCLAP::ValueArg<boost::uint_fast32_t> numOfColsBlockArg("c","blockcols","Number of columns within a block (Default 0) - Note values greater than 1 result in a non-sequencial SPD file.",false,0,"unsigned int");
 		cmd.add( numOfColsBlockArg );
 
         TCLAP::ValueArg<float> absUpperArg("","absup","Absolute upper threshold for returns which are to be removed.",false,0,"float");
         cmd.add( absUpperArg );
-
+        
         TCLAP::ValueArg<float> absLowerArg("","abslow","Absolute lower threshold for returns which are to be removed.",false,0,"float");
         cmd.add( absLowerArg );
-
+        
         TCLAP::ValueArg<float> relUpperArg("","relup","Relative (to median) upper threshold for returns which are to be removed.",false,0,"float");
         cmd.add( relUpperArg );
-
+        
         TCLAP::ValueArg<float> relLowerArg("","rellow","Relative (to median) lower threshold for returns which are to be removed.",false,0,"float");
         cmd.add( relLowerArg );
-
+        
         TCLAP::ValueArg<float> gRelUpperArg("","grelup","Global relative (to median) upper threshold for returns which are to be removed.",false,0,"float");
         cmd.add( gRelUpperArg );
-
+        
         TCLAP::ValueArg<float> gRelLowerArg("","grellow","Global relative (to median) lower threshold for returns which are to be removed.",false,0,"float");
         cmd.add( gRelLowerArg );
-
+        
 		TCLAP::ValueArg<std::string> inputFileArg("i","input","The input SPD file.",true,"","String");
 		cmd.add( inputFileArg );
-
+        
         TCLAP::ValueArg<std::string> outputFileArg("o","output","The output SPD file.",true,"","String");
 		cmd.add( outputFileArg );
-
+        
 		cmd.parse( argc, argv );
 				
 		std::string inputFile = inputFileArg.getValue();
 		std::string outputFile = outputFileArg.getValue();
-
+        
         bool absUpSet = absUpperArg.isSet();
         bool absLowSet = absLowerArg.isSet();
         bool relUpSet = relUpperArg.isSet();
         bool relLowSet = relLowerArg.isSet();
         bool gRelUpSet = gRelUpperArg.isSet();
         bool gRelLowSet = gRelLowerArg.isSet();
-
+        
         if( (absUpSet | absLowSet) & (gRelUpSet | gRelLowSet))
         {
             throw spdlib::SPDException("Either global relative or absolute thresholding can be used.");
         }
-
+        
         spdlib::SPDFile *spdInFile = new spdlib::SPDFile(inputFile);
         spdlib::SPDSetupProcessPulses processPulses = spdlib::SPDSetupProcessPulses(numOfColsBlockArg.getValue(), numOfRowsBlockArg.getValue(), true);
-
+        
         double gMedianZ = 0;
         if(gRelUpSet | gRelLowSet)
         {
@@ -110,7 +110,7 @@ int main (int argc, char * const argv[])
             gMedianZ = pulseProcessorCalcMedian->getMedianMedianVal();
             std::cout << "Global Median = " << gMedianZ << std::endl;
         }
-
+        
         float absUpThres = 0;
         if(absUpSet)
         {
@@ -121,7 +121,7 @@ int main (int argc, char * const argv[])
             absUpThres = gMedianZ + gRelUpperArg.getValue();
             absUpSet = true;
         }
-
+        
         float absLowThres = 0;
         if(absLowSet)
         {
@@ -132,14 +132,14 @@ int main (int argc, char * const argv[])
             absLowThres = gMedianZ - gRelLowerArg.getValue();
             absLowSet = true;
         }
-
+        
         spdlib::SPDPulseProcessor *pulseProcessor = new spdlib::SPDRemoveVerticalNoise(absUpSet, absLowSet, relUpSet, relLowSet, absUpThres, absLowerArg.getValue(), relUpperArg.getValue(), relLowerArg.getValue());
         processPulses.processPulsesWithOutputSPD(pulseProcessor, spdInFile, outputFile);
-
+        
         delete pulseProcessor;
         delete spdInFile;
 	}
-	catch (TCLAP::ArgException &e)
+	catch (TCLAP::ArgException &e) 
 	{
 		std::cerr << "Parse Error: " << e.what() << std::endl;
 	}

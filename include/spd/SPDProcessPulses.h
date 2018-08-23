@@ -58,23 +58,23 @@ namespace spdlib
 	{
 	public:
         SPDProcessPulses(SPDPulseProcessor *pulseProcessor, bool usingWindow, boost::uint_fast16_t winHSize);
-
+        
         void processDataBlockImage(SPDFile *inSPDFile, std::vector<SPDPulse*> ***pulses, float ***imageDataBlock, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast32_t numImgBands, float binSize) throw(SPDProcessingException);
 		void processDataBlock(SPDFile *inSPDFile, std::vector<SPDPulse*> ***pulses, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, float binSize) throw(SPDProcessingException);
-
+        
         void processDataBlockImage(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses, float ***imageDataBlock, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast32_t numImgBands) throw(SPDProcessingException);
 		void processDataBlock(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses) throw(SPDProcessingException);
-
+        
         std::vector<std::string> getImageBandDescriptions() throw(SPDProcessingException);
         void setHeaderValues(SPDFile *spdFile) throw(SPDProcessingException);
-
+        
         ~SPDProcessPulses();
     protected:
         SPDPulseProcessor *pulseProcessor;
         bool usingWindow;
         boost::uint_fast16_t winHSize;
 	};
-
+    
     class DllExport SPDSetupProcessPulses
     {
     public:
@@ -88,7 +88,7 @@ namespace spdlib
         boost::uint_fast32_t blockXSize;
         boost::uint_fast32_t blockYSize;
         bool printProgress;
-    };
+    };    
 }
 
 #endif

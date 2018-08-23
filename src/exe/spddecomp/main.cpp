@@ -36,7 +36,7 @@
 int main (int argc, char * const argv[])
 {
     std::cout.precision(12);
-
+    
     std::cout << "spddecomp " << SPDLIB_PACKAGE_STRING << ", Copyright (C) " << SPDLIB_COPYRIGHT_YEAR << " Sorted Pulse Library (SPD)\n";
 	std::cout << "This program comes with ABSOLUTELY NO WARRANTY. This is free software,\n";
 	std::cout << "and you are welcome to redistribute it under certain conditions; See\n";
@@ -70,10 +70,10 @@ int main (int argc, char * const argv[])
 
 		TCLAP::SwitchArg allGausSwitch("a","all","Fit all Gaussian at once", false);
 		cmd.add( allGausSwitch );
-
+        
         TCLAP::ValueArg<std::string> inputFileArg("i","input","The input file.",true,"","String");
 		cmd.add( inputFileArg );
-
+        
         TCLAP::ValueArg<std::string> outputFileArg("o","output","The output file.",true,"","String");
 		cmd.add( outputFileArg );
 
@@ -81,25 +81,25 @@ int main (int argc, char * const argv[])
 
 		std::string inSPDFilePath = inputFileArg.getValue();
         std::string outFilePath = outputFileArg.getValue();
-
+        
         uint_fast32_t intThreshold = intThresholdArg.getValue();
         bool noiseSet = noiseSetSwitch.getValue();
         uint_fast32_t decayThres = intDecayThresholdArg.getValue();
         uint_fast32_t window = windowThresholdArg.getValue();
         float decayVal = decayArg.getValue();
-
+        
         spdlib::SPDDecompOption decompOption = spdlib::spd_decomp_indvid;
         if(allGausSwitch.getValue())
         {
             decompOption = spdlib::spd_decomp_all;
         }
-
+        
         bool thresholdSet = false;
         if(intThresholdArg.isSet())
         {
             thresholdSet = true;
         }
-
+                
         spdlib::SPDDecomposeWaveforms decompSPDFile;
         decompSPDFile.decomposeWaveforms(inSPDFilePath, outFilePath, numOfColsBlockArg.getValue(), numOfRowsBlockArg.getValue(), decompOption, intThreshold, thresholdSet, noiseSet, window, decayThres, decayVal);
 
@@ -112,7 +112,7 @@ int main (int argc, char * const argv[])
 	{
 		std::cerr << "Error: " << e.what() << std::endl;
 	}
-
+    
     std::cout << "spddecomp - end\n";
 }
 

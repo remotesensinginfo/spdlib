@@ -29,13 +29,13 @@
 #endif
 #include "spd/SPDFileUtilities.h"
 
-namespace spdlib
+namespace spdlib 
 {
     SPDFileUtilities::SPDFileUtilities()
     {
-
+        
     }
-
+    
     boost::uint_fast16_t SPDFileUtilities::getDIRCount(std::string dir) throw(SPDException)
 	{
 		DIR *dp;
@@ -57,18 +57,18 @@ namespace spdlib
 		closedir(dp);
         return files.size();
 	}
-
+    
 	void SPDFileUtilities::getDIRList(std::string dir, std::list<std::string> *files) throw(SPDException)
 	{
 		DIR *dp;
 		struct dirent *dirp;
-		if((dp  = opendir(dir.c_str())) == NULL)
+		if((dp  = opendir(dir.c_str())) == NULL) 
 		{
 			std::string message = std::string("Could not open ") + dir;
 			throw SPDException(message);
 		}
 		
-		while ((dirp = readdir(dp)) != NULL)
+		while ((dirp = readdir(dp)) != NULL) 
 		{
 			files->push_back(std::string(dirp->d_name));
 		}
@@ -79,13 +79,13 @@ namespace spdlib
 	{
 		DIR *dp;
 		struct dirent *dirp;
-		if((dp  = opendir(dir.c_str())) == NULL)
+		if((dp  = opendir(dir.c_str())) == NULL) 
 		{
 			std::string message = std::string("Could not open ") + dir;
 			throw SPDException(message);
 		}
 		
-		while ((dirp = readdir(dp)) != NULL)
+		while ((dirp = readdir(dp)) != NULL) 
 		{
 			files->push_back(std::string(dirp->d_name));
 		}
@@ -96,7 +96,7 @@ namespace spdlib
 	{
 		DIR *dp;
 		struct dirent *dirp;
-		if((dp  = opendir(dir.c_str())) == NULL)
+		if((dp  = opendir(dir.c_str())) == NULL) 
 		{
 			std::string message = std::string("Could not open ") + dir;
 			throw SPDException(message);
@@ -104,7 +104,7 @@ namespace spdlib
 		
 		std::string filename = "";
 		
-		while ((dirp = readdir(dp)) != NULL)
+		while ((dirp = readdir(dp)) != NULL) 
 		{
 			filename = std::string(dirp->d_name);
 			if(SPDFileUtilities::getExtension(filename) == ext)
@@ -123,7 +123,7 @@ namespace spdlib
 	{
 		DIR *dp;
 		struct dirent *dirp;
-		if((dp  = opendir(dir.c_str())) == NULL)
+		if((dp  = opendir(dir.c_str())) == NULL) 
 		{
 			std::string message = std::string("Could not open ") + dir;
 			throw SPDException(message);
@@ -131,7 +131,7 @@ namespace spdlib
 		
 		std::string filename = "";
 		
-		while ((dirp = readdir(dp)) != NULL)
+		while ((dirp = readdir(dp)) != NULL) 
 		{
 			filename = std::string(dirp->d_name);
 			if(SPDFileUtilities::getExtension(filename) == ext)
@@ -151,7 +151,7 @@ namespace spdlib
 		std::vector<std::string> *files = new std::vector<std::string>();
 		DIR *dp;
 		struct dirent *dirp;
-		if((dp  = opendir(dir.c_str())) == NULL)
+		if((dp  = opendir(dir.c_str())) == NULL) 
 		{
 			std::string message = std::string("Could not open ") + dir;
 			throw SPDException(message);
@@ -159,7 +159,7 @@ namespace spdlib
 		
 		std::string filename = "";
 		
-		while ((dirp = readdir(dp)) != NULL)
+		while ((dirp = readdir(dp)) != NULL) 
 		{
 			filename = std::string(dirp->d_name);
 			if(SPDFileUtilities::getExtension(filename) == ext)
@@ -189,7 +189,7 @@ namespace spdlib
 		std::vector<std::string> *files = new std::vector<std::string>();
 		DIR *dp;
 		struct dirent *dirp;
-		if((dp  = opendir(dir.c_str())) == NULL)
+		if((dp  = opendir(dir.c_str())) == NULL) 
 		{
 			std::string message = std::string("Could not open ") + dir;
 			throw SPDException(message);
@@ -197,7 +197,7 @@ namespace spdlib
 		
 		std::string filename = "";
 		
-		while ((dirp = readdir(dp)) != NULL)
+		while ((dirp = readdir(dp)) != NULL) 
 		{
 			filename = std::string(dirp->d_name);
 			//std::cout << "Filename (" << name << "): " << filename << " (" << SPDFileUtilities::getFileNameNoExtension(filename) << ")"<< std::endl;
@@ -318,23 +318,23 @@ namespace spdlib
 	
 	bool SPDFileUtilities::checkFilePresent(std::string file)
 	{
-		struct stat stFileInfo;
-		bool blnReturn;
-		boost::uint_fast32_t intStat;
+		struct stat stFileInfo; 
+		bool blnReturn; 
+		boost::uint_fast32_t intStat; 
 		
-		intStat = stat(file.c_str(), &stFileInfo);
-		if(intStat == 0)
-		{
-			blnReturn = true;
-		}
-		else
-		{
-			blnReturn = false;
+		intStat = stat(file.c_str(), &stFileInfo); 
+		if(intStat == 0) 
+		{  
+			blnReturn = true; 
+		} 
+		else 
+		{ 
+			blnReturn = false; 
 		}
 		
-		return blnReturn;
+		return blnReturn; 
 	}
-
+    
     bool SPDFileUtilities::checkDIR4SHP(std::string dir, std::string shp) throw(SPDException)
 	{
 		std::string *dirList = NULL;
@@ -441,11 +441,11 @@ namespace spdlib
 		}
 		delete[] dirList;
 	}
-
-
+    
+    
     SPDFileUtilities::~SPDFileUtilities()
     {
-
+        
     }
 }
 

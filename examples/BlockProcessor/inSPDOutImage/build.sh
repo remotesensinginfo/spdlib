@@ -23,4 +23,4 @@ cmake -D CMAKE_INSTALL_PREFIX=/Users/pete/Temp/spdtest/ \
 -D SPDLIB_LIB_PATH=$SPDLIB_LIB_PATH \
 .
 
-make
+make 

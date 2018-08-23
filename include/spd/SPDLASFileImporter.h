@@ -59,7 +59,7 @@
 
 namespace spdlib
 {
-
+    
     /** Function to get WKT string from LAS header */
     std::string getWKTfromLAS(LASheader &header);
 
@@ -83,10 +83,10 @@ namespace spdlib
         bool classWarningGiven;
       bool strictPulses;
     };
-
+    
     /**
      Strict importer for LAS files (LASSTRICT).
-
+     
      Throws SPDIOException if pulses can't be created from available points (i.e., not all expected returns are found).
      */
     class DllExport SPDLASFileImporterStrictPulses : public SPDDataImporter
@@ -105,10 +105,10 @@ namespace spdlib
       SPDLASFileImporter* lasDataImporter;
         bool classWarningGiven;
     };
-
+    
     /**
      No pulse importer for LAS files (LASNP)
-
+     
      */
     class DllExport SPDLASFileNoPulsesImporter : public SPDDataImporter
     {

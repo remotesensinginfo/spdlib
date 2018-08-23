@@ -55,7 +55,7 @@ namespace spdlib
 					pxlVals[i][j] = std::numeric_limits<float>::signaling_NaN();
 				}
 			}
-			else
+			else 
 			{
 				rasterBand->RasterIO(GF_Read, 0, row, xSize, 1, data, xSize, 1, GDT_Float32, 0, 0);
 				for(boost::uint_fast32_t col = tlX, j = 0; col <= brX; ++col, ++j)
@@ -64,7 +64,7 @@ namespace spdlib
 					{
 						pxlVals[i][j] = std::numeric_limits<float>::signaling_NaN();
 					}
-					else
+					else 
 					{
 						pxlVals[i][j] = data[col];
 					}
@@ -103,7 +103,7 @@ namespace spdlib
 					{
 						pxlVals[i][j] = data[xSize-1];
 					}
-					else
+					else 
 					{
 						pxlVals[i][j] = data[col];
 					}
@@ -122,13 +122,13 @@ namespace spdlib
 					{
 						pxlVals[i][j] = data[xSize-1];
 					}
-					else
+					else 
 					{
 						pxlVals[i][j] = data[col];
 					}
 				}
 			}
-			else
+			else 
 			{
 				rasterBand->RasterIO(GF_Read, 0, row, xSize, 1, data, xSize, 1, GDT_Float32, 0, 0);
 				for(int_fast32_t col = tlX, j = 0; col <= brX; ++col, ++j)
@@ -141,7 +141,7 @@ namespace spdlib
 					{
 						pxlVals[i][j] = data[xSize-1];
 					}
-					else
+					else 
 					{
 						pxlVals[i][j] = data[col];
 					}
@@ -154,7 +154,7 @@ namespace spdlib
 	
 	void SPDImageUtils::getPixelLocation(GDALDataset *dataset, double x, double y, std::string wktStrBBox, boost::uint_fast32_t *imgX, boost::uint_fast32_t *imgY, float *xOff, float *yOff) throw(SPDImageException)
 	{
-		try
+		try 
 		{
 			double projX = 0;
 			double projY = 0;
@@ -208,7 +208,7 @@ namespace spdlib
 			OGRSpatialReference::DestroySpatialReference(imgSpatialRef);
 			OGRSpatialReference::DestroySpatialReference(dataSpatialRef);
 		}
-		catch (SPDImageException &e)
+		catch (SPDImageException &e) 
 		{
 			throw e;
 		}
@@ -217,7 +217,7 @@ namespace spdlib
 	
 	void SPDImageUtils::getPixelPointLocations(GDALDataset *dataset, double x, double y, std::string wktStrBBox,boost::int_fast32_t *imgX,boost::int_fast32_t *imgY, float *xOff, float *yOff) throw(SPDImageException)
 	{
-		try
+		try 
 		{
 			double projX = 0;
 			double projY = 0;
@@ -286,7 +286,7 @@ namespace spdlib
 			OGRSpatialReference::DestroySpatialReference(imgSpatialRef);
 			OGRSpatialReference::DestroySpatialReference(dataSpatialRef);
 		}
-		catch (SPDImageException &e)
+		catch (SPDImageException &e) 
 		{
 			throw e;
 		}
@@ -360,7 +360,7 @@ namespace spdlib
 		return newValue;
 		
 	}
-
+    
     void SPDImageUtils::getImageOverlapCut2Env(GDALDataset **datasets, int numDS,  int **dsOffsets, int *width, int *height, double *gdalTransform, OGREnvelope *env, int *maxBlockX, int *maxBlockY) throw(SPDImageException)
 	{
 		double **transformations = new double*[numDS];
@@ -401,7 +401,7 @@ namespace spdlib
 				{
                     *maxBlockX = xBlockSize[i];
                     *maxBlockY = yBlockSize[i];
-
+                    
 					pixelXRes = transformations[i][1];
 					pixelYRes = transformations[i][5];
 					
@@ -468,19 +468,19 @@ namespace spdlib
 					{
 						minY = tmpMinY;
 					}
-
+                    
                     if(xBlockSize[i] > (*maxBlockX))
                     {
                         *maxBlockX = xBlockSize[i];
                     }
-
+                    
                     if(yBlockSize[i] > (*maxBlockY))
                     {
                         *maxBlockY = yBlockSize[i];
                     }
 				}
 			}
-
+            
 			if(maxX - minX <= 0)
 			{
 				std::cout << "MinX = " << minX << std::endl;
@@ -529,7 +529,7 @@ namespace spdlib
 				std::cout << "MaxY = " << maxY << std::endl;
 				throw SPDImageException("Images and Envelope do not overlap in the Y axis");
 			}
-
+            
             gdalTransform[0] = minX;
 			gdalTransform[1] = pixelXRes;
 			gdalTransform[2] = rotateX;
@@ -539,7 +539,7 @@ namespace spdlib
 			
             //std::cout << "(maxX - minX)/pixelXRes = " << (maxX - minX)/pixelXRes << std::endl;
             //std::cout << "(maxY - minY)/pixelYResPos = " << (maxY - minY)/pixelYResPos << std::endl;
-
+            
 			*width = floor(((maxX - minX)/pixelXRes)+0.5);
 			*height = floor(((maxY - minY)/pixelYResPos)+0.5);
 			
@@ -608,11 +608,11 @@ namespace spdlib
 		{
 			delete[] ySize;
 		}
-
+        
         delete[] xBlockSize;
         delete[] yBlockSize;
 	}
-
+    
     bool SPDImageUtils::closeResTest(double baseRes, double targetRes, double resDiffThresh)
     {
     	/** Calculates if two doubles are close to each other with the threshold
@@ -620,18 +620,18 @@ namespace spdlib
     	 * - A two sided test is used rather than the absolute value to prevent
     	 * 	 overflows.
     	 */
-
+        
     	bool closeRes = true;
     	double resDiff = baseRes - targetRes;
     	double resDiffVal = resDiffThresh * baseRes;
-
+        
     	if((resDiff > 0) && (resDiff > resDiffVal)){closeRes = false;}
     	else if((resDiff < 0) && (resDiff > -1.*resDiffVal)){closeRes = false;}
-
+        
     	return closeRes;
     }
-
-
+    
+    
     void SPDImageUtils::copyInDatasetIntoOutDataset(GDALDataset *dataset, GDALDataset *outputImageDS, OGREnvelope *env) throw(SPDImageException)
     {
         GDALAllRegister();
@@ -655,39 +655,39 @@ namespace spdlib
 		GDALRasterBand **outputRasterBands = NULL;
 		
 		try
-		{
+		{            
             if(outputImageDS->GetRasterCount() != dataset->GetRasterCount())
             {
                 throw SPDImageException("The input and output datasets do not have the same number of image bands\n");
             }
-
-
+            
+            
             GDALDataset **tmpDatasets = new GDALDataset*[2];
             tmpDatasets[0] = dataset;
             tmpDatasets[1] = outputImageDS;
-
-
+            
+            
 			// Find image overlap
 			this->getImageOverlapCut2Env(tmpDatasets, 2,  dsOffsets, &width, &height, gdalTranslation, env, &xBlockSize, &yBlockSize);
-
+            
             //std::cout << "Overlap Image Width = " << width << std::endl;
             //std::cout << "Overlap Image Height = " << height << std::endl;
-
+            
             delete[] tmpDatasets;
-
+            
 			if(width < 1)
             {
                 throw SPDImageException("The output dataset does not have the correct width\n");
             }
-
+            
             if(height < 1)
             {
                 throw SPDImageException("The output dataset does not have the correct height\n");
             }
 			
             numOfBands = dataset->GetRasterCount();
-
-
+            
+            
 			// Get Image Input Bands
 			inImgOffset = new int[2];
             inImgOffset[0] = dsOffsets[0][0];
@@ -698,7 +698,7 @@ namespace spdlib
             {
                 inputRasterBands[j] = dataset->GetRasterBand(j+1);
             }
-
+            
 			//Get Image Output Bands
             outImgOffset = new int[2];
             outImgOffset[0] = dsOffsets[1][0];
@@ -709,23 +709,23 @@ namespace spdlib
 			{
 				outputRasterBands[i] = outputImageDS->GetRasterBand(i+1);
 			}
-
+            
             //std::cout << "Max. block size: " << yBlockSize << std::endl;
-
+            
 			// Allocate memory
 			inputData = new float*[numOfBands];
 			for(int i = 0; i < numOfBands; i++)
 			{
 				inputData[i] = (float *) CPLMalloc(sizeof(float)*width*yBlockSize);
 			}
-
+            
 			int nYBlocks = height / yBlockSize;
             int remainRows = height - (nYBlocks * yBlockSize);
             int rowOffset = 0;
-
+            
 			// Loop images to process data
 			for(int i = 0; i < nYBlocks; i++)
-			{
+			{                
 				for(int n = 0; n < numOfBands; n++)
 				{
                     rowOffset = inImgOffset[1] + (yBlockSize * i);
@@ -738,7 +738,7 @@ namespace spdlib
 					outputRasterBands[n]->RasterIO(GF_Write, outImgOffset[0], rowOffset, width, yBlockSize, inputData[n], width, yBlockSize, GDT_Float32, 0, 0);
 				}
 			}
-
+            
             if(remainRows > 0)
             {
                 for(int n = 0; n < numOfBands; n++)
@@ -777,7 +777,7 @@ namespace spdlib
 			{
 				delete[] inImgOffset;
 			}
-
+            
             if(outImgOffset != NULL)
 			{
 				delete[] outImgOffset;
@@ -806,7 +806,7 @@ namespace spdlib
 			}
 			throw e;
 		}
-
+        
 		if(gdalTranslation != NULL)
 		{
 			delete[] gdalTranslation;
@@ -828,7 +828,7 @@ namespace spdlib
         {
             delete[] inImgOffset;
         }
-
+        
         if(outImgOffset != NULL)
         {
             delete[] outImgOffset;
@@ -856,8 +856,8 @@ namespace spdlib
 			delete[] outputRasterBands;
 		}
     }
-
-
+    
+    
     boost::uint_fast32_t SPDImageUtils::findColumnIndex(const GDALRasterAttributeTable *gdalATT, std::string colName) throw(SPDImageException)
     {
         int numColumns = gdalATT->GetColumnCount();
@@ -872,16 +872,16 @@ namespace spdlib
                 break;
             }
         }
-
+        
         if(!foundCol)
         {
             std::string message = std::string("The column ") + colName + std::string(" could not be found.");
             throw SPDImageException(message);
         }
-
+        
         return colIdx;
     }
-
+    
     boost::uint_fast32_t SPDImageUtils::findColumnIndexOrCreate(GDALRasterAttributeTable *gdalATT, std::string colName, GDALRATFieldType dType) throw(SPDImageException)
     {
         int numColumns = gdalATT->GetColumnCount();
@@ -896,16 +896,16 @@ namespace spdlib
                 break;
             }
         }
-
+        
         if(!foundCol)
         {
             gdalATT->CreateColumn(colName.c_str(), dType, GFU_Generic);
             colIdx = numColumns;
         }
-
+        
         return colIdx;
     }
-
+    
 	
 	SPDImageUtils::~SPDImageUtils()
 	{

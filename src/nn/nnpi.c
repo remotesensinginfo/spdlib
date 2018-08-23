@@ -39,7 +39,7 @@
  *                   Sibson interpolation, if circle_build fails(), now a
  *                   local copy of a point is moved slightly rather than the
  *                   data point itself. The later approach have found leading
- *                   to inconsistencies of the new point position with the
+ *                   to inconsistencies of the new point position with the 
  *                   earlier built triangulation.
  *                 22/11/2006 PS: introduced special treatment for big circles
  *                   by moving their centers in a certain way, closer to the
@@ -47,7 +47,7 @@
  *                   such events. Modified _nnpi_calculate_weights() to handle
  *                   the case when instead of being in between two data points
  *                   the interpolation point is close to a data point.
- *                 30/10/2007 PS: Modified treatment of degenerate cases in
+ *                 30/10/2007 PS: Modified treatment of degenerate cases in 
  *                   nnpi_triangle_process(), many thanks to John Gerschwitz,
  *                   Petroleum Geo-Services, for exposing the defect introduced
  *                   in v. 1.69. Changed EPS_SAME from 1.0e-15 to 1.0e-8. Also
@@ -80,7 +80,7 @@ struct nnpi {
     double wmin;
     int n;                      /* number of points processed */
     /*
-     * work variables
+     * work variables 
      */
     int ncircles;
     int nvertices;
@@ -148,7 +148,7 @@ static void nnpi_add_weight(nnpi* nn, int vertex, double w)
     int i;
 
     /*
-     * find whether the vertex is already in the list
+     * find whether the vertex is already in the list 
      */
     /*
      * For clustered data the number of natural neighbours for a point may
@@ -162,7 +162,7 @@ static void nnpi_add_weight(nnpi* nn, int vertex, double w)
 
     if (i == nn->nvertices) {   /* not in the list */
         /*
-         * get more memory if necessary
+         * get more memory if necessary 
          */
         if (nn->nvertices == nn->nallocated) {
             nn->vertices = realloc(nn->vertices, (nn->nallocated + NINC) * sizeof(int));
@@ -171,7 +171,7 @@ static void nnpi_add_weight(nnpi* nn, int vertex, double w)
         }
 
         /*
-         * add the vertex to the list
+         * add the vertex to the list 
          */
         nn->vertices[i] = vertex;
         nn->weights[i] = w;
@@ -198,13 +198,13 @@ static void nnpi_triangle_process(nnpi* nn, point* p, int i)
      *
      * assert(circle_contains(c, p));
      *
-     * I removed it after introducing flag `contains' to
+     * I removed it after introducing flag `contains' to 
      * delaunay_circles_find(). It looks like the code is robust enough to
      * run without this assertion.
      */
 
     /*
-     * Sibson interpolation by using Watson's algorithm
+     * Sibson interpolation by using Watson's algorithm 
      */
     for (j = 0; j < 3; ++j) {
         int j1 = (j + 1) % 3;
@@ -248,11 +248,11 @@ static void nnpi_triangle_process(nnpi* nn, point* p, int i)
              * If a circle is recognised as very large in circle_build2(), then
              * its parameters are replaced by NaNs, which results in the
              * variable `det' above being NaN.
-             *
+             * 
              * When this happens inside convex hall of the data, there is
              * always a triangle on another side of the edge, processing of
              * which also produces an invalid circle. Processing of this edge
-             * yields two pairs of infinite determinants, with singularities
+             * yields two pairs of infinite determinants, with singularities 
              * of each pair cancelling if the point moves slightly off the edge.
              *
              * Each of the determinants corresponds to the (signed) area of a
@@ -1035,7 +1035,7 @@ int main(int argc, char* argv[])
     printf("  %d output points\n", nx * nx);
 
     /*
-     * generate data
+     * generate data 
      */
     printf("  generating data:\n");
     fflush(stdout);
@@ -1058,7 +1058,7 @@ int main(int argc, char* argv[])
     d = delaunay_build(nin, pin, 0, NULL, 0, NULL);
 
     /*
-     * generate output points
+     * generate output points 
      */
     points_generate2(-0.1, 1.1, -0.1, 1.1, nx, nx, &nout, &pout);
     cpi = (nx / 2) * (nx + 1);
@@ -1066,7 +1066,7 @@ int main(int argc, char* argv[])
     gettimeofday(&tv0, &tz);
 
     /*
-     * create interpolator
+     * create interpolator 
      */
     printf("  creating interpolator:\n");
     fflush(stdout);
@@ -1081,7 +1081,7 @@ int main(int argc, char* argv[])
     }
 
     /*
-     * interpolate
+     * interpolate 
      */
     printf("  interpolating:\n");
     fflush(stdout);

@@ -35,7 +35,7 @@ namespace spdlib
         this->greenBand = greenBand;
         this->blueBand = blueBand;
     }
-
+    
     void SPDDefineRGBValues::processDataColumnImage(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses, float *imageData, SPDXYPoint *cenPts, boost::uint_fast32_t numImgBands, float binSize) throw(SPDProcessingException)
     {
         if((inSPDFile->getDecomposedPtDefined() == SPD_TRUE) | (inSPDFile->getDiscretePtDefined() == SPD_TRUE))
@@ -52,7 +52,7 @@ namespace spdlib
             {
                 throw SPDProcessingException("Defined Blue band is not in the dataset");
             }
-
+            
             std::vector<SPDPulse*>::iterator iterPulses;
             std::vector<SPDPoint*>::iterator iterPoints;
             for(iterPulses = pulses->begin(); iterPulses != pulses->end(); ++iterPulses)
@@ -73,36 +73,36 @@ namespace spdlib
             throw SPDProcessingException("You can only define RGB values on to points (i.e., not waveform data) decompose the data first.");
         }
     }
-		
+		        
     SPDDefineRGBValues::~SPDDefineRGBValues()
     {
-
+        
     }
-
-
-
+    
+    
+    
     SPDFindRGBValuesStats::SPDFindRGBValuesStats()
     {
         this->redMean = 0;
         this->redStdDev = 0;
         this->redMin = 0;
         this->redMax = 0;
-
+        
         this->greenMean = 0;
         this->greenStdDev = 0;
         this->greenMin = 0;
         this->greenMax = 0;
-
+        
         this->blueMean = 0;
         this->blueStdDev = 0;
         this->blueMin = 0;
         this->blueMax = 0;
-
+        
         this->calcStdDev = false;
         this->first = true;
         this->countPts = 0;
     }
-
+    
     void SPDFindRGBValuesStats::processDataColumn(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses, SPDXYPoint *cenPts) throw(SPDProcessingException)
     {
         for(std::vector<SPDPulse*>::iterator iterPulses = pulses->begin(); iterPulses != pulses->end(); ++iterPulses)
@@ -118,11 +118,11 @@ namespace spdlib
                             this->redMean = (*iterPts)->red;
                             this->redMin = (*iterPts)->red;
                             this->redMax = (*iterPts)->red;
-
+                            
                             this->greenMean = (*iterPts)->green;
                             this->greenMin = (*iterPts)->green;
                             this->greenMax = (*iterPts)->green;
-
+                            
                             this->blueMean = (*iterPts)->blue;
                             this->blueMin = (*iterPts)->blue;
                             this->blueMax = (*iterPts)->blue;
@@ -148,7 +148,7 @@ namespace spdlib
                             {
                                 this->redMax = (*iterPts)->red;
                             }
-
+                            
                             this->greenMean += (*iterPts)->green;
                             if((*iterPts)->green < this->greenMin)
                             {
@@ -158,7 +158,7 @@ namespace spdlib
                             {
                                 this->greenMax = (*iterPts)->green;
                             }
-
+                            
                             this->blueMean += (*iterPts)->blue;
                             if((*iterPts)->blue < this->blueMin)
                             {
@@ -176,22 +176,22 @@ namespace spdlib
                             this->blueStdDev += pow((*iterPts)->blue - this->blueMean, 2);
                         }
                     }
-
+                    
                     ++this->countPts;
                 }
             }
-
-
+            
+            
         }
     }
 
     SPDFindRGBValuesStats::~SPDFindRGBValuesStats()
     {
-
+        
     }
-
-
-
+    
+    
+    
     SPDLinearStretchRGBValues::SPDLinearStretchRGBValues(float redMin, float redMax, float greenMin, float greenMax, float blueMin, float blueMax, bool stretchIndepend)
     {
         this->redMin = redMin;
@@ -200,13 +200,13 @@ namespace spdlib
         this->greenMax = greenMax;
         this->blueMin = blueMin;
         this->blueMax = blueMax;
-
+        
         this->redRange = redMax - redMin;
         this->greenRange = greenMax - greenMin;
         this->blueRange = blueMax - blueMin;
-
+        
         this->stretchIndepend = stretchIndepend;
-
+        
         // seb modifications to support stretching all bands bythe same amount
         this->maxRange = redRange;
         if(greenRange > maxRange)
@@ -217,7 +217,7 @@ namespace spdlib
         {
             maxRange = blueRange;
         }
-
+        
         this->totalMin = redMin;
         if(greenMin < totalMin)
         {
@@ -227,7 +227,7 @@ namespace spdlib
         {
             totalMin = blueMin;
         }
-
+        
         this->totalMax = redMax;
         if(greenMax > totalMax)
         {
@@ -237,9 +237,9 @@ namespace spdlib
         {
             totalMax = blueMax;
         }
-
+        
     }
-
+    
     void SPDLinearStretchRGBValues::processDataColumn(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses, SPDXYPoint *cenPts) throw(SPDProcessingException)
     {
         for(std::vector<SPDPulse*>::iterator iterPulses = pulses->begin(); iterPulses != pulses->end(); ++iterPulses)
@@ -263,7 +263,7 @@ namespace spdlib
                         {
                             (*iterPts)->red = (((*iterPts)->red-redMin)/redRange)*255;
                         }
-
+                        
                         if((*iterPts)->green < greenMin)
                         {
                             (*iterPts)->green = 0;
@@ -276,7 +276,7 @@ namespace spdlib
                         {
                             (*iterPts)->green = (((*iterPts)->green-greenMin)/greenRange)*255;
                         }
-
+                        
                         if((*iterPts)->blue < blueMin)
                         {
                             (*iterPts)->blue = 0;
@@ -298,11 +298,11 @@ namespace spdlib
                     }
                 }
             }
-
-
+            
+            
         }
     }
-
+    
     uint_fast16_t SPDLinearStretchRGBValues::scalePixelValue(uint_fast16_t value)
     {
         uint_fast16_t val = 0;
@@ -318,7 +318,7 @@ namespace spdlib
         {
             val = ((value-totalMin)/maxRange)*255;
         }
-
+        
         if(val > 255)
         {
             val = 255;
@@ -327,14 +327,14 @@ namespace spdlib
         {
             val = 0;
         }
-
+        
         return val;
     }
-
-
+    
+        
     SPDLinearStretchRGBValues::~SPDLinearStretchRGBValues()
     {
-
+        
     }
 
 }

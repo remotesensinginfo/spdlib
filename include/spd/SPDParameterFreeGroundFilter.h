@@ -61,7 +61,7 @@
 
 namespace spdlib
 {
-
+    
     struct SPDPFFProcessLevel
     {
         float **data;
@@ -69,13 +69,13 @@ namespace spdlib
         boost::uint_fast32_t ySize;
         float pxlRes;
     };
-
+        
     class DllExport SPDParameterFreeGroundFilter : public SPDDataBlockProcessor
 	{
 	public:
         // constructor
         SPDParameterFreeGroundFilter(float grdPtDev, boost::uint_fast16_t classParameters, bool checkForFalseMinma, boost::uint_fast32_t kValue, boost::uint_fast32_t classifyDevThresh, boost::uint_fast32_t topHatStart, bool topHatScales, boost::uint_fast32_t topHatFactor, boost::uint_fast16_t minPointDensity);
-
+        
         // public functions
         void processDataBlockImage(SPDFile *inSPDFile, std::vector<SPDPulse*> ***pulses, float ***imageDataBlock, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast32_t numImgBands, float binSize) throw(SPDProcessingException);
 		void processDataBlock(SPDFile *inSPDFile, std::vector<SPDPulse*> ***pulses, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, float binSize) throw(SPDProcessingException);
@@ -83,10 +83,10 @@ namespace spdlib
 		{throw SPDProcessingException("SPDProgressiveMophologicalGrdFilter requires processing with a grid.");};
         void processDataBlock(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses) throw(SPDProcessingException)
         {throw SPDProcessingException("SPDProgressiveMophologicalGrdFilter requires processing with a grid.");};
-
+        
         boost::uint_fast16_t** generateHoldingElement(boost::uint_fast16_t elSize);
         void deleteHoldingElement(boost::uint_fast16_t** toDelete, boost::uint_fast16_t elSize);
-
+        
         std::vector<std::string> getImageBandDescriptions() throw(SPDProcessingException)
         {
             std::vector<std::string> bandNames;
@@ -97,7 +97,7 @@ namespace spdlib
         {
             // Nothing to do...
         }
-
+        
         ~SPDParameterFreeGroundFilter();
     protected:
         // members
@@ -132,10 +132,10 @@ namespace spdlib
         SPDPFFProcessLevel* runSurfaceEstimation(SPDFile *inSPDFile, std::vector<SPDPulse*> ***pulses, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, float binSize) throw(SPDProcessingException);
 
 	};
-
-
-
-
+    
+    
+    
+    
     class DllExport SPDTPSPFFGrdFilteringInterpolator
 	{
 	public:
@@ -155,8 +155,8 @@ namespace spdlib
         float binSize;
         float radius;
 	};
-
-
+     
+    
 }
 
 

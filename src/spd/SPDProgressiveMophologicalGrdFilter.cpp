@@ -25,7 +25,7 @@
 
 namespace spdlib
 {
-
+    
     SPDProgressiveMophologicalGrdFilter::SPDProgressiveMophologicalGrdFilter(boost::uint_fast16_t initFilterHSize, boost::uint_fast16_t maxFilterHSize, float terrainSlope, float initElevDiff, float maxElevDiff, float grdPtDev, bool medianFilter, boost::uint_fast16_t medianFilterHSize, boost::uint_fast16_t classParameters)
     {
         this->initFilterHSize = initFilterHSize;
@@ -38,7 +38,7 @@ namespace spdlib
         this->medianFilterHSize = medianFilterHSize;
         this->classParameters = classParameters;
     }
-
+    
     void SPDProgressiveMophologicalGrdFilter::processDataBlockImage(SPDFile *inSPDFile, std::vector<SPDPulse*> ***pulses, float ***imageDataBlock, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast32_t numImgBands, float binSize) throw(SPDProcessingException)
     {
         if(numImgBands < 1)
@@ -81,7 +81,7 @@ namespace spdlib
 				imageDataBlock[0][i][j] = elev[i][j];
 			}
 		}
-
+        
 		float elevDiffThreshold = initElevDiff;
 		
 		boost::uint_fast16_t **element = NULL;
@@ -161,7 +161,7 @@ namespace spdlib
 			}
 			delete[] element;
 		}
-
+        
 		// Clean up memory
 		for(boost::uint_fast32_t i = 0; i < ySize; ++i)
 		{
@@ -179,7 +179,7 @@ namespace spdlib
 		delete[] elevDialate;
 		delete[] changeFlag;
     }
-
+    
     void SPDProgressiveMophologicalGrdFilter::processDataBlock(SPDFile *inSPDFile, std::vector<SPDPulse*> ***pulses, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, float binSize) throw(SPDProcessingException)
     {
 		float **elev = new float*[ySize];
@@ -320,7 +320,7 @@ namespace spdlib
                                 {
                                     (*iterPoints)->classification = SPD_UNCLASSIFIED;
                                 }
-
+                                
 								if(fabs((*iterPoints)->z - elevFinal[i][j]) < grdPtDev)
 								{
 									(*iterPoints)->classification = SPD_GROUND;
@@ -351,7 +351,7 @@ namespace spdlib
 		delete[] elevFinal;
 		delete[] changeFlag;
     }
-
+    
 	void SPDProgressiveMophologicalGrdFilter::performErosion(float **elev, float **elevErode, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast16_t filterHSize, boost::uint_fast16_t **element)
 	{
 		boost::uint_fast32_t filterPxlStartX = 0;
@@ -460,16 +460,16 @@ namespace spdlib
 					{
 						elevErode[i][j] = elevValues->front();
 					}
-					else
+					else 
 					{
 						elevErode[i][j] = std::numeric_limits<float>::signaling_NaN();
 					}
 				}
-				else
+				else 
 				{
 					elevErode[i][j] = std::numeric_limits<float>::signaling_NaN();
 				}
-
+                
 				
 			}
 		}
@@ -584,12 +584,12 @@ namespace spdlib
 					{
 						elevDialate[i][j] = elevValues->front();
 					}
-					else
+					else 
 					{
 						elevDialate[i][j] = std::numeric_limits<float>::signaling_NaN();
 					}
 				}
-				else
+				else 
 				{
 					elevDialate[i][j] = std::numeric_limits<float>::signaling_NaN();
 				}
@@ -860,16 +860,16 @@ namespace spdlib
 					{
 						elevOut[i][j] = elevValues->front();
 					}
-					else
+					else 
 					{
 						elevOut[i][j] = std::numeric_limits<float>::signaling_NaN();
 					}
 				}
-				else
+				else 
 				{
 					elevOut[i][j] = elev[i][j];
 				}
-
+                
 				
 				
 			}
@@ -894,20 +894,20 @@ namespace spdlib
 				{
 					element[i][j] = 1;
 				}
-				else
+				else 
 				{
 					element[i][j] = 0;
 				}
-
+                
 			}
 		}
 	}
 
     SPDProgressiveMophologicalGrdFilter::~SPDProgressiveMophologicalGrdFilter()
     {
-
+        
     }
-
+    
 }
 
 

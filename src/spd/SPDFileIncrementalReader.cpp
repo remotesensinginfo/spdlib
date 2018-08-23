@@ -7,23 +7,23 @@
  *
  *  This file is part of SPDLib.
  *
- *  Permission is hereby granted, free of charge, to any person
- *  obtaining a copy of this software and associated documentation
- *  files (the "Software"), to deal in the Software without restriction,
- *  including without limitation the rights to use, copy, modify,
- *  merge, publish, distribute, sublicense, and/or sell copies of the
- *  Software, and to permit persons to whom the Software is furnished
+ *  Permission is hereby granted, free of charge, to any person 
+ *  obtaining a copy of this software and associated documentation 
+ *  files (the "Software"), to deal in the Software without restriction, 
+ *  including without limitation the rights to use, copy, modify, 
+ *  merge, publish, distribute, sublicense, and/or sell copies of the 
+ *  Software, and to permit persons to whom the Software is furnished 
  *  to do so, subject to the following conditions:
  *
- *  The above copyright notice and this permission notice shall be
+ *  The above copyright notice and this permission notice shall be 
  *  included in all copies or substantial portions of the Software.
  *
- *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
- *  EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
- *  OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
- *  IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR
- *  ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF
- *  CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+ *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, 
+ *  EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES 
+ *  OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. 
+ *  IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR 
+ *  ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF 
+ *  CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION 
  *  WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  *
  */
@@ -74,7 +74,7 @@ namespace spdlib
 			
 			this->spdFile = spdFile;
 			spdFileReader.readHeaderInfo(spdFile->getFilePath(), spdFile);
-
+            
             try
 			{
 				spdInFile = new H5::H5File( spdFile->getFilePath(), H5F_ACC_RDONLY );
@@ -98,7 +98,7 @@ namespace spdlib
             {
                 throw SPDIOException("SPD Pulse version was not recognised.");
             }
-
+            
 			if(spdFile->getPointVersion() == 1)
             {
                 pointType = ptsUtils.createSPDPointV1DataTypeMemory();
@@ -135,7 +135,7 @@ namespace spdlib
 		
 		return fileOpened;
 	}
-
+    
     /*UPDATED*/
     void SPDFileIncrementalReader::readPulseData(std::list<SPDPulse*> *pulses, boost::uint_fast64_t offset, boost::uint_fast64_t numPulses) throw(SPDIOException)
 	{
@@ -149,21 +149,21 @@ namespace spdlib
             H5::Exception::dontPrint();
             SPDPointUtils ptsUtils;
             SPDPulseUtils pulseUtils;
-
+            
             if(numPulses > 0)
             {
                 H5::DataSet pulsesDataset = spdInFile->openDataSet( SPDFILE_DATASETNAME_PULSES );
                 H5::DataSpace pulsesDataspace = pulsesDataset.getSpace();
-
+                
                 H5::DataSet pointsDataset = spdInFile->openDataSet( SPDFILE_DATASETNAME_POINTS );
                 H5::DataSpace pointsDataspace = pointsDataset.getSpace();
-
+                
                 H5::DataSet transmittedDataset = spdInFile->openDataSet( SPDFILE_DATASETNAME_TRANSMITTED );
                 H5::DataSpace transmittedDataspace = transmittedDataset.getSpace();
-
+                
                 H5::DataSet receivedDataset = spdInFile->openDataSet( SPDFILE_DATASETNAME_RECEIVED );
                 H5::DataSpace receivedDataspace = receivedDataset.getSpace();
-
+                
                 int rank = 1;
                 // START: Variables for Pulse //
                 hsize_t pulseOffset[1];
@@ -171,82 +171,82 @@ namespace spdlib
                 hsize_t pulseCount[1];
                 pulseCount[0]  = numPulses;
                 pulsesDataspace.selectHyperslab( H5S_SELECT_SET, pulseCount, pulseOffset );
-
-                hsize_t pulseDims[1];
+                
+                hsize_t pulseDims[1]; 
                 pulseDims[0] = numPulses;
                 H5::DataSpace pulseMemspace( rank, pulseDims );
-
+                
                 hsize_t pulseOffset_out[1];
                 hsize_t pulseCount_out[1];
                 pulseOffset_out[0] = 0;
                 pulseCount_out[0]  = numPulses;
                 pulseMemspace.selectHyperslab( H5S_SELECT_SET, pulseCount_out, pulseOffset_out );
                 // END: Variables for Pulse //
-
+                
                 // START: Variables for Point //
                 hsize_t pointOffset[1];
                 hsize_t pointCount[1];
-
-                hsize_t pointDims[1];
+                
+                hsize_t pointDims[1]; 
                 H5::DataSpace pointMemspace;
-
+                
                 hsize_t pointOffset_out[1];
                 hsize_t pointCount_out[1];
                 // END: Variables for Point //
-
+                
                 // START: Variables for Transmitted //
                 hsize_t transOffset[1];
                 hsize_t transCount[1];
-
-                hsize_t transDims[1];
+                
+                hsize_t transDims[1]; 
                 H5::DataSpace transMemspace;
-
+                
                 hsize_t transOffset_out[1];
                 hsize_t transCount_out[1];
                 // END: Variables for Transmitted //
-
+                
                 // START: Variables for Received //
                 hsize_t receivedOffset[1];
                 hsize_t receivedCount[1];
-
-                hsize_t receivedDims[1];
+                
+                hsize_t receivedDims[1]; 
                 H5::DataSpace receivedMemspace;
-
+                
                 hsize_t receivedOffset_out[1];
                 hsize_t receivedCount_out[1];
                 // END: Variables for Received //
-
-
+                
+                
                 void *pulseArray = NULL;
                 void *pointsArray = NULL;
                 unsigned long *transmittedArray = NULL;
                 unsigned long *receivedArray = NULL;
-
+                
                 boost::uint_fast64_t ptStartIdx = 0;
                 boost::uint_fast64_t numOfPoints = 0;
                 boost::uint_fast64_t transStartIdx = 0;
                 boost::uint_fast64_t numOfTransVals = 0;
                 boost::uint_fast64_t receivedStartIdx = 0;
                 boost::uint_fast64_t numOfReceivedVals = 0;
-
+                
                 boost::uint_fast64_t ptIdx = 0;
                 boost::uint_fast64_t transIdx = 0;
                 boost::uint_fast64_t receivedIdx = 0;
-
+                
                 SPDPulse *pulse = NULL;
                 SPDPoint *point = NULL;
-
+                
                 pulseOffset[0] = offset;
                 pulseCount[0]  = numPulses;
                 pulsesDataspace.selectHyperslab( H5S_SELECT_SET, pulseCount, pulseOffset );
-
+                
                 pulseDims[0] = numPulses;
                 pulseMemspace = H5::DataSpace( rank, pulseDims );
-
+                
                 pulseOffset_out[0] = 0;
                 pulseCount_out[0]  = numPulses;
                 pulseMemspace.selectHyperslab( H5S_SELECT_SET, pulseCount_out, pulseOffset_out );
-
+                                
                 if(spdFile->getPulseVersion() == 1)
                 {
                     pulseArray = new SPDPulseH5V1[numPulses];
@@ -256,14 +256,14 @@ namespace spdlib
                     pulseArray = new SPDPulseH5V2[numPulses];
                 }
                 pulsesDataset.read(pulseArray, *pulseType, pulseMemspace, pulsesDataspace );
-
+                
                 ptStartIdx = 0;
                 numOfPoints = 0;
                 transStartIdx = 0;
                 numOfTransVals = 0;
                 receivedStartIdx = 0;
                 numOfReceivedVals = 0;
-
+                
                 if(spdFile->getPulseVersion() == 1)
                 {
                     SPDPulseH5V1 *pulseObj = NULL;
@@ -298,7 +298,7 @@ namespace spdlib
                         numOfReceivedVals += pulseObj->numOfReceivedBins;
                     }
                 }
-
+                
                 if(numOfPoints > 0)
                 {
                     // Read Points.
@@ -310,7 +310,7 @@ namespace spdlib
                     {
                         pointsArray = new SPDPointH5V2[numOfPoints];
                     }
-
+                    
                     pointOffset[0] = ptStartIdx;
                     pointCount[0] = numOfPoints;
                     pointsDataspace.selectHyperslab(H5S_SELECT_SET, pointCount, pointOffset);
@@ -321,7 +321,7 @@ namespace spdlib
                     pointMemspace.selectHyperslab( H5S_SELECT_SET, pointCount_out, pointOffset_out );
                     pointsDataset.read(pointsArray, *pointType, pointMemspace, pointsDataspace);
                 }
-
+                
                 if(numOfTransVals > 0)
                 {
                     // Read Transmitted Vals.
@@ -336,7 +336,7 @@ namespace spdlib
                     transMemspace.selectHyperslab( H5S_SELECT_SET, transCount_out, transOffset_out );
                     transmittedDataset.read(transmittedArray, H5::PredType::NATIVE_ULONG, transMemspace, transmittedDataspace);
                 }
-
+                
                 if(numOfReceivedVals > 0)
                 {
                     // Read Received Vals.
@@ -351,11 +351,11 @@ namespace spdlib
                     receivedMemspace.selectHyperslab( H5S_SELECT_SET, receivedCount_out, receivedOffset_out );
                     receivedDataset.read(receivedArray, H5::PredType::NATIVE_ULONG, receivedMemspace, receivedDataspace);
                 }
-
+                
                 ptIdx = 0;
                 transIdx = 0;
                 receivedIdx = 0;
-
+                
                 for( boost::uint_fast32_t j = 0; j < numPulses; ++j)
                 {
                     if(spdFile->getPulseVersion() == 1)
@@ -366,7 +366,7 @@ namespace spdlib
                     {
                         pulse = pulseUtils.createSPDPulseCopyFromH5(&((SPDPulseH5V2 *)pulseArray)[j]);
                     }
-
+                    
                     if(pulse->numberOfReturns > 0)
                     {
                         //pulse->pts = new std::vector<SPDPoint*>();
@@ -384,7 +384,7 @@ namespace spdlib
                             pulse->pts->push_back(point);
                         }
                     }
-
+                    
                     if(pulse->numOfTransmittedBins > 0)
                     {
                         pulse->transmitted = new boost::uint_fast32_t[pulse->numOfTransmittedBins];
@@ -393,7 +393,7 @@ namespace spdlib
                             pulse->transmitted[n] = transmittedArray[transIdx++];
                         }
                     }
-
+                    
                     if(pulse->numOfReceivedBins > 0)
                     {
                         pulse->received = new boost::uint_fast32_t[pulse->numOfReceivedBins];
@@ -402,10 +402,10 @@ namespace spdlib
                             pulse->received[n] = receivedArray[receivedIdx++];
                         }
                     }
-
+                    
                     pulses->push_back(pulse);
                 }
-
+                
                 if(numOfPoints > 0)
                 {
                     if(spdFile->getPointVersion() == 1)
@@ -417,17 +417,17 @@ namespace spdlib
                         delete[] reinterpret_cast<SPDPointH5V2*>(pointsArray);
                     }
                 }
-
+                
                 if(numOfTransVals > 0)
                 {
                     delete[] transmittedArray;
                 }
-
+                
                 if(numOfReceivedVals > 0)
                 {
                     delete[] receivedArray;
                 }
-
+                
                 if(spdFile->getPulseVersion() == 1)
                 {
                     delete[] reinterpret_cast<SPDPulseH5V1*>(pulseArray);
@@ -459,7 +459,7 @@ namespace spdlib
             throw e;
         }
 	}
-
+    
 	/*UPDATED*/
 	void SPDFileIncrementalReader::readPulseData(std::vector<SPDPulse*> *pulses, boost::uint_fast64_t offset, boost::uint_fast64_t numPulses) throw(SPDIOException)
 	{
@@ -473,21 +473,21 @@ namespace spdlib
             H5::Exception::dontPrint();
             SPDPointUtils ptsUtils;
             SPDPulseUtils pulseUtils;
-
+            
             if(numPulses > 0)
             {
                 H5::DataSet pulsesDataset = spdInFile->openDataSet( SPDFILE_DATASETNAME_PULSES );
                 H5::DataSpace pulsesDataspace = pulsesDataset.getSpace();
-
+                
                 H5::DataSet pointsDataset = spdInFile->openDataSet( SPDFILE_DATASETNAME_POINTS );
                 H5::DataSpace pointsDataspace = pointsDataset.getSpace();
-
+                
                 H5::DataSet transmittedDataset = spdInFile->openDataSet( SPDFILE_DATASETNAME_TRANSMITTED );
                 H5::DataSpace transmittedDataspace = transmittedDataset.getSpace();
-
+                
                 H5::DataSet receivedDataset = spdInFile->openDataSet( SPDFILE_DATASETNAME_RECEIVED );
                 H5::DataSpace receivedDataspace = receivedDataset.getSpace();
-
+                
                 int rank = 1;
                 // START: Variables for Pulse //
                 hsize_t pulseOffset[1];
@@ -495,82 +495,82 @@ namespace spdlib
                 hsize_t pulseCount[1];
                 pulseCount[0]  = numPulses;
                 pulsesDataspace.selectHyperslab( H5S_SELECT_SET, pulseCount, pulseOffset );
-
-                hsize_t pulseDims[1];
+                
+                hsize_t pulseDims[1]; 
                 pulseDims[0] = numPulses;
                 H5::DataSpace pulseMemspace( rank, pulseDims );
-
+                
                 hsize_t pulseOffset_out[1];
                 hsize_t pulseCount_out[1];
                 pulseOffset_out[0] = 0;
                 pulseCount_out[0]  = numPulses;
                 pulseMemspace.selectHyperslab( H5S_SELECT_SET, pulseCount_out, pulseOffset_out );
                 // END: Variables for Pulse //
-
+                
                 // START: Variables for Point //
                 hsize_t pointOffset[1];
                 hsize_t pointCount[1];
-
-                hsize_t pointDims[1];
+                
+                hsize_t pointDims[1]; 
                 H5::DataSpace pointMemspace;
-
+                
                 hsize_t pointOffset_out[1];
                 hsize_t pointCount_out[1];
                 // END: Variables for Point //
-
+                
                 // START: Variables for Transmitted //
                 hsize_t transOffset[1];
                 hsize_t transCount[1];
-
-                hsize_t transDims[1];
+                
+                hsize_t transDims[1]; 
                 H5::DataSpace transMemspace;
-
+                
                 hsize_t transOffset_out[1];
                 hsize_t transCount_out[1];
                 // END: Variables for Transmitted //
-
+                
                 // START: Variables for Received //
                 hsize_t receivedOffset[1];
                 hsize_t receivedCount[1];
-
-                hsize_t receivedDims[1];
+                
+                hsize_t receivedDims[1]; 
                 H5::DataSpace receivedMemspace;
-
+                
                 hsize_t receivedOffset_out[1];
                 hsize_t receivedCount_out[1];
                 // END: Variables for Received //
-
-
+                
+                
                 void *pulseArray = NULL;
                 void *pointsArray = NULL;
                 unsigned long *transmittedArray = NULL;
                 unsigned long *receivedArray = NULL;
-
+                
                 boost::uint_fast64_t ptStartIdx = 0;
                 boost::uint_fast64_t numOfPoints = 0;
                 boost::uint_fast64_t transStartIdx = 0;
                 boost::uint_fast64_t numOfTransVals = 0;
                 boost::uint_fast64_t receivedStartIdx = 0;
                 boost::uint_fast64_t numOfReceivedVals = 0;
-
+                
                 boost::uint_fast64_t ptIdx = 0;
                 boost::uint_fast64_t transIdx = 0;
                 boost::uint_fast64_t receivedIdx = 0;
-
+                
                 SPDPulse *pulse = NULL;
                 SPDPoint *point = NULL;
-
+                
                 pulseOffset[0] = offset;
                 pulseCount[0]  = numPulses;
                 pulsesDataspace.selectHyperslab( H5S_SELECT_SET, pulseCount, pulseOffset );
-
+                
                 pulseDims[0] = numPulses;
                 pulseMemspace = H5::DataSpace( rank, pulseDims );
-
+                
                 pulseOffset_out[0] = 0;
                 pulseCount_out[0]  = numPulses;
                 pulseMemspace.selectHyperslab( H5S_SELECT_SET, pulseCount_out, pulseOffset_out );
-
+                
                 if(spdFile->getPulseVersion() == 1)
                 {
                     pulseArray = new SPDPulseH5V1[numPulses];
@@ -580,14 +580,14 @@ namespace spdlib
                     pulseArray = new SPDPulseH5V2[numPulses];
                 }
                 pulsesDataset.read(pulseArray, *pulseType, pulseMemspace, pulsesDataspace );
-
+                
                 ptStartIdx = 0;
                 numOfPoints = 0;
                 transStartIdx = 0;
                 numOfTransVals = 0;
                 receivedStartIdx = 0;
                 numOfReceivedVals = 0;
-
+                
                 if(spdFile->getPulseVersion() == 1)
                 {
                     SPDPulseH5V1 *pulseObj = NULL;
@@ -622,7 +622,7 @@ namespace spdlib
                         numOfReceivedVals += pulseObj->numOfReceivedBins;
                     }
                 }
-
+                
                 if(numOfPoints > 0)
                 {
                     // Read Points.
@@ -634,7 +634,7 @@ namespace spdlib
                     {
                         pointsArray = new SPDPointH5V2[numOfPoints];
                     }
-
+                    
                     pointOffset[0] = ptStartIdx;
                     pointCount[0] = numOfPoints;
                     pointsDataspace.selectHyperslab(H5S_SELECT_SET, pointCount, pointOffset);
@@ -645,7 +645,7 @@ namespace spdlib
                     pointMemspace.selectHyperslab( H5S_SELECT_SET, pointCount_out, pointOffset_out );
                     pointsDataset.read(pointsArray, *pointType, pointMemspace, pointsDataspace);
                 }
-
+                
                 if(numOfTransVals > 0)
                 {
                     // Read Transmitted Vals.
@@ -660,7 +660,7 @@ namespace spdlib
                     transMemspace.selectHyperslab( H5S_SELECT_SET, transCount_out, transOffset_out );
                     transmittedDataset.read(transmittedArray, H5::PredType::NATIVE_ULONG, transMemspace, transmittedDataspace);
                 }
-
+                
                 if(numOfReceivedVals > 0)
                 {
                     // Read Received Vals.
@@ -675,11 +675,11 @@ namespace spdlib
                     receivedMemspace.selectHyperslab( H5S_SELECT_SET, receivedCount_out, receivedOffset_out );
                     receivedDataset.read(receivedArray, H5::PredType::NATIVE_ULONG, receivedMemspace, receivedDataspace);
                 }
-
+                
                 ptIdx = 0;
                 transIdx = 0;
                 receivedIdx = 0;
-
+                
                 for( boost::uint_fast32_t j = 0; j < numPulses; ++j)
                 {
                     if(spdFile->getPulseVersion() == 1)
@@ -690,7 +690,7 @@ namespace spdlib
                     {
                         pulse = pulseUtils.createSPDPulseCopyFromH5(&((SPDPulseH5V2 *)pulseArray)[j]);
                     }
-
+                    
                     if(pulse->numberOfReturns > 0)
                     {
                         //pulse->pts = new std::vector<SPDPoint*>();
@@ -708,7 +708,7 @@ namespace spdlib
                             pulse->pts->push_back(point);
                         }
                     }
-
+                    
                     if(pulse->numOfTransmittedBins > 0)
                     {
                         pulse->transmitted = new boost::uint_fast32_t[pulse->numOfTransmittedBins];
@@ -717,7 +717,7 @@ namespace spdlib
                             pulse->transmitted[n] = transmittedArray[transIdx++];
                         }
                     }
-
+                    
                     if(pulse->numOfReceivedBins > 0)
                     {
                         pulse->received = new boost::uint_fast32_t[pulse->numOfReceivedBins];
@@ -726,11 +726,11 @@ namespace spdlib
                             pulse->received[n] = receivedArray[receivedIdx++];
                         }
                     }
-
+                    
                     pulses->push_back(pulse);
-
+                    
                 }
-
+                
                 if(numOfPoints > 0)
                 {
                     if(spdFile->getPointVersion() == 1)
@@ -742,17 +742,17 @@ namespace spdlib
                         delete[] reinterpret_cast<SPDPointH5V2*>(pointsArray);
                     }
                 }
-
+                
                 if(numOfTransVals > 0)
                 {
                     delete[] transmittedArray;
                 }
-
+                
                 if(numOfReceivedVals > 0)
                 {
                     delete[] receivedArray;
                 }
-
+                
                 if(spdFile->getPulseVersion() == 1)
                 {
                     delete[] reinterpret_cast<SPDPulseH5V1*>(pulseArray);
@@ -791,7 +791,7 @@ namespace spdlib
 		{
 			throw SPDIOException("Input file is not open..");
 		}
-
+        
         if(spdFile->getFileType() == SPD_UPD_TYPE)
         {
             throw SPDIOException("This function is only available for files with a spatial index.");
@@ -817,7 +817,7 @@ namespace spdlib
 			plsPerBinDSpace.selectHyperslab( H5S_SELECT_SET, selectionSize, offsetDims );
 			binOffsetsDSpace.selectHyperslab( H5S_SELECT_SET, selectionSize, offsetDims );
 			
-			hsize_t memSpaceDims[1];
+			hsize_t memSpaceDims[1]; 
 			memSpaceDims[0] = spdFile->getNumberBinsX();
 			H5::DataSpace memSpace( 1, memSpaceDims ); // has rank == 1
 			
@@ -851,7 +851,7 @@ namespace spdlib
 			throw e;
 		}
 	}
-
+    
 	/*UPDATED*/
 	void SPDFileIncrementalReader::readPulseDataRow(boost::uint_fast32_t row, std::list<SPDPulse*> **pulses) throw(SPDIOException)
 	{
@@ -859,7 +859,7 @@ namespace spdlib
 		{
 			throw SPDIOException("Input file is not open..");
 		}
-
+        
         if(spdFile->getFileType() == SPD_UPD_TYPE)
         {
             throw SPDIOException("This function is only available for files with a spatial index.");
@@ -871,32 +871,32 @@ namespace spdlib
                 H5::Exception::dontPrint();
                 SPDPointUtils ptsUtils;
                 SPDPulseUtils pulseUtils;
-
+                
                 unsigned long *plsInBins = new unsigned long[spdFile->getNumberBinsX()];
                 unsigned long long *offsets = new unsigned long long[spdFile->getNumberBinsX()];
-
+                
                 this->readRefHeaderRow(row, offsets, plsInBins);
-
+                            
                 boost::uint_fast64_t totalNumPulses = 0;
                 for(boost::uint_fast32_t i = 0; i < spdFile->getNumberBinsX(); ++i)
                 {
                     totalNumPulses += plsInBins[i];
                 }
-
+                            
                 if(totalNumPulses > 0)
                 {
                     H5::DataSet pulsesDataset = spdInFile->openDataSet( SPDFILE_DATASETNAME_PULSES );
                     H5::DataSpace pulsesDataspace = pulsesDataset.getSpace();
-
+                    
                     H5::DataSet pointsDataset = spdInFile->openDataSet( SPDFILE_DATASETNAME_POINTS );
                     H5::DataSpace pointsDataspace = pointsDataset.getSpace();
-
+                    
                     H5::DataSet transmittedDataset = spdInFile->openDataSet( SPDFILE_DATASETNAME_TRANSMITTED );
                     H5::DataSpace transmittedDataspace = transmittedDataset.getSpace();
-
+                    
                     H5::DataSet receivedDataset = spdInFile->openDataSet( SPDFILE_DATASETNAME_RECEIVED );
                     H5::DataSpace receivedDataspace = receivedDataset.getSpace();
-
+                    
                     int rank = 1;
                     // START: Variables for Pulse //
                     hsize_t pulseOffset[1];
@@ -904,82 +904,82 @@ namespace spdlib
                     hsize_t pulseCount[1];
                     pulseCount[0]  = totalNumPulses;
                     pulsesDataspace.selectHyperslab( H5S_SELECT_SET, pulseCount, pulseOffset );
-
-                    hsize_t pulseDims[1];
+                    
+                    hsize_t pulseDims[1]; 
                     pulseDims[0] = totalNumPulses;
                     H5::DataSpace pulseMemspace( rank, pulseDims );
-
+                    
                     hsize_t pulseOffset_out[1];
                     hsize_t pulseCount_out[1];
                     pulseOffset_out[0] = 0;
                     pulseCount_out[0]  = totalNumPulses;
                     pulseMemspace.selectHyperslab( H5S_SELECT_SET, pulseCount_out, pulseOffset_out );
                     // END: Variables for Pulse //
-
+                    
                     // START: Variables for Point //
                     hsize_t pointOffset[1];
                     hsize_t pointCount[1];
-
-                    hsize_t pointDims[1];
+                    
+                    hsize_t pointDims[1]; 
                     H5::DataSpace pointMemspace;
-
+                    
                     hsize_t pointOffset_out[1];
                     hsize_t pointCount_out[1];
                     // END: Variables for Point //
-
+                    
                     // START: Variables for Transmitted //
                     hsize_t transOffset[1];
                     hsize_t transCount[1];
-
-                    hsize_t transDims[1];
+                    
+                    hsize_t transDims[1]; 
                     H5::DataSpace transMemspace;
-
+                    
                     hsize_t transOffset_out[1];
                     hsize_t transCount_out[1];
                     // END: Variables for Transmitted //
-
+                    
                     // START: Variables for Received //
                     hsize_t receivedOffset[1];
                     hsize_t receivedCount[1];
-
-                    hsize_t receivedDims[1];
+                    
+                    hsize_t receivedDims[1]; 
                     H5::DataSpace receivedMemspace;
-
+                    
                     hsize_t receivedOffset_out[1];
                     hsize_t receivedCount_out[1];
                     // END: Variables for Received //
-
-
+                    
+                    
                     void *pulseArray = NULL;
                     void *pointsArray = NULL;
                     unsigned long *transmittedArray = NULL;
                     unsigned long *receivedArray = NULL;
-
+                    
                     boost::uint_fast64_t ptStartIdx = 0;
                     boost::uint_fast64_t numOfPoints = 0;
                     boost::uint_fast64_t transStartIdx = 0;
                     boost::uint_fast64_t numOfTransVals = 0;
                     boost::uint_fast64_t receivedStartIdx = 0;
                     boost::uint_fast64_t numOfReceivedVals = 0;
-
+                    
                     boost::uint_fast64_t ptIdx = 0;
                     boost::uint_fast64_t transIdx = 0;
                     boost::uint_fast64_t receivedIdx = 0;
-
+                    
                     SPDPulse *pulse = NULL;
                     SPDPoint *point = NULL;
-
+                    
                     pulseOffset[0] = offsets[0];
                     pulseCount[0]  = totalNumPulses;
                     pulsesDataspace.selectHyperslab( H5S_SELECT_SET, pulseCount, pulseOffset );
-
+                    
                     pulseDims[0] = totalNumPulses;
                     pulseMemspace = H5::DataSpace( rank, pulseDims );
-
+                    
                     pulseOffset_out[0] = 0;
                     pulseCount_out[0]  = totalNumPulses;
                     pulseMemspace.selectHyperslab( H5S_SELECT_SET, pulseCount_out, pulseOffset_out );
-
+                                        
                     if(spdFile->getPulseVersion() == 1)
                     {
                         pulseArray = new SPDPulseH5V1[totalNumPulses];
@@ -988,16 +988,16 @@ namespace spdlib
                     {
                         pulseArray = new SPDPulseH5V2[totalNumPulses];
                     }
-
+                    
                     pulsesDataset.read(pulseArray, *pulseType, pulseMemspace, pulsesDataspace );
-
+                    
                     ptStartIdx = 0;
                     numOfPoints = 0;
                     transStartIdx = 0;
                     numOfTransVals = 0;
                     receivedStartIdx = 0;
                     numOfReceivedVals = 0;
-
+                    
                     if(spdFile->getPulseVersion() == 1)
                     {
                         SPDPulseH5V1 *pulseObj = NULL;
@@ -1032,7 +1032,7 @@ namespace spdlib
                             numOfReceivedVals += pulseObj->numOfReceivedBins;
                         }
                     }
-
+                    
                     if(numOfPoints > 0)
                     {
                         // Read Points.
@@ -1044,7 +1044,7 @@ namespace spdlib
                         {
                             pointsArray = new SPDPointH5V2[numOfPoints];
                         }
-
+                        
                         pointOffset[0] = ptStartIdx;
                         pointCount[0] = numOfPoints;
                         pointsDataspace.selectHyperslab(H5S_SELECT_SET, pointCount, pointOffset);
@@ -1055,7 +1055,7 @@ namespace spdlib
                         pointMemspace.selectHyperslab( H5S_SELECT_SET, pointCount_out, pointOffset_out );
                         pointsDataset.read(pointsArray, *pointType, pointMemspace, pointsDataspace);
                     }
-
+                    
                     if(numOfTransVals > 0)
                     {
                         // Read Transmitted Vals.
@@ -1070,7 +1070,7 @@ namespace spdlib
                         transMemspace.selectHyperslab( H5S_SELECT_SET, transCount_out, transOffset_out );
                         transmittedDataset.read(transmittedArray, H5::PredType::NATIVE_ULONG, transMemspace, transmittedDataspace);
                     }
-
+                    
                     if(numOfReceivedVals > 0)
                     {
                         // Read Received Vals.
@@ -1085,19 +1085,19 @@ namespace spdlib
                         receivedMemspace.selectHyperslab( H5S_SELECT_SET, receivedCount_out, receivedOffset_out );
                         receivedDataset.read(receivedArray, H5::PredType::NATIVE_ULONG, receivedMemspace, receivedDataspace);
                     }
-
+                    
                     ptIdx = 0;
                     transIdx = 0;
                     receivedIdx = 0;
-
+                    
                     boost::uint_fast32_t start = 0;
                     boost::uint_fast32_t end = 0;
-
+                    
                     for(boost::uint_fast32_t i = 0; i < spdFile->getNumberBinsX(); ++i)
                     {
                         start = end;
                         end += plsInBins[i];
-
+                        
                         for( boost::uint_fast32_t j = start; j < end; ++j)
                         {
                             if(spdFile->getPulseVersion() == 1)
@@ -1108,7 +1108,7 @@ namespace spdlib
                             {
                                 pulse = pulseUtils.createSPDPulseCopyFromH5(&((SPDPulseH5V2 *)pulseArray)[j]);
                             }
-
+                            
                             if(pulse->numberOfReturns > 0)
                             {
                                 //pulse->pts = new std::vector<SPDPoint*>();
@@ -1126,7 +1126,7 @@ namespace spdlib
                                     pulse->pts->push_back(point);
                                 }
                             }
-
+                            
                             if(pulse->numOfTransmittedBins > 0)
                             {
                                 pulse->transmitted = new boost::uint_fast32_t[pulse->numOfTransmittedBins];
@@ -1135,7 +1135,7 @@ namespace spdlib
                                     pulse->transmitted[n] = transmittedArray[transIdx++];
                                 }
                             }
-
+                            
                             if(pulse->numOfReceivedBins > 0)
                             {
                                 pulse->received = new boost::uint_fast32_t[pulse->numOfReceivedBins];
@@ -1146,10 +1146,10 @@ namespace spdlib
                             }
 
                             pulses[i]->push_back(pulse);
-
+                            
                         }
                     }
-
+                    
                     if(numOfPoints > 0)
                     {
                         if(spdFile->getPointVersion() == 1)
@@ -1161,17 +1161,17 @@ namespace spdlib
                             delete[] reinterpret_cast<SPDPointH5V2*>(pointsArray);
                         }
                     }
-
+                    
                     if(numOfTransVals > 0)
                     {
                         delete[] transmittedArray;
                     }
-
+                    
                     if(numOfReceivedVals > 0)
                     {
                         delete[] receivedArray;
                     }
-
+                    
                     if(spdFile->getPulseVersion() == 1)
                     {
                         delete[] reinterpret_cast<SPDPulseH5V1*>(pulseArray);
@@ -1181,10 +1181,10 @@ namespace spdlib
                         delete[] reinterpret_cast<SPDPulseH5V2*>(pulseArray);
                     }
                 }
-
+                
                 delete[] plsInBins;
                 delete[] offsets;
-
+                
             }
             catch( H5::FileIException &e )
             {
@@ -1213,20 +1213,20 @@ namespace spdlib
             {
                 SPDPointUtils ptsUtils;
                 SPDPulseUtils pulseUtils;
-
+                
                 unsigned long *plsInBins = new unsigned long[spdFile->getNumberBinsX()];
                 unsigned long long *offsets = new unsigned long long[spdFile->getNumberBinsX()];
-
+                
                 this->readRefHeaderRow(row, offsets, plsInBins);
-
+                
                 for(boost::uint_fast64_t col = 0; col < spdFile->getNumberBinsX(); ++col)
                 {
                     this->readPulseData(pulses[col], offsets[col], plsInBins[col]);
                 }
-
+                
                 delete[] plsInBins;
                 delete[] offsets;
-
+                
             }
             catch(SPDIOException &e)
             {
@@ -1246,7 +1246,7 @@ namespace spdlib
 		{
 			throw SPDIOException("Input file is not open..");
 		}
-
+        
         if(spdFile->getFileType() == SPD_UPD_TYPE)
         {
             throw SPDIOException("This function is only available for files with a spatial index.");
@@ -1258,32 +1258,32 @@ namespace spdlib
                 H5::Exception::dontPrint();
                 SPDPointUtils ptsUtils;
                 SPDPulseUtils pulseUtils;
-
+                
                 unsigned long *plsInBins = new unsigned long[spdFile->getNumberBinsX()];
                 unsigned long long *offsets = new unsigned long long[spdFile->getNumberBinsX()];
-
+                
                 this->readRefHeaderRow(row, offsets, plsInBins);
-
+                
                 boost::uint_fast64_t totalNumPulses = 0;
                 for(boost::uint_fast32_t i = 0; i < spdFile->getNumberBinsX(); ++i)
                 {
                     totalNumPulses += plsInBins[i];
                 }
-
+                
                 if(totalNumPulses > 0)
                 {
                     H5::DataSet pulsesDataset = spdInFile->openDataSet( SPDFILE_DATASETNAME_PULSES );
                     H5::DataSpace pulsesDataspace = pulsesDataset.getSpace();
-
+                    
                     H5::DataSet pointsDataset = spdInFile->openDataSet( SPDFILE_DATASETNAME_POINTS );
                     H5::DataSpace pointsDataspace = pointsDataset.getSpace();
-
+                    
                     H5::DataSet transmittedDataset = spdInFile->openDataSet( SPDFILE_DATASETNAME_TRANSMITTED );
                     H5::DataSpace transmittedDataspace = transmittedDataset.getSpace();
-
+                    
                     H5::DataSet receivedDataset = spdInFile->openDataSet( SPDFILE_DATASETNAME_RECEIVED );
                     H5::DataSpace receivedDataspace = receivedDataset.getSpace();
-
+                    
                     int rank = 1;
                     // START: Variables for Pulse //
                     hsize_t pulseOffset[1];
@@ -1291,82 +1291,82 @@ namespace spdlib
                     hsize_t pulseCount[1];
                     pulseCount[0]  = totalNumPulses;
                     pulsesDataspace.selectHyperslab( H5S_SELECT_SET, pulseCount, pulseOffset );
-
-                    hsize_t pulseDims[1];
+                    
+                    hsize_t pulseDims[1]; 
                     pulseDims[0] = totalNumPulses;
                     H5::DataSpace pulseMemspace( rank, pulseDims );
-
+                    
                     hsize_t pulseOffset_out[1];
                     hsize_t pulseCount_out[1];
                     pulseOffset_out[0] = 0;
                     pulseCount_out[0]  = totalNumPulses;
                     pulseMemspace.selectHyperslab( H5S_SELECT_SET, pulseCount_out, pulseOffset_out );
                     // END: Variables for Pulse //
-
+                    
                     // START: Variables for Point //
                     hsize_t pointOffset[1];
                     hsize_t pointCount[1];
-
-                    hsize_t pointDims[1];
+                    
+                    hsize_t pointDims[1]; 
                     H5::DataSpace pointMemspace;
-
+                    
                     hsize_t pointOffset_out[1];
                     hsize_t pointCount_out[1];
                     // END: Variables for Point //
-
+                    
                     // START: Variables for Transmitted //
                     hsize_t transOffset[1];
                     hsize_t transCount[1];
-
-                    hsize_t transDims[1];
+                    
+                    hsize_t transDims[1]; 
                     H5::DataSpace transMemspace;
-
+                    
                     hsize_t transOffset_out[1];
                     hsize_t transCount_out[1];
                     // END: Variables for Transmitted //
-
+                    
                     // START: Variables for Received //
                     hsize_t receivedOffset[1];
                     hsize_t receivedCount[1];
-
-                    hsize_t receivedDims[1];
+                    
+                    hsize_t receivedDims[1]; 
                     H5::DataSpace receivedMemspace;
-
+                    
                     hsize_t receivedOffset_out[1];
                     hsize_t receivedCount_out[1];
                     // END: Variables for Received //
-
-
+                    
+                    
                     void *pulseArray = NULL;
                     void *pointsArray = NULL;
                     unsigned long *transmittedArray = NULL;
                     unsigned long *receivedArray = NULL;
-
+                    
                     boost::uint_fast64_t ptStartIdx = 0;
                     boost::uint_fast64_t numOfPoints = 0;
                     boost::uint_fast64_t transStartIdx = 0;
                     boost::uint_fast64_t numOfTransVals = 0;
                     boost::uint_fast64_t receivedStartIdx = 0;
                     boost::uint_fast64_t numOfReceivedVals = 0;
-
+                    
                     boost::uint_fast64_t ptIdx = 0;
                     boost::uint_fast64_t transIdx = 0;
                     boost::uint_fast64_t receivedIdx = 0;
-
+                    
                     SPDPulse *pulse = NULL;
                     SPDPoint *point = NULL;
-
+                    
                     pulseOffset[0] = offsets[0];
                     pulseCount[0]  = totalNumPulses;
                     pulsesDataspace.selectHyperslab( H5S_SELECT_SET, pulseCount, pulseOffset );
-
+                    
                     pulseDims[0] = totalNumPulses;
                     pulseMemspace = H5::DataSpace( rank, pulseDims );
-
+                    
                     pulseOffset_out[0] = 0;
                     pulseCount_out[0]  = totalNumPulses;
                     pulseMemspace.selectHyperslab( H5S_SELECT_SET, pulseCount_out, pulseOffset_out );
-
+                    
                     if(spdFile->getPulseVersion() == 1)
                     {
                         pulseArray = new SPDPulseH5V1[totalNumPulses];
@@ -1375,16 +1375,16 @@ namespace spdlib
                     {
                         pulseArray = new SPDPulseH5V2[totalNumPulses];
                     }
-
+                    
                     pulsesDataset.read(pulseArray, *pulseType, pulseMemspace, pulsesDataspace );
-
+                    
                     ptStartIdx = 0;
                     numOfPoints = 0;
                     transStartIdx = 0;
                     numOfTransVals = 0;
                     receivedStartIdx = 0;
                     numOfReceivedVals = 0;
-
+                    
                     if(spdFile->getPulseVersion() == 1)
                     {
                         SPDPulseH5V1 *pulseObj = NULL;
@@ -1419,7 +1419,7 @@ namespace spdlib
                             numOfReceivedVals += pulseObj->numOfReceivedBins;
                         }
                     }
-
+                    
                     if(numOfPoints > 0)
                     {
                         // Read Points.
@@ -1431,7 +1431,7 @@ namespace spdlib
                         {
                             pointsArray = new SPDPointH5V2[numOfPoints];
                         }
-
+                        
                         pointOffset[0] = ptStartIdx;
                         pointCount[0] = numOfPoints;
                         pointsDataspace.selectHyperslab(H5S_SELECT_SET, pointCount, pointOffset);
@@ -1442,7 +1442,7 @@ namespace spdlib
                         pointMemspace.selectHyperslab( H5S_SELECT_SET, pointCount_out, pointOffset_out );
                         pointsDataset.read(pointsArray, *pointType, pointMemspace, pointsDataspace);
                     }
-
+                    
                     if(numOfTransVals > 0)
                     {
                         // Read Transmitted Vals.
@@ -1457,7 +1457,7 @@ namespace spdlib
                         transMemspace.selectHyperslab( H5S_SELECT_SET, transCount_out, transOffset_out );
                         transmittedDataset.read(transmittedArray, H5::PredType::NATIVE_ULONG, transMemspace, transmittedDataspace);
                     }
-
+                    
                     if(numOfReceivedVals > 0)
                     {
                         // Read Received Vals.
@@ -1472,19 +1472,19 @@ namespace spdlib
                         receivedMemspace.selectHyperslab( H5S_SELECT_SET, receivedCount_out, receivedOffset_out );
                         receivedDataset.read(receivedArray, H5::PredType::NATIVE_ULONG, receivedMemspace, receivedDataspace);
                     }
-
+                    
                     ptIdx = 0;
                     transIdx = 0;
                     receivedIdx = 0;
-
+                    
                     boost::uint_fast32_t start = 0;
                     boost::uint_fast32_t end = 0;
-
+                    
                     for(boost::uint_fast32_t i = 0; i < spdFile->getNumberBinsX(); ++i)
                     {
                         start = end;
                         end += plsInBins[i];
-
+                        
                         for( boost::uint_fast32_t j = start; j < end; ++j)
                         {
                             if(spdFile->getPulseVersion() == 1)
@@ -1495,7 +1495,7 @@ namespace spdlib
                             {
                                 pulse = pulseUtils.createSPDPulseCopyFromH5(&((SPDPulseH5V2 *)pulseArray)[j]);
                             }
-
+                            
                             if(pulse->numberOfReturns > 0)
                             {
                                 //pulse->pts = new std::vector<SPDPoint*>();
@@ -1513,7 +1513,7 @@ namespace spdlib
                                     pulse->pts->push_back(point);
                                 }
                             }
-
+                            
                             if(pulse->numOfTransmittedBins > 0)
                             {
                                 pulse->transmitted = new boost::uint_fast32_t[pulse->numOfTransmittedBins];
@@ -1522,7 +1522,7 @@ namespace spdlib
                                     pulse->transmitted[n] = transmittedArray[transIdx++];
                                 }
                             }
-
+                            
                             if(pulse->numOfReceivedBins > 0)
                             {
                                 pulse->received = new boost::uint_fast32_t[pulse->numOfReceivedBins];
@@ -1531,12 +1531,12 @@ namespace spdlib
                                     pulse->received[n] = receivedArray[receivedIdx++];
                                 }
                             }
-
+                            
                             pulses[i]->push_back(pulse);
-
+                            
                         }
                     }
-
+                    
                     if(numOfPoints > 0)
                     {
                         if(spdFile->getPointVersion() == 1)
@@ -1548,17 +1548,17 @@ namespace spdlib
                             delete[] reinterpret_cast<SPDPointH5V2*>(pointsArray);
                         }
                     }
-
+                    
                     if(numOfTransVals > 0)
                     {
                         delete[] transmittedArray;
                     }
-
+                    
                     if(numOfReceivedVals > 0)
                     {
                         delete[] receivedArray;
                     }
-
+                    
                     if(spdFile->getPulseVersion() == 1)
                     {
                         delete[] reinterpret_cast<SPDPulseH5V1*>(pulseArray);
@@ -1568,10 +1568,10 @@ namespace spdlib
                         delete[] reinterpret_cast<SPDPulseH5V2*>(pulseArray);
                     }
                 }
-
+                
                 delete[] plsInBins;
                 delete[] offsets;
-
+                
             }
             catch( H5::FileIException &e )
             {
@@ -1600,20 +1600,20 @@ namespace spdlib
             {
                 SPDPointUtils ptsUtils;
                 SPDPulseUtils pulseUtils;
-
+                
                 unsigned long *plsInBins = new unsigned long[spdFile->getNumberBinsX()];
                 unsigned long long *offsets = new unsigned long long[spdFile->getNumberBinsX()];
-
+                
                 this->readRefHeaderRow(row, offsets, plsInBins);
-
+                
                 for(boost::uint_fast64_t col = 0; col < spdFile->getNumberBinsX(); ++col)
                 {
                     this->readPulseData(pulses[col], offsets[col], plsInBins[col]);
                 }
-
+                
                 delete[] plsInBins;
                 delete[] offsets;
-
+                
             }
             catch(SPDIOException &e)
             {
@@ -1659,19 +1659,19 @@ namespace spdlib
             {
                 unsigned long *plsInBins = new unsigned long[spdFile->getNumberBinsX()];
                 unsigned long long *offsets = new unsigned long long[spdFile->getNumberBinsX()];
-
+                
                 this->readRefHeaderRow(row, offsets, plsInBins);
-
+                
                 boost::uint_fast64_t offset = offsets[startCol];
                 boost::uint_fast64_t numPts = 0;
-
+                
                 for(boost::uint_fast32_t i = startCol; i < endCol; ++i)
                 {
                     numPts = numPts + plsInBins[i];
                 }
-
+                
                 this->readPulseData(pulses, offset, numPts);
-
+                
                 delete[] plsInBins;
                 delete[] offsets;
             }
@@ -1686,20 +1686,20 @@ namespace spdlib
             {
                 SPDPointUtils ptsUtils;
                 SPDPulseUtils pulseUtils;
-
+                
                 unsigned long *plsInBins = new unsigned long[spdFile->getNumberBinsX()];
                 unsigned long long *offsets = new unsigned long long[spdFile->getNumberBinsX()];
-
+                
                 this->readRefHeaderRow(row, offsets, plsInBins);
-
+                
                 for(boost::uint_fast64_t col = startCol; col < endCol; ++col)
                 {
                     this->readPulseData(pulses, offsets[col], plsInBins[col]);
                 }
-
+                
                 delete[] plsInBins;
                 delete[] offsets;
-
+                
             }
             catch(SPDIOException &e)
             {
@@ -1745,19 +1745,19 @@ namespace spdlib
             {
                 unsigned long *plsInBins = new unsigned long[spdFile->getNumberBinsX()];
                 unsigned long long *offsets = new unsigned long long[spdFile->getNumberBinsX()];
-
+                
                 this->readRefHeaderRow(row, offsets, plsInBins);
-
+                
                 boost::uint_fast64_t offset = offsets[startCol];
                 boost::uint_fast64_t numPts = 0;
-
+                
                 for(boost::uint_fast32_t i = startCol; i < endCol; ++i)
                 {
                     numPts = numPts + plsInBins[i];
                 }
-
+                
                 this->readPulseData(pulses, offset, numPts);
-
+                
                 delete[] plsInBins;
                 delete[] offsets;
             }
@@ -1772,20 +1772,20 @@ namespace spdlib
             {
                 SPDPointUtils ptsUtils;
                 SPDPulseUtils pulseUtils;
-
+                
                 unsigned long *plsInBins = new unsigned long[spdFile->getNumberBinsX()];
                 unsigned long long *offsets = new unsigned long long[spdFile->getNumberBinsX()];
-
+                
                 this->readRefHeaderRow(row, offsets, plsInBins);
-
+                
                 for(boost::uint_fast64_t col = startCol; col < endCol; ++col)
                 {
                     this->readPulseData(pulses, offsets[col], plsInBins[col]);
                 }
-
+                
                 delete[] plsInBins;
                 delete[] offsets;
-
+                
             }
             catch(SPDIOException &e)
             {
@@ -1805,14 +1805,14 @@ namespace spdlib
 		{
 			throw SPDIOException("Input file is not open..");
 		}
-
+        
         boost::uint_fast32_t startRow = bbox[1];
         boost::uint_fast32_t endRow = bbox[3];
         boost::uint_fast32_t startCol = bbox[0];
         boost::uint_fast32_t endCol = bbox[2];
-
+        
         boost::uint_fast32_t numCols = endCol - startCol;
-
+        
         if(spdFile->getFileType() == SPD_UPD_TYPE)
         {
             throw SPDIOException("This function is only available for files with a spatial index.");
@@ -1823,116 +1823,116 @@ namespace spdlib
             {
                 // Read PTS..
                 H5::Exception::dontPrint();
-
+                
                 SPDPointUtils ptsUtils;
                 SPDPulseUtils pulseUtils;
-
+                
                 unsigned long *plsInBins = new unsigned long[spdFile->getNumberBinsX()];
                 unsigned long long *offsets = new unsigned long long[spdFile->getNumberBinsX()];
-
+                
                 boost::uint_fast64_t totalNumPulses = 0;
-
+                
                 H5::DataSet pulsesDataset = spdInFile->openDataSet( SPDFILE_DATASETNAME_PULSES );
                 H5::DataSpace pulsesDataspace = pulsesDataset.getSpace();
-
+                
                 H5::DataSet pointsDataset = spdInFile->openDataSet( SPDFILE_DATASETNAME_POINTS );
                 H5::DataSpace pointsDataspace = pointsDataset.getSpace();
-
+                
                 H5::DataSet transmittedDataset = spdInFile->openDataSet( SPDFILE_DATASETNAME_TRANSMITTED );
                 H5::DataSpace transmittedDataspace = transmittedDataset.getSpace();
-
+                
                 H5::DataSet receivedDataset = spdInFile->openDataSet( SPDFILE_DATASETNAME_RECEIVED );
                 H5::DataSpace receivedDataspace = receivedDataset.getSpace();
-
+                
                 int rank = 1;
                 // START: Variables for Pulse //
                 hsize_t pulseOffset[1];
                 hsize_t pulseCount[1];
-
-                hsize_t pulseDims[1];
+                
+                hsize_t pulseDims[1]; 
                 H5::DataSpace pulseMemspace;
-
+                
                 hsize_t pulseOffset_out[1];
                 hsize_t pulseCount_out[1];
                 // END: Variables for Pulse //
-
+                
                 // START: Variables for Point //
                 hsize_t pointOffset[1];
                 hsize_t pointCount[1];
-
-                hsize_t pointDims[1];
+                
+                hsize_t pointDims[1]; 
                 H5::DataSpace pointMemspace;
-
+                
                 hsize_t pointOffset_out[1];
                 hsize_t pointCount_out[1];
                 // END: Variables for Point //
-
+                
                 // START: Variables for Transmitted //
                 hsize_t transOffset[1];
                 hsize_t transCount[1];
-
-                hsize_t transDims[1];
+                
+                hsize_t transDims[1]; 
                 H5::DataSpace transMemspace;
-
+                
                 hsize_t transOffset_out[1];
                 hsize_t transCount_out[1];
                 // END: Variables for Transmitted //
-
+                
                 // START: Variables for Received //
                 hsize_t receivedOffset[1];
                 hsize_t receivedCount[1];
-
-                hsize_t receivedDims[1];
+                
+                hsize_t receivedDims[1]; 
                 H5::DataSpace receivedMemspace;
-
+                
                 hsize_t receivedOffset_out[1];
                 hsize_t receivedCount_out[1];
                 // END: Variables for Received //
-
+                
                 void *pulseArray = NULL;
                 void *pointsArray = NULL;
                 unsigned long *transmittedArray = NULL;
                 unsigned long *receivedArray = NULL;
-
+                
                 boost::uint_fast64_t ptStartIdx = 0;
                 boost::uint_fast64_t numOfPoints = 0;
                 boost::uint_fast64_t transStartIdx = 0;
                 boost::uint_fast64_t numOfTransVals = 0;
                 boost::uint_fast64_t receivedStartIdx = 0;
                 boost::uint_fast64_t numOfReceivedVals = 0;
-
+                
                 boost::uint_fast64_t ptIdx = 0;
                 boost::uint_fast64_t transIdx = 0;
                 boost::uint_fast64_t receivedIdx = 0;
-
+                
                 SPDPulse *pulse = NULL;
                 SPDPoint *point = NULL;
-
+                
                 boost::uint_fast32_t rowIdx = 0;
-
+                
                 for(boost::uint_fast32_t row = startRow; row < endRow; ++row)
                 {
                     this->readRefHeaderRow(row, offsets, plsInBins);
-
+                    
                     totalNumPulses = 0;
                     for(boost::uint_fast32_t i = startCol; i < endCol; ++i)
                     {
                         totalNumPulses += plsInBins[i];
                     }
-
+                                    
                     if(totalNumPulses > 0)
                     {
                         pulseOffset[0] = offsets[startCol];
                         pulseCount[0]  = totalNumPulses;
                         pulsesDataspace.selectHyperslab( H5S_SELECT_SET, pulseCount, pulseOffset );
-
+                        
                         pulseDims[0] = totalNumPulses;
                         pulseMemspace = H5::DataSpace( rank, pulseDims );
-
+                        
                         pulseOffset_out[0] = 0;
                         pulseCount_out[0]  = totalNumPulses;
                         pulseMemspace.selectHyperslab( H5S_SELECT_SET, pulseCount_out, pulseOffset_out );
-
+                        
                         if(spdFile->getPulseVersion() == 1)
                         {
                             pulseArray = new SPDPulseH5V1[totalNumPulses];
@@ -1949,7 +1949,7 @@ namespace spdlib
                         numOfTransVals = 0;
                         receivedStartIdx = 0;
                         numOfReceivedVals = 0;
-
+                        
                         if(spdFile->getPulseVersion() == 1)
                         {
                             SPDPulseH5V1 *pulseObj = NULL;
@@ -1984,8 +1984,8 @@ namespace spdlib
                                 numOfReceivedVals += pulseObj->numOfReceivedBins;
                             }
                         }
-
-
+                        
+                        
                         if(numOfPoints > 0)
                         {
                             // Read Points.
@@ -1997,7 +1997,7 @@ namespace spdlib
                             {
                                 pointsArray = new SPDPointH5V2[numOfPoints];
                             }
-
+                            
                             pointOffset[0] = ptStartIdx;
                             pointCount[0] = numOfPoints;
                             pointsDataspace.selectHyperslab(H5S_SELECT_SET, pointCount, pointOffset);
@@ -2023,7 +2023,7 @@ namespace spdlib
                             transMemspace.selectHyperslab( H5S_SELECT_SET, transCount_out, transOffset_out );
                             transmittedDataset.read(transmittedArray, H5::PredType::NATIVE_ULONG, transMemspace, transmittedDataspace);
                         }
-
+                        
                         if(numOfReceivedVals > 0)
                         {
                             // Read Received Vals.
@@ -2038,19 +2038,19 @@ namespace spdlib
                             receivedMemspace.selectHyperslab( H5S_SELECT_SET, receivedCount_out, receivedOffset_out );
                             receivedDataset.read(receivedArray, H5::PredType::NATIVE_ULONG, receivedMemspace, receivedDataspace);
                         }
-
+                        
                         ptIdx = 0;
                         transIdx = 0;
                         receivedIdx = 0;
-
+                        
                         boost::uint_fast32_t start = 0;
                         boost::uint_fast32_t end = 0;
-
+                        
                         for(boost::uint_fast32_t colIdx = 0; colIdx < numCols; ++colIdx)
                         {
                             start = end;
                             end += plsInBins[(startCol+colIdx)];
-
+                        
                             for( boost::uint_fast32_t j = start; j < end; ++j)
                             {
                                 if(spdFile->getPulseVersion() == 1)
@@ -2061,7 +2061,7 @@ namespace spdlib
                                 {
                                     pulse = pulseUtils.createSPDPulseCopyFromH5(&((SPDPulseH5V2 *)pulseArray)[j]);
                                 }
-
+                                
                                 if(pulse->numberOfReturns > 0)
                                 {
                                     //pulse->pts = new std::vector<SPDPoint*>();
@@ -2079,7 +2079,7 @@ namespace spdlib
                                         pulse->pts->push_back(point);
                                     }
                                 }
-
+                                
                                 if(pulse->numOfTransmittedBins > 0)
                                 {
                                     pulse->transmitted = new boost::uint_fast32_t[pulse->numOfTransmittedBins];
@@ -2088,7 +2088,7 @@ namespace spdlib
                                         pulse->transmitted[n] = transmittedArray[transIdx++];
                                     }
                                 }
-
+                                
                                 if(pulse->numOfReceivedBins > 0)
                                 {
                                     pulse->received = new boost::uint_fast32_t[pulse->numOfReceivedBins];
@@ -2101,7 +2101,7 @@ namespace spdlib
                                 pulses[rowIdx][colIdx]->push_back(pulse);
                             }
                         }
-
+                        
                         if(numOfPoints > 0)
                         {
                             if(spdFile->getPointVersion() == 1)
@@ -2113,17 +2113,17 @@ namespace spdlib
                                 delete[] reinterpret_cast<SPDPointH5V2*>(pointsArray);
                             }
                         }
-
+                        
                         if(numOfTransVals > 0)
                         {
                             delete[] transmittedArray;
                         }
-
+                        
                         if(numOfReceivedVals > 0)
                         {
                             delete[] receivedArray;
                         }
-
+                        
                         if(spdFile->getPulseVersion() == 1)
                         {
                             delete[] reinterpret_cast<SPDPulseH5V1*>(pulseArray);
@@ -2133,7 +2133,7 @@ namespace spdlib
                             delete[] reinterpret_cast<SPDPulseH5V2*>(pulseArray);
                         }
                     }
-
+                    
                     ++rowIdx;
                 }		
                 delete[] plsInBins;
@@ -2166,16 +2166,16 @@ namespace spdlib
             {
                 SPDPointUtils ptsUtils;
                 SPDPulseUtils pulseUtils;
-
+                
                 unsigned long *plsInBins = new unsigned long[spdFile->getNumberBinsX()];
                 unsigned long long *offsets = new unsigned long long[spdFile->getNumberBinsX()];
-
+                
                 boost::uint_fast64_t i = 0;
                 boost::uint_fast64_t j = 0;
                 for(boost::uint_fast64_t row = startRow; row < endRow; ++row)
                 {
                     this->readRefHeaderRow(row, offsets, plsInBins);
-
+                    
                     for(boost::uint_fast64_t col = startCol; col < endCol; ++col)
                     {
                         this->readPulseData(pulses[i][j], offsets[col], plsInBins[col]);
@@ -2184,10 +2184,10 @@ namespace spdlib
                     j = 0;
                     ++i;
                 }
-
+                
                 delete[] plsInBins;
                 delete[] offsets;
-
+                
             }
             catch(SPDIOException &e)
             {
@@ -2207,14 +2207,14 @@ namespace spdlib
 		{
 			throw SPDIOException("Input file is not open..");
 		}
-
+        
         boost::uint_fast32_t startRow = bbox[1];
         boost::uint_fast32_t endRow = bbox[3];
         boost::uint_fast32_t startCol = bbox[0];
         boost::uint_fast32_t endCol = bbox[2];
-
+        
         boost::uint_fast32_t numCols = endCol - startCol;
-
+        
         if(spdFile->getFileType() == SPD_UPD_TYPE)
         {
             throw SPDIOException("This function is only available for files with a spatial index.");
@@ -2225,116 +2225,116 @@ namespace spdlib
             {
                 // Read PTS..
                 H5::Exception::dontPrint();
-
+                
                 SPDPointUtils ptsUtils;
                 SPDPulseUtils pulseUtils;
-
+                
                 unsigned long *plsInBins = new unsigned long[spdFile->getNumberBinsX()];
                 unsigned long long *offsets = new unsigned long long[spdFile->getNumberBinsX()];
-
+                
                 boost::uint_fast64_t totalNumPulses = 0;
-
+                
                 H5::DataSet pulsesDataset = spdInFile->openDataSet( SPDFILE_DATASETNAME_PULSES );
                 H5::DataSpace pulsesDataspace = pulsesDataset.getSpace();
-
+                
                 H5::DataSet pointsDataset = spdInFile->openDataSet( SPDFILE_DATASETNAME_POINTS );
                 H5::DataSpace pointsDataspace = pointsDataset.getSpace();
-
+                
                 H5::DataSet transmittedDataset = spdInFile->openDataSet( SPDFILE_DATASETNAME_TRANSMITTED );
                 H5::DataSpace transmittedDataspace = transmittedDataset.getSpace();
-
+                
                 H5::DataSet receivedDataset = spdInFile->openDataSet( SPDFILE_DATASETNAME_RECEIVED );
                 H5::DataSpace receivedDataspace = receivedDataset.getSpace();
-
+                
                 int rank = 1;
                 // START: Variables for Pulse //
                 hsize_t pulseOffset[1];
                 hsize_t pulseCount[1];
-
-                hsize_t pulseDims[1];
+                
+                hsize_t pulseDims[1]; 
                 H5::DataSpace pulseMemspace;
-
+                
                 hsize_t pulseOffset_out[1];
                 hsize_t pulseCount_out[1];
                 // END: Variables for Pulse //
-
+                
                 // START: Variables for Point //
                 hsize_t pointOffset[1];
                 hsize_t pointCount[1];
-
-                hsize_t pointDims[1];
+                
+                hsize_t pointDims[1]; 
                 H5::DataSpace pointMemspace;
-
+                
                 hsize_t pointOffset_out[1];
                 hsize_t pointCount_out[1];
                 // END: Variables for Point //
-
+                
                 // START: Variables for Transmitted //
                 hsize_t transOffset[1];
                 hsize_t transCount[1];
-
-                hsize_t transDims[1];
+                
+                hsize_t transDims[1]; 
                 H5::DataSpace transMemspace;
-
+                
                 hsize_t transOffset_out[1];
                 hsize_t transCount_out[1];
                 // END: Variables for Transmitted //
-
+                
                 // START: Variables for Received //
                 hsize_t receivedOffset[1];
                 hsize_t receivedCount[1];
-
-                hsize_t receivedDims[1];
+                
+                hsize_t receivedDims[1]; 
                 H5::DataSpace receivedMemspace;
-
+                
                 hsize_t receivedOffset_out[1];
                 hsize_t receivedCount_out[1];
                 // END: Variables for Received //
-
+                
                 void *pulseArray = NULL;
                 void *pointsArray = NULL;
                 unsigned long *transmittedArray = NULL;
                 unsigned long *receivedArray = NULL;
-
+                
                 boost::uint_fast64_t ptStartIdx = 0;
                 boost::uint_fast64_t numOfPoints = 0;
                 boost::uint_fast64_t transStartIdx = 0;
                 boost::uint_fast64_t numOfTransVals = 0;
                 boost::uint_fast64_t receivedStartIdx = 0;
                 boost::uint_fast64_t numOfReceivedVals = 0;
-
+                
                 boost::uint_fast64_t ptIdx = 0;
                 boost::uint_fast64_t transIdx = 0;
                 boost::uint_fast64_t receivedIdx = 0;
-
+                
                 SPDPulse *pulse = NULL;
                 SPDPoint *point = NULL;
-
+                
                 boost::uint_fast32_t rowIdx = 0;
-
+                
                 for(boost::uint_fast32_t row = startRow; row < endRow; ++row)
                 {
                     this->readRefHeaderRow(row, offsets, plsInBins);
-
+                    
                     totalNumPulses = 0;
                     for(boost::uint_fast32_t i = startCol; i < endCol; ++i)
                     {
                         totalNumPulses += plsInBins[i];
                     }
-
+                    
                     if(totalNumPulses > 0)
                     {
                         pulseOffset[0] = offsets[startCol];
                         pulseCount[0]  = totalNumPulses;
                         pulsesDataspace.selectHyperslab( H5S_SELECT_SET, pulseCount, pulseOffset );
-
+                        
                         pulseDims[0] = totalNumPulses;
                         pulseMemspace = H5::DataSpace( rank, pulseDims );
-
+                        
                         pulseOffset_out[0] = 0;
                         pulseCount_out[0]  = totalNumPulses;
                         pulseMemspace.selectHyperslab( H5S_SELECT_SET, pulseCount_out, pulseOffset_out );
-
+                        
                         if(spdFile->getPulseVersion() == 1)
                         {
                             pulseArray = new SPDPulseH5V1[totalNumPulses];
@@ -2344,14 +2344,14 @@ namespace spdlib
                             pulseArray = new SPDPulseH5V2[totalNumPulses];
                         }
                         pulsesDataset.read(pulseArray, *pulseType, pulseMemspace, pulsesDataspace );
-
+                        
                         ptStartIdx = 0;
                         numOfPoints = 0;
                         transStartIdx = 0;
                         numOfTransVals = 0;
                         receivedStartIdx = 0;
                         numOfReceivedVals = 0;
-
+                        
                         if(spdFile->getPulseVersion() == 1)
                         {
                             SPDPulseH5V1 *pulseObj = NULL;
@@ -2386,8 +2386,8 @@ namespace spdlib
                                 numOfReceivedVals += pulseObj->numOfReceivedBins;
                             }
                         }
-
-
+                        
+                        
                         if(numOfPoints > 0)
                         {
                             // Read Points.
@@ -2399,7 +2399,7 @@ namespace spdlib
                             {
                                 pointsArray = new SPDPointH5V2[numOfPoints];
                             }
-
+                            
                             pointOffset[0] = ptStartIdx;
                             pointCount[0] = numOfPoints;
                             pointsDataspace.selectHyperslab(H5S_SELECT_SET, pointCount, pointOffset);
@@ -2410,7 +2410,7 @@ namespace spdlib
                             pointMemspace.selectHyperslab( H5S_SELECT_SET, pointCount_out, pointOffset_out );
                             pointsDataset.read(pointsArray, *pointType, pointMemspace, pointsDataspace);
                         }
-
+                        
                         if(numOfTransVals > 0)
                         {
                             // Read Transmitted Vals.
@@ -2425,7 +2425,7 @@ namespace spdlib
                             transMemspace.selectHyperslab( H5S_SELECT_SET, transCount_out, transOffset_out );
                             transmittedDataset.read(transmittedArray, H5::PredType::NATIVE_ULONG, transMemspace, transmittedDataspace);
                         }
-
+                        
                         if(numOfReceivedVals > 0)
                         {
                             // Read Received Vals.
@@ -2440,19 +2440,19 @@ namespace spdlib
                             receivedMemspace.selectHyperslab( H5S_SELECT_SET, receivedCount_out, receivedOffset_out );
                             receivedDataset.read(receivedArray, H5::PredType::NATIVE_ULONG, receivedMemspace, receivedDataspace);
                         }
-
+                        
                         ptIdx = 0;
                         transIdx = 0;
                         receivedIdx = 0;
-
+                        
                         boost::uint_fast32_t start = 0;
                         boost::uint_fast32_t end = 0;
-
+                        
                         for(boost::uint_fast32_t colIdx = 0; colIdx < numCols; ++colIdx)
                         {
                             start = end;
                             end += plsInBins[(startCol+colIdx)];
-
+                            
                             for( boost::uint_fast32_t j = start; j < end; ++j)
                             {
                                 if(spdFile->getPulseVersion() == 1)
@@ -2463,7 +2463,7 @@ namespace spdlib
                                 {
                                     pulse = pulseUtils.createSPDPulseCopyFromH5(&((SPDPulseH5V2 *)pulseArray)[j]);
                                 }
-
+                                
                                 if(pulse->numberOfReturns > 0)
                                 {
                                     //pulse->pts = new std::vector<SPDPoint*>();
@@ -2481,7 +2481,7 @@ namespace spdlib
                                         pulse->pts->push_back(point);
                                     }
                                 }
-
+                                
                                 if(pulse->numOfTransmittedBins > 0)
                                 {
                                     pulse->transmitted = new boost::uint_fast32_t[pulse->numOfTransmittedBins];
@@ -2490,7 +2490,7 @@ namespace spdlib
                                         pulse->transmitted[n] = transmittedArray[transIdx++];
                                     }
                                 }
-
+                                
                                 if(pulse->numOfReceivedBins > 0)
                                 {
                                     pulse->received = new boost::uint_fast32_t[pulse->numOfReceivedBins];
@@ -2499,11 +2499,11 @@ namespace spdlib
                                         pulse->received[n] = receivedArray[receivedIdx++];
                                     }
                                 }
-
+                                
                                 pulses[rowIdx][colIdx]->push_back(pulse);
                             }
                         }
-
+                        
                         if(numOfPoints > 0)
                         {
                             if(spdFile->getPointVersion() == 1)
@@ -2515,17 +2515,17 @@ namespace spdlib
                                 delete[] reinterpret_cast<SPDPointH5V2*>(pointsArray);
                             }
                         }
-
+                        
                         if(numOfTransVals > 0)
                         {
                             delete[] transmittedArray;
                         }
-
+                        
                         if(numOfReceivedVals > 0)
                         {
                             delete[] receivedArray;
                         }
-
+                        
                         if(spdFile->getPulseVersion() == 1)
                         {
                             delete[] reinterpret_cast<SPDPulseH5V1*>(pulseArray);
@@ -2535,7 +2535,7 @@ namespace spdlib
                             delete[] reinterpret_cast<SPDPulseH5V2*>(pulseArray);
                         }
                     }
-
+                    
                     ++rowIdx;
                 }		
                 delete[] plsInBins;
@@ -2568,16 +2568,16 @@ namespace spdlib
             {
                 SPDPointUtils ptsUtils;
                 SPDPulseUtils pulseUtils;
-
+                
                 unsigned long *plsInBins = new unsigned long[spdFile->getNumberBinsX()];
                 unsigned long long *offsets = new unsigned long long[spdFile->getNumberBinsX()];
-
+                
                 boost::uint_fast64_t i = 0;
                 boost::uint_fast64_t j = 0;
                 for(boost::uint_fast64_t row = startRow; row < endRow; ++row)
                 {
                     this->readRefHeaderRow(row, offsets, plsInBins);
-
+                    
                     for(boost::uint_fast64_t col = startCol; col < endCol; ++col)
                     {
                         this->readPulseData(pulses[i][j], offsets[col], plsInBins[col]);
@@ -2586,10 +2586,10 @@ namespace spdlib
                     j = 0;
                     ++i;
                 }
-
+                
                 delete[] plsInBins;
                 delete[] offsets;
-
+                
             }
             catch(SPDIOException &e)
             {
@@ -2601,7 +2601,7 @@ namespace spdlib
             throw SPDIOException("SPD File type was not recognised.");
         }
 	}
-
+    
     /*UPDATED*/
 	void SPDFileIncrementalReader::readPulseDataBlock(std::list<SPDPulse*> ***pulses, boost::uint_fast32_t *bbox, boost::uint_fast32_t xOff, boost::uint_fast32_t yOff) throw(SPDIOException)
 	{
@@ -2609,14 +2609,14 @@ namespace spdlib
 		{
 			throw SPDIOException("Input file is not open..");
 		}
-
+        
         boost::uint_fast32_t startRow = bbox[1];
         boost::uint_fast32_t endRow = bbox[3];
         boost::uint_fast32_t startCol = bbox[0];
         boost::uint_fast32_t endCol = bbox[2];
-
+        
         boost::uint_fast32_t numCols = endCol - startCol;
-
+        
         if(spdFile->getFileType() == SPD_UPD_TYPE)
         {
             throw SPDIOException("This function is only available for files with a spatial index.");
@@ -2627,116 +2627,116 @@ namespace spdlib
             {
                 // Read PTS..
                 H5::Exception::dontPrint();
-
+                
                 SPDPointUtils ptsUtils;
                 SPDPulseUtils pulseUtils;
-
+                
                 unsigned long *plsInBins = new unsigned long[spdFile->getNumberBinsX()];
                 unsigned long long *offsets = new unsigned long long[spdFile->getNumberBinsX()];
-
+                
                 boost::uint_fast64_t totalNumPulses = 0;
-
+                
                 H5::DataSet pulsesDataset = spdInFile->openDataSet( SPDFILE_DATASETNAME_PULSES );
                 H5::DataSpace pulsesDataspace = pulsesDataset.getSpace();
-
+                
                 H5::DataSet pointsDataset = spdInFile->openDataSet( SPDFILE_DATASETNAME_POINTS );
                 H5::DataSpace pointsDataspace = pointsDataset.getSpace();
-
+                
                 H5::DataSet transmittedDataset = spdInFile->openDataSet( SPDFILE_DATASETNAME_TRANSMITTED );
                 H5::DataSpace transmittedDataspace = transmittedDataset.getSpace();
-
+                
                 H5::DataSet receivedDataset = spdInFile->openDataSet( SPDFILE_DATASETNAME_RECEIVED );
                 H5::DataSpace receivedDataspace = receivedDataset.getSpace();
-
+                
                 int rank = 1;
                 // START: Variables for Pulse //
                 hsize_t pulseOffset[1];
                 hsize_t pulseCount[1];
-
-                hsize_t pulseDims[1];
+                
+                hsize_t pulseDims[1]; 
                 H5::DataSpace pulseMemspace;
-
+                
                 hsize_t pulseOffset_out[1];
                 hsize_t pulseCount_out[1];
                 // END: Variables for Pulse //
-
+                
                 // START: Variables for Point //
                 hsize_t pointOffset[1];
                 hsize_t pointCount[1];
-
-                hsize_t pointDims[1];
+                
+                hsize_t pointDims[1]; 
                 H5::DataSpace pointMemspace;
-
+                
                 hsize_t pointOffset_out[1];
                 hsize_t pointCount_out[1];
                 // END: Variables for Point //
-
+                
                 // START: Variables for Transmitted //
                 hsize_t transOffset[1];
                 hsize_t transCount[1];
-
-                hsize_t transDims[1];
+                
+                hsize_t transDims[1]; 
                 H5::DataSpace transMemspace;
-
+                
                 hsize_t transOffset_out[1];
                 hsize_t transCount_out[1];
                 // END: Variables for Transmitted //
-
+                
                 // START: Variables for Received //
                 hsize_t receivedOffset[1];
                 hsize_t receivedCount[1];
-
-                hsize_t receivedDims[1];
+                
+                hsize_t receivedDims[1]; 
                 H5::DataSpace receivedMemspace;
-
+                
                 hsize_t receivedOffset_out[1];
                 hsize_t receivedCount_out[1];
                 // END: Variables for Received //
-
+                
                 void *pulseArray = NULL;
                 void *pointsArray = NULL;
                 unsigned long *transmittedArray = NULL;
                 unsigned long *receivedArray = NULL;
-
+                
                 boost::uint_fast64_t ptStartIdx = 0;
                 boost::uint_fast64_t numOfPoints = 0;
                 boost::uint_fast64_t transStartIdx = 0;
                 boost::uint_fast64_t numOfTransVals = 0;
                 boost::uint_fast64_t receivedStartIdx = 0;
                 boost::uint_fast64_t numOfReceivedVals = 0;
-
+                
                 boost::uint_fast64_t ptIdx = 0;
                 boost::uint_fast64_t transIdx = 0;
                 boost::uint_fast64_t receivedIdx = 0;
-
+                
                 SPDPulse *pulse = NULL;
                 SPDPoint *point = NULL;
-
+                
                 boost::uint_fast32_t rowIdx = 0;
-
+                
                 for(boost::uint_fast32_t row = startRow; row < endRow; ++row)
                 {
                     this->readRefHeaderRow(row, offsets, plsInBins);
-
+                    
                     totalNumPulses = 0;
                     for(boost::uint_fast32_t i = startCol; i < endCol; ++i)
                     {
                         totalNumPulses += plsInBins[i];
                     }
-
+                    
                     if(totalNumPulses > 0)
                     {
                         pulseOffset[0] = offsets[startCol];
                         pulseCount[0]  = totalNumPulses;
                         pulsesDataspace.selectHyperslab( H5S_SELECT_SET, pulseCount, pulseOffset );
-
+                        
                         pulseDims[0] = totalNumPulses;
                         pulseMemspace = H5::DataSpace( rank, pulseDims );
-
+                        
                         pulseOffset_out[0] = 0;
                         pulseCount_out[0]  = totalNumPulses;
                         pulseMemspace.selectHyperslab( H5S_SELECT_SET, pulseCount_out, pulseOffset_out );
-
+                        
                         if(spdFile->getPulseVersion() == 1)
                         {
                             pulseArray = new SPDPulseH5V1[totalNumPulses];
@@ -2746,14 +2746,14 @@ namespace spdlib
                             pulseArray = new SPDPulseH5V2[totalNumPulses];
                         }
                         pulsesDataset.read(pulseArray, *pulseType, pulseMemspace, pulsesDataspace );
-
+                        
                         ptStartIdx = 0;
                         numOfPoints = 0;
                         transStartIdx = 0;
                         numOfTransVals = 0;
                         receivedStartIdx = 0;
                         numOfReceivedVals = 0;
-
+                        
                         if(spdFile->getPulseVersion() == 1)
                         {
                             SPDPulseH5V1 *pulseObj = NULL;
@@ -2788,8 +2788,8 @@ namespace spdlib
                                 numOfReceivedVals += pulseObj->numOfReceivedBins;
                             }
                         }
-
-
+                        
+                        
                         if(numOfPoints > 0)
                         {
                             // Read Points.
@@ -2801,7 +2801,7 @@ namespace spdlib
                             {
                                 pointsArray = new SPDPointH5V2[numOfPoints];
                             }
-
+                            
                             pointOffset[0] = ptStartIdx;
                             pointCount[0] = numOfPoints;
                             pointsDataspace.selectHyperslab(H5S_SELECT_SET, pointCount, pointOffset);
@@ -2812,7 +2812,7 @@ namespace spdlib
                             pointMemspace.selectHyperslab( H5S_SELECT_SET, pointCount_out, pointOffset_out );
                             pointsDataset.read(pointsArray, *pointType, pointMemspace, pointsDataspace);
                         }
-
+                        
                         if(numOfTransVals > 0)
                         {
                             // Read Transmitted Vals.
@@ -2827,7 +2827,7 @@ namespace spdlib
                             transMemspace.selectHyperslab( H5S_SELECT_SET, transCount_out, transOffset_out );
                             transmittedDataset.read(transmittedArray, H5::PredType::NATIVE_ULONG, transMemspace, transmittedDataspace);
                         }
-
+                        
                         if(numOfReceivedVals > 0)
                         {
                             // Read Received Vals.
@@ -2842,19 +2842,19 @@ namespace spdlib
                             receivedMemspace.selectHyperslab( H5S_SELECT_SET, receivedCount_out, receivedOffset_out );
                             receivedDataset.read(receivedArray, H5::PredType::NATIVE_ULONG, receivedMemspace, receivedDataspace);
                         }
-
+                        
                         ptIdx = 0;
                         transIdx = 0;
                         receivedIdx = 0;
-
+                        
                         boost::uint_fast32_t start = 0;
                         boost::uint_fast32_t end = 0;
-
+                        
                         for(boost::uint_fast32_t colIdx = 0; colIdx < numCols; ++colIdx)
                         {
                             start = end;
                             end += plsInBins[(startCol+colIdx)];
-
+                            
                             for( boost::uint_fast32_t j = start; j < end; ++j)
                             {
                                 if(spdFile->getPulseVersion() == 1)
@@ -2865,7 +2865,7 @@ namespace spdlib
                                 {
                                     pulse = pulseUtils.createSPDPulseCopyFromH5(&((SPDPulseH5V2 *)pulseArray)[j]);
                                 }
-
+                                
                                 if(pulse->numberOfReturns > 0)
                                 {
                                     //pulse->pts = new std::vector<SPDPoint*>();
@@ -2883,7 +2883,7 @@ namespace spdlib
                                         pulse->pts->push_back(point);
                                     }
                                 }
-
+                                
                                 if(pulse->numOfTransmittedBins > 0)
                                 {
                                     pulse->transmitted = new boost::uint_fast32_t[pulse->numOfTransmittedBins];
@@ -2892,7 +2892,7 @@ namespace spdlib
                                         pulse->transmitted[n] = transmittedArray[transIdx++];
                                     }
                                 }
-
+                                
                                 if(pulse->numOfReceivedBins > 0)
                                 {
                                     pulse->received = new boost::uint_fast32_t[pulse->numOfReceivedBins];
@@ -2901,11 +2901,11 @@ namespace spdlib
                                         pulse->received[n] = receivedArray[receivedIdx++];
                                     }
                                 }
-
+                                
                                 pulses[rowIdx+yOff][colIdx+xOff]->push_back(pulse);
                             }
                         }
-
+                        
                         if(numOfPoints > 0)
                         {
                             if(spdFile->getPointVersion() == 1)
@@ -2917,17 +2917,17 @@ namespace spdlib
                                 delete[] reinterpret_cast<SPDPointH5V2*>(pointsArray);
                             }
                         }
-
+                        
                         if(numOfTransVals > 0)
                         {
                             delete[] transmittedArray;
                         }
-
+                        
                         if(numOfReceivedVals > 0)
                         {
                             delete[] receivedArray;
                         }
-
+                        
                         if(spdFile->getPulseVersion() == 1)
                         {
                             delete[] reinterpret_cast<SPDPulseH5V1*>(pulseArray);
@@ -2937,7 +2937,7 @@ namespace spdlib
                             delete[] reinterpret_cast<SPDPulseH5V2*>(pulseArray);
                         }
                     }
-
+                    
                     ++rowIdx;
                 }		
                 delete[] plsInBins;
@@ -2970,16 +2970,16 @@ namespace spdlib
             {
                 SPDPointUtils ptsUtils;
                 SPDPulseUtils pulseUtils;
-
+                
                 unsigned long *plsInBins = new unsigned long[spdFile->getNumberBinsX()];
                 unsigned long long *offsets = new unsigned long long[spdFile->getNumberBinsX()];
-
+                
                 boost::uint_fast64_t i = yOff;
                 boost::uint_fast64_t j = xOff;
                 for(boost::uint_fast64_t row = startRow; row < endRow; ++row)
                 {
                     this->readRefHeaderRow(row, offsets, plsInBins);
-
+                    
                     for(boost::uint_fast64_t col = startCol; col < endCol; ++col)
                     {
                         this->readPulseData(pulses[i][j], offsets[col], plsInBins[col]);
@@ -2988,10 +2988,10 @@ namespace spdlib
                     j = xOff;
                     ++i;
                 }
-
+                
                 delete[] plsInBins;
                 delete[] offsets;
-
+                
             }
             catch(SPDIOException &e)
             {
@@ -3011,17 +3011,17 @@ namespace spdlib
 		{
 			throw SPDIOException("Input file is not open..");
 		}
-
+        
         boost::uint_fast32_t startRow = bbox[1];
         boost::uint_fast32_t endRow = bbox[3];
         boost::uint_fast32_t startCol = bbox[0];
         boost::uint_fast32_t endCol = bbox[2];
-
+        
         boost::uint_fast32_t numCols = endCol - startCol;
-
+        
         //cout << "Rows: " << startRow << " - " << endRow << " = " << endRow - startRow << endl;
         //cout << "Cols: " << startCol << " - " << endCol << " = " << endCol - startCol << endl;
-
+        
         if(spdFile->getFileType() == SPD_UPD_TYPE)
         {
             throw SPDIOException("This function is only available for files with a spatial index.");
@@ -3032,116 +3032,116 @@ namespace spdlib
             {
                 // Read PTS..
                 H5::Exception::dontPrint();
-
+                
                 SPDPointUtils ptsUtils;
                 SPDPulseUtils pulseUtils;
-
+                
                 unsigned long *plsInBins = new unsigned long[spdFile->getNumberBinsX()];
                 unsigned long long *offsets = new unsigned long long[spdFile->getNumberBinsX()];
-
+                
                 boost::uint_fast64_t totalNumPulses = 0;
-
+                
                 H5::DataSet pulsesDataset = spdInFile->openDataSet( SPDFILE_DATASETNAME_PULSES );
                 H5::DataSpace pulsesDataspace = pulsesDataset.getSpace();
-
+                
                 H5::DataSet pointsDataset = spdInFile->openDataSet( SPDFILE_DATASETNAME_POINTS );
                 H5::DataSpace pointsDataspace = pointsDataset.getSpace();
-
+                
                 H5::DataSet transmittedDataset = spdInFile->openDataSet( SPDFILE_DATASETNAME_TRANSMITTED );
                 H5::DataSpace transmittedDataspace = transmittedDataset.getSpace();
-
+                
                 H5::DataSet receivedDataset = spdInFile->openDataSet( SPDFILE_DATASETNAME_RECEIVED );
                 H5::DataSpace receivedDataspace = receivedDataset.getSpace();
-
+                
                 int rank = 1;
                 // START: Variables for Pulse //
                 hsize_t pulseOffset[1];
                 hsize_t pulseCount[1];
-
-                hsize_t pulseDims[1];
+                
+                hsize_t pulseDims[1]; 
                 H5::DataSpace pulseMemspace;
-
+                
                 hsize_t pulseOffset_out[1];
                 hsize_t pulseCount_out[1];
                 // END: Variables for Pulse //
-
+                
                 // START: Variables for Point //
                 hsize_t pointOffset[1];
                 hsize_t pointCount[1];
-
-                hsize_t pointDims[1];
+                
+                hsize_t pointDims[1]; 
                 H5::DataSpace pointMemspace;
-
+                
                 hsize_t pointOffset_out[1];
                 hsize_t pointCount_out[1];
                 // END: Variables for Point //
-
+                
                 // START: Variables for Transmitted //
                 hsize_t transOffset[1];
                 hsize_t transCount[1];
-
-                hsize_t transDims[1];
+                
+                hsize_t transDims[1]; 
                 H5::DataSpace transMemspace;
-
+                
                 hsize_t transOffset_out[1];
                 hsize_t transCount_out[1];
                 // END: Variables for Transmitted //
-
+                
                 // START: Variables for Received //
                 hsize_t receivedOffset[1];
                 hsize_t receivedCount[1];
-
-                hsize_t receivedDims[1];
+                
+                hsize_t receivedDims[1]; 
                 H5::DataSpace receivedMemspace;
-
+                
                 hsize_t receivedOffset_out[1];
                 hsize_t receivedCount_out[1];
                 // END: Variables for Received //
-
+                
                 void *pulseArray = NULL;
                 void *pointsArray = NULL;
                 unsigned long *transmittedArray = NULL;
                 unsigned long *receivedArray = NULL;
-
+                
                 boost::uint_fast64_t ptStartIdx = 0;
                 boost::uint_fast64_t numOfPoints = 0;
                 boost::uint_fast64_t transStartIdx = 0;
                 boost::uint_fast64_t numOfTransVals = 0;
                 boost::uint_fast64_t receivedStartIdx = 0;
                 boost::uint_fast64_t numOfReceivedVals = 0;
-
+                
                 boost::uint_fast64_t ptIdx = 0;
                 boost::uint_fast64_t transIdx = 0;
                 boost::uint_fast64_t receivedIdx = 0;
-
+                
                 SPDPulse *pulse = NULL;
                 SPDPoint *point = NULL;
-
+                
                 boost::uint_fast32_t rowIdx = 0;
-
+                
                 for(boost::uint_fast32_t row = startRow; row < endRow; ++row)
                 {
                     this->readRefHeaderRow(row, offsets, plsInBins);
-
+                    
                     totalNumPulses = 0;
                     for(boost::uint_fast32_t i = startCol; i < endCol; ++i)
                     {
                         totalNumPulses += plsInBins[i];
                     }
-
+                    
                     if(totalNumPulses > 0)
                     {
                         pulseOffset[0] = offsets[startCol];
                         pulseCount[0]  = totalNumPulses;
                         pulsesDataspace.selectHyperslab( H5S_SELECT_SET, pulseCount, pulseOffset );
-
+                        
                         pulseDims[0] = totalNumPulses;
                         pulseMemspace = H5::DataSpace( rank, pulseDims );
-
+                        
                         pulseOffset_out[0] = 0;
                         pulseCount_out[0]  = totalNumPulses;
                         pulseMemspace.selectHyperslab( H5S_SELECT_SET, pulseCount_out, pulseOffset_out );
-
+                        
                         if(spdFile->getPulseVersion() == 1)
                         {
                             pulseArray = new SPDPulseH5V1[totalNumPulses];
@@ -3151,14 +3151,14 @@ namespace spdlib
                             pulseArray = new SPDPulseH5V2[totalNumPulses];
                         }
                         pulsesDataset.read(pulseArray, *pulseType, pulseMemspace, pulsesDataspace );
-
+                        
                         ptStartIdx = 0;
                         numOfPoints = 0;
                         transStartIdx = 0;
                         numOfTransVals = 0;
                         receivedStartIdx = 0;
                         numOfReceivedVals = 0;
-
+                        
                         if(spdFile->getPulseVersion() == 1)
                         {
                             SPDPulseH5V1 *pulseObj = NULL;
@@ -3193,8 +3193,8 @@ namespace spdlib
                                 numOfReceivedVals += pulseObj->numOfReceivedBins;
                             }
                         }
-
-
+                        
+                        
                         if(numOfPoints > 0)
                         {
                             // Read Points.
@@ -3206,7 +3206,7 @@ namespace spdlib
                             {
                                 pointsArray = new SPDPointH5V2[numOfPoints];
                             }
-
+                            
                             pointOffset[0] = ptStartIdx;
                             pointCount[0] = numOfPoints;
                             pointsDataspace.selectHyperslab(H5S_SELECT_SET, pointCount, pointOffset);
@@ -3217,7 +3217,7 @@ namespace spdlib
                             pointMemspace.selectHyperslab( H5S_SELECT_SET, pointCount_out, pointOffset_out );
                             pointsDataset.read(pointsArray, *pointType, pointMemspace, pointsDataspace);
                         }
-
+                        
                         if(numOfTransVals > 0)
                         {
                             // Read Transmitted Vals.
@@ -3232,7 +3232,7 @@ namespace spdlib
                             transMemspace.selectHyperslab( H5S_SELECT_SET, transCount_out, transOffset_out );
                             transmittedDataset.read(transmittedArray, H5::PredType::NATIVE_ULONG, transMemspace, transmittedDataspace);
                         }
-
+                        
                         if(numOfReceivedVals > 0)
                         {
                             // Read Received Vals.
@@ -3247,19 +3247,19 @@ namespace spdlib
                             receivedMemspace.selectHyperslab( H5S_SELECT_SET, receivedCount_out, receivedOffset_out );
                             receivedDataset.read(receivedArray, H5::PredType::NATIVE_ULONG, receivedMemspace, receivedDataspace);
                         }
-
+                        
                         ptIdx = 0;
                         transIdx = 0;
                         receivedIdx = 0;
-
+                        
                         boost::uint_fast32_t start = 0;
                         boost::uint_fast32_t end = 0;
-
+                        
                         for(boost::uint_fast32_t colIdx = 0; colIdx < numCols; ++colIdx)
                         {
                             start = end;
                             end += plsInBins[(startCol+colIdx)];
-
+                            
                             for( boost::uint_fast32_t j = start; j < end; ++j)
                             {
                                 if(spdFile->getPulseVersion() == 1)
@@ -3270,7 +3270,7 @@ namespace spdlib
                                 {
                                     pulse = pulseUtils.createSPDPulseCopyFromH5(&((SPDPulseH5V2 *)pulseArray)[j]);
                                 }
-
+                                
                                 if(pulse->numberOfReturns > 0)
                                 {
                                     //pulse->pts = new std::vector<SPDPoint*>();
@@ -3288,7 +3288,7 @@ namespace spdlib
                                         pulse->pts->push_back(point);
                                     }
                                 }
-
+                                
                                 if(pulse->numOfTransmittedBins > 0)
                                 {
                                     pulse->transmitted = new boost::uint_fast32_t[pulse->numOfTransmittedBins];
@@ -3297,7 +3297,7 @@ namespace spdlib
                                         pulse->transmitted[n] = transmittedArray[transIdx++];
                                     }
                                 }
-
+                                
                                 if(pulse->numOfReceivedBins > 0)
                                 {
                                     pulse->received = new boost::uint_fast32_t[pulse->numOfReceivedBins];
@@ -3306,11 +3306,11 @@ namespace spdlib
                                         pulse->received[n] = receivedArray[receivedIdx++];
                                     }
                                 }
-
+                                
                                 pulses[rowIdx+yOff][colIdx+xOff]->push_back(pulse);
                             }
                         }
-
+                        
                         if(numOfPoints > 0)
                         {
                             if(spdFile->getPointVersion() == 1)
@@ -3322,17 +3322,17 @@ namespace spdlib
                                 delete[] reinterpret_cast<SPDPointH5V2*>(pointsArray);
                             }
                         }
-
+                        
                         if(numOfTransVals > 0)
                         {
                             delete[] transmittedArray;
                         }
-
+                        
                         if(numOfReceivedVals > 0)
                         {
                             delete[] receivedArray;
                         }
-
+                        
                         if(spdFile->getPulseVersion() == 1)
                         {
                             delete[] reinterpret_cast<SPDPulseH5V1*>(pulseArray);
@@ -3342,7 +3342,7 @@ namespace spdlib
                             delete[] reinterpret_cast<SPDPulseH5V2*>(pulseArray);
                         }
                     }
-
+                    
                     ++rowIdx;
                 }		
                 delete[] plsInBins;
@@ -3375,16 +3375,16 @@ namespace spdlib
             {
                 SPDPointUtils ptsUtils;
                 SPDPulseUtils pulseUtils;
-
+                
                 unsigned long *plsInBins = new unsigned long[spdFile->getNumberBinsX()];
                 unsigned long long *offsets = new unsigned long long[spdFile->getNumberBinsX()];
-
+                
                 boost::uint_fast64_t i = yOff;
                 boost::uint_fast64_t j = xOff;
                 for(boost::uint_fast64_t row = startRow; row < endRow; ++row)
                 {
                     this->readRefHeaderRow(row, offsets, plsInBins);
-
+                    
                     for(boost::uint_fast64_t col = startCol; col < endCol; ++col)
                     {
                         this->readPulseData(pulses[i][j], offsets[col], plsInBins[col]);
@@ -3393,10 +3393,10 @@ namespace spdlib
                     j = xOff;
                     ++i;
                 }
-
+                
                 delete[] plsInBins;
                 delete[] offsets;
-
+                
             }
             catch(SPDIOException &e)
             {
@@ -3420,7 +3420,7 @@ namespace spdlib
         boost::uint_fast32_t endRow = bbox[3];
         boost::uint_fast32_t startCol = bbox[0];
         boost::uint_fast32_t endCol = bbox[2];
-
+        
         if(spdFile->getFileType() == SPD_UPD_TYPE)
         {
             throw SPDIOException("This function is only available for files with a spatial index.");
@@ -3431,105 +3431,105 @@ namespace spdlib
             {
                 // Read PTS..
                 H5::Exception::dontPrint();
-
+                
                 H5::H5File *spdInFile = NULL;
                 spdInFile = new H5::H5File( spdFile->getFilePath(), H5F_ACC_RDONLY );
-
+                
                 SPDPointUtils ptsUtils;
                 SPDPulseUtils pulseUtils;
-
+                
                 unsigned long *plsInBins = new unsigned long[spdFile->getNumberBinsX()];
                 unsigned long long *offsets = new unsigned long long[spdFile->getNumberBinsX()];
-
+                
                 boost::uint_fast64_t totalNumPulses = 0;
-
+                
                 H5::DataSet pulsesDataset = spdInFile->openDataSet( SPDFILE_DATASETNAME_PULSES );
                 H5::DataSpace pulsesDataspace = pulsesDataset.getSpace();
-
+                
                 H5::DataSet pointsDataset = spdInFile->openDataSet( SPDFILE_DATASETNAME_POINTS );
                 H5::DataSpace pointsDataspace = pointsDataset.getSpace();
-
+                
                 H5::DataSet transmittedDataset = spdInFile->openDataSet( SPDFILE_DATASETNAME_TRANSMITTED );
                 H5::DataSpace transmittedDataspace = transmittedDataset.getSpace();
-
+                
                 H5::DataSet receivedDataset = spdInFile->openDataSet( SPDFILE_DATASETNAME_RECEIVED );
                 H5::DataSpace receivedDataspace = receivedDataset.getSpace();
-
+                
                 int rank = 1;
                 // START: Variables for Pulse //
                 hsize_t pulseOffset[1];
                 hsize_t pulseCount[1];
-
-                hsize_t pulseDims[1];
+                
+                hsize_t pulseDims[1]; 
                 H5::DataSpace pulseMemspace;
-
+                
                 hsize_t pulseOffset_out[1];
                 hsize_t pulseCount_out[1];
                 // END: Variables for Pulse //
-
+                
                 // START: Variables for Point //
                 hsize_t pointOffset[1];
                 hsize_t pointCount[1];
-
-                hsize_t pointDims[1];
+                
+                hsize_t pointDims[1]; 
                 H5::DataSpace pointMemspace;
-
+                
                 hsize_t pointOffset_out[1];
                 hsize_t pointCount_out[1];
                 // END: Variables for Point //
-
+                
                 // START: Variables for Transmitted //
                 hsize_t transOffset[1];
                 hsize_t transCount[1];
-
-                hsize_t transDims[1];
+                
+                hsize_t transDims[1]; 
                 H5::DataSpace transMemspace;
-
+                
                 hsize_t transOffset_out[1];
                 hsize_t transCount_out[1];
                 // END: Variables for Transmitted //
-
+                
                 // START: Variables for Received //
                 hsize_t receivedOffset[1];
                 hsize_t receivedCount[1];
-
-                hsize_t receivedDims[1];
+                
+                hsize_t receivedDims[1]; 
                 H5::DataSpace receivedMemspace;
-
+                
                 hsize_t receivedOffset_out[1];
                 hsize_t receivedCount_out[1];
                 // END: Variables for Received //
-
-
+                
+                
                 void *pulseArray = NULL;
                 void *pointsArray = NULL;
                 unsigned long *transmittedArray = NULL;
                 unsigned long *receivedArray = NULL;
-
+                
                 boost::uint_fast64_t ptStartIdx = 0;
                 boost::uint_fast64_t numOfPoints = 0;
                 boost::uint_fast64_t transStartIdx = 0;
                 boost::uint_fast64_t numOfTransVals = 0;
                 boost::uint_fast64_t receivedStartIdx = 0;
                 boost::uint_fast64_t numOfReceivedVals = 0;
-
+                
                 boost::uint_fast64_t ptIdx = 0;
                 boost::uint_fast64_t transIdx = 0;
                 boost::uint_fast64_t receivedIdx = 0;
-
+                
                 SPDPulse *pulse = NULL;
                 SPDPoint *point = NULL;
-
+                
                 for(boost::uint_fast32_t row = startRow; row < endRow; ++row)
                 {
                     this->readRefHeaderRow(row, offsets, plsInBins);
-
+                    
                     totalNumPulses = 0;
                     for(boost::uint_fast32_t i = startCol; i < endCol; ++i)
                     {
                         totalNumPulses += plsInBins[i];
                     }
-
+                    
                     if(totalNumPulses > 0)
                     {
                         pulseOffset[0] = 0;
@@ -3540,7 +3540,7 @@ namespace spdlib
                         pulseOffset_out[0] = 0;
                         pulseCount_out[0]  = totalNumPulses;
                         pulseMemspace.selectHyperslab( H5S_SELECT_SET, pulseCount_out, pulseOffset_out );
-
+                        
                         if(spdFile->getPulseVersion() == 1)
                         {
                             pulseArray = new SPDPulseH5V1[totalNumPulses];
@@ -3552,23 +3552,23 @@ namespace spdlib
                         pulseOffset[0] = offsets[startCol];
                         pulseCount[0]  = totalNumPulses;
                         pulsesDataspace.selectHyperslab( H5S_SELECT_SET, pulseCount, pulseOffset );
-
+                        
                         pulseDims[0] = totalNumPulses;
                         pulseMemspace = H5::DataSpace( rank, pulseDims );
-
+                        
                         pulseOffset_out[0] = 0;
                         pulseCount_out[0]  = totalNumPulses;
                         pulseMemspace.selectHyperslab( H5S_SELECT_SET, pulseCount_out, pulseOffset_out );
-
+                        
                         pulsesDataset.read(pulseArray, *pulseType, pulseMemspace, pulsesDataspace );
-
+                        
                         ptStartIdx = 0;
                         numOfPoints = 0;
                         transStartIdx = 0;
                         numOfTransVals = 0;
                         receivedStartIdx = 0;
                         numOfReceivedVals = 0;
-
+                        
                         if(spdFile->getPulseVersion() == 1)
                         {
                             SPDPulseH5V1 *pulseObj = NULL;
@@ -3603,7 +3603,7 @@ namespace spdlib
                                 numOfReceivedVals += pulseObj->numOfReceivedBins;
                             }
                         }
-
+                        
                         if(numOfPoints > 0)
                         {
                             // Read Points.
@@ -3626,7 +3626,7 @@ namespace spdlib
                             pointMemspace.selectHyperslab( H5S_SELECT_SET, pointCount_out, pointOffset_out );
                             pointsDataset.read(pointsArray, *pointType, pointMemspace, pointsDataspace);
                         }
-
+                        
                         if(numOfTransVals > 0)
                         {
                             // Read Transmitted Vals.
@@ -3641,7 +3641,7 @@ namespace spdlib
                             transMemspace.selectHyperslab( H5S_SELECT_SET, transCount_out, transOffset_out );
                             transmittedDataset.read(transmittedArray, H5::PredType::NATIVE_ULONG, transMemspace, transmittedDataspace);
                         }
-
+                        
                         if(numOfReceivedVals > 0)
                         {
                             // Read Received Vals.
@@ -3656,11 +3656,11 @@ namespace spdlib
                             receivedMemspace.selectHyperslab( H5S_SELECT_SET, receivedCount_out, receivedOffset_out );
                             receivedDataset.read(receivedArray, H5::PredType::NATIVE_ULONG, receivedMemspace, receivedDataspace);
                         }
-
+                        
                         ptIdx = 0;
                         transIdx = 0;
                         receivedIdx = 0;
-
+                        
                         for( boost::uint_fast32_t j = 0; j < totalNumPulses; ++j)
                         {
                             if(spdFile->getPulseVersion() == 1)
@@ -3671,7 +3671,7 @@ namespace spdlib
                             {
                                 pulse = pulseUtils.createSPDPulseCopyFromH5(&((SPDPulseH5V2 *)pulseArray)[j]);
                             }
-
+                            
                             if(pulse->numberOfReturns > 0)
                             {
                                 //pulse->pts = new std::vector<SPDPoint*>();
@@ -3690,7 +3690,7 @@ namespace spdlib
                                     pulse->pts->push_back(point);
                                 }
                             }
-
+                            
                             if(pulse->numOfTransmittedBins > 0)
                             {
                                 pulse->transmitted = new boost::uint_fast32_t[pulse->numOfTransmittedBins];
@@ -3699,7 +3699,7 @@ namespace spdlib
                                     pulse->transmitted[n] = transmittedArray[transIdx++];
                                 }
                             }
-
+                            
                             if(pulse->numOfReceivedBins > 0)
                             {
                                 pulse->received = new boost::uint_fast32_t[pulse->numOfReceivedBins];
@@ -3708,10 +3708,10 @@ namespace spdlib
                                     pulse->received[n] = receivedArray[receivedIdx++];
                                 }
                             }
-
+                            
                             pulses->push_back(pulse);
                         }
-
+                        
                         if(numOfPoints > 0)
                         {
                             if(spdFile->getPointVersion() == 1)
@@ -3723,17 +3723,17 @@ namespace spdlib
                                 delete[] reinterpret_cast<SPDPointH5V2*>(pointsArray);
                             }
                         }
-
+                        
                         if(numOfTransVals > 0)
                         {
                             delete[] transmittedArray;
                         }
-
+                        
                         if(numOfReceivedVals > 0)
                         {
                             delete[] receivedArray;
                         }
-
+                        
                         if(spdFile->getPulseVersion() == 1)
                         {
                             delete[] reinterpret_cast<SPDPulseH5V1*>(pulseArray);
@@ -3774,23 +3774,23 @@ namespace spdlib
             {
                 SPDPointUtils ptsUtils;
                 SPDPulseUtils pulseUtils;
-
+                
                 unsigned long *plsInBins = new unsigned long[spdFile->getNumberBinsX()];
                 unsigned long long *offsets = new unsigned long long[spdFile->getNumberBinsX()];
-
+                
                 for(boost::uint_fast64_t row = startRow; row < endRow; ++row)
                 {
                     this->readRefHeaderRow(row, offsets, plsInBins);
-
+                    
                     for(boost::uint_fast64_t col = startCol; col < endCol; ++col)
                     {
                         this->readPulseData(pulses, offsets[col], plsInBins[col]);
                     }
                 }
-
+                
                 delete[] plsInBins;
                 delete[] offsets;
-
+                
             }
             catch(SPDIOException &e)
             {
@@ -3814,7 +3814,7 @@ namespace spdlib
         boost::uint_fast32_t endRow = bbox[3];
         boost::uint_fast32_t startCol = bbox[0];
         boost::uint_fast32_t endCol = bbox[2];
-
+        
         if(spdFile->getFileType() == SPD_UPD_TYPE)
         {
             throw SPDIOException("This function is only available for files with a spatial index.");
@@ -3825,105 +3825,105 @@ namespace spdlib
             {
                 // Read PTS..
                 H5::Exception::dontPrint();
-
+                
                 H5::H5File *spdInFile = NULL;
                 spdInFile = new H5::H5File( spdFile->getFilePath(), H5F_ACC_RDONLY );
-
+                
                 SPDPointUtils ptsUtils;
                 SPDPulseUtils pulseUtils;
-
+                
                 unsigned long *plsInBins = new unsigned long[spdFile->getNumberBinsX()];
                 unsigned long long *offsets = new unsigned long long[spdFile->getNumberBinsX()];
-
+                
                 boost::uint_fast64_t totalNumPulses = 0;
-
+                
                 H5::DataSet pulsesDataset = spdInFile->openDataSet( SPDFILE_DATASETNAME_PULSES );
                 H5::DataSpace pulsesDataspace = pulsesDataset.getSpace();
-
+                
                 H5::DataSet pointsDataset = spdInFile->openDataSet( SPDFILE_DATASETNAME_POINTS );
                 H5::DataSpace pointsDataspace = pointsDataset.getSpace();
-
+                
                 H5::DataSet transmittedDataset = spdInFile->openDataSet( SPDFILE_DATASETNAME_TRANSMITTED );
                 H5::DataSpace transmittedDataspace = transmittedDataset.getSpace();
-
+                
                 H5::DataSet receivedDataset = spdInFile->openDataSet( SPDFILE_DATASETNAME_RECEIVED );
                 H5::DataSpace receivedDataspace = receivedDataset.getSpace();
-
+                
                 int rank = 1;
                 // START: Variables for Pulse //
                 hsize_t pulseOffset[1];
                 hsize_t pulseCount[1];
-
-                hsize_t pulseDims[1];
+                
+                hsize_t pulseDims[1]; 
                 H5::DataSpace pulseMemspace;
-
+                
                 hsize_t pulseOffset_out[1];
                 hsize_t pulseCount_out[1];
                 // END: Variables for Pulse //
-
+                
                 // START: Variables for Point //
                 hsize_t pointOffset[1];
                 hsize_t pointCount[1];
-
-                hsize_t pointDims[1];
+                
+                hsize_t pointDims[1]; 
                 H5::DataSpace pointMemspace;
-
+                
                 hsize_t pointOffset_out[1];
                 hsize_t pointCount_out[1];
                 // END: Variables for Point //
-
+                
                 // START: Variables for Transmitted //
                 hsize_t transOffset[1];
                 hsize_t transCount[1];
-
-                hsize_t transDims[1];
+                
+                hsize_t transDims[1]; 
                 H5::DataSpace transMemspace;
-
+                
                 hsize_t transOffset_out[1];
                 hsize_t transCount_out[1];
                 // END: Variables for Transmitted //
-
+                
                 // START: Variables for Received //
                 hsize_t receivedOffset[1];
                 hsize_t receivedCount[1];
-
-                hsize_t receivedDims[1];
+                
+                hsize_t receivedDims[1]; 
                 H5::DataSpace receivedMemspace;
-
+                
                 hsize_t receivedOffset_out[1];
                 hsize_t receivedCount_out[1];
                 // END: Variables for Received //
-
-
+                
+                
                 void *pulseArray = NULL;
                 void *pointsArray = NULL;
                 unsigned long *transmittedArray = NULL;
                 unsigned long *receivedArray = NULL;
-
+                
                 boost::uint_fast64_t ptStartIdx = 0;
                 boost::uint_fast64_t numOfPoints = 0;
                 boost::uint_fast64_t transStartIdx = 0;
                 boost::uint_fast64_t numOfTransVals = 0;
                 boost::uint_fast64_t receivedStartIdx = 0;
                 boost::uint_fast64_t numOfReceivedVals = 0;
-
+                
                 boost::uint_fast64_t ptIdx = 0;
                 boost::uint_fast64_t transIdx = 0;
                 boost::uint_fast64_t receivedIdx = 0;
-
+                
                 SPDPulse *pulse = NULL;
                 SPDPoint *point = NULL;
-
+                
                 for(boost::uint_fast32_t row = startRow; row < endRow; ++row)
                 {
                     this->readRefHeaderRow(row, offsets, plsInBins);
-
+                    
                     totalNumPulses = 0;
                     for(boost::uint_fast32_t i = startCol; i < endCol; ++i)
                     {
                         totalNumPulses += plsInBins[i];
                     }
-
+                    
                     if(totalNumPulses > 0)
                     {
                         pulseOffset[0] = 0;
@@ -3934,7 +3934,7 @@ namespace spdlib
                         pulseOffset_out[0] = 0;
                         pulseCount_out[0]  = totalNumPulses;
                         pulseMemspace.selectHyperslab( H5S_SELECT_SET, pulseCount_out, pulseOffset_out );
-
+                        
                         if(spdFile->getPulseVersion() == 1)
                         {
                             pulseArray = new SPDPulseH5V1[totalNumPulses];
@@ -3946,23 +3946,23 @@ namespace spdlib
                         pulseOffset[0] = offsets[startCol];
                         pulseCount[0]  = totalNumPulses;
                         pulsesDataspace.selectHyperslab( H5S_SELECT_SET, pulseCount, pulseOffset );
-
+                        
                         pulseDims[0] = totalNumPulses;
                         pulseMemspace = H5::DataSpace( rank, pulseDims );
-
+                        
                         pulseOffset_out[0] = 0;
                         pulseCount_out[0]  = totalNumPulses;
                         pulseMemspace.selectHyperslab( H5S_SELECT_SET, pulseCount_out, pulseOffset_out );
-
+                        
                         pulsesDataset.read(pulseArray, *pulseType, pulseMemspace, pulsesDataspace );
-
+                        
                         ptStartIdx = 0;
                         numOfPoints = 0;
                         transStartIdx = 0;
                         numOfTransVals = 0;
                         receivedStartIdx = 0;
                         numOfReceivedVals = 0;
-
+                        
                         if(spdFile->getPulseVersion() == 1)
                         {
                             SPDPulseH5V1 *pulseObj = NULL;
@@ -3997,7 +3997,7 @@ namespace spdlib
                                 numOfReceivedVals += pulseObj->numOfReceivedBins;
                             }
                         }
-
+                        
                         if(numOfPoints > 0)
                         {
                             // Read Points.
@@ -4009,7 +4009,7 @@ namespace spdlib
                             {
                                 pointsArray = new SPDPointH5V2[numOfPoints];
                             }
-
+                            
                             pointOffset[0] = ptStartIdx;
                             pointCount[0] = numOfPoints;
                             pointsDataspace.selectHyperslab(H5S_SELECT_SET, pointCount, pointOffset);
@@ -4020,7 +4020,7 @@ namespace spdlib
                             pointMemspace.selectHyperslab( H5S_SELECT_SET, pointCount_out, pointOffset_out );
                             pointsDataset.read(pointsArray, *pointType, pointMemspace, pointsDataspace);
                         }
-
+                        
                         if(numOfTransVals > 0)
                         {
                             // Read Transmitted Vals.
@@ -4035,7 +4035,7 @@ namespace spdlib
                             transMemspace.selectHyperslab( H5S_SELECT_SET, transCount_out, transOffset_out );
                             transmittedDataset.read(transmittedArray, H5::PredType::NATIVE_ULONG, transMemspace, transmittedDataspace);
                         }
-
+                        
                         if(numOfReceivedVals > 0)
                         {
                             // Read Received Vals.
@@ -4050,11 +4050,11 @@ namespace spdlib
                             receivedMemspace.selectHyperslab( H5S_SELECT_SET, receivedCount_out, receivedOffset_out );
                             receivedDataset.read(receivedArray, H5::PredType::NATIVE_ULONG, receivedMemspace, receivedDataspace);
                         }
-
+                        
                         ptIdx = 0;
                         transIdx = 0;
                         receivedIdx = 0;
-
+                        
                         for( boost::uint_fast32_t j = 0; j < totalNumPulses; ++j)
                         {
                             if(spdFile->getPulseVersion() == 1)
@@ -4065,7 +4065,7 @@ namespace spdlib
                             {
                                 pulse = pulseUtils.createSPDPulseCopyFromH5(&((SPDPulseH5V2 *)pulseArray)[j]);
                             }
-
+                            
                             if(pulse->numberOfReturns > 0)
                             {
                                 //pulse->pts = new std::vector<SPDPoint*>();
@@ -4080,11 +4080,11 @@ namespace spdlib
                                     {
                                         point = ptsUtils.createSPDPointCopy(&((SPDPointH5V2 *)pointsArray)[ptIdx++]);
                                     }
-
+                                    
                                     pulse->pts->push_back(point);
                                 }
                             }
-
+                            
                             if(pulse->numOfTransmittedBins > 0)
                             {
                                 pulse->transmitted = new boost::uint_fast32_t[pulse->numOfTransmittedBins];
@@ -4093,7 +4093,7 @@ namespace spdlib
                                     pulse->transmitted[n] = transmittedArray[transIdx++];
                                 }
                             }
-
+                            
                             if(pulse->numOfReceivedBins > 0)
                             {
                                 pulse->received = new boost::uint_fast32_t[pulse->numOfReceivedBins];
@@ -4102,10 +4102,10 @@ namespace spdlib
                                     pulse->received[n] = receivedArray[receivedIdx++];
                                 }
                             }
-
+                            
                             pulses->push_back(pulse);
                         }
-
+                        
                         if(numOfPoints > 0)
                         {
                             if(spdFile->getPointVersion() == 1)
@@ -4117,17 +4117,17 @@ namespace spdlib
                                 delete[] reinterpret_cast<SPDPointH5V2*>(pointsArray);
                             }
                         }
-
+                        
                         if(numOfTransVals > 0)
                         {
                             delete[] transmittedArray;
                         }
-
+                        
                         if(numOfReceivedVals > 0)
                         {
                             delete[] receivedArray;
                         }
-
+                        
                         if(spdFile->getPulseVersion() == 1)
                         {
                             delete[] reinterpret_cast<SPDPulseH5V1*>(pulseArray);
@@ -4168,23 +4168,23 @@ namespace spdlib
             {
                 SPDPointUtils ptsUtils;
                 SPDPulseUtils pulseUtils;
-
+                
                 unsigned long *plsInBins = new unsigned long[spdFile->getNumberBinsX()];
                 unsigned long long *offsets = new unsigned long long[spdFile->getNumberBinsX()];
-
+                
                 for(boost::uint_fast64_t row = startRow; row < endRow; ++row)
                 {
                     this->readRefHeaderRow(row, offsets, plsInBins);
-
+                    
                     for(boost::uint_fast64_t col = startCol; col < endCol; ++col)
                     {
                         this->readPulseData(pulses, offsets[col], plsInBins[col]);
                     }
                 }
-
+                
                 delete[] plsInBins;
                 delete[] offsets;
-
+                
             }
             catch(SPDIOException &e)
             {
@@ -4204,17 +4204,17 @@ namespace spdlib
 		{
 			throw SPDIOException("Input file is not open..");
 		}
-
+        
         if(spdFile->getFileType() == SPD_UPD_TYPE)
         {
             throw SPDIOException("This function is only available for files with a spatial index.");
         }
-
+        
         boost::uint_fast32_t startCol = 0;
         boost::uint_fast32_t endCol = 0;
         boost::uint_fast32_t startRow = 0;
         boost::uint_fast32_t endRow = 0;
-
+        
         double tmpDist = 0;
         boost::uint_fast32_t numCols = 0;
         boost::uint_fast32_t numRows = 0;
@@ -4231,7 +4231,7 @@ namespace spdlib
                 numCols = boost::numeric_cast<boost::uint_fast32_t>(tmpDist/spdFile->getBinSize());
                 startCol = numCols;
             }
-
+            
             // Define End Column
             tmpDist = spdFile->getXMax() - env->MaxX;
             if(tmpDist < 0)
@@ -4243,7 +4243,7 @@ namespace spdlib
                 numCols = boost::numeric_cast<boost::uint_fast32_t>(tmpDist/spdFile->getBinSize());
                 endCol = spdFile->getNumberBinsX() - numCols;
             }
-
+            
             // Define Starting Row
             tmpDist = spdFile->getYMax() - env->MaxY;
             if(tmpDist < 0)
@@ -4255,7 +4255,7 @@ namespace spdlib
                 numRows = boost::numeric_cast<boost::uint_fast32_t>(tmpDist/spdFile->getBinSize());
                 startRow = numRows;
             }
-
+            
             // Define End Row
             tmpDist = env->MinY - spdFile->getYMin();
             if(tmpDist < 0)
@@ -4268,29 +4268,29 @@ namespace spdlib
                 endRow = spdFile->getNumberBinsY() - numRows;
             }
         }
-        catch(boost::numeric::negative_overflow& e)
+        catch(boost::numeric::negative_overflow& e) 
         {
             throw SPDIOException(e.what());
         }
-        catch(boost::numeric::positive_overflow& e)
+        catch(boost::numeric::positive_overflow& e) 
         {
             throw SPDIOException(e.what());
         }
-        catch(boost::numeric::bad_numeric_cast& e)
+        catch(boost::numeric::bad_numeric_cast& e) 
         {
             throw SPDIOException(e.what());
         }
-
+        
         if(endCol <= startCol)
         {
             throw SPDIOException("Define subset is not within the input file (X Axis).");
         }
-
+        
         if(endRow <= startRow)
         {
             throw SPDIOException("Define subset is not within the input file (Y Axis).");
         }
-
+   
         try
         {
             for(boost::uint_fast32_t rows = startRow; rows < endRow; ++rows)
@@ -4311,17 +4311,17 @@ namespace spdlib
 		{
 			throw SPDIOException("Input file is not open..");
 		}
-
+        
         if(spdFile->getFileType() == SPD_UPD_TYPE)
         {
             throw SPDIOException("This function is only available for files with a spatial index.");
         }
-
+        
         boost::uint_fast32_t startCol = 0;
         boost::uint_fast32_t endCol = 0;
         boost::uint_fast32_t startRow = 0;
         boost::uint_fast32_t endRow = 0;
-
+        
         double tmpDist = 0;
         boost::uint_fast32_t numCols = 0;
         boost::uint_fast32_t numRows = 0;
@@ -4338,7 +4338,7 @@ namespace spdlib
                 numCols = boost::numeric_cast<boost::uint_fast32_t>(tmpDist/spdFile->getBinSize());
                 startCol = numCols;
             }
-
+            
             // Define End Column
             tmpDist = spdFile->getXMax() - env->MaxX;
             if(tmpDist < 0)
@@ -4350,7 +4350,7 @@ namespace spdlib
                 numCols = boost::numeric_cast<boost::uint_fast32_t>(tmpDist/spdFile->getBinSize());
                 endCol = spdFile->getNumberBinsX() - numCols;
             }
-
+            
             // Define Starting Row
             tmpDist = spdFile->getYMax() - env->MaxY;
             if(tmpDist < 0)
@@ -4362,7 +4362,7 @@ namespace spdlib
                 numRows = boost::numeric_cast<boost::uint_fast32_t>(tmpDist/spdFile->getBinSize());
                 startRow = numRows;
             }
-
+            
             // Define End Row
             tmpDist = env->MinY - spdFile->getYMin();
             if(tmpDist < 0)
@@ -4375,29 +4375,29 @@ namespace spdlib
                 endRow = spdFile->getNumberBinsY() - numRows;
             }
         }
-        catch(boost::numeric::negative_overflow& e)
+        catch(boost::numeric::negative_overflow& e) 
         {
             throw SPDIOException(e.what());
         }
-        catch(boost::numeric::positive_overflow& e)
+        catch(boost::numeric::positive_overflow& e) 
         {
             throw SPDIOException(e.what());
         }
-        catch(boost::numeric::bad_numeric_cast& e)
+        catch(boost::numeric::bad_numeric_cast& e) 
         {
             throw SPDIOException(e.what());
         }
-
+        
         if(endCol <= startCol)
         {
             throw SPDIOException("Define subset is not within the input file (X Axis).");
         }
-
+        
         if(endRow <= startRow)
         {
             throw SPDIOException("Define subset is not within the input file (Y Axis).");
         }
-
+        
         try
         {
             for(boost::uint_fast32_t rows = startRow; rows < endRow; ++rows)
@@ -4410,7 +4410,7 @@ namespace spdlib
             throw e;
         }		
 	}
-
+    
     /*UPDATED*/
     void SPDFileIncrementalReader::readPulseDataInGeom(std::list<SPDPulse*> *pulses, OGRGeometry *geom) throw(SPDIOException)
 	{
@@ -4418,7 +4418,7 @@ namespace spdlib
 		{
 			throw SPDIOException("Input file is not open..");
 		}
-
+        
         if(spdFile->getFileType() == SPD_UPD_TYPE)
         {
             throw SPDIOException("This function is only available for files with a spatial index.");
@@ -4426,12 +4426,12 @@ namespace spdlib
 		
         OGREnvelope geomEnv;
         geom->getEnvelope(&geomEnv);
-
+        
         boost::uint_fast32_t startCol = 0;
         boost::uint_fast32_t endCol = 0;
         boost::uint_fast32_t startRow = 0;
         boost::uint_fast32_t endRow = 0;
-
+        
         double tmpDist = 0;
         boost::uint_fast32_t numCols = 0;
         boost::uint_fast32_t numRows = 0;
@@ -4448,7 +4448,7 @@ namespace spdlib
                 numCols = boost::numeric_cast<boost::uint_fast32_t>(tmpDist/spdFile->getBinSize());
                 startCol = numCols;
             }
-
+            
             // Define End Column
             tmpDist = spdFile->getXMax() - geomEnv.MaxX;
             if(tmpDist < 0)
@@ -4460,7 +4460,7 @@ namespace spdlib
                 numCols = boost::numeric_cast<boost::uint_fast32_t>(tmpDist/spdFile->getBinSize());
                 endCol = spdFile->getNumberBinsX() - numCols;
             }
-
+            
             // Define Starting Row
             tmpDist = spdFile->getYMax() - geomEnv.MaxY;
             if(tmpDist < 0)
@@ -4472,7 +4472,7 @@ namespace spdlib
                 numRows = boost::numeric_cast<boost::uint_fast32_t>(tmpDist/spdFile->getBinSize());
                 startRow = numRows;
             }
-
+            
             // Define End Row
             tmpDist = geomEnv.MinY - spdFile->getYMin();
             if(tmpDist < 0)
@@ -4485,29 +4485,29 @@ namespace spdlib
                 endRow = spdFile->getNumberBinsY() - numRows;
             }
         }
-        catch(boost::numeric::negative_overflow& e)
+        catch(boost::numeric::negative_overflow& e) 
         {
             throw SPDIOException(e.what());
         }
-        catch(boost::numeric::positive_overflow& e)
+        catch(boost::numeric::positive_overflow& e) 
         {
             throw SPDIOException(e.what());
         }
-        catch(boost::numeric::bad_numeric_cast& e)
+        catch(boost::numeric::bad_numeric_cast& e) 
         {
             throw SPDIOException(e.what());
         }
-
+        
         if(endCol <= startCol)
         {
             throw SPDIOException("Define subset is not within the input file (X Axis).");
         }
-
+        
         if(endRow <= startRow)
         {
             throw SPDIOException("Define subset is not within the input file (Y Axis).");
         }
-
+        
         try
         {
             OGRPoint *pt = new OGRPoint();
@@ -4518,12 +4518,12 @@ namespace spdlib
                 {
                     pt->setX((*iterPulses)->xIdx);
                     pt->setY((*iterPulses)->yIdx);
-
+                    
                     if(geom->Contains(pt))
                     {
                         ++iterPulses; // Next Pulse...
                     }
-                    else
+                    else 
                     {
                         SPDPulseUtils::deleteSPDPulse(*iterPulses);
                         iterPulses = pulses->erase(iterPulses);
@@ -4545,7 +4545,7 @@ namespace spdlib
 		{
 			throw SPDIOException("Input file is not open..");
 		}
-
+        
         if(spdFile->getFileType() == SPD_UPD_TYPE)
         {
             throw SPDIOException("This function is only available for files with a spatial index.");
@@ -4553,12 +4553,12 @@ namespace spdlib
 		
         OGREnvelope geomEnv;
         geom->getEnvelope(&geomEnv);
-
+        
         boost::uint_fast32_t startCol = 0;
         boost::uint_fast32_t endCol = 0;
         boost::uint_fast32_t startRow = 0;
         boost::uint_fast32_t endRow = 0;
-
+        
         double tmpDist = 0;
         boost::uint_fast32_t numCols = 0;
         boost::uint_fast32_t numRows = 0;
@@ -4575,7 +4575,7 @@ namespace spdlib
                 numCols = boost::numeric_cast<boost::uint_fast32_t>(tmpDist/spdFile->getBinSize());
                 startCol = numCols;
             }
-
+            
             // Define End Column
             tmpDist = spdFile->getXMax() - geomEnv.MaxX;
             if(tmpDist < 0)
@@ -4587,7 +4587,7 @@ namespace spdlib
                 numCols = boost::numeric_cast<boost::uint_fast32_t>(tmpDist/spdFile->getBinSize());
                 endCol = spdFile->getNumberBinsX() - numCols;
             }
-
+            
             // Define Starting Row
             tmpDist = spdFile->getYMax() - geomEnv.MaxY;
             if(tmpDist < 0)
@@ -4599,7 +4599,7 @@ namespace spdlib
                 numRows = boost::numeric_cast<boost::uint_fast32_t>(tmpDist/spdFile->getBinSize());
                 startRow = numRows;
             }
-
+            
             // Define End Row
             tmpDist = geomEnv.MinY - spdFile->getYMin();
             if(tmpDist < 0)
@@ -4612,29 +4612,29 @@ namespace spdlib
                 endRow = spdFile->getNumberBinsY() - numRows;
             }
         }
-        catch(boost::numeric::negative_overflow& e)
+        catch(boost::numeric::negative_overflow& e) 
         {
             throw SPDIOException(e.what());
         }
-        catch(boost::numeric::positive_overflow& e)
+        catch(boost::numeric::positive_overflow& e) 
         {
             throw SPDIOException(e.what());
         }
-        catch(boost::numeric::bad_numeric_cast& e)
+        catch(boost::numeric::bad_numeric_cast& e) 
         {
             throw SPDIOException(e.what());
         }
-
+        
         if(endCol <= startCol)
         {
             throw SPDIOException("Define subset is not within the input file (X Axis).");
         }
-
+        
         if(endRow <= startRow)
         {
             throw SPDIOException("Define subset is not within the input file (Y Axis).");
         }
-
+        
         try
         {
             OGRPoint *pt = new OGRPoint();
@@ -4645,12 +4645,12 @@ namespace spdlib
                 {
                     pt->setX((*iterPulses)->xIdx);
                     pt->setY((*iterPulses)->yIdx);
-
+                    
                     if(geom->Contains(pt))
                     {
                         ++iterPulses; // Next Pulse...
                     }
-                    else
+                    else 
                     {
                         SPDPulseUtils::deleteSPDPulse(*iterPulses);
                         iterPulses = pulses->erase(iterPulses);
@@ -4677,7 +4677,7 @@ namespace spdlib
 		double yMin = 0;
 		double yMax = 0;
 		
-		try
+		try 
 		{
             H5::Exception::dontPrint();
 			
@@ -4705,7 +4705,7 @@ namespace spdlib
 			pulseCount[0]  = spdFile->getPulseBlockSize();
 			pulsesDataspace.selectHyperslab( H5S_SELECT_SET, pulseCount, pulseOffset );
 			
-			hsize_t pulseDims[1];
+			hsize_t pulseDims[1]; 
 			pulseDims[0] = spdFile->getPulseBlockSize();
 			H5::DataSpace pulseMemspace( rank, pulseDims );
 			
@@ -4717,7 +4717,7 @@ namespace spdlib
 			// END: Variables for Pulse //
 			
 			void *pulseArray = NULL;
-
+            
             if(spdFile->getPulseVersion() == 1)
             {
                 pulseArray = new SPDPulseH5V1[spdFile->getPulseBlockSize()];
@@ -4733,7 +4733,7 @@ namespace spdlib
 				pulsesDataspace.selectHyperslab(H5S_SELECT_SET, pulseCount, pulseOffset);
 				pulsesDataset.read(pulseArray, *pulseType, pulseMemspace, pulsesDataspace);
 
-
+                
                 if(spdFile->getPulseVersion() == 1)
                 {
                     SPDPulseH5V1 *pulseObj = NULL;
@@ -4747,7 +4747,7 @@ namespace spdlib
                             yMin = pulseObj->yIdx;
                             yMax = pulseObj->yIdx;
                         }
-                        else
+                        else 
                         {
                             if(pulseObj->xIdx < xMin)
                             {
@@ -4757,7 +4757,7 @@ namespace spdlib
                             {
                                 xMax = pulseObj->xIdx;
                             }
-
+                            
                             if(pulseObj->yIdx < yMin)
                             {
                                 yMin = pulseObj->yIdx;
@@ -4782,7 +4782,7 @@ namespace spdlib
                             yMin = pulseObj->yIdx;
                             yMax = pulseObj->yIdx;
                         }
-                        else
+                        else 
                         {
                             if(pulseObj->xIdx < xMin)
                             {
@@ -4792,7 +4792,7 @@ namespace spdlib
                             {
                                 xMax = pulseObj->xIdx;
                             }
-
+                            
                             if(pulseObj->yIdx < yMin)
                             {
                                 yMin = pulseObj->yIdx;
@@ -4824,7 +4824,7 @@ namespace spdlib
 			pulseOffset_out[0] = 0;
 			pulseCount_out[0]  = remainingPulses;
 			pulseMemspace.selectHyperslab( H5S_SELECT_SET, pulseCount_out, pulseOffset_out );
-			
+			           
             if(spdFile->getPulseVersion() == 1)
             {
                 pulseArray = new SPDPulseH5V1[remainingPulses];
@@ -4833,9 +4833,9 @@ namespace spdlib
             {
                 pulseArray = new SPDPulseH5V2[remainingPulses];
             }
-
+            
 			pulsesDataset.read(pulseArray, *pulseType, pulseMemspace, pulsesDataspace );
-
+            
             if(spdFile->getPulseVersion() == 1)
             {
                 SPDPulseH5V1 *pulseObj = NULL;
@@ -4849,7 +4849,7 @@ namespace spdlib
                         yMin = pulseObj->yIdx;
                         yMax = pulseObj->yIdx;
                     }
-                    else
+                    else 
                     {
                         if(pulseObj->xIdx < xMin)
                         {
@@ -4859,7 +4859,7 @@ namespace spdlib
                         {
                             xMax = pulseObj->xIdx;
                         }
-
+                        
                         if(pulseObj->yIdx < yMin)
                         {
                             yMin = pulseObj->yIdx;
@@ -4884,7 +4884,7 @@ namespace spdlib
                         yMin = pulseObj->yIdx;
                         yMax = pulseObj->yIdx;
                     }
-                    else
+                    else 
                     {
                         if(pulseObj->xIdx < xMin)
                         {
@@ -4894,7 +4894,7 @@ namespace spdlib
                         {
                             xMax = pulseObj->xIdx;
                         }
-
+                        
                         if(pulseObj->yIdx < yMin)
                         {
                             yMin = pulseObj->yIdx;
@@ -4949,7 +4949,7 @@ namespace spdlib
 		{
 			throw SPDIOException("Input file is not open..");
 		}
-
+        
         if(spdFile->getFileType() == SPD_UPD_TYPE)
         {
             throw SPDIOException("This function is only available for files with a spatial index.");
@@ -4971,7 +4971,7 @@ namespace spdlib
 			selectionSize[1]  = spdFile->getNumberBinsX();
 			plsQKImgDSpace.selectHyperslab( H5S_SELECT_SET, selectionSize, offsetDims );
 			
-			hsize_t memSpaceDims[1];
+			hsize_t memSpaceDims[1]; 
 			memSpaceDims[0] = spdFile->getNumberBinsX();
 			H5::DataSpace memSpace( 1, memSpaceDims ); // has rank == 1
 			
@@ -5047,11 +5047,11 @@ namespace spdlib
 	{
 		if(fileOpened)
 		{
-			try
+			try 
 			{
 				this->close();
 			}
-			catch (SPDIOException &e)
+			catch (SPDIOException &e) 
 			{
                 std::cout << "WARNING: " << e.what() << std::endl;
 			}

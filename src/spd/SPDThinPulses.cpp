@@ -26,34 +26,34 @@
 
 namespace spdlib
 {
-
+    
     SPDThinPulses::SPDThinPulses(boost::uint_fast16_t numPulses)
     {
         this->numPulses = numPulses;
     }
-
+    
     void SPDThinPulses::processDataColumn(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses, SPDXYPoint *cenPts) throw(SPDProcessingException)
     {
         try
         {
             //std::cout << "pulses->size() = " << pulses->size();
-
+            
             if(pulses->size() > numPulses)
             {
                 std::vector<boost::uint_fast16_t> idxes;
                 boost::uint_fast16_t idx = 0;
                 bool notFoundIdx = false;
                 bool found = false;
-
+                
                 for(boost::uint_fast16_t i = 0; i < numPulses; ++i)
                 {
                     try
                     {
                         notFoundIdx = true;
                         while(notFoundIdx)
-                        {
-                            idx = boost::numeric_cast<boost::uint_fast16_t>(rand() % pulses->size());
-
+                        {                            
+                            idx = boost::numeric_cast<boost::uint_fast16_t>(rand() % pulses->size());                            
+                            
                             found = false;
                             for(std::vector<boost::uint_fast16_t>::iterator iterIdxes = idxes.begin(); iterIdxes != idxes.end(); ++iterIdxes)
                             {
@@ -63,14 +63,14 @@ namespace spdlib
                                     break;
                                 }
                             }
-
+                            
                             if(!found)
                             {
                                 notFoundIdx = false;
                                 break;
                             }
                         }
-
+                                                
                         idxes.push_back(idx);
                     }
                     catch(boost::numeric::negative_overflow& e)
@@ -86,7 +86,7 @@ namespace spdlib
                         throw SPDProcessingException(e.what());
                     }
                 }
-
+                
                 SPDPulseUtils plsUtils;
                 size_t i = 0;
                 for(std::vector<SPDPulse*>::iterator iterPulse = pulses->begin(); iterPulse != pulses->end(); )
@@ -100,7 +100,7 @@ namespace spdlib
                             break;
                         }
                     }
-
+                    
                     if(!found)
                     {
                         plsUtils.deleteSPDPulse(*iterPulse);
@@ -110,12 +110,12 @@ namespace spdlib
                     {
                         ++iterPulse;
                     }
-
+                    
                     ++i;
                 }
-
+                
             }
-
+            
             //std::cout << " = " << pulses->size() << std::endl;
         }
         catch (SPDProcessingException &e)
@@ -126,14 +126,14 @@ namespace spdlib
         {
             throw SPDProcessingException(e.what());
         }
-
+        
     }
-
+    
     SPDThinPulses::~SPDThinPulses()
     {
-
+        
     }
-
+    
 }
 
 

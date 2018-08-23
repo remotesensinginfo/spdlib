@@ -27,30 +27,30 @@
 
 namespace spdlib
 {
-
+    
 
     SPDPolyFitGroundFilter::SPDPolyFitGroundFilter()
     {
-
+        
     }
-
+    
     void SPDPolyFitGroundFilter::applyGlobalPolyFitGroundFilter(std::string inputFile, std::string outputFile, float grdThres, boost::uint_fast16_t degree, boost::uint_fast16_t iters, boost::uint_fast32_t blockXSize, boost::uint_fast32_t blockYSize, float processingResolution, boost::uint_fast16_t ptSelectClass)throw(SPDProcessingException)
     {
-        try
+        try 
         {
             // Read SPD file header.
             SPDFile *spdFile = new SPDFile(inputFile);
             SPDFileReader spdReader;
             spdReader.readHeaderInfo(spdFile->getFilePath(), spdFile);
-
+                        
             // Find the minimum returns.
             std::vector<SPDPoint*> *minPts = new std::vector<SPDPoint*>();
-
+            
             SPDPulseProcessor *processorMinPoints = new SPDFindMinReturnsProcessor(minPts, ptSelectClass);
             SPDSetupProcessPulses processPulses = SPDSetupProcessPulses(blockXSize, blockYSize, true);
             processPulses.processPulses(processorMinPoints, spdFile, processingResolution);
             delete processorMinPoints;
-
+            
             // Create grid to store returns.
             std::vector<SPDPoint*> ***minPtGrid = new std::vector<SPDPoint*>**[spdFile->getNumberBinsY()];
             for(boost::uint_fast32_t i = 0; i < spdFile->getNumberBinsY(); ++i)
@@ -61,10 +61,10 @@ namespace spdlib
                     minPtGrid[i][j] = new std::vector<SPDPoint*>();
                 }
             }
-
+            
             // Grid returns.
             this->buildMinGrid(spdFile, minPts, minPtGrid);
-
+            
             /********** Find Surface ***************/
 			
 			// calculate number of coefficients
@@ -77,7 +77,7 @@ namespace spdlib
 			int ItersCount=0;
 			
 			
-			if (degree > 1)
+			if (degree > 1) 
 			{
                 Ncoeffs=((degree+1)*(2*degree))/2;
 			}
@@ -85,13 +85,13 @@ namespace spdlib
             {
 				Ncoeffs=3; // plane fit (Const+Ax+By) hardcoded because above equation only works for orders of 2 or more
 			}
-
+            
 			// Set up matrix of powers
 			gsl_matrix *indVarPow;
 			gsl_vector *depVar;
 			gsl_vector *outCoefficients;
 			gsl_vector *SurfaceZ;
-
+            
 			
 			indVarPow = gsl_matrix_alloc(spdFile->getNumberBinsX()*spdFile->getNumberBinsY(),Ncoeffs); // Matrix to hold powers of x,y
 			depVar = gsl_vector_alloc(spdFile->getNumberBinsX()*spdFile->getNumberBinsY()); // Vector to hold z term
@@ -105,8 +105,8 @@ namespace spdlib
 			cov = gsl_matrix_alloc(Ncoeffs, Ncoeffs);
 			
 			//gsl_permutation * perm = gsl_permutation_alloc (spdFile->getNumberBinsX()*spdFile->getNumberBinsY());
-
-
+            
+            
 			bool keepProcessing = true;
 			
 			std::cout << "Number of Y bins: " << spdFile->getNumberBinsY() << '\n';
@@ -122,7 +122,7 @@ namespace spdlib
 						//std::cout << "i,j : " << i << " " << j << '\n';
 						//std::cout << "Number of Y bins: " << spdFile->getNumberBinsY() << '\n';
 						//std::cout << "Number of X bins: " << spdFile->getNumberBinsX() << '\n';
-
+                        
 						
 						if(minPtGrid[i][j]->size() > 0)
 						{
@@ -166,14 +166,14 @@ namespace spdlib
 				// Find surface
 				//matrix operations to find coefficients
 				// K=U.inverse(Utrans.U)
-				//Coeffs=K.z
+				//Coeffs=K.z  
 				
 				//LU = gsl_linalg_LU_decomp (gsl_matrix * indVarPow, gsl_permutation * perm, int * signum);
 				//gsl_linalg_LU_solve (const gsl_matrix * LU, const gsl_permutation * perm, const gsl_vector * depVar, gsl_vector * outCoefficients);
 				
 				// Perform Least Squared Fit
 				
-
+                
 				gsl_multifit_linear(indVarPow, depVar, outCoefficients, cov, &chisq, workspace);
 				
 				// calculate vector of z values from outCoefficients and indVarPow to compare with original data in next bit...
@@ -186,11 +186,11 @@ namespace spdlib
 				// if there are points above a certain threshold, delete them
 				// and then start the interation again to find a better surface fit for the ground.
 				// this step is necessary to remove minimum points in branches residing over shadowed areas.
-
+                
 				
                 for(unsigned int j = 0; j < outCoefficients->size; j++)
                 {
-                    double outm = gsl_vector_get(outCoefficients, j);
+                    double outm = gsl_vector_get(outCoefficients, j); 
                     std::cout << outm << " , " ;
                 }
                 std::cout << '\n';
@@ -237,8 +237,8 @@ namespace spdlib
 							}
 							
 							++l;
-
-
+                            
+                            
 						}
 					}
 					
@@ -251,7 +251,7 @@ namespace spdlib
 				}
 				
 				
-			}
+			}  
             // end of while loop
 			
 			
@@ -261,8 +261,8 @@ namespace spdlib
             gsl_matrix_free(indVarPow);
             gsl_vector_free(depVar);
             /***************************************/
-
-
+            
+            
             // Remove minimum returns grid and minimum returns from memory
             for(boost::uint_fast32_t i = 0; i < spdFile->getNumberBinsY(); ++i)
             {
@@ -273,20 +273,20 @@ namespace spdlib
                 delete[] minPtGrid[i];
             }
             delete[] minPtGrid;
-
+            
             for(std::vector<SPDPoint*>::iterator iterPts = minPts->begin(); iterPts != minPts->end(); )
             {
                 delete *iterPts;
                 iterPts = minPts->erase(iterPts);
             }
             delete minPts;
-
+            
             // Classify ground returns using identified surface.
             SPDPulseProcessor *processorClassFromSurface = new SPDClassifyGrdReturnsFromSurfaceCoefficientsProcessor(grdThres, degree, iters, outCoefficients, ptSelectClass);
             processPulses.processPulsesWithOutputSPD(processorClassFromSurface, spdFile, outputFile, processingResolution);
             delete processorClassFromSurface;
-        }
-        catch (SPDProcessingException &e)
+        } 
+        catch (SPDProcessingException &e) 
         {
             throw e;
         }
@@ -296,18 +296,18 @@ namespace spdlib
         }
 
     }
-
+    
     void SPDPolyFitGroundFilter::applyLocalPolyFitGroundFilter(std::string inputFile, std::string outputFile, float grdThres,boost::uint_fast16_t degree, boost::uint_fast16_t iters, boost::uint_fast32_t blockXSize, boost::uint_fast32_t blockYSize, boost::uint_fast32_t overlap, float processingResolution, boost::uint_fast16_t ptSelectClass)throw(SPDProcessingException)
     {
         try
         {
             SPDFile *spdInFile = new SPDFile(inputFile);
-
+            
             SPDPolyFitGroundLocalFilter *blockProcessor = new SPDPolyFitGroundLocalFilter(grdThres, degree, iters, ptSelectClass, processingResolution);
             SPDProcessDataBlocks processBlocks = SPDProcessDataBlocks(blockProcessor, overlap, blockXSize, blockYSize, true);
-
+            
             processBlocks.processDataBlocksGridPulsesOutputSPD(spdInFile, outputFile, processingResolution);
-
+            
             delete blockProcessor;
             delete spdInFile;
         }
@@ -316,7 +316,7 @@ namespace spdlib
             throw e;
         }
     }
-
+    
     void SPDPolyFitGroundFilter::buildMinGrid(SPDFile *spdFile, std::vector<SPDPoint*> *minPts, std::vector<SPDPoint*> ***minPtGrid)throw(SPDProcessingException)
     {
         if(minPts->size() > 0)
@@ -324,18 +324,18 @@ namespace spdlib
             double binSize = spdFile->getBinSize();
             boost::uint_fast32_t xBins = spdFile->getNumberBinsX();
             boost::uint_fast32_t yBins = spdFile->getNumberBinsY();
-
+            
             if((xBins < 1) | (yBins < 1))
 			{
 				throw SPDProcessingException("There insufficent number of bins for binning (try reducing resolution).");
 			}
-
+            
             double tlX = spdFile->getXMin();
             double tlY = spdFile->getYMax();
-
+            
 			std::vector<SPDPoint*>::iterator iterPts;
 			
-			try
+			try 
 			{	
 				double xDiff = 0;
 				double yDiff = 0;
@@ -351,20 +351,20 @@ namespace spdlib
 					xDiff = (pt->x - tlX)/binSize;
 					yDiff = (tlY - pt->y)/binSize;				
 					
-					try
+					try 
 					{
 						xIdx = boost::numeric_cast<boost::uint_fast32_t>(xDiff);
 						yIdx = boost::numeric_cast<boost::uint_fast32_t>(yDiff);
 					}
-					catch(boost::numeric::negative_overflow& e)
+					catch(boost::numeric::negative_overflow& e) 
 					{
 						throw SPDProcessingException(e.what());
 					}
-					catch(boost::numeric::positive_overflow& e)
+					catch(boost::numeric::positive_overflow& e) 
 					{
 						throw SPDProcessingException(e.what());
 					}
-					catch(boost::numeric::bad_numeric_cast& e)
+					catch(boost::numeric::bad_numeric_cast& e) 
 					{
 						throw SPDProcessingException(e.what());
 					}
@@ -398,28 +398,28 @@ namespace spdlib
 					minPtGrid[yIdx][xIdx]->push_back(pt);
 				}
 			}
-			catch (SPDProcessingException &e)
+			catch (SPDProcessingException &e) 
 			{
 				throw e;
 			}
 			
 		}
-		else
+		else 
 		{
 			throw SPDProcessingException("Inputted list of points was empty.");
 		}
     }
-
+    
     SPDPolyFitGroundFilter::~SPDPolyFitGroundFilter()
     {
-
+        
     }
-
-
-
-
-
-
+    
+    
+    
+    
+    
+    
 
     SPDPolyFitGroundLocalFilter::SPDPolyFitGroundLocalFilter(float grdThres, boost::uint_fast16_t degree, boost::uint_fast16_t iters, boost::uint_fast16_t ptSelectClass, float binWidth): SPDDataBlockProcessor()
     {
@@ -429,18 +429,18 @@ namespace spdlib
         this->ptSelectClass = ptSelectClass;
         this->binWidth = binWidth;
     }
-
+        
     void SPDPolyFitGroundLocalFilter::processDataBlock(SPDFile *inSPDFile, std::vector<SPDPulse*> ***pulses, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, float binSize) throw(SPDProcessingException)
     {
         try
         {
             std::cout << "Block Y Size: " << ((float)ySize)*binWidth << " metres." << std::endl;
 			std::cout << "Block X Size: " << ((float)xSize)*binWidth << " metres." << std::endl;
-
+            
             bool first = true;
             SPDPoint *minPt = NULL;
             float minZ = 0;
-
+            
             std::vector<SPDPoint*> **minPtGrid = new std::vector<SPDPoint*>*[ySize];
             for(boost::uint_fast32_t i = 0; i < ySize; ++i)
             {
@@ -490,7 +490,7 @@ namespace spdlib
                     }
                 }
             }
-
+            
             /********** Find Surface ***************/
 			
 			// calculate number of coefficients
@@ -511,7 +511,7 @@ namespace spdlib
             {
 				Ncoeffs=3; // plane fit (Const+Ax+By) hardcoded because above equation only works for orders of 2 or more
 			}
-
+            
 			// Set up matrix of powers
 			gsl_matrix *indVarPow = gsl_matrix_alloc(xSize*ySize,Ncoeffs); // Matrix to hold powers of x,y
 			gsl_vector *depVar = gsl_vector_alloc(xSize*ySize); // Vector to hold z term
@@ -523,7 +523,7 @@ namespace spdlib
 			gsl_matrix *cov;
 			double chisq;
 			cov = gsl_matrix_alloc(Ncoeffs, Ncoeffs);
-
+            
 			bool keepProcessing = true;
 			while(keepProcessing)
 			{
@@ -581,7 +581,7 @@ namespace spdlib
 				
 				// Perform Least Squared Fit
 				
-
+                
 				gsl_multifit_linear(indVarPow, depVar, outCoefficients, cov, &chisq, workspace);
 				
 				// calculate vector of z values from outCoefficients and indVarPow to compare with original data in next bit...
@@ -594,7 +594,7 @@ namespace spdlib
 				// if there are points above a certain threshold, delete them
 				// and then start the interation again to find a better surface fit for the ground.
 				// this step is necessary to remove minimum points in branches residing over shadowed areas.
-
+                
 				/*
                 for(unsigned int j = 0; j < outCoefficients->size; j++)
                 {
@@ -660,8 +660,8 @@ namespace spdlib
             gsl_matrix_free(indVarPow);
             gsl_vector_free(depVar);
             /***************************************/
-
-
+            
+            
             for(boost::uint_fast32_t i = 0; i < ySize; ++i)
             {
                 delete[] minPtGrid[i];
@@ -678,14 +678,14 @@ namespace spdlib
                                 {
                                     (*iterPoints)->classification = SPD_UNCLASSIFIED;
                                 }
-
+                                
                                 // Calc surface height for return
                                 double xcoord= (*iterPoints)->x;
                                 double ycoord= (*iterPoints)->y;
                                 double zcoord= (*iterPoints)->z;
                                 double surfaceValue=0; // reset z value from surface coefficients
                                 boost::uint_fast32_t l=0;
-
+                                
                                 for (boost::uint_fast32_t m = 0; m < outCoefficients->size ; m++)
                                 {
                                     for (boost::uint_fast32_t n=0; n < outCoefficients->size ; n++)
@@ -695,16 +695,16 @@ namespace spdlib
                                             double xelementtPow = pow(xcoord, ((int)(m)));
                                             double yelementtPow = pow(ycoord, ((int)(n)));
                                             double outm = gsl_vector_get(outCoefficients, l);
-
+                                            
                                             surfaceValue=surfaceValue+(outm*xelementtPow*yelementtPow);
                                             ++l;
                                         }
                                     }
                                 }
-
+                                
                                 // Is return height less than surface height + grdThres
                                 // sqrt((zcoord-surfaceValue)*(zcoord-surfaceValue)) <= grdThres
-
+                                
                                 if ((zcoord-surfaceValue) <= grdThres) {
                                     (*iterPoints)->classification = SPD_GROUND;
                                 }
@@ -716,14 +716,14 @@ namespace spdlib
                                 {
                                     (*iterPoints)->classification = SPD_UNCLASSIFIED;
                                 }
-
+                                
                                 // Calc surface height for return
                                 double xcoord= (*iterPoints)->x;
                                 double ycoord= (*iterPoints)->y;
                                 double zcoord= (*iterPoints)->z;
                                 double surfaceValue=0; // reset z value from surface coefficients
                                 boost::uint_fast32_t l=0;
-
+                                
                                 for (boost::uint_fast32_t m = 0; m < outCoefficients->size ; m++)
                                 {
                                     for (boost::uint_fast32_t n=0; n < outCoefficients->size ; n++)
@@ -733,16 +733,16 @@ namespace spdlib
                                             double xelementtPow = pow(xcoord, ((int)(m)));
                                             double yelementtPow = pow(ycoord, ((int)(n)));
                                             double outm = gsl_vector_get(outCoefficients, l);
-
+                                            
                                             surfaceValue=surfaceValue+(outm*xelementtPow*yelementtPow);
                                             ++l;
                                         }
                                     }
                                 }
-
+                                
                                 // Is return height less than surface height + grdThres
                                 // sqrt((zcoord-surfaceValue)*(zcoord-surfaceValue)) <= grdThres
-
+                                
                                 if ((zcoord-surfaceValue) <= grdThres) {
                                     (*iterPoints)->classification = SPD_GROUND;
                                 }
@@ -752,7 +752,7 @@ namespace spdlib
                 }
             }
             delete[] minPtGrid;
-
+            
             gsl_vector_free(outCoefficients);
             gsl_vector_free(SurfaceZ);
         }
@@ -761,13 +761,13 @@ namespace spdlib
             throw e;
         }
     }
-
-
+    
+    
     SPDPolyFitGroundLocalFilter::~SPDPolyFitGroundLocalFilter()
     {
-
+        
     }
-
+    
 }
 
 

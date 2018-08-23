@@ -143,10 +143,10 @@ static void tio2delaunay(struct triangulateio* tio_out, delaunay* d)
     int i, j;
 
     /*
-     * I assume that all input points appear in tio_out in the same order as
+     * I assume that all input points appear in tio_out in the same order as 
      * they were written to tio_in. I have seen no exceptions so far, even
      * if duplicate points were presented. Just in case, let us make a couple
-     * of checks.
+     * of checks. 
      */
     assert(tio_out->numberofpoints == d->npoints);
     assert(tio_out->pointlist[2 * d->npoints - 2] == d->points[d->npoints - 1].x && tio_out->pointlist[2 * d->npoints - 1] == d->points[d->npoints - 1].y);
@@ -298,7 +298,7 @@ delaunay* delaunay_build(int np, point points[], int ns, int segments[], int nh,
         fflush(stderr);
 
     /*
-     * climax
+     * climax 
      */
     triangulate(cmd, &tio_in, &tio_out, NULL);
 
@@ -421,7 +421,7 @@ static void delaunay_resetflags(delaunay* d)
  * @param p Point to be mapped
  * @param n Pointer to the number of tricircles within `d' containing `p'
  *          (output)
- * @param out Pointer to an array of indices of the corresponding triangles
+ * @param out Pointer to an array of indices of the corresponding triangles 
  *            [n] (output)
  *
  * There is a standard search procedure involving search through triangle
@@ -437,12 +437,12 @@ static void delaunay_resetflags(delaunay* d)
 void delaunay_circles_find(delaunay* d, point* p, int* n, int** out)
 {
     /*
-     * This flag was introduced as a hack to handle some degenerate cases. It
+     * This flag was introduced as a hack to handle some degenerate cases. It 
      * is set to 1 only if the triangle associated with the first circle is
-     * already known to contain the point. In this case the circle is assumed
+     * already known to contain the point. In this case the circle is assumed 
      * to contain the point without a check. In my practice this turned
      * useful in some cases when point p coincided with one of the vertices
-     * of a thin triangle.
+     * of a thin triangle. 
      */
     int contains = 0;
     int i;
@@ -475,28 +475,28 @@ void delaunay_circles_find(delaunay* d, point* p, int* n, int** out)
 
     /*
      * It is important to have a reasonable seed here. If the last search
-     * was successful -- start with the last found tricircle, otherwhile (i)
+     * was successful -- start with the last found tricircle, otherwhile (i) 
      * try to find a triangle containing p; if fails then (ii) check
      * tricircles from the last search; if fails then (iii) make linear
-     * search through all tricircles
+     * search through all tricircles 
      */
     if (d->first_id < 0 || !circle_contains(&d->circles[d->first_id], p)) {
         /*
-         * if any triangle contains p -- start with this triangle
+         * if any triangle contains p -- start with this triangle 
          */
         d->first_id = delaunay_xytoi(d, p, d->first_id);
         contains = (d->first_id >= 0);
 
         /*
          * if no triangle contains p, there still is a chance that it is
-         * inside some of circumcircles
+         * inside some of circumcircles 
          */
         if (d->first_id < 0) {
             int nn = d->t_out->n;
             int tid = -1;
 
             /*
-             * first check results of the last search
+             * first check results of the last search 
              */
             for (i = 0; i < nn; ++i) {
                 tid = d->t_out->v[i];
@@ -504,7 +504,7 @@ void delaunay_circles_find(delaunay* d, point* p, int* n, int** out)
                     break;
             }
             /*
-             * if unsuccessful, search through all circles
+             * if unsuccessful, search through all circles 
              */
             if (tid < 0 || i == nn) {
                 double nt = d->ntriangles;
@@ -532,7 +532,7 @@ void delaunay_circles_find(delaunay* d, point* p, int* n, int** out)
     delaunay_addflag(d, d->first_id);
 
     /*
-     * main cycle
+     * main cycle 
      */
     while (d->t_in->n > 0) {
         int tid = istack_pop(d->t_in);

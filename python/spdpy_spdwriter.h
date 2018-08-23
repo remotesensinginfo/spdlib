@@ -63,25 +63,25 @@ namespace spdlib_py
         bool open(SPDFile spdFile, string outputFile) throw(SPDException)
         {
             try
-            {
+            {               
                 spdFileOut = new SPDFile(outputFile);
                 spdFileOut->copyAttributesFrom(&spdFile);
-
+                
                 if(spdFileOut->getNumberBinsX() == 0)
                 {
                     throw SPDException("The number of bins in the X axis needs to be > 0.");
                 }
-
+                
                 if(spdFileOut->getNumberBinsY() == 0)
                 {
                     throw SPDException("The number of bins in the Y axis needs to be > 0.");
                 }
-
+                
                 if(spdFileOut->getBinSize() == 0)
                 {
                     throw SPDException("The bin size needs to be > 0.");
                 }
-
+                
                 spdWriter = new SPDSeqFileWriter();
                 spdWriter->open(spdFileOut, outputFile);
                 readerOpen = true;
@@ -103,7 +103,7 @@ namespace spdlib_py
                     vector<SPDPulse*> *outPulses = convertPyList2Vector(&pulses);
 
                     spdWriter->writeDataColumn(outPulses, col, row);
-
+                    
                     delete outPulses;
                 }
                 else
@@ -124,28 +124,28 @@ namespace spdlib_py
             {
                 if(readerOpen)
                 {
-
+                    
                     // Number of bins in list
                     boost::python::ssize_t nCols = boost::python::len(pulses);
-
+                    
                     // Interate through bins
                     for(boost::python::ssize_t i = 0; i < nCols; ++i)
                     {
-
+                        
                         // Get column of pulses
-                        boost::python::list tmpPulses = boost::python::extract<boost::python::list>(pulses[i]);
-
+                        boost::python::list tmpPulses = boost::python::extract<boost::python::list>(pulses[i]);                        
+                        
                         // Convert python sublist to a vector
                         vector<SPDPulse*> *outPulses = convertPyList2Vector(&tmpPulses);
-
+                        
                         // Write data column pulses
                         spdWriter->writeDataColumn(outPulses, i, row);
-
+                        
                         // Clean up
                         delete outPulses;
-
+                    
                     }
-
+                
                 }
                 else
                 {
@@ -207,29 +207,29 @@ namespace spdlib_py
             readerOpen = false;
             spdWriter = NULL;
         };
-
+        
         bool open(SPDFile spdFile, string outputFile) throw(SPDException)
         {
             try
             {
                 spdFileOut = new SPDFile(outputFile);
                 spdFileOut->copyAttributesFrom(&spdFile);
-
+                
                 if(spdFileOut->getNumberBinsX() == 0)
                 {
                     throw SPDException("The number of bins in the X axis needs to be > 0.");
                 }
-
+                
                 if(spdFileOut->getNumberBinsY() == 0)
                 {
                     throw SPDException("The number of bins in the Y axis needs to be > 0.");
                 }
-
+                
                 if(spdFileOut->getBinSize() == 0)
                 {
                     throw SPDException("The bin size needs to be > 0.");
                 }
-
+                
                 spdWriter = new SPDNonSeqFileWriter();
                 spdWriter->open(spdFileOut, outputFile);
                 readerOpen = true;
@@ -241,7 +241,7 @@ namespace spdlib_py
             }
             return true;
         };
-
+        
         void writeDataColumn(boost::python::list pulses, uint_fast32_t col, uint_fast32_t row)throw(SPDException)
         {
             try
@@ -249,9 +249,9 @@ namespace spdlib_py
                 if(readerOpen)
                 {
                     vector<SPDPulse*> *outPulses = convertPyList2Vector(&pulses);
-
+                    
                     spdWriter->writeDataColumn(outPulses, col, row);
-
+ 
                     delete outPulses;
                 }
                 else
@@ -272,28 +272,28 @@ namespace spdlib_py
             {
                 if(readerOpen)
                 {
-
+                    
                     // Number of bins in list
                     boost::python::ssize_t nCols = boost::python::len(pulses);
-
+                    
                     // Interate through bins
                     for(boost::python::ssize_t i = 0; i < nCols; ++i)
                     {
-
+                        
                         // Get column of pulses
-                        boost::python::list tmpPulses = boost::python::extract<boost::python::list>(pulses[i]);
-
+                        boost::python::list tmpPulses = boost::python::extract<boost::python::list>(pulses[i]);                        
+                        
                         // Convert python sublist to a vector
                         vector<SPDPulse*> *outPulses = convertPyList2Vector(&tmpPulses);
-
+                        
                         // Write data column pulses
                         spdWriter->writeDataColumn(outPulses, i, row);
-
+                        
                         // Clean up
                         delete outPulses;
-
+                    
                     }
-
+                
                 }
                 else
                 {
@@ -306,7 +306,7 @@ namespace spdlib_py
                 throw e;
             }
         };
-
+        
         void close(SPDFile spdFile) throw(SPDException)
         {
             try
@@ -323,7 +323,7 @@ namespace spdlib_py
                 throw e;
             }
         }
-
+        
         ~SPDPyNonSeqWriter()
         {
             if(readerOpen)

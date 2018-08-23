@@ -4,26 +4,26 @@
  *
  *  Created by Pete Bunting on 27/11/2010.
  *  Copyright 2010 SPDLib. All rights reserved.
- *
+ * 
  *  This file is part of SPDLib.
  *
- *  Permission is hereby granted, free of charge, to any person
- *  obtaining a copy of this software and associated documentation
- *  files (the "Software"), to deal in the Software without restriction,
- *  including without limitation the rights to use, copy, modify,
- *  merge, publish, distribute, sublicense, and/or sell copies of the
- *  Software, and to permit persons to whom the Software is furnished
+ *  Permission is hereby granted, free of charge, to any person 
+ *  obtaining a copy of this software and associated documentation 
+ *  files (the "Software"), to deal in the Software without restriction, 
+ *  including without limitation the rights to use, copy, modify, 
+ *  merge, publish, distribute, sublicense, and/or sell copies of the 
+ *  Software, and to permit persons to whom the Software is furnished 
  *  to do so, subject to the following conditions:
  *
- *  The above copyright notice and this permission notice shall be
+ *  The above copyright notice and this permission notice shall be 
  *  included in all copies or substantial portions of the Software.
  *
- *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
- *  EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
- *  OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
- *  IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR
- *  ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF
- *  CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+ *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, 
+ *  EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES 
+ *  OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. 
+ *  IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR 
+ *  ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF 
+ *  CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION 
  *  WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  *
  */
@@ -119,7 +119,7 @@ namespace spdlib
 		spdPointDataType->insertMember(POINTMEMBERNAME_WAVEFORM_OFFSET, HOFFSET(SPDPointH5V1, waveformOffset), H5::PredType::NATIVE_ULONG);
 		return spdPointDataType;
 	}
-
+    
     H5::CompType* SPDPointUtils::createSPDPointV2DataTypeDisk()
 	{
 		H5::CompType *spdPointDataType = new H5::CompType( sizeof(SPDPointH5V2) );
@@ -213,7 +213,7 @@ namespace spdlib
 		pt->wavePacketDescIdx = 0;
 		pt->waveformOffset = 0;
 	}
-
+    
     void SPDPointUtils::initSPDPoint(SPDPointH5V2 *pt)
 	{
 		pt->x = 0;
@@ -261,7 +261,7 @@ namespace spdlib
 
 		return pt_out;
 	}
-
+    
     void SPDPointUtils::copySPDPointTo(SPDPoint *pt, SPDPoint *pt_out)
 	{
 		pt_out->x = pt->x;
@@ -573,15 +573,15 @@ namespace spdlib
 		pt_out->wavePacketDescIdx = pt->wavePacketDescIdx;
 		pt_out->waveformOffset = pt->waveformOffset;
 	}
-
+    
     void SPDPointUtils::verticalHeightBinPoints(std::vector<SPDPoint*> *pts, std::vector<SPDPoint*> **bins, boost::uint_fast32_t numBins, float min, float max, bool ignorePtsOverMax, bool ignoreGrd, float minHeightThres)throw(SPDProcessingException)
     {
-        try
+        try 
         {
             float interval = (max-min)/numBins;
             float diff = 0;
             boost::uint_fast32_t idx = 0;
-
+            
             for(std::vector<SPDPoint*>::iterator iterPts = pts->begin(); iterPts != pts->end(); ++iterPts)
             {
                 if(ignoreGrd & ((*iterPts)->classification != SPD_GROUND))
@@ -589,24 +589,24 @@ namespace spdlib
                     if((*iterPts)->height > minHeightThres)
                     {
                         diff = ((*iterPts)->height - min)/interval;
-
-                        try
+                                                
+                        try 
                         {
                             idx = boost::numeric_cast<boost::uint_fast32_t>(diff);
                         }
-                        catch(boost::numeric::negative_overflow& e)
+                        catch(boost::numeric::negative_overflow& e) 
                         {
                             throw SPDProcessingException(e.what());
                         }
-                        catch(boost::numeric::positive_overflow& e)
+                        catch(boost::numeric::positive_overflow& e) 
                         {
                             throw SPDProcessingException(e.what());
                         }
-                        catch(boost::numeric::bad_numeric_cast& e)
+                        catch(boost::numeric::bad_numeric_cast& e) 
                         {
                             throw SPDProcessingException(e.what());
                         }
-
+                        
                         if((idx > ((numBins)-1)) & !ignorePtsOverMax)
                         {
                             std::cout << "Height: = " << (*iterPts)->height << std::endl;
@@ -627,24 +627,24 @@ namespace spdlib
                     if((*iterPts)->height > minHeightThres)
                     {
                         diff = ((*iterPts)->height - min)/interval;
-
-                        try
+                                                
+                        try 
                         {
                             idx = boost::numeric_cast<boost::uint_fast32_t>(diff);
                         }
-                        catch(boost::numeric::negative_overflow& e)
+                        catch(boost::numeric::negative_overflow& e) 
                         {
                             throw SPDProcessingException(e.what());
                         }
-                        catch(boost::numeric::positive_overflow& e)
+                        catch(boost::numeric::positive_overflow& e) 
                         {
                             throw SPDProcessingException(e.what());
                         }
-                        catch(boost::numeric::bad_numeric_cast& e)
+                        catch(boost::numeric::bad_numeric_cast& e) 
                         {
                             throw SPDProcessingException(e.what());
                         }
-
+                                                
                         if((idx > ((numBins)-1)) & !ignorePtsOverMax)
                         {
                             std::cout << "Height: = " << (*iterPts)->height << std::endl;
@@ -661,7 +661,7 @@ namespace spdlib
                 }
             }
         }
-        catch (SPDProcessingException &e)
+        catch (SPDProcessingException &e) 
         {
             throw e;
         }
@@ -669,29 +669,29 @@ namespace spdlib
 	
     void SPDPointUtils::verticalElevationBinPoints(std::vector<SPDPoint*> *pts, std::vector<SPDPoint*> **bins, boost::uint_fast32_t numBins, float min, float max)throw(SPDProcessingException)
     {
-        try
+        try 
         {
             float interval = (max-min)/numBins;
             float diff = 0;
             boost::uint_fast32_t idx = 0;
-
+            
             for(std::vector<SPDPoint*>::iterator iterPts = pts->begin(); iterPts != pts->end(); ++iterPts)
             {
                 diff = ((*iterPts)->z - min)/interval;
-
-                try
+                
+                try 
 				{
 					idx = boost::numeric_cast<boost::uint_fast32_t>(diff);
 				}
-				catch(boost::numeric::negative_overflow& e)
+				catch(boost::numeric::negative_overflow& e) 
 				{
 					throw SPDProcessingException(e.what());
 				}
-				catch(boost::numeric::positive_overflow& e)
+				catch(boost::numeric::positive_overflow& e) 
 				{
 					throw SPDProcessingException(e.what());
 				}
-				catch(boost::numeric::bad_numeric_cast& e)
+				catch(boost::numeric::bad_numeric_cast& e) 
 				{
 					throw SPDProcessingException(e.what());
 				}
@@ -704,16 +704,16 @@ namespace spdlib
 					std::cout << "Num Bins = " << numBins << std::endl;
 					throw SPDProcessingException("Did not find index within range.");
 				}
-
+                
                 bins[idx]->push_back(*iterPts);
             }
         }
-        catch (SPDProcessingException &e)
+        catch (SPDProcessingException &e) 
         {
             throw e;
         }
     }
-
+    
 	SPDPointUtils::~SPDPointUtils()
 	{
 		

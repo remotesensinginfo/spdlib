@@ -168,7 +168,7 @@ spdpy2_createPointArray(PyObject *self, PyObject *args)
 // Convert a float *** to a numpy array to a numpy array
 // Note to Pete: a 3D C array would have made this easier
 // since we could have just wrapped it with PyArray_SimpleNewFromData
-PyObject* ConvertFloatCPPArrayToNumpy(float ***imageDataBlock, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize,
+PyObject* ConvertFloatCPPArrayToNumpy(float ***imageDataBlock, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, 
             boost::uint_fast32_t numImgBands)
 {
     npy_intp dims[] = {ySize, xSize, numImgBands};
@@ -189,7 +189,7 @@ PyObject* ConvertFloatCPPArrayToNumpy(float ***imageDataBlock, boost::uint_fast3
 }
 
 // the other way
-void ConvertNumpyToFloatCPPArray(float ***imageDataBlock, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize,
+void ConvertNumpyToFloatCPPArray(float ***imageDataBlock, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, 
             boost::uint_fast32_t numImgBands, PyObject *pImageData)
 {
     for(boost::uint_fast32_t i = 0; i < ySize; ++i)
@@ -310,8 +310,8 @@ public:
         Py_DECREF(m_pUserParams);
     }
 
-    void processDataBlockImage(spdlib::SPDFile *inSPDFile, std::vector<spdlib::SPDPulse*> ***pulses,
-            float ***imageDataBlock, spdlib::SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize,
+    void processDataBlockImage(spdlib::SPDFile *inSPDFile, std::vector<spdlib::SPDPulse*> ***pulses, 
+            float ***imageDataBlock, spdlib::SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, 
             boost::uint_fast32_t numImgBands, float binSize) throw(spdlib::SPDProcessingException)
     {
         // convert file into numpy array on the first call
@@ -350,7 +350,7 @@ public:
         }
 
         // set the various elements in the tuple
-        // note PyTuple_SetItem steals a reference and
+        // note PyTuple_SetItem steals a reference and 
         // presumeably decrefs anything already there
         PyTuple_SetItem(m_pUserParams, PULSES_INDEX, pPulseArray);
         PyTuple_SetItem(m_pUserParams, POINTS_INDEX, pPointArray);
@@ -367,7 +367,7 @@ public:
         }
         // otherinputs set in constructor
 
-        // call python function
+        // call python function 
         PyObject *pResult = PyObject_CallObject(m_pApplyFn, m_pUserParams);
 
         if( pResult == NULL )
@@ -389,8 +389,8 @@ public:
         }
     }
 
-    void processDataBlock(spdlib::SPDFile *inSPDFile, std::vector<spdlib::SPDPulse*> ***pulses,
-            spdlib::SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize,
+    void processDataBlock(spdlib::SPDFile *inSPDFile, std::vector<spdlib::SPDPulse*> ***pulses, 
+            spdlib::SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, 
             float binSize) throw(spdlib::SPDProcessingException)
     {
         // convert file into numpy array on the first call
@@ -416,7 +416,7 @@ public:
         }
 
         // set the various elements in the tuple
-        // note PyTuple_SetItem steals a reference and
+        // note PyTuple_SetItem steals a reference and 
         // presumeably decrefs anything already there
         PyTuple_SetItem(m_pUserParams, PULSES_INDEX, pPulseArray);
         PyTuple_SetItem(m_pUserParams, POINTS_INDEX, pPointArray);
@@ -432,7 +432,7 @@ public:
         }
         // otherinputs set in constructor
 
-        // call python function
+        // call python function 
         PyObject *pResult = PyObject_CallObject(m_pApplyFn, m_pUserParams);
 
         if( pResult == NULL )
@@ -450,8 +450,8 @@ public:
         }
     }
 
-    void processDataBlockImage(spdlib::SPDFile *inSPDFile, std::vector<spdlib::SPDPulse*> *pulses,
-            float ***imageDataBlock, spdlib::SPDXYPoint ***cenPts, boost::uint_fast32_t xSize,
+    void processDataBlockImage(spdlib::SPDFile *inSPDFile, std::vector<spdlib::SPDPulse*> *pulses, 
+            float ***imageDataBlock, spdlib::SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, 
             boost::uint_fast32_t ySize, boost::uint_fast32_t numImgBands) throw(spdlib::SPDProcessingException)
     {
         throw spdlib::SPDProcessingException("Not implemented as not required.");
@@ -511,8 +511,8 @@ spdpy2_blockProcessor(PyObject *self, PyObject *args)
     PyObject *pApplyFn, *pControls, *pOtherInputs;
     const char *pszInputSPDFile, *pszInputImageFile, *pszOutputSPDFile, *pszOutputImageFile;
     int nPassCenPts, nPassWaveforms;
-    if( !PyArg_ParseTuple(args, "OszzzOiiO", &pApplyFn, &pszInputSPDFile, &pszInputImageFile,
-                &pszOutputSPDFile, &pszOutputImageFile, &pControls, &nPassCenPts, &nPassWaveforms,
+    if( !PyArg_ParseTuple(args, "OszzzOiiO", &pApplyFn, &pszInputSPDFile, &pszInputImageFile, 
+                &pszOutputSPDFile, &pszOutputImageFile, &pControls, &nPassCenPts, &nPassWaveforms, 
                 &pOtherInputs))
         return NULL;
 
@@ -579,7 +579,7 @@ spdpy2_blockProcessor(PyObject *self, PyObject *args)
         return NULL;
     }
     bool printProgress = (pVal == Py_True);
-    Py_DECREF(pVal);
+    Py_DECREF(pVal);    
 
     pVal = PyObject_GetAttrString(pControls, "keepMinExtent");
     if( ( pVal == NULL ) || !PyBool_Check(pVal) )
@@ -589,7 +589,7 @@ spdpy2_blockProcessor(PyObject *self, PyObject *args)
         return NULL;
     }
     bool keepMinExtent = (pVal == Py_True);
-    Py_DECREF(pVal);
+    Py_DECREF(pVal);    
 
     pVal = PyObject_GetAttrString(pControls, "processingResolution");
 #if PY_MAJOR_VERSION >= 3
@@ -602,7 +602,7 @@ spdpy2_blockProcessor(PyObject *self, PyObject *args)
         Py_XDECREF(pVal);
         return NULL;
     }
-    float processingResolution = PyFloat_AsDouble(pVal);
+    float processingResolution = PyFloat_AsDouble(pVal);    
     Py_DECREF(pVal);
 
     pVal = PyObject_GetAttrString(pControls, "numImgBands");
@@ -628,7 +628,7 @@ spdpy2_blockProcessor(PyObject *self, PyObject *args)
     if( ( pVal == NULL ) || !PyUnicode_Check(pVal) )
 #else
     if( ( pVal == NULL ) || !PyString_Check(pVal) )
-#endif
+#endif    
     {
         PyErr_SetString(GETSTATE(self)->error, "controls object must have an string gdalFormat field");
         Py_XDECREF(pVal);
@@ -638,7 +638,7 @@ spdpy2_blockProcessor(PyObject *self, PyObject *args)
     PyObject *bytes = PyUnicode_AsEncodedString(pVal, NULL, NULL);
     std::string gdalFormat = PyBytes_AsString(bytes);
     Py_DECREF(bytes);
-#else
+#else   
     std::string gdalFormat = PyString_AsString(pVal);
 #endif
     Py_DECREF(pVal);
@@ -709,12 +709,12 @@ spdpy2_blockProcessor(PyObject *self, PyObject *args)
     try
     {
         spdInFile = new spdlib::SPDFile(pszInputSPDFile);
-        blockProcessor = new SPDDataBlockProcessorPython(pApplyFn, pOtherInputs,
+        blockProcessor = new SPDDataBlockProcessorPython(pApplyFn, pOtherInputs, 
                             pHeaderValuesCB, &bandDescriptions, pszOutputSPDFile != NULL,
                             pszInputImageFile != NULL, pszOutputImageFile != NULL, nPassCenPts != 0,
                             nPassWaveforms != 0);
 
-        spdlib::SPDProcessDataBlocks processBlocks = spdlib::SPDProcessDataBlocks(blockProcessor,
+        spdlib::SPDProcessDataBlocks processBlocks = spdlib::SPDProcessDataBlocks(blockProcessor, 
             overlap, blockXSize, blockYSize, printProgress, keepMinExtent);
 
         if( ( pszOutputSPDFile != NULL ) && ( pszInputImageFile == NULL ) && ( pszOutputImageFile == NULL ) )
@@ -731,7 +731,7 @@ spdpy2_blockProcessor(PyObject *self, PyObject *args)
         }
         else if( ( pszOutputSPDFile == NULL ) && ( pszInputImageFile == NULL ) && ( pszOutputImageFile != NULL ) )
         {
-            processBlocks.processDataBlocksGridPulsesOutputImage(spdInFile, pszOutputImageFile,
+            processBlocks.processDataBlocksGridPulsesOutputImage(spdInFile, pszOutputImageFile, 
                                 processingResolution, numImgBands, gdalFormat);
         }
         else
@@ -776,13 +776,13 @@ static PyMethodDef module_methods[] = {
 
 #if PY_MAJOR_VERSION >= 3
 
-static int spdpy2_traverse(PyObject *m, visitproc visit, void *arg)
+static int spdpy2_traverse(PyObject *m, visitproc visit, void *arg) 
 {
     Py_VISIT(GETSTATE(m)->error);
     return 0;
 }
 
-static int spdpy2_clear(PyObject *m)
+static int spdpy2_clear(PyObject *m) 
 {
     Py_CLEAR(GETSTATE(m)->error);
     return 0;
@@ -802,14 +802,14 @@ static struct PyModuleDef moduledef = {
 
 #define INITERROR return NULL
 
-PyMODINIT_FUNC
+PyMODINIT_FUNC 
 PyInit__spdpy2(void)
 
 #else
 #define INITERROR return
 
 PyMODINIT_FUNC
-init_spdpy2(void)
+init_spdpy2(void) 
 #endif
 {
     // initialize the numpy/recaray stuff

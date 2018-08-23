@@ -41,22 +41,22 @@ namespace spdlib{
 			char ch = ' ';
 			char lastch = ' ';
 			inputFile.get(ch);
-			while (!inputFile.eof())
+			while (!inputFile.eof()) 
 			{
 				if ((ch == 0x0a) && (lastch == 0x0d))
 				{
 					++count; // Windows Line Ending
 				}
-				else if ((lastch == 0x0d) && (ch != 0x0a))
+				else if ((lastch == 0x0d) && (ch != 0x0a)) 
 				{
 					++count; // Mac Line Ending
-				}
-				else if (ch == 0x0a)
+				} 
+				else if (ch == 0x0a) 
 				{
 					++count; // UNIX Line Ending
 				}
 				lastch = ch;
-				inputFile.get(ch);
+				inputFile.get(ch);      
 			}
 			
 			inputFile.close();
@@ -140,12 +140,12 @@ namespace spdlib{
 		
 		return line.substr(firstChar, lastChar-firstChar);
 	}
-
+    
     std::string SPDTextFileUtilities::removeChar(std::string line, char val)
     {
         std::string word = "";
         unsigned int lineLength = line.length();
-
+        
         for(unsigned int i = 0; i < lineLength; i++)
 		{
 			if((line.at(i) != val))
@@ -204,17 +204,17 @@ namespace spdlib{
 		char ch = ' ';
 		char lastch = ' ';
 		inputFileStream.get(ch);
-		while (!inputFileStream.eof())
+		while (!inputFileStream.eof()) 
 		{					
 			if ((ch == 0x0a) && (lastch == 0x0d))
 			{
 				lineEnding = true; // Windows Line Ending
 			}
-			else if ((lastch == 0x0d) && (ch != 0x0a))
+			else if ((lastch == 0x0d) && (ch != 0x0a)) 
 			{
 				lineEnding = true; // Mac Line Ending
-			}
-			else if (ch == 0x0a)
+			} 
+			else if (ch == 0x0a) 
 			{
 				lineEnding = true; // UNIX Line Ending
 			}
@@ -226,20 +226,20 @@ namespace spdlib{
 				strLine = "";
                 lineEnding = false;
 			}
-			else
+			else 
 			{
 				strLine += ch;
 			}
 			
 			lastch = ch;
-			inputFileStream.get(ch);
+			inputFileStream.get(ch);      
 		}
 		wholeFile += strLine;
 		inputFileStream.close();
 		
 		return wholeFile;
 	}
-
+    
     std::vector<std::string> SPDTextFileUtilities::readFileLinesToVector(std::string input) throw(SPDIOException)
     {
         std::vector<std::string> wholeFile;
@@ -296,7 +296,7 @@ namespace spdlib{
 		return wholeFile;
     }
 	
-
+    
     bool SPDTextFileUtilities::isNumber(char val)
     {
         bool num = false;
@@ -340,31 +340,31 @@ namespace spdlib{
         {
             num = true;
         }
-
+        
         return num;
     }
-
+    
     bool SPDTextFileUtilities::lineStartWithHash(std::string line) throw(SPDIOException)
     {
         bool hashPresent = false;
-
+        
         std::string tmpLine = line;
         boost::algorithm::trim(tmpLine);
-
+        
         if(tmpLine.at(0) == '#')
         {
             hashPresent = true;
         }
-
+        
         return hashPresent;
     }
-
+    
     bool SPDTextFileUtilities::lineContainsChar(std::string line, char val) throw(SPDIOException)
     {
         bool charPresent = false;
-
+        
         unsigned int lineLength = line.length();
-
+        
         for(unsigned int i = 0; i < lineLength; i++)
 		{
 			if(line.at(i) == val)
@@ -373,7 +373,7 @@ namespace spdlib{
                 break;
 			}
 		}
-
+        
         return charPresent;
     }
 	

@@ -26,12 +26,12 @@
 
 namespace spdlib
 {
-
+    
     SPDClassifyPtsNumReturns::SPDClassifyPtsNumReturns(): SPDDataBlockProcessor()
     {
-
+        
     }
-
+        
     void SPDClassifyPtsNumReturns::processDataBlock(SPDFile *inSPDFile, std::vector<SPDPulse*> ***pulses, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, float binSize) throw(SPDProcessingException)
     {
         try
@@ -53,7 +53,7 @@ namespace spdlib
                     std::cout << "." << feedbackCounter << "." << std::flush;
                     feedbackCounter = feedbackCounter + 10;
                 }
-
+                
                 for(boost::uint_fast32_t j = 0; j < xSize; ++j)
                 {
                     sumNumReturns = 0;
@@ -67,7 +67,7 @@ namespace spdlib
                     {
                         meanNumReturns = (float)sumNumReturns / (float)numPulses;
                         //std::cout << "MeanNumReturns = " << meanNumReturns << std::endl;
-
+                        
                         for(std::vector<SPDPulse*>::iterator iterPulses = pulses[i][j]->begin(); iterPulses != pulses[i][j]->end(); ++iterPulses)
                         {
                             if((*iterPulses)->numberOfReturns > 0)
@@ -100,9 +100,9 @@ namespace spdlib
                                     }
                                 }
                             }
-
-
-
+                            
+                            
+                            
                         }
                     }
                 }
@@ -114,13 +114,13 @@ namespace spdlib
             throw e;
         }
     }
-
+    
     SPDClassifyPtsNumReturns::~SPDClassifyPtsNumReturns()
     {
-
+        
     }
-
-
+    
+    
 }
 
 

@@ -58,17 +58,17 @@ namespace spdlib
 		char ch = ' ';
 		char lastch = ' ';
 		inputFileStream.get(ch);
-		while (!inputFileStream.eof())
+		while (!inputFileStream.eof()) 
 		{					
 			if ((ch == 0x0a) && (lastch == 0x0d))
 			{
 				lineEnding = true; // Windows Line Ending
 			}
-			else if ((lastch == 0x0d) && (ch != 0x0a))
+			else if ((lastch == 0x0d) && (ch != 0x0a)) 
 			{
 				lineEnding = true; // Mac Line Ending
-			}
-			else if (ch == 0x0a)
+			} 
+			else if (ch == 0x0a) 
 			{
 				lineEnding = true; // UNIX Line Ending
 			}
@@ -77,13 +77,13 @@ namespace spdlib
 			{
 				break;
 			}
-			else
+			else 
 			{
 				strLine += ch;
 			}
 			
 			lastch = ch;
-			inputFileStream.get(ch);
+			inputFileStream.get(ch);      
 		}
 		
 		boost::algorithm::trim(strLine);

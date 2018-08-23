@@ -75,9 +75,9 @@ namespace spdlib
 		
 		try
 		{
-
+            
             std::string outputDIR = SPDFileUtilities::getFileDirectoryPath(outputLayer);
-
+            
             if(SPDFileUtilities::checkDIR4SHP(outputDIR, SHPFileOutLayer))
             {
                 if(deleteOutShpIfExists)
@@ -89,7 +89,7 @@ namespace spdlib
                     throw SPDProcessingException("Shapefile already exists, either delete or select force.");
                 }
             }
-
+            
 			/////////////////////////////////////
 			//
 			// Open Input Shapfile.
@@ -184,14 +184,14 @@ namespace spdlib
 			
             std::ofstream *outASCIIFile = new std::ofstream();
             outASCIIFile->open(outputASCII.c_str(), std::ios::out | std::ios::trunc);
-
+            
             if(!outASCIIFile->is_open())
-            {
+            {                
                 std::string message = std::string("Could not open file ") + outputASCII;
                 throw SPDProcessingException(message);
             }
 
-
+            
 			SPDFile *spdFile = new SPDFile(spdInputFile);
 			SPDFileIncrementalReader *spdReader = new SPDFileIncrementalReader();
 			spdReader->open(spdFile);
@@ -202,7 +202,7 @@ namespace spdlib
 			outASCIIFile->flush();
             outASCIIFile->close();
             delete outASCIIFile;
-
+            
             spdReader->close();
 			delete spdReader;
 			delete spdFile;

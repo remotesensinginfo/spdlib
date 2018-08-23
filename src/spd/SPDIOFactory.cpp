@@ -82,7 +82,7 @@ namespace spdlib
                     break;
                 }
             }
-
+            
             if(!found)
             {
                 throw SPDIOException("Could not find suitable importor");

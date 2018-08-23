@@ -58,49 +58,49 @@
 
 namespace spdlib
 {
-
+    
     class DllExport SPDTidyGroundReturnNegativeHeights : public SPDDataBlockProcessor
 	{
 	public:
         SPDTidyGroundReturnNegativeHeights();
-
+        
         void processDataBlockImage(SPDFile *inSPDFile, std::vector<SPDPulse*> ***pulses, float ***imageDataBlock, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast32_t numImgBands, float binSize) throw(SPDProcessingException){throw SPDProcessingException("SPDTidyGroundReturnNegativeHeights does not work with an image.");};
         void processDataBlock(SPDFile *inSPDFile, std::vector<SPDPulse*> ***pulses, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, float binSize) throw(SPDProcessingException);
         void processDataBlockImage(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses, float ***imageDataBlock, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast32_t numImgBands) throw(SPDProcessingException){throw SPDProcessingException("SPDTidyGroundReturnNegativeHeights requires processing with a grid.");};
         void processDataBlock(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses) throw(SPDProcessingException){throw SPDProcessingException("SPDTidyGroundReturnNegativeHeights requires processing with a grid.");};
-
+        
         std::vector<std::string> getImageBandDescriptions() throw(SPDProcessingException)
         {
             std::vector<std::string> bandNames;
             return bandNames;}
         ;
         void setHeaderValues(SPDFile *spdFile) throw(SPDProcessingException){};
-
+        
         ~SPDTidyGroundReturnNegativeHeights();
 	};
-
-
+    
+    
     class DllExport SPDTidyGroundReturnsPlaneFitting : public SPDPulseProcessor
 	{
 	public:
         SPDTidyGroundReturnsPlaneFitting();
-
+        
         void processDataColumnImage(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses, float *imageData, SPDXYPoint *cenPts, boost::uint_fast32_t numImgBands, float binSize) throw(SPDProcessingException){throw SPDProcessingException("SPDTidyGroundReturnsPlaneFitting does not use the function.");};
 		void processDataColumn(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses, SPDXYPoint *cenPts) throw(SPDProcessingException){throw SPDProcessingException("SPDTidyGroundReturnsPlaneFitting does not use the function.");};
-
+        
         void processDataWindowImage(SPDFile *inSPDFile, bool **validBins, std::vector<SPDPulse*> ***pulses, float ***imageData, SPDXYPoint ***cenPts, boost::uint_fast32_t numImgBands, float binSize, boost::uint_fast16_t winSize) throw(SPDProcessingException){throw SPDProcessingException("SPDTidyGroundReturnsPlaneFitting does not use the function.");};
 		void processDataWindow(SPDFile *inSPDFile, bool **validBins, std::vector<SPDPulse*> ***pulses, SPDXYPoint ***cenPts, boost::uint_fast16_t winSize) throw(SPDProcessingException);
-
+        
         std::vector<std::string> getImageBandDescriptions() throw(SPDProcessingException)
         {
             std::vector<std::string> bandNames;
             return bandNames;
         };
         void setHeaderValues(SPDFile *spdFile) throw(SPDProcessingException){};
-
+        
         ~SPDTidyGroundReturnsPlaneFitting();
 	};
-
+    
 }
 
 #endif

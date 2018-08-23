@@ -26,7 +26,7 @@
 
 namespace spdlib
 {
-
+    
 	
 	SPDLineParserASCII::SPDLineParserASCII() : SPDTextLineProcessor(), sourceID(0), ptCount(0), lineCount(0), rgbValuesFound(false)
 	{
@@ -55,7 +55,7 @@ namespace spdlib
             {
                 std::vector<std::string> *tokens = new std::vector<std::string>();
                 textUtils.tokenizeString(line, delimiter, tokens, true);
-
+                
                 if(tokens->size() == 1)
                 {
                     if(ptCount > 0)
@@ -69,11 +69,11 @@ namespace spdlib
                     bool definedX = false;
                     bool definedY = false;
                     bool definedZ = false;
-
+                    
                     SPDPoint *pt = new SPDPoint();
                     ptUtils.initSPDPoint(pt);
-
-                    try
+                    
+                    try 
                     {
                         for(std::vector<ASCIIField>::iterator iterFields = fields.begin(); iterFields != fields.end(); ++iterFields)
                         {
@@ -192,42 +192,42 @@ namespace spdlib
                                 throw SPDIOException("Field was not recognised.");
                             }
                         }
-
+                        
                         pl->xIdx = pt->x;
                         pl->yIdx = pt->y;
                         pl->pts->push_back(pt);
                         pl->numberOfReturns = 1;
                         ++ptCount;
-
+                        
                         if(!definedX | !definedY | !definedZ)
                         {
                             throw SPDIOException("At the very minimum the X, Y, Z fields must be populated.");
                         }
-
+                        
                         returnValue = true;
-                    }
-                    catch (std::out_of_range &e)
+                    } 
+                    catch (std::out_of_range &e) 
                     {
                         std::cerr << "WARNING: " << e.what() << std::endl;
                         std::cerr << "Could not parse line: " << line << std::endl;
                         std::cerr << "Processing has continued and this line has been ignored.\n";
                     }
-                    catch (std::exception &e)
+                    catch (std::exception &e) 
                     {
                         std::cerr << "WARNING: " << e.what() << std::endl;
                         std::cerr << "Could not parse line: " << line << std::endl;
                         std::cerr << "Processing has continued and this line has been ignored.\n";
                     }
                 }
-
+            
                 delete tokens;
             }
-
+            
             ++lineCount;
 		}
 		return returnValue;
 	}
-
+    
 	bool SPDLineParserASCII::isFileType(std::string fileType)
 	{
 		if(fileType == "ASCII")
@@ -259,7 +259,7 @@ namespace spdlib
 		sourceID = 0;
 		ptCount = 0;
 	}
-
+    
     void SPDLineParserASCII::parseSchema(std::string schema)throw(SPDIOException)
     {
         SPDTextFileUtilities textUtils;
@@ -271,10 +271,10 @@ namespace spdlib
 		xercesc::DOMElement *rootElement = NULL;
 		xercesc::DOMNodeList *fieldsList = NULL;
 		xercesc::DOMElement *fieldElement = NULL;
-        try
+        try 
 		{
             xercesc::XMLPlatformUtils::Initialize();
-
+            
             XMLCh *lineTag = xercesc::XMLString::transcode("line");
             XMLCh *fieldTag = xercesc::XMLString::transcode("field");
             XMLCh *delimterAttStr = xercesc::XMLString::transcode("delimiter");
@@ -283,12 +283,12 @@ namespace spdlib
             XMLCh *nameAttStr = xercesc::XMLString::transcode("name");
             XMLCh *typeAttStr = xercesc::XMLString::transcode("type");
             XMLCh *indexAttStr = xercesc::XMLString::transcode("index");
-
+            
             XMLCh *optionSPDInt = xercesc::XMLString::transcode("spd_int");
             XMLCh *optionSPDUInt = xercesc::XMLString::transcode("spd_uint");
             XMLCh *optionSPDFloat = xercesc::XMLString::transcode("spd_float");
             XMLCh *optionSPDDouble = xercesc::XMLString::transcode("spd_double");
-
+            
             xercesc::XMLString::transcode("LS", tempStr, 99);
 			impl = xercesc::DOMImplementationRegistry::getDOMImplementation(tempStr);
 			if(impl == NULL)
@@ -300,7 +300,7 @@ namespace spdlib
 			parser = ((xercesc::DOMImplementationLS*)impl)->createLSParser(xercesc::DOMImplementationLS::MODE_SYNCHRONOUS, 0);
 			errHandler = (xercesc::ErrorHandler*) new xercesc::HandlerBase();
 			parser->getDomConfig()->setParameter(xercesc::XMLUni::fgDOMErrorHandler, errHandler);
-			
+			            
 			// Open Document
 			doc = parser->parseURI(schema.c_str());	
 			
@@ -311,7 +311,7 @@ namespace spdlib
 			{
 				throw SPDIOException("Incorrect root element; Root element should be \"list\"");
 			}
-
+            
             if(rootElement->hasAttribute(delimterAttStr))
             {
                 char *charValue = xercesc::XMLString::transcode(rootElement->getAttribute(delimterAttStr));
@@ -322,7 +322,7 @@ namespace spdlib
             {
                 throw SPDIOException("No \'delimiter\' attribute was provided.");
             }
-
+            
             if(rootElement->hasAttribute(commentCharAttStr))
             {
                 char *charValue = xercesc::XMLString::transcode(rootElement->getAttribute(commentCharAttStr));
@@ -333,7 +333,7 @@ namespace spdlib
             {
                 throw SPDIOException("No \'comment\' attribute was provided.");
             }
-
+            
             if(rootElement->hasAttribute(ignoreLinesAttStr))
             {
                 char *charValue = xercesc::XMLString::transcode(rootElement->getAttribute(ignoreLinesAttStr));
@@ -344,8 +344,8 @@ namespace spdlib
             {
                 throw SPDIOException("No \'ignorelines\' attribute was provided.");
             }
-
-
+            
+            
 
             fieldsList = rootElement->getElementsByTagName(fieldTag);
 			boost::uint_fast32_t numFields = fieldsList->getLength();
@@ -356,14 +356,14 @@ namespace spdlib
             std::string nameVal;
             SPDDataType dataTypeVal;
             boost::uint_fast16_t idxVal;
-
+            
 			for(int i = 0; i < numFields; i++)
 			{
 				fieldElement = static_cast<xercesc::DOMElement*>(fieldsList->item(i));
 				nameVal = "";
                 dataTypeVal = spd_float;
                 idxVal = 0;
-
+                
                 if(fieldElement->hasAttribute(nameAttStr))
                 {
                     char *charValue = xercesc::XMLString::transcode(fieldElement->getAttribute(nameAttStr));
@@ -374,7 +374,7 @@ namespace spdlib
                 {
                     throw SPDIOException("No \'name\' attribute was provided.");
                 }
-
+                
                 if(fieldElement->hasAttribute(typeAttStr))
                 {
                     const XMLCh *dataTypeValXMLStr = fieldElement->getAttribute(typeAttStr);
@@ -403,8 +403,8 @@ namespace spdlib
                 {
                     throw SPDIOException("No \'type\' attribute was provided.");
                 }
-
-
+                
+                
                 if(fieldElement->hasAttribute(indexAttStr))
                 {
                     char *charValue = xercesc::XMLString::transcode(fieldElement->getAttribute(indexAttStr));
@@ -418,7 +418,7 @@ namespace spdlib
 				
                 fields.push_back(ASCIIField(nameVal, dataTypeVal, idxVal));
 			}
-
+                        
             parser->release();
 			delete errHandler;
 			xercesc::XMLString::release(&lineTag);
@@ -436,14 +436,14 @@ namespace spdlib
             			
 			xercesc::XMLPlatformUtils::Terminate();
         }
-        catch (const xercesc::XMLException& e)
+        catch (const xercesc::XMLException& e) 
 		{
 			parser->release();
 			char *message = xercesc::XMLString::transcode(e.getMessage());
 			std::string outMessage =  std::string("XMLException : ") + std::string(message);
 			throw SPDIOException(outMessage.c_str());
 		}
-		catch (const xercesc::DOMException& e)
+		catch (const xercesc::DOMException& e) 
 		{
 			parser->release();
 			char *message = xercesc::XMLString::transcode(e.getMessage());

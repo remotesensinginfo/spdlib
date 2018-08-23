@@ -71,22 +71,22 @@
 #endif
 
 namespace spdlib
-{
+{    
     class DllExport SPDShiftData : public SPDDataBlockProcessor
 	{
 	public:
         SPDShiftData(float xShift, float yShift);
         void processDataBlockImage(SPDFile *inSPDFile, std::vector<SPDPulse*> ***pulses, float ***imageDataBlock, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast32_t numImgBands, float binSize) throw(SPDProcessingException)
 		{throw SPDProcessingException("SPDMultiscaleCurvatureGrdClassification cannot output an image layer.");};
-
+        
         void processDataBlock(SPDFile *inSPDFile, std::vector<SPDPulse*> ***pulses, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, float binSize) throw(SPDProcessingException);
-
+        
         void processDataBlockImage(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses, float ***imageDataBlock, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast32_t numImgBands) throw(SPDProcessingException)
 		{throw SPDProcessingException("SPDMultiscaleCurvatureGrdClassification requires processing with a grid.");};
-
+        
         void processDataBlock(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses) throw(SPDProcessingException)
         {throw SPDProcessingException("SPDMultiscaleCurvatureGrdClassification requires processing with a grid.");};
-
+        
         std::vector<std::string> getImageBandDescriptions() throw(SPDProcessingException)
         {
             std::vector<std::string> bandNames;
@@ -99,14 +99,14 @@ namespace spdlib
             spdFile->setYMin(spdFile->getYMin()+yShift);
             spdFile->setYMax(spdFile->getYMax()+yShift);
         }
-
+        
         ~SPDShiftData();
-
+        
     protected:
         float xShift;
         float yShift;
 	};
-
+    
     class DllExport SPDGCPImg2MapNode
 	{
 	public:
@@ -123,22 +123,22 @@ namespace spdlib
 		float xOff_;
 		float yOff_;
 	};
-
-
+    
+    
     typedef CGAL::Exact_predicates_inexact_constructions_kernel K;
     typedef K::FT                                         CGALCoordType;
     typedef K::Vector_2                                   CGALVector;
     typedef K::Point_2                                    CGALPoint;
-
+    
     typedef CGAL::Delaunay_triangulation_2<K>             DelaunayTriangulation;
     typedef CGAL::Interpolation_traits_2<K>               InterpTraits;
     typedef CGAL::Delaunay_triangulation_2<K>::Vertex_handle    Vertex_handle;
     typedef CGAL::Delaunay_triangulation_2<K>::Face_handle    Face_handle;
-
+    
     typedef std::vector< std::pair<CGALPoint, CGALCoordType> >   CoordinateVector;
     typedef std::map<CGALPoint, SPDGCPImg2MapNode*, K::Less_xy_2>     PointValueMap;
-
-
+    
+    
     class DllExport SPDWarpException : public SPDException
 	{
 	public:
@@ -146,8 +146,8 @@ namespace spdlib
 		SPDWarpException(const char *message): SPDException(message){};
 		SPDWarpException(std::string message): SPDException(message){};
 	};
-
-
+    
+    
     class DllExport SPDWarpPointData
     {
     public:
@@ -161,7 +161,7 @@ namespace spdlib
         virtual void readGCPs(std::string gcpFile) throw(SPDException);
         std::vector<SPDGCPImg2MapNode*> *gcps;
     };
-
+    
     class DllExport SPDNearestNeighbourWarp : public SPDWarpPointData
     {
     public:
@@ -175,7 +175,7 @@ namespace spdlib
         DelaunayTriangulation *dt;
         PointValueMap *values;
     };
-
+    
     class DllExport SPDTriangulationPlaneFittingWarp : public SPDWarpPointData
     {
     public:
@@ -192,8 +192,8 @@ namespace spdlib
 		void fitPlane2XPoints(std::list<SPDGCPImg2MapNode*> *normPts, double *a, double *b, double *c) throw(SPDWarpException);
 		void fitPlane2YPoints(std::list<SPDGCPImg2MapNode*> *normPts, double *a, double *b, double *c) throw(SPDWarpException);
     };
-
-
+    
+    
     class DllExport SPDPolynomialWarp : public SPDWarpPointData
     {
     public:
@@ -210,15 +210,15 @@ namespace spdlib
         gsl_vector *aE;
         gsl_vector *aN;
     };
-
-
+    
+    
     enum SPDWarpLocation
     {
         spdwarppulseidx=1,
         spdwarpfromall=2,
         spdwarppulseorigin=3
     };
-
+    
     class DllExport SPDNonLinearWarp : public SPDImporterProcessor
 	{
 	public:
@@ -233,8 +233,8 @@ namespace spdlib
         SPDWarpPointData *calcOffsets;
         SPDWarpLocation warpLoc;
 	};
-
-
+    
+     
 }
 
 #endif

@@ -4,7 +4,7 @@
  *
  *  Created by Pete Bunting on 30/11/2010.
  *  Copyright 2011 SPDLib. All rights reserved.
- *
+ * 
  *  This file is part of SPDLib.
  *
  *  SPDLib is free software: you can redistribute it and/or modify
@@ -42,17 +42,17 @@
 
 #include "spd/spd-config.h"
 
-int main (int argc, char * const argv[])
+int main (int argc, char * const argv[]) 
 {
     std::cout.precision(12);
-
+    
     //cout << "spdproj " << SPDLIB_PACKAGE_STRING << ", Copyright (C) " << SPDLIB_COPYRIGHT_YEAR << " Sorted Pulse Library (SPD)\n";
 	//cout << "This program comes with ABSOLUTELY NO WARRANTY. This is free software,\n";
 	//cout << "and you are welcome to redistribute it under certain conditions; See\n";
 	//cout << "website (http://www.spdlib.org). Bugs are to be reported on the trac\n";
 	//cout << "or directly to " << SPDLIB_PACKAGE_BUGREPORT << endl;
 	
-	try
+	try 
 	{
         TCLAP::CmdLine cmd("Print and convert projection strings: spdproj", ' ', "1.0.0");
 		
@@ -66,7 +66,7 @@ int main (int argc, char * const argv[])
         TCLAP::ValueArg<int> epsgPrettyArg("","epsgpretty", "Print the WKT (to print Pretty WKT) string associated with the EPSG code provided.",false,0, "int");
         TCLAP::ValueArg<std::string> shapefileArg("","shp","Print the WKT string associated with the input ESRI shapefile.",false,"", "string");
         TCLAP::ValueArg<std::string> shapefilePrettyArg("","shppretty", "Print the WKT (to print Pretty WKT) string associated with the input ESRI shapefile.",false,"", "string");
-
+        
         std::vector<TCLAP::Arg*> arguments;
         arguments.push_back(&proj4Arg);
         arguments.push_back(&proj4PrettyArg);
@@ -78,11 +78,11 @@ int main (int argc, char * const argv[])
         arguments.push_back(&epsgPrettyArg);
         arguments.push_back(&shapefileArg);
         arguments.push_back(&shapefilePrettyArg);
-
+        
         cmd.xorAdd(arguments);
-
+         
         cmd.parse( argc, argv );
-
+        
         if(proj4PrettyArg.isSet())
         {
             OGRSpatialReference oSRS;
@@ -110,11 +110,11 @@ int main (int argc, char * const argv[])
                 std::string message = std::string("Could not open image ") + imageArg.getValue();
                 throw spdlib::SPDException(message.c_str());
             }
-
+            
             const char *wtkSpatialRef = inGDALImage->GetProjectionRef();
-
+            
             std::cout << wtkSpatialRef << std::endl;
-
+            
             GDALClose(inGDALImage);
 			GDALDestroyDriverManager();
         }
@@ -127,18 +127,18 @@ int main (int argc, char * const argv[])
                 std::string message = std::string("Could not open image ") + imagePrettyArg.getValue();
                 throw spdlib::SPDException(message.c_str());
             }
-
+            
             const char *wtkSpatialRef = inGDALImage->GetProjectionRef();
-
+            
             OGRSpatialReference ogrSpatial = OGRSpatialReference(wtkSpatialRef);
-
+            
             char **wktPrettySpatialRef = new char*[1];
             ogrSpatial.exportToPrettyWkt(wktPrettySpatialRef);
             std::cout << wktPrettySpatialRef[0] << std::endl;
             OGRFree(wktPrettySpatialRef);
 
             GDALClose(inGDALImage);
-			GDALDestroyDriverManager();
+			GDALDestroyDriverManager();            
         }
         else if(spdArg.isSet())
         {
@@ -153,14 +153,14 @@ int main (int argc, char * const argv[])
             spdlib::SPDFile *spdFile = new spdlib::SPDFile(spdPrettyArg.getValue());
             spdlib::SPDFileReader spdReader;
             spdReader.readHeaderInfo(spdPrettyArg.getValue(), spdFile);
-
+            
             OGRSpatialReference ogrSpatial = OGRSpatialReference(spdFile->getSpatialReference().c_str());
-
+            
             char **wktPrettySpatialRef = new char*[1];
             ogrSpatial.exportToPrettyWkt(wktPrettySpatialRef);
             std::cout << wktPrettySpatialRef[0] << std::endl;
             OGRFree(wktPrettySpatialRef);
-
+            
             delete spdFile;
         }
         else if(epsgPrettyArg.isSet())
@@ -185,15 +185,15 @@ int main (int argc, char * const argv[])
         {
             // Convert to absolute path
             std::string inputVector = boost::filesystem::absolute(shapefileArg.getValue()).string();
-
+            
             OGRRegisterAll();
-
+            
             GDALDataset *inputSHPDS = NULL;
             OGRLayer *inputSHPLayer = NULL;
-
+            
             spdlib::SPDVectorUtils vecUtils;
             std::string SHPFileInLayer = vecUtils.getLayerName(inputVector);
-
+            
             /////////////////////////////////////
             //
             // Open Input Shapfile.
@@ -212,27 +212,27 @@ int main (int argc, char * const argv[])
                 throw spdlib::SPDException(message.c_str());
             }
             OGRSpatialReference *spatialRef = inputSHPLayer->GetSpatialRef();
-
+            
             char **wktPrettySpatialRef = new char*[1];
             spatialRef->exportToWkt(wktPrettySpatialRef);
             std::cout << wktPrettySpatialRef[0] << std::endl;
             OGRFree(wktPrettySpatialRef);
-
+            
             GDALClose(inputSHPDS);
         }
         else if(shapefilePrettyArg.isSet())
         {
             // Convert to absolute path
             std::string inputVector = boost::filesystem::absolute(shapefileArg.getValue()).string();
-
+            
             OGRRegisterAll();
-
+            
             GDALDataset *inputSHPDS = NULL;
             OGRLayer *inputSHPLayer = NULL;
-
+            
             spdlib::SPDVectorUtils vecUtils;
             std::string SHPFileInLayer = vecUtils.getLayerName(inputVector);
-
+            
             /////////////////////////////////////
             //
             // Open Input Shapfile.
@@ -251,21 +251,21 @@ int main (int argc, char * const argv[])
                 throw spdlib::SPDException(message.c_str());
             }
             OGRSpatialReference *spatialRef = inputSHPLayer->GetSpatialRef();
-
+            
             char **wktPrettySpatialRef = new char*[1];
             spatialRef->exportToPrettyWkt(wktPrettySpatialRef);
             std::cout << wktPrettySpatialRef[0] << std::endl;
             OGRFree(wktPrettySpatialRef);
-
+            
             GDALClose(inputSHPDS);
         }
         else
         {
             throw spdlib::SPDException("No option given...");
         }
-
+        
 	}
-	catch (TCLAP::ArgException &e)
+	catch (TCLAP::ArgException &e) 
 	{
 		std::cerr << "Parse Error: " << e.what() << std::endl;
 	}

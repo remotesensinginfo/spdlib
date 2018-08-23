@@ -4,7 +4,7 @@
  *
  *  Created by Pete Bunting on 30/11/2010.
  *  Copyright 2010 SPDLib. All rights reserved.
- *
+ * 
  *  This file is part of SPDLib.
  *
  *  SPDLib is free software: you can redistribute it and/or modify
@@ -37,17 +37,17 @@
 
 #include "spd/spd-config.h"
 
-int main (int argc, char * const argv[])
+int main (int argc, char * const argv[]) 
 {
     std::cout.precision(12);
-
+    
     std::cout << "spdsubset " << SPDLIB_PACKAGE_STRING << ", Copyright (C) " << SPDLIB_COPYRIGHT_YEAR << " Sorted Pulse Library (SPD)\n";
 	std::cout << "This program comes with ABSOLUTELY NO WARRANTY. This is free software,\n";
 	std::cout << "and you are welcome to redistribute it under certain conditions; See\n";
 	std::cout << "website (http://www.spdlib.org). Bugs are to be reported on the trac\n";
 	std::cout << "or directly to " << SPDLIB_PACKAGE_BUGREPORT << std::endl;
 	
-	try
+	try 
 	{
         TCLAP::CmdLine cmd("Subset point cloud data: spdsubset", ' ', "1.0.0");
 
@@ -68,13 +68,13 @@ int main (int argc, char * const argv[])
 		
 		TCLAP::ValueArg<double> zMaxArg("","zmax","Maximum Z threshold",false,NAN,"double");
 		cmd.add( zMaxArg );
-
+        
         TCLAP::ValueArg<double> hMinArg("","hmin","Minimum Height threshold",false,NAN,"double");
 		cmd.add( hMinArg );
 		
 		TCLAP::ValueArg<double> hMaxArg("","hmax","Maximum Height threshold",false,NAN,"double");
 		cmd.add( hMaxArg );
-
+        
         TCLAP::ValueArg<double> azMinArg("","azmin","Minimum azimuth threshold",false,NAN,"double");
 		cmd.add( azMinArg );
 		
@@ -92,7 +92,7 @@ int main (int argc, char * const argv[])
 		
 		TCLAP::ValueArg<double> ranMaxArg("","ranmax","Maximum range threshold",false,NAN,"double");
 		cmd.add( ranMaxArg );
-
+        
         TCLAP::ValueArg<double> sliMinArg("","slimin","Minimum scanline index threshold",false,NAN,"uint_fast32_t");
 		cmd.add( sliMinArg );
 		
@@ -107,7 +107,7 @@ int main (int argc, char * const argv[])
 
         TCLAP::SwitchArg heightSwitch("","height","Threshold the height of each pulse (currently only valid with SPD to SPD subsetting)", false);
 		cmd.add( heightSwitch );
-
+        
         TCLAP::SwitchArg sphericalSwitch("","spherical","Subset a spherically indexed SPD file.", false);
         cmd.add( sphericalSwitch );
 
@@ -116,52 +116,52 @@ int main (int argc, char * const argv[])
 
         TCLAP::ValueArg<std::string> textfileArg("","txtfile","A text containing the extent to which the file should be cut to.",false,"","string");
 		cmd.add( textfileArg );
-
+        
         TCLAP::SwitchArg ignoreRangeSwitch("","ignorerange","Defining that range should be ignored when subsetting using a text file.", false);
 		cmd.add( ignoreRangeSwitch );
-
+        
         TCLAP::SwitchArg ignoreZSwitch("","ignorez","Defining that Z should be ignored when subsetting using a text file.", false);
 		cmd.add( ignoreZSwitch );
-
+        
         TCLAP::ValueArg<std::string> shapefileArg("","shpfile","A shapefile to which the dataset should be subsetted to.",false,"","string");
 		cmd.add( shapefileArg );
-
+        
         TCLAP::ValueArg<std::string> imgfileArg("","imgfile","A binary image to which the dataset should be subsetted to (pixel values of 1 define ROI).",false,"","string");
 		cmd.add( imgfileArg );
-
+        
         TCLAP::ValueArg<uint_fast32_t> startArg("","start","First pulse in the block",false,0,"uint_fast32_t");
 		cmd.add( startArg );
 		
 		TCLAP::ValueArg<uint_fast32_t> numArg("","num","Number of pulses to be exported",false,0,"uint_fast32_t");
 		cmd.add( numArg );
-
+        
         TCLAP::ValueArg<boost::uint_fast32_t> numOfRowsBlockArg("r","blockrows","Number of rows within a block (Default 100)",false,100,"unsigned int");
 		cmd.add( numOfRowsBlockArg );
-
+        
         TCLAP::ValueArg<boost::uint_fast32_t> numOfColsBlockArg("c","blockcols","Number of columns within a block (Default 0) - Note values greater than 1 result in a non-sequencial SPD file.",false,0,"unsigned int");
 		cmd.add( numOfColsBlockArg );
 		
 		TCLAP::ValueArg<std::string> inputFileArg("i","input","The input SPD file.",true,"","String");
 		cmd.add( inputFileArg );
-
+        
         TCLAP::ValueArg<std::string> outputFileArg("o","output","The output SPD file.",true,"","String");
 		cmd.add( outputFileArg );
-
+        
 		cmd.parse( argc, argv );
 		
         std::string inputFile = inputFileArg.getValue();
         std::string outputFile = outputFileArg.getValue();
-
+        
         spdlib::SPDFile *inSPDFile = new spdlib::SPDFile(inputFile);
         spdlib::SPDFileReader spdReader = spdlib::SPDFileReader();
         spdReader.readHeaderInfo(inputFile, inSPDFile);
-
+        
         bool indexedSPDFile = true;
         if(inSPDFile->getFileType() == spdlib::SPD_UPD_TYPE)
         {
             indexedSPDFile = false;
         }
-
+        
         if(startArg.isSet() & !indexedSPDFile)
         {
             spdlib::SPDUPDPulseSubset updSubset;
@@ -202,7 +202,7 @@ int main (int argc, char * const argv[])
                             else if(line == "#Scan")
                             {
                                 scanCoords = true;
-                            }
+                            }                            
                             first = false;
                         }
                         else
@@ -270,13 +270,13 @@ int main (int argc, char * const argv[])
                     bbox[5] = zMaxArg.getValue();
                 }
             }
-
+            
             if(ignoreRange | ignoreZ)
             {
                 bbox[4] = NAN;
                 bbox[5] = NAN;
             }
-
+                
             if(boost::math::isnan(bbox[0]))
             {
                 bboxDefined[0] = false;
@@ -325,13 +325,13 @@ int main (int argc, char * const argv[])
             {
                 bboxDefined[5] = true;
             }
-
+            
             if(ignoreRange | ignoreZ)
             {
                 bboxDefined[4] = false;
                 bboxDefined[5] = false;
             }
-
+            
             if(sphericalCoords)
             {
                 std::cout << "Azimuth Min:" << bbox[0] << std::endl;
@@ -359,7 +359,7 @@ int main (int argc, char * const argv[])
                 std::cout << "Z Min:" << bbox[4] << std::endl;
                 std::cout << "Z Max:" << bbox[5] << std::endl;
             }
-
+            
             if(sphericalCoords)
             {
                 if(indexedSPDFile)
@@ -416,7 +416,7 @@ int main (int argc, char * const argv[])
             }
         }
 	}
-	catch (TCLAP::ArgException &e)
+	catch (TCLAP::ArgException &e) 
 	{
 		std::cerr << "Parse Error: " << e.what() << std::endl;
 	}

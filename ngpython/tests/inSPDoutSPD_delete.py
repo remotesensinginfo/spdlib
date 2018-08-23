@@ -23,7 +23,7 @@
 #
 
 """
-Test for the Python spdapplier module.
+Test for the Python spdapplier module. 
 Deletes a subset of the input points
 """
 
