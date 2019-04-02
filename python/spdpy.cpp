@@ -36,7 +36,7 @@
 #include <boost/python/class.hpp>
 #include <boost/python/init.hpp>
 #include <boost/python/list.hpp>
-#include <boost/python/numeric.hpp>
+#include <boost/python/numpy.hpp>
 #include <boost/python/extract.hpp>
 #include <boost/python/docstring_options.hpp>
 

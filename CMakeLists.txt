@@ -233,11 +233,11 @@ include_directories(${BOOST_INCLUDE_DIR})
 
 if (MSVC)
     # Under Windows, the boost libs are strangely named - use glob to find them
-    file(GLOB BOOST_FS_LIB ${BOOST_LIB_PATH}/libboost_filesystem-${MSVC_STRING}-*.lib )
+    file(GLOB BOOST_FS_LIB ${BOOST_LIB_PATH}/libboost_filesystem.lib )
     if(NOT BOOST_FS_LIB)
         message(FATAL_ERROR "Could not find boost_filesystem lib")
     endif()
-    file(GLOB BOOST_SYS_LIB ${BOOST_LIB_PATH}/libboost_system-${MSVC_STRING}-*.lib )
+    file(GLOB BOOST_SYS_LIB ${BOOST_LIB_PATH}/libboost_system.lib )
     if(NOT BOOST_SYS_LIB)
         message(FATAL_ERROR "Could not find boost_system lib")
     endif()
