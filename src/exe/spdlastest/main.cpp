@@ -44,7 +44,7 @@ namespace spdlib
 	public:
 		SPDTestLasFile(){};
         
-        void printPulsesFromLASFile(std::string inputFile, uint_fast32_t startIdx, uint_fast16_t numPulses) throw(SPDException)
+        void printPulsesFromLASFile(std::string inputFile, uint_fast32_t startIdx, uint_fast16_t numPulses)
         {
             try
             {
@@ -127,7 +127,7 @@ namespace spdlib
             }
         };
         
-        void printPulsesFromLASFileNotFirstReturnsStartPulse(std::string inputFile) throw(SPDException)
+        void printPulsesFromLASFileNotFirstReturnsStartPulse(std::string inputFile)
         {
             // Open LAS file
             LASreadOpener lasreadopener;
@@ -185,7 +185,7 @@ namespace spdlib
             }
         };
         
-        void countNumPulses(std::string inputFile) throw(SPDException)
+        void countNumPulses(std::string inputFile)
         {
             // Open LAS file
             LASreadOpener lasreadopener;

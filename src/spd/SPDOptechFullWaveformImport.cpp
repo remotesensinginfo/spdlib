@@ -44,7 +44,7 @@ namespace spdlib
         return new SPDOptechFullWaveformASCIIImport(convertCoords, outputProjWKT, schema, indexCoords, defineOrigin, originX, originY, originZ, waveNoiseThreshold);
     }
     
-    std::list<SPDPulse*>* SPDOptechFullWaveformASCIIImport::readAllDataToList(std::string inputFile, SPDFile *spdFile)throw(SPDIOException)
+    std::list<SPDPulse*>* SPDOptechFullWaveformASCIIImport::readAllDataToList(std::string inputFile, SPDFile *spdFile)
     {
         std::list<SPDPulse*> *pulses = new std::list<SPDPulse*>();
         
@@ -74,7 +74,7 @@ namespace spdlib
         return pulses;
     }
     
-    std::vector<SPDPulse*>* SPDOptechFullWaveformASCIIImport::readAllDataToVector(std::string inputFile, SPDFile *spdFile)throw(SPDIOException)
+    std::vector<SPDPulse*>* SPDOptechFullWaveformASCIIImport::readAllDataToVector(std::string inputFile, SPDFile *spdFile)
     {
         std::vector<SPDPulse*> *pulses = new std::vector<SPDPulse*>();
         
@@ -297,7 +297,7 @@ namespace spdlib
         return pulses;
     }
 		
-    void SPDOptechFullWaveformASCIIImport::readAndProcessAllData(std::string inputFile, SPDFile *spdFile, SPDImporterProcessor *processor) throw(SPDIOException)
+    void SPDOptechFullWaveformASCIIImport::readAndProcessAllData(std::string inputFile, SPDFile *spdFile, SPDImporterProcessor *processor) 
     {
         try
         {
@@ -332,7 +332,7 @@ namespace spdlib
 		return false;
     }
     
-    void SPDOptechFullWaveformASCIIImport::readHeaderInfo(std::string inputFile, SPDFile *spdFile) throw(SPDIOException)
+    void SPDOptechFullWaveformASCIIImport::readHeaderInfo(std::string inputFile, SPDFile *spdFile) 
     {
         try
         {
@@ -347,7 +347,7 @@ namespace spdlib
         }
     }
     
-    void SPDOptechFullWaveformASCIIImport::readSPDOPTHeader(std::string inputHDRFile, SPDFile *spdFile, std::string *sensorFile, std::string *waveformsFile)throw(SPDIOException)
+    void SPDOptechFullWaveformASCIIImport::readSPDOPTHeader(std::string inputHDRFile, SPDFile *spdFile, std::string *sensorFile, std::string *waveformsFile)
     {
         try
         {

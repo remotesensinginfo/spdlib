@@ -55,8 +55,8 @@ namespace spdlib
 	{
 	public:
 		SPDIOUtils();
-		void gridAndWriteData(SPDDataExporter *exporter, std::list<SPDPulse*> *pls, SPDFile *spdFile, std::string outputFile)throw(SPDIOException);
-		void gridAndWriteData(SPDDataExporter *exporter, std::vector<SPDPulse*> *pls, SPDFile *spdFile, std::string outputFile)throw(SPDIOException);
+		void gridAndWriteData(SPDDataExporter *exporter, std::list<SPDPulse*> *pls, SPDFile *spdFile, std::string outputFile);
+		void gridAndWriteData(SPDDataExporter *exporter, std::vector<SPDPulse*> *pls, SPDFile *spdFile, std::string outputFile);
 		~SPDIOUtils();
 	};
 }

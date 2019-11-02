@@ -53,10 +53,10 @@ namespace spdlib
 	{
 	public:
 		SPDTextFileLineReader();
-		void openFile(std::string filepath)throw(SPDIOException);
+		void openFile(std::string filepath);
 		bool endOfFile();
-		std::string readLine()throw(SPDIOException);
-		void closeFile()throw(SPDIOException);
+		std::string readLine();
+		void closeFile();
 		~SPDTextFileLineReader();	
 	private:
 		std::ifstream inputFileStream;

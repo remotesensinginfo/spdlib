@@ -34,7 +34,7 @@
 namespace spdlib
 {
     
-    void SPDFileWriter::writeHeaderInfo(H5::H5File* spdOutH5File, SPDFile *spdFile) throw(SPDIOException)
+    void SPDFileWriter::writeHeaderInfo(H5::H5File* spdOutH5File, SPDFile *spdFile) 
     {
         try 
 		{
@@ -444,7 +444,7 @@ namespace spdlib
 		}
     }
     
-    void SPDFileWriter::updateHeaderInfo(H5::H5File* spdH5File, SPDFile *spdFile) throw(SPDIOException)
+    void SPDFileWriter::updateHeaderInfo(H5::H5File* spdH5File, SPDFile *spdFile) 
 	{
 		float outFloatDataValue[1];
 		double outDoubleDataValue[1];
@@ -1304,7 +1304,7 @@ namespace spdlib
 		}
 	}
     
-    void SPDFileWriter::updateHeaderInfo(SPDFile *spdFile) throw(SPDIOException)
+    void SPDFileWriter::updateHeaderInfo(SPDFile *spdFile) 
 	{
 		float outFloatDataValue[1];
 		double outDoubleDataValue[1];
@@ -2169,7 +2169,7 @@ namespace spdlib
 		}
 	}
     
-    void SPDFileWriter::readHeaderInfo(H5::H5File *spdH5File, SPDFile *spdFile) throw(SPDIOException)
+    void SPDFileWriter::readHeaderInfo(H5::H5File *spdH5File, SPDFile *spdFile) 
 	{
 		float inFloatDataValue[1];
 		double inDoubleDataValue[1];
@@ -3012,7 +3012,7 @@ namespace spdlib
 		this->keepMinExtent = false;
 	}
 	
-	SPDSeqFileWriter::SPDSeqFileWriter(const SPDDataExporter &dataExporter) throw(SPDException) : SPDDataExporter(dataExporter), spdOutH5File(NULL), pulsesDataset(NULL), spdPulseDataType(NULL), pointsDataset(NULL), spdPointDataType(NULL), datasetPlsPerBin(NULL), datasetBinsOffset(NULL), receivedDataset(NULL), transmittedDataset(NULL), datasetQuicklook(NULL), numPulses(0), numPts(0), numTransVals(0), numReceiveVals(0), firstColumn(true), nextCol(0), nextRow(0), numCols(0), numRows(0)
+	SPDSeqFileWriter::SPDSeqFileWriter(const SPDDataExporter &dataExporter)  : SPDDataExporter(dataExporter), spdOutH5File(NULL), pulsesDataset(NULL), spdPulseDataType(NULL), pointsDataset(NULL), spdPointDataType(NULL), datasetPlsPerBin(NULL), datasetBinsOffset(NULL), receivedDataset(NULL), transmittedDataset(NULL), datasetQuicklook(NULL), numPulses(0), numPts(0), numTransVals(0), numReceiveVals(0), firstColumn(true), nextCol(0), nextRow(0), numCols(0), numRows(0)
 	{
 		if(fileOpened)
 		{
@@ -3020,7 +3020,7 @@ namespace spdlib
 		}
 	}
 	
-	SPDSeqFileWriter& SPDSeqFileWriter::operator=(const SPDSeqFileWriter& dataExporter) throw(SPDException)
+	SPDSeqFileWriter& SPDSeqFileWriter::operator=(const SPDSeqFileWriter& dataExporter) 
 	{
 		if(fileOpened)
 		{
@@ -3037,7 +3037,7 @@ namespace spdlib
         return new SPDSeqFileWriter();
     }
 	
-	bool SPDSeqFileWriter::open(SPDFile *spdFile, std::string outputFile) throw(SPDIOException)
+	bool SPDSeqFileWriter::open(SPDFile *spdFile, std::string outputFile) 
 	{
 		SPDPulseUtils pulseUtils;
 		SPDPointUtils pointUtils;
@@ -3342,12 +3342,12 @@ namespace spdlib
 		return fileOpened;
 	}
     
-    bool SPDSeqFileWriter::reopen(SPDFile *spdFile, std::string outputFile) throw(SPDIOException)
+    bool SPDSeqFileWriter::reopen(SPDFile *spdFile, std::string outputFile) 
     {
         throw SPDIOException("No reopen option available.");
     }
 	
-	void SPDSeqFileWriter::writeDataColumn(std::list<SPDPulse*> *pls, boost::uint_fast32_t col, boost::uint_fast32_t row)throw(SPDIOException)
+	void SPDSeqFileWriter::writeDataColumn(std::list<SPDPulse*> *pls, boost::uint_fast32_t col, boost::uint_fast32_t row)
 	{
 		SPDPulseUtils pulseUtils;
 		SPDPointUtils pointUtils;
@@ -3825,7 +3825,7 @@ namespace spdlib
         }
 	}
 	
-	void SPDSeqFileWriter::writeDataColumn(std::vector<SPDPulse*> *pls, boost::uint_fast32_t col, boost::uint_fast32_t row)throw(SPDIOException)
+	void SPDSeqFileWriter::writeDataColumn(std::vector<SPDPulse*> *pls, boost::uint_fast32_t col, boost::uint_fast32_t row)
 	{
         SPDPulseUtils pulseUtils;
 		SPDPointUtils pointUtils;
@@ -4304,7 +4304,7 @@ namespace spdlib
         }
 	}
 	
-	void SPDSeqFileWriter::finaliseClose() throw(SPDIOException)
+	void SPDSeqFileWriter::finaliseClose() 
 	{
 		if(!fileOpened)
 		{
@@ -4799,7 +4799,7 @@ namespace spdlib
 		this->keepMinExtent = false;
 	}
 	
-	SPDNonSeqFileWriter::SPDNonSeqFileWriter(const SPDDataExporter &dataExporter) throw(SPDException) : SPDDataExporter(dataExporter), spdOutH5File(NULL), pulsesDataset(NULL), spdPulseDataType(NULL), pointsDataset(NULL), spdPointDataType(NULL), datasetPlsPerBin(NULL), datasetBinsOffset(NULL), receivedDataset(NULL), transmittedDataset(NULL), datasetQuicklook(NULL), numPulses(0), numPts(0), numTransVals(0), numReceiveVals(0), firstColumn(true), numCols(0), numRows(0)
+	SPDNonSeqFileWriter::SPDNonSeqFileWriter(const SPDDataExporter &dataExporter)  : SPDDataExporter(dataExporter), spdOutH5File(NULL), pulsesDataset(NULL), spdPulseDataType(NULL), pointsDataset(NULL), spdPointDataType(NULL), datasetPlsPerBin(NULL), datasetBinsOffset(NULL), receivedDataset(NULL), transmittedDataset(NULL), datasetQuicklook(NULL), numPulses(0), numPts(0), numTransVals(0), numReceiveVals(0), firstColumn(true), numCols(0), numRows(0)
 	{
 		if(fileOpened)
 		{
@@ -4807,7 +4807,7 @@ namespace spdlib
 		}
 	}
 	
-	SPDNonSeqFileWriter& SPDNonSeqFileWriter::operator=(const SPDNonSeqFileWriter& dataExporter) throw(SPDException)
+	SPDNonSeqFileWriter& SPDNonSeqFileWriter::operator=(const SPDNonSeqFileWriter& dataExporter) 
 	{
 		if(fileOpened)
 		{
@@ -4824,7 +4824,7 @@ namespace spdlib
         return new SPDNonSeqFileWriter();
     }
 	
-	bool SPDNonSeqFileWriter::open(SPDFile *spdFile, std::string outputFile) throw(SPDIOException)
+	bool SPDNonSeqFileWriter::open(SPDFile *spdFile, std::string outputFile) 
 	{
 		SPDPulseUtils pulseUtils;
 		SPDPointUtils pointUtils;
@@ -5122,12 +5122,12 @@ namespace spdlib
 		return fileOpened;
 	}
     
-    bool SPDNonSeqFileWriter::reopen(SPDFile *spdFile, std::string outputFile) throw(SPDIOException)
+    bool SPDNonSeqFileWriter::reopen(SPDFile *spdFile, std::string outputFile) 
     {
         throw SPDIOException("No reopen option available.");
     }
 	
-	void SPDNonSeqFileWriter::writeDataColumn(std::list<SPDPulse*> *pls, boost::uint_fast32_t col, boost::uint_fast32_t row)throw(SPDIOException)
+	void SPDNonSeqFileWriter::writeDataColumn(std::list<SPDPulse*> *pls, boost::uint_fast32_t col, boost::uint_fast32_t row)
 	{
 		SPDPulseUtils pulseUtils;
 		SPDPointUtils pointUtils;
@@ -5552,7 +5552,7 @@ namespace spdlib
 		}
 	}
 	
-	void SPDNonSeqFileWriter::writeDataColumn(std::vector<SPDPulse*> *pls, boost::uint_fast32_t col, boost::uint_fast32_t row)throw(SPDIOException)
+	void SPDNonSeqFileWriter::writeDataColumn(std::vector<SPDPulse*> *pls, boost::uint_fast32_t col, boost::uint_fast32_t row)
 	{
         SPDPulseUtils pulseUtils;
 		SPDPointUtils pointUtils;
@@ -5998,7 +5998,7 @@ namespace spdlib
 		}
 	}
 	
-	void SPDNonSeqFileWriter::finaliseClose() throw(SPDIOException)
+	void SPDNonSeqFileWriter::finaliseClose() 
 	{
 		if(!fileOpened)
 		{
@@ -6475,7 +6475,7 @@ namespace spdlib
         this->keepMinExtent = false;
 	}
     
-	SPDNoIdxFileWriter::SPDNoIdxFileWriter(const SPDDataExporter &dataExporter) throw(SPDException) : SPDDataExporter(dataExporter), spdOutH5File(NULL), pulsesDataset(NULL), spdPulseDataType(NULL), pointsDataset(NULL), spdPointDataType(NULL), receivedDataset(NULL), transmittedDataset(NULL), numPulses(0), numPts(0), numTransVals(0), numReceiveVals(0)
+	SPDNoIdxFileWriter::SPDNoIdxFileWriter(const SPDDataExporter &dataExporter)  : SPDDataExporter(dataExporter), spdOutH5File(NULL), pulsesDataset(NULL), spdPulseDataType(NULL), pointsDataset(NULL), spdPointDataType(NULL), receivedDataset(NULL), transmittedDataset(NULL), numPulses(0), numPts(0), numTransVals(0), numReceiveVals(0)
 	{
 		if(fileOpened)
 		{
@@ -6483,7 +6483,7 @@ namespace spdlib
 		}
 	}
     
-	SPDNoIdxFileWriter& SPDNoIdxFileWriter::operator=(const SPDNoIdxFileWriter& dataExporter) throw(SPDException)
+	SPDNoIdxFileWriter& SPDNoIdxFileWriter::operator=(const SPDNoIdxFileWriter& dataExporter) 
 	{
 		if(fileOpened)
 		{
@@ -6500,7 +6500,7 @@ namespace spdlib
         return new SPDNoIdxFileWriter();
     }
     
-	bool SPDNoIdxFileWriter::open(SPDFile *spdFile, std::string outputFile) throw(SPDIOException)
+	bool SPDNoIdxFileWriter::open(SPDFile *spdFile, std::string outputFile) 
 	{
 		SPDPulseUtils pulseUtils;
 		SPDPointUtils pointUtils;
@@ -6738,7 +6738,7 @@ namespace spdlib
 		return fileOpened;
 	}
     
-    bool SPDNoIdxFileWriter::reopen(SPDFile *spdFile, std::string outputFile) throw(SPDIOException)
+    bool SPDNoIdxFileWriter::reopen(SPDFile *spdFile, std::string outputFile) 
     {
         SPDPulseUtils pulseUtils;
 		SPDPointUtils pointUtils;
@@ -7134,7 +7134,7 @@ namespace spdlib
 		return fileOpened;
     }
     
-	void SPDNoIdxFileWriter::writeDataColumn(std::list<SPDPulse*> *plsIn, boost::uint_fast32_t col, boost::uint_fast32_t row)throw(SPDIOException)
+	void SPDNoIdxFileWriter::writeDataColumn(std::list<SPDPulse*> *plsIn, boost::uint_fast32_t col, boost::uint_fast32_t row)
 	{
 		SPDPulseUtils pulseUtils;
 		SPDPointUtils pointUtils;
@@ -7475,7 +7475,7 @@ namespace spdlib
 		}
 	}
 	
-	void SPDNoIdxFileWriter::writeDataColumn(std::vector<SPDPulse*> *plsIn, boost::uint_fast32_t col, boost::uint_fast32_t row)throw(SPDIOException)
+	void SPDNoIdxFileWriter::writeDataColumn(std::vector<SPDPulse*> *plsIn, boost::uint_fast32_t col, boost::uint_fast32_t row)
 	{
 		SPDPulseUtils pulseUtils;
 		SPDPointUtils pointUtils;
@@ -7829,7 +7829,7 @@ namespace spdlib
 		}
 	}
     
-	void SPDNoIdxFileWriter::finaliseClose() throw(SPDIOException)
+	void SPDNoIdxFileWriter::finaliseClose() 
 	{
 		if(!fileOpened)
 		{

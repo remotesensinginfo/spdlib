@@ -54,9 +54,9 @@ namespace spdlib
 	class DllExport SPDExportAsReadUnGridded : public SPDImporterProcessor
 	{
 	public:
-		SPDExportAsReadUnGridded(SPDDataExporter *exporter, SPDFile *spdFileOut, bool defineSource=false, boost::uint_fast16_t sourceID=0, bool defineReturnID=false, boost::uint_fast16_t returnID=0, bool defineClasses=false, boost::uint_fast16_t classValue=0) throw(SPDException);
-		void processImportedPulse(SPDFile *spdFile, SPDPulse *pulse) throw(SPDIOException);
-		void completeFileAndClose(SPDFile *spdFile)throw(SPDIOException);
+		SPDExportAsReadUnGridded(SPDDataExporter *exporter, SPDFile *spdFileOut, bool defineSource=false, boost::uint_fast16_t sourceID=0, bool defineReturnID=false, boost::uint_fast16_t returnID=0, bool defineClasses=false, boost::uint_fast16_t classValue=0) ;
+		void processImportedPulse(SPDFile *spdFile, SPDPulse *pulse) ;
+		void completeFileAndClose(SPDFile *spdFile);
         void setSourceID(boost::uint_fast16_t sourceID);
         void setReturnID(boost::uint_fast16_t returnID);
         void setClassValue(boost::uint_fast16_t classValue);

@@ -65,10 +65,10 @@ namespace spdlib
         SPDFileWriter(){};
         virtual ~SPDFileWriter(){};
     protected:
-        virtual void writeHeaderInfo(H5::H5File *spdOutH5File, SPDFile *spdFile)throw(SPDIOException);
-        virtual void updateHeaderInfo(H5::H5File *spdOutH5File, SPDFile *spdFile)throw(SPDIOException);
-        virtual void updateHeaderInfo(SPDFile *spdFile)throw(SPDIOException);
-        virtual void readHeaderInfo(H5::H5File *spdH5File, SPDFile *spdFile) throw(SPDIOException);
+        virtual void writeHeaderInfo(H5::H5File *spdOutH5File, SPDFile *spdFile);
+        virtual void updateHeaderInfo(H5::H5File *spdOutH5File, SPDFile *spdFile);
+        virtual void updateHeaderInfo(SPDFile *spdFile);
+        virtual void readHeaderInfo(H5::H5File *spdH5File, SPDFile *spdFile) ;
     };
     
     
@@ -76,17 +76,17 @@ namespace spdlib
 	{
 	public:
 		SPDSeqFileWriter();
-		SPDSeqFileWriter(const SPDDataExporter &dataExporter) throw(SPDException);
-		SPDSeqFileWriter(const SPDSeqFileWriter &dataExporter) throw(SPDException);
+		SPDSeqFileWriter(const SPDDataExporter &dataExporter) ;
+		SPDSeqFileWriter(const SPDSeqFileWriter &dataExporter) ;
         SPDDataExporter* getInstance();
-		bool open(SPDFile *spdFile, std::string outputFile) throw(SPDIOException);
-        bool reopen(SPDFile *spdFile, std::string outputFile) throw(SPDIOException);
-		void writeDataColumn(std::list<SPDPulse*> *pls, boost::uint_fast32_t col, boost::uint_fast32_t row)throw(SPDIOException);
-		void writeDataColumn(std::vector<SPDPulse*> *pls, boost::uint_fast32_t col, boost::uint_fast32_t row)throw(SPDIOException);
-		void finaliseClose() throw(SPDIOException);
+		bool open(SPDFile *spdFile, std::string outputFile) ;
+        bool reopen(SPDFile *spdFile, std::string outputFile) ;
+		void writeDataColumn(std::list<SPDPulse*> *pls, boost::uint_fast32_t col, boost::uint_fast32_t row);
+		void writeDataColumn(std::vector<SPDPulse*> *pls, boost::uint_fast32_t col, boost::uint_fast32_t row);
+		void finaliseClose() ;
 		bool requireGrid();
 		bool needNumOutPts();
-		SPDSeqFileWriter& operator=(const SPDSeqFileWriter& dataExporter) throw(SPDException);
+		SPDSeqFileWriter& operator=(const SPDSeqFileWriter& dataExporter) ;
 		~SPDSeqFileWriter();
 	private:
 		H5::H5File *spdOutH5File;
@@ -139,17 +139,17 @@ namespace spdlib
 	{
 	public:
 		SPDNonSeqFileWriter();
-		SPDNonSeqFileWriter(const SPDDataExporter &dataExporter) throw(SPDException);
-		SPDNonSeqFileWriter(const SPDSeqFileWriter &dataExporter) throw(SPDException);
+		SPDNonSeqFileWriter(const SPDDataExporter &dataExporter) ;
+		SPDNonSeqFileWriter(const SPDSeqFileWriter &dataExporter) ;
         SPDDataExporter* getInstance();
-		bool open(SPDFile *spdFile, std::string outputFile) throw(SPDIOException);
-        bool reopen(SPDFile *spdFile, std::string outputFile) throw(SPDIOException);
-		void writeDataColumn(std::list<SPDPulse*> *pls, boost::uint_fast32_t col, boost::uint_fast32_t row)throw(SPDIOException);
-		void writeDataColumn(std::vector<SPDPulse*> *pls, boost::uint_fast32_t col, boost::uint_fast32_t row)throw(SPDIOException);
-		void finaliseClose() throw(SPDIOException);
+		bool open(SPDFile *spdFile, std::string outputFile) ;
+        bool reopen(SPDFile *spdFile, std::string outputFile) ;
+		void writeDataColumn(std::list<SPDPulse*> *pls, boost::uint_fast32_t col, boost::uint_fast32_t row);
+		void writeDataColumn(std::vector<SPDPulse*> *pls, boost::uint_fast32_t col, boost::uint_fast32_t row);
+		void finaliseClose() ;
 		bool requireGrid();
 		bool needNumOutPts();
-		SPDNonSeqFileWriter& operator=(const SPDNonSeqFileWriter& dataExporter) throw(SPDException);
+		SPDNonSeqFileWriter& operator=(const SPDNonSeqFileWriter& dataExporter) ;
 		~SPDNonSeqFileWriter();
 	private:
 		H5::H5File *spdOutH5File;
@@ -195,17 +195,17 @@ namespace spdlib
 	{
 	public:
 		SPDNoIdxFileWriter();
-		SPDNoIdxFileWriter(const SPDDataExporter &dataExporter) throw(SPDException);
-		SPDNoIdxFileWriter(const SPDNoIdxFileWriter &dataExporter) throw(SPDException);
+		SPDNoIdxFileWriter(const SPDDataExporter &dataExporter) ;
+		SPDNoIdxFileWriter(const SPDNoIdxFileWriter &dataExporter) ;
         SPDDataExporter* getInstance();
-		bool open(SPDFile *spdFile, std::string outputFile) throw(SPDIOException);
-        bool reopen(SPDFile *spdFile, std::string outputFile) throw(SPDIOException);
-		void writeDataColumn(std::list<SPDPulse*> *pls, boost::uint_fast32_t col, boost::uint_fast32_t row)throw(SPDIOException);
-		void writeDataColumn(std::vector<SPDPulse*> *pls, boost::uint_fast32_t col, boost::uint_fast32_t row)throw(SPDIOException);
-		void finaliseClose() throw(SPDIOException);
+		bool open(SPDFile *spdFile, std::string outputFile) ;
+        bool reopen(SPDFile *spdFile, std::string outputFile) ;
+		void writeDataColumn(std::list<SPDPulse*> *pls, boost::uint_fast32_t col, boost::uint_fast32_t row);
+		void writeDataColumn(std::vector<SPDPulse*> *pls, boost::uint_fast32_t col, boost::uint_fast32_t row);
+		void finaliseClose() ;
 		bool requireGrid();
 		bool needNumOutPts();
-		SPDNoIdxFileWriter& operator=(const SPDNoIdxFileWriter& dataExporter) throw(SPDException);
+		SPDNoIdxFileWriter& operator=(const SPDNoIdxFileWriter& dataExporter) ;
 		~SPDNoIdxFileWriter();
 	private:
 		H5::H5File *spdOutH5File;

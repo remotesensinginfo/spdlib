@@ -59,21 +59,21 @@ namespace spdlib
     {
     public: 
         SPDFileUtilities();
-        static boost::uint_fast16_t getDIRCount(std::string dir) throw(SPDException);
-        static void getDIRList(std::string dir, std::list<std::string> *files) throw(SPDException);
-        static void getDIRList(std::string dir, std::vector<std::string> *files) throw(SPDException);
-        static void getDIRList(std::string dir, std::string ext, std::list<std::string> *files, bool withpath) throw(SPDException);
-        static void getDIRList(std::string dir, std::string ext, std::vector<std::string> *files, bool withpath) throw(SPDException);
-        static std::string* getDIRList(std::string dir, std::string ext,boost::uint_fast32_t *numFiles, bool withpath) throw(SPDException);
-        static std::string* getFilesInDIRWithName(std::string dir, std::string name,boost::uint_fast32_t *numFiles) throw(SPDException);
+        static boost::uint_fast16_t getDIRCount(std::string dir) ;
+        static void getDIRList(std::string dir, std::list<std::string> *files) ;
+        static void getDIRList(std::string dir, std::vector<std::string> *files) ;
+        static void getDIRList(std::string dir, std::string ext, std::list<std::string> *files, bool withpath) ;
+        static void getDIRList(std::string dir, std::string ext, std::vector<std::string> *files, bool withpath) ;
+        static std::string* getDIRList(std::string dir, std::string ext,boost::uint_fast32_t *numFiles, bool withpath) ;
+        static std::string* getFilesInDIRWithName(std::string dir, std::string name,boost::uint_fast32_t *numFiles) ;
         static std::string getFileNameNoExtension(std::string filepath);
         static std::string getFileName(std::string filepath);
         static std::string removeExtension(std::string filepath);
         static std::string getExtension(std::string filepath);
         static std::string getFileDirectoryPath(std::string filepath);
         static bool checkFilePresent(std::string file);
-        static bool checkDIR4SHP(std::string dir, std::string shp) throw(SPDException);
-        static void deleteSHP(std::string dir, std::string shp) throw(SPDException);
+        static bool checkDIR4SHP(std::string dir, std::string shp) ;
+        static void deleteSHP(std::string dir, std::string shp) ;
         ~SPDFileUtilities();
     };
 }

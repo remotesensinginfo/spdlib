@@ -33,7 +33,7 @@ namespace spdlib{
 		
 	}
 	
-	Matrix* SPDMatrixUtils::createMatrix(int n, int m) throw(SPDException)
+	Matrix* SPDMatrixUtils::createMatrix(int n, int m) 
 	{
 		/// Create matrix n rows by m colums
 		if(n < 1 | m < 1)
@@ -54,7 +54,7 @@ namespace spdlib{
 		return matrix;
 	}
 	
-	Matrix* SPDMatrixUtils::createMatrix(Matrix *matrix) throw(SPDException)
+	Matrix* SPDMatrixUtils::createMatrix(Matrix *matrix) 
 	{
 		if(matrix == NULL)
 		{
@@ -76,7 +76,7 @@ namespace spdlib{
 		return newMatrix;
 	}
 	
-	Matrix* SPDMatrixUtils::copyMatrix(Matrix *matrix) throw(SPDException)
+	Matrix* SPDMatrixUtils::copyMatrix(Matrix *matrix) 
 	{
 		if(matrix == NULL)
 		{
@@ -109,7 +109,7 @@ namespace spdlib{
 		}
 	}
 	
-	double SPDMatrixUtils::determinant(Matrix *matrix) throw(SPDException)
+	double SPDMatrixUtils::determinant(Matrix *matrix) 
 	{
 		double sum = 0;
 		if(matrix->n != matrix->m)
@@ -158,7 +158,7 @@ namespace spdlib{
 		return sum;
 	}
 	
-	Matrix* SPDMatrixUtils::cofactors(Matrix *matrix) throw(SPDException)
+	Matrix* SPDMatrixUtils::cofactors(Matrix *matrix) 
 	{
 		if(matrix->n != matrix->m)
 		{
@@ -197,7 +197,7 @@ namespace spdlib{
 		return newMatrix;
 	}
 	
-	Matrix* SPDMatrixUtils::transpose(Matrix *matrix) throw(SPDException)
+	Matrix* SPDMatrixUtils::transpose(Matrix *matrix) 
 	{
 		Matrix *newMatrix = NULL;
 		newMatrix = this->createMatrix(matrix->m, matrix->n);
@@ -211,7 +211,7 @@ namespace spdlib{
 		return newMatrix;
 	}
 	
-	void SPDMatrixUtils::multipleSingle(Matrix *matrix, double multiple) throw(SPDException)
+	void SPDMatrixUtils::multipleSingle(Matrix *matrix, double multiple) 
 	{
 		int numElements = matrix->n * matrix->m;
 		for(int i = 0; i < numElements; i++)
@@ -220,7 +220,7 @@ namespace spdlib{
 		}
 	}
 	
-	Matrix* SPDMatrixUtils::multiplication(Matrix *matrixA, Matrix *matrixB) throw(SPDException)
+	Matrix* SPDMatrixUtils::multiplication(Matrix *matrixA, Matrix *matrixB) 
 	{
 		Matrix *matrix1 = NULL;
 		Matrix *matrix2 = NULL;
@@ -280,7 +280,7 @@ namespace spdlib{
 		}
 	}
 	
-	void SPDMatrixUtils::saveMatrix2GridTxt(Matrix *matrix, std::string filepath) throw(SPDException)
+	void SPDMatrixUtils::saveMatrix2GridTxt(Matrix *matrix, std::string filepath) 
 	{
 		std::string outputFilename = filepath + std::string(".gmtxt");
 		std::ofstream outTxtFile;
@@ -318,7 +318,7 @@ namespace spdlib{
 		
 	}
 	
-	void SPDMatrixUtils::saveMatrix2CSV(Matrix *matrix, std::string filepath) throw(SPDException)
+	void SPDMatrixUtils::saveMatrix2CSV(Matrix *matrix, std::string filepath) 
 	{
 		std::string outputFilename = filepath + std::string(".csv");
 		std::ofstream outTxtFile;
@@ -353,7 +353,7 @@ namespace spdlib{
 		
 	}
 	
-	void SPDMatrixUtils::saveMatrix2txt(Matrix *matrix, std::string filepath) throw(SPDException)
+	void SPDMatrixUtils::saveMatrix2txt(Matrix *matrix, std::string filepath) 
 	{
 		std::string outputFilename = filepath + std::string(".mtxt");
 		std::ofstream outTxtFile;
@@ -386,7 +386,7 @@ namespace spdlib{
 		}
 	}
 	
-	void SPDMatrixUtils::saveMatrix2Binary(Matrix *matrix, std::string filepath) throw(SPDException)
+	void SPDMatrixUtils::saveMatrix2Binary(Matrix *matrix, std::string filepath) 
 	{
 		std::ofstream matrixOutput;
 		std::string matrixFilepath = filepath + std::string(".mtx");
@@ -409,7 +409,7 @@ namespace spdlib{
 		matrixOutput.close();
 	}
 	
-	Matrix* SPDMatrixUtils::readMatrixFromTxt(std::string filepath) throw(SPDException)
+	Matrix* SPDMatrixUtils::readMatrixFromTxt(std::string filepath) 
 	{
 		SPDTextFileUtilities textUtils;
 		Matrix *matrix = new Matrix();
@@ -503,7 +503,7 @@ namespace spdlib{
 		return matrix;
 	}
 	
-	Matrix* SPDMatrixUtils::readMatrixFromGridTxt(std::string filepath) throw(SPDException)
+	Matrix* SPDMatrixUtils::readMatrixFromGridTxt(std::string filepath) 
 	{
         SPDTextFileUtilities txtUtils;
 		Matrix *matrix = new Matrix();
@@ -600,7 +600,7 @@ namespace spdlib{
 	}
 	
 	
-	Matrix* SPDMatrixUtils::readMatrixFromBinary(std::string filepath) throw(SPDException)
+	Matrix* SPDMatrixUtils::readMatrixFromBinary(std::string filepath) 
 	{
 		Matrix *matrix = new Matrix();
 		std::string matrixFilepath = filepath + std::string(".mtx");
@@ -636,7 +636,7 @@ namespace spdlib{
 		return matrix;
 	}
 	
-	Matrix* SPDMatrixUtils::normalisedMatrix(Matrix *matrix, double min, double max) throw(SPDException)
+	Matrix* SPDMatrixUtils::normalisedMatrix(Matrix *matrix, double min, double max) 
 	{
 		double matrixMIN = 0;
 		double matrixMAX = 0;
@@ -681,7 +681,7 @@ namespace spdlib{
 		return outMatrix;
 	}
 	
-	Matrix* SPDMatrixUtils::duplicateMatrix(Matrix *matrix, int xDuplications, int yDuplications) throw(SPDException)
+	Matrix* SPDMatrixUtils::duplicateMatrix(Matrix *matrix, int xDuplications, int yDuplications) 
 	{
 		int newM = matrix->m * xDuplications;
 		int newN = matrix->n * yDuplications;

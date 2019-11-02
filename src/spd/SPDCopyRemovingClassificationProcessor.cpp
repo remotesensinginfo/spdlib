@@ -33,7 +33,7 @@ namespace spdlib
 
     }
     
-    void SPDCopyRemovingClassificationProcessor::processDataColumn(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses, SPDXYPoint *cenPts) throw(SPDProcessingException)
+    void SPDCopyRemovingClassificationProcessor::processDataColumn(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses, SPDXYPoint *cenPts) 
     {
         std::vector<SPDPoint*>::iterator iterPoints;
 		for(std::vector<SPDPulse*>::iterator iterPulses = pulses->begin(); iterPulses != pulses->end(); ++iterPulses)

@@ -76,23 +76,23 @@ namespace spdlib
 	{
 	public:
         SPDShiftData(float xShift, float yShift);
-        void processDataBlockImage(SPDFile *inSPDFile, std::vector<SPDPulse*> ***pulses, float ***imageDataBlock, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast32_t numImgBands, float binSize) throw(SPDProcessingException)
+        void processDataBlockImage(SPDFile *inSPDFile, std::vector<SPDPulse*> ***pulses, float ***imageDataBlock, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast32_t numImgBands, float binSize) 
 		{throw SPDProcessingException("SPDMultiscaleCurvatureGrdClassification cannot output an image layer.");};
         
-        void processDataBlock(SPDFile *inSPDFile, std::vector<SPDPulse*> ***pulses, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, float binSize) throw(SPDProcessingException);
+        void processDataBlock(SPDFile *inSPDFile, std::vector<SPDPulse*> ***pulses, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, float binSize) ;
         
-        void processDataBlockImage(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses, float ***imageDataBlock, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast32_t numImgBands) throw(SPDProcessingException)
+        void processDataBlockImage(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses, float ***imageDataBlock, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast32_t numImgBands) 
 		{throw SPDProcessingException("SPDMultiscaleCurvatureGrdClassification requires processing with a grid.");};
         
-        void processDataBlock(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses) throw(SPDProcessingException)
+        void processDataBlock(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses) 
         {throw SPDProcessingException("SPDMultiscaleCurvatureGrdClassification requires processing with a grid.");};
         
-        std::vector<std::string> getImageBandDescriptions() throw(SPDProcessingException)
+        std::vector<std::string> getImageBandDescriptions() 
         {
             std::vector<std::string> bandNames;
             return bandNames;
         }
-        void setHeaderValues(SPDFile *spdFile) throw(SPDProcessingException)
+        void setHeaderValues(SPDFile *spdFile) 
         {
             spdFile->setXMin(spdFile->getXMin()+xShift);
             spdFile->setXMax(spdFile->getXMax()+xShift);
@@ -152,13 +152,13 @@ namespace spdlib
     {
     public:
         SPDWarpPointData();
-        virtual bool initWarp(std::string gcpFile)throw(SPDWarpException)=0;
-        virtual float calcXOffset(float eastings, float northings)throw(SPDWarpException)=0;
-        virtual float calcYOffset(float eastings, float northings)throw(SPDWarpException)=0;
-        virtual void calcOffset(float eastings, float northings, float *xOff, float *yOff)throw(SPDWarpException);
+        virtual bool initWarp(std::string gcpFile)=0;
+        virtual float calcXOffset(float eastings, float northings)=0;
+        virtual float calcYOffset(float eastings, float northings)=0;
+        virtual void calcOffset(float eastings, float northings, float *xOff, float *yOff);
         virtual ~SPDWarpPointData();
     protected:
-        virtual void readGCPs(std::string gcpFile) throw(SPDException);
+        virtual void readGCPs(std::string gcpFile) ;
         std::vector<SPDGCPImg2MapNode*> *gcps;
     };
     
@@ -166,10 +166,10 @@ namespace spdlib
     {
     public:
         SPDNearestNeighbourWarp();
-        virtual bool initWarp(std::string gcpFile)throw(SPDWarpException);
-        virtual float calcXOffset(float eastings, float northings)throw(SPDWarpException);
-        virtual float calcYOffset(float eastings, float northings)throw(SPDWarpException);
-        virtual void calcOffset(float eastings, float northings, float *xOff, float *yOff)throw(SPDWarpException);
+        virtual bool initWarp(std::string gcpFile);
+        virtual float calcXOffset(float eastings, float northings);
+        virtual float calcYOffset(float eastings, float northings);
+        virtual void calcOffset(float eastings, float northings, float *xOff, float *yOff);
         virtual ~SPDNearestNeighbourWarp();
     protected:
         DelaunayTriangulation *dt;
@@ -180,17 +180,17 @@ namespace spdlib
     {
     public:
         SPDTriangulationPlaneFittingWarp();
-        virtual bool initWarp(std::string gcpFile)throw(SPDWarpException);
-        virtual float calcXOffset(float eastings, float northings)throw(SPDWarpException);
-        virtual float calcYOffset(float eastings, float northings)throw(SPDWarpException);
-        virtual void calcOffset(float eastings, float northings, float *xOff, float *yOff)throw(SPDWarpException);
+        virtual bool initWarp(std::string gcpFile);
+        virtual float calcXOffset(float eastings, float northings);
+        virtual float calcYOffset(float eastings, float northings);
+        virtual void calcOffset(float eastings, float northings, float *xOff, float *yOff);
         virtual ~SPDTriangulationPlaneFittingWarp();
     protected:
         DelaunayTriangulation *dt;
         PointValueMap *values;
         std::list<SPDGCPImg2MapNode*>* normGCPs(std::list<const SPDGCPImg2MapNode*> *gcps, double eastings, double northings);
-		void fitPlane2XPoints(std::list<SPDGCPImg2MapNode*> *normPts, double *a, double *b, double *c) throw(SPDWarpException);
-		void fitPlane2YPoints(std::list<SPDGCPImg2MapNode*> *normPts, double *a, double *b, double *c) throw(SPDWarpException);
+		void fitPlane2XPoints(std::list<SPDGCPImg2MapNode*> *normPts, double *a, double *b, double *c) ;
+		void fitPlane2YPoints(std::list<SPDGCPImg2MapNode*> *normPts, double *a, double *b, double *c) ;
     };
     
     
@@ -198,10 +198,10 @@ namespace spdlib
     {
     public:
         SPDPolynomialWarp(int order);
-        virtual bool initWarp(std::string gcpFile)throw(SPDWarpException);
-        virtual float calcXOffset(float eastings, float northings)throw(SPDWarpException);
-        virtual float calcYOffset(float eastings, float northings)throw(SPDWarpException);
-        virtual void calcOffset(float eastings, float northings, float *xOff, float *yOff)throw(SPDWarpException);
+        virtual bool initWarp(std::string gcpFile);
+        virtual float calcXOffset(float eastings, float northings);
+        virtual float calcYOffset(float eastings, float northings);
+        virtual void calcOffset(float eastings, float northings, float *xOff, float *yOff);
         virtual ~SPDPolynomialWarp();
     protected:
         int polyOrder; // Polynominal order
@@ -222,9 +222,9 @@ namespace spdlib
     class DllExport SPDNonLinearWarp : public SPDImporterProcessor
 	{
 	public:
-		SPDNonLinearWarp(SPDDataExporter *exporter, SPDFile *spdFileOut, SPDWarpPointData *calcOffsets, SPDWarpLocation warpLoc) throw(SPDException);
-		void processImportedPulse(SPDFile *spdFile, SPDPulse *pulse) throw(SPDIOException);
-		void completeFileAndClose(SPDFile *spdFile)throw(SPDIOException);
+		SPDNonLinearWarp(SPDDataExporter *exporter, SPDFile *spdFileOut, SPDWarpPointData *calcOffsets, SPDWarpLocation warpLoc) ;
+		void processImportedPulse(SPDFile *spdFile, SPDPulse *pulse) ;
+		void completeFileAndClose(SPDFile *spdFile);
 		~SPDNonLinearWarp();
 	private:
 		SPDDataExporter *exporter;

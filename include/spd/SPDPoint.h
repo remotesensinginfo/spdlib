@@ -449,8 +449,8 @@ namespace spdlib
 		void copySPDPointH5To(SPDPointH5V2 *pt, SPDPointH5V2 *pt_out);
 		void copySPDPointH5To(SPDPointH5V2 *pt, SPDPoint *pt_out);
         
-        void verticalHeightBinPoints(std::vector<SPDPoint*> *pts, std::vector<SPDPoint*> **bins,boost::uint_fast32_t numBins, float min, float max, bool ignorePtsOverMax, bool ignoreGrd, float minHeightThres)throw(SPDProcessingException);
-        void verticalElevationBinPoints(std::vector<SPDPoint*> *pts, std::vector<SPDPoint*> **bins,boost::uint_fast32_t numBins, float min, float max)throw(SPDProcessingException);
+        void verticalHeightBinPoints(std::vector<SPDPoint*> *pts, std::vector<SPDPoint*> **bins,boost::uint_fast32_t numBins, float min, float max, bool ignorePtsOverMax, bool ignoreGrd, float minHeightThres);
+        void verticalElevationBinPoints(std::vector<SPDPoint*> *pts, std::vector<SPDPoint*> **bins,boost::uint_fast32_t numBins, float min, float max);
 		~SPDPointUtils();		
 	};
 	

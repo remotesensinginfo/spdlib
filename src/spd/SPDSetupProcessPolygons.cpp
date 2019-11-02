@@ -60,7 +60,7 @@ namespace spdlib
 		
 	}
 		
-	void SPDSetupProcessShapefilePolygons::processPolygons(std::string spdInputFile, std::string inputLayer, std::string outputLayer, bool deleteOutShpIfExists, bool copyAttributes, SPDPolygonProcessor *processor) throw(SPDProcessingException)
+	void SPDSetupProcessShapefilePolygons::processPolygons(std::string spdInputFile, std::string inputLayer, std::string outputLayer, bool deleteOutShpIfExists, bool copyAttributes, SPDPolygonProcessor *processor) 
 	{
 		OGRRegisterAll();
 		
@@ -153,7 +153,7 @@ namespace spdlib
 		
 	}
 	
-	void SPDSetupProcessShapefilePolygons::processPolygons(std::string spdInputFile, std::string inputLayer, std::string outputASCII, SPDPolygonProcessor *processor) throw(SPDProcessingException)
+	void SPDSetupProcessShapefilePolygons::processPolygons(std::string spdInputFile, std::string inputLayer, std::string outputASCII, SPDPolygonProcessor *processor) 
 	{
 		OGRRegisterAll();
 		

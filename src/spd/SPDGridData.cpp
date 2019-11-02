@@ -33,7 +33,7 @@ namespace spdlib
 		
 	}
 	
-	std::list<SPDPulse*>*** SPDGridData::gridData(std::list<SPDPulse*>* pls, SPDFile *spdFile) throw(SPDProcessingException)
+	std::list<SPDPulse*>*** SPDGridData::gridData(std::list<SPDPulse*>* pls, SPDFile *spdFile) 
 	{
 		try 
 		{
@@ -73,7 +73,7 @@ namespace spdlib
 		}
 	}
 	
-	std::list<SPDPulse*>*** SPDGridData::gridData(std::vector<SPDPulse*>* pls, SPDFile *spdFile) throw(SPDProcessingException)
+	std::list<SPDPulse*>*** SPDGridData::gridData(std::vector<SPDPulse*>* pls, SPDFile *spdFile) 
 	{
 		try 
 		{
@@ -113,7 +113,7 @@ namespace spdlib
 		}
 	}
 
-    void SPDGridData::gridData(std::list<SPDPulse*>* pls, SPDFile *spdFile, std::list<SPDPulse*>*** grid, OGREnvelope *env, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, float binsize) throw(SPDProcessingException)
+    void SPDGridData::gridData(std::list<SPDPulse*>* pls, SPDFile *spdFile, std::list<SPDPulse*>*** grid, OGREnvelope *env, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, float binsize) 
     {
         try 
 		{
@@ -148,7 +148,7 @@ namespace spdlib
 		}
     }
     
-    void SPDGridData::gridData(std::vector<SPDPulse*>* pls, SPDFile *spdFile, std::list<SPDPulse*>*** grid, OGREnvelope *env, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, float binsize) throw(SPDProcessingException)
+    void SPDGridData::gridData(std::vector<SPDPulse*>* pls, SPDFile *spdFile, std::list<SPDPulse*>*** grid, OGREnvelope *env, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, float binsize) 
     {
         try 
 		{
@@ -183,7 +183,7 @@ namespace spdlib
 		}
     }
     
-    void SPDGridData::reGridData(boost::uint_fast16_t indexType, std::vector<SPDPulse*> ***inGridPls, boost::uint_fast32_t inXSize, boost::uint_fast32_t inYSize, std::vector<SPDPulse*> ***outGridPls, boost::uint_fast32_t outXSize, boost::uint_fast32_t outYSize, double originX, double originY, float outBinSize) throw(SPDProcessingException)
+    void SPDGridData::reGridData(boost::uint_fast16_t indexType, std::vector<SPDPulse*> ***inGridPls, boost::uint_fast32_t inXSize, boost::uint_fast32_t inYSize, std::vector<SPDPulse*> ***outGridPls, boost::uint_fast32_t outXSize, boost::uint_fast32_t outYSize, double originX, double originY, float outBinSize) 
     {
         try 
 		{
@@ -218,7 +218,7 @@ namespace spdlib
 		}
     }
     
-    void SPDGridData::cartGridDataIgnoringOutGrid(std::vector<SPDPulse*>* pls, std::vector<SPDPulse*>*** grid, OGREnvelope *env, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, float binsize) throw(SPDProcessingException)
+    void SPDGridData::cartGridDataIgnoringOutGrid(std::vector<SPDPulse*>* pls, std::vector<SPDPulse*>*** grid, OGREnvelope *env, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, float binsize) 
     {
         if((xSize < 1) | (ySize < 1))
 		{
@@ -297,7 +297,7 @@ namespace spdlib
     
 	/* Private functions */
 	
-	std::list<SPDPulse*>*** SPDGridData::gridDataCartesian(std::list<SPDPulse*>* pls, SPDFile *spdFile) throw(SPDProcessingException)
+	std::list<SPDPulse*>*** SPDGridData::gridDataCartesian(std::list<SPDPulse*>* pls, SPDFile *spdFile) 
 	{
 		boost::uint_fast32_t xSize = 0;
 		boost::uint_fast32_t ySize = 0;
@@ -440,7 +440,7 @@ namespace spdlib
 		return griddedPls;
 	}
 
-	std::list<SPDPulse*>*** SPDGridData::gridDataSpherical(std::list<SPDPulse*>* pls, SPDFile *spdFile) throw(SPDProcessingException)
+	std::list<SPDPulse*>*** SPDGridData::gridDataSpherical(std::list<SPDPulse*>* pls, SPDFile *spdFile) 
 	{
 		boost::uint_fast32_t xSize = 0;
 		boost::uint_fast32_t ySize = 0;
@@ -567,12 +567,12 @@ namespace spdlib
 		return griddedPls;
 	}
     
-    std::list<SPDPulse*>*** SPDGridData::gridDataCylindrical(std::list<SPDPulse*>* pls, SPDFile *spdFile) throw(SPDProcessingException)
+    std::list<SPDPulse*>*** SPDGridData::gridDataCylindrical(std::list<SPDPulse*>* pls, SPDFile *spdFile) 
 	{
 	    throw SPDProcessingException("Cylindrical gridding not implemented yet... gridDataCylindrical");      
     }  
       
-    std::list<SPDPulse*>*** SPDGridData::gridDataPolar(std::list<SPDPulse*>* pls, SPDFile *spdFile) throw(SPDProcessingException)
+    std::list<SPDPulse*>*** SPDGridData::gridDataPolar(std::list<SPDPulse*>* pls, SPDFile *spdFile) 
 	{
 		boost::uint_fast32_t xSize = 0;
 		boost::uint_fast32_t ySize = 0;
@@ -709,7 +709,7 @@ namespace spdlib
         return griddedPls;
 	}
     
-    std::list<SPDPulse*>*** SPDGridData::gridDataScan(std::list<SPDPulse*>* pls, SPDFile *spdFile) throw(SPDProcessingException)
+    std::list<SPDPulse*>*** SPDGridData::gridDataScan(std::list<SPDPulse*>* pls, SPDFile *spdFile) 
 	{
 		boost::uint_fast32_t xSize = 0;
 		boost::uint_fast32_t ySize = 0;
@@ -845,7 +845,7 @@ namespace spdlib
 	}
     
     
-	std::list<SPDPulse*>*** SPDGridData::gridDataCartesian(std::vector<SPDPulse*>* pls, SPDFile *spdFile) throw(SPDProcessingException)
+	std::list<SPDPulse*>*** SPDGridData::gridDataCartesian(std::vector<SPDPulse*>* pls, SPDFile *spdFile) 
 	{
 		boost::uint_fast32_t xSize = 0;
 		boost::uint_fast32_t ySize = 0;
@@ -988,7 +988,7 @@ namespace spdlib
 		return griddedPls;
 	}
 	
-	std::list<SPDPulse*>*** SPDGridData::gridDataSpherical(std::vector<SPDPulse*>* pls, SPDFile *spdFile) throw(SPDProcessingException)
+	std::list<SPDPulse*>*** SPDGridData::gridDataSpherical(std::vector<SPDPulse*>* pls, SPDFile *spdFile) 
 	{
 		boost::uint_fast32_t xSize = 0;
 		boost::uint_fast32_t ySize = 0;
@@ -1115,12 +1115,12 @@ namespace spdlib
 		return griddedPls;
     }
     
-    std::list<SPDPulse*>*** SPDGridData::gridDataCylindrical(std::vector<SPDPulse*>* pls, SPDFile *spdFile) throw(SPDProcessingException)
+    std::list<SPDPulse*>*** SPDGridData::gridDataCylindrical(std::vector<SPDPulse*>* pls, SPDFile *spdFile) 
 	{
 	    throw SPDProcessingException("Cylindrical gridding not implemented yet... gridDataCylindrical");    
     }
     
-    std::list<SPDPulse*>*** SPDGridData::gridDataPolar(std::vector<SPDPulse*>* pls, SPDFile *spdFile) throw(SPDProcessingException)
+    std::list<SPDPulse*>*** SPDGridData::gridDataPolar(std::vector<SPDPulse*>* pls, SPDFile *spdFile) 
 	{
 		boost::uint_fast32_t xSize = 0;
 		boost::uint_fast32_t ySize = 0;
@@ -1257,7 +1257,7 @@ namespace spdlib
         return griddedPls;
 	}
 
-    std::list<SPDPulse*>*** SPDGridData::gridDataScan(std::vector<SPDPulse*>* pls, SPDFile *spdFile) throw(SPDProcessingException)
+    std::list<SPDPulse*>*** SPDGridData::gridDataScan(std::vector<SPDPulse*>* pls, SPDFile *spdFile) 
 	{
 		boost::uint_fast32_t xSize = 0;
 		boost::uint_fast32_t ySize = 0;
@@ -1392,7 +1392,7 @@ namespace spdlib
 		return griddedPls;
 	}
     
-    void SPDGridData::gridDataCartesian(std::list<SPDPulse*>* pls, std::list<SPDPulse*>*** grid, OGREnvelope *env, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, float binsize) throw(SPDProcessingException)
+    void SPDGridData::gridDataCartesian(std::list<SPDPulse*>* pls, std::list<SPDPulse*>*** grid, OGREnvelope *env, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, float binsize) 
     {
         if((xSize < 1) | (ySize < 1))
 		{
@@ -1476,7 +1476,7 @@ namespace spdlib
 		}
     }
     
-    void SPDGridData::gridDataSpherical(std::list<SPDPulse*>* pls, std::list<SPDPulse*>*** grid, OGREnvelope *env, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, float binsize) throw(SPDProcessingException)
+    void SPDGridData::gridDataSpherical(std::list<SPDPulse*>* pls, std::list<SPDPulse*>*** grid, OGREnvelope *env, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, float binsize) 
     {
         if((xSize < 1) | (ySize < 1))
 		{
@@ -1561,17 +1561,17 @@ namespace spdlib
 
     }
 
-    void SPDGridData::gridDataCylindrical(std::list<SPDPulse*>* pls, std::list<SPDPulse*>*** grid, OGREnvelope *env, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, float binsize) throw(SPDProcessingException)
+    void SPDGridData::gridDataCylindrical(std::list<SPDPulse*>* pls, std::list<SPDPulse*>*** grid, OGREnvelope *env, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, float binsize) 
     {
         throw SPDProcessingException("Cylindrical gridding not implemented yet... gridDataCylindrical");
     }
     
-    void SPDGridData::gridDataPolar(std::list<SPDPulse*>* pls, std::list<SPDPulse*>*** grid, OGREnvelope *env, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, float binsize) throw(SPDProcessingException)
+    void SPDGridData::gridDataPolar(std::list<SPDPulse*>* pls, std::list<SPDPulse*>*** grid, OGREnvelope *env, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, float binsize) 
     {
         throw SPDProcessingException("Polar gridding not implemented yet... gridDataPolar");
     }
     
-    void SPDGridData::gridDataScan(std::list<SPDPulse*>* pls, std::list<SPDPulse*>*** grid, OGREnvelope *env, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, float binsize) throw(SPDProcessingException)
+    void SPDGridData::gridDataScan(std::list<SPDPulse*>* pls, std::list<SPDPulse*>*** grid, OGREnvelope *env, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, float binsize) 
     {
         if((xSize < 1) | (ySize < 1))
 		{
@@ -1655,7 +1655,7 @@ namespace spdlib
 		}
     }
     
-    void SPDGridData::gridDataCartesian(std::vector<SPDPulse*>* pls, std::list<SPDPulse*>*** grid, OGREnvelope *env, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, float binsize) throw(SPDProcessingException)
+    void SPDGridData::gridDataCartesian(std::vector<SPDPulse*>* pls, std::list<SPDPulse*>*** grid, OGREnvelope *env, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, float binsize) 
     {
         if((xSize < 1) | (ySize < 1))
 		{
@@ -1747,7 +1747,7 @@ namespace spdlib
 		}
     }
     
-    void SPDGridData::gridDataSpherical(std::vector<SPDPulse*>* pls, std::list<SPDPulse*>*** grid, OGREnvelope *env, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, float binsize) throw(SPDProcessingException)
+    void SPDGridData::gridDataSpherical(std::vector<SPDPulse*>* pls, std::list<SPDPulse*>*** grid, OGREnvelope *env, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, float binsize) 
     {
         if((xSize < 1) | (ySize < 1))
 		{
@@ -1831,17 +1831,17 @@ namespace spdlib
 		}
     }
 
-    void SPDGridData::gridDataCylindrical(std::vector<SPDPulse*>* pls, std::list<SPDPulse*>*** grid, OGREnvelope *env, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, float binsize) throw(SPDProcessingException)
+    void SPDGridData::gridDataCylindrical(std::vector<SPDPulse*>* pls, std::list<SPDPulse*>*** grid, OGREnvelope *env, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, float binsize) 
     {
         throw SPDProcessingException("Cylindrical gridding not implemented yet... gridDataCylindrical");
     }
     
-    void SPDGridData::gridDataPolar(std::vector<SPDPulse*>* pls, std::list<SPDPulse*>*** grid, OGREnvelope *env, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, float binsize) throw(SPDProcessingException)
+    void SPDGridData::gridDataPolar(std::vector<SPDPulse*>* pls, std::list<SPDPulse*>*** grid, OGREnvelope *env, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, float binsize) 
     {
         throw SPDProcessingException("Polar gridding not implemented yet... gridDataPolar");
     }
     
-    void SPDGridData::gridDataScan(std::vector<SPDPulse*>* pls, std::list<SPDPulse*>*** grid, OGREnvelope *env, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, float binsize) throw(SPDProcessingException)
+    void SPDGridData::gridDataScan(std::vector<SPDPulse*>* pls, std::list<SPDPulse*>*** grid, OGREnvelope *env, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, float binsize) 
     {
         if((xSize < 1) | (ySize < 1))
 		{
@@ -1929,7 +1929,7 @@ namespace spdlib
     
     
     
-	void SPDGridData::reGridDataCartesian(std::vector<SPDPulse*> ***inGridPls, boost::uint_fast32_t inXSize, boost::uint_fast32_t inYSize, std::vector<SPDPulse*> ***outGridPls, boost::uint_fast32_t outXSize, boost::uint_fast32_t outYSize, double originX, double originY, float outBinSize) throw(SPDProcessingException)
+	void SPDGridData::reGridDataCartesian(std::vector<SPDPulse*> ***inGridPls, boost::uint_fast32_t inXSize, boost::uint_fast32_t inYSize, std::vector<SPDPulse*> ***outGridPls, boost::uint_fast32_t outXSize, boost::uint_fast32_t outYSize, double originX, double originY, float outBinSize) 
     {
         if((outXSize < 1) | (outYSize < 1))
 		{
@@ -2009,7 +2009,7 @@ namespace spdlib
 		}
     }
     
-    void SPDGridData::reGridDataSpherical(std::vector<SPDPulse*> ***inGridPls, boost::uint_fast32_t inXSize, boost::uint_fast32_t inYSize, std::vector<SPDPulse*> ***outGridPls, boost::uint_fast32_t outXSize, boost::uint_fast32_t outYSize, double originX, double originY, float outBinSize) throw(SPDProcessingException)
+    void SPDGridData::reGridDataSpherical(std::vector<SPDPulse*> ***inGridPls, boost::uint_fast32_t inXSize, boost::uint_fast32_t inYSize, std::vector<SPDPulse*> ***outGridPls, boost::uint_fast32_t outXSize, boost::uint_fast32_t outYSize, double originX, double originY, float outBinSize) 
     {
         if((outXSize < 1) | (outYSize < 1))
 		{
@@ -2088,17 +2088,17 @@ namespace spdlib
 		}
     }
     
-    void SPDGridData::reGridDataCylindrical(std::vector<SPDPulse*> ***inGridPls, boost::uint_fast32_t inXSize, boost::uint_fast32_t inYSize, std::vector<SPDPulse*> ***outGridPls, boost::uint_fast32_t outXSize, boost::uint_fast32_t outYSize, double originX, double originY, float outBinSize) throw(SPDProcessingException)
+    void SPDGridData::reGridDataCylindrical(std::vector<SPDPulse*> ***inGridPls, boost::uint_fast32_t inXSize, boost::uint_fast32_t inYSize, std::vector<SPDPulse*> ***outGridPls, boost::uint_fast32_t outXSize, boost::uint_fast32_t outYSize, double originX, double originY, float outBinSize) 
     {
         throw SPDProcessingException("Cylindrical gridding not implemented yet... reGridDataCylindrical");
     }
     
-    void SPDGridData::reGridDataPolar(std::vector<SPDPulse*> ***inGridPls, boost::uint_fast32_t inXSize, boost::uint_fast32_t inYSize, std::vector<SPDPulse*> ***outGridPls, boost::uint_fast32_t outXSize, boost::uint_fast32_t outYSize, double originX, double originY, float outBinSize) throw(SPDProcessingException)
+    void SPDGridData::reGridDataPolar(std::vector<SPDPulse*> ***inGridPls, boost::uint_fast32_t inXSize, boost::uint_fast32_t inYSize, std::vector<SPDPulse*> ***outGridPls, boost::uint_fast32_t outXSize, boost::uint_fast32_t outYSize, double originX, double originY, float outBinSize) 
     {
         throw SPDProcessingException("Polar gridding not implemented yet... reGridDataPolar");
     }
         
-    void SPDGridData::reGridDataScan(std::vector<SPDPulse*> ***inGridPls, boost::uint_fast32_t inXSize, boost::uint_fast32_t inYSize, std::vector<SPDPulse*> ***outGridPls, boost::uint_fast32_t outXSize, boost::uint_fast32_t outYSize, double originX, double originY, float outBinSize) throw(SPDProcessingException)
+    void SPDGridData::reGridDataScan(std::vector<SPDPulse*> ***inGridPls, boost::uint_fast32_t inXSize, boost::uint_fast32_t inYSize, std::vector<SPDPulse*> ***outGridPls, boost::uint_fast32_t outXSize, boost::uint_fast32_t outYSize, double originX, double originY, float outBinSize) 
     {
         if((outXSize < 1) | (outYSize < 1))
 		{

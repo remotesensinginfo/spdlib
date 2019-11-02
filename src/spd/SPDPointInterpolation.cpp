@@ -35,7 +35,7 @@ namespace spdlib
         this->maxNumPtsPerBin = maxNumPtsPerBin;
 	}
     
-    std::vector<SPDPoint*>* SPDPointInterpolator::findPoints(std::list<SPDPulse*> ***pulses, boost::uint_fast32_t numXBins, boost::uint_fast32_t numYBins, boost::uint_fast16_t ptClass) throw(SPDProcessingException)
+    std::vector<SPDPoint*>* SPDPointInterpolator::findPoints(std::list<SPDPulse*> ***pulses, boost::uint_fast32_t numXBins, boost::uint_fast32_t numYBins, boost::uint_fast16_t ptClass) 
     {
         std::vector<SPDPoint*> *points = new std::vector<SPDPoint*>();
         std::list<SPDPulse*>::iterator iterPulses;
@@ -162,7 +162,7 @@ namespace spdlib
         return points;
     }
     
-    std::vector<SPDPoint*>* SPDPointInterpolator::findPoints(std::vector<SPDPulse*> ***pulses, boost::uint_fast32_t numXBins, boost::uint_fast32_t numYBins, boost::uint_fast16_t ptClass) throw(SPDProcessingException)
+    std::vector<SPDPoint*>* SPDPointInterpolator::findPoints(std::vector<SPDPulse*> ***pulses, boost::uint_fast32_t numXBins, boost::uint_fast32_t numYBins, boost::uint_fast16_t ptClass) 
     {
         std::vector<SPDPoint*> *points = new std::vector<SPDPoint*>();
         std::vector<SPDPulse*>::iterator iterPulses;
@@ -290,7 +290,7 @@ namespace spdlib
         return points;
     }
     
-    std::vector<SPDPoint*>* SPDPointInterpolator::findPoints(std::list<SPDPulse*> *pulses, boost::uint_fast16_t ptClass) throw(SPDProcessingException)
+    std::vector<SPDPoint*>* SPDPointInterpolator::findPoints(std::list<SPDPulse*> *pulses, boost::uint_fast16_t ptClass) 
     {
         std::vector<SPDPoint*> *points = new std::vector<SPDPoint*>();
         std::list<SPDPulse*>::iterator iterPulses;
@@ -340,7 +340,7 @@ namespace spdlib
         return points;
     }
     
-    std::vector<SPDPoint*>* SPDPointInterpolator::findPoints(std::vector<SPDPulse*> *pulses, boost::uint_fast16_t ptClass) throw(SPDProcessingException)
+    std::vector<SPDPoint*>* SPDPointInterpolator::findPoints(std::vector<SPDPulse*> *pulses, boost::uint_fast16_t ptClass) 
     {
         std::vector<SPDPoint*> *points = new std::vector<SPDPoint*>();
         std::vector<SPDPulse*>::iterator iterPulses;
@@ -391,7 +391,7 @@ namespace spdlib
         return points;
     }
     
-    void SPDPointInterpolator::thinPoints(std::vector<SPDPoint*> *points) throw(SPDProcessingException)
+    void SPDPointInterpolator::thinPoints(std::vector<SPDPoint*> *points) 
     {
         try
         {
@@ -417,7 +417,7 @@ namespace spdlib
 
 	}
 	
-    void SPDTriangulationPointInterpolator::initInterpolator(std::list<SPDPulse*> ***pulses, boost::uint_fast32_t numXBins, boost::uint_fast32_t numYBins, boost::uint_fast16_t ptClass) throw(SPDProcessingException)
+    void SPDTriangulationPointInterpolator::initInterpolator(std::list<SPDPulse*> ***pulses, boost::uint_fast32_t numXBins, boost::uint_fast32_t numYBins, boost::uint_fast16_t ptClass) 
     {
         try
         {
@@ -511,7 +511,7 @@ namespace spdlib
         initialised = true;
     }
     
-    void SPDTriangulationPointInterpolator::initInterpolator(std::vector<SPDPulse*> ***pulses, boost::uint_fast32_t numXBins, boost::uint_fast32_t numYBins, boost::uint_fast16_t ptClass) throw(SPDProcessingException)
+    void SPDTriangulationPointInterpolator::initInterpolator(std::vector<SPDPulse*> ***pulses, boost::uint_fast32_t numXBins, boost::uint_fast32_t numYBins, boost::uint_fast16_t ptClass) 
     {
         try
         {
@@ -605,7 +605,7 @@ namespace spdlib
         initialised = true;
     }
     
-    void SPDTriangulationPointInterpolator::initInterpolator(std::list<SPDPulse*> *pulses, boost::uint_fast16_t ptClass) throw(SPDProcessingException)
+    void SPDTriangulationPointInterpolator::initInterpolator(std::list<SPDPulse*> *pulses, boost::uint_fast16_t ptClass) 
     {
         try
         {
@@ -699,7 +699,7 @@ namespace spdlib
         initialised = true;
     }
     
-    void SPDTriangulationPointInterpolator::initInterpolator(std::vector<SPDPulse*> *pulses, boost::uint_fast16_t ptClass) throw(SPDProcessingException)
+    void SPDTriangulationPointInterpolator::initInterpolator(std::vector<SPDPulse*> *pulses, boost::uint_fast16_t ptClass) 
     {
         try
         {
@@ -793,7 +793,7 @@ namespace spdlib
         initialised = true;
     }
 	
-	void SPDTriangulationPointInterpolator::resetInterpolator() throw(SPDProcessingException)
+	void SPDTriangulationPointInterpolator::resetInterpolator() 
 	{
         totalNumPoints = 0;
         if(initialised)
@@ -826,7 +826,7 @@ namespace spdlib
 		this->gridResolution = gridResolution;
 	}
 	
-	void SPDGridIndexPointInterpolator::initInterpolator(std::list<SPDPulse*> ***pulses, boost::uint_fast32_t numXBins, boost::uint_fast32_t numYBins, boost::uint_fast16_t ptClass) throw(SPDProcessingException)
+	void SPDGridIndexPointInterpolator::initInterpolator(std::list<SPDPulse*> ***pulses, boost::uint_fast32_t numXBins, boost::uint_fast32_t numYBins, boost::uint_fast16_t ptClass) 
 	{
         try
         {
@@ -847,7 +847,7 @@ namespace spdlib
         initialised = true;
 	}
 	
-	void SPDGridIndexPointInterpolator::initInterpolator(std::vector<SPDPulse*> ***pulses, boost::uint_fast32_t numXBins, boost::uint_fast32_t numYBins, boost::uint_fast16_t ptClass) throw(SPDProcessingException)
+	void SPDGridIndexPointInterpolator::initInterpolator(std::vector<SPDPulse*> ***pulses, boost::uint_fast32_t numXBins, boost::uint_fast32_t numYBins, boost::uint_fast16_t ptClass) 
 	{
         try
         {
@@ -868,7 +868,7 @@ namespace spdlib
         initialised = true;
 	}
 	
-	void SPDGridIndexPointInterpolator::initInterpolator(std::list<SPDPulse*> *pulses, boost::uint_fast16_t ptClass) throw(SPDProcessingException)
+	void SPDGridIndexPointInterpolator::initInterpolator(std::list<SPDPulse*> *pulses, boost::uint_fast16_t ptClass) 
 	{
         try
         {
@@ -889,7 +889,7 @@ namespace spdlib
         initialised = true;
 	}
 	
-	void SPDGridIndexPointInterpolator::initInterpolator(std::vector<SPDPulse*> *pulses, boost::uint_fast16_t ptClass) throw(SPDProcessingException)
+	void SPDGridIndexPointInterpolator::initInterpolator(std::vector<SPDPulse*> *pulses, boost::uint_fast16_t ptClass) 
 	{
         try
         {
@@ -910,7 +910,7 @@ namespace spdlib
         initialised = true;
 	}
 
-	void SPDGridIndexPointInterpolator::resetInterpolator() throw(SPDProcessingException)
+	void SPDGridIndexPointInterpolator::resetInterpolator() 
 	{
 		if(initialised)
 		{
@@ -940,7 +940,7 @@ namespace spdlib
         this->numLayers = numLayers;
     }
 		
-    void SPDRFBPointInterpolator::initInterpolator(std::list<SPDPulse*> ***pulses, boost::uint_fast32_t numXBins, boost::uint_fast32_t numYBins, boost::uint_fast16_t ptClass) throw(SPDProcessingException)
+    void SPDRFBPointInterpolator::initInterpolator(std::list<SPDPulse*> ***pulses, boost::uint_fast32_t numXBins, boost::uint_fast32_t numYBins, boost::uint_fast16_t ptClass) 
     {
         try
         {
@@ -961,7 +961,7 @@ namespace spdlib
         initialised = true;
     }
     
-    void SPDRFBPointInterpolator::initInterpolator(std::vector<SPDPulse*> ***pulses, boost::uint_fast32_t numXBins, boost::uint_fast32_t numYBins, boost::uint_fast16_t ptClass) throw(SPDProcessingException)
+    void SPDRFBPointInterpolator::initInterpolator(std::vector<SPDPulse*> ***pulses, boost::uint_fast32_t numXBins, boost::uint_fast32_t numYBins, boost::uint_fast16_t ptClass) 
     {
         try
         {
@@ -1107,7 +1107,7 @@ namespace spdlib
         initialised = true;
     }
     
-	void SPDRFBPointInterpolator::initInterpolator(std::list<SPDPulse*> *pulses, boost::uint_fast16_t ptClass) throw(SPDProcessingException)
+	void SPDRFBPointInterpolator::initInterpolator(std::list<SPDPulse*> *pulses, boost::uint_fast16_t ptClass) 
     {
         try
         {
@@ -1131,7 +1131,7 @@ namespace spdlib
         initialised = true;
     }
     
-	void SPDRFBPointInterpolator::initInterpolator(std::vector<SPDPulse*> *pulses, boost::uint_fast16_t ptClass) throw(SPDProcessingException)
+	void SPDRFBPointInterpolator::initInterpolator(std::vector<SPDPulse*> *pulses, boost::uint_fast16_t ptClass) 
     {
         try
         {
@@ -1152,7 +1152,7 @@ namespace spdlib
         initialised = true;
     }
     
-	float SPDRFBPointInterpolator::getValue(double eastings, double northings) throw(SPDProcessingException)
+	float SPDRFBPointInterpolator::getValue(double eastings, double northings) 
     {
         float val = 0.0;
         if(initialised)
@@ -1166,7 +1166,7 @@ namespace spdlib
         return val;
     }
     
-	void SPDRFBPointInterpolator::resetInterpolator() throw(SPDProcessingException)
+	void SPDRFBPointInterpolator::resetInterpolator() 
     {
         if(initialised)
 		{
@@ -1206,7 +1206,7 @@ namespace spdlib
 		
 	}
 	
-	float SPDNearestNeighbourInterpolator::getValue(double eastings, double northings) throw(SPDProcessingException)
+	float SPDNearestNeighbourInterpolator::getValue(double eastings, double northings) 
 	{
 		double outElevation = std::numeric_limits<float>::signaling_NaN();
 		if(initialised)
@@ -1239,7 +1239,7 @@ namespace spdlib
         cPt = new SPD3DDataPt();
 	}
 	
-	float SPDTINPlaneFitInterpolator::getValue(double eastings, double northings) throw(SPDProcessingException)
+	float SPDTINPlaneFitInterpolator::getValue(double eastings, double northings) 
 	{
 		double outElevation = 0;
 		if(initialised)
@@ -1335,7 +1335,7 @@ namespace spdlib
 		this->stdDevDist = stdDevDist;
 	}
 	
-	float SPDStdDevFilterInterpolator::getValue(double eastings, double northings) throw(SPDProcessingException)
+	float SPDStdDevFilterInterpolator::getValue(double eastings, double northings) 
 	{
 		float returnZVal = std::numeric_limits<float>::signaling_NaN();
 		try 
@@ -1564,7 +1564,7 @@ namespace spdlib
         this->minNumPoints = minNumPoints;
 	}
 	
-	float SPDTPSRadiusInterpolator::getValue(double eastings, double northings) throw(SPDProcessingException)
+	float SPDTPSRadiusInterpolator::getValue(double eastings, double northings) 
 	{
         float newZValue = std::numeric_limits<float>::signaling_NaN();
         std::vector<SPDPoint*> *splinePts = new std::vector<SPDPoint*>();
@@ -1633,7 +1633,7 @@ namespace spdlib
         this->numPoints = numPoints;
 	}
 	
-	float SPDTPSNumPtsInterpolator::getValue(double eastings, double northings) throw(SPDProcessingException)
+	float SPDTPSNumPtsInterpolator::getValue(double eastings, double northings) 
 	{
         float newZValue = std::numeric_limits<float>::signaling_NaN();
         std::vector<SPDPoint*> *splinePts = new std::vector<SPDPoint*>();
@@ -1693,7 +1693,7 @@ namespace spdlib
 
     }
     
-    float SPDNaturalNeighborCGALPointInterpolator::getValue(double eastings, double northings) throw(SPDProcessingException)
+    float SPDNaturalNeighborCGALPointInterpolator::getValue(double eastings, double northings) 
     {
         float newZValue = std::numeric_limits<float>::signaling_NaN(); 
         if(initialised)
@@ -1745,7 +1745,7 @@ namespace spdlib
         this->maxNumPtsPerBin = maxNumPtsPerBin;
 	}
     
-    std::vector<SPDPoint*>* SPDSphericalPointInterpolator::findPoints(std::list<SPDPulse*> ***pulses, boost::uint_fast32_t numXBins, boost::uint_fast32_t numYBins, boost::uint_fast16_t ptClass) throw(SPDProcessingException)
+    std::vector<SPDPoint*>* SPDSphericalPointInterpolator::findPoints(std::list<SPDPulse*> ***pulses, boost::uint_fast32_t numXBins, boost::uint_fast32_t numYBins, boost::uint_fast16_t ptClass) 
     {
         std::vector<SPDPoint*> *points = new std::vector<SPDPoint*>();
         std::list<SPDPulse*>::iterator iterPulses;
@@ -1814,7 +1814,7 @@ namespace spdlib
         return points;
     }
     
-    std::vector<SPDPoint*>* SPDSphericalPointInterpolator::findPoints(std::vector<SPDPulse*> ***pulses, boost::uint_fast32_t numXBins, boost::uint_fast32_t numYBins, boost::uint_fast16_t ptClass) throw(SPDProcessingException)
+    std::vector<SPDPoint*>* SPDSphericalPointInterpolator::findPoints(std::vector<SPDPulse*> ***pulses, boost::uint_fast32_t numXBins, boost::uint_fast32_t numYBins, boost::uint_fast16_t ptClass) 
     {
         std::vector<SPDPoint*> *points = new std::vector<SPDPoint*>();
         std::vector<SPDPulse*>::iterator iterPulses;
@@ -1883,7 +1883,7 @@ namespace spdlib
         return points;
     }
     
-    std::vector<SPDPoint*>* SPDSphericalPointInterpolator::findPoints(std::list<SPDPulse*> *pulses, boost::uint_fast16_t ptClass) throw(SPDProcessingException)
+    std::vector<SPDPoint*>* SPDSphericalPointInterpolator::findPoints(std::list<SPDPulse*> *pulses, boost::uint_fast16_t ptClass) 
     {
         std::vector<SPDPoint*> *points = new std::vector<SPDPoint*>();
         std::list<SPDPulse*>::iterator iterPulses;
@@ -1946,7 +1946,7 @@ namespace spdlib
         return points;
     }
     
-    std::vector<SPDPoint*>* SPDSphericalPointInterpolator::findPoints(std::vector<SPDPulse*> *pulses, boost::uint_fast16_t ptClass) throw(SPDProcessingException)
+    std::vector<SPDPoint*>* SPDSphericalPointInterpolator::findPoints(std::vector<SPDPulse*> *pulses, boost::uint_fast16_t ptClass) 
     {
         std::vector<SPDPoint*> *points = new std::vector<SPDPoint*>();
         std::vector<SPDPulse*>::iterator iterPulses;
@@ -2009,7 +2009,7 @@ namespace spdlib
         return points;
     }
     
-    void SPDSphericalPointInterpolator::thinPoints(std::vector<SPDPoint*> *points) throw(SPDProcessingException)
+    void SPDSphericalPointInterpolator::thinPoints(std::vector<SPDPoint*> *points) 
     {
         try
         {
@@ -2038,7 +2038,7 @@ namespace spdlib
         returnNaNValue = false;
 	}
 	
-    void SPDTriangulationSphericalPointInterpolator::initInterpolator(std::list<SPDPulse*> ***pulses, boost::uint_fast32_t numXBins, boost::uint_fast32_t numYBins, boost::uint_fast16_t ptClass) throw(SPDProcessingException)
+    void SPDTriangulationSphericalPointInterpolator::initInterpolator(std::list<SPDPulse*> ***pulses, boost::uint_fast32_t numXBins, boost::uint_fast32_t numYBins, boost::uint_fast16_t ptClass) 
     {
         try
         {
@@ -2074,7 +2074,7 @@ namespace spdlib
         initialised = true;
     }
     
-    void SPDTriangulationSphericalPointInterpolator::initInterpolator(std::vector<SPDPulse*> ***pulses, boost::uint_fast32_t numXBins, boost::uint_fast32_t numYBins, boost::uint_fast16_t ptClass) throw(SPDProcessingException)
+    void SPDTriangulationSphericalPointInterpolator::initInterpolator(std::vector<SPDPulse*> ***pulses, boost::uint_fast32_t numXBins, boost::uint_fast32_t numYBins, boost::uint_fast16_t ptClass) 
     {
         try
         {
@@ -2114,7 +2114,7 @@ namespace spdlib
         initialised = true;
     }
     
-    void SPDTriangulationSphericalPointInterpolator::initInterpolator(std::list<SPDPulse*> *pulses, boost::uint_fast16_t ptClass) throw(SPDProcessingException)
+    void SPDTriangulationSphericalPointInterpolator::initInterpolator(std::list<SPDPulse*> *pulses, boost::uint_fast16_t ptClass) 
     {
         try
         {
@@ -2153,7 +2153,7 @@ namespace spdlib
         initialised = true;
     }
     
-    void SPDTriangulationSphericalPointInterpolator::initInterpolator(std::vector<SPDPulse*> *pulses, boost::uint_fast16_t ptClass) throw(SPDProcessingException)
+    void SPDTriangulationSphericalPointInterpolator::initInterpolator(std::vector<SPDPulse*> *pulses, boost::uint_fast16_t ptClass) 
     {
         try
         {
@@ -2192,7 +2192,7 @@ namespace spdlib
         initialised = true;
     }
 	
-	void SPDTriangulationSphericalPointInterpolator::resetInterpolator() throw(SPDProcessingException)
+	void SPDTriangulationSphericalPointInterpolator::resetInterpolator() 
 	{
         if(initialised)
         {
@@ -2238,7 +2238,7 @@ namespace spdlib
 		this->gridResolution = gridResolution;
 	}
 	
-	void SPDGridIndexSphericalPointInterpolator::initInterpolator(std::list<SPDPulse*> ***pulses, boost::uint_fast32_t numXBins, boost::uint_fast32_t numYBins, boost::uint_fast16_t ptClass) throw(SPDProcessingException)
+	void SPDGridIndexSphericalPointInterpolator::initInterpolator(std::list<SPDPulse*> ***pulses, boost::uint_fast32_t numXBins, boost::uint_fast32_t numYBins, boost::uint_fast16_t ptClass) 
 	{
         try
         {
@@ -2258,7 +2258,7 @@ namespace spdlib
         initialised = true;
 	}
 	
-	void SPDGridIndexSphericalPointInterpolator::initInterpolator(std::vector<SPDPulse*> ***pulses, boost::uint_fast32_t numXBins, boost::uint_fast32_t numYBins, boost::uint_fast16_t ptClass) throw(SPDProcessingException)
+	void SPDGridIndexSphericalPointInterpolator::initInterpolator(std::vector<SPDPulse*> ***pulses, boost::uint_fast32_t numXBins, boost::uint_fast32_t numYBins, boost::uint_fast16_t ptClass) 
 	{
         try
         {
@@ -2279,7 +2279,7 @@ namespace spdlib
         initialised = true;
 	}
 	
-	void SPDGridIndexSphericalPointInterpolator::initInterpolator(std::list<SPDPulse*> *pulses, boost::uint_fast16_t ptClass) throw(SPDProcessingException)
+	void SPDGridIndexSphericalPointInterpolator::initInterpolator(std::list<SPDPulse*> *pulses, boost::uint_fast16_t ptClass) 
 	{
         try
         {
@@ -2299,7 +2299,7 @@ namespace spdlib
         initialised = true;
 	}
 	
-	void SPDGridIndexSphericalPointInterpolator::initInterpolator(std::vector<SPDPulse*> *pulses, boost::uint_fast16_t ptClass) throw(SPDProcessingException)
+	void SPDGridIndexSphericalPointInterpolator::initInterpolator(std::vector<SPDPulse*> *pulses, boost::uint_fast16_t ptClass) 
 	{
         try
         {
@@ -2319,7 +2319,7 @@ namespace spdlib
         initialised = true;
 	}
     
-	void SPDGridIndexSphericalPointInterpolator::resetInterpolator() throw(SPDProcessingException)
+	void SPDGridIndexSphericalPointInterpolator::resetInterpolator() 
 	{
 		if(initialised)
 		{
@@ -2358,7 +2358,7 @@ namespace spdlib
         
     }
     
-    float SPDNaturalNeighborSphericalPointInterpolator::getValue(double azimuth, double zenith) throw(SPDProcessingException)
+    float SPDNaturalNeighborSphericalPointInterpolator::getValue(double azimuth, double zenith) 
     {
         float newRangeValue = std::numeric_limits<float>::signaling_NaN(); 
         if(initialised)
@@ -2404,7 +2404,7 @@ namespace spdlib
 		this->distanceThreshold = distanceThreshold;
 	}
 	
-	float SPDNearestNeighborSphericalPointInterpolator::getValue(double azimuth, double zenith) throw(SPDProcessingException)
+	float SPDNearestNeighborSphericalPointInterpolator::getValue(double azimuth, double zenith) 
 	{
 		double newRangeValue = std::numeric_limits<float>::signaling_NaN();
 		if(initialised)
@@ -2449,7 +2449,7 @@ namespace spdlib
         this->minNumPoints = minNumPoints;
 	}
 	
-	float SPDTPSRadiusSphericalInterpolator::getValue(double azimuth, double zenith) throw(SPDProcessingException)
+	float SPDTPSRadiusSphericalInterpolator::getValue(double azimuth, double zenith) 
 	{
         float newRangeValue = std::numeric_limits<float>::signaling_NaN();
         std::vector<SPDPoint*> *splinePts = new std::vector<SPDPoint*>();
@@ -2508,7 +2508,7 @@ namespace spdlib
         this->numPoints = numPoints;
 	}
 	
-	float SPDTPSNumPtsSphericalInterpolator::getValue(double azimuth, double zenith) throw(SPDProcessingException)
+	float SPDTPSNumPtsSphericalInterpolator::getValue(double azimuth, double zenith) 
 	{
         float newRangeValue = std::numeric_limits<float>::signaling_NaN();
         std::vector<SPDPoint*> *splinePts = new std::vector<SPDPoint*>();

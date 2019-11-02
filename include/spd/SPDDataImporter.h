@@ -62,8 +62,8 @@ namespace spdlib
 	class DllExport SPDImporterProcessor
 	{
 	public:
-		SPDImporterProcessor() throw(SPDException){};
-		virtual void processImportedPulse(SPDFile *spdFile, SPDPulse *pulse) throw(SPDIOException) = 0;
+		SPDImporterProcessor() {};
+		virtual void processImportedPulse(SPDFile *spdFile, SPDPulse *pulse)  = 0;
 		virtual ~SPDImporterProcessor(){};
 	};
 	
@@ -83,12 +83,12 @@ namespace spdlib
             this->waveNoiseThreshold = waveNoiseThreshold;
 		};
         virtual SPDDataImporter* getInstance(bool convertCoords, std::string outputProjWKT, std::string schema, boost::uint_fast16_t indexCoords, bool defineOrigin, double originX, double originY, float originZ, float waveNoiseThreshold)=0;
-		virtual std::list<SPDPulse*>* readAllDataToList(std::string inputFile, SPDFile *spdFile)throw(SPDIOException)=0;
-		virtual std::vector<SPDPulse*>* readAllDataToVector(std::string inputFile, SPDFile *spdFile)throw(SPDIOException)=0;
-		virtual void readAndProcessAllData(std::string inputFile, SPDFile *spdFile, SPDImporterProcessor *processor) throw(SPDIOException)=0;
+		virtual std::list<SPDPulse*>* readAllDataToList(std::string inputFile, SPDFile *spdFile)=0;
+		virtual std::vector<SPDPulse*>* readAllDataToVector(std::string inputFile, SPDFile *spdFile)=0;
+		virtual void readAndProcessAllData(std::string inputFile, SPDFile *spdFile, SPDImporterProcessor *processor) =0;
 		virtual bool isFileType(std::string fileType)=0;
-        virtual void readHeaderInfo(std::string inputFile, SPDFile *spdFile) throw(SPDIOException)=0;
-        virtual void readSchema()throw(SPDIOException){};
+        virtual void readHeaderInfo(std::string inputFile, SPDFile *spdFile) =0;
+        virtual void readSchema(){};
 		virtual void setOutputProjWKT(std::string outputProjWKT){this->outputProjWKT = outputProjWKT;this->convertCoords = true;};
 		virtual void setConvertCoords(bool convertCoords){this->convertCoords = convertCoords;};
 		virtual void setIndexCoordsType(boost::uint_fast16_t indexCoords=SPD_FIRST_RETURN){this->indexCoords = indexCoords;};
@@ -120,7 +120,7 @@ namespace spdlib
         double originY;
         float originZ;
         float waveNoiseThreshold;
-		void transformCoordinateSystem(double *x, double *y, double *z) throw(SPDIOException)
+		void transformCoordinateSystem(double *x, double *y, double *z) 
 		{
 			if(!haveCoordsBeenInit)
 			{
@@ -129,7 +129,7 @@ namespace spdlib
 			
 			try 
 			{
-				if( (coordTransform == NULL) || !coordTransform->Transform( 1, x, y, z ) )
+				if( (coordTransform == NULL) || !coordTransform->Transform( 1, x, y, z, NULL ) )
 				{
 					throw SPDIOException("Transformation of coordinates failed.");
 				}
@@ -139,7 +139,7 @@ namespace spdlib
 				throw e;
 			}
 		};
-		void transformCoordinateSystem(double *x, double *y, float *z) throw(SPDIOException)
+		void transformCoordinateSystem(double *x, double *y, float *z) 
 		{
 			if(!haveCoordsBeenInit)
 			{
@@ -149,7 +149,7 @@ namespace spdlib
 			try 
 			{
                 double val = *z;
-				if( (coordTransform == NULL) || !coordTransform->Transform( 1, x, y, &val ) )
+				if( (coordTransform == NULL) || !coordTransform->Transform( 1, x, y, &val, NULL ) )
 				{
 					throw SPDIOException("Transformation of coordinates failed.");
 				}
@@ -160,7 +160,7 @@ namespace spdlib
 				throw e;
 			}
 		};
-		void transformCoordinateSystem(double *x, double *y) throw(SPDIOException)
+		void transformCoordinateSystem(double *x, double *y) 
 		{
 			if(!haveCoordsBeenInit)
 			{
@@ -169,7 +169,7 @@ namespace spdlib
 			
 			try 
 			{
-				if( (coordTransform == NULL) || !coordTransform->Transform( 1, x, y ) )
+				if( (coordTransform == NULL) || !coordTransform->Transform( 1, x, y, NULL, NULL ) )
 				{
 					throw SPDIOException("Transformation of coordinates failed.");
 				}
@@ -179,7 +179,7 @@ namespace spdlib
 				throw e;
 			}
 		};
-		void initCoordinateSystemTransformation(SPDFile *spdFile) throw(SPDIOException)
+		void initCoordinateSystemTransformation(SPDFile *spdFile) 
 		{
 			pj_in = new OGRSpatialReference();
 			char **inProjWKT = new char*[1];
@@ -208,7 +208,7 @@ namespace spdlib
 			
 			haveCoordsBeenInit = true;
 		};
-		void defineIdxCoords(SPDFile *spdFile, SPDPulse *pulse) throw(SPDIOException)
+		void defineIdxCoords(SPDFile *spdFile, SPDPulse *pulse) 
 		{
 			if((spdFile->getDiscretePtDefined() == SPD_TRUE) | (spdFile->getDecomposedPtDefined() == SPD_TRUE))
 			{
@@ -396,7 +396,7 @@ namespace spdlib
 				throw SPDIOException("Neither a waveform or point data is defined.");
 			}
 		};
-		void transformPulseCoords(SPDFile *spdFile, SPDPulse *pulse) throw(SPDIOException)
+		void transformPulseCoords(SPDFile *spdFile, SPDPulse *pulse) 
 		{
 			try 
 			{

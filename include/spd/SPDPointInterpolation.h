@@ -95,12 +95,12 @@ namespace spdlib
 	{
 	public:
 		SPDPointInterpolator(boost::uint_fast16_t elevVal, float thinGridRes, bool thinData, boost::uint_fast16_t selectHighOrLow, boost::uint_fast16_t maxNumPtsPerBin);
-		virtual void initInterpolator(std::list<SPDPulse*> ***pulses, boost::uint_fast32_t numXBins, boost::uint_fast32_t numYBins, boost::uint_fast16_t ptClass) throw(SPDProcessingException) = 0;
-		virtual void initInterpolator(std::vector<SPDPulse*> ***pulses, boost::uint_fast32_t numXBins, boost::uint_fast32_t numYBins, boost::uint_fast16_t ptClass) throw(SPDProcessingException) = 0;
-		virtual void initInterpolator(std::list<SPDPulse*> *pulses, boost::uint_fast16_t ptClass) throw(SPDProcessingException) = 0;
-		virtual void initInterpolator(std::vector<SPDPulse*> *pulses, boost::uint_fast16_t ptClass) throw(SPDProcessingException) = 0;
-		virtual float getValue(double eastings, double northings) throw(SPDProcessingException) = 0;
-        virtual void getValues(double *eastings, double *northings, float *zVals, unsigned long nPts) throw(SPDProcessingException)
+		virtual void initInterpolator(std::list<SPDPulse*> ***pulses, boost::uint_fast32_t numXBins, boost::uint_fast32_t numYBins, boost::uint_fast16_t ptClass)  = 0;
+		virtual void initInterpolator(std::vector<SPDPulse*> ***pulses, boost::uint_fast32_t numXBins, boost::uint_fast32_t numYBins, boost::uint_fast16_t ptClass)  = 0;
+		virtual void initInterpolator(std::list<SPDPulse*> *pulses, boost::uint_fast16_t ptClass)  = 0;
+		virtual void initInterpolator(std::vector<SPDPulse*> *pulses, boost::uint_fast16_t ptClass)  = 0;
+		virtual float getValue(double eastings, double northings)  = 0;
+        virtual void getValues(double *eastings, double *northings, float *zVals, unsigned long nPts) 
         {
             for(unsigned long i = 0; i < nPts; ++i)
             {
@@ -108,14 +108,14 @@ namespace spdlib
             }
         };
         virtual bool useGetValues(){return false;};
-		virtual void resetInterpolator() throw(SPDProcessingException) = 0;
+		virtual void resetInterpolator()  = 0;
 		virtual ~SPDPointInterpolator(){};
 	protected:
-        std::vector<SPDPoint*>* findPoints(std::list<SPDPulse*> ***pulses, boost::uint_fast32_t numXBins, boost::uint_fast32_t numYBins, boost::uint_fast16_t ptClass) throw(SPDProcessingException);
-		std::vector<SPDPoint*>* findPoints(std::vector<SPDPulse*> ***pulses, boost::uint_fast32_t numXBins, boost::uint_fast32_t numYBins, boost::uint_fast16_t ptClass) throw(SPDProcessingException);
-		std::vector<SPDPoint*>* findPoints(std::list<SPDPulse*> *pulses, boost::uint_fast16_t ptClass) throw(SPDProcessingException);
-		std::vector<SPDPoint*>* findPoints(std::vector<SPDPulse*> *pulses, boost::uint_fast16_t ptClass) throw(SPDProcessingException);
-        void thinPoints(std::vector<SPDPoint*> *points) throw(SPDProcessingException);
+        std::vector<SPDPoint*>* findPoints(std::list<SPDPulse*> ***pulses, boost::uint_fast32_t numXBins, boost::uint_fast32_t numYBins, boost::uint_fast16_t ptClass) ;
+		std::vector<SPDPoint*>* findPoints(std::vector<SPDPulse*> ***pulses, boost::uint_fast32_t numXBins, boost::uint_fast32_t numYBins, boost::uint_fast16_t ptClass) ;
+		std::vector<SPDPoint*>* findPoints(std::list<SPDPulse*> *pulses, boost::uint_fast16_t ptClass) ;
+		std::vector<SPDPoint*>* findPoints(std::vector<SPDPulse*> *pulses, boost::uint_fast16_t ptClass) ;
+        void thinPoints(std::vector<SPDPoint*> *points) ;
 		bool initialised;
         boost::uint_fast16_t elevVal;
         float thinGridRes;
@@ -138,12 +138,12 @@ namespace spdlib
 	{
 	public:
 		SPDTriangulationPointInterpolator(boost::uint_fast16_t elevVal, float thinGridRes, bool thinData, boost::uint_fast16_t selectHighOrLow, boost::uint_fast16_t maxNumPtsPerBin);
-		virtual void initInterpolator(std::list<SPDPulse*> ***pulses, boost::uint_fast32_t numXBins, boost::uint_fast32_t numYBins, boost::uint_fast16_t ptClass) throw(SPDProcessingException);
-		virtual void initInterpolator(std::vector<SPDPulse*> ***pulses, boost::uint_fast32_t numXBins, boost::uint_fast32_t numYBins, boost::uint_fast16_t ptClass) throw(SPDProcessingException);
-		virtual void initInterpolator(std::list<SPDPulse*> *pulses, boost::uint_fast16_t ptClass) throw(SPDProcessingException);
-		virtual void initInterpolator(std::vector<SPDPulse*> *pulses, boost::uint_fast16_t ptClass) throw(SPDProcessingException);
-		virtual float getValue(double eastings, double northings) throw(SPDProcessingException) = 0;
-		virtual void resetInterpolator() throw(SPDProcessingException);
+		virtual void initInterpolator(std::list<SPDPulse*> ***pulses, boost::uint_fast32_t numXBins, boost::uint_fast32_t numYBins, boost::uint_fast16_t ptClass) ;
+		virtual void initInterpolator(std::vector<SPDPulse*> ***pulses, boost::uint_fast32_t numXBins, boost::uint_fast32_t numYBins, boost::uint_fast16_t ptClass) ;
+		virtual void initInterpolator(std::list<SPDPulse*> *pulses, boost::uint_fast16_t ptClass) ;
+		virtual void initInterpolator(std::vector<SPDPulse*> *pulses, boost::uint_fast16_t ptClass) ;
+		virtual float getValue(double eastings, double northings)  = 0;
+		virtual void resetInterpolator() ;
 		virtual ~SPDTriangulationPointInterpolator();
 	protected:
         DelaunayTriangulation *dt;
@@ -164,13 +164,13 @@ namespace spdlib
     {
     public:
         SPDTriangulationNNPointInterpolator(boost::uint_fast16_t elevVal, float thinGridRes, bool thinData, boost::uint_fast16_t selectHighOrLow, boost::uint_fast16_t maxNumPtsPerBin);
-        virtual void initInterpolator(std::list<SPDPulse*> ***pulses, boost::uint_fast32_t numXBins, boost::uint_fast32_t numYBins, boost::uint_fast16_t ptClass) throw(SPDProcessingException);
-        virtual void initInterpolator(std::vector<SPDPulse*> ***pulses, boost::uint_fast32_t numXBins, boost::uint_fast32_t numYBins, boost::uint_fast16_t ptClass) throw(SPDProcessingException);
-        virtual void initInterpolator(std::list<SPDPulse*> *pulses, boost::uint_fast16_t ptClass) throw(SPDProcessingException);
-        virtual void initInterpolator(std::vector<SPDPulse*> *pulses, boost::uint_fast16_t ptClass) throw(SPDProcessingException);
-        virtual float getValue(double eastings, double northings) throw(SPDProcessingException);
-        virtual void getValues(double *eastings, double *northings, float *zVals, unsigned long nPts) throw(SPDProcessingException) = 0;
-        virtual void resetInterpolator() throw(SPDProcessingException);
+        virtual void initInterpolator(std::list<SPDPulse*> ***pulses, boost::uint_fast32_t numXBins, boost::uint_fast32_t numYBins, boost::uint_fast16_t ptClass) ;
+        virtual void initInterpolator(std::vector<SPDPulse*> ***pulses, boost::uint_fast32_t numXBins, boost::uint_fast32_t numYBins, boost::uint_fast16_t ptClass) ;
+        virtual void initInterpolator(std::list<SPDPulse*> *pulses, boost::uint_fast16_t ptClass) ;
+        virtual void initInterpolator(std::vector<SPDPulse*> *pulses, boost::uint_fast16_t ptClass) ;
+        virtual float getValue(double eastings, double northings) ;
+        virtual void getValues(double *eastings, double *northings, float *zVals, unsigned long nPts)  = 0;
+        virtual void resetInterpolator() ;
         virtual bool useGetValues(){return true;};
         virtual ~SPDTriangulationNNPointInterpolator();
     protected:
@@ -195,12 +195,12 @@ namespace spdlib
 	{
 	public:
 		SPDGridIndexPointInterpolator(double gridResolution, boost::uint_fast16_t elevVal, float thinGridRes, bool thinData, boost::uint_fast16_t selectHighOrLow, boost::uint_fast16_t maxNumPtsPerBin);
-		virtual void initInterpolator(std::list<SPDPulse*> ***pulses, boost::uint_fast32_t numXBins, boost::uint_fast32_t numYBins, boost::uint_fast16_t ptClass) throw(SPDProcessingException);
-		virtual void initInterpolator(std::vector<SPDPulse*> ***pulses, boost::uint_fast32_t numXBins, boost::uint_fast32_t numYBins, boost::uint_fast16_t ptClass) throw(SPDProcessingException);
-		virtual void initInterpolator(std::list<SPDPulse*> *pulses, boost::uint_fast16_t ptClass) throw(SPDProcessingException);
-		virtual void initInterpolator(std::vector<SPDPulse*> *pulses, boost::uint_fast16_t ptClass) throw(SPDProcessingException);
-		virtual float getValue(double eastings, double northings) throw(SPDProcessingException) = 0;
-		virtual void resetInterpolator() throw(SPDProcessingException);
+		virtual void initInterpolator(std::list<SPDPulse*> ***pulses, boost::uint_fast32_t numXBins, boost::uint_fast32_t numYBins, boost::uint_fast16_t ptClass) ;
+		virtual void initInterpolator(std::vector<SPDPulse*> ***pulses, boost::uint_fast32_t numXBins, boost::uint_fast32_t numYBins, boost::uint_fast16_t ptClass) ;
+		virtual void initInterpolator(std::list<SPDPulse*> *pulses, boost::uint_fast16_t ptClass) ;
+		virtual void initInterpolator(std::vector<SPDPulse*> *pulses, boost::uint_fast16_t ptClass) ;
+		virtual float getValue(double eastings, double northings)  = 0;
+		virtual void resetInterpolator() ;
 		virtual ~SPDGridIndexPointInterpolator();
 	protected:
 		SPDPointGridIndex *idx;
@@ -221,12 +221,12 @@ namespace spdlib
 	{
 	public:
 		SPDRFBPointInterpolator(double radius, boost::uint_fast16_t numLayers, boost::uint_fast16_t elevVal, float thinGridRes, bool thinData, boost::uint_fast16_t selectHighOrLow, boost::uint_fast16_t maxNumPtsPerBin);
-		virtual void initInterpolator(std::list<SPDPulse*> ***pulses, boost::uint_fast32_t numXBins, boost::uint_fast32_t numYBins, boost::uint_fast16_t ptClass) throw(SPDProcessingException);
-		virtual void initInterpolator(std::vector<SPDPulse*> ***pulses, boost::uint_fast32_t numXBins, boost::uint_fast32_t numYBins, boost::uint_fast16_t ptClass) throw(SPDProcessingException);
-		virtual void initInterpolator(std::list<SPDPulse*> *pulses, boost::uint_fast16_t ptClass) throw(SPDProcessingException);
-		virtual void initInterpolator(std::vector<SPDPulse*> *pulses, boost::uint_fast16_t ptClass) throw(SPDProcessingException);
-		virtual float getValue(double eastings, double northings) throw(SPDProcessingException);
-		virtual void resetInterpolator() throw(SPDProcessingException);
+		virtual void initInterpolator(std::list<SPDPulse*> ***pulses, boost::uint_fast32_t numXBins, boost::uint_fast32_t numYBins, boost::uint_fast16_t ptClass) ;
+		virtual void initInterpolator(std::vector<SPDPulse*> ***pulses, boost::uint_fast32_t numXBins, boost::uint_fast32_t numYBins, boost::uint_fast16_t ptClass) ;
+		virtual void initInterpolator(std::list<SPDPulse*> *pulses, boost::uint_fast16_t ptClass) ;
+		virtual void initInterpolator(std::vector<SPDPulse*> *pulses, boost::uint_fast16_t ptClass) ;
+		virtual float getValue(double eastings, double northings) ;
+		virtual void resetInterpolator() ;
 		virtual ~SPDRFBPointInterpolator();
     protected:
         double radius;
@@ -248,7 +248,7 @@ namespace spdlib
 	{
 	public:
 		SPDNearestNeighbourInterpolator(boost::uint_fast16_t elevVal, float thinGridRes, bool thinData, boost::uint_fast16_t selectHighOrLow, boost::uint_fast16_t maxNumPtsPerBin);
-		float getValue(double eastings, double northings) throw(SPDProcessingException);
+		float getValue(double eastings, double northings) ;
 		~SPDNearestNeighbourInterpolator();		
 	};
 	
@@ -262,7 +262,7 @@ namespace spdlib
 	{
 	public:
 		SPDTINPlaneFitInterpolator(boost::uint_fast16_t elevVal, float thinGridRes, bool thinData, boost::uint_fast16_t selectHighOrLow, boost::uint_fast16_t maxNumPtsPerBin);
-		float getValue(double eastings, double northings) throw(SPDProcessingException);
+		float getValue(double eastings, double northings) ;
 		~SPDTINPlaneFitInterpolator();
 	private:
         SPDMathsUtils *mathUtils;
@@ -280,7 +280,7 @@ namespace spdlib
 	{
 	public:
 		SPDStdDevFilterInterpolator(float stdDevThreshold, float lowDist, float highDist, float stdDevDist, double gridResolution, boost::uint_fast16_t elevVal, float thinGridRes, bool thinData, boost::uint_fast16_t selectHighOrLow, boost::uint_fast16_t maxNumPtsPerBin);
-		float getValue(double eastings, double northings) throw(SPDProcessingException);
+		float getValue(double eastings, double northings) ;
 		~SPDStdDevFilterInterpolator();
 	private:
 		float stdDevThreshold;
@@ -293,7 +293,7 @@ namespace spdlib
 	{
 	public:
 		SPDTPSRadiusInterpolator(float radius, boost::uint_fast16_t minNumPoints, double gridResolution, boost::uint_fast16_t elevVal, float thinGridRes, bool thinData, boost::uint_fast16_t selectHighOrLow, boost::uint_fast16_t maxNumPtsPerBin);
-		float getValue(double eastings, double northings) throw(SPDProcessingException);
+		float getValue(double eastings, double northings) ;
 		~SPDTPSRadiusInterpolator();
 	private:
 		float radius;
@@ -304,7 +304,7 @@ namespace spdlib
 	{
 	public:
 		SPDTPSNumPtsInterpolator(float radius, boost::uint_fast16_t numPoints, double gridResolution, boost::uint_fast16_t elevVal, float thinGridRes, bool thinData, boost::uint_fast16_t selectHighOrLow, boost::uint_fast16_t maxNumPtsPerBin);
-		float getValue(double eastings, double northings) throw(SPDProcessingException);
+		float getValue(double eastings, double northings) ;
 		~SPDTPSNumPtsInterpolator();
 	private:
         float radius;
@@ -315,7 +315,7 @@ namespace spdlib
 	{
 	public:
 		SPDNaturalNeighborCGALPointInterpolator(boost::uint_fast16_t elevVal, float thinGridRes, bool thinData, boost::uint_fast16_t selectHighOrLow, boost::uint_fast16_t maxNumPtsPerBin);
-		float getValue(double eastings, double northings) throw(SPDProcessingException);
+		float getValue(double eastings, double northings) ;
 		~SPDNaturalNeighborCGALPointInterpolator();
 	};
     
@@ -325,7 +325,7 @@ namespace spdlib
     {
     public:
         SPDNaturalNeighborNNPointInterpolator(boost::uint_fast16_t elevVal, float thinGridRes, bool thinData, boost::uint_fast16_t selectHighOrLow, boost::uint_fast16_t maxNumPtsPerBin);
-        void getValues(double *eastings, double *northings, float *zVals, unsigned long nPts) throw(SPDProcessingException);
+        void getValues(double *eastings, double *northings, float *zVals, unsigned long nPts) ;
         ~SPDNaturalNeighborNNPointInterpolator();
     };*/
     
@@ -365,19 +365,19 @@ namespace spdlib
 	{
 	public:
 		SPDSphericalPointInterpolator(boost::uint_fast16_t elevVal, float thinGridRes, bool thinData, boost::uint_fast16_t selectHighOrLow, boost::uint_fast16_t maxNumPtsPerBin);
-		virtual void initInterpolator(std::list<SPDPulse*> ***pulses, boost::uint_fast32_t numXBins, boost::uint_fast32_t numYBins, boost::uint_fast16_t ptClass) throw(SPDProcessingException) = 0;
-		virtual void initInterpolator(std::vector<SPDPulse*> ***pulses, boost::uint_fast32_t numXBins, boost::uint_fast32_t numYBins, boost::uint_fast16_t ptClass) throw(SPDProcessingException) = 0;
-		virtual void initInterpolator(std::list<SPDPulse*> *pulses, boost::uint_fast16_t ptClass) throw(SPDProcessingException) = 0;
-		virtual void initInterpolator(std::vector<SPDPulse*> *pulses, boost::uint_fast16_t ptClass) throw(SPDProcessingException) = 0;
-		virtual float getValue(double azimuth, double zenith) throw(SPDProcessingException) = 0;
-		virtual void resetInterpolator() throw(SPDProcessingException) = 0;
+		virtual void initInterpolator(std::list<SPDPulse*> ***pulses, boost::uint_fast32_t numXBins, boost::uint_fast32_t numYBins, boost::uint_fast16_t ptClass)  = 0;
+		virtual void initInterpolator(std::vector<SPDPulse*> ***pulses, boost::uint_fast32_t numXBins, boost::uint_fast32_t numYBins, boost::uint_fast16_t ptClass)  = 0;
+		virtual void initInterpolator(std::list<SPDPulse*> *pulses, boost::uint_fast16_t ptClass)  = 0;
+		virtual void initInterpolator(std::vector<SPDPulse*> *pulses, boost::uint_fast16_t ptClass)  = 0;
+		virtual float getValue(double azimuth, double zenith)  = 0;
+		virtual void resetInterpolator()  = 0;
 		virtual ~SPDSphericalPointInterpolator(){};
 	protected:
-        std::vector<SPDPoint*>* findPoints(std::list<SPDPulse*> ***pulses, boost::uint_fast32_t numXBins, boost::uint_fast32_t numYBins, boost::uint_fast16_t ptClass) throw(SPDProcessingException);
-		std::vector<SPDPoint*>* findPoints(std::vector<SPDPulse*> ***pulses, boost::uint_fast32_t numXBins, boost::uint_fast32_t numYBins, boost::uint_fast16_t ptClass) throw(SPDProcessingException);
-		std::vector<SPDPoint*>* findPoints(std::list<SPDPulse*> *pulses, boost::uint_fast16_t ptClass) throw(SPDProcessingException);
-		std::vector<SPDPoint*>* findPoints(std::vector<SPDPulse*> *pulses, boost::uint_fast16_t ptClass) throw(SPDProcessingException);
-        void thinPoints(std::vector<SPDPoint*> *points) throw(SPDProcessingException);
+        std::vector<SPDPoint*>* findPoints(std::list<SPDPulse*> ***pulses, boost::uint_fast32_t numXBins, boost::uint_fast32_t numYBins, boost::uint_fast16_t ptClass) ;
+		std::vector<SPDPoint*>* findPoints(std::vector<SPDPulse*> ***pulses, boost::uint_fast32_t numXBins, boost::uint_fast32_t numYBins, boost::uint_fast16_t ptClass) ;
+		std::vector<SPDPoint*>* findPoints(std::list<SPDPulse*> *pulses, boost::uint_fast16_t ptClass) ;
+		std::vector<SPDPoint*>* findPoints(std::vector<SPDPulse*> *pulses, boost::uint_fast16_t ptClass) ;
+        void thinPoints(std::vector<SPDPoint*> *points) ;
 		bool initialised;
         boost::uint_fast16_t elevVal;
         float thinGridRes;
@@ -399,12 +399,12 @@ namespace spdlib
 	{
 	public:
 		SPDTriangulationSphericalPointInterpolator(boost::uint_fast16_t elevVal, float thinGridRes, bool thinData, boost::uint_fast16_t selectHighOrLow, boost::uint_fast16_t maxNumPtsPerBin);
-		virtual void initInterpolator(std::list<SPDPulse*> ***pulses, boost::uint_fast32_t numXBins, boost::uint_fast32_t numYBins, boost::uint_fast16_t ptClass) throw(SPDProcessingException);
-		virtual void initInterpolator(std::vector<SPDPulse*> ***pulses, boost::uint_fast32_t numXBins, boost::uint_fast32_t numYBins, boost::uint_fast16_t ptClass) throw(SPDProcessingException);
-		virtual void initInterpolator(std::list<SPDPulse*> *pulses, boost::uint_fast16_t ptClass) throw(SPDProcessingException);
-		virtual void initInterpolator(std::vector<SPDPulse*> *pulses, boost::uint_fast16_t ptClass) throw(SPDProcessingException);
-		virtual float getValue(double azimuth, double zenith) throw(SPDProcessingException) = 0;
-		virtual void resetInterpolator() throw(SPDProcessingException);
+		virtual void initInterpolator(std::list<SPDPulse*> ***pulses, boost::uint_fast32_t numXBins, boost::uint_fast32_t numYBins, boost::uint_fast16_t ptClass) ;
+		virtual void initInterpolator(std::vector<SPDPulse*> ***pulses, boost::uint_fast32_t numXBins, boost::uint_fast32_t numYBins, boost::uint_fast16_t ptClass) ;
+		virtual void initInterpolator(std::list<SPDPulse*> *pulses, boost::uint_fast16_t ptClass) ;
+		virtual void initInterpolator(std::vector<SPDPulse*> *pulses, boost::uint_fast16_t ptClass) ;
+		virtual float getValue(double azimuth, double zenith)  = 0;
+		virtual void resetInterpolator() ;
 		virtual ~SPDTriangulationSphericalPointInterpolator();
 	protected:
         DelaunayTriangulation *dt;
@@ -426,12 +426,12 @@ namespace spdlib
 	{
 	public:
 		SPDGridIndexSphericalPointInterpolator(double gridResolution, boost::uint_fast16_t elevVal, float thinGridRes, bool thinData, boost::uint_fast16_t selectHighOrLow, boost::uint_fast16_t maxNumPtsPerBin);
-		virtual void initInterpolator(std::list<SPDPulse*> ***pulses, boost::uint_fast32_t numXBins, boost::uint_fast32_t numYBins, boost::uint_fast16_t ptClass) throw(SPDProcessingException);
-		virtual void initInterpolator(std::vector<SPDPulse*> ***pulses, boost::uint_fast32_t numXBins, boost::uint_fast32_t numYBins, boost::uint_fast16_t ptClass) throw(SPDProcessingException);
-		virtual void initInterpolator(std::list<SPDPulse*> *pulses, boost::uint_fast16_t ptClass) throw(SPDProcessingException);
-		virtual void initInterpolator(std::vector<SPDPulse*> *pulses, boost::uint_fast16_t ptClass) throw(SPDProcessingException);
-		virtual float getValue(double eastings, double northings) throw(SPDProcessingException) = 0;
-		virtual void resetInterpolator() throw(SPDProcessingException);
+		virtual void initInterpolator(std::list<SPDPulse*> ***pulses, boost::uint_fast32_t numXBins, boost::uint_fast32_t numYBins, boost::uint_fast16_t ptClass) ;
+		virtual void initInterpolator(std::vector<SPDPulse*> ***pulses, boost::uint_fast32_t numXBins, boost::uint_fast32_t numYBins, boost::uint_fast16_t ptClass) ;
+		virtual void initInterpolator(std::list<SPDPulse*> *pulses, boost::uint_fast16_t ptClass) ;
+		virtual void initInterpolator(std::vector<SPDPulse*> *pulses, boost::uint_fast16_t ptClass) ;
+		virtual float getValue(double eastings, double northings)  = 0;
+		virtual void resetInterpolator() ;
 		virtual ~SPDGridIndexSphericalPointInterpolator();
 	protected:
 		SPDPointGridIndex *idx;
@@ -444,7 +444,7 @@ namespace spdlib
 	{
 	public:
 		SPDNaturalNeighborSphericalPointInterpolator(boost::uint_fast16_t elevVal, float thinGridRes, bool thinData, boost::uint_fast16_t selectHighOrLow, boost::uint_fast16_t maxNumPtsPerBin);
-		float getValue(double azimuth, double zenith) throw(SPDProcessingException);
+		float getValue(double azimuth, double zenith) ;
 		~SPDNaturalNeighborSphericalPointInterpolator();
 	};
     
@@ -452,7 +452,7 @@ namespace spdlib
 	{
 	public:
 		SPDNearestNeighborSphericalPointInterpolator(boost::uint_fast16_t elevVal, float thinGridRes, bool thinData, boost::uint_fast16_t selectHighOrLow, boost::uint_fast16_t maxNumPtsPerBin, float distanceThreshold);
-		float getValue(double azimuth, double zenith) throw(SPDProcessingException);
+		float getValue(double azimuth, double zenith) ;
 		~SPDNearestNeighborSphericalPointInterpolator();
     protected:
         float distanceThreshold;
@@ -462,7 +462,7 @@ namespace spdlib
 	{
 	public:
 		SPDTPSRadiusSphericalInterpolator(float radius, boost::uint_fast16_t minNumPoints, double gridResolution, boost::uint_fast16_t elevVal, float thinGridRes, bool thinData, boost::uint_fast16_t selectHighOrLow, boost::uint_fast16_t maxNumPtsPerBin);
-		float getValue(double azimuth, double zenith) throw(SPDProcessingException);
+		float getValue(double azimuth, double zenith) ;
 		~SPDTPSRadiusSphericalInterpolator();
 	private:
 		float radius;
@@ -473,7 +473,7 @@ namespace spdlib
 	{
 	public:
 		SPDTPSNumPtsSphericalInterpolator(float radius, boost::uint_fast16_t numPoints, double gridResolution, boost::uint_fast16_t elevVal, float thinGridRes, bool thinData, boost::uint_fast16_t selectHighOrLow, boost::uint_fast16_t maxNumPtsPerBin);
-		float getValue(double azimuth, double zenith) throw(SPDProcessingException);
+		float getValue(double azimuth, double zenith) ;
 		~SPDTPSNumPtsSphericalInterpolator();
 	private:
         float radius;

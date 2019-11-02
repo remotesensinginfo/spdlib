@@ -38,7 +38,7 @@ namespace spdlib
         return new SPDFullWaveformDatFileImporter(convertCoords, outputProjWKT, schema, indexCoords, defineOrigin, originX, originY, originZ, waveNoiseThreshold);
     }
     
-	std::list<SPDPulse*>* SPDFullWaveformDatFileImporter::readAllDataToList(std::string inputFile, SPDFile *spdFile)throw(SPDIOException)
+	std::list<SPDPulse*>* SPDFullWaveformDatFileImporter::readAllDataToList(std::string inputFile, SPDFile *spdFile)
 	{
 		SPDTextFileUtilities textFileUtils;
 		SPDTextFileLineReader lineReader;
@@ -364,7 +364,7 @@ namespace spdlib
 		return pulses;
 	}
 	
-	std::vector<SPDPulse*>* SPDFullWaveformDatFileImporter::readAllDataToVector(std::string inputFile, SPDFile *spdFile)throw(SPDIOException)
+	std::vector<SPDPulse*>* SPDFullWaveformDatFileImporter::readAllDataToVector(std::string inputFile, SPDFile *spdFile)
 	{
 		SPDTextFileUtilities textFileUtils;
 		SPDTextFileLineReader lineReader;
@@ -690,7 +690,7 @@ namespace spdlib
 		return pulses;
 	}
 	
-	void SPDFullWaveformDatFileImporter::readAndProcessAllData(std::string inputFile, SPDFile *spdFile, SPDImporterProcessor *processor)throw(SPDIOException)
+	void SPDFullWaveformDatFileImporter::readAndProcessAllData(std::string inputFile, SPDFile *spdFile, SPDImporterProcessor *processor)
 	{
 		SPDTextFileUtilities textFileUtils;
 		SPDTextFileLineReader lineReader;
@@ -1022,12 +1022,12 @@ namespace spdlib
 		return false;
 	}
     
-    void SPDFullWaveformDatFileImporter::readHeaderInfo(std::string, SPDFile*) throw(SPDIOException)
+    void SPDFullWaveformDatFileImporter::readHeaderInfo(std::string, SPDFile*) 
     {
         // No Header to Read..
     }
 	
-	SPDPulse* SPDFullWaveformDatFileImporter::createPulse(std::vector<std::string> *transTokens, std::vector<std::string> *extraTransLines) throw(SPDIOException)
+	SPDPulse* SPDFullWaveformDatFileImporter::createPulse(std::vector<std::string> *transTokens, std::vector<std::string> *extraTransLines) 
 	{
 		SPDTextFileUtilities textFileUtils;
 		SPDPulseUtils pulseUtils;
@@ -1170,7 +1170,7 @@ namespace spdlib
 		return pulse;
 	}
 	
-	SPDPulse* SPDFullWaveformDatFileImporter::createPulse(std::vector<std::string> *transTokens, std::vector<std::string> *extraTransLines, std::vector<std::string> *receivedTokens, std::vector<std::string> *receivedExtraLines) throw(SPDIOException)
+	SPDPulse* SPDFullWaveformDatFileImporter::createPulse(std::vector<std::string> *transTokens, std::vector<std::string> *extraTransLines, std::vector<std::string> *receivedTokens, std::vector<std::string> *receivedExtraLines) 
 	{
 		SPDTextFileUtilities textFileUtils;
 		SPDPulseUtils pulseUtils;

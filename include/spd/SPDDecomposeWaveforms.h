@@ -76,7 +76,7 @@ namespace spdlib
     {
     public:
         SPDDecomposeWaveforms();
-        void decomposeWaveforms(std::string inFilePath, std::string outFilePath, boost::uint_fast32_t blockXSize, boost::uint_fast32_t blockYSize, SPDDecompOption decompOption, boost::uint_fast32_t intThreshold, bool thresholdSet, bool noiseSet, uint_fast32_t window, boost::uint_fast32_t decayThres, float decayVal) throw(SPDException);
+        void decomposeWaveforms(std::string inFilePath, std::string outFilePath, boost::uint_fast32_t blockXSize, boost::uint_fast32_t blockYSize, SPDDecompOption decompOption, boost::uint_fast32_t intThreshold, bool thresholdSet, bool noiseSet, uint_fast32_t window, boost::uint_fast32_t decayThres, float decayVal) ;
         ~SPDDecomposeWaveforms();
     };
     
@@ -92,7 +92,7 @@ namespace spdlib
     {
     public:
         SPDDecomposePulseAll(SPDInitDecomposition *findInitPts, boost::uint_fast32_t intThreshold, bool thresholdSet, bool noiseSet);
-        void decompose(SPDPulse *pulse, SPDFile *spdFile) throw(SPDProcessingException);
+        void decompose(SPDPulse *pulse, SPDFile *spdFile) ;
         ~SPDDecomposePulseAll();
     protected:
         SPDInitDecomposition *findInitPts;
@@ -107,7 +107,7 @@ namespace spdlib
     {
     public:
         SPDDecomposePulseIndividually(SPDInitDecomposition *findInitPts, boost::uint_fast16_t waveFitWindow, boost::uint_fast32_t intThreshold, bool thresholdSet);
-        void decompose(SPDPulse *pulse, SPDFile *spdFile) throw(SPDProcessingException);
+        void decompose(SPDPulse *pulse, SPDFile *spdFile) ;
         ~SPDDecomposePulseIndividually();
         SPDInitDecomposition *findInitPts;
         boost::uint_fast16_t waveFitWindow;
@@ -120,7 +120,7 @@ namespace spdlib
     class DllExport SPDDecomposePulseImportProcessor : public SPDImporterProcessor
 	{
 	public:
-		SPDDecomposePulseImportProcessor(SPDDecomposePulse *decompose, SPDDataExporter *exporter, SPDFile *spdFileOut) throw(SPDException)
+		SPDDecomposePulseImportProcessor(SPDDecomposePulse *decompose, SPDDataExporter *exporter, SPDFile *spdFileOut) 
         {
             this->decompose = decompose;
             this->exporter = exporter;
@@ -141,7 +141,7 @@ namespace spdlib
             }
             this->pulses = new std::list<SPDPulse*>();
         }
-		void processImportedPulse(SPDFile *spdFile, SPDPulse *pulse) throw(SPDIOException)
+		void processImportedPulse(SPDFile *spdFile, SPDPulse *pulse) 
         {
             try 
             {
@@ -158,7 +158,7 @@ namespace spdlib
                 throw SPDIOException(e.what());
             }
         };
-		void completeFileAndClose(SPDFile *spdFile)throw(SPDIOException)
+		void completeFileAndClose(SPDFile *spdFile)
         {
             try 
             {
@@ -193,9 +193,9 @@ namespace spdlib
             this->decompose = decompose;
         }
         
-        void processDataColumnImage(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses, float *imageData, SPDXYPoint *cenPts, boost::uint_fast32_t numImgBands, float binSize) throw(SPDProcessingException)
+        void processDataColumnImage(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses, float *imageData, SPDXYPoint *cenPts, boost::uint_fast32_t numImgBands, float binSize) 
         {throw SPDProcessingException("Processing is not implemented for processDataColumnImage().");};
-		void processDataColumn(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses, SPDXYPoint *cenPts) throw(SPDProcessingException)
+		void processDataColumn(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses, SPDXYPoint *cenPts) 
         {
             try
             {
@@ -212,16 +212,16 @@ namespace spdlib
                 throw e;
             }
         };
-        void processDataWindowImage(SPDFile *inSPDFile, bool **validBins, std::vector<SPDPulse*> ***pulses, float ***imageData, SPDXYPoint ***cenPts, boost::uint_fast32_t numImgBands, float binSize, boost::uint_fast16_t winSize) throw(SPDProcessingException)
+        void processDataWindowImage(SPDFile *inSPDFile, bool **validBins, std::vector<SPDPulse*> ***pulses, float ***imageData, SPDXYPoint ***cenPts, boost::uint_fast32_t numImgBands, float binSize, boost::uint_fast16_t winSize) 
         {throw SPDProcessingException("Processing using a window is not implemented.");};
-		void processDataWindow(SPDFile *inSPDFile, bool **validBins, std::vector<SPDPulse*> ***pulses, SPDXYPoint ***cenPts, boost::uint_fast16_t winSize) throw(SPDProcessingException)
+		void processDataWindow(SPDFile *inSPDFile, bool **validBins, std::vector<SPDPulse*> ***pulses, SPDXYPoint ***cenPts, boost::uint_fast16_t winSize) 
         {throw SPDProcessingException("Processing using a window is not implemented.");};
         
-        std::vector<std::string> getImageBandDescriptions() throw(SPDProcessingException)
+        std::vector<std::string> getImageBandDescriptions() 
         {
             return std::vector<std::string>();
         };
-        void setHeaderValues(SPDFile *spdFile) throw(SPDProcessingException)
+        void setHeaderValues(SPDFile *spdFile) 
         {
             spdFile->setDecomposedPtDefined(SPD_TRUE);
             spdFile->setDiscretePtDefined(SPD_TRUE);

@@ -36,7 +36,7 @@ namespace spdlib
         
     }
     
-    boost::uint_fast16_t SPDFileUtilities::getDIRCount(std::string dir) throw(SPDException)
+    boost::uint_fast16_t SPDFileUtilities::getDIRCount(std::string dir) 
 	{
 		DIR *dp;
 		struct dirent *dirp;
@@ -58,7 +58,7 @@ namespace spdlib
         return files.size();
 	}
     
-	void SPDFileUtilities::getDIRList(std::string dir, std::list<std::string> *files) throw(SPDException)
+	void SPDFileUtilities::getDIRList(std::string dir, std::list<std::string> *files) 
 	{
 		DIR *dp;
 		struct dirent *dirp;
@@ -75,7 +75,7 @@ namespace spdlib
 		closedir(dp);
 	}
 	
-	void SPDFileUtilities::getDIRList(std::string dir, std::vector<std::string> *files) throw(SPDException)
+	void SPDFileUtilities::getDIRList(std::string dir, std::vector<std::string> *files) 
 	{
 		DIR *dp;
 		struct dirent *dirp;
@@ -92,7 +92,7 @@ namespace spdlib
 		closedir(dp);
 	}
 	
-	void SPDFileUtilities::getDIRList(std::string dir, std::string ext, std::list<std::string> *files, bool withpath) throw(SPDException)
+	void SPDFileUtilities::getDIRList(std::string dir, std::string ext, std::list<std::string> *files, bool withpath) 
 	{
 		DIR *dp;
 		struct dirent *dirp;
@@ -119,7 +119,7 @@ namespace spdlib
 		closedir(dp);		
 	}
 	
-	void SPDFileUtilities::getDIRList(std::string dir, std::string ext, std::vector<std::string> *files, bool withpath) throw(SPDException)
+	void SPDFileUtilities::getDIRList(std::string dir, std::string ext, std::vector<std::string> *files, bool withpath) 
 	{
 		DIR *dp;
 		struct dirent *dirp;
@@ -146,7 +146,7 @@ namespace spdlib
 		closedir(dp);		
 	}
 	
-	std::string* SPDFileUtilities::getDIRList(std::string dir, std::string ext, boost::uint_fast32_t *numFiles, bool withpath) throw(SPDException)
+	std::string* SPDFileUtilities::getDIRList(std::string dir, std::string ext, boost::uint_fast32_t *numFiles, bool withpath) 
 	{
 		std::vector<std::string> *files = new std::vector<std::string>();
 		DIR *dp;
@@ -184,7 +184,7 @@ namespace spdlib
 		return outputFiles;
 	}
 	
-	std::string* SPDFileUtilities::getFilesInDIRWithName(std::string dir, std::string name, boost::uint_fast32_t *numFiles) throw(SPDException)
+	std::string* SPDFileUtilities::getFilesInDIRWithName(std::string dir, std::string name, boost::uint_fast32_t *numFiles) 
 	{
 		std::vector<std::string> *files = new std::vector<std::string>();
 		DIR *dp;
@@ -335,7 +335,7 @@ namespace spdlib
 		return blnReturn; 
 	}
     
-    bool SPDFileUtilities::checkDIR4SHP(std::string dir, std::string shp) throw(SPDException)
+    bool SPDFileUtilities::checkDIR4SHP(std::string dir, std::string shp) 
 	{
 		std::string *dirList = NULL;
 		boost::uint_fast32_t numFiles = 0;
@@ -364,7 +364,7 @@ namespace spdlib
 		return returnVal;
 	}
 	
-	void SPDFileUtilities::deleteSHP(std::string dir, std::string shp) throw(SPDException)
+	void SPDFileUtilities::deleteSHP(std::string dir, std::string shp) 
 	{
 		std::string *dirList = NULL;
 		boost::uint_fast32_t numFiles = 0;

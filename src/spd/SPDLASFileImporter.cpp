@@ -80,7 +80,7 @@ namespace spdlib
         return new SPDLASFileImporter(convertCoords, outputProjWKT, schema, indexCoords, defineOrigin, originX, originY, originZ, waveNoiseThreshold);
     }
 
-    std::list<SPDPulse*>* SPDLASFileImporter::readAllDataToList(std::string inputFile, SPDFile *spdFile)throw(SPDIOException)
+    std::list<SPDPulse*>* SPDLASFileImporter::readAllDataToList(std::string inputFile, SPDFile *spdFile)
     {
         /* This has been removed when updated to LASlib.
          * It is only required when exporting to a format which needs the number
@@ -90,7 +90,7 @@ namespace spdlib
         throw SPDIOException("Reading LAS to a list is not currently supported");
     }
 
-    std::vector<SPDPulse*>* SPDLASFileImporter::readAllDataToVector(std::string inputFile, SPDFile *spdFile)throw(SPDIOException)
+    std::vector<SPDPulse*>* SPDLASFileImporter::readAllDataToVector(std::string inputFile, SPDFile *spdFile)
     {
         /**
          * Class to read LAS format input data to a vector of SPDPulses.
@@ -578,7 +578,7 @@ namespace spdlib
         return pulses;
     }
 
-    void SPDLASFileImporter::readAndProcessAllData(std::string inputFile, SPDFile *spdFile, SPDImporterProcessor *processor)throw(SPDIOException)
+    void SPDLASFileImporter::readAndProcessAllData(std::string inputFile, SPDFile *spdFile, SPDImporterProcessor *processor)
     {
         /**
          * Class to read LAS format input data and process. Used for UPD import.
@@ -1070,12 +1070,12 @@ namespace spdlib
         return false;
     }
 
-    void SPDLASFileImporter::readHeaderInfo(std::string, SPDFile*) throw(SPDIOException)
+    void SPDLASFileImporter::readHeaderInfo(std::string, SPDFile*) 
     {
         // No Header to Read..
     }
 
-    SPDPoint* SPDLASFileImporter::createSPDPoint(LASpoint const& pt)throw(SPDIOException)
+    SPDPoint* SPDLASFileImporter::createSPDPoint(LASpoint const& pt)
     {
         try
         {
@@ -1194,19 +1194,19 @@ namespace spdlib
         return (SPDDataImporter*) this->lasDataImporter;
     }
 
-    std::list<SPDPulse*>* SPDLASFileImporterStrictPulses::readAllDataToList(std::string inputFile, SPDFile *spdFile)throw(SPDIOException)
+    std::list<SPDPulse*>* SPDLASFileImporterStrictPulses::readAllDataToList(std::string inputFile, SPDFile *spdFile)
     {
         return this->lasDataImporter->readAllDataToList(inputFile, spdFile);
     }
-		std::vector<SPDPulse*>* readAllDataToVector(std::string inputFile, SPDFile *spdFile)throw(SPDIOException);
-		void readAndProcessAllData(std::string inputFile, SPDFile *spdFile, SPDImporterProcessor *processor) throw(SPDIOException);
+		std::vector<SPDPulse*>* readAllDataToVector(std::string inputFile, SPDFile *spdFile);
+		void readAndProcessAllData(std::string inputFile, SPDFile *spdFile, SPDImporterProcessor *processor) ;
 
-    std::vector<SPDPulse*>* SPDLASFileImporterStrictPulses::readAllDataToVector(std::string inputFile, SPDFile *spdFile)throw(SPDIOException)
+    std::vector<SPDPulse*>* SPDLASFileImporterStrictPulses::readAllDataToVector(std::string inputFile, SPDFile *spdFile)
     {
         return this->lasDataImporter->readAllDataToVector(inputFile, spdFile);
     }
 
-    void SPDLASFileImporterStrictPulses::readAndProcessAllData(std::string inputFile, SPDFile *spdFile, SPDImporterProcessor *processor)throw(SPDIOException)
+    void SPDLASFileImporterStrictPulses::readAndProcessAllData(std::string inputFile, SPDFile *spdFile, SPDImporterProcessor *processor)
     {
         this->lasDataImporter->readAndProcessAllData(inputFile, spdFile, processor);
     }
@@ -1220,7 +1220,7 @@ namespace spdlib
         return false;
     }
 
-    void SPDLASFileImporterStrictPulses::readHeaderInfo(std::string, SPDFile*) throw(SPDIOException)
+    void SPDLASFileImporterStrictPulses::readHeaderInfo(std::string, SPDFile*) 
     {
         // No Header to Read..
     }
@@ -1240,7 +1240,7 @@ namespace spdlib
         return new SPDLASFileNoPulsesImporter(convertCoords, outputProjWKT, schema, indexCoords, defineOrigin, originX, originY, originZ, waveNoiseThreshold);
     }
 
-    std::list<SPDPulse*>* SPDLASFileNoPulsesImporter::readAllDataToList(std::string inputFile, SPDFile *spdFile)throw(SPDIOException)
+    std::list<SPDPulse*>* SPDLASFileNoPulsesImporter::readAllDataToList(std::string inputFile, SPDFile *spdFile)
     {
         /* This has been removed when updated to LASlib.
          * It is only required when exporting to a format which needs the number
@@ -1250,7 +1250,7 @@ namespace spdlib
         throw SPDIOException("Reading LAS to a list is not currently supported");
     }
 
-    std::vector<SPDPulse*>* SPDLASFileNoPulsesImporter::readAllDataToVector(std::string inputFile, SPDFile *spdFile)throw(SPDIOException)
+    std::vector<SPDPulse*>* SPDLASFileNoPulsesImporter::readAllDataToVector(std::string inputFile, SPDFile *spdFile)
     {
         /**
          * Class to read LAS format input data to a vector of SPDPulses.
@@ -1454,7 +1454,7 @@ namespace spdlib
 
     }
 
-    void SPDLASFileNoPulsesImporter::readAndProcessAllData(std::string inputFile, SPDFile *spdFile, SPDImporterProcessor *processor)throw(SPDIOException)
+    void SPDLASFileNoPulsesImporter::readAndProcessAllData(std::string inputFile, SPDFile *spdFile, SPDImporterProcessor *processor)
     {
         /**
          * Class to read LAS format input data and process
@@ -1662,12 +1662,12 @@ namespace spdlib
         return false;
     }
 
-    void SPDLASFileNoPulsesImporter::readHeaderInfo(std::string, SPDFile*) throw(SPDIOException)
+    void SPDLASFileNoPulsesImporter::readHeaderInfo(std::string, SPDFile*) 
     {
         // No Header to Read..
     }
 
-    SPDPoint* SPDLASFileNoPulsesImporter::createSPDPoint(LASpoint const& pt)throw(SPDIOException)
+    SPDPoint* SPDLASFileNoPulsesImporter::createSPDPoint(LASpoint const& pt)
     {
         try
         {

@@ -31,7 +31,7 @@ namespace spdlib
         
     }
         
-    void SPDDecomposeWaveforms::decomposeWaveforms(std::string inFilePath, std::string outFilePath, boost::uint_fast32_t blockXSize, boost::uint_fast32_t blockYSize, SPDDecompOption decompOption, boost::uint_fast32_t intThreshold, bool thresholdSet, bool noiseSet, uint_fast32_t window, boost::uint_fast32_t decayThres, float decayVal) throw(SPDException)
+    void SPDDecomposeWaveforms::decomposeWaveforms(std::string inFilePath, std::string outFilePath, boost::uint_fast32_t blockXSize, boost::uint_fast32_t blockYSize, SPDDecompOption decompOption, boost::uint_fast32_t intThreshold, bool thresholdSet, bool noiseSet, uint_fast32_t window, boost::uint_fast32_t decayThres, float decayVal) 
     {
         try 
         {
@@ -116,7 +116,7 @@ namespace spdlib
 		this->mpResultsValues = new mp_result();
     }
         
-    void SPDDecomposePulseAll::decompose(SPDPulse *pulse, SPDFile *spdFile) throw(SPDProcessingException)
+    void SPDDecomposePulseAll::decompose(SPDPulse *pulse, SPDFile *spdFile) 
     {
         bool debug_info = false;
 		try
@@ -509,7 +509,7 @@ namespace spdlib
 		this->mpResultsValues = new mp_result();
     }
     
-    void SPDDecomposePulseIndividually::decompose(SPDPulse *pulse, SPDFile *spdFile) throw(SPDProcessingException)
+    void SPDDecomposePulseIndividually::decompose(SPDPulse *pulse, SPDFile *spdFile) 
     {
         bool debug_info = false;
 		try

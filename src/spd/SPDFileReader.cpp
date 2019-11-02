@@ -43,7 +43,7 @@ namespace spdlib
         return new SPDFileReader(convertCoords, outputProjWKT, schema, indexCoords, defineOrigin, originX, originY, originZ, waveNoiseThreshold);
     }
 	
-	std::list<SPDPulse*>* SPDFileReader::readAllDataToList(std::string inputFile, SPDFile *spdFile)throw(SPDIOException)
+	std::list<SPDPulse*>* SPDFileReader::readAllDataToList(std::string inputFile, SPDFile *spdFile)
 	{
 		SPDPointUtils ptsUtils;
 		SPDPulseUtils pulseUtils;
@@ -916,7 +916,7 @@ namespace spdlib
 		return pulses;
 	}
 	
-	std::vector<SPDPulse*>* SPDFileReader::readAllDataToVector(std::string inputFile, SPDFile *spdFile)throw(SPDIOException)
+	std::vector<SPDPulse*>* SPDFileReader::readAllDataToVector(std::string inputFile, SPDFile *spdFile)
 	{
 		SPDPointUtils ptsUtils;
 		SPDPulseUtils pulseUtils;
@@ -1789,7 +1789,7 @@ namespace spdlib
 		return pulses;
 	}
 	
-	void SPDFileReader::readAndProcessAllData(std::string inputFile, SPDFile *spdFile, SPDImporterProcessor *processor) throw(SPDIOException)
+	void SPDFileReader::readAndProcessAllData(std::string inputFile, SPDFile *spdFile, SPDImporterProcessor *processor) 
 	{
 		SPDPointUtils ptsUtils;
 		SPDPulseUtils pulseUtils;
@@ -2668,7 +2668,7 @@ namespace spdlib
 		return false;
 	}
 		
-	void SPDFileReader::readHeaderInfo(std::string, SPDFile *spdFile) throw(SPDIOException)
+	void SPDFileReader::readHeaderInfo(std::string, SPDFile *spdFile) 
 	{
 		float inFloatDataValue[1];
 		double inDoubleDataValue[1];
@@ -3521,7 +3521,7 @@ namespace spdlib
 		}
 	}
 	
-	void SPDFileReader::readRefHeaderRow(H5::H5File *spdInFile, boost::uint_fast32_t row, unsigned long long *binOffsets, unsigned long *numPtsInBin, boost::uint_fast32_t numXBins) throw(SPDIOException)
+	void SPDFileReader::readRefHeaderRow(H5::H5File *spdInFile, boost::uint_fast32_t row, unsigned long long *binOffsets, unsigned long *numPtsInBin, boost::uint_fast32_t numXBins) 
 	{
 		try
 		{

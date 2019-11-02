@@ -32,7 +32,7 @@ namespace spdlib{
      * Metric's with are neither height, Amplitude or range
      */
 
-    double SPDMetricCalcNumPulses::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcNumPulses::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) 
     {
         boost::uint_fast64_t numPulses = 0;
         if(minNumReturns == 0)
@@ -70,7 +70,7 @@ namespace spdlib{
     }
 
 
-    double SPDMetricCalcCanopyCover::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcCanopyCover::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) 
     {
         double canopyCover = 0;
         try
@@ -153,7 +153,7 @@ namespace spdlib{
         return canopyCover;
     }
 
-    double SPDMetricCalcCanopyCoverPercent::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcCanopyCoverPercent::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) 
     {
         double canopyCover = 0;
         try
@@ -254,7 +254,7 @@ namespace spdlib{
      * Metric's for height
      */
 
-    double SPDMetricCalcLeeOpennessHeight::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcLeeOpennessHeight::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) 
     {
         std::vector<double> *ptVals = this->getPointsValuesWithinHeightParameters(pulses, spdFile, geom);
         double openness = 0;
@@ -370,7 +370,7 @@ namespace spdlib{
         return openness;
     }
 
-    double SPDMetricCalcNumReturnsHeight::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcNumReturnsHeight::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) 
     {
         std::vector<double> *ptVals = this->getPointsValuesWithinHeightParameters(pulses, spdFile, geom);
         boost::uint_fast64_t numReturns = ptVals->size();
@@ -378,7 +378,7 @@ namespace spdlib{
         return numReturns;
     }
 
-    double SPDMetricCalcSumHeight::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcSumHeight::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) 
     {
         std::vector<double> *ptVals = this->getPointsValuesWithinHeightParameters(pulses, spdFile, geom);
         double sum = 0;
@@ -390,7 +390,7 @@ namespace spdlib{
         return sum;
     }
 
-    double SPDMetricCalcMeanHeight::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcMeanHeight::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) 
     {
         std::vector<double> *ptVals = this->getPointsValuesWithinHeightParameters(pulses, spdFile, geom);
         double mean = 0;
@@ -406,7 +406,7 @@ namespace spdlib{
         return mean;
     }
 
-    double SPDMetricCalcMedianHeight::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcMedianHeight::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) 
     {
         std::vector<double> *ptVals = this->getPointsValuesWithinHeightParameters(pulses, spdFile, geom);
         double median = 0;
@@ -423,7 +423,7 @@ namespace spdlib{
         return median;
     }
 
-    double SPDMetricCalcModeHeight::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcModeHeight::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) 
     {
         std::vector<double> *ptVals = this->getPointsValuesWithinHeightParameters(pulses, spdFile, geom);
         double mode = 0;
@@ -440,7 +440,7 @@ namespace spdlib{
         return mode;
     }
 
-    double SPDMetricCalcMinHeight::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcMinHeight::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) 
     {
         std::vector<double> *ptVals = this->getPointsValuesWithinHeightParameters(pulses, spdFile, geom);
         double min = 0;
@@ -456,7 +456,7 @@ namespace spdlib{
         return min;
     }
 
-    double SPDMetricCalcMaxHeight::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcMaxHeight::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) 
     {
         std::vector<double> *ptVals = this->getPointsValuesWithinHeightParameters(pulses, spdFile, geom);
         double max = 0;
@@ -473,7 +473,7 @@ namespace spdlib{
     }
 
 
-    double SPDMetricCalcDominantHeight::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcDominantHeight::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) 
     {
         double dominantHeight = 0;
         try
@@ -695,7 +695,7 @@ namespace spdlib{
         return dominantHeight;
     }
 
-    double SPDMetricCalcStdDevHeight::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcStdDevHeight::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) 
     {
         std::vector<double> *ptVals = this->getPointsValuesWithinHeightParameters(pulses, spdFile, geom);
         double stddev = 0;
@@ -711,7 +711,7 @@ namespace spdlib{
         return stddev;
     }
 
-    double SPDMetricCalcVarianceHeight::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcVarianceHeight::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) 
     {
         std::vector<double> *ptVals = this->getPointsValuesWithinHeightParameters(pulses, spdFile, geom);
         double variance = 0;
@@ -727,7 +727,7 @@ namespace spdlib{
         return variance;
     }
 
-    double SPDMetricCalcAbsDeviationHeight::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcAbsDeviationHeight::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) 
     {
         std::vector<double> *ptVals = this->getPointsValuesWithinHeightParameters(pulses, spdFile, geom);
         double absdev = 0;
@@ -743,7 +743,7 @@ namespace spdlib{
         return absdev;
     }
 
-    double SPDMetricCalcCoefficientOfVariationHeight::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcCoefficientOfVariationHeight::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) 
     {
         std::vector<double> *ptVals = this->getPointsValuesWithinHeightParameters(pulses, spdFile, geom);
         double cv = 0;
@@ -766,7 +766,7 @@ namespace spdlib{
         return cv;
     }
 
-    double SPDMetricCalcPercentileHeight::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcPercentileHeight::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) 
     {
         std::vector<double> *ptVals = this->getPointsValuesWithinHeightParameters(pulses, spdFile, geom);
         double percentileVal = 0;
@@ -785,7 +785,7 @@ namespace spdlib{
         return percentileVal;
     }
 
-    double SPDMetricCalcSkewnessHeight::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcSkewnessHeight::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) 
     {
         std::vector<double> *ptVals = this->getPointsValuesWithinHeightParameters(pulses, spdFile, geom);
         double skew = 0;
@@ -801,7 +801,7 @@ namespace spdlib{
         return skew;
     }
 
-    double SPDMetricCalcPersonModeSkewnessHeight::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcPersonModeSkewnessHeight::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) 
     {
         std::vector<double> *ptVals = this->getPointsValuesWithinHeightParameters(pulses, spdFile, geom);
         double personModeSkew = 0;
@@ -822,7 +822,7 @@ namespace spdlib{
         return personModeSkew;
     }
 
-    double SPDMetricCalcPersonMedianSkewnessHeight::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcPersonMedianSkewnessHeight::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) 
     {
         std::vector<double> *ptVals = this->getPointsValuesWithinHeightParameters(pulses, spdFile, geom);
         double personMedianSkew = 0;
@@ -843,7 +843,7 @@ namespace spdlib{
         return personMedianSkew;
     }
 
-    double SPDMetricCalcKurtosisHeight::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcKurtosisHeight::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) 
     {
         std::vector<double> *ptVals = this->getPointsValuesWithinHeightParameters(pulses, spdFile, geom);
         double kurtosis = 0;
@@ -859,7 +859,7 @@ namespace spdlib{
         return kurtosis;
     }
 
-    double SPDMetricCalcNumReturnsAboveMetricHeight::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcNumReturnsAboveMetricHeight::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) 
     {
         std::vector<double> *ptVals = this->getPointsValuesWithinHeightParameters(pulses, spdFile, geom);
         boost::uint_fast64_t valCount = 0;
@@ -879,7 +879,7 @@ namespace spdlib{
         return valCount;
     }
 
-    double SPDMetricCalcNumReturnsBelowMetricHeight::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcNumReturnsBelowMetricHeight::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) 
     {
         std::vector<double> *ptVals = this->getPointsValuesWithinHeightParameters(pulses, spdFile, geom);
         boost::uint_fast64_t valCount = 0;
@@ -898,7 +898,7 @@ namespace spdlib{
         return valCount;
     }
 
-    double SPDMetricCalcWeibullAlphaHeight::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcWeibullAlphaHeight::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) 
     {
         double weibullAlpha = 0;
         try
@@ -1113,7 +1113,7 @@ namespace spdlib{
         return weibullAlpha;
     }
 
-    double SPDMetricCalcWeibullBetaHeight::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcWeibullBetaHeight::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) 
     {
         double weibullBeta = 0;
         try
@@ -1288,7 +1288,7 @@ namespace spdlib{
         return weibullBeta;
     }
 
-    double SPDMetricCalcWeibullQuantileRangeHeight::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcWeibullQuantileRangeHeight::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) 
     {
         double weibullQuantileRange = 0;
         try
@@ -1469,7 +1469,7 @@ namespace spdlib{
      */
 
 
-    double SPDMetricCalcNumReturnsZ::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcNumReturnsZ::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) 
     {
         std::vector<double> *ptVals = this->getPointsValuesWithinZParameters(pulses, spdFile, geom);
         boost::uint_fast64_t numReturns = ptVals->size();
@@ -1477,7 +1477,7 @@ namespace spdlib{
         return numReturns;
     }
 
-    double SPDMetricCalcSumZ::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcSumZ::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) 
     {
         std::vector<double> *ptVals = this->getPointsValuesWithinZParameters(pulses, spdFile, geom);
         double sum = 0;
@@ -1489,7 +1489,7 @@ namespace spdlib{
         return sum;
     }
 
-    double SPDMetricCalcMeanZ::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcMeanZ::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) 
     {
         std::vector<double> *ptVals = this->getPointsValuesWithinZParameters(pulses, spdFile, geom);
         double mean = 0;
@@ -1505,7 +1505,7 @@ namespace spdlib{
         return mean;
     }
 
-    double SPDMetricCalcMedianZ::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcMedianZ::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) 
     {
         std::vector<double> *ptVals = this->getPointsValuesWithinZParameters(pulses, spdFile, geom);
         double median = 0;
@@ -1534,7 +1534,7 @@ namespace spdlib{
         return median;
     }
 
-    double SPDMetricCalcModeZ::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcModeZ::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) 
     {
         std::vector<double> *ptVals = this->getPointsValuesWithinZParameters(pulses, spdFile, geom);
         double mode = 0;
@@ -1551,7 +1551,7 @@ namespace spdlib{
         return mode;
     }
 
-    double SPDMetricCalcMinZ::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcMinZ::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) 
     {
         std::vector<double> *ptVals = this->getPointsValuesWithinZParameters(pulses, spdFile, geom);
         double min = 0;
@@ -1567,7 +1567,7 @@ namespace spdlib{
         return min;
     }
 
-    double SPDMetricCalcMaxZ::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcMaxZ::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) 
     {
         std::vector<double> *ptVals = this->getPointsValuesWithinZParameters(pulses, spdFile, geom);
         double max = 0;
@@ -1583,7 +1583,7 @@ namespace spdlib{
         return max;
     }
 
-    double SPDMetricCalcStdDevZ::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcStdDevZ::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) 
     {
         std::vector<double> *ptVals = this->getPointsValuesWithinZParameters(pulses, spdFile, geom);
         double stddev = 0;
@@ -1599,7 +1599,7 @@ namespace spdlib{
         return stddev;
     }
 
-    double SPDMetricCalcVarianceZ::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcVarianceZ::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) 
     {
         std::vector<double> *ptVals = this->getPointsValuesWithinZParameters(pulses, spdFile, geom);
         double variance = 0;
@@ -1615,7 +1615,7 @@ namespace spdlib{
         return variance;
     }
 
-    double SPDMetricCalcAbsDeviationZ::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcAbsDeviationZ::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) 
     {
         std::vector<double> *ptVals = this->getPointsValuesWithinZParameters(pulses, spdFile, geom);
         double absdev = 0;
@@ -1631,7 +1631,7 @@ namespace spdlib{
         return absdev;
     }
 
-    double SPDMetricCalcCoefficientOfVariationZ::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcCoefficientOfVariationZ::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) 
     {
         std::vector<double> *ptVals = this->getPointsValuesWithinZParameters(pulses, spdFile, geom);
         double cv = 0;
@@ -1654,7 +1654,7 @@ namespace spdlib{
         return cv;
     }
 
-    double SPDMetricCalcPercentileZ::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcPercentileZ::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) 
     {
         std::vector<double> *ptVals = this->getPointsValuesWithinZParameters(pulses, spdFile, geom);
         double percentileVal = 0;
@@ -1673,7 +1673,7 @@ namespace spdlib{
         return percentileVal;
     }
 
-    double SPDMetricCalcSkewnessZ::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcSkewnessZ::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) 
     {
         std::vector<double> *ptVals = this->getPointsValuesWithinZParameters(pulses, spdFile, geom);
         double skew = 0;
@@ -1689,7 +1689,7 @@ namespace spdlib{
         return skew;
     }
 
-    double SPDMetricCalcPersonModeSkewnessZ::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcPersonModeSkewnessZ::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) 
     {
         std::vector<double> *ptVals = this->getPointsValuesWithinZParameters(pulses, spdFile, geom);
         double personModeSkew = 0;
@@ -1710,7 +1710,7 @@ namespace spdlib{
         return personModeSkew;
     }
 
-    double SPDMetricCalcPersonMedianSkewnessZ::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcPersonMedianSkewnessZ::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) 
     {
         std::vector<double> *ptVals = this->getPointsValuesWithinZParameters(pulses, spdFile, geom);
         double personMedianSkew = 0;
@@ -1731,7 +1731,7 @@ namespace spdlib{
         return personMedianSkew;
     }
 
-    double SPDMetricCalcKurtosisZ::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcKurtosisZ::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) 
     {
         std::vector<double> *ptVals = this->getPointsValuesWithinZParameters(pulses, spdFile, geom);
         double kurtosis = 0;
@@ -1747,7 +1747,7 @@ namespace spdlib{
         return kurtosis;
     }
 
-    double SPDMetricCalcNumReturnsAboveMetricZ::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcNumReturnsAboveMetricZ::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) 
     {
         std::vector<double> *ptVals = this->getPointsValuesWithinZParameters(pulses, spdFile, geom);
         boost::uint_fast64_t valCount = 0;
@@ -1766,7 +1766,7 @@ namespace spdlib{
         return valCount;
     }
 
-    double SPDMetricCalcNumReturnsBelowMetricZ::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcNumReturnsBelowMetricZ::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) 
     {
         std::vector<double> *ptVals = this->getPointsValuesWithinZParameters(pulses, spdFile, geom);
         boost::uint_fast64_t valCount = 0;
@@ -1785,7 +1785,7 @@ namespace spdlib{
         return valCount;
     }
 
-    double SPDMetricCalcWeibullAlphaZ::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcWeibullAlphaZ::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) 
     {
         double weibullAlpha = 0;
         try
@@ -1960,7 +1960,7 @@ namespace spdlib{
         return weibullAlpha;
     }
 
-    double SPDMetricCalcWeibullBetaZ::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcWeibullBetaZ::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) 
     {
         double weibullBeta = 0;
         try
@@ -2135,7 +2135,7 @@ namespace spdlib{
         return weibullBeta;
     }
 
-    double SPDMetricCalcWeibullQuantileRangeZ::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcWeibullQuantileRangeZ::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) 
     {
         double weibullQuantileRange = 0;
         try
@@ -2317,7 +2317,7 @@ namespace spdlib{
      * Metric's for Amplitude
      */
 
-    double SPDMetricCalcNumReturnsAmplitude::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcNumReturnsAmplitude::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) 
     {
         std::vector<double> *ptVals = this->getPointsValuesWithinAmplitudeParameters(pulses, spdFile, geom);
         boost::uint_fast64_t numReturns = ptVals->size();
@@ -2325,7 +2325,7 @@ namespace spdlib{
         return numReturns;
     }
 
-    double SPDMetricCalcSumAmplitude::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcSumAmplitude::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) 
     {
         std::vector<double> *ptVals;
         ptVals = this->getPointsValuesWithinAmplitudeParameters(pulses, spdFile, geom);
@@ -2339,7 +2339,7 @@ namespace spdlib{
         return sum;
     }
 
-    double SPDMetricCalcMeanAmplitude::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcMeanAmplitude::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) 
     {
         double mean = 0;
 
@@ -2359,7 +2359,7 @@ namespace spdlib{
         return mean;
     }
 
-    double SPDMetricCalcMedianAmplitude::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcMedianAmplitude::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) 
     {
         std::vector<double> *ptVals;
         ptVals = this->getPointsValuesWithinAmplitudeParameters(pulses, spdFile, geom);
@@ -2378,7 +2378,7 @@ namespace spdlib{
         return median;
     }
 
-    double SPDMetricCalcModeAmplitude::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcModeAmplitude::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) 
     {
         std::vector<double> *ptVals;
         ptVals = this->getPointsValuesWithinAmplitudeParameters(pulses, spdFile, geom);
@@ -2397,7 +2397,7 @@ namespace spdlib{
         return mode;
     }
 
-    double SPDMetricCalcMinAmplitude::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcMinAmplitude::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) 
     {
         std::vector<double> *ptVals;
         ptVals = this->getPointsValuesWithinAmplitudeParameters(pulses, spdFile, geom);
@@ -2415,7 +2415,7 @@ namespace spdlib{
         return min;
     }
 
-    double SPDMetricCalcMaxAmplitude::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcMaxAmplitude::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) 
     {
         std::vector<double> *ptVals;
         ptVals = this->getPointsValuesWithinAmplitudeParameters(pulses, spdFile, geom);
@@ -2433,7 +2433,7 @@ namespace spdlib{
         return max;
     }
 
-    double SPDMetricCalcStdDevAmplitude::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcStdDevAmplitude::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) 
     {
         std::vector<double> *ptVals;
         ptVals = this->getPointsValuesWithinAmplitudeParameters(pulses, spdFile, geom);
@@ -2451,7 +2451,7 @@ namespace spdlib{
         return stddev;
     }
 
-    double SPDMetricCalcVarianceAmplitude::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcVarianceAmplitude::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) 
     {
         std::vector<double> *ptVals;
         ptVals = this->getPointsValuesWithinAmplitudeParameters(pulses, spdFile, geom);
@@ -2469,7 +2469,7 @@ namespace spdlib{
         return variance;
     }
 
-    double SPDMetricCalcAbsDeviationAmplitude::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcAbsDeviationAmplitude::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) 
     {
         std::vector<double> *ptVals;
         ptVals = this->getPointsValuesWithinAmplitudeParameters(pulses, spdFile, geom);
@@ -2487,7 +2487,7 @@ namespace spdlib{
         return absdev;
     }
 
-    double SPDMetricCalcCoefficientOfVariationAmplitude::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcCoefficientOfVariationAmplitude::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) 
     {
         std::vector<double> *ptVals;
         ptVals = this->getPointsValuesWithinAmplitudeParameters(pulses, spdFile, geom);
@@ -2512,7 +2512,7 @@ namespace spdlib{
         return cv;
     }
 
-    double SPDMetricCalcPercentileAmplitude::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcPercentileAmplitude::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) 
     {
         std::vector<double> *ptVals;
         ptVals = this->getPointsValuesWithinAmplitudeParameters(pulses, spdFile, geom);
@@ -2532,7 +2532,7 @@ namespace spdlib{
         return quantile;
     }
 
-    double SPDMetricCalcSkewnessAmplitude::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcSkewnessAmplitude::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) 
     {
         std::vector<double> *ptVals;
         ptVals = this->getPointsValuesWithinAmplitudeParameters(pulses, spdFile, geom);
@@ -2550,7 +2550,7 @@ namespace spdlib{
         return skew;
     }
 
-    double SPDMetricCalcPersonModeSkewnessAmplitude::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcPersonModeSkewnessAmplitude::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) 
     {
         std::vector<double> *ptVals;
         ptVals = this->getPointsValuesWithinAmplitudeParameters(pulses, spdFile, geom);
@@ -2573,7 +2573,7 @@ namespace spdlib{
         return personModeSkew;
     }
 
-    double SPDMetricCalcPersonMedianSkewnessAmplitude::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcPersonMedianSkewnessAmplitude::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) 
     {
         std::vector<double> *ptVals;
         ptVals = this->getPointsValuesWithinAmplitudeParameters(pulses, spdFile, geom);
@@ -2596,7 +2596,7 @@ namespace spdlib{
         return personMedianSkew;
     }
 
-    double SPDMetricCalcKurtosisAmplitude::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcKurtosisAmplitude::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) 
     {
         std::vector<double> *ptVals;
         ptVals = this->getPointsValuesWithinAmplitudeParameters(pulses, spdFile, geom);
@@ -2614,7 +2614,7 @@ namespace spdlib{
         return kurtosis;
     }
 
-    double SPDMetricCalcNumReturnsAboveMetricAmplitude::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcNumReturnsAboveMetricAmplitude::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) 
     {
         std::vector<double> *ptVals = this->getPointsValuesWithinAmplitudeParameters(pulses, spdFile, geom);
         boost::uint_fast64_t valCount = 0;
@@ -2633,7 +2633,7 @@ namespace spdlib{
         return valCount;
     }
 
-    double SPDMetricCalcNumReturnsBelowMetricAmplitude::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcNumReturnsBelowMetricAmplitude::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) 
     {
         std::vector<double> *ptVals = this->getPointsValuesWithinAmplitudeParameters(pulses, spdFile, geom);
         boost::uint_fast64_t valCount = 0;
@@ -2659,7 +2659,7 @@ namespace spdlib{
      * Metric's for Range (Spherical Coordinates)
      */
 
-    double SPDMetricCalcNumReturnsRange::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcNumReturnsRange::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) 
     {
         std::vector<double> *ptVals = this->getPointsValuesWithinRangeParameters(pulses, spdFile, geom);
         boost::uint_fast64_t numReturns = ptVals->size();
@@ -2667,7 +2667,7 @@ namespace spdlib{
         return numReturns;
     }
 
-    double SPDMetricCalcSumRange::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcSumRange::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) 
     {
         std::vector<double> *ptVals = this->getPointsValuesWithinRangeParameters(pulses, spdFile, geom);
         double sum = 0;
@@ -2679,7 +2679,7 @@ namespace spdlib{
         return sum;
     }
 
-    double SPDMetricCalcMeanRange::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcMeanRange::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) 
     {
         std::vector<double> *ptVals = this->getPointsValuesWithinRangeParameters(pulses, spdFile, geom);
         double mean = 0;
@@ -2695,7 +2695,7 @@ namespace spdlib{
         return mean;
     }
 
-    double SPDMetricCalcMedianRange::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcMedianRange::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) 
     {
         std::vector<double> *ptVals = this->getPointsValuesWithinRangeParameters(pulses, spdFile, geom);
         double median = 0;
@@ -2712,7 +2712,7 @@ namespace spdlib{
         return median;
     }
 
-    double SPDMetricCalcModeRange::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcModeRange::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) 
     {
         std::vector<double> *ptVals = this->getPointsValuesWithinRangeParameters(pulses, spdFile, geom);
         double mode = 0;
@@ -2729,7 +2729,7 @@ namespace spdlib{
         return mode;
     }
 
-    double SPDMetricCalcMinRange::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcMinRange::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) 
     {
         std::vector<double> *ptVals = this->getPointsValuesWithinRangeParameters(pulses, spdFile, geom);
         double min = 0;
@@ -2745,7 +2745,7 @@ namespace spdlib{
         return min;
     }
 
-    double SPDMetricCalcMaxRange::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcMaxRange::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) 
     {
         std::vector<double> *ptVals = this->getPointsValuesWithinRangeParameters(pulses, spdFile, geom);
         double max = 0;
@@ -2761,7 +2761,7 @@ namespace spdlib{
         return max;
     }
 
-    double SPDMetricCalcStdDevRange::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcStdDevRange::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) 
     {
         std::vector<double> *ptVals = this->getPointsValuesWithinRangeParameters(pulses, spdFile, geom);
         double stddev = 0;
@@ -2777,7 +2777,7 @@ namespace spdlib{
         return stddev;
     }
 
-    double SPDMetricCalcVarianceRange::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcVarianceRange::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) 
     {
         std::vector<double> *ptVals = this->getPointsValuesWithinRangeParameters(pulses, spdFile, geom);
         double variance = 0;
@@ -2793,7 +2793,7 @@ namespace spdlib{
         return variance;
     }
 
-    double SPDMetricCalcAbsDeviationRange::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcAbsDeviationRange::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) 
     {
         std::vector<double> *ptVals = this->getPointsValuesWithinRangeParameters(pulses, spdFile, geom);
         double absdev = 0;
@@ -2809,7 +2809,7 @@ namespace spdlib{
         return absdev;
     }
 
-    double SPDMetricCalcCoefficientOfVariationRange::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcCoefficientOfVariationRange::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) 
     {
         std::vector<double> *ptVals = this->getPointsValuesWithinRangeParameters(pulses, spdFile, geom);
         double cv = 0;
@@ -2832,7 +2832,7 @@ namespace spdlib{
         return cv;
     }
 
-    double SPDMetricCalcPercentileRange::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcPercentileRange::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) 
     {
         std::vector<double> *ptVals = this->getPointsValuesWithinRangeParameters(pulses, spdFile, geom);
         double quantile = 0;
@@ -2850,7 +2850,7 @@ namespace spdlib{
         return quantile;
     }
 
-    double SPDMetricCalcSkewnessRange::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcSkewnessRange::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) 
     {
         std::vector<double> *ptVals = this->getPointsValuesWithinRangeParameters(pulses, spdFile, geom);
         double skew = 0;
@@ -2866,7 +2866,7 @@ namespace spdlib{
         return skew;
     }
 
-    double SPDMetricCalcPersonModeSkewnessRange::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcPersonModeSkewnessRange::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) 
     {
         std::vector<double> *ptVals = this->getPointsValuesWithinRangeParameters(pulses, spdFile, geom);
         double personModeSkew = 0;
@@ -2887,7 +2887,7 @@ namespace spdlib{
         return personModeSkew;
     }
 
-    double SPDMetricCalcPersonMedianSkewnessRange::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcPersonMedianSkewnessRange::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) 
     {
         std::vector<double> *ptVals = this->getPointsValuesWithinRangeParameters(pulses, spdFile, geom);
         double personMedianSkew = 0;
@@ -2908,7 +2908,7 @@ namespace spdlib{
         return personMedianSkew;
     }
 
-    double SPDMetricCalcKurtosisRange::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcKurtosisRange::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) 
     {
         std::vector<double> *ptVals = this->getPointsValuesWithinRangeParameters(pulses, spdFile, geom);
         double kurtosis = 0;
@@ -2924,7 +2924,7 @@ namespace spdlib{
         return kurtosis;
     }
 
-    double SPDMetricCalcNumReturnsAboveMetricRange::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcNumReturnsAboveMetricRange::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) 
     {
         std::vector<double> *ptVals = this->getPointsValuesWithinRangeParameters(pulses, spdFile, geom);
         boost::uint_fast64_t valCount = 0;
@@ -2943,7 +2943,7 @@ namespace spdlib{
         return valCount;
     }
 
-    double SPDMetricCalcNumReturnsBelowMetricRange::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcNumReturnsBelowMetricRange::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) 
     {
         std::vector<double> *ptVals = this->getPointsValuesWithinRangeParameters(pulses, spdFile, geom);
         boost::uint_fast64_t valCount = 0;
@@ -2962,7 +2962,7 @@ namespace spdlib{
         return valCount;
     }
 
-    double SPDMetricCalcWeibullAlphaRange::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcWeibullAlphaRange::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) 
     {
         double weibullAlpha = 0;
         try
@@ -3137,7 +3137,7 @@ namespace spdlib{
         return weibullAlpha;
     }
 
-    double SPDMetricCalcWeibullBetaRange::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcWeibullBetaRange::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) 
     {
         double weibullBeta = 0;
         try
@@ -3312,7 +3312,7 @@ namespace spdlib{
         return weibullBeta;
     }
 
-    double SPDMetricCalcWeibullQuantileRangeRange::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcWeibullQuantileRangeRange::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) 
     {
         double weibullQuantileRange = 0;
         try
@@ -3493,7 +3493,7 @@ namespace spdlib{
      * Metric's for width
      */
 
-    double SPDMetricCalcNumReturnsWidth::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcNumReturnsWidth::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) 
     {
         std::vector<double> *ptVals = this->getPointsValuesWithinWidthParameters(pulses, spdFile, geom);
         boost::uint_fast64_t numReturns = ptVals->size();
@@ -3501,7 +3501,7 @@ namespace spdlib{
         return numReturns;
     }
 
-    double SPDMetricCalcSumWidth::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcSumWidth::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) 
     {
         std::vector<double> *ptVals = this->getPointsValuesWithinWidthParameters(pulses, spdFile, geom);
         double sum = 0;
@@ -3513,7 +3513,7 @@ namespace spdlib{
         return sum;
     }
 
-    double SPDMetricCalcMeanWidth::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcMeanWidth::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) 
     {
         std::vector<double> *ptVals = this->getPointsValuesWithinWidthParameters(pulses, spdFile, geom);
         double mean = 0;
@@ -3529,7 +3529,7 @@ namespace spdlib{
         return mean;
     }
 
-    double SPDMetricCalcMedianWidth::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcMedianWidth::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) 
     {
         std::vector<double> *ptVals = this->getPointsValuesWithinWidthParameters(pulses, spdFile, geom);
         double median = 0;
@@ -3546,7 +3546,7 @@ namespace spdlib{
         return median;
     }
 
-    double SPDMetricCalcModeWidth::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcModeWidth::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) 
     {
         std::vector<double> *ptVals = this->getPointsValuesWithinWidthParameters(pulses, spdFile, geom);
         double mode = 0;
@@ -3563,7 +3563,7 @@ namespace spdlib{
         return mode;
     }
 
-    double SPDMetricCalcMinWidth::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcMinWidth::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) 
     {
         std::vector<double> *ptVals = this->getPointsValuesWithinWidthParameters(pulses, spdFile, geom);
         double min = 0;
@@ -3579,7 +3579,7 @@ namespace spdlib{
         return min;
     }
 
-    double SPDMetricCalcMaxWidth::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcMaxWidth::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) 
     {
         std::vector<double> *ptVals = this->getPointsValuesWithinWidthParameters(pulses, spdFile, geom);
         double max = 0;
@@ -3595,7 +3595,7 @@ namespace spdlib{
         return max;
     }
 
-    double SPDMetricCalcStdDevWidth::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcStdDevWidth::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) 
     {
         std::vector<double> *ptVals = this->getPointsValuesWithinWidthParameters(pulses, spdFile, geom);
         double stddev = 0;
@@ -3611,7 +3611,7 @@ namespace spdlib{
         return stddev;
     }
 
-    double SPDMetricCalcVarianceWidth::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcVarianceWidth::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) 
     {
         std::vector<double> *ptVals = this->getPointsValuesWithinWidthParameters(pulses, spdFile, geom);
         double variance = 0;
@@ -3627,7 +3627,7 @@ namespace spdlib{
         return variance;
     }
 
-    double SPDMetricCalcAbsDeviationWidth::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcAbsDeviationWidth::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) 
     {
         std::vector<double> *ptVals = this->getPointsValuesWithinWidthParameters(pulses, spdFile, geom);
         double absdev = 0;
@@ -3643,7 +3643,7 @@ namespace spdlib{
         return absdev;
     }
 
-    double SPDMetricCalcCoefficientOfVariationWidth::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcCoefficientOfVariationWidth::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) 
     {
         std::vector<double> *ptVals = this->getPointsValuesWithinWidthParameters(pulses, spdFile, geom);
         double cv = 0;
@@ -3666,7 +3666,7 @@ namespace spdlib{
         return cv;
     }
 
-    double SPDMetricCalcPercentileWidth::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcPercentileWidth::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) 
     {
         std::vector<double> *ptVals = this->getPointsValuesWithinWidthParameters(pulses, spdFile, geom);
         double quantile = 0;
@@ -3684,7 +3684,7 @@ namespace spdlib{
         return quantile;
     }
 
-    double SPDMetricCalcSkewnessWidth::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcSkewnessWidth::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) 
     {
         std::vector<double> *ptVals = this->getPointsValuesWithinWidthParameters(pulses, spdFile, geom);
         double skew = 0;
@@ -3700,7 +3700,7 @@ namespace spdlib{
         return skew;
     }
 
-    double SPDMetricCalcPersonModeSkewnessWidth::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcPersonModeSkewnessWidth::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) 
     {
         std::vector<double> *ptVals = this->getPointsValuesWithinWidthParameters(pulses, spdFile, geom);
         double personModeSkew = 0;
@@ -3721,7 +3721,7 @@ namespace spdlib{
         return personModeSkew;
     }
 
-    double SPDMetricCalcPersonMedianSkewnessWidth::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcPersonMedianSkewnessWidth::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) 
     {
         std::vector<double> *ptVals = this->getPointsValuesWithinWidthParameters(pulses, spdFile, geom);
         double personMedianSkew = 0;
@@ -3742,7 +3742,7 @@ namespace spdlib{
         return personMedianSkew;
     }
 
-    double SPDMetricCalcKurtosisWidth::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcKurtosisWidth::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) 
     {
         std::vector<double> *ptVals = this->getPointsValuesWithinWidthParameters(pulses, spdFile, geom);
         double kurtosis = 0;
@@ -3758,7 +3758,7 @@ namespace spdlib{
         return kurtosis;
     }
 
-    double SPDMetricCalcNumReturnsAboveMetricWidth::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcNumReturnsAboveMetricWidth::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) 
     {
         std::vector<double> *ptVals = this->getPointsValuesWithinWidthParameters(pulses, spdFile, geom);
         boost::uint_fast64_t valCount = 0;
@@ -3777,7 +3777,7 @@ namespace spdlib{
         return valCount;
     }
 
-    double SPDMetricCalcNumReturnsBelowMetricWidth::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcNumReturnsBelowMetricWidth::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) 
     {
         std::vector<double> *ptVals = this->getPointsValuesWithinWidthParameters(pulses, spdFile, geom);
         boost::uint_fast64_t valCount = 0;
@@ -3799,7 +3799,7 @@ namespace spdlib{
     /**
     Waveform-only metrics
     */
-    double SPDMetricCalcHeightOfMedianEnergy::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) throw(SPDProcessingException)
+    double SPDMetricCalcHeightOfMedianEnergy::calcValue(std::vector<SPDPulse*> *pulses, SPDFile *spdFile, OGRGeometry *geom) 
     {
         /*
         Calculate Height of Median Energy (HOME)

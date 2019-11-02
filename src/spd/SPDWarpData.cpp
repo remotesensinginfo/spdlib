@@ -33,7 +33,7 @@ namespace spdlib
         this->yShift = yShift;
     }
     
-    void SPDShiftData::processDataBlock(SPDFile *inSPDFile, std::vector<SPDPulse*> ***pulses, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, float binSize) throw(SPDProcessingException)
+    void SPDShiftData::processDataBlock(SPDFile *inSPDFile, std::vector<SPDPulse*> ***pulses, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, float binSize) 
     {
         std::vector<SPDPulse*>::iterator iterPulses;
         std::vector<SPDPoint*>::iterator iterPoints;
@@ -121,7 +121,7 @@ namespace spdlib
     }
     
     
-    void SPDWarpPointData::readGCPs(std::string gcpFile) throw(SPDException)
+    void SPDWarpPointData::readGCPs(std::string gcpFile) 
     {
         try
         {
@@ -173,7 +173,7 @@ namespace spdlib
         }
     }
     
-    void SPDWarpPointData::calcOffset(float eastings, float northings, float *xOff, float *yOff)throw(SPDWarpException)
+    void SPDWarpPointData::calcOffset(float eastings, float northings, float *xOff, float *yOff)
     {
         try
         {
@@ -207,7 +207,7 @@ namespace spdlib
         
     }
     
-    bool SPDNearestNeighbourWarp::initWarp(std::string gcpFile)throw(SPDWarpException)
+    bool SPDNearestNeighbourWarp::initWarp(std::string gcpFile)
     {
         try
         {
@@ -241,7 +241,7 @@ namespace spdlib
         return true;
     }
     
-    float SPDNearestNeighbourWarp::calcXOffset(float eastings, float northings)throw(SPDWarpException)
+    float SPDNearestNeighbourWarp::calcXOffset(float eastings, float northings)
     {
         CGALPoint p(eastings, northings);
         Vertex_handle vh = dt->nearest_vertex(p);
@@ -255,7 +255,7 @@ namespace spdlib
         return nodeA->xOff();
     }
     
-    float SPDNearestNeighbourWarp::calcYOffset(float eastings, float northings)throw(SPDWarpException)
+    float SPDNearestNeighbourWarp::calcYOffset(float eastings, float northings)
     {
         CGALPoint p(eastings, northings);
         Vertex_handle vh = dt->nearest_vertex(p);
@@ -269,7 +269,7 @@ namespace spdlib
         return nodeA->yOff();
     }
     
-    void SPDNearestNeighbourWarp::calcOffset(float eastings, float northings, float *xOff, float *yOff)throw(SPDWarpException)
+    void SPDNearestNeighbourWarp::calcOffset(float eastings, float northings, float *xOff, float *yOff)
     {
         CGALPoint p(eastings, northings);
         Vertex_handle vh = dt->nearest_vertex(p);
@@ -305,7 +305,7 @@ namespace spdlib
         
     }
     
-    bool SPDTriangulationPlaneFittingWarp::initWarp(std::string gcpFile)throw(SPDWarpException)
+    bool SPDTriangulationPlaneFittingWarp::initWarp(std::string gcpFile)
     {
         try
         {
@@ -339,7 +339,7 @@ namespace spdlib
         return true;
     }
     
-    float SPDTriangulationPlaneFittingWarp::calcXOffset(float eastings, float northings)throw(SPDWarpException)
+    float SPDTriangulationPlaneFittingWarp::calcXOffset(float eastings, float northings)
     {
         CGALPoint p(eastings, northings);
         Vertex_handle vh = dt->nearest_vertex(p);
@@ -381,7 +381,7 @@ namespace spdlib
         return xOff;
     }
     
-    float SPDTriangulationPlaneFittingWarp::calcYOffset(float eastings, float northings)throw(SPDWarpException)
+    float SPDTriangulationPlaneFittingWarp::calcYOffset(float eastings, float northings)
     {
         CGALPoint p(eastings, northings);
         Vertex_handle vh = dt->nearest_vertex(p);
@@ -423,7 +423,7 @@ namespace spdlib
         return yOff;
     }
     
-    void SPDTriangulationPlaneFittingWarp::calcOffset(float eastings, float northings, float *xOff, float *yOff)throw(SPDWarpException)
+    void SPDTriangulationPlaneFittingWarp::calcOffset(float eastings, float northings, float *xOff, float *yOff)
     {
         CGALPoint p(eastings, northings);
         Vertex_handle vh = dt->nearest_vertex(p);
@@ -484,7 +484,7 @@ namespace spdlib
 		return normTriPts;
 	}
 	
-	void SPDTriangulationPlaneFittingWarp::fitPlane2XPoints(std::list<SPDGCPImg2MapNode*> *normPts, double *a, double *b, double *c) throw(SPDWarpException)
+	void SPDTriangulationPlaneFittingWarp::fitPlane2XPoints(std::list<SPDGCPImg2MapNode*> *normPts, double *a, double *b, double *c) 
 	{
 		SPDMatrixUtils matrices;
 		
@@ -550,7 +550,7 @@ namespace spdlib
 		}
 	}
 	
-	void SPDTriangulationPlaneFittingWarp::fitPlane2YPoints(std::list<SPDGCPImg2MapNode*> *normPts, double *a, double *b, double *c) throw(SPDWarpException)
+	void SPDTriangulationPlaneFittingWarp::fitPlane2YPoints(std::list<SPDGCPImg2MapNode*> *normPts, double *a, double *b, double *c) 
 	{
 		SPDMatrixUtils matrices;
 		
@@ -638,7 +638,7 @@ namespace spdlib
         this->polyOrder = order;
     }
     
-    bool SPDPolynomialWarp::initWarp(std::string gcpFile)throw(SPDWarpException)
+    bool SPDPolynomialWarp::initWarp(std::string gcpFile)
     {
         try
         {
@@ -798,7 +798,7 @@ namespace spdlib
         return true;
     }
     
-    float SPDPolynomialWarp::calcXOffset(float eastings, float northings)throw(SPDWarpException)
+    float SPDPolynomialWarp::calcXOffset(float eastings, float northings)
     {
         /* Return nearest pixel based on input easting and northing.
          Pixel x coordinate are found from polynominal model */
@@ -824,7 +824,7 @@ namespace spdlib
 		return pX;
     }
     
-    float SPDPolynomialWarp::calcYOffset(float eastings, float northings)throw(SPDWarpException)
+    float SPDPolynomialWarp::calcYOffset(float eastings, float northings)
     {
         /* Return nearest pixel based on input easting and northing.
          Pixel y coordinate are found from polynominal model */
@@ -851,7 +851,7 @@ namespace spdlib
 		return pY;
     }
     
-    void SPDPolynomialWarp::calcOffset(float eastings, float northings, float *xOff, float *yOff)throw(SPDWarpException)
+    void SPDPolynomialWarp::calcOffset(float eastings, float northings, float *xOff, float *yOff)
     {
         std::cout << "Calculating Offset for [" << eastings << "," << northings << "]\n";
         
@@ -907,7 +907,7 @@ namespace spdlib
     
     
     
-    SPDNonLinearWarp::SPDNonLinearWarp(SPDDataExporter *exporter, SPDFile *spdFileOut, SPDWarpPointData *calcOffsets, SPDWarpLocation warpLoc) throw(SPDException)
+    SPDNonLinearWarp::SPDNonLinearWarp(SPDDataExporter *exporter, SPDFile *spdFileOut, SPDWarpPointData *calcOffsets, SPDWarpLocation warpLoc) 
     {
         this->exporter = exporter;
         this->spdFileOut = spdFileOut;
@@ -931,7 +931,7 @@ namespace spdlib
     }
     
     
-    void SPDNonLinearWarp::processImportedPulse(SPDFile *spdFile, SPDPulse *pulse) throw(SPDIOException)
+    void SPDNonLinearWarp::processImportedPulse(SPDFile *spdFile, SPDPulse *pulse) 
     {
         try
         {
@@ -1021,7 +1021,7 @@ namespace spdlib
         }
     }
     
-    void SPDNonLinearWarp::completeFileAndClose(SPDFile *spdFile)throw(SPDIOException)
+    void SPDNonLinearWarp::completeFileAndClose(SPDFile *spdFile)
     {
         try
         {

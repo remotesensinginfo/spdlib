@@ -62,10 +62,10 @@ namespace spdlib
 	{
 	public:
 		SPDPolygonProcessor(){};
-		virtual void processFeature(OGRFeature *inFeature, OGRFeature *outFeature, boost::uint_fast64_t fid, std::vector<SPDPulse*> *pulses, SPDFile *spdFile) throw(SPDProcessingException)= 0;
-        virtual void processFeature(OGRFeature *inFeature, std::ofstream *outASCIIFile, boost::uint_fast64_t fid, std::vector<SPDPulse*> *pulses, SPDFile *spdFile) throw(SPDProcessingException)= 0;
-		virtual void createOutputLayerDefinition(OGRLayer *outputLayer, OGRFeatureDefn *inFeatureDefn) throw(SPDProcessingException) = 0;
-		virtual void writeASCIIHeader(std::ofstream *outASCIIFile) throw(SPDProcessingException) = 0;
+		virtual void processFeature(OGRFeature *inFeature, OGRFeature *outFeature, boost::uint_fast64_t fid, std::vector<SPDPulse*> *pulses, SPDFile *spdFile) = 0;
+        virtual void processFeature(OGRFeature *inFeature, std::ofstream *outASCIIFile, boost::uint_fast64_t fid, std::vector<SPDPulse*> *pulses, SPDFile *spdFile) = 0;
+		virtual void createOutputLayerDefinition(OGRLayer *outputLayer, OGRFeatureDefn *inFeatureDefn)  = 0;
+		virtual void writeASCIIHeader(std::ofstream *outASCIIFile)  = 0;
         virtual ~SPDPolygonProcessor(){};
 	};
 }

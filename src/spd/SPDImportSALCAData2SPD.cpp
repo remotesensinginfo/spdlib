@@ -43,21 +43,21 @@ namespace spdlib
         return new SPDSALCADataBinaryImporter(convertCoords, outputProjWKT, schema, indexCoords, defineOrigin, originX, originY, originZ, waveNoiseThreshold);
     }
     
-    std::list<SPDPulse*>* SPDSALCADataBinaryImporter::readAllDataToList(std::string, SPDFile *spdFile)throw(SPDIOException)
+    std::list<SPDPulse*>* SPDSALCADataBinaryImporter::readAllDataToList(std::string, SPDFile *spdFile)
     {
         std::list<SPDPulse*> *pulses = new std::list<SPDPulse*>();
         
         return pulses;
     }
     
-    std::vector<SPDPulse*>* SPDSALCADataBinaryImporter::readAllDataToVector(std::string inputFile, SPDFile *spdFile)throw(SPDIOException)
+    std::vector<SPDPulse*>* SPDSALCADataBinaryImporter::readAllDataToVector(std::string inputFile, SPDFile *spdFile)
     {
         std::vector<SPDPulse*> *pulses = new std::vector<SPDPulse*>();
         
         return pulses;
     }
     
-    void SPDSALCADataBinaryImporter::readAndProcessAllData(std::string inputFile, SPDFile *spdFile, SPDImporterProcessor *processor) throw(SPDIOException)
+    void SPDSALCADataBinaryImporter::readAndProcessAllData(std::string inputFile, SPDFile *spdFile, SPDImporterProcessor *processor) 
     {
         try
         {
@@ -302,12 +302,12 @@ namespace spdlib
 		return false;
     }
     
-    void SPDSALCADataBinaryImporter::readHeaderInfo(std::string inputFile, SPDFile *spdFile) throw(SPDIOException)
+    void SPDSALCADataBinaryImporter::readHeaderInfo(std::string inputFile, SPDFile *spdFile) 
     {
         
     }
     
-    SalcaHDRParams* SPDSALCADataBinaryImporter::readHeaderParameters(std::string headerFilePath, std::vector<std::pair<float,std::string> > *fileList)throw(SPDIOException)
+    SalcaHDRParams* SPDSALCADataBinaryImporter::readHeaderParameters(std::string headerFilePath, std::vector<std::pair<float,std::string> > *fileList)
     {
         SalcaHDRParams *hdrParams = new SalcaHDRParams();
         try
@@ -485,7 +485,7 @@ namespace spdlib
  
     
     /** Read data into array */
-    int* SPDSALCADataBinaryImporter::readData(std::string inFilePath, int i, unsigned int numb, unsigned int nBins, unsigned int *length) throw(SPDIOException)
+    int* SPDSALCADataBinaryImporter::readData(std::string inFilePath, int i, unsigned int numb, unsigned int nBins, unsigned int *length) 
     {
         int *outData = NULL;
         try
@@ -558,7 +558,7 @@ namespace spdlib
         return(outData);
     }
 
-    void SPDSALCADataBinaryImporter::findWaveformsBinIdxes(int *data, unsigned int dataLen, unsigned int maxRNBins, unsigned int prevWl2End, unsigned int *wl1StartIdxTrans, unsigned int *wl2StartIdxTrans, unsigned int *wl1EndIdxTrans, unsigned int *wl2EndIdxTrans, unsigned int *wl1StartIdxRec, unsigned int *wl2StartIdxRec, unsigned int *wl1EndIdxRec, unsigned int *wl2EndIdxRec) throw(SPDIOException)
+    void SPDSALCADataBinaryImporter::findWaveformsBinIdxes(int *data, unsigned int dataLen, unsigned int maxRNBins, unsigned int prevWl2End, unsigned int *wl1StartIdxTrans, unsigned int *wl2StartIdxTrans, unsigned int *wl1EndIdxTrans, unsigned int *wl2EndIdxTrans, unsigned int *wl1StartIdxRec, unsigned int *wl2StartIdxRec, unsigned int *wl1EndIdxRec, unsigned int *wl2EndIdxRec) 
     {
         try
         {
@@ -730,7 +730,7 @@ namespace spdlib
         }
     }
     
-    bool SPDSALCADataBinaryImporter::zeroCrossing(int *data, unsigned int startIdx, unsigned int endIdx, unsigned int idx) throw(SPDIOException)
+    bool SPDSALCADataBinaryImporter::zeroCrossing(int *data, unsigned int startIdx, unsigned int endIdx, unsigned int idx) 
     {
         //std::cout << "Idx = " << idx << " [" << startIdx << ", " << endIdx << "]\n";
         

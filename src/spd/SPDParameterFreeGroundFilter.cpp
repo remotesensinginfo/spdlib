@@ -43,7 +43,7 @@ namespace spdlib
     /**
      * Process one of the blocks to form an image
      */
-    void SPDParameterFreeGroundFilter::processDataBlockImage(SPDFile *inSPDFile, std::vector<SPDPulse*> ***pulses, float ***imageDataBlock, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast32_t numImgBands, float binSize) throw(SPDProcessingException)
+    void SPDParameterFreeGroundFilter::processDataBlockImage(SPDFile *inSPDFile, std::vector<SPDPulse*> ***pulses, float ***imageDataBlock, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast32_t numImgBands, float binSize) 
     {
         // get surface
         SPDPFFProcessLevel *surfaceGrid = this->runSurfaceEstimation(inSPDFile, pulses, cenPts, xSize, ySize, binSize);
@@ -70,7 +70,7 @@ namespace spdlib
     /**
      * Run the Paramater Free Ground Filter routine to iteratively interpolate a surface of minimum control points towards the true ground surface
      */
-    SPDPFFProcessLevel* SPDParameterFreeGroundFilter::runSurfaceEstimation(SPDFile *inSPDFile, std::vector<SPDPulse*> ***pulses, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, float binSize) throw(SPDProcessingException)
+    SPDPFFProcessLevel* SPDParameterFreeGroundFilter::runSurfaceEstimation(SPDFile *inSPDFile, std::vector<SPDPulse*> ***pulses, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, float binSize) 
     {
         // Allocate Memory...
         float **elev = new float*[ySize];
@@ -284,7 +284,7 @@ namespace spdlib
     }
     
 		
-    void SPDParameterFreeGroundFilter::processDataBlock(SPDFile *inSPDFile, std::vector<SPDPulse*> ***pulses, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, float binSize) throw(SPDProcessingException)
+    void SPDParameterFreeGroundFilter::processDataBlock(SPDFile *inSPDFile, std::vector<SPDPulse*> ***pulses, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, float binSize) 
     {
         // Allocate memory, actually none required
         SPDPFFProcessLevel *surfaceGrid = NULL;
@@ -1269,7 +1269,7 @@ namespace spdlib
         this->radius = radius;
 	}
     
-    void SPDTPSPFFGrdFilteringInterpolator::initInterpolator(float **data, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, double tlEastings, double tlNorthings, float binSize) throw(SPDProcessingException)
+    void SPDTPSPFFGrdFilteringInterpolator::initInterpolator(float **data, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, double tlEastings, double tlNorthings, float binSize) 
     {
         this->data = data;
         this->xSize = xSize;
@@ -1280,7 +1280,7 @@ namespace spdlib
         this->initialised = true;
     }
     
-	void SPDTPSPFFGrdFilteringInterpolator::resetInterpolator() throw(SPDProcessingException)
+	void SPDTPSPFFGrdFilteringInterpolator::resetInterpolator() 
 	{
 		if(initialised)
 		{
@@ -1289,7 +1289,7 @@ namespace spdlib
 		}
 	}
 	
-	float SPDTPSPFFGrdFilteringInterpolator::getValue(double eastings, double northings) throw(SPDProcessingException)
+	float SPDTPSPFFGrdFilteringInterpolator::getValue(double eastings, double northings) 
 	{
         float newZValue = 0;
         if(initialised)

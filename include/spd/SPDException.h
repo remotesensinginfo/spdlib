@@ -56,8 +56,8 @@ namespace spdlib
 		SPDException();
 		SPDException(const char *message);
 		SPDException(std::string message);
-		virtual ~SPDException() throw();
-		virtual const char* what() const throw();
+		virtual ~SPDException();
+		virtual const char* what();
 	protected:
         std::string msgs;
 	};

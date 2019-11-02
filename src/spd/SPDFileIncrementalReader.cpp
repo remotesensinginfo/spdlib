@@ -38,7 +38,7 @@ namespace spdlib
 	
 	}
 	
-	SPDFileIncrementalReader::SPDFileIncrementalReader(const SPDFileIncrementalReader &spdReader) throw(SPDException) : spdFile(NULL), spdInFile(NULL), pulseType(NULL), pointType(NULL), fileOpened(false)
+	SPDFileIncrementalReader::SPDFileIncrementalReader(const SPDFileIncrementalReader &spdReader)  : spdFile(NULL), spdInFile(NULL), pulseType(NULL), pointType(NULL), fileOpened(false)
 	{
 		if(fileOpened)
 		{
@@ -50,7 +50,7 @@ namespace spdlib
 		this->fileOpened = false;
 	}
 	
-	SPDFileIncrementalReader& SPDFileIncrementalReader::operator=(const SPDFileIncrementalReader& spdReader) throw(SPDException)
+	SPDFileIncrementalReader& SPDFileIncrementalReader::operator=(const SPDFileIncrementalReader& spdReader) 
 	{
 		if(fileOpened)
 		{
@@ -63,7 +63,7 @@ namespace spdlib
 	}
 	
     /*UPDATED*/
-	bool SPDFileIncrementalReader::open(SPDFile *spdFile) throw(SPDIOException)
+	bool SPDFileIncrementalReader::open(SPDFile *spdFile) 
 	{
 		try
 		{
@@ -137,7 +137,7 @@ namespace spdlib
 	}
     
     /*UPDATED*/
-    void SPDFileIncrementalReader::readPulseData(std::list<SPDPulse*> *pulses, boost::uint_fast64_t offset, boost::uint_fast64_t numPulses) throw(SPDIOException)
+    void SPDFileIncrementalReader::readPulseData(std::list<SPDPulse*> *pulses, boost::uint_fast64_t offset, boost::uint_fast64_t numPulses) 
 	{
         if(!fileOpened)
 		{
@@ -461,7 +461,7 @@ namespace spdlib
 	}
     
 	/*UPDATED*/
-	void SPDFileIncrementalReader::readPulseData(std::vector<SPDPulse*> *pulses, boost::uint_fast64_t offset, boost::uint_fast64_t numPulses) throw(SPDIOException)
+	void SPDFileIncrementalReader::readPulseData(std::vector<SPDPulse*> *pulses, boost::uint_fast64_t offset, boost::uint_fast64_t numPulses) 
 	{
 		if(!fileOpened)
 		{
@@ -785,7 +785,7 @@ namespace spdlib
         }
 	}
 	
-	void SPDFileIncrementalReader::readRefHeaderRow(boost::uint_fast32_t row, unsigned long long *binOffsets, unsigned long *numPtsInBin) throw(SPDIOException)
+	void SPDFileIncrementalReader::readRefHeaderRow(boost::uint_fast32_t row, unsigned long long *binOffsets, unsigned long *numPtsInBin) 
 	{
 		if(!fileOpened)
 		{
@@ -853,7 +853,7 @@ namespace spdlib
 	}
     
 	/*UPDATED*/
-	void SPDFileIncrementalReader::readPulseDataRow(boost::uint_fast32_t row, std::list<SPDPulse*> **pulses) throw(SPDIOException)
+	void SPDFileIncrementalReader::readPulseDataRow(boost::uint_fast32_t row, std::list<SPDPulse*> **pulses) 
 	{
 		if(!fileOpened)
 		{
@@ -1240,7 +1240,7 @@ namespace spdlib
 	}
 	
     /*UPDATED*/
-	void SPDFileIncrementalReader::readPulseDataRow(boost::uint_fast32_t row, std::vector<SPDPulse*> **pulses) throw(SPDIOException)
+	void SPDFileIncrementalReader::readPulseDataRow(boost::uint_fast32_t row, std::vector<SPDPulse*> **pulses) 
 	{
 		if(!fileOpened)
 		{
@@ -1627,7 +1627,7 @@ namespace spdlib
 	}
 	
     /*UPDATED*/
-	void SPDFileIncrementalReader::readPulseData(std::list<SPDPulse*> *pulses, boost::uint_fast32_t row, boost::uint_fast32_t startCol, boost::uint_fast32_t endCol) throw(SPDIOException)
+	void SPDFileIncrementalReader::readPulseData(std::list<SPDPulse*> *pulses, boost::uint_fast32_t row, boost::uint_fast32_t startCol, boost::uint_fast32_t endCol) 
 	{
 		if(!fileOpened)
 		{
@@ -1713,7 +1713,7 @@ namespace spdlib
 	}
 	
     /*UPDATED*/
-	void SPDFileIncrementalReader::readPulseData(std::vector<SPDPulse*> *pulses, boost::uint_fast32_t row, boost::uint_fast32_t startCol, boost::uint_fast32_t endCol) throw(SPDIOException)
+	void SPDFileIncrementalReader::readPulseData(std::vector<SPDPulse*> *pulses, boost::uint_fast32_t row, boost::uint_fast32_t startCol, boost::uint_fast32_t endCol) 
 	{
 		if(!fileOpened)
 		{
@@ -1799,7 +1799,7 @@ namespace spdlib
 	}
 	
     /*UPDATED*/
-	void SPDFileIncrementalReader::readPulseDataBlock(std::list<SPDPulse*> ***pulses, boost::uint_fast32_t *bbox) throw(SPDIOException)
+	void SPDFileIncrementalReader::readPulseDataBlock(std::list<SPDPulse*> ***pulses, boost::uint_fast32_t *bbox) 
 	{
 		if(!fileOpened)
 		{
@@ -2201,7 +2201,7 @@ namespace spdlib
 	}
 	
     /*UPDATED*/
-	void SPDFileIncrementalReader::readPulseDataBlock(std::vector<SPDPulse*> ***pulses, boost::uint_fast32_t *bbox) throw(SPDIOException)
+	void SPDFileIncrementalReader::readPulseDataBlock(std::vector<SPDPulse*> ***pulses, boost::uint_fast32_t *bbox) 
 	{
 		if(!fileOpened)
 		{
@@ -2603,7 +2603,7 @@ namespace spdlib
 	}
     
     /*UPDATED*/
-	void SPDFileIncrementalReader::readPulseDataBlock(std::list<SPDPulse*> ***pulses, boost::uint_fast32_t *bbox, boost::uint_fast32_t xOff, boost::uint_fast32_t yOff) throw(SPDIOException)
+	void SPDFileIncrementalReader::readPulseDataBlock(std::list<SPDPulse*> ***pulses, boost::uint_fast32_t *bbox, boost::uint_fast32_t xOff, boost::uint_fast32_t yOff) 
 	{
 		if(!fileOpened)
 		{
@@ -3005,7 +3005,7 @@ namespace spdlib
 	}
 	
     /*UPDATED*/
-	void SPDFileIncrementalReader::readPulseDataBlock(std::vector<SPDPulse*> ***pulses, boost::uint_fast32_t *bbox, boost::uint_fast32_t xOff, boost::uint_fast32_t yOff) throw(SPDIOException)
+	void SPDFileIncrementalReader::readPulseDataBlock(std::vector<SPDPulse*> ***pulses, boost::uint_fast32_t *bbox, boost::uint_fast32_t xOff, boost::uint_fast32_t yOff) 
 	{
 		if(!fileOpened)
 		{
@@ -3409,7 +3409,7 @@ namespace spdlib
         }
 	}
 	
-	void SPDFileIncrementalReader::readPulseDataBlock(std::list<SPDPulse*> *pulses, boost::uint_fast32_t *bbox) throw(SPDIOException)
+	void SPDFileIncrementalReader::readPulseDataBlock(std::list<SPDPulse*> *pulses, boost::uint_fast32_t *bbox) 
 	{
 		if(!fileOpened)
 		{
@@ -3803,7 +3803,7 @@ namespace spdlib
         }
 	}
 	
-	void SPDFileIncrementalReader::readPulseDataBlock(std::vector<SPDPulse*> *pulses, boost::uint_fast32_t *bbox) throw(SPDIOException)
+	void SPDFileIncrementalReader::readPulseDataBlock(std::vector<SPDPulse*> *pulses, boost::uint_fast32_t *bbox) 
 	{
 		if(!fileOpened)
 		{
@@ -4198,7 +4198,7 @@ namespace spdlib
 	}
 	
     /*UPDATED*/
-	void SPDFileIncrementalReader::readPulseDataInGeoEnv(std::list<SPDPulse*> *pulses, OGREnvelope *env) throw(SPDIOException)
+	void SPDFileIncrementalReader::readPulseDataInGeoEnv(std::list<SPDPulse*> *pulses, OGREnvelope *env) 
 	{
 		if(!fileOpened)
 		{
@@ -4305,7 +4305,7 @@ namespace spdlib
 	}
 	
     /*UPDATED*/
-	void SPDFileIncrementalReader::readPulseDataInGeoEnv(std::vector<SPDPulse*> *pulses, OGREnvelope *env) throw(SPDIOException)
+	void SPDFileIncrementalReader::readPulseDataInGeoEnv(std::vector<SPDPulse*> *pulses, OGREnvelope *env) 
 	{
 		if(!fileOpened)
 		{
@@ -4412,7 +4412,7 @@ namespace spdlib
 	}
     
     /*UPDATED*/
-    void SPDFileIncrementalReader::readPulseDataInGeom(std::list<SPDPulse*> *pulses, OGRGeometry *geom) throw(SPDIOException)
+    void SPDFileIncrementalReader::readPulseDataInGeom(std::list<SPDPulse*> *pulses, OGRGeometry *geom) 
 	{
 		if(!fileOpened)
 		{
@@ -4539,7 +4539,7 @@ namespace spdlib
 	}
 	
     /*UPDATED*/
-	void SPDFileIncrementalReader::readPulseDataInGeom(std::vector<SPDPulse*> *pulses, OGRGeometry *geom) throw(SPDIOException)
+	void SPDFileIncrementalReader::readPulseDataInGeom(std::vector<SPDPulse*> *pulses, OGRGeometry *geom) 
 	{
 		if(!fileOpened)
 		{
@@ -4666,7 +4666,7 @@ namespace spdlib
 	}
 
     /*UPDATED*/
-	void SPDFileIncrementalReader::calcGeoEnv(OGREnvelope *env) throw(SPDIOException)
+	void SPDFileIncrementalReader::calcGeoEnv(OGREnvelope *env) 
 	{
 		SPDPointUtils ptsUtils;
 		SPDPulseUtils pulseUtils;
@@ -4943,7 +4943,7 @@ namespace spdlib
 		env->MaxY = yMax;
 	}
 	
-	void SPDFileIncrementalReader::readQKRow(float *data, boost::uint_fast32_t row) throw(SPDIOException)
+	void SPDFileIncrementalReader::readQKRow(float *data, boost::uint_fast32_t row) 
 	{
 		if(!fileOpened)
 		{
@@ -5005,7 +5005,7 @@ namespace spdlib
 		}
 	}
 	
-	void SPDFileIncrementalReader::close() throw(SPDIOException)
+	void SPDFileIncrementalReader::close() 
 	{
 		try
 		{

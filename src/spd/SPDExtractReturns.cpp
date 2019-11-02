@@ -27,7 +27,7 @@
 namespace spdlib
 {
 
-    SPDExtractReturnsImportProcess::SPDExtractReturnsImportProcess(std::string outputFilePath, bool classValSet, boost::uint_fast16_t classID, bool returnValSet, boost::uint_fast16_t returnVal) throw(SPDException):SPDImporterProcessor()
+    SPDExtractReturnsImportProcess::SPDExtractReturnsImportProcess(std::string outputFilePath, bool classValSet, boost::uint_fast16_t classID, bool returnValSet, boost::uint_fast16_t returnVal) :SPDImporterProcessor()
     {
         this->classValSet = classValSet;
         this->classID = classID;
@@ -42,7 +42,7 @@ namespace spdlib
         this->pulses = new std::vector<SPDPulse*>();
     }
     
-    void SPDExtractReturnsImportProcess::processImportedPulse(SPDFile *spdFile, SPDPulse *pulse) throw(SPDIOException)
+    void SPDExtractReturnsImportProcess::processImportedPulse(SPDFile *spdFile, SPDPulse *pulse) 
     {
         if(pulse->pts->size() > 0)
         {
@@ -231,7 +231,7 @@ namespace spdlib
         pulses->clear();
     }
     
-    void SPDExtractReturnsImportProcess::completeFileAndClose(SPDFile *spdFile)throw(SPDIOException)
+    void SPDExtractReturnsImportProcess::completeFileAndClose(SPDFile *spdFile)
     {
         try
 		{
@@ -263,7 +263,7 @@ namespace spdlib
         this->highOrLow = highOrLow;
     }
     
-    void SPDExtractReturnsBlockProcess::processDataColumn(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses, SPDXYPoint *cenPts) throw(SPDProcessingException)
+    void SPDExtractReturnsBlockProcess::processDataColumn(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses, SPDXYPoint *cenPts) 
     {
         try
         {

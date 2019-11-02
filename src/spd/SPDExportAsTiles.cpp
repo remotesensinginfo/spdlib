@@ -28,7 +28,7 @@ namespace spdlib
 {
 	
 
-	SPDExportAsRowTiles::SPDExportAsRowTiles(PointDataTileFile *tiles, boost::uint_fast32_t numOfTiles, SPDFile *overallSPD, double tileHeight, bool useSphericIdx, bool useScanIdx) throw(SPDException): SPDImporterProcessor(), tiles(NULL), numOfTiles(0), overallSPD(NULL), tileHeight(0), useSphericIdx(false), useScanIdx(false), filesOpen(false)
+	SPDExportAsRowTiles::SPDExportAsRowTiles(PointDataTileFile *tiles, boost::uint_fast32_t numOfTiles, SPDFile *overallSPD, double tileHeight, bool useSphericIdx, bool useScanIdx) : SPDImporterProcessor(), tiles(NULL), numOfTiles(0), overallSPD(NULL), tileHeight(0), useSphericIdx(false), useScanIdx(false), filesOpen(false)
 	{
 		this->tiles = tiles;
 		this->numOfTiles = numOfTiles;
@@ -44,7 +44,7 @@ namespace spdlib
 		filesOpen = true;
 	}
 	
-	void SPDExportAsRowTiles::processImportedPulse(SPDFile *spdFile, SPDPulse *pulse) throw(SPDIOException)
+	void SPDExportAsRowTiles::processImportedPulse(SPDFile *spdFile, SPDPulse *pulse) 
 	{
         double yDiff = 0.0;
         if(useSphericIdx)
@@ -96,7 +96,7 @@ namespace spdlib
 		}
 	}
 	
-	void SPDExportAsRowTiles::completeFileAndClose()throw(SPDIOException)
+	void SPDExportAsRowTiles::completeFileAndClose()
 	{
 		try 
 		{
@@ -118,7 +118,7 @@ namespace spdlib
 	}
     
     
-    SPDExportAsBlockTiles::SPDExportAsBlockTiles(PointDataTileFile *tiles, boost::uint_fast32_t numOfTiles, boost::uint_fast32_t numOfXTiles, boost::uint_fast32_t numOfYTiles, SPDFile *overallSPD, double tileHeight, double tileWidth, bool useSphericIdx, bool useScanIdx) throw(SPDException)
+    SPDExportAsBlockTiles::SPDExportAsBlockTiles(PointDataTileFile *tiles, boost::uint_fast32_t numOfTiles, boost::uint_fast32_t numOfXTiles, boost::uint_fast32_t numOfYTiles, SPDFile *overallSPD, double tileHeight, double tileWidth, bool useSphericIdx, bool useScanIdx) 
     {
         this->tiles = tiles;
 		this->numOfTiles = numOfTiles;
@@ -137,7 +137,7 @@ namespace spdlib
 		filesOpen = true;
     }
     
-    void SPDExportAsBlockTiles::processImportedPulse(SPDFile *spdFile, SPDPulse *pulse) throw(SPDIOException)
+    void SPDExportAsBlockTiles::processImportedPulse(SPDFile *spdFile, SPDPulse *pulse) 
     {
         double yDiff = 0.0;
         double xDiff = 0.0;
@@ -203,7 +203,7 @@ namespace spdlib
 		}
     }
     
-    void SPDExportAsBlockTiles::completeFileAndClose()throw(SPDIOException)
+    void SPDExportAsBlockTiles::completeFileAndClose()
     {
         try 
 		{

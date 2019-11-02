@@ -27,7 +27,7 @@
 namespace spdlib
 {
 
-    SPDSplit::SPDSplit(std::string outputFilePath, boost::uint_fast16_t sourceID) throw(SPDException) : SPDImporterProcessor()
+    SPDSplit::SPDSplit(std::string outputFilePath, boost::uint_fast16_t sourceID)  : SPDImporterProcessor()
     {
         try
         {
@@ -48,7 +48,7 @@ namespace spdlib
         
     }
     
-    void SPDSplit::processImportedPulse(SPDFile *spdFile, SPDPulse *pulse) throw(SPDIOException)
+    void SPDSplit::processImportedPulse(SPDFile *spdFile, SPDPulse *pulse) 
     {
         //std::cout << "pulseCount = " << pulseCount << std::endl;
         //std::cout << "sourceID = " << sourceID << std::endl;
@@ -74,7 +74,7 @@ namespace spdlib
 		}
     }
     
-    void SPDSplit::completeFileAndClose()throw(SPDIOException)
+    void SPDSplit::completeFileAndClose()
     {
         try
 		{

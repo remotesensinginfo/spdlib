@@ -32,7 +32,7 @@ namespace spdlib
 		
 	}
 	
-	void SPDSubsetSPDFile::subsetSPDFile(std::string inputFile, std::string outputFile, double *bbox, bool *bboxDefined) throw(SPDException)
+	void SPDSubsetSPDFile::subsetSPDFile(std::string inputFile, std::string outputFile, double *bbox, bool *bboxDefined) 
 	{
 		try 
 		{
@@ -279,7 +279,7 @@ namespace spdlib
 		}
 	}
 	
-    void SPDSubsetSPDFile::subsetSPDFile2Shp(std::string inputFile, std::string outputFile, std::string shapefile) throw(SPDException)
+    void SPDSubsetSPDFile::subsetSPDFile2Shp(std::string inputFile, std::string outputFile, std::string shapefile) 
     {
         try
         {
@@ -462,7 +462,7 @@ namespace spdlib
     }
     
     
-    void SPDSubsetSPDFile::subsetSPDFile2Img(std::string inputFile, std::string outputFile, std::string imgfile, boost::uint_fast32_t blockXSize, boost::uint_fast32_t blockYSize) throw(SPDException)
+    void SPDSubsetSPDFile::subsetSPDFile2Img(std::string inputFile, std::string outputFile, std::string imgfile, boost::uint_fast32_t blockXSize, boost::uint_fast32_t blockYSize) 
     {
         try
         {
@@ -484,7 +484,7 @@ namespace spdlib
         }
     }
     
-    void SPDSubsetSPDFile::subsetSPDFileHeightOnly(std::string inputFile, std::string outputFile, double lowHeight, double upperHeight) throw(SPDException)
+    void SPDSubsetSPDFile::subsetSPDFileHeightOnly(std::string inputFile, std::string outputFile, double lowHeight, double upperHeight) 
     {
         try 
 		{
@@ -570,7 +570,7 @@ namespace spdlib
 		}
     }
     
-    void SPDSubsetSPDFile::subsetSphericalSPDFile(std::string inputFile, std::string outputFile, double *bbox, bool *bboxDefined) throw(SPDException)
+    void SPDSubsetSPDFile::subsetSphericalSPDFile(std::string inputFile, std::string outputFile, double *bbox, bool *bboxDefined) 
     {
         try 
 		{
@@ -801,7 +801,7 @@ namespace spdlib
 		}
     }
     
-    void SPDSubsetSPDFile::subsetScanSPDFile(std::string inputFile, std::string outputFile, double *bbox, bool *bboxDefined) throw(SPDException)
+    void SPDSubsetSPDFile::subsetScanSPDFile(std::string inputFile, std::string outputFile, double *bbox, bool *bboxDefined) 
     {
         try 
 		{
@@ -1045,7 +1045,7 @@ namespace spdlib
 		
 	}
 	
-	void SPDUPDPulseSubset::subsetUPD(std::string inputFile, std::string outputFile, boost::uint_fast32_t startPulse, boost::uint_fast32_t numOfPulses)throw(SPDIOException)
+	void SPDUPDPulseSubset::subsetUPD(std::string inputFile, std::string outputFile, boost::uint_fast32_t startPulse, boost::uint_fast32_t numOfPulses)
 	{
 		try 
 		{
@@ -1086,7 +1086,7 @@ namespace spdlib
         
     }
     
-    void SPDDataSubsetWithImgBlockProcessor::processDataBlockImage(SPDFile *inSPDFile, std::vector<SPDPulse*> ***pulses, float ***imageDataBlock, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast32_t numImgBands, float binSize) throw(SPDProcessingException)
+    void SPDDataSubsetWithImgBlockProcessor::processDataBlockImage(SPDFile *inSPDFile, std::vector<SPDPulse*> ***pulses, float ***imageDataBlock, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast32_t numImgBands, float binSize) 
     {
         try
 		{

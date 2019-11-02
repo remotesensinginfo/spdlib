@@ -67,32 +67,32 @@ namespace spdlib
 	{
 	public:
 		SPDFileIncrementalReader();
-		SPDFileIncrementalReader(const SPDFileIncrementalReader &spdReader) throw(SPDException);
-		SPDFileIncrementalReader& operator=(const SPDFileIncrementalReader& spdReader) throw(SPDException);
+		SPDFileIncrementalReader(const SPDFileIncrementalReader &spdReader) ;
+		SPDFileIncrementalReader& operator=(const SPDFileIncrementalReader& spdReader) ;
 		/**
 		 * Open the SPD file. 
 		 * This function needs to be executed but the other functions in this class can be used.
 		 */
-		bool open(SPDFile *spdFile) throw(SPDIOException);
+		bool open(SPDFile *spdFile) ;
         /**
 		 * Read the file index for a row
 		 * row - the row of the file to be read in
 		 * binOffsets - the offsets for each bin
 		 * numPtsInBin - the number of points in each bin.
 		 */
-		void readRefHeaderRow(boost::uint_fast32_t row, unsigned long long *binOffsets, unsigned long *numPtsInBin) throw(SPDIOException);
+		void readRefHeaderRow(boost::uint_fast32_t row, unsigned long long *binOffsets, unsigned long *numPtsInBin) ;
 		/**
 		 * Read a row of data
 		 * row - the row of the file to be read in
 		 * pulses - pulses to std::list<SPDPulse*>[cols]
 		 */
-		void readPulseDataRow(boost::uint_fast32_t row, std::list<SPDPulse*> **pulses) throw(SPDIOException);
+		void readPulseDataRow(boost::uint_fast32_t row, std::list<SPDPulse*> **pulses) ;
 		/**
 		 * Read a row of data
 		 * row - the row of the file to be read in
 		 * pulses - pulses to std::vector<SPDPulse*>[cols]
 		 */
-		void readPulseDataRow(boost::uint_fast32_t row, std::vector<SPDPulse*> **pulses) throw(SPDIOException);		
+		void readPulseDataRow(boost::uint_fast32_t row, std::vector<SPDPulse*> **pulses) ;		
 		/**
 		 * Read a given number of pulses starting from the offset
 		 * pulses - pulses to std::list<SPDPulse*>*
@@ -100,7 +100,7 @@ namespace spdlib
 		 * startCol - the column (within the row) to start reading.
 		 * endCol - the column (within the row) to end reading.
 		 */
-		void readPulseData(std::list<SPDPulse*> *pulses, boost::uint_fast32_t row, boost::uint_fast32_t startCol, boost::uint_fast32_t endCol) throw(SPDIOException);
+		void readPulseData(std::list<SPDPulse*> *pulses, boost::uint_fast32_t row, boost::uint_fast32_t startCol, boost::uint_fast32_t endCol) ;
 		/**
 		 * Read a given number of pulses starting from the offset
 		 * pulses - pulses to std::vector<SPDPulse*>*
@@ -108,33 +108,33 @@ namespace spdlib
 		 * startCol - the column (within the row) to start reading.
 		 * endCol - the column (within the row) to end reading.
 		 */
-		void readPulseData(std::vector<SPDPulse*> *pulses, boost::uint_fast32_t row, boost::uint_fast32_t startCol, boost::uint_fast32_t endCol) throw(SPDIOException);
+		void readPulseData(std::vector<SPDPulse*> *pulses, boost::uint_fast32_t row, boost::uint_fast32_t startCol, boost::uint_fast32_t endCol) ;
 		/**
 		 * Read a given number of pulses starting from the offset
 		 * pulses - pulses to std::list<SPDPulse*>*
 		 * offset - the offset in the list of pulses (in the HDF/SPD file)
 		 * numPts - the number of points to be read.
 		 */
-		void readPulseData(std::list<SPDPulse*> *pulses, boost::uint_fast64_t offset, boost::uint_fast64_t numPts) throw(SPDIOException);
+		void readPulseData(std::list<SPDPulse*> *pulses, boost::uint_fast64_t offset, boost::uint_fast64_t numPts) ;
 		/**
 		 * Read a given number of pulses starting from the offset
 		 * pulses - pulses to std::vector<SPDPulse*>*
 		 * offset - the offset in the list of pulses (in the HDF/SPD file)
 		 * numPts - the number of points to be read.
 		 */
-		void readPulseData(std::vector<SPDPulse*> *pulses, boost::uint_fast64_t offset, boost::uint_fast64_t numPts) throw(SPDIOException);
+		void readPulseData(std::vector<SPDPulse*> *pulses, boost::uint_fast64_t offset, boost::uint_fast64_t numPts) ;
 		/**
 		 * Read a block of data
 		 * pulses - points to std::list<SPDPulse*>[rows][cols]
 		 * bbox - [startX, startY, endX, endY]
 		 */
-		void readPulseDataBlock(std::list<SPDPulse*> ***pulses, boost::uint_fast32_t *bbox) throw(SPDIOException);
+		void readPulseDataBlock(std::list<SPDPulse*> ***pulses, boost::uint_fast32_t *bbox) ;
 		/**
 		 * Read a block of data
 		 * pulses - points to std::vector<SPDPulse*>[rows][cols]
 		 * bbox - [startX, startY, endX, endY]
 		 */
-		void readPulseDataBlock(std::vector<SPDPulse*> ***pulses, boost::uint_fast32_t *bbox) throw(SPDIOException);
+		void readPulseDataBlock(std::vector<SPDPulse*> ***pulses, boost::uint_fast32_t *bbox) ;
         /**
 		 * Read a block of data
 		 * pulses - points to std::list<SPDPulse*>[rows][cols]
@@ -142,7 +142,7 @@ namespace spdlib
          * xOff - start offset for adding data to pulses
          * yOff - start offset for adding data to pulses
 		 */
-		void readPulseDataBlock(std::list<SPDPulse*> ***pulses, boost::uint_fast32_t *bbox, boost::uint_fast32_t xOff, boost::uint_fast32_t yOff) throw(SPDIOException);
+		void readPulseDataBlock(std::list<SPDPulse*> ***pulses, boost::uint_fast32_t *bbox, boost::uint_fast32_t xOff, boost::uint_fast32_t yOff) ;
 		/**
 		 * Read a block of data
 		 * pulses - points to std::vector<SPDPulse*>[rows][cols]
@@ -150,57 +150,57 @@ namespace spdlib
          * xOff - start offset for adding data to pulses
          * yOff - start offset for adding data to pulses
 		 */
-		void readPulseDataBlock(std::vector<SPDPulse*> ***pulses, boost::uint_fast32_t *bbox, boost::uint_fast32_t xOff, boost::uint_fast32_t yOff) throw(SPDIOException);
+		void readPulseDataBlock(std::vector<SPDPulse*> ***pulses, boost::uint_fast32_t *bbox, boost::uint_fast32_t xOff, boost::uint_fast32_t yOff) ;
 		/**
 		 * Read a block of data into a single array
 		 * pulses - points to std::list<SPDPulse*>
 		 * bbox - [startX, startY, endX, endY]
 		 */
-		void readPulseDataBlock(std::list<SPDPulse*> *pulses, boost::uint_fast32_t *bbox) throw(SPDIOException);
+		void readPulseDataBlock(std::list<SPDPulse*> *pulses, boost::uint_fast32_t *bbox) ;
 		/**
 		 * Read a block of data into a single array
 		 * pulses - points to std::vector<SPDPulse*>
 		 * bbox - [startX, startY, endX, endY]
 		 */
-		void readPulseDataBlock(std::vector<SPDPulse*> *pulses, boost::uint_fast32_t *bbox) throw(SPDIOException);
+		void readPulseDataBlock(std::vector<SPDPulse*> *pulses, boost::uint_fast32_t *bbox) ;
 		/**
 		 * Read in pulses within a geographic envelope without using index
 		 * pts - points to std::list<SPDPoint*>
 		 * env - geographic envelope
 		 */
-		void readPulseDataInGeoEnv(std::list<SPDPulse*> *pulses, OGREnvelope *env) throw(SPDIOException);
+		void readPulseDataInGeoEnv(std::list<SPDPulse*> *pulses, OGREnvelope *env) ;
 		/**
 		 * Read in pulses within a geographic envelope without using index
 		 * pts - points to std::vector<SPDPoint*>
 		 * env - geographic envelope
 		 */
-		void readPulseDataInGeoEnv(std::vector<SPDPulse*> *pulses, OGREnvelope *env) throw(SPDIOException);
+		void readPulseDataInGeoEnv(std::vector<SPDPulse*> *pulses, OGREnvelope *env) ;
         /**
 		 * Read in pulses within a geometry without using index
 		 * pts - points to std::list<SPDPoint*>
 		 * geom - OGRGeometry defining the area from which the pulses are to be returned.
 		 */
-		void readPulseDataInGeom(std::list<SPDPulse*> *pulses, OGRGeometry *geom) throw(SPDIOException);
+		void readPulseDataInGeom(std::list<SPDPulse*> *pulses, OGRGeometry *geom) ;
 		/**
 		 * Read in pulses within a geometry without using index
 		 * pts - points to std::vector<SPDPoint*>
 		 * geom - OGRGeometry defining the area from which the pulses are to be returned.
 		 */
-		void readPulseDataInGeom(std::vector<SPDPulse*> *pulses, OGRGeometry *geom) throw(SPDIOException);
+		void readPulseDataInGeom(std::vector<SPDPulse*> *pulses, OGRGeometry *geom) ;
 		/**
 		 * Calculate the file extent 
 		 * env - geographic envelope 
 		 */
-		void calcGeoEnv(OGREnvelope *env) throw(SPDIOException);
+		void calcGeoEnv(OGREnvelope *env) ;
 		/**
 		 * Get the a row of the quicklook image
 		 */
-		void readQKRow(float *data, boost::uint_fast32_t row) throw(SPDIOException);
+		void readQKRow(float *data, boost::uint_fast32_t row) ;
 		/**
 		 * Close the SPD file. 
 		 * This function needs to be executed when you have finished reading from the file.
 		 */
-		void close() throw(SPDIOException);
+		void close() ;
 		~SPDFileIncrementalReader();	
 	private:
 		SPDFile *spdFile;

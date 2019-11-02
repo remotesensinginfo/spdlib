@@ -63,24 +63,24 @@ namespace spdlib
 	{
 	public:
 		SPDDataExporter(std::string filetype);
-		SPDDataExporter(const SPDDataExporter &dataExporter) throw(SPDException);
+		SPDDataExporter(const SPDDataExporter &dataExporter) ;
         virtual SPDDataExporter* getInstance()=0;
-		virtual bool open(SPDFile *spdFile, std::string outputFile) throw(SPDIOException) = 0;
-        virtual bool reopen(SPDFile *spdFile, std::string outputFile) throw(SPDIOException) = 0;
-		virtual void writeDataColumn(std::list<SPDPulse*> *pls, boost::uint_fast32_t col, boost::uint_fast32_t row)throw(SPDIOException) = 0;
-		virtual void writeDataColumn(std::vector<SPDPulse*> *pls, boost::uint_fast32_t col, boost::uint_fast32_t row)throw(SPDIOException) = 0;
-		virtual void writeData(std::list<SPDPulse*> ***griddedPls, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize)throw(SPDIOException);
-		virtual void writeData(std::vector<SPDPulse*> ***griddedPls, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize)throw(SPDIOException);
-        virtual void writeData(std::list<SPDPulse*> ***griddedPls, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast32_t startBinX, boost::uint_fast32_t startBinY, boost::uint_fast32_t startIdxX, boost::uint_fast32_t startIdxY)throw(SPDIOException);
-		virtual void writeData(std::vector<SPDPulse*> ***griddedPls, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast32_t startBinX, boost::uint_fast32_t startBinY, boost::uint_fast32_t startIdxX, boost::uint_fast32_t startIdxY)throw(SPDIOException);
-		virtual void finaliseClose() throw(SPDIOException) = 0;
+		virtual bool open(SPDFile *spdFile, std::string outputFile)  = 0;
+        virtual bool reopen(SPDFile *spdFile, std::string outputFile)  = 0;
+		virtual void writeDataColumn(std::list<SPDPulse*> *pls, boost::uint_fast32_t col, boost::uint_fast32_t row) = 0;
+		virtual void writeDataColumn(std::vector<SPDPulse*> *pls, boost::uint_fast32_t col, boost::uint_fast32_t row) = 0;
+		virtual void writeData(std::list<SPDPulse*> ***griddedPls, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize);
+		virtual void writeData(std::vector<SPDPulse*> ***griddedPls, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize);
+        virtual void writeData(std::list<SPDPulse*> ***griddedPls, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast32_t startBinX, boost::uint_fast32_t startBinY, boost::uint_fast32_t startIdxX, boost::uint_fast32_t startIdxY);
+		virtual void writeData(std::vector<SPDPulse*> ***griddedPls, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast32_t startBinX, boost::uint_fast32_t startBinY, boost::uint_fast32_t startIdxX, boost::uint_fast32_t startIdxY);
+		virtual void finaliseClose()  = 0;
 		virtual bool needNumOutPts()=0;
         virtual void setKeepMinExtent(bool keepMinExtent){this->keepMinExtent = keepMinExtent;};
 		virtual void setNumOutPts(boost::uint_fast64_t numOutPts);
 		virtual bool isFileType(std::string filetype);
 		virtual bool requireGrid()=0;
         virtual void setExportZasH(bool exportZasH){this->exportZasH = exportZasH;};
-        SPDDataExporter& operator=(const SPDDataExporter& dataExporter) throw(SPDException);
+        SPDDataExporter& operator=(const SPDDataExporter& dataExporter) ;
 		virtual bool opened();
 		virtual ~SPDDataExporter();
 	protected:

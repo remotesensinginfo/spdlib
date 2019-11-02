@@ -54,9 +54,9 @@ namespace spdlib
 	class DllExport SPDSplit : public SPDImporterProcessor
 	{
 	public:
-		SPDSplit(std::string outputFilePath, boost::uint_fast16_t sourceID) throw(SPDException);
-		void processImportedPulse(SPDFile *spdFile, SPDPulse *pulse) throw(SPDIOException);
-		void completeFileAndClose()throw(SPDIOException);
+		SPDSplit(std::string outputFilePath, boost::uint_fast16_t sourceID) ;
+		void processImportedPulse(SPDFile *spdFile, SPDPulse *pulse) ;
+		void completeFileAndClose();
 		~SPDSplit();
 	private:
         SPDDataExporter *exporter;

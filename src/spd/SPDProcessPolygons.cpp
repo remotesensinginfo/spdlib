@@ -30,7 +30,7 @@ namespace spdlib
 		this->processor = processor;
 	}
 	
-	void SPDProcessPolygons::processPolygons(SPDFile *spdFile, SPDFileIncrementalReader *spdReader, OGRLayer *inputLayer, OGRLayer *outputLayer, bool copyAttributes)throw(SPDProcessingException)
+	void SPDProcessPolygons::processPolygons(SPDFile *spdFile, SPDFileIncrementalReader *spdReader, OGRLayer *inputLayer, OGRLayer *outputLayer, bool copyAttributes)
 	{
 		OGRGeometry *geometry = NULL;
 		
@@ -155,7 +155,7 @@ namespace spdlib
 		}
 	}
     
-    void SPDProcessPolygons::processPolygons(SPDFile *spdFile, SPDFileIncrementalReader *spdReader, OGRLayer *inputLayer, std::ofstream *outASCIIFile)throw(SPDProcessingException)
+    void SPDProcessPolygons::processPolygons(SPDFile *spdFile, SPDFileIncrementalReader *spdReader, OGRLayer *inputLayer, std::ofstream *outASCIIFile)
 	{
 		OGRGeometry *geometry = NULL;
 		
@@ -247,7 +247,7 @@ namespace spdlib
 		}
 	}
 	
-	void SPDProcessPolygons::copyFeatureDefn(OGRLayer *outputSHPLayer, OGRFeatureDefn *inFeatureDefn) throw(SPDProcessingException)
+	void SPDProcessPolygons::copyFeatureDefn(OGRLayer *outputSHPLayer, OGRFeatureDefn *inFeatureDefn) 
 	{
 		boost::uint_fast32_t fieldCount = inFeatureDefn->GetFieldCount();
 		for(boost::uint_fast32_t i = 0; i < fieldCount; ++i)
@@ -260,7 +260,7 @@ namespace spdlib
 		}
 	}
 	
-	void SPDProcessPolygons::copyFeatureData(OGRFeature *inFeature, OGRFeature *outFeature, OGRFeatureDefn *inFeatureDefn, OGRFeatureDefn *outFeatureDefn) throw(SPDProcessingException)
+	void SPDProcessPolygons::copyFeatureData(OGRFeature *inFeature, OGRFeature *outFeature, OGRFeatureDefn *inFeatureDefn, OGRFeatureDefn *outFeatureDefn) 
 	{
 		boost::uint_fast32_t fieldCount = inFeatureDefn->GetFieldCount();
 		for(boost::uint_fast32_t i = 0; i < fieldCount; ++i)

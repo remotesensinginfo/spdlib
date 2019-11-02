@@ -59,7 +59,7 @@ namespace spdlib
 	{
 	public:
 		SPDMergeFiles();
-		void mergeToUPD(std::vector<std::string> inputFiles, std::string output, std::string inFormat, std::string schema, std::string inSpatialRef, bool convertCoords, std::string outputProj4, boost::uint_fast16_t indexCoords, bool setSourceID, bool setReturnIDs, std::vector<boost::uint_fast16_t> returnID, bool setClasses, std::vector<boost::uint_fast16_t> classValues, bool ignoreChecks, boost::uint_fast16_t waveBinRes, bool keepMinExtent) throw(SPDException);
+		void mergeToUPD(std::vector<std::string> inputFiles, std::string output, std::string inFormat, std::string schema, std::string inSpatialRef, bool convertCoords, std::string outputProj4, boost::uint_fast16_t indexCoords, bool setSourceID, bool setReturnIDs, std::vector<boost::uint_fast16_t> returnID, bool setClasses, std::vector<boost::uint_fast16_t> classValues, bool ignoreChecks, boost::uint_fast16_t waveBinRes, bool keepMinExtent) ;
 		~SPDMergeFiles();
 	};
 }

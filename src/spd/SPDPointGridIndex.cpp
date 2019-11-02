@@ -31,7 +31,7 @@ namespace spdlib
 		deletePtsInBins = false;
 	}
 	
-    void SPDPointGridIndex::buildIndex(std::vector<SPDPoint*> *pts, double resolution, OGREnvelope *env) throw(SPDProcessingException)
+    void SPDPointGridIndex::buildIndex(std::vector<SPDPoint*> *pts, double resolution, OGREnvelope *env) 
 	{
 		if(pts->size() > 0)
 		{
@@ -228,7 +228,7 @@ namespace spdlib
         deletePtsInBins = false;
 	}
     
-	void SPDPointGridIndex::buildIndex(std::vector<SPDPoint*> *pts, double resolution) throw(SPDProcessingException)
+	void SPDPointGridIndex::buildIndex(std::vector<SPDPoint*> *pts, double resolution) 
 	{
 		if(pts->size() > 0)
 		{
@@ -398,7 +398,7 @@ namespace spdlib
 		deletePtsInBins = false;
 	}
 	
-	bool SPDPointGridIndex::getPointsInRadius(std::vector<SPDPoint*> *pts, double eastings, double northings, double radius) throw(SPDProcessingException)
+	bool SPDPointGridIndex::getPointsInRadius(std::vector<SPDPoint*> *pts, double eastings, double northings, double radius) 
 	{
 		if((eastings < tlX) | 
 		   (eastings > brX) |
@@ -522,7 +522,7 @@ namespace spdlib
 		return returnVal;
 	}
 	
-    bool SPDPointGridIndex::getSetNumOfPoints(std::vector<SPDPoint*> *pts, double eastings, double northings, boost::uint_fast16_t numPts, double maxRadius) throw(SPDProcessingException)
+    bool SPDPointGridIndex::getSetNumOfPoints(std::vector<SPDPoint*> *pts, double eastings, double northings, boost::uint_fast16_t numPts, double maxRadius) 
     {
         //std::cout << "PT: [" << eastings << "," << northings << "]\n";
         
@@ -744,7 +744,7 @@ namespace spdlib
 		return returnVal;
     }
     
-    void SPDPointGridIndex::thinPtsInBins(boost::uint_fast16_t elevVal, boost::uint_fast16_t selectHighOrLow, boost::uint_fast16_t maxNumPtsPerBin) throw(SPDProcessingException)
+    void SPDPointGridIndex::thinPtsInBins(boost::uint_fast16_t elevVal, boost::uint_fast16_t selectHighOrLow, boost::uint_fast16_t maxNumPtsPerBin) 
     {
         boost::uint_fast32_t numPtsToRemove = 0;
         for(boost::uint_fast32_t i = 0; i < yBins; ++i)
@@ -803,7 +803,7 @@ namespace spdlib
     }
     
     /*
-    void SPDPointGridIndex::thinPtsInBinsWithDelete(boost::uint_fast16_t elevVal, boost::uint_fast16_t selectHighOrLow, boost::uint_fast16_t maxNumPtsPerBin) throw(SPDProcessingException)
+    void SPDPointGridIndex::thinPtsInBinsWithDelete(boost::uint_fast16_t elevVal, boost::uint_fast16_t selectHighOrLow, boost::uint_fast16_t maxNumPtsPerBin) 
     {
         boost::uint_fast32_t numPtsToRemove = 0;
         for(boost::uint_fast32_t i = 0; i < yBins; ++i)
@@ -859,7 +859,7 @@ namespace spdlib
     }
     */
     
-    void SPDPointGridIndex::thinPtsWithAvZ(boost::uint_fast16_t elevVal) throw(SPDProcessingException)
+    void SPDPointGridIndex::thinPtsWithAvZ(boost::uint_fast16_t elevVal) 
     {
         std::vector<SPDPoint*>::iterator iterPts;
         SPDPoint *pt = NULL;
@@ -919,7 +919,7 @@ namespace spdlib
         deletePtsInBins = true;
     }
     
-    void SPDPointGridIndex::getAllPointsInGrid(std::vector<SPDPoint*> *pts) throw(SPDProcessingException)
+    void SPDPointGridIndex::getAllPointsInGrid(std::vector<SPDPoint*> *pts) 
     {
         std::vector<SPDPoint*>::iterator iterPts;
         for(boost::uint_fast32_t i = 0; i < yBins; ++i)

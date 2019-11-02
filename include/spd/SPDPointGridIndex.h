@@ -92,14 +92,14 @@ namespace spdlib
 	{
 	public:
 		SPDPointGridIndex();
-		void buildIndex(std::vector<SPDPoint*> *pts, double binSize, OGREnvelope *env) throw(SPDProcessingException);
-        void buildIndex(std::vector<SPDPoint*> *pts, double binSize) throw(SPDProcessingException);
-		bool getPointsInRadius(std::vector<SPDPoint*> *pts, double eastings, double northings, double radius) throw(SPDProcessingException);
-        bool getSetNumOfPoints(std::vector<SPDPoint*> *pts, double eastings, double northings, boost::uint_fast16_t numPts, double maxRadius) throw(SPDProcessingException);
-        void thinPtsInBins(boost::uint_fast16_t elevVal, boost::uint_fast16_t selectHighOrLow, boost::uint_fast16_t maxNumPtsPerBin) throw(SPDProcessingException);
-        //void thinPtsInBinsWithDelete(boost::uint_fast16_t elevVal,boost::uint_fast16_t selectHighOrLow,boost::uint_fast16_t maxNumPtsPerBin) throw(SPDProcessingException);
-        void thinPtsWithAvZ(boost::uint_fast16_t elevVal) throw(SPDProcessingException);
-        void getAllPointsInGrid(std::vector<SPDPoint*> *pts) throw(SPDProcessingException);
+		void buildIndex(std::vector<SPDPoint*> *pts, double binSize, OGREnvelope *env) ;
+        void buildIndex(std::vector<SPDPoint*> *pts, double binSize) ;
+		bool getPointsInRadius(std::vector<SPDPoint*> *pts, double eastings, double northings, double radius) ;
+        bool getSetNumOfPoints(std::vector<SPDPoint*> *pts, double eastings, double northings, boost::uint_fast16_t numPts, double maxRadius) ;
+        void thinPtsInBins(boost::uint_fast16_t elevVal, boost::uint_fast16_t selectHighOrLow, boost::uint_fast16_t maxNumPtsPerBin) ;
+        //void thinPtsInBinsWithDelete(boost::uint_fast16_t elevVal,boost::uint_fast16_t selectHighOrLow,boost::uint_fast16_t maxNumPtsPerBin) ;
+        void thinPtsWithAvZ(boost::uint_fast16_t elevVal) ;
+        void getAllPointsInGrid(std::vector<SPDPoint*> *pts) ;
         boost::uint_fast32_t getXBins(){return xBins;};
         boost::uint_fast32_t getYBins(){return yBins;};
 		~SPDPointGridIndex();

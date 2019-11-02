@@ -32,7 +32,7 @@ namespace spdlib
 		
 	}
 	
-	void SPDImageUtils::getImagePixelValues(GDALDataset *dataset, boost::uint_fast32_t imgX, boost::uint_fast32_t imgY, float **pxlVals, boost::uint_fast32_t winHSize, boost::uint_fast16_t band) throw(SPDImageException)
+	void SPDImageUtils::getImagePixelValues(GDALDataset *dataset, boost::uint_fast32_t imgX, boost::uint_fast32_t imgY, float **pxlVals, boost::uint_fast32_t winHSize, boost::uint_fast16_t band) 
 	{		
 		boost::uint_fast32_t xSize = dataset->GetRasterXSize();
 		boost::uint_fast32_t ySize = dataset->GetRasterYSize();
@@ -75,7 +75,7 @@ namespace spdlib
 		delete[] data;
 	}
 	
-	void SPDImageUtils::getImagePixelPtValues(GDALDataset *dataset,boost::int_fast32_t *imgX,boost::int_fast32_t *imgY, float **pxlVals, boost::uint_fast32_t winHSize, boost::uint_fast16_t band) throw(SPDImageException)
+	void SPDImageUtils::getImagePixelPtValues(GDALDataset *dataset,boost::int_fast32_t *imgX,boost::int_fast32_t *imgY, float **pxlVals, boost::uint_fast32_t winHSize, boost::uint_fast16_t band) 
 	{
 		boost::uint_fast32_t xSize = dataset->GetRasterXSize();
 		boost::uint_fast32_t ySize = dataset->GetRasterYSize();
@@ -152,7 +152,7 @@ namespace spdlib
 		delete[] data;
 	}
 	
-	void SPDImageUtils::getPixelLocation(GDALDataset *dataset, double x, double y, std::string wktStrBBox, boost::uint_fast32_t *imgX, boost::uint_fast32_t *imgY, float *xOff, float *yOff) throw(SPDImageException)
+	void SPDImageUtils::getPixelLocation(GDALDataset *dataset, double x, double y, std::string wktStrBBox, boost::uint_fast32_t *imgX, boost::uint_fast32_t *imgY, float *xOff, float *yOff) 
 	{
 		try 
 		{
@@ -215,7 +215,7 @@ namespace spdlib
 		
 	}
 	
-	void SPDImageUtils::getPixelPointLocations(GDALDataset *dataset, double x, double y, std::string wktStrBBox,boost::int_fast32_t *imgX,boost::int_fast32_t *imgY, float *xOff, float *yOff) throw(SPDImageException)
+	void SPDImageUtils::getPixelPointLocations(GDALDataset *dataset, double x, double y, std::string wktStrBBox,boost::int_fast32_t *imgX,boost::int_fast32_t *imgY, float *xOff, float *yOff) 
 	{
 		try 
 		{
@@ -292,7 +292,7 @@ namespace spdlib
 		}
 	}
 	
-	float SPDImageUtils::cubicInterpValue(float xShift, float yShift, float **pixels, boost::uint_fast32_t winSize) throw(SPDImageException)
+	float SPDImageUtils::cubicInterpValue(float xShift, float yShift, float **pixels, boost::uint_fast32_t winSize) 
 	{
 		if(winSize != 4)
 		{
@@ -361,7 +361,7 @@ namespace spdlib
 		
 	}
     
-    void SPDImageUtils::getImageOverlapCut2Env(GDALDataset **datasets, int numDS,  int **dsOffsets, int *width, int *height, double *gdalTransform, OGREnvelope *env, int *maxBlockX, int *maxBlockY) throw(SPDImageException)
+    void SPDImageUtils::getImageOverlapCut2Env(GDALDataset **datasets, int numDS,  int **dsOffsets, int *width, int *height, double *gdalTransform, OGREnvelope *env, int *maxBlockX, int *maxBlockY) 
 	{
 		double **transformations = new double*[numDS];
 		int *xSize = new int[numDS];
@@ -632,7 +632,7 @@ namespace spdlib
     }
     
     
-    void SPDImageUtils::copyInDatasetIntoOutDataset(GDALDataset *dataset, GDALDataset *outputImageDS, OGREnvelope *env) throw(SPDImageException)
+    void SPDImageUtils::copyInDatasetIntoOutDataset(GDALDataset *dataset, GDALDataset *outputImageDS, OGREnvelope *env) 
     {
         GDALAllRegister();
 		double *gdalTranslation = new double[6];
@@ -858,7 +858,7 @@ namespace spdlib
     }
     
     
-    boost::uint_fast32_t SPDImageUtils::findColumnIndex(const GDALRasterAttributeTable *gdalATT, std::string colName) throw(SPDImageException)
+    boost::uint_fast32_t SPDImageUtils::findColumnIndex(const GDALRasterAttributeTable *gdalATT, std::string colName) 
     {
         int numColumns = gdalATT->GetColumnCount();
         bool foundCol = false;
@@ -882,7 +882,7 @@ namespace spdlib
         return colIdx;
     }
     
-    boost::uint_fast32_t SPDImageUtils::findColumnIndexOrCreate(GDALRasterAttributeTable *gdalATT, std::string colName, GDALRATFieldType dType) throw(SPDImageException)
+    boost::uint_fast32_t SPDImageUtils::findColumnIndexOrCreate(GDALRasterAttributeTable *gdalATT, std::string colName, GDALRATFieldType dType) 
     {
         int numColumns = gdalATT->GetColumnCount();
         bool foundCol = false;

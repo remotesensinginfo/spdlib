@@ -27,7 +27,7 @@
 namespace spdlib
 {
 
-    SPDSampleInTime::SPDSampleInTime(std::string outputFilePath, boost::uint_fast16_t tSample) throw(SPDException) : SPDImporterProcessor()
+    SPDSampleInTime::SPDSampleInTime(std::string outputFilePath, boost::uint_fast16_t tSample)  : SPDImporterProcessor()
     {
         try
         {
@@ -48,7 +48,7 @@ namespace spdlib
         
     }
     
-    void SPDSampleInTime::processImportedPulse(SPDFile *spdFile, SPDPulse *pulse) throw(SPDIOException)
+    void SPDSampleInTime::processImportedPulse(SPDFile *spdFile, SPDPulse *pulse) 
     {
         //std::cout << "pulseCount = " << pulseCount << std::endl;
         //std::cout << "tSample = " << tSample << std::endl;
@@ -75,7 +75,7 @@ namespace spdlib
 		}
     }
     
-    void SPDSampleInTime::completeFileAndClose()throw(SPDIOException)
+    void SPDSampleInTime::completeFileAndClose()
     {
         try
 		{

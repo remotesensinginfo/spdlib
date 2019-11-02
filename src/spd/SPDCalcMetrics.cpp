@@ -114,7 +114,7 @@ namespace spdlib
         }
     }
 
-    void SPDCalcMetrics::parseMetricsXML(std::string inXMLFilePath, std::vector<SPDMetric*> *metrics, std::vector<std::string> *fieldNames) throw(SPDProcessingException)
+    void SPDCalcMetrics::parseMetricsXML(std::string inXMLFilePath, std::vector<SPDMetric*> *metrics, std::vector<std::string> *fieldNames) 
     {
         
         // Check file exists
@@ -218,7 +218,7 @@ namespace spdlib
 		}
     }
 
-    SPDMetric* SPDCalcMetrics::createMetric(xercesc::DOMElement *metricElement) throw(SPDProcessingException)
+    SPDMetric* SPDCalcMetrics::createMetric(xercesc::DOMElement *metricElement) 
     {
         XMLCh *metricadd = xercesc::XMLString::transcode("add");
         XMLCh *metricminus = xercesc::XMLString::transcode("minus");
@@ -2040,7 +2040,7 @@ namespace spdlib
         this->fieldNames = fieldNames;
     }
 
-    void SPDCalcImageMetrics::processDataColumnImage(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses, float *imageData, SPDXYPoint *cenPts, boost::uint_fast32_t numImgBands, float binSize) throw(SPDProcessingException)
+    void SPDCalcImageMetrics::processDataColumnImage(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses, float *imageData, SPDXYPoint *cenPts, boost::uint_fast32_t numImgBands, float binSize) 
     {
         if(numImgBands != metrics->size())
         {
@@ -2087,7 +2087,7 @@ namespace spdlib
         }
     }
 
-    std::vector<std::string> SPDCalcImageMetrics::getImageBandDescriptions() throw(SPDProcessingException)
+    std::vector<std::string> SPDCalcImageMetrics::getImageBandDescriptions() 
     {
         if(metrics->size() != fieldNames->size())
         {
@@ -2103,7 +2103,7 @@ namespace spdlib
         return bandNames;
     }
 
-    void SPDCalcImageMetrics::setHeaderValues(SPDFile *spdFile) throw(SPDProcessingException)
+    void SPDCalcImageMetrics::setHeaderValues(SPDFile *spdFile) 
     {
         // Nothing to do here.
     }
@@ -2124,7 +2124,7 @@ namespace spdlib
         this->fieldNames = fieldNames;
     }
 
-    void SPDCalcPolyMetrics::processFeature(OGRFeature *inFeature, OGRFeature *outFeature, boost::uint_fast64_t fid, std::vector<SPDPulse*> *pulses, SPDFile *spdFile) throw(SPDProcessingException)
+    void SPDCalcPolyMetrics::processFeature(OGRFeature *inFeature, OGRFeature *outFeature, boost::uint_fast64_t fid, std::vector<SPDPulse*> *pulses, SPDFile *spdFile) 
     {
         std::vector<SPDMetric*>::iterator iterMetrics = metrics->begin();
         std::vector<std::string>::iterator iterNames = fieldNames->begin();
@@ -2145,7 +2145,7 @@ namespace spdlib
         }
     }
 
-    void SPDCalcPolyMetrics::processFeature(OGRFeature *inFeature, std::ofstream *outASCIIFile, boost::uint_fast64_t fid, std::vector<SPDPulse*> *pulses, SPDFile *spdFile) throw(SPDProcessingException)
+    void SPDCalcPolyMetrics::processFeature(OGRFeature *inFeature, std::ofstream *outASCIIFile, boost::uint_fast64_t fid, std::vector<SPDPulse*> *pulses, SPDFile *spdFile) 
     {
         (*outASCIIFile) << fid;
 
@@ -2161,7 +2161,7 @@ namespace spdlib
         (*outASCIIFile) << std::endl;
     }
 
-    void SPDCalcPolyMetrics::createOutputLayerDefinition(OGRLayer *outputLayer, OGRFeatureDefn *inFeatureDefn) throw(SPDProcessingException)
+    void SPDCalcPolyMetrics::createOutputLayerDefinition(OGRLayer *outputLayer, OGRFeatureDefn *inFeatureDefn) 
     {
         if(metrics->size() != fieldNames->size())
         {
@@ -2180,7 +2180,7 @@ namespace spdlib
         }
     }
 
-    void SPDCalcPolyMetrics::writeASCIIHeader(std::ofstream *outASCIIFile) throw(SPDProcessingException)
+    void SPDCalcPolyMetrics::writeASCIIHeader(std::ofstream *outASCIIFile) 
     {
         (*outASCIIFile) << "FID";
         for(std::vector<std::string>::iterator iterNames = fieldNames->begin(); iterNames != fieldNames->end(); ++iterNames)
@@ -2205,7 +2205,7 @@ namespace spdlib
         this->colMedianVals = new std::vector<double>();
     }
     
-    void SPDCalcZMedianVal::processDataColumn(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses, SPDXYPoint *cenPts) throw(SPDProcessingException)
+    void SPDCalcZMedianVal::processDataColumn(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses, SPDXYPoint *cenPts) 
     {
         if(pulses->size() > 0)
         {

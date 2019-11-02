@@ -59,14 +59,14 @@ namespace spdlib
 	public:
         SPDProcessPulses(SPDPulseProcessor *pulseProcessor, bool usingWindow, boost::uint_fast16_t winHSize);
         
-        void processDataBlockImage(SPDFile *inSPDFile, std::vector<SPDPulse*> ***pulses, float ***imageDataBlock, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast32_t numImgBands, float binSize) throw(SPDProcessingException);
-		void processDataBlock(SPDFile *inSPDFile, std::vector<SPDPulse*> ***pulses, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, float binSize) throw(SPDProcessingException);
+        void processDataBlockImage(SPDFile *inSPDFile, std::vector<SPDPulse*> ***pulses, float ***imageDataBlock, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast32_t numImgBands, float binSize) ;
+		void processDataBlock(SPDFile *inSPDFile, std::vector<SPDPulse*> ***pulses, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, float binSize) ;
         
-        void processDataBlockImage(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses, float ***imageDataBlock, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast32_t numImgBands) throw(SPDProcessingException);
-		void processDataBlock(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses) throw(SPDProcessingException);
+        void processDataBlockImage(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses, float ***imageDataBlock, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast32_t numImgBands) ;
+		void processDataBlock(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses) ;
         
-        std::vector<std::string> getImageBandDescriptions() throw(SPDProcessingException);
-        void setHeaderValues(SPDFile *spdFile) throw(SPDProcessingException);
+        std::vector<std::string> getImageBandDescriptions() ;
+        void setHeaderValues(SPDFile *spdFile) ;
         
         ~SPDProcessPulses();
     protected:
@@ -79,10 +79,10 @@ namespace spdlib
     {
     public:
         SPDSetupProcessPulses(boost::uint_fast32_t blockXSize=250, boost::uint_fast32_t blockYSize=250, bool printProgress=true);
-        void processPulsesWithInputImage(SPDPulseProcessor *pulseProcessor, SPDFile *spdInFile, std::string outFile, std::string imageFilePath, bool usingWindow=false, boost::uint_fast16_t winHSize=0) throw(SPDProcessingException);
-        void processPulsesWithOutputImage(SPDPulseProcessor *pulseProcessor, SPDFile *spdInFile, std::string outImagePath, boost::uint_fast16_t numImgBands, float processingResolution=0, std::string gdalFormat="ENVI", bool usingWindow=false, boost::uint_fast16_t winHSize=0) throw(SPDProcessingException);
-        void processPulsesWithOutputSPD(SPDPulseProcessor *pulseProcessor, SPDFile *spdInFile, std::string outFile, float processingResolution=0, bool usingWindow=false, boost::uint_fast16_t winHSize=0) throw(SPDProcessingException);
-        void processPulses(SPDPulseProcessor *pulseProcessor, SPDFile *spdInFile, float processingResolution=0, bool usingWindow=false, boost::uint_fast16_t winHSize=0) throw(SPDProcessingException);
+        void processPulsesWithInputImage(SPDPulseProcessor *pulseProcessor, SPDFile *spdInFile, std::string outFile, std::string imageFilePath, bool usingWindow=false, boost::uint_fast16_t winHSize=0) ;
+        void processPulsesWithOutputImage(SPDPulseProcessor *pulseProcessor, SPDFile *spdInFile, std::string outImagePath, boost::uint_fast16_t numImgBands, float processingResolution=0, std::string gdalFormat="ENVI", bool usingWindow=false, boost::uint_fast16_t winHSize=0) ;
+        void processPulsesWithOutputSPD(SPDPulseProcessor *pulseProcessor, SPDFile *spdInFile, std::string outFile, float processingResolution=0, bool usingWindow=false, boost::uint_fast16_t winHSize=0) ;
+        void processPulses(SPDPulseProcessor *pulseProcessor, SPDFile *spdInFile, float processingResolution=0, bool usingWindow=false, boost::uint_fast16_t winHSize=0) ;
         ~SPDSetupProcessPulses();
     protected:
         boost::uint_fast32_t blockXSize;

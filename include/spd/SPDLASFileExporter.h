@@ -63,17 +63,17 @@ namespace spdlib
 	{
 	public:
 		SPDLASFileExporter();
-		SPDLASFileExporter(const SPDDataExporter &dataExporter) throw(SPDException);
-		SPDLASFileExporter(const SPDLASFileExporter &dataExporter) throw(SPDException);
+		SPDLASFileExporter(const SPDDataExporter &dataExporter) ;
+		SPDLASFileExporter(const SPDLASFileExporter &dataExporter) ;
         SPDDataExporter* getInstance();
-		bool open(SPDFile *spdFile, std::string outputFile) throw(SPDIOException);
-        bool reopen(SPDFile *spdFile, std::string outputFile) throw(SPDIOException);
-		void writeDataColumn(std::list<SPDPulse*> *pls,boost::uint_fast32_t col,boost::uint_fast32_t row)throw(SPDIOException);
-		void writeDataColumn(std::vector<SPDPulse*> *pls,boost::uint_fast32_t col,boost::uint_fast32_t row)throw(SPDIOException);
-		void finaliseClose() throw(SPDIOException);
+		bool open(SPDFile *spdFile, std::string outputFile) ;
+        bool reopen(SPDFile *spdFile, std::string outputFile) ;
+		void writeDataColumn(std::list<SPDPulse*> *pls,boost::uint_fast32_t col,boost::uint_fast32_t row);
+		void writeDataColumn(std::vector<SPDPulse*> *pls,boost::uint_fast32_t col,boost::uint_fast32_t row);
+		void finaliseClose() ;
 		bool requireGrid();
 		bool needNumOutPts();
-		SPDLASFileExporter& operator=(const SPDLASFileExporter& dataExporter) throw(SPDException);
+		SPDLASFileExporter& operator=(const SPDLASFileExporter& dataExporter) ;
 		~SPDLASFileExporter();
 	private:
 		std::fstream *outDataStream;

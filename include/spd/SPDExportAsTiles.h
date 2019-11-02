@@ -63,9 +63,9 @@ namespace spdlib
 	class DllExport SPDExportAsRowTiles : public SPDImporterProcessor
 	{
 	public:
-		SPDExportAsRowTiles(PointDataTileFile *tiles,boost::uint_fast32_t numOfTiles, SPDFile *overallSPD, double tileHeight, bool useSphericIdx, bool useScanIdx) throw(SPDException);
-		void processImportedPulse(SPDFile *spdFile, SPDPulse *pulse) throw(SPDIOException);
-		void completeFileAndClose()throw(SPDIOException);
+		SPDExportAsRowTiles(PointDataTileFile *tiles,boost::uint_fast32_t numOfTiles, SPDFile *overallSPD, double tileHeight, bool useSphericIdx, bool useScanIdx) ;
+		void processImportedPulse(SPDFile *spdFile, SPDPulse *pulse) ;
+		void completeFileAndClose();
 		~SPDExportAsRowTiles();
 	private:
 		PointDataTileFile *tiles;
@@ -81,9 +81,9 @@ namespace spdlib
     class DllExport SPDExportAsBlockTiles : public SPDImporterProcessor
 	{
 	public:
-		SPDExportAsBlockTiles(PointDataTileFile *tiles, boost::uint_fast32_t numOfTiles, boost::uint_fast32_t numOfXTiles, boost::uint_fast32_t numOfYTiles, SPDFile *overallSPD, double tileHeight, double tileWidth, bool useSphericIdx, bool useScanIdx) throw(SPDException);
-		void processImportedPulse(SPDFile *spdFile, SPDPulse *pulse) throw(SPDIOException);
-		void completeFileAndClose()throw(SPDIOException);
+		SPDExportAsBlockTiles(PointDataTileFile *tiles, boost::uint_fast32_t numOfTiles, boost::uint_fast32_t numOfXTiles, boost::uint_fast32_t numOfYTiles, SPDFile *overallSPD, double tileHeight, double tileWidth, bool useSphericIdx, bool useScanIdx) ;
+		void processImportedPulse(SPDFile *spdFile, SPDPulse *pulse) ;
+		void completeFileAndClose();
 		~SPDExportAsBlockTiles();
 	private:
 		PointDataTileFile *tiles;

@@ -69,12 +69,12 @@ namespace spdlib
 	{
 	public:
 		SPDSubsetSPDFile();
-		void subsetSPDFile(std::string inputFile, std::string outputFile, double *bbox, bool *bboxDefined) throw(SPDException);
-        void subsetSPDFile2Shp(std::string inputFile, std::string outputFile, std::string shapefile) throw(SPDException);
-        void subsetSPDFile2Img(std::string inputFile, std::string outputFile, std::string imgfile, boost::uint_fast32_t blockXSize, boost::uint_fast32_t blockYSize) throw(SPDException);
-        void subsetSPDFileHeightOnly(std::string inputFile, std::string outputFile, double lowHeight, double upperHeight) throw(SPDException);
-        void subsetSphericalSPDFile(std::string inputFile, std::string outputFile, double *bbox, bool *bboxDefined) throw(SPDException);
-        void subsetScanSPDFile(std::string inputFile, std::string outputFile, double *bbox, bool *bboxDefined) throw(SPDException);
+		void subsetSPDFile(std::string inputFile, std::string outputFile, double *bbox, bool *bboxDefined) ;
+        void subsetSPDFile2Shp(std::string inputFile, std::string outputFile, std::string shapefile) ;
+        void subsetSPDFile2Img(std::string inputFile, std::string outputFile, std::string imgfile, boost::uint_fast32_t blockXSize, boost::uint_fast32_t blockYSize) ;
+        void subsetSPDFileHeightOnly(std::string inputFile, std::string outputFile, double lowHeight, double upperHeight) ;
+        void subsetSphericalSPDFile(std::string inputFile, std::string outputFile, double *bbox, bool *bboxDefined) ;
+        void subsetScanSPDFile(std::string inputFile, std::string outputFile, double *bbox, bool *bboxDefined) ;
 		~SPDSubsetSPDFile();
 	};
     
@@ -82,7 +82,7 @@ namespace spdlib
 	{
 	public:
 		SPDUPDPulseSubset();
-		void subsetUPD(std::string inputFile, std::string outputFile, boost::uint_fast32_t startPulse, boost::uint_fast32_t numOfPulses)throw(SPDIOException);
+		void subsetUPD(std::string inputFile, std::string outputFile, boost::uint_fast32_t startPulse, boost::uint_fast32_t numOfPulses);
 		~SPDUPDPulseSubset();
 	};
     
@@ -92,14 +92,14 @@ namespace spdlib
 	{
 	public:
         SPDDataSubsetWithImgBlockProcessor();
-        void processDataBlockImage(SPDFile *inSPDFile, std::vector<SPDPulse*> ***pulses, float ***imageDataBlock, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast32_t numImgBands, float binSize) throw(SPDProcessingException);
-		void processDataBlock(SPDFile *inSPDFile, std::vector<SPDPulse*> ***pulses, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, float binSize) throw(SPDProcessingException){throw SPDProcessingException("Not Implemented.");};
+        void processDataBlockImage(SPDFile *inSPDFile, std::vector<SPDPulse*> ***pulses, float ***imageDataBlock, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast32_t numImgBands, float binSize) ;
+		void processDataBlock(SPDFile *inSPDFile, std::vector<SPDPulse*> ***pulses, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, float binSize) {throw SPDProcessingException("Not Implemented.");};
         
-        void processDataBlockImage(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses, float ***imageDataBlock, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast32_t numImgBands) throw(SPDProcessingException){throw SPDProcessingException("Not Implemented.");};
-		void processDataBlock(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses) throw(SPDProcessingException){throw SPDProcessingException("Not Implemented.");};
+        void processDataBlockImage(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses, float ***imageDataBlock, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast32_t numImgBands) {throw SPDProcessingException("Not Implemented.");};
+		void processDataBlock(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses) {throw SPDProcessingException("Not Implemented.");};
         
-        std::vector<std::string> getImageBandDescriptions() throw(SPDProcessingException){return std::vector<std::string>();};
-        void setHeaderValues(SPDFile *spdFile) throw(SPDProcessingException){};
+        std::vector<std::string> getImageBandDescriptions() {return std::vector<std::string>();};
+        void setHeaderValues(SPDFile *spdFile) {};
         ~SPDDataSubsetWithImgBlockProcessor();
 	};
 }

@@ -31,7 +31,7 @@ namespace spdlib
 		
 	}
 	
-	void SPDConvertFormats::convertInMemory(std::string input, std::string output, std::string inFormat, std::string schema, std::string outFormat, float binsize, std::string inSpatialRef, bool convertCoords, std::string outputProjWKT, boost::uint_fast16_t indexCoords, bool defineTL, double tlX, double tlY, bool defineOrigin, double originX, double originY, float originZ, bool useSphericIdx, bool usePolarIdx, bool useScanIdx, float waveNoiseThreshold, boost::uint_fast16_t waveformBitRes, boost::uint_fast16_t pointVersion, boost::uint_fast16_t pulseVersion, bool keepInMinExtent, bool exportZasH) throw(SPDException)
+	void SPDConvertFormats::convertInMemory(std::string input, std::string output, std::string inFormat, std::string schema, std::string outFormat, float binsize, std::string inSpatialRef, bool convertCoords, std::string outputProjWKT, boost::uint_fast16_t indexCoords, bool defineTL, double tlX, double tlY, bool defineOrigin, double originX, double originY, float originZ, bool useSphericIdx, bool usePolarIdx, bool useScanIdx, float waveNoiseThreshold, boost::uint_fast16_t waveformBitRes, boost::uint_fast16_t pointVersion, boost::uint_fast16_t pulseVersion, bool keepInMinExtent, bool exportZasH) 
 	{        
 		try 
 		{
@@ -226,7 +226,7 @@ namespace spdlib
 		}
 	}
 	
-	void SPDConvertFormats::convertToSPDUsingRowTiles(std::string input, std::string output, std::string inFormat, std::string schema, float binsize, std::string inSpatialRef, bool convertCoords, std::string outputProjWKT, boost::uint_fast16_t indexCoords, std::string tempdir, boost::uint_fast16_t numRowsInTile, bool defineTL, double tlX, double tlY,  bool defineOrigin, double originX, double originY, float originZ, bool useSphericIdx, bool usePolarIdx, bool useScanIdx, float waveNoiseThreshold, boost::uint_fast16_t waveformBitRes, bool keepTmpFiles, boost::uint_fast16_t pointVersion, boost::uint_fast16_t pulseVersion, bool keepInMinExtent) throw(SPDException)
+	void SPDConvertFormats::convertToSPDUsingRowTiles(std::string input, std::string output, std::string inFormat, std::string schema, float binsize, std::string inSpatialRef, bool convertCoords, std::string outputProjWKT, boost::uint_fast16_t indexCoords, std::string tempdir, boost::uint_fast16_t numRowsInTile, bool defineTL, double tlX, double tlY,  bool defineOrigin, double originX, double originY, float originZ, bool useSphericIdx, bool usePolarIdx, bool useScanIdx, float waveNoiseThreshold, boost::uint_fast16_t waveformBitRes, bool keepTmpFiles, boost::uint_fast16_t pointVersion, boost::uint_fast16_t pulseVersion, bool keepInMinExtent) 
 	{
         std::cout.precision(12);
         if(usePolarIdx)
@@ -782,7 +782,7 @@ namespace spdlib
 
 	}
 	
-    void SPDConvertFormats::convertToSPDUsingBlockTiles(std::string input, std::string output, std::string inFormat, std::string schema, float binsize, std::string inSpatialRef, bool convertCoords, std::string outputProjWKT, boost::uint_fast16_t indexCoords, std::string tempdir,boost::uint_fast16_t numRowsInTile, boost::uint_fast16_t numColsInTile, bool defineTL, double tlX, double tlY, bool defineOrigin, double originX, double originY, float originZ, bool useSphericIdx, bool usePolarIdx, bool useScanIdx, float waveNoiseThreshold,boost::uint_fast16_t waveformBitRes, bool keepTmpFiles, boost::uint_fast16_t pointVersion, boost::uint_fast16_t pulseVersion, bool keepInMinExtent) throw(SPDException)
+    void SPDConvertFormats::convertToSPDUsingBlockTiles(std::string input, std::string output, std::string inFormat, std::string schema, float binsize, std::string inSpatialRef, bool convertCoords, std::string outputProjWKT, boost::uint_fast16_t indexCoords, std::string tempdir,boost::uint_fast16_t numRowsInTile, boost::uint_fast16_t numColsInTile, bool defineTL, double tlX, double tlY, bool defineOrigin, double originX, double originY, float originZ, bool useSphericIdx, bool usePolarIdx, bool useScanIdx, float waveNoiseThreshold,boost::uint_fast16_t waveformBitRes, bool keepTmpFiles, boost::uint_fast16_t pointVersion, boost::uint_fast16_t pulseVersion, bool keepInMinExtent) 
     {
         //std::cout.precision(10);
         if(usePolarIdx)
@@ -1384,7 +1384,7 @@ namespace spdlib
     }
 
     
-    void SPDConvertFormats::copySPD2SPD(SPDFile *inSPDFile, SPDFile *outSPDFile)throw(SPDException)
+    void SPDConvertFormats::copySPD2SPD(SPDFile *inSPDFile, SPDFile *outSPDFile)
     {
         try
         {

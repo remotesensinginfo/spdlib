@@ -31,7 +31,7 @@ namespace spdlib
             
     }
     
-	void SPDIOUtils::gridAndWriteData(SPDDataExporter *exporter, std::list<SPDPulse*> *pls, SPDFile *spdFile, std::string outputFile)throw(SPDIOException)
+	void SPDIOUtils::gridAndWriteData(SPDDataExporter *exporter, std::list<SPDPulse*> *pls, SPDFile *spdFile, std::string outputFile)
 	{
 		try 
 		{
@@ -77,7 +77,7 @@ namespace spdlib
 		}
 	}
 	
-	void SPDIOUtils::gridAndWriteData(SPDDataExporter *exporter, std::vector<SPDPulse*> *pls, SPDFile *spdFile, std::string outputFile)throw(SPDIOException)
+	void SPDIOUtils::gridAndWriteData(SPDDataExporter *exporter, std::vector<SPDPulse*> *pls, SPDFile *spdFile, std::string outputFile)
 	{
 		try 
 		{

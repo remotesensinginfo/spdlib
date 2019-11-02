@@ -33,7 +33,7 @@ namespace spdlib
         
     }
     
-    void SPDCalcFileStats::calcImagePulsePointDensity(std::string inputSPDFile, std::string outputImageFile, boost::uint_fast32_t blockXSize, boost::uint_fast32_t blockYSize, float processingResolution, std::string gdalFormat) throw(SPDProcessingException)
+    void SPDCalcFileStats::calcImagePulsePointDensity(std::string inputSPDFile, std::string outputImageFile, boost::uint_fast32_t blockXSize, boost::uint_fast32_t blockYSize, float processingResolution, std::string gdalFormat) 
     {
         try 
         {
@@ -51,7 +51,7 @@ namespace spdlib
         }
     }
     
-    void SPDCalcFileStats::calcOverallPulsePointDensityStats(std::string inputSPDFile, std::string outputTextFile, boost::uint_fast32_t blockXSize, boost::uint_fast32_t blockYSize, float processingResolution) throw(SPDProcessingException)
+    void SPDCalcFileStats::calcOverallPulsePointDensityStats(std::string inputSPDFile, std::string outputTextFile, boost::uint_fast32_t blockXSize, boost::uint_fast32_t blockYSize, float processingResolution) 
     {
         try 
         {
@@ -125,7 +125,7 @@ namespace spdlib
         sqDiffPoints = 0;
     }
         
-    void SPDPulseProcessorCalcStats::processDataColumnImage(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses, float *imageData, SPDXYPoint *cenPts, boost::uint_fast32_t numImgBands, float binSize) throw(SPDProcessingException)
+    void SPDPulseProcessorCalcStats::processDataColumnImage(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses, float *imageData, SPDXYPoint *cenPts, boost::uint_fast32_t numImgBands, float binSize) 
     {
         try
         {
@@ -150,7 +150,7 @@ namespace spdlib
         }
     }
 		
-    void SPDPulseProcessorCalcStats::processDataColumn(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses, SPDXYPoint *cenPts) throw(SPDProcessingException)
+    void SPDPulseProcessorCalcStats::processDataColumn(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses, SPDXYPoint *cenPts) 
     {
         try
         {
@@ -222,7 +222,7 @@ namespace spdlib
         }
     }
         
-    std::vector<std::string> SPDPulseProcessorCalcStats::getImageBandDescriptions() throw(SPDProcessingException)
+    std::vector<std::string> SPDPulseProcessorCalcStats::getImageBandDescriptions() 
     {
         std::vector<std::string> bandNames;
         bandNames.push_back("Pulse Density");
@@ -231,7 +231,7 @@ namespace spdlib
         return bandNames;
     }
     
-    void SPDPulseProcessorCalcStats::setHeaderValues(SPDFile *spdFile) throw(SPDProcessingException)
+    void SPDPulseProcessorCalcStats::setHeaderValues(SPDFile *spdFile) 
     {
         // NOTHING TO DO HERE...
     }
