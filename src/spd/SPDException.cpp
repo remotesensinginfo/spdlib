@@ -49,12 +49,12 @@ namespace spdlib
 		msgs = message;
 	}
 	
-	const char* SPDException::what() const throw()
+	const char* SPDException::what()
 	{
 		return msgs.c_str();
 	}
 	
-	SPDException::~SPDException() throw()
+	SPDException::~SPDException()
 	{
 		
 	}

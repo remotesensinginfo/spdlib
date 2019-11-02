@@ -57,7 +57,7 @@ namespace spdlib
 		return *this;
     }
 
-    void SPDProcessDataBlocks::processDataBlocksGridPulsesInputImage(SPDFile *spdInFile, std::string outFile, std::string imageFilePath) throw(SPDProcessingException)
+    void SPDProcessDataBlocks::processDataBlocksGridPulsesInputImage(SPDFile *spdInFile, std::string outFile, std::string imageFilePath) 
     {
         try
         {
@@ -833,7 +833,7 @@ namespace spdlib
         }
     }
 
-    void SPDProcessDataBlocks::processDataBlocksGridPulsesOutputImage(SPDFile *spdInFile, std::string outImagePath, float processingResolution, boost::uint_fast16_t numImgBands, std::string gdalFormat) throw(SPDProcessingException)
+    void SPDProcessDataBlocks::processDataBlocksGridPulsesOutputImage(SPDFile *spdInFile, std::string outImagePath, float processingResolution, boost::uint_fast16_t numImgBands, std::string gdalFormat) 
     {
         try
         {
@@ -1664,7 +1664,7 @@ namespace spdlib
     }
     
     
-    void SPDProcessDataBlocks::processDataBlocksGridPulsesOutputImage(SPDFile *spdInFile, GDALDataset *outImageDS) throw(SPDProcessingException)
+    void SPDProcessDataBlocks::processDataBlocksGridPulsesOutputImage(SPDFile *spdInFile, GDALDataset *outImageDS) 
     {
         try
         {
@@ -1918,7 +1918,7 @@ namespace spdlib
         }
     }
 
-    void SPDProcessDataBlocks::processDataBlocksGridPulsesOutputSPD(SPDFile *spdInFile, std::string outFile, float processingResolution) throw(SPDProcessingException)
+    void SPDProcessDataBlocks::processDataBlocksGridPulsesOutputSPD(SPDFile *spdInFile, std::string outFile, float processingResolution) 
     {
         try
         {
@@ -2658,7 +2658,7 @@ namespace spdlib
         }
     }
 
-    void SPDProcessDataBlocks::processDataBlocksGridPulses(SPDFile *spdInFile, float processingResolution) throw(SPDProcessingException)
+    void SPDProcessDataBlocks::processDataBlocksGridPulses(SPDFile *spdInFile, float processingResolution) 
     {
         try
         {
@@ -3324,12 +3324,12 @@ namespace spdlib
         }
     }
 
-    void SPDProcessDataBlocks::processDataBlocksOutputImage(SPDFile *spdInFile, std::string outImagePath, float processingResolution, boost::uint_fast16_t numImgBands, std::string gdalFormat) throw(SPDProcessingException)
+    void SPDProcessDataBlocks::processDataBlocksOutputImage(SPDFile *spdInFile, std::string outImagePath, float processingResolution, boost::uint_fast16_t numImgBands, std::string gdalFormat) 
     {
         //GDALAllRegister();
     }
 
-    void SPDProcessDataBlocks::processDataBlocks(SPDFile *spdInFile) throw(SPDProcessingException)
+    void SPDProcessDataBlocks::processDataBlocks(SPDFile *spdInFile) 
     {
         try
         {
@@ -3858,7 +3858,7 @@ namespace spdlib
         }
     }
 
-    void SPDProcessDataBlocks::populateFromImage(float ***imageDataBlock, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast16_t numImgBands, GDALRasterBand **imgBands, double imgXOrigin, double imgYOrigin, float imgRes, double blockXOrigin, double blockYOrigin) throw(SPDProcessingException)
+    void SPDProcessDataBlocks::populateFromImage(float ***imageDataBlock, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast16_t numImgBands, GDALRasterBand **imgBands, double imgXOrigin, double imgYOrigin, float imgRes, double blockXOrigin, double blockYOrigin) 
     {
         std::cout.precision(12);
         /*
@@ -4134,7 +4134,7 @@ namespace spdlib
         }
     }
     
-    void SPDProcessDataBlocks::writeImageData(GDALRasterBand **imageBands, float ***imageDataBlock, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast16_t numImgBands, boost::uint_fast32_t startBinX, boost::uint_fast32_t startBinY, boost::uint_fast32_t startIdxX, boost::uint_fast32_t startIdxY)throw(SPDProcessingException)
+    void SPDProcessDataBlocks::writeImageData(GDALRasterBand **imageBands, float ***imageDataBlock, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast16_t numImgBands, boost::uint_fast32_t startBinX, boost::uint_fast32_t startBinY, boost::uint_fast32_t startIdxX, boost::uint_fast32_t startIdxY)
     {
         try
         {

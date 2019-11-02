@@ -37,7 +37,7 @@ namespace spdlib
         return boost::filesystem::path(filepath).stem().string();
 	}
     
-	OGRGeometryCollection* SPDVectorUtils::getGeometryCollection(std::string inputVector) throw(SPDIOException)
+	OGRGeometryCollection* SPDVectorUtils::getGeometryCollection(std::string inputVector) 
     {
         OGRRegisterAll();
 		
@@ -92,7 +92,7 @@ namespace spdlib
         return geomCollection;
     }
     
-    OGRPolygon* SPDVectorUtils::createPolygon(double xMin, double xMax, double yMin, double yMax) throw(SPDIOException)
+    OGRPolygon* SPDVectorUtils::createPolygon(double xMin, double xMax, double yMin, double yMax) 
     {
         OGRPolygon *ogrPoly = new OGRPolygon();
 		

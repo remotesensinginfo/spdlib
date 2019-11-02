@@ -32,7 +32,7 @@ namespace spdlib
 		
 	}
 	
-	SPDGeneralASCIIFileWriter::SPDGeneralASCIIFileWriter(const SPDDataExporter &dataExporter) throw(SPDException) : SPDDataExporter(dataExporter), outASCIIFile(NULL), fileType(0)
+	SPDGeneralASCIIFileWriter::SPDGeneralASCIIFileWriter(const SPDDataExporter &dataExporter)  : SPDDataExporter(dataExporter), outASCIIFile(NULL), fileType(0)
 	{
 		if(fileOpened)
 		{
@@ -40,7 +40,7 @@ namespace spdlib
 		}
 	}
 	
-	SPDGeneralASCIIFileWriter& SPDGeneralASCIIFileWriter::operator=(const SPDGeneralASCIIFileWriter& dataExporter) throw(SPDException)
+	SPDGeneralASCIIFileWriter& SPDGeneralASCIIFileWriter::operator=(const SPDGeneralASCIIFileWriter& dataExporter) 
 	{
 		if(fileOpened)
 		{
@@ -57,7 +57,7 @@ namespace spdlib
         return new SPDGeneralASCIIFileWriter();
     }
 	
-	bool SPDGeneralASCIIFileWriter::open(SPDFile *spdFile, std::string outputFile) throw(SPDIOException)
+	bool SPDGeneralASCIIFileWriter::open(SPDFile *spdFile, std::string outputFile) 
 	{
 		outASCIIFile = new std::ofstream();
 		outASCIIFile->open(outputFile.c_str(), std::ios::out | std::ios::trunc);
@@ -98,12 +98,12 @@ namespace spdlib
 		return fileOpened;
 	}
     
-    bool SPDGeneralASCIIFileWriter::reopen(SPDFile *spdFile, std::string outputFile) throw(SPDIOException)
+    bool SPDGeneralASCIIFileWriter::reopen(SPDFile *spdFile, std::string outputFile) 
     {
         throw SPDIOException("No reopen option available.");
     }
 	
-	void SPDGeneralASCIIFileWriter::writeDataColumn(std::list<SPDPulse*> *plsIn, boost::uint_fast32_t col, boost::uint_fast32_t row)throw(SPDIOException)
+	void SPDGeneralASCIIFileWriter::writeDataColumn(std::list<SPDPulse*> *plsIn, boost::uint_fast32_t col, boost::uint_fast32_t row)
 	{
 		SPDPulseUtils pulseUtils;
 		SPDPointUtils pointUtils;
@@ -179,7 +179,7 @@ namespace spdlib
 		
 	}
 	
-	void SPDGeneralASCIIFileWriter::writeDataColumn(std::vector<SPDPulse*> *plsIn, boost::uint_fast32_t col, boost::uint_fast32_t row)throw(SPDIOException)
+	void SPDGeneralASCIIFileWriter::writeDataColumn(std::vector<SPDPulse*> *plsIn, boost::uint_fast32_t col, boost::uint_fast32_t row)
 	{
 		SPDPulseUtils pulseUtils;
 		SPDPointUtils pointUtils;
@@ -255,7 +255,7 @@ namespace spdlib
 		
 	}
 	
-	void SPDGeneralASCIIFileWriter::finaliseClose() throw(SPDIOException)
+	void SPDGeneralASCIIFileWriter::finaliseClose() 
 	{
 		if(!fileOpened)
 		{

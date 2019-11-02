@@ -61,12 +61,12 @@ namespace spdlib
 	public:
 		SPDTextLineProcessor():headerRead(false){};
 		virtual bool haveReadheader()=0;
-		virtual void parseHeader(std::string strLine) throw(SPDIOException)=0;
-		virtual bool parseLine(std::string line, SPDPulse *pl,boost::uint_fast16_t indexCoords) throw(SPDIOException)=0;
+		virtual void parseHeader(std::string strLine) =0;
+		virtual bool parseLine(std::string line, SPDPulse *pl,boost::uint_fast16_t indexCoords) =0;
 		virtual bool isFileType(std::string fileType)=0;
 		virtual void saveHeaderValues(SPDFile *spdFile)=0;
 		virtual void reset()=0;
-        virtual void parseSchema(std::string schema)throw(SPDIOException)=0;
+        virtual void parseSchema(std::string schema)=0;
 		virtual ~SPDTextLineProcessor(){};
 	protected:
 		bool headerRead;
@@ -79,11 +79,11 @@ namespace spdlib
 		SPDTextFileImporter(SPDTextLineProcessor *lineParser, bool convertCoords=false, std::string outputProjWKT="", std::string schema="", boost::uint_fast16_t indexCoords=SPD_FIRST_RETURN, bool defineOrigin=false, double originX=0, double originY=0, float originZ=0, float waveNoiseThreshold=0);
 		SPDTextFileImporter(const SPDTextFileImporter &textFileImporter);
 		SPDDataImporter* getInstance(bool convertCoords, std::string outputProjWKT, std::string schema, boost::uint_fast16_t indexCoords, bool defineOrigin, double originX, double originY, float originZ, float waveNoiseThreshold);
-        std::list<SPDPulse*>* readAllDataToList(std::string, SPDFile *spdFile)throw(SPDIOException);
-		std::vector<SPDPulse*>* readAllDataToVector(std::string inputFile, SPDFile *spdFile)throw(SPDIOException);
-		void readAndProcessAllData(std::string inputFile, SPDFile *spdFile, SPDImporterProcessor *processor) throw(SPDIOException);
-        void readHeaderInfo(std::string inputFile, SPDFile *spdFile) throw(SPDIOException);
-        void readSchema()throw(SPDIOException);
+        std::list<SPDPulse*>* readAllDataToList(std::string, SPDFile *spdFile);
+		std::vector<SPDPulse*>* readAllDataToVector(std::string inputFile, SPDFile *spdFile);
+		void readAndProcessAllData(std::string inputFile, SPDFile *spdFile, SPDImporterProcessor *processor) ;
+        void readHeaderInfo(std::string inputFile, SPDFile *spdFile) ;
+        void readSchema();
 		bool isFileType(std::string fileType);
 		SPDTextFileImporter& operator=(const SPDTextFileImporter& textFileImporter);
 		~SPDTextFileImporter();

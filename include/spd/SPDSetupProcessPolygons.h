@@ -66,8 +66,8 @@ namespace spdlib
 	{
 	public:
 		SPDSetupProcessPolygonsAbstract(){};
-		virtual void processPolygons(std::string spdInputFile, std::string inputLayer, std::string outputLayer, bool deleteOutShpIfExists, bool copyAttributes, SPDPolygonProcessor *processor)throw(SPDProcessingException) = 0;
-		virtual void processPolygons(std::string spdInputFile, std::string inputLayer, std::string outputASCII, SPDPolygonProcessor *processor)throw(SPDProcessingException) = 0;
+		virtual void processPolygons(std::string spdInputFile, std::string inputLayer, std::string outputLayer, bool deleteOutShpIfExists, bool copyAttributes, SPDPolygonProcessor *processor) = 0;
+		virtual void processPolygons(std::string spdInputFile, std::string inputLayer, std::string outputASCII, SPDPolygonProcessor *processor) = 0;
 		virtual ~SPDSetupProcessPolygonsAbstract(){};
 	protected:
 		std::string getLayerName(std::string filepath);
@@ -77,8 +77,8 @@ namespace spdlib
 	{
 	public:
 		SPDSetupProcessShapefilePolygons();
-		void processPolygons(std::string spdInputFile, std::string inputLayer, std::string outputLayer, bool deleteOutShpIfExists,  bool copyAttributes, SPDPolygonProcessor *processor)throw(SPDProcessingException);
-        void processPolygons(std::string spdInputFile, std::string inputLayer, std::string outputASCII, SPDPolygonProcessor *processor)throw(SPDProcessingException);
+		void processPolygons(std::string spdInputFile, std::string inputLayer, std::string outputLayer, bool deleteOutShpIfExists,  bool copyAttributes, SPDPolygonProcessor *processor);
+        void processPolygons(std::string spdInputFile, std::string inputLayer, std::string outputASCII, SPDPolygonProcessor *processor);
         ~SPDSetupProcessShapefilePolygons();
 	};
 }

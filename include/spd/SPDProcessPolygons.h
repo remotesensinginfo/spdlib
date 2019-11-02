@@ -62,13 +62,13 @@ namespace spdlib
 	{
 	public:
 		SPDProcessPolygons(SPDPolygonProcessor *processor);
-		void processPolygons(SPDFile *spdFile, SPDFileIncrementalReader *spdReader, OGRLayer *inputLayer, OGRLayer *outputLayer, bool copyAttributes)throw(SPDProcessingException);
-        void processPolygons(SPDFile *spdFile, SPDFileIncrementalReader *spdReader, OGRLayer *inputLayer, std::ofstream *outASCIIFile)throw(SPDProcessingException);
+		void processPolygons(SPDFile *spdFile, SPDFileIncrementalReader *spdReader, OGRLayer *inputLayer, OGRLayer *outputLayer, bool copyAttributes);
+        void processPolygons(SPDFile *spdFile, SPDFileIncrementalReader *spdReader, OGRLayer *inputLayer, std::ofstream *outASCIIFile);
 		~SPDProcessPolygons();
 	private:
 		SPDPolygonProcessor *processor;
-		void copyFeatureDefn(OGRLayer *outputSHPLayer, OGRFeatureDefn *inFeatureDefn) throw(SPDProcessingException);
-		void copyFeatureData(OGRFeature *inFeature, OGRFeature *outFeature, OGRFeatureDefn *inFeatureDefn, OGRFeatureDefn *outFeatureDefn) throw(SPDProcessingException);
+		void copyFeatureDefn(OGRLayer *outputSHPLayer, OGRFeatureDefn *inFeatureDefn) ;
+		void copyFeatureData(OGRFeature *inFeature, OGRFeature *outFeature, OGRFeatureDefn *inFeatureDefn, OGRFeatureDefn *outFeatureDefn) ;
 	};
 }
 

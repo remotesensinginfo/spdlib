@@ -58,43 +58,43 @@ namespace spdlib{
 	{
 	public:
 		SPDTextFileUtilities();
-        boost::uint_fast64_t countLines(std::string input) throw(SPDIOException);
+        boost::uint_fast64_t countLines(std::string input) ;
 		bool lineStart(std::string line, char token);
 		bool blankline(std::string line);
 		std::string removeWhiteSpace(std::string line);
         std::string removeChar(std::string line, char val);
 		void tokenizeString(std::string line, char token, std::vector<std::string> *tokens, bool ignoreDuplicateTokens=true);
-		std::string readFileToString(std::string input) throw(SPDIOException);
-        std::vector<std::string> readFileLinesToVector(std::string input) throw(SPDIOException);
+		std::string readFileToString(std::string input) ;
+        std::vector<std::string> readFileLinesToVector(std::string input) ;
         bool isNumber(char val);
-        bool lineStartWithHash(std::string line) throw(SPDIOException);
-        bool lineContainsChar(std::string line, char val) throw(SPDIOException);
+        bool lineStartWithHash(std::string line) ;
+        bool lineContainsChar(std::string line, char val) ;
 		
-		double strtodouble(std::string inValue)throw(SPDTextFileException);
-		float strtofloat(std::string inValue)throw(SPDTextFileException);
+		double strtodouble(std::string inValue);
+		float strtofloat(std::string inValue);
 		
-        boost::uint_fast8_t strto8bitUInt(std::string inValue)throw(SPDTextFileException);
-        boost::uint_fast16_t strto16bitUInt(std::string inValue)throw(SPDTextFileException);
-        boost::uint_fast32_t strto32bitUInt(std::string inValue)throw(SPDTextFileException);
-        boost::uint_fast64_t strto64bitUInt(std::string inValue)throw(SPDTextFileException);
+        boost::uint_fast8_t strto8bitUInt(std::string inValue);
+        boost::uint_fast16_t strto16bitUInt(std::string inValue);
+        boost::uint_fast32_t strto32bitUInt(std::string inValue);
+        boost::uint_fast64_t strto64bitUInt(std::string inValue);
             
-        boost::int_fast8_t strto8bitInt(std::string inValue)throw(SPDTextFileException);
-        boost::int_fast16_t strto16bitInt(std::string inValue)throw(SPDTextFileException);
-        boost::int_fast32_t strto32bitInt(std::string inValue)throw(SPDTextFileException);
-        boost::int_fast64_t strto64bitInt(std::string inValue)throw(SPDTextFileException);
+        boost::int_fast8_t strto8bitInt(std::string inValue);
+        boost::int_fast16_t strto16bitInt(std::string inValue);
+        boost::int_fast32_t strto32bitInt(std::string inValue);
+        boost::int_fast64_t strto64bitInt(std::string inValue);
 		
-		std::string doubletostring(double number)throw(SPDTextFileException);
-		std::string floattostring(float number)throw(SPDTextFileException);
+		std::string doubletostring(double number);
+		std::string floattostring(float number);
 		
-		std::string uInt8bittostring(boost::uint_fast8_t number)throw(SPDTextFileException);
-		std::string uInt16bittostring(boost::uint_fast16_t number)throw(SPDTextFileException);
-		std::string uInt32bittostring(boost::uint_fast32_t number)throw(SPDTextFileException);
-		std::string uInt64bittostring(boost::uint_fast64_t number)throw(SPDTextFileException);
+		std::string uInt8bittostring(boost::uint_fast8_t number);
+		std::string uInt16bittostring(boost::uint_fast16_t number);
+		std::string uInt32bittostring(boost::uint_fast32_t number);
+		std::string uInt64bittostring(boost::uint_fast64_t number);
 		
-		std::string int8bittostring(boost::int_fast8_t number)throw(SPDTextFileException);
-		std::string int16bittostring(boost::int_fast16_t number)throw(SPDTextFileException);
-		std::string int32bittostring(boost::int_fast32_t number)throw(SPDTextFileException);
-		std::string int64bittostring(boost::int_fast64_t number)throw(SPDTextFileException);
+		std::string int8bittostring(boost::int_fast8_t number);
+		std::string int16bittostring(boost::int_fast16_t number);
+		std::string int32bittostring(boost::int_fast32_t number);
+		std::string int64bittostring(boost::int_fast64_t number);
 		
 		~SPDTextFileUtilities();
 	};

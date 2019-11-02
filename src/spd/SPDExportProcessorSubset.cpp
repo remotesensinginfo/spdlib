@@ -26,7 +26,7 @@
 
 namespace spdlib
 {
-	SPDExportProcessorSubset::SPDExportProcessorSubset(SPDDataExporter *exporter, SPDFile *spdFileOut, double *bbox) throw(SPDException) : SPDImporterProcessor()
+	SPDExportProcessorSubset::SPDExportProcessorSubset(SPDDataExporter *exporter, SPDFile *spdFileOut, double *bbox)  : SPDImporterProcessor()
 	{
 		this->exporter = exporter;
 		this->spdFileOut = spdFileOut;
@@ -56,7 +56,7 @@ namespace spdlib
 		this->first = true;
 	}
 	
-	void SPDExportProcessorSubset::processImportedPulse(SPDFile *spdFile, SPDPulse *pulse) throw(SPDIOException)
+	void SPDExportProcessorSubset::processImportedPulse(SPDFile *spdFile, SPDPulse *pulse) 
 	{
 		try
 		{
@@ -198,7 +198,7 @@ namespace spdlib
 		}
 	}
 	
-	void SPDExportProcessorSubset::completeFileAndClose(SPDFile *spdFile)throw(SPDIOException)
+	void SPDExportProcessorSubset::completeFileAndClose(SPDFile *spdFile)
 	{
 		try 
 		{
@@ -217,7 +217,7 @@ namespace spdlib
 		delete pulses;
 	}
     
-    SPDExportProcessorSubsetSpherical::SPDExportProcessorSubsetSpherical(SPDDataExporter *exporter, SPDFile *spdFileOut, double *bbox) throw(SPDException) : SPDImporterProcessor()
+    SPDExportProcessorSubsetSpherical::SPDExportProcessorSubsetSpherical(SPDDataExporter *exporter, SPDFile *spdFileOut, double *bbox)  : SPDImporterProcessor()
 	{
 		this->exporter = exporter;
 		this->spdFileOut = spdFileOut;
@@ -239,7 +239,7 @@ namespace spdlib
 		this->pulses = new std::list<SPDPulse*>();
 	}
 	
-	void SPDExportProcessorSubsetSpherical::processImportedPulse(SPDFile *spdFile, SPDPulse *pulse) throw(SPDIOException)
+	void SPDExportProcessorSubsetSpherical::processImportedPulse(SPDFile *spdFile, SPDPulse *pulse) 
 	{
 		try
 		{
@@ -284,7 +284,7 @@ namespace spdlib
 		}
 	}
 	
-	void SPDExportProcessorSubsetSpherical::completeFileAndClose(SPDFile *spdFile)throw(SPDIOException)
+	void SPDExportProcessorSubsetSpherical::completeFileAndClose(SPDFile *spdFile)
 	{
 		try 
 		{
@@ -302,7 +302,7 @@ namespace spdlib
 		delete pulses;
 	}
 	
-    SPDExportProcessorSubsetScan::SPDExportProcessorSubsetScan(SPDDataExporter *exporter, SPDFile *spdFileOut, double *bbox) throw(SPDException) : SPDImporterProcessor()
+    SPDExportProcessorSubsetScan::SPDExportProcessorSubsetScan(SPDDataExporter *exporter, SPDFile *spdFileOut, double *bbox)  : SPDImporterProcessor()
 	{
 		this->exporter = exporter;
 		this->spdFileOut = spdFileOut;
@@ -324,7 +324,7 @@ namespace spdlib
 		this->pulses = new std::list<SPDPulse*>();
 	}
 	
-	void SPDExportProcessorSubsetScan::processImportedPulse(SPDFile *spdFile, SPDPulse *pulse) throw(SPDIOException)
+	void SPDExportProcessorSubsetScan::processImportedPulse(SPDFile *spdFile, SPDPulse *pulse) 
 	{
 		try
 		{
@@ -369,7 +369,7 @@ namespace spdlib
 		}
 	}
 	
-	void SPDExportProcessorSubsetScan::completeFileAndClose(SPDFile *spdFile)throw(SPDIOException)
+	void SPDExportProcessorSubsetScan::completeFileAndClose(SPDFile *spdFile)
 	{
 		try 
 		{
@@ -393,7 +393,7 @@ namespace spdlib
 		
 	}
 	
-	void SPDSubsetNonGriddedFile::subsetCartesian(std::string input, std::string output, double *bbox, bool *bboxDefined) throw(SPDException)
+	void SPDSubsetNonGriddedFile::subsetCartesian(std::string input, std::string output, double *bbox, bool *bboxDefined) 
 	{
         try
         {
@@ -460,7 +460,7 @@ namespace spdlib
         }
 	}
     
-    void SPDSubsetNonGriddedFile::subsetSpherical(std::string input, std::string output, double *bbox, bool *bboxDefined) throw(SPDException)
+    void SPDSubsetNonGriddedFile::subsetSpherical(std::string input, std::string output, double *bbox, bool *bboxDefined) 
     {
         try
         {                        
@@ -526,7 +526,7 @@ namespace spdlib
         }
     }
 
-    void SPDSubsetNonGriddedFile::subsetScan(std::string input, std::string output, double *bbox, bool *bboxDefined) throw(SPDException)
+    void SPDSubsetNonGriddedFile::subsetScan(std::string input, std::string output, double *bbox, bool *bboxDefined) 
     {
         try
         {                        

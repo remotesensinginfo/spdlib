@@ -43,7 +43,7 @@ namespace spdlib
         return new SPDTextFileImporter(this->lineParser, convertCoords, outputProjWKT, schema, indexCoords, defineOrigin, originX, originY, originZ, waveNoiseThreshold);
     }
 		
-	std::list<SPDPulse*>* SPDTextFileImporter::readAllDataToList(std::string inputFile, SPDFile *spdFile)throw(SPDIOException)
+	std::list<SPDPulse*>* SPDTextFileImporter::readAllDataToList(std::string inputFile, SPDFile *spdFile)
 	{
 		if(convertCoords)
 		{
@@ -294,7 +294,7 @@ namespace spdlib
 		return allPulses;
 	}
 	
-	std::vector<SPDPulse*>* SPDTextFileImporter::readAllDataToVector(std::string inputFile, SPDFile *spdFile)throw(SPDIOException)
+	std::vector<SPDPulse*>* SPDTextFileImporter::readAllDataToVector(std::string inputFile, SPDFile *spdFile)
 	{
 		if(convertCoords)
 		{
@@ -545,7 +545,7 @@ namespace spdlib
 		return allPulses;
 	}
 	
-	void SPDTextFileImporter::readAndProcessAllData(std::string inputFile, SPDFile *spdFile, SPDImporterProcessor *processor)throw(SPDIOException)
+	void SPDTextFileImporter::readAndProcessAllData(std::string inputFile, SPDFile *spdFile, SPDImporterProcessor *processor)
 	{        
 		if(convertCoords)
 		{
@@ -794,12 +794,12 @@ namespace spdlib
 		return lineParser->isFileType(fileType);
 	}
     
-    void SPDTextFileImporter::readHeaderInfo(std::string, SPDFile*) throw(SPDIOException)
+    void SPDTextFileImporter::readHeaderInfo(std::string, SPDFile*) 
     {
         // No Header to Read..
     }
     
-    void SPDTextFileImporter::readSchema()throw(SPDIOException)
+    void SPDTextFileImporter::readSchema()
     {
         try 
         {

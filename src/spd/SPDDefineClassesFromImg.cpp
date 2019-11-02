@@ -34,7 +34,7 @@ namespace spdlib
         this->classBand = classBand;
     }
     
-    void SPDDefineClassesFromImg::processDataColumnImage(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses, float *imageData, SPDXYPoint *cenPts, boost::uint_fast32_t numImgBands, float binSize) throw(SPDProcessingException)
+    void SPDDefineClassesFromImg::processDataColumnImage(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses, float *imageData, SPDXYPoint *cenPts, boost::uint_fast32_t numImgBands, float binSize) 
     {
         if((inSPDFile->getDecomposedPtDefined() == SPD_TRUE) | (inSPDFile->getDiscretePtDefined() == SPD_TRUE))
         {

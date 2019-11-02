@@ -70,10 +70,10 @@ namespace spdlib
             this->ptSelectClass = ptSelectClass;
         };
         
-        void processDataColumnImage(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses, float *imageData, SPDXYPoint *cenPts, boost::uint_fast32_t numImgBands, float binSize) throw(SPDProcessingException)
+        void processDataColumnImage(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses, float *imageData, SPDXYPoint *cenPts, boost::uint_fast32_t numImgBands, float binSize) 
 		{throw SPDProcessingException("Processing with an output image is not implemented.");};
         
-        void processDataColumn(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses, SPDXYPoint *cenPts) throw(SPDProcessingException)
+        void processDataColumn(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses, SPDXYPoint *cenPts) 
         {
             SPDPoint *minPt = NULL;
             float minZ = 0;
@@ -126,18 +126,18 @@ namespace spdlib
             }
         };
         
-        void processDataWindowImage(SPDFile *inSPDFile, bool **validBins, std::vector<SPDPulse*> ***pulses, float ***imageData, SPDXYPoint ***cenPts, boost::uint_fast32_t numImgBands, float binSize, boost::uint_fast16_t winSize) throw(SPDProcessingException)
+        void processDataWindowImage(SPDFile *inSPDFile, bool **validBins, std::vector<SPDPulse*> ***pulses, float ***imageData, SPDXYPoint ***cenPts, boost::uint_fast32_t numImgBands, float binSize, boost::uint_fast16_t winSize) 
         {throw SPDProcessingException("Processing using a window is not implemented.");};
         
-		void processDataWindow(SPDFile *inSPDFile, bool **validBins, std::vector<SPDPulse*> ***pulses, SPDXYPoint ***cenPts, boost::uint_fast16_t winSize) throw(SPDProcessingException)
+		void processDataWindow(SPDFile *inSPDFile, bool **validBins, std::vector<SPDPulse*> ***pulses, SPDXYPoint ***cenPts, boost::uint_fast16_t winSize) 
         {throw SPDProcessingException("Processing using a window is not implemented.");};
         
-        std::vector<std::string> getImageBandDescriptions() throw(SPDProcessingException)
+        std::vector<std::string> getImageBandDescriptions() 
         {
             return std::vector<std::string>();
         };
         
-        void setHeaderValues(SPDFile *spdFile) throw(SPDProcessingException)
+        void setHeaderValues(SPDFile *spdFile) 
         {};
         
         ~SPDFindMinReturnsProcessor(){};
@@ -159,10 +159,10 @@ namespace spdlib
             this->ptSelectClass = ptSelectClass;
         };
         
-        void processDataColumnImage(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses, float *imageData, SPDXYPoint *cenPts, boost::uint_fast32_t numImgBands, float binSize) throw(SPDProcessingException)
+        void processDataColumnImage(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses, float *imageData, SPDXYPoint *cenPts, boost::uint_fast32_t numImgBands, float binSize) 
 		{throw SPDProcessingException("Processing with an output image is not implemented.");};
         
-        void processDataColumn(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses, SPDXYPoint *cenPts) throw(SPDProcessingException)
+        void processDataColumn(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses, SPDXYPoint *cenPts) 
         {
             for(std::vector<SPDPulse*>::iterator iterPulses = pulses->begin(); iterPulses != pulses->end(); ++iterPulses)
             {
@@ -252,18 +252,18 @@ namespace spdlib
             }
         };
         
-        void processDataWindowImage(SPDFile *inSPDFile, bool **validBins, std::vector<SPDPulse*> ***pulses, float ***imageData, SPDXYPoint ***cenPts, boost::uint_fast32_t numImgBands, float binSize, boost::uint_fast16_t winSize) throw(SPDProcessingException)
+        void processDataWindowImage(SPDFile *inSPDFile, bool **validBins, std::vector<SPDPulse*> ***pulses, float ***imageData, SPDXYPoint ***cenPts, boost::uint_fast32_t numImgBands, float binSize, boost::uint_fast16_t winSize) 
         {throw SPDProcessingException("Processing using a window is not implemented.");};
         
-		void processDataWindow(SPDFile *inSPDFile, bool **validBins, std::vector<SPDPulse*> ***pulses, SPDXYPoint ***cenPts, boost::uint_fast16_t winSize) throw(SPDProcessingException)
+		void processDataWindow(SPDFile *inSPDFile, bool **validBins, std::vector<SPDPulse*> ***pulses, SPDXYPoint ***cenPts, boost::uint_fast16_t winSize) 
         {throw SPDProcessingException("Processing using a window is not implemented.");};
         
-        std::vector<std::string> getImageBandDescriptions() throw(SPDProcessingException)
+        std::vector<std::string> getImageBandDescriptions() 
         {
             return std::vector<std::string>();
         };
         
-        void setHeaderValues(SPDFile *spdFile) throw(SPDProcessingException)
+        void setHeaderValues(SPDFile *spdFile) 
         {};
         
         ~SPDClassifyGrdReturnsFromSurfaceCoefficientsProcessor(){};
@@ -283,20 +283,20 @@ namespace spdlib
         SPDPolyFitGroundLocalFilter(float grdThres, boost::uint_fast16_t degree, boost::uint_fast16_t iters, boost::uint_fast16_t ptSelectClass, float binWidth);
         
         // public functions
-        void processDataBlockImage(SPDFile *inSPDFile, std::vector<SPDPulse*> ***pulses, float ***imageDataBlock, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast32_t numImgBands, float binSize) throw(SPDProcessingException)
+        void processDataBlockImage(SPDFile *inSPDFile, std::vector<SPDPulse*> ***pulses, float ***imageDataBlock, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast32_t numImgBands, float binSize) 
 		{throw SPDProcessingException("SPDPolyFitGroundLocalFilter processDataBlockImage not implemented.");};
-        void processDataBlock(SPDFile *inSPDFile, std::vector<SPDPulse*> ***pulses, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, float binSize) throw(SPDProcessingException);
-        void processDataBlockImage(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses, float ***imageDataBlock, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast32_t numImgBands) throw(SPDProcessingException)
+        void processDataBlock(SPDFile *inSPDFile, std::vector<SPDPulse*> ***pulses, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, float binSize) ;
+        void processDataBlockImage(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses, float ***imageDataBlock, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast32_t numImgBands) 
 		{throw SPDProcessingException("SPDPolyFitGroundLocalFilter requires processing with a grid.");};
-        void processDataBlock(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses) throw(SPDProcessingException)
+        void processDataBlock(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses) 
         {throw SPDProcessingException("SPDPolyFitGroundLocalFilter requires processing with a grid.");};
         
-        std::vector<std::string> getImageBandDescriptions() throw(SPDProcessingException)
+        std::vector<std::string> getImageBandDescriptions() 
         {
             std::vector<std::string> bandNames;
             return bandNames;
         }
-        void setHeaderValues(SPDFile *spdFile) throw(SPDProcessingException)
+        void setHeaderValues(SPDFile *spdFile) 
         {
             // Nothing to do...
         }
@@ -316,11 +316,11 @@ namespace spdlib
 	{
 	public:
 		SPDPolyFitGroundFilter();
-        void applyGlobalPolyFitGroundFilter(std::string inputFile, std::string outputFile, float grdThres, boost::uint_fast16_t degree, boost::uint_fast16_t iters, boost::uint_fast32_t blockXSize, boost::uint_fast32_t blockYSize, float processingResolution, boost::uint_fast16_t ptSelectClass)throw(SPDProcessingException);
-        void applyLocalPolyFitGroundFilter(std::string inputFile, std::string outputFile, float grdThres, boost::uint_fast16_t degree, boost::uint_fast16_t iters, boost::uint_fast32_t blockXSize, boost::uint_fast32_t blockYSize, boost::uint_fast32_t overlap, float processingResolution, boost::uint_fast16_t ptSelectClass)throw(SPDProcessingException);
+        void applyGlobalPolyFitGroundFilter(std::string inputFile, std::string outputFile, float grdThres, boost::uint_fast16_t degree, boost::uint_fast16_t iters, boost::uint_fast32_t blockXSize, boost::uint_fast32_t blockYSize, float processingResolution, boost::uint_fast16_t ptSelectClass);
+        void applyLocalPolyFitGroundFilter(std::string inputFile, std::string outputFile, float grdThres, boost::uint_fast16_t degree, boost::uint_fast16_t iters, boost::uint_fast32_t blockXSize, boost::uint_fast32_t blockYSize, boost::uint_fast32_t overlap, float processingResolution, boost::uint_fast16_t ptSelectClass);
 		~SPDPolyFitGroundFilter();
     private:
-        void buildMinGrid(SPDFile *spdFile, std::vector<SPDPoint*> *minPts, std::vector<SPDPoint*> ***minPtGrid)throw(SPDProcessingException);
+        void buildMinGrid(SPDFile *spdFile, std::vector<SPDPoint*> *minPts, std::vector<SPDPoint*> ***minPtGrid);
 	};
     
     

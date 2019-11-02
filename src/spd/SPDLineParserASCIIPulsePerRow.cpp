@@ -37,12 +37,12 @@ namespace spdlib
 		return headerRead;
 	}
 	
-	void SPDLineParserASCIIPulsePerRow::parseHeader(std::string) throw(SPDIOException)
+	void SPDLineParserASCIIPulsePerRow::parseHeader(std::string) 
 	{
 		
 	}
 	
-	bool SPDLineParserASCIIPulsePerRow::parseLine(std::string line, SPDPulse *pl, boost::uint_fast16_t indexCoords)throw(SPDIOException)
+	bool SPDLineParserASCIIPulsePerRow::parseLine(std::string line, SPDPulse *pl, boost::uint_fast16_t indexCoords)
 	{
 		SPDTextFileUtilities textUtils;
 		SPDPointUtils ptUtils;

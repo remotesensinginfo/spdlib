@@ -59,7 +59,7 @@ namespace spdlib
 	{
 	public:
 		SPDGenBinaryMask();
-        void generateBinaryMask(boost::uint_fast32_t numPulses, std::string inputSPDFile, std::string outputImageFile, boost::uint_fast32_t blockXSize=250, boost::uint_fast32_t blockYSize=250, float processingResolution=0, std::string gdalFormat="ENVI") throw(SPDProcessingException);
+        void generateBinaryMask(boost::uint_fast32_t numPulses, std::string inputSPDFile, std::string outputImageFile, boost::uint_fast32_t blockXSize=250, boost::uint_fast32_t blockYSize=250, float processingResolution=0, std::string gdalFormat="ENVI") ;
 		~SPDGenBinaryMask();
 	};
     
@@ -69,16 +69,16 @@ namespace spdlib
 	public:
         SPDPulseProcessorCalcMask(boost::uint_fast32_t numPulses);
         
-        void processDataColumnImage(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses, float *imageData, SPDXYPoint *cenPts, boost::uint_fast32_t numImgBands, float binSize) throw(SPDProcessingException);
-		void processDataColumn(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses, SPDXYPoint *cenPts) throw(SPDProcessingException)
+        void processDataColumnImage(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses, float *imageData, SPDXYPoint *cenPts, boost::uint_fast32_t numImgBands, float binSize) ;
+		void processDataColumn(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses, SPDXYPoint *cenPts) 
         {throw SPDProcessingException("Processing is not implemented for processDataColumn().");};
-        void processDataWindowImage(SPDFile *inSPDFile, bool **validBins, std::vector<SPDPulse*> ***pulses, float ***imageData, SPDXYPoint ***cenPts, boost::uint_fast32_t numImgBands, float binSize, boost::uint_fast16_t winSize) throw(SPDProcessingException)
+        void processDataWindowImage(SPDFile *inSPDFile, bool **validBins, std::vector<SPDPulse*> ***pulses, float ***imageData, SPDXYPoint ***cenPts, boost::uint_fast32_t numImgBands, float binSize, boost::uint_fast16_t winSize) 
         {throw SPDProcessingException("Processing using a window is not implemented.");};
-		void processDataWindow(SPDFile *inSPDFile, bool **validBins, std::vector<SPDPulse*> ***pulses, SPDXYPoint ***cenPts, boost::uint_fast16_t winSize) throw(SPDProcessingException)
+		void processDataWindow(SPDFile *inSPDFile, bool **validBins, std::vector<SPDPulse*> ***pulses, SPDXYPoint ***cenPts, boost::uint_fast16_t winSize) 
         {throw SPDProcessingException("Processing using a window is not implemented.");};
         
-        std::vector<std::string> getImageBandDescriptions() throw(SPDProcessingException);
-        void setHeaderValues(SPDFile *spdFile) throw(SPDProcessingException);
+        std::vector<std::string> getImageBandDescriptions() ;
+        void setHeaderValues(SPDFile *spdFile) ;
         
         ~SPDPulseProcessorCalcMask();
     protected:

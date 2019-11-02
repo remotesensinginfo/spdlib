@@ -62,8 +62,8 @@ namespace spdlib
 	{
 	public:
 		SPDVectorUtils();
-		OGRGeometryCollection* getGeometryCollection(std::string inputVector) throw(SPDIOException);
-        OGRPolygon* createPolygon(double xMin, double xMax, double yMin, double yMax) throw(SPDIOException);
+		OGRGeometryCollection* getGeometryCollection(std::string inputVector) ;
+        OGRPolygon* createPolygon(double xMin, double xMax, double yMin, double yMax) ;
         std::string getLayerName(std::string filepath);
 		~SPDVectorUtils();
 	};

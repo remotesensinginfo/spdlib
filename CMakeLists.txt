@@ -32,7 +32,7 @@ set (PROJECT_TOOLS_DIR tools)
 set (SPDLIB_REPO_VERSION 309)
 set (SPDLIB_VERSION_MAJOR 3)
 set (SPDLIB_VERSION_MINOR 3)
-set (SPDLIB_VERSION_PATCH 0)
+set (SPDLIB_VERSION_PATCH 1)
 set (SPDLIB_IO_VERSION_MAJOR 3)
 set (SPDLIB_IO_VERSION_MINOR 0)
 set (SPDLIB_IO_VERSION_PATCH 0)
@@ -149,6 +149,7 @@ if(WIN32)
             add_definitions(-D_SCL_SECURE_NO_WARNINGS)
         endif()
         
+        # Set to /W2 - way too many warnings otherwise
         if(CMAKE_CXX_FLAGS MATCHES "/W[0-4]")
             string(REGEX REPLACE "/W[0-4]" "/W2"
                    CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
@@ -162,7 +163,7 @@ if(WIN32)
         mark_as_advanced(MSVC_ENVIRONMENT_PATH)
         set(VCPROJ_USER_ENVIRONMENT_PATH_DEBUG "${ENVIRONMENT_PATH}")
         mark_as_advanced(VCPROJ_USER_ENVIRONMENT_PATH_DEBUG)
-
+        
         # Use cmake's MSVC_VERSION to work out the name of the Boost/CGAL DLL's 
         # to use (they use a different numbering scheme from cmake)
         set(MSVC_STRING_1500 "vc90")
@@ -176,11 +177,27 @@ if(WIN32)
         # get GSL functions
         add_definitions(-DGSL_DLL)
         # HDF5 functions/classes
-        add_definitions(-DH5_BUILT_AS_DYNAMIC_LIB) 
-        # this seems to be required otherwise OGRGeometry::IsEmpty is not found
-        add_definitions(-DHAVE_GEOS)
+        add_definitions(-DH5_BUILT_AS_DYNAMIC_LIB)
+        
     endif()
 
+else()
+  # Recommended C++ compilation flags
+  # -Weffc++
+  set(RSGISLIB_COMMON_CXX_FLAGS
+	"-Wall -Wpointer-arith -Wcast-align -Wcast-qual -Wredundant-decls -Wno-long-long")
+	#"-pedantic -ansi -Wall -Wpointer-arith -Wcast-align -Wcast-qual -Wfloat-equal -Wredundant-decls -Wno-long-long")
+
+  if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
+
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC ${RSGISLIB_COMMON_CXX_FLAGS}")
+    if (CMAKE_COMPILER_IS_GNUCXX)
+      set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+    endif()
+
+  elseif("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang" OR "${CMAKE_CXX_COMPILER}" MATCHES "clang")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${RSGISLIB_COMMON_CXX_FLAGS} -std=c++11")
+  endif()
 endif(WIN32)
 
 if(APPLE)
@@ -197,7 +214,7 @@ if(APPLE)
     # don't add the automatically determined parts of the RPATH
     # which point to directories outside the build tree to the install RPATH
     SET(CMAKE_INSTALL_RPATH_USE_LINK_PATH FALSE)
-        
+    
     SET(CMAKE_MACOSX_RPATH TRUE)
 endif(APPLE)
 

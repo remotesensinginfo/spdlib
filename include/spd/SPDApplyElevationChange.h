@@ -63,19 +63,19 @@ namespace spdlib
 	{
 	public:
 		SPDApplyElevationChange();
-		void applyConstantElevationChangeUnsorted(std::string inputFile, std::string outputFile, double elevConstant, bool addOffset) throw(SPDException);
-		void applyConstantElevationChangeSPD(std::string inputSPDFile, std::string outputSPDFile, double elevConstant, bool addOffset, boost::uint_fast32_t blockXSize, boost::uint_fast32_t blockYSize) throw(SPDException);
-		void applyVariableElevationChangeUnsorted(std::string inputFile, std::string outputFile, std::string elevImage, bool addOffset) throw(SPDException);
-		void applyVariableElevationChangeSPD(std::string inputSPDFile, std::string outputSPDFile, std::string elevImage, bool addOffset, boost::uint_fast32_t blockXSize, boost::uint_fast32_t blockYSize) throw(SPDException);
+		void applyConstantElevationChangeUnsorted(std::string inputFile, std::string outputFile, double elevConstant, bool addOffset) ;
+		void applyConstantElevationChangeSPD(std::string inputSPDFile, std::string outputSPDFile, double elevConstant, bool addOffset, boost::uint_fast32_t blockXSize, boost::uint_fast32_t blockYSize) ;
+		void applyVariableElevationChangeUnsorted(std::string inputFile, std::string outputFile, std::string elevImage, bool addOffset) ;
+		void applyVariableElevationChangeSPD(std::string inputSPDFile, std::string outputSPDFile, std::string elevImage, bool addOffset, boost::uint_fast32_t blockXSize, boost::uint_fast32_t blockYSize) ;
 		~SPDApplyElevationChange();
 	};
 	
 	class DllExport SPDApplyUnsortedElevChangeConstant : public SPDImporterProcessor
 	{
 	public:
-		SPDApplyUnsortedElevChangeConstant(double elevConstant, bool addOffset, SPDDataExporter *exporter, SPDFile *spdFileOut) throw(SPDException);
-		void processImportedPulse(SPDFile *spdFile, SPDPulse *pulse) throw(SPDIOException);
-		void completeFileAndClose(SPDFile *spdFile)throw(SPDIOException);
+		SPDApplyUnsortedElevChangeConstant(double elevConstant, bool addOffset, SPDDataExporter *exporter, SPDFile *spdFileOut) ;
+		void processImportedPulse(SPDFile *spdFile, SPDPulse *pulse) ;
+		void completeFileAndClose(SPDFile *spdFile);
 		~SPDApplyUnsortedElevChangeConstant();
 	private:
 		double elevConstant;
@@ -88,9 +88,9 @@ namespace spdlib
 	class DllExport SPDApplyUnsortedElevChangeVariable : public SPDImporterProcessor
 	{
 	public:
-		SPDApplyUnsortedElevChangeVariable(GDALDataset *elevImage, bool addOffset, SPDDataExporter *exporter, SPDFile *spdFileOut) throw(SPDException);
-		void processImportedPulse(SPDFile *spdFile, SPDPulse *pulse) throw(SPDIOException);
-		void completeFileAndClose(SPDFile *spdFile)throw(SPDIOException);
+		SPDApplyUnsortedElevChangeVariable(GDALDataset *elevImage, bool addOffset, SPDDataExporter *exporter, SPDFile *spdFileOut) ;
+		void processImportedPulse(SPDFile *spdFile, SPDPulse *pulse) ;
+		void completeFileAndClose(SPDFile *spdFile);
 		~SPDApplyUnsortedElevChangeVariable();
 	private:
 		GDALDataset *elevImage;
@@ -111,21 +111,21 @@ namespace spdlib
 	public:
         SPDApplySPDElevChangeConstant(double elevConstant, bool addOffset);
         
-        void processDataColumnImage(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses, float *imageData, SPDXYPoint *cenPts, boost::uint_fast32_t numImgBands, float binSize) throw(SPDProcessingException)
+        void processDataColumnImage(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses, float *imageData, SPDXYPoint *cenPts, boost::uint_fast32_t numImgBands, float binSize) 
         {throw SPDProcessingException("Processing is not implemented for processDataColumnImage().");};
         
-		void processDataColumn(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses, SPDXYPoint *cenPts) throw(SPDProcessingException);
+		void processDataColumn(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses, SPDXYPoint *cenPts) ;
         
-        void processDataWindowImage(SPDFile *inSPDFile, bool **validBins, std::vector<SPDPulse*> ***pulses, float ***imageData, SPDXYPoint ***cenPts, boost::uint_fast32_t numImgBands, float binSize, boost::uint_fast16_t winSize) throw(SPDProcessingException)
+        void processDataWindowImage(SPDFile *inSPDFile, bool **validBins, std::vector<SPDPulse*> ***pulses, float ***imageData, SPDXYPoint ***cenPts, boost::uint_fast32_t numImgBands, float binSize, boost::uint_fast16_t winSize) 
         {throw SPDProcessingException("Processing using a window is not implemented.");};
-		void processDataWindow(SPDFile *inSPDFile, bool **validBins, std::vector<SPDPulse*> ***pulses, SPDXYPoint ***cenPts, boost::uint_fast16_t winSize) throw(SPDProcessingException)
+		void processDataWindow(SPDFile *inSPDFile, bool **validBins, std::vector<SPDPulse*> ***pulses, SPDXYPoint ***cenPts, boost::uint_fast16_t winSize) 
         {throw SPDProcessingException("Processing using a window is not implemented.");};
         
-        std::vector<std::string> getImageBandDescriptions() throw(SPDProcessingException)
+        std::vector<std::string> getImageBandDescriptions() 
         {
             return std::vector<std::string>();
         };
-        void setHeaderValues(SPDFile *spdFile) throw(SPDProcessingException){};
+        void setHeaderValues(SPDFile *spdFile) {};
         
         ~SPDApplySPDElevChangeConstant();
     private:
@@ -138,21 +138,21 @@ namespace spdlib
 	public:
         SPDApplySPDElevChangeVariable(GDALDataset *elevImage, bool addOffset);
         
-        void processDataColumnImage(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses, float *imageData, SPDXYPoint *cenPts, boost::uint_fast32_t numImgBands, float binSize) throw(SPDProcessingException)
+        void processDataColumnImage(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses, float *imageData, SPDXYPoint *cenPts, boost::uint_fast32_t numImgBands, float binSize) 
         {throw SPDProcessingException("Processing is not implemented for processDataColumnImage().");};
         
-		void processDataColumn(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses, SPDXYPoint *cenPts) throw(SPDProcessingException);
+		void processDataColumn(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses, SPDXYPoint *cenPts) ;
         
-        void processDataWindowImage(SPDFile *inSPDFile, bool **validBins, std::vector<SPDPulse*> ***pulses, float ***imageData, SPDXYPoint ***cenPts, boost::uint_fast32_t numImgBands, float binSize, boost::uint_fast16_t winSize) throw(SPDProcessingException)
+        void processDataWindowImage(SPDFile *inSPDFile, bool **validBins, std::vector<SPDPulse*> ***pulses, float ***imageData, SPDXYPoint ***cenPts, boost::uint_fast32_t numImgBands, float binSize, boost::uint_fast16_t winSize) 
         {throw SPDProcessingException("Processing using a window is not implemented.");};
-		void processDataWindow(SPDFile *inSPDFile, bool **validBins, std::vector<SPDPulse*> ***pulses, SPDXYPoint ***cenPts, boost::uint_fast16_t winSize) throw(SPDProcessingException)
+		void processDataWindow(SPDFile *inSPDFile, bool **validBins, std::vector<SPDPulse*> ***pulses, SPDXYPoint ***cenPts, boost::uint_fast16_t winSize) 
         {throw SPDProcessingException("Processing using a window is not implemented.");};
         
-        std::vector<std::string> getImageBandDescriptions() throw(SPDProcessingException)
+        std::vector<std::string> getImageBandDescriptions() 
         {
             return std::vector<std::string>();
         };
-        void setHeaderValues(SPDFile *spdFile) throw(SPDProcessingException){};
+        void setHeaderValues(SPDFile *spdFile) {};
         
         ~SPDApplySPDElevChangeVariable();
     private:
@@ -171,25 +171,25 @@ namespace spdlib
 	public:
 		SPDApplySPDElevChangeConstant(double elevConstant, bool addOffset);
 		
-		bool processPulsesInputImage(SPDFile*, std::vector<SPDPulse*>*, float*, unsigned int) throw(SPDProcessingException){throw SPDProcessingException("Not Implemented");};
-		bool processPulsesInputImageCenPxl(SPDFile*, std::vector<SPDPulse*>*, float*, unsigned int, SPDPulse*, float) throw(SPDProcessingException){throw SPDProcessingException("Not Implemented");};
+		bool processPulsesInputImage(SPDFile*, std::vector<SPDPulse*>*, float*, unsigned int) {throw SPDProcessingException("Not Implemented");};
+		bool processPulsesInputImageCenPxl(SPDFile*, std::vector<SPDPulse*>*, float*, unsigned int, SPDPulse*, float) {throw SPDProcessingException("Not Implemented");};
 		
-		void processPulsesOutputImage(SPDFile*, std::vector<SPDPulse*>*, float*, unsigned int) throw(SPDProcessingException){throw SPDProcessingException("Not Implemented");};
-		void processPulsesOutputImageCenPxl(SPDFile*, std::vector<SPDPulse*>*, float*, unsigned int, SPDPulse*, float) throw(SPDProcessingException){throw SPDProcessingException("Not Implemented");};
+		void processPulsesOutputImage(SPDFile*, std::vector<SPDPulse*>*, float*, unsigned int) {throw SPDProcessingException("Not Implemented");};
+		void processPulsesOutputImageCenPxl(SPDFile*, std::vector<SPDPulse*>*, float*, unsigned int, SPDPulse*, float) {throw SPDProcessingException("Not Implemented");};
 		
-		bool processPulses(SPDFile *spdFile, std::vector<SPDPulse*> *pulses) throw(SPDProcessingException);
-		bool processPulsesCenPxl(SPDFile*, std::vector<SPDPulse*>*, SPDPulse*, float) throw(SPDProcessingException){throw SPDProcessingException("Not Implemented");};
+		bool processPulses(SPDFile *spdFile, std::vector<SPDPulse*> *pulses) ;
+		bool processPulsesCenPxl(SPDFile*, std::vector<SPDPulse*>*, SPDPulse*, float) {throw SPDProcessingException("Not Implemented");};
 		
-		bool processPulsesWindowInputImage(SPDFile*, std::list<SPDPulse*>***, unsigned int, float***, unsigned int) throw(SPDProcessingException){throw SPDProcessingException("Not Implemented");};
-		bool processPulsesWindowInputImageCenPxl(SPDFile*, std::list<SPDPulse*>***, unsigned int, float***, unsigned int, SPDPulse*, float) throw(SPDProcessingException){throw SPDProcessingException("Not Implemented");};
+		bool processPulsesWindowInputImage(SPDFile*, std::list<SPDPulse*>***, unsigned int, float***, unsigned int) {throw SPDProcessingException("Not Implemented");};
+		bool processPulsesWindowInputImageCenPxl(SPDFile*, std::list<SPDPulse*>***, unsigned int, float***, unsigned int, SPDPulse*, float) {throw SPDProcessingException("Not Implemented");};
 		
-		void processPulsesWindowOutputImage(SPDFile *spdFile, std::list<SPDPulse*>***, unsigned int, float*, unsigned int) throw(SPDProcessingException){throw SPDProcessingException("Not Implemented");};
-		void processPulsesWindowOutputImageCenPxl(SPDFile*, std::list<SPDPulse*>***, unsigned int, float*, unsigned int, SPDPulse*, float) throw(SPDProcessingException){throw SPDProcessingException("Not Implemented");};
+		void processPulsesWindowOutputImage(SPDFile *spdFile, std::list<SPDPulse*>***, unsigned int, float*, unsigned int) {throw SPDProcessingException("Not Implemented");};
+		void processPulsesWindowOutputImageCenPxl(SPDFile*, std::list<SPDPulse*>***, unsigned int, float*, unsigned int, SPDPulse*, float) {throw SPDProcessingException("Not Implemented");};
 		
-		bool processPulsesWindow(SPDFile*, std::list<SPDPulse*>***, unsigned int) throw(SPDProcessingException){throw SPDProcessingException("Not Implemented");};
-		bool processPulsesWindowCenPxl(SPDFile*, std::list<SPDPulse*>***, unsigned int, SPDPulse*, float) throw(SPDProcessingException){throw SPDProcessingException("Not Implemented");};
+		bool processPulsesWindow(SPDFile*, std::list<SPDPulse*>***, unsigned int) {throw SPDProcessingException("Not Implemented");};
+		bool processPulsesWindowCenPxl(SPDFile*, std::list<SPDPulse*>***, unsigned int, SPDPulse*, float) {throw SPDProcessingException("Not Implemented");};
 		
-        std::vector<std::string> getImageBandDescriptions() throw(SPDProcessingException){throw SPDProcessingException("Not Implemented");}
+        std::vector<std::string> getImageBandDescriptions() {throw SPDProcessingException("Not Implemented");}
         
 		~SPDApplySPDElevChangeConstant();
 	private:
@@ -202,25 +202,25 @@ namespace spdlib
 	public:
 		SPDApplySPDElevChangeVariable(GDALDataset *elevImage, bool addOffset);
 		
-		bool processPulsesInputImage(SPDFile*, std::vector<SPDPulse*>*, float*, unsigned int) throw(SPDProcessingException){throw SPDProcessingException("Not Implemented");};
-		bool processPulsesInputImageCenPxl(SPDFile*, std::vector<SPDPulse*>*, float*, unsigned int, SPDPulse*, float) throw(SPDProcessingException){throw SPDProcessingException("Not Implemented");};
+		bool processPulsesInputImage(SPDFile*, std::vector<SPDPulse*>*, float*, unsigned int) {throw SPDProcessingException("Not Implemented");};
+		bool processPulsesInputImageCenPxl(SPDFile*, std::vector<SPDPulse*>*, float*, unsigned int, SPDPulse*, float) {throw SPDProcessingException("Not Implemented");};
 		
-		void processPulsesOutputImage(SPDFile*, std::vector<SPDPulse*>*, float*, unsigned int) throw(SPDProcessingException){throw SPDProcessingException("Not Implemented");};
-		void processPulsesOutputImageCenPxl(SPDFile*, std::vector<SPDPulse*>*, float*, unsigned int, SPDPulse*, float) throw(SPDProcessingException){throw SPDProcessingException("Not Implemented");};
+		void processPulsesOutputImage(SPDFile*, std::vector<SPDPulse*>*, float*, unsigned int) {throw SPDProcessingException("Not Implemented");};
+		void processPulsesOutputImageCenPxl(SPDFile*, std::vector<SPDPulse*>*, float*, unsigned int, SPDPulse*, float) {throw SPDProcessingException("Not Implemented");};
 		
-		bool processPulses(SPDFile *spdFile, std::vector<SPDPulse*> *pulses) throw(SPDProcessingException);
-		bool processPulsesCenPxl(SPDFile*, std::vector<SPDPulse*>*, SPDPulse*, float) throw(SPDProcessingException){throw SPDProcessingException("Not Implemented");};
+		bool processPulses(SPDFile *spdFile, std::vector<SPDPulse*> *pulses) ;
+		bool processPulsesCenPxl(SPDFile*, std::vector<SPDPulse*>*, SPDPulse*, float) {throw SPDProcessingException("Not Implemented");};
 		
-		bool processPulsesWindowInputImage(SPDFile*, std::list<SPDPulse*>***, unsigned int, float***, unsigned int) throw(SPDProcessingException){throw SPDProcessingException("Not Implemented");};
-		bool processPulsesWindowInputImageCenPxl(SPDFile*, std::list<SPDPulse*>***, unsigned int, float***, unsigned int, SPDPulse*, float) throw(SPDProcessingException){throw SPDProcessingException("Not Implemented");};
+		bool processPulsesWindowInputImage(SPDFile*, std::list<SPDPulse*>***, unsigned int, float***, unsigned int) {throw SPDProcessingException("Not Implemented");};
+		bool processPulsesWindowInputImageCenPxl(SPDFile*, std::list<SPDPulse*>***, unsigned int, float***, unsigned int, SPDPulse*, float) {throw SPDProcessingException("Not Implemented");};
 		
-		void processPulsesWindowOutputImage(SPDFile *spdFile, std::list<SPDPulse*>***, unsigned int, float*, unsigned int) throw(SPDProcessingException){throw SPDProcessingException("Not Implemented");};
-		void processPulsesWindowOutputImageCenPxl(SPDFile*, std::list<SPDPulse*>***, unsigned int, float*, unsigned int, SPDPulse*, float) throw(SPDProcessingException){throw SPDProcessingException("Not Implemented");};
+		void processPulsesWindowOutputImage(SPDFile *spdFile, std::list<SPDPulse*>***, unsigned int, float*, unsigned int) {throw SPDProcessingException("Not Implemented");};
+		void processPulsesWindowOutputImageCenPxl(SPDFile*, std::list<SPDPulse*>***, unsigned int, float*, unsigned int, SPDPulse*, float) {throw SPDProcessingException("Not Implemented");};
 		
-		bool processPulsesWindow(SPDFile*, std::list<SPDPulse*>***, unsigned int) throw(SPDProcessingException){throw SPDProcessingException("Not Implemented");};
-		bool processPulsesWindowCenPxl(SPDFile*, std::list<SPDPulse*>***, unsigned int, SPDPulse*, float) throw(SPDProcessingException){throw SPDProcessingException("Not Implemented");};
+		bool processPulsesWindow(SPDFile*, std::list<SPDPulse*>***, unsigned int) {throw SPDProcessingException("Not Implemented");};
+		bool processPulsesWindowCenPxl(SPDFile*, std::list<SPDPulse*>***, unsigned int, SPDPulse*, float) {throw SPDProcessingException("Not Implemented");};
 		
-        std::vector<std::string> getImageBandDescriptions() throw(SPDProcessingException){throw SPDProcessingException("Not Implemented");}
+        std::vector<std::string> getImageBandDescriptions() {throw SPDProcessingException("Not Implemented");}
         
 		~SPDApplySPDElevChangeVariable();
 	private:

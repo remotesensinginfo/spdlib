@@ -85,19 +85,19 @@ namespace spdlib
 	public:
 		SPDSALCADataBinaryImporter(bool convertCoords=false, std::string outputProjWKT="", std::string schema="", boost::uint_fast16_t indexCoords=SPD_FIRST_RETURN, bool defineOrigin=false, double originX=0, double originY=0, float originZ=0, float waveNoiseThreshold=0);
 		SPDDataImporter* getInstance(bool convertCoords, std::string outputProjWKT,std::string schema,boost::uint_fast16_t indexCoords, bool defineOrigin, double originX, double originY, float originZ, float waveNoiseThreshold);
-        std::list<SPDPulse*>* readAllDataToList(std::string, SPDFile *spdFile)throw(SPDIOException);
-		std::vector<SPDPulse*>* readAllDataToVector(std::string inputFile, SPDFile *spdFile)throw(SPDIOException);
-		void readAndProcessAllData(std::string inputFile, SPDFile *spdFile, SPDImporterProcessor *processor) throw(SPDIOException);
+        std::list<SPDPulse*>* readAllDataToList(std::string, SPDFile *spdFile);
+		std::vector<SPDPulse*>* readAllDataToVector(std::string inputFile, SPDFile *spdFile);
+		void readAndProcessAllData(std::string inputFile, SPDFile *spdFile, SPDImporterProcessor *processor) ;
 		bool isFileType(std::string fileType);
-        void readHeaderInfo(std::string inputFile, SPDFile *spdFile) throw(SPDIOException);
+        void readHeaderInfo(std::string inputFile, SPDFile *spdFile) ;
 		~SPDSALCADataBinaryImporter();
 	private:
-		SalcaHDRParams* readHeaderParameters(std::string headerFilePath, std::vector<std::pair<float,std::string> > *fileList)throw(SPDIOException);
+		SalcaHDRParams* readHeaderParameters(std::string headerFilePath, std::vector<std::pair<float,std::string> > *fileList);
         /** read data into array */
-        int* readData(std::string inFilePath, int i, unsigned int numb, unsigned int nBins, unsigned int *length) throw(SPDIOException);
+        int* readData(std::string inFilePath, int i, unsigned int numb, unsigned int nBins, unsigned int *length) ;
         /** Find outgoing pulse and check saturation */
-        void findWaveformsBinIdxes(int *data, unsigned int dataLen, unsigned int maxRNBins, unsigned int prevWl2End, unsigned int *wl1StartIdxTrans, unsigned int *wl2StartIdxTrans, unsigned int *wl1EndIdxTrans, unsigned int *wl2EndIdxTrans, unsigned int *wl1StartIdxRec, unsigned int *wl2StartIdxRec, unsigned int *wl1EndIdxRec, unsigned int *wl2EndIdxRec) throw(SPDIOException);
-        bool zeroCrossing(int *data, unsigned int startIdx, unsigned int endIdx, unsigned int idx) throw(SPDIOException);
+        void findWaveformsBinIdxes(int *data, unsigned int dataLen, unsigned int maxRNBins, unsigned int prevWl2End, unsigned int *wl1StartIdxTrans, unsigned int *wl2StartIdxTrans, unsigned int *wl1EndIdxTrans, unsigned int *wl2EndIdxTrans, unsigned int *wl1StartIdxRec, unsigned int *wl2StartIdxRec, unsigned int *wl1EndIdxRec, unsigned int *wl2EndIdxRec) ;
+        bool zeroCrossing(int *data, unsigned int startIdx, unsigned int endIdx, unsigned int idx) ;
 	};
     
     

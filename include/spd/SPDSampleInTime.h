@@ -54,9 +54,9 @@ namespace spdlib
 	class DllExport SPDSampleInTime : public SPDImporterProcessor
 	{
 	public:
-		SPDSampleInTime(std::string outputFilePath, boost::uint_fast16_t tSample) throw(SPDException);
-		void processImportedPulse(SPDFile *spdFile, SPDPulse *pulse) throw(SPDIOException);
-		void completeFileAndClose()throw(SPDIOException);
+		SPDSampleInTime(std::string outputFilePath, boost::uint_fast16_t tSample) ;
+		void processImportedPulse(SPDFile *spdFile, SPDPulse *pulse) ;
+		void completeFileAndClose();
 		~SPDSampleInTime();
 	private:
         SPDDataExporter *exporter;

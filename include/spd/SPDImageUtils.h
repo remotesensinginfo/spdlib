@@ -61,20 +61,20 @@ namespace spdlib
 	{
 	public:
 		SPDImageUtils();
-		void getImagePixelValues(GDALDataset *dataset,boost::uint_fast32_t imgX,boost::uint_fast32_t imgY, float **pxlVals,boost::uint_fast32_t winHSize,boost::uint_fast16_t band) throw(SPDImageException);
-		void getImagePixelPtValues(GDALDataset *dataset,boost::int_fast32_t *imgX,boost::int_fast32_t *imgY, float **pxlVals,boost::uint_fast32_t winHSize,boost::uint_fast16_t band) throw(SPDImageException);
-		void getPixelLocation(GDALDataset *dataset, double x, double y, std::string wktStrBBox,boost::uint_fast32_t *imgX,boost::uint_fast32_t *imgY, float *xOff, float *yOff) throw(SPDImageException);
-		void getPixelPointLocations(GDALDataset *dataset, double x, double y, std::string wktStrBBox,boost::int_fast32_t *imgX,boost::int_fast32_t *imgY, float *xOff, float *yOff) throw(SPDImageException);
+		void getImagePixelValues(GDALDataset *dataset,boost::uint_fast32_t imgX,boost::uint_fast32_t imgY, float **pxlVals,boost::uint_fast32_t winHSize,boost::uint_fast16_t band) ;
+		void getImagePixelPtValues(GDALDataset *dataset,boost::int_fast32_t *imgX,boost::int_fast32_t *imgY, float **pxlVals,boost::uint_fast32_t winHSize,boost::uint_fast16_t band) ;
+		void getPixelLocation(GDALDataset *dataset, double x, double y, std::string wktStrBBox,boost::uint_fast32_t *imgX,boost::uint_fast32_t *imgY, float *xOff, float *yOff) ;
+		void getPixelPointLocations(GDALDataset *dataset, double x, double y, std::string wktStrBBox,boost::int_fast32_t *imgX,boost::int_fast32_t *imgY, float *xOff, float *yOff) ;
 		/**
 		 * For a cubic interpolation 4 data values are required. Therefore, winSize must equal 4.
 		 */ 
-		float cubicInterpValue(float xShift, float yShift, float **pixels,boost::uint_fast32_t winSize) throw(SPDImageException);
+		float cubicInterpValue(float xShift, float yShift, float **pixels,boost::uint_fast32_t winSize) ;
         
-        void getImageOverlapCut2Env(GDALDataset **datasets, int numDS,  int **dsOffsets, int *width, int *height, double *gdalTransform, OGREnvelope *env, int *maxBlockX, int *maxBlockY) throw(SPDImageException);
+        void getImageOverlapCut2Env(GDALDataset **datasets, int numDS,  int **dsOffsets, int *width, int *height, double *gdalTransform, OGREnvelope *env, int *maxBlockX, int *maxBlockY) ;
         bool closeResTest(double baseRes, double targetRes, double resDiffThresh=0.0001);
-        void copyInDatasetIntoOutDataset(GDALDataset *dataset, GDALDataset *outputImageDS, OGREnvelope *env) throw(SPDImageException);
-		boost::uint_fast32_t findColumnIndex(const GDALRasterAttributeTable *gdalATT, std::string colName) throw(SPDImageException);
-        boost::uint_fast32_t findColumnIndexOrCreate(GDALRasterAttributeTable *gdalATT, std::string colName, GDALRATFieldType dType) throw(SPDImageException);
+        void copyInDatasetIntoOutDataset(GDALDataset *dataset, GDALDataset *outputImageDS, OGREnvelope *env) ;
+		boost::uint_fast32_t findColumnIndex(const GDALRasterAttributeTable *gdalATT, std::string colName) ;
+        boost::uint_fast32_t findColumnIndexOrCreate(GDALRasterAttributeTable *gdalATT, std::string colName, GDALRATFieldType dType) ;
         ~SPDImageUtils();
 	private:
 		/**

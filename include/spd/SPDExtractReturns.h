@@ -56,9 +56,9 @@ namespace spdlib
 	class DllExport SPDExtractReturnsImportProcess : public SPDImporterProcessor
 	{
 	public:
-		SPDExtractReturnsImportProcess(std::string outputFilePath, bool classValSet, boost::uint_fast16_t classID, bool returnValSet, boost::uint_fast16_t returnVal) throw(SPDException);
-		void processImportedPulse(SPDFile *spdFile, SPDPulse *pulse) throw(SPDIOException);
-		void completeFileAndClose(SPDFile *spdFile)throw(SPDIOException);
+		SPDExtractReturnsImportProcess(std::string outputFilePath, bool classValSet, boost::uint_fast16_t classID, bool returnValSet, boost::uint_fast16_t returnVal) ;
+		void processImportedPulse(SPDFile *spdFile, SPDPulse *pulse) ;
+		void completeFileAndClose(SPDFile *spdFile);
 		~SPDExtractReturnsImportProcess();
 	private:
         SPDDataExporter *exporter;
@@ -76,18 +76,18 @@ namespace spdlib
 	public:
         SPDExtractReturnsBlockProcess(bool classValSet, boost::uint_fast16_t classID, bool returnValSet, boost::uint_fast16_t returnVal, bool minMaxSet, boost::uint_fast16_t highOrLow);
         
-        void processDataColumnImage(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses, float *imageData, SPDXYPoint *cenPts, boost::uint_fast32_t numImgBands, float binSize) throw(SPDProcessingException)
+        void processDataColumnImage(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses, float *imageData, SPDXYPoint *cenPts, boost::uint_fast32_t numImgBands, float binSize) 
         {throw SPDProcessingException("Processing is not implemented for processDataColumn().");};
         
-		void processDataColumn(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses, SPDXYPoint *cenPts) throw(SPDProcessingException);
+		void processDataColumn(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses, SPDXYPoint *cenPts) ;
         
-        void processDataWindowImage(SPDFile *inSPDFile, bool **validBins, std::vector<SPDPulse*> ***pulses, float ***imageData, SPDXYPoint ***cenPts, boost::uint_fast32_t numImgBands, float binSize, boost::uint_fast16_t winSize) throw(SPDProcessingException)
+        void processDataWindowImage(SPDFile *inSPDFile, bool **validBins, std::vector<SPDPulse*> ***pulses, float ***imageData, SPDXYPoint ***cenPts, boost::uint_fast32_t numImgBands, float binSize, boost::uint_fast16_t winSize) 
         {throw SPDProcessingException("Processing using a window is not implemented.");};
-		void processDataWindow(SPDFile *inSPDFile, bool **validBins, std::vector<SPDPulse*> ***pulses, SPDXYPoint ***cenPts, boost::uint_fast16_t winSize) throw(SPDProcessingException)
+		void processDataWindow(SPDFile *inSPDFile, bool **validBins, std::vector<SPDPulse*> ***pulses, SPDXYPoint ***cenPts, boost::uint_fast16_t winSize) 
         {throw SPDProcessingException("Processing using a window is not implemented.");};
         
-        std::vector<std::string> getImageBandDescriptions() throw(SPDProcessingException){return std::vector<std::string>();};
-        void setHeaderValues(SPDFile *spdFile) throw(SPDProcessingException){};
+        std::vector<std::string> getImageBandDescriptions() {return std::vector<std::string>();};
+        void setHeaderValues(SPDFile *spdFile) {};
         
         ~SPDExtractReturnsBlockProcess();
     protected:

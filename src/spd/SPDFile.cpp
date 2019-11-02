@@ -1466,7 +1466,7 @@ namespace spdlib
 	}
     
     
-    double* SPDFileProcessingUtilities::calcCartesainOverlap(SPDFile **spdFiles, boost::uint_fast16_t numOfFiles) throw(SPDProcessingException)
+    double* SPDFileProcessingUtilities::calcCartesainOverlap(SPDFile **spdFiles, boost::uint_fast16_t numOfFiles) 
     {
         /**
          * overlap[0] = min X
@@ -1528,7 +1528,7 @@ namespace spdlib
         return overlap;
     }
     
-    double* SPDFileProcessingUtilities::calcSphericalOverlap(SPDFile **spdFiles, boost::uint_fast16_t numOfFiles) throw(SPDProcessingException)
+    double* SPDFileProcessingUtilities::calcSphericalOverlap(SPDFile **spdFiles, boost::uint_fast16_t numOfFiles) 
     {
         /**
          * overlap[0] = min Azimuth

@@ -66,15 +66,15 @@ namespace spdlib
 	public:
 		SPDFullWaveformDatFileImporter(bool convertCoords=false, std::string outputProjWKT="", std::string schema="", boost::uint_fast16_t indexCoords=SPD_START_OF_RECEIVED_WAVEFORM, bool defineOrigin=false, double originX=0, double originY=0, float originZ=0, float waveNoiseThreshold=0);
 		SPDDataImporter* getInstance(bool convertCoords, std::string outputProjWKT, std::string schema, boost::uint_fast16_t indexCoords, bool defineOrigin, double originX, double originY, float originZ, float waveNoiseThreshold);
-        std::list<SPDPulse*>* readAllDataToList(std::string inputFile, SPDFile *spdFile)throw(SPDIOException);
-		std::vector<SPDPulse*>* readAllDataToVector(std::string inputFile, SPDFile *spdFile)throw(SPDIOException);
-		void readAndProcessAllData(std::string inputFile, SPDFile *spdFile, SPDImporterProcessor *processor) throw(SPDIOException);
+        std::list<SPDPulse*>* readAllDataToList(std::string inputFile, SPDFile *spdFile);
+		std::vector<SPDPulse*>* readAllDataToVector(std::string inputFile, SPDFile *spdFile);
+		void readAndProcessAllData(std::string inputFile, SPDFile *spdFile, SPDImporterProcessor *processor) ;
 		bool isFileType(std::string fileType);
-        void readHeaderInfo(std::string inputFile, SPDFile *spdFile) throw(SPDIOException);
+        void readHeaderInfo(std::string inputFile, SPDFile *spdFile) ;
 		~SPDFullWaveformDatFileImporter();
 	private:
-		SPDPulse* createPulse(std::vector<std::string> *transTokens, std::vector<std::string> *transExtraLines) throw(SPDIOException);
-		SPDPulse* createPulse(std::vector<std::string> *transTokens, std::vector<std::string> *transExtraLines, std::vector<std::string> *receivedTokens, std::vector<std::string> *receivedExtraLines) throw(SPDIOException);
+		SPDPulse* createPulse(std::vector<std::string> *transTokens, std::vector<std::string> *transExtraLines) ;
+		SPDPulse* createPulse(std::vector<std::string> *transTokens, std::vector<std::string> *transExtraLines, std::vector<std::string> *receivedTokens, std::vector<std::string> *receivedExtraLines) ;
         SPDMathsUtils *mathUtils;
 	};
 }

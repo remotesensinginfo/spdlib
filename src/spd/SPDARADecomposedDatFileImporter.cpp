@@ -38,7 +38,7 @@ namespace spdlib
         return new SPDARADecomposedDatFileImporter(convertCoords, outputProjWKT, schema, indexCoords, defineOrigin, originX, originY, originZ, waveNoiseThreshold);
     }
     
-	std::list<SPDPulse*>* SPDARADecomposedDatFileImporter::readAllDataToList(std::string inputFile, SPDFile *spdFile)throw(SPDIOException)
+	std::list<SPDPulse*>* SPDARADecomposedDatFileImporter::readAllDataToList(std::string inputFile, SPDFile *spdFile)
 	{
 		SPDTextFileUtilities textFileUtils;
 		SPDTextFileLineReader lineReader;
@@ -394,7 +394,7 @@ namespace spdlib
 		return pulses;
 	}
 	
-	std::vector<SPDPulse*>* SPDARADecomposedDatFileImporter::readAllDataToVector(std::string inputFile, SPDFile *spdFile)throw(SPDIOException)
+	std::vector<SPDPulse*>* SPDARADecomposedDatFileImporter::readAllDataToVector(std::string inputFile, SPDFile *spdFile)
 	{
 		SPDTextFileUtilities textFileUtils;
 		SPDTextFileLineReader lineReader;
@@ -747,7 +747,7 @@ namespace spdlib
 		return pulses;
 	}
 	
-	void SPDARADecomposedDatFileImporter::readAndProcessAllData(std::string inputFile, SPDFile *spdFile, SPDImporterProcessor *processor)throw(SPDIOException)
+	void SPDARADecomposedDatFileImporter::readAndProcessAllData(std::string inputFile, SPDFile *spdFile, SPDImporterProcessor *processor)
 	{
 		SPDTextFileUtilities textFileUtils;
 		SPDTextFileLineReader lineReader;
@@ -1109,7 +1109,7 @@ namespace spdlib
 		return false;
 	}
     
-    void SPDARADecomposedDatFileImporter::readHeaderInfo(std::string, SPDFile*) throw(SPDIOException)
+    void SPDARADecomposedDatFileImporter::readHeaderInfo(std::string, SPDFile*)
     {
         // No Header to Read..
     }

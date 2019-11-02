@@ -78,8 +78,8 @@ namespace spdlib
 	{
 	public:
 		SPDInitDecomposition(){};
-		virtual std::vector<uint_fast32_t>* findInitPoints(boost::uint_fast32_t *waveform,boost::uint_fast16_t waveformLength, float intThreshold) throw(SPDException) = 0;
-        virtual std::vector<uint_fast32_t>* findInitPoints(float *waveform,boost::uint_fast16_t waveformLength, float intThreshold) throw(SPDException) = 0;
+		virtual std::vector<uint_fast32_t>* findInitPoints(boost::uint_fast32_t *waveform,boost::uint_fast16_t waveformLength, float intThreshold)  = 0;
+        virtual std::vector<uint_fast32_t>* findInitPoints(float *waveform,boost::uint_fast16_t waveformLength, float intThreshold)  = 0;
 		virtual ~SPDInitDecomposition(){};
 	};
 	
@@ -87,8 +87,8 @@ namespace spdlib
 	{
 	public:
 		SPDInitDecompositionZeroCrossingSimple(float decay);
-		std::vector<uint_fast32_t>* findInitPoints(boost::uint_fast32_t *waveform,boost::uint_fast16_t waveformLength, float intThreshold) throw(SPDException);
-        std::vector<uint_fast32_t>* findInitPoints(float *waveform,boost::uint_fast16_t waveformLength, float intThreshold) throw(SPDException);
+		std::vector<uint_fast32_t>* findInitPoints(boost::uint_fast32_t *waveform,boost::uint_fast16_t waveformLength, float intThreshold) ;
+        std::vector<uint_fast32_t>* findInitPoints(float *waveform,boost::uint_fast16_t waveformLength, float intThreshold) ;
 		~SPDInitDecompositionZeroCrossingSimple();
 	private:
 		float decay;
@@ -98,8 +98,8 @@ namespace spdlib
 	{
 	public:
 		SPDInitDecompositionZeroCrossing(float decay,boost::uint_fast32_t intDecayThres);
-		std::vector<uint_fast32_t>* findInitPoints(boost::uint_fast32_t *waveform,boost::uint_fast16_t waveformLength, float intThreshold) throw(SPDException);
-        std::vector<uint_fast32_t>* findInitPoints(float *waveform,boost::uint_fast16_t waveformLength, float intThreshold) throw(SPDException);
+		std::vector<uint_fast32_t>* findInitPoints(boost::uint_fast32_t *waveform,boost::uint_fast16_t waveformLength, float intThreshold) ;
+        std::vector<uint_fast32_t>* findInitPoints(float *waveform,boost::uint_fast16_t waveformLength, float intThreshold) ;
 		~SPDInitDecompositionZeroCrossing();
 	private:
 		bool zeroCrossing(float grad1, float grad2);
@@ -111,8 +111,8 @@ namespace spdlib
 	{
 	public:
 		SPDInitDecompositionZeroCrossingNoRinging();
-		std::vector<uint_fast32_t>* findInitPoints(boost::uint_fast32_t *waveform,boost::uint_fast16_t waveformLength, float intThreshold) throw(SPDException);
-        std::vector<uint_fast32_t>* findInitPoints(float *waveform,boost::uint_fast16_t waveformLength, float intThreshold) throw(SPDException);
+		std::vector<uint_fast32_t>* findInitPoints(boost::uint_fast32_t *waveform,boost::uint_fast16_t waveformLength, float intThreshold) ;
+        std::vector<uint_fast32_t>* findInitPoints(float *waveform,boost::uint_fast16_t waveformLength, float intThreshold) ;
 		~SPDInitDecompositionZeroCrossingNoRinging();
 	private:
 		bool zeroCrossing(float grad1, float grad2);
@@ -124,20 +124,20 @@ namespace spdlib
         SPDMathsUtils();
         /// dataValuesY is the list to be smoothed while dataValuesX are the corresponding
         /// values for the other axis (e.g., height).
-        void applySavitzkyGolaySmoothing(float *dataValuesY, float *dataValuesX,boost::uint_fast32_t numValues,boost::uint_fast16_t winHSize,boost::uint_fast16_t order, bool removeLTZeros) throw(SPDProcessingException);
+        void applySavitzkyGolaySmoothing(float *dataValuesY, float *dataValuesX,boost::uint_fast32_t numValues,boost::uint_fast16_t winHSize,boost::uint_fast16_t order, bool removeLTZeros) ;
         /// fitGaussianMixture is a function which fits are number of Gaussians (the number and starting points are defined
         /// by the SPDInitDecomposition class passed to the function) to the dataValues.
-        std::vector<GaussianDecompReturnType*>* fitGaussianMixture(SPDInitDecomposition *initDecomp, float minimumGaussianGap, float *dataValues, float *dataIntervals,boost::uint_fast32_t nVals, float intThreshold) throw(SPDProcessingException);
+        std::vector<GaussianDecompReturnType*>* fitGaussianMixture(SPDInitDecomposition *initDecomp, float minimumGaussianGap, float *dataValues, float *dataIntervals,boost::uint_fast32_t nVals, float intThreshold) ;
         /// decomposeSingleGaussian is a function which fits a Gaussian to the inputted data values using 
         /// the maximum peak as the starting point.
-        void decomposeSingleGaussian(boost::uint_fast32_t *waveform,boost::uint_fast16_t waveformLength,boost::uint_fast16_t waveFitWindow, float waveformTimeInterval, float *transAmp, float *transWidth, float *peakTime) throw(SPDProcessingException);
+        void decomposeSingleGaussian(boost::uint_fast32_t *waveform,boost::uint_fast16_t waveformLength,boost::uint_fast16_t waveFitWindow, float waveformTimeInterval, float *transAmp, float *transWidth, float *peakTime) ;
         /// Do two rectangles intersect with one another.
         bool rectangleIntersection(double xMin1, double xMax1, double yMin1, double yMax1, double xMin2, double xMax2, double yMin2, double yMax2);
         bool rectangle1Contains2(double xMin1, double xMax1, double yMin1, double yMax1, double xMin2, double xMax2, double yMin2, double yMax2);
         double calcRectangleIntersection(double xMin1, double xMax1, double yMin1, double yMax1, double xMin2, double xMax2, double yMin2, double yMax2);
-        double calcValueViaPlaneFitting(SPD3DDataPt *a, SPD3DDataPt *b, SPD3DDataPt *c, double x, double y) throw(SPDProcessingException);
-        void fitPlane(double *x, double *y, double *z, boost::uint_fast32_t numValues, double normX, double normY, double *a, double *b, double *c) throw(SPDProcessingException);
-        double devFromPlane(double *x, double *y, double *z, boost::uint_fast32_t numValues, double normX, double normY, double a, double b, double c) throw(SPDProcessingException);
+        double calcValueViaPlaneFitting(SPD3DDataPt *a, SPD3DDataPt *b, SPD3DDataPt *c, double x, double y) ;
+        void fitPlane(double *x, double *y, double *z, boost::uint_fast32_t numValues, double normX, double normY, double *a, double *b, double *c) ;
+        double devFromPlane(double *x, double *y, double *z, boost::uint_fast32_t numValues, double normX, double normY, double a, double b, double c) ;
         ~SPDMathsUtils();
     };
     

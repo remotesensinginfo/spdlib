@@ -26,7 +26,7 @@
 namespace spdlib
 {
 
-	SPDExportAsReadUnGridded::SPDExportAsReadUnGridded(SPDDataExporter *exporter, SPDFile *spdFileOut, bool defineSource, boost::uint_fast16_t sourceID, bool defineReturnID, boost::uint_fast16_t returnID, bool defineClasses, boost::uint_fast16_t classValue) throw(SPDException): SPDImporterProcessor(), exporter(NULL), spdFileOut(NULL), fileOpen(false), pulses(NULL)
+	SPDExportAsReadUnGridded::SPDExportAsReadUnGridded(SPDDataExporter *exporter, SPDFile *spdFileOut, bool defineSource, boost::uint_fast16_t sourceID, bool defineReturnID, boost::uint_fast16_t returnID, bool defineClasses, boost::uint_fast16_t classValue) : SPDImporterProcessor(), exporter(NULL), spdFileOut(NULL), fileOpen(false), pulses(NULL)
 	{
 		this->exporter = exporter;
 		this->spdFileOut = spdFileOut;
@@ -56,7 +56,7 @@ namespace spdlib
 		
 	}
 		
-	void SPDExportAsReadUnGridded::processImportedPulse(SPDFile *spdFile, SPDPulse *pulse) throw(SPDIOException)
+	void SPDExportAsReadUnGridded::processImportedPulse(SPDFile *spdFile, SPDPulse *pulse) 
 	{
 		try
 		{
@@ -95,7 +95,7 @@ namespace spdlib
 		}
 	}
 		
-	void SPDExportAsReadUnGridded::completeFileAndClose(SPDFile *spdFile)throw(SPDIOException)
+	void SPDExportAsReadUnGridded::completeFileAndClose(SPDFile *spdFile)
 	{
 		try 
 		{

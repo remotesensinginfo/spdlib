@@ -56,9 +56,9 @@ namespace spdlib
 	class DllExport SPDExportProcessorSubset : public SPDImporterProcessor
 	{
 	public:
-		SPDExportProcessorSubset(SPDDataExporter *exporter, SPDFile *spdFileOut, double *bbox) throw(SPDException);
-		void processImportedPulse(SPDFile *spdFile, SPDPulse *pulse) throw(SPDIOException);
-		void completeFileAndClose(SPDFile *spdFile)throw(SPDIOException);
+		SPDExportProcessorSubset(SPDDataExporter *exporter, SPDFile *spdFileOut, double *bbox) ;
+		void processImportedPulse(SPDFile *spdFile, SPDPulse *pulse) ;
+		void completeFileAndClose(SPDFile *spdFile);
 		~SPDExportProcessorSubset();
 	private:
 		SPDDataExporter *exporter;
@@ -78,9 +78,9 @@ namespace spdlib
 	class DllExport SPDExportProcessorSubsetSpherical : public SPDImporterProcessor
 	{
 	public:
-		SPDExportProcessorSubsetSpherical(SPDDataExporter *exporter, SPDFile *spdFileOut, double *bbox) throw(SPDException);
-		void processImportedPulse(SPDFile *spdFile, SPDPulse *pulse) throw(SPDIOException);
-		void completeFileAndClose(SPDFile *spdFile)throw(SPDIOException);
+		SPDExportProcessorSubsetSpherical(SPDDataExporter *exporter, SPDFile *spdFileOut, double *bbox) ;
+		void processImportedPulse(SPDFile *spdFile, SPDPulse *pulse) ;
+		void completeFileAndClose(SPDFile *spdFile);
 		~SPDExportProcessorSubsetSpherical();
 	private:
 		SPDDataExporter *exporter;
@@ -93,9 +93,9 @@ namespace spdlib
 	class DllExport SPDExportProcessorSubsetScan : public SPDImporterProcessor
 	{
 	public:
-		SPDExportProcessorSubsetScan(SPDDataExporter *exporter, SPDFile *spdFileOut, double *bbox) throw(SPDException);
-		void processImportedPulse(SPDFile *spdFile, SPDPulse *pulse) throw(SPDIOException);
-		void completeFileAndClose(SPDFile *spdFile)throw(SPDIOException);
+		SPDExportProcessorSubsetScan(SPDDataExporter *exporter, SPDFile *spdFileOut, double *bbox) ;
+		void processImportedPulse(SPDFile *spdFile, SPDPulse *pulse) ;
+		void completeFileAndClose(SPDFile *spdFile);
 		~SPDExportProcessorSubsetScan();
 	private:
 		SPDDataExporter *exporter;
@@ -109,9 +109,9 @@ namespace spdlib
 	{
 	public:
 		SPDSubsetNonGriddedFile();
-		void subsetCartesian(std::string input, std::string output, double *bbox, bool *bboxDefined) throw(SPDException);
-        void subsetSpherical(std::string input, std::string output, double *bbox, bool *bboxDefined) throw(SPDException);
-        void subsetScan(std::string input, std::string output, double *bbox, bool *bboxDefined) throw(SPDException);
+		void subsetCartesian(std::string input, std::string output, double *bbox, bool *bboxDefined) ;
+        void subsetSpherical(std::string input, std::string output, double *bbox, bool *bboxDefined) ;
+        void subsetScan(std::string input, std::string output, double *bbox, bool *bboxDefined) ;
 		~SPDSubsetNonGriddedFile();
 	};
 }

@@ -39,7 +39,7 @@ namespace spdlib
 		this->exporters = ioFactory.exporters;
 	}
 
-	SPDDataExporter* SPDIOFactory::getExporter(std::string filetype, bool exportZasH) throw(SPDIOException)
+	SPDDataExporter* SPDIOFactory::getExporter(std::string filetype, bool exportZasH) 
 	{
 		SPDDataExporter *dataExporter = NULL;
 		bool found = false;
@@ -64,7 +64,7 @@ namespace spdlib
 		return dataExporter;
 	}
 
-	SPDDataImporter* SPDIOFactory::getImporter(std::string filetype, bool convertCoords, std::string outputProjWKT, std::string schema, boost::uint_fast16_t indexCoords, bool defineOrigin, double originX, double originY, float originZ, float waveNoiseThreshold) throw(SPDIOException)
+	SPDDataImporter* SPDIOFactory::getImporter(std::string filetype, bool convertCoords, std::string outputProjWKT, std::string schema, boost::uint_fast16_t indexCoords, bool defineOrigin, double originX, double originY, float originZ, float waveNoiseThreshold) 
 	{
 		SPDDataImporter *dataImporter = NULL;
 		bool found = false;

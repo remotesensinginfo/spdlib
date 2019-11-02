@@ -32,7 +32,7 @@ namespace spdlib
         this->numPulses = numPulses;
     }
     
-    void SPDThinPulses::processDataColumn(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses, SPDXYPoint *cenPts) throw(SPDProcessingException)
+    void SPDThinPulses::processDataColumn(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses, SPDXYPoint *cenPts) 
     {
         try
         {

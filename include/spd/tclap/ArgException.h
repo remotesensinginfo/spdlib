@@ -56,7 +56,7 @@ class ArgException : public std::exception
 		/**
 		 * Destructor.
 		 */
-		virtual ~ArgException() throw() { }
+		virtual ~ArgException() { }
 
 		/**
 		 * Returns the error text.
@@ -66,7 +66,7 @@ class ArgException : public std::exception
 		/**
 		 * Returns the argument id.
 		 */
-		std::string argId() const  
+		std::string argId()
 		{ 
 			if ( _argId == "undefined" )
 				return " ";
@@ -77,7 +77,7 @@ class ArgException : public std::exception
 		/**
 		 * Returns the arg id and error text. 
 		 */
-		const char* what() const throw() 
+		const char* what()
 		{
 			static std::string ex; 
 			ex = _argId + " -- " + _errorText;
@@ -88,7 +88,7 @@ class ArgException : public std::exception
 		 * Returns the type of the exception.  Used to explain and distinguish
 		 * between different child exceptions.
 		 */
-		std::string typeDescription() const
+		std::string typeDescription()
 		{
 			return _typeDescription; 
 		}

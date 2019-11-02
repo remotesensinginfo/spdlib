@@ -30,7 +30,7 @@ namespace spdlib{
 		
 	}
 	
-	boost::uint_fast64_t SPDTextFileUtilities::countLines(std::string input) throw(SPDIOException)
+	boost::uint_fast64_t SPDTextFileUtilities::countLines(std::string input) 
 	{
 		boost::uint_fast64_t count = 0;
 		std::string strLine;
@@ -189,7 +189,7 @@ namespace spdlib{
 		}		
 	}
 	
-	std::string SPDTextFileUtilities::readFileToString(std::string input) throw(SPDIOException)
+	std::string SPDTextFileUtilities::readFileToString(std::string input) 
 	{
 		std::string wholeFile = "";
 		std::ifstream inputFileStream;
@@ -240,7 +240,7 @@ namespace spdlib{
 		return wholeFile;
 	}
     
-    std::vector<std::string> SPDTextFileUtilities::readFileLinesToVector(std::string input) throw(SPDIOException)
+    std::vector<std::string> SPDTextFileUtilities::readFileLinesToVector(std::string input) 
     {
         std::vector<std::string> wholeFile;
 		std::ifstream inputFileStream;
@@ -344,7 +344,7 @@ namespace spdlib{
         return num;
     }
     
-    bool SPDTextFileUtilities::lineStartWithHash(std::string line) throw(SPDIOException)
+    bool SPDTextFileUtilities::lineStartWithHash(std::string line) 
     {
         bool hashPresent = false;
         
@@ -359,7 +359,7 @@ namespace spdlib{
         return hashPresent;
     }
     
-    bool SPDTextFileUtilities::lineContainsChar(std::string line, char val) throw(SPDIOException)
+    bool SPDTextFileUtilities::lineContainsChar(std::string line, char val) 
     {
         bool charPresent = false;
         
@@ -377,7 +377,7 @@ namespace spdlib{
         return charPresent;
     }
 	
-	double SPDTextFileUtilities::strtodouble(std::string inValue) throw(SPDTextFileException)
+	double SPDTextFileUtilities::strtodouble(std::string inValue) 
 	{
 		double outValue = 0;
 		try
@@ -393,7 +393,7 @@ namespace spdlib{
 		return outValue;
 	}
 	
-	float SPDTextFileUtilities::strtofloat(std::string inValue) throw(SPDTextFileException)
+	float SPDTextFileUtilities::strtofloat(std::string inValue) 
 	{
 		float outValue = 0;
 		try
@@ -409,7 +409,7 @@ namespace spdlib{
 		return outValue;
 	}
 	
-	boost::uint_fast8_t SPDTextFileUtilities::strto8bitUInt(std::string inValue) throw(SPDTextFileException)
+	boost::uint_fast8_t SPDTextFileUtilities::strto8bitUInt(std::string inValue) 
 	{
 		boost::uint_fast8_t outValue = 0;
 		try
@@ -425,7 +425,7 @@ namespace spdlib{
 		return outValue;
 	}
 	
-	boost::uint_fast16_t SPDTextFileUtilities::strto16bitUInt(std::string inValue) throw(SPDTextFileException)
+	boost::uint_fast16_t SPDTextFileUtilities::strto16bitUInt(std::string inValue) 
 	{
 		boost::uint_fast16_t outValue = 0;
 		try
@@ -441,7 +441,7 @@ namespace spdlib{
 		return outValue;
 	}
 	
-	boost::uint_fast32_t SPDTextFileUtilities::strto32bitUInt(std::string inValue) throw(SPDTextFileException)
+	boost::uint_fast32_t SPDTextFileUtilities::strto32bitUInt(std::string inValue) 
 	{
 		boost::uint_fast32_t outValue = 0;
 		try
@@ -457,7 +457,7 @@ namespace spdlib{
 		return outValue;
 	}
 	
-	boost::uint_fast64_t SPDTextFileUtilities::strto64bitUInt(std::string inValue) throw(SPDTextFileException)
+	boost::uint_fast64_t SPDTextFileUtilities::strto64bitUInt(std::string inValue) 
 	{
 		boost::uint_fast64_t outValue = 0;
 		try
@@ -473,7 +473,7 @@ namespace spdlib{
 		return outValue;
 	}
 	
-    boost::int_fast8_t SPDTextFileUtilities::strto8bitInt(std::string inValue) throw(SPDTextFileException)
+    boost::int_fast8_t SPDTextFileUtilities::strto8bitInt(std::string inValue) 
 	{
         boost::int_fast8_t outValue = 0;
 		try
@@ -489,7 +489,7 @@ namespace spdlib{
 		return outValue;
 	}
 	
-    boost::int_fast16_t SPDTextFileUtilities::strto16bitInt(std::string inValue) throw(SPDTextFileException)
+    boost::int_fast16_t SPDTextFileUtilities::strto16bitInt(std::string inValue) 
 	{
         boost::int_fast16_t outValue = 0;
 		try
@@ -505,7 +505,7 @@ namespace spdlib{
 		return outValue;
 	}
 	
-    boost::int_fast32_t SPDTextFileUtilities::strto32bitInt(std::string inValue) throw(SPDTextFileException)
+    boost::int_fast32_t SPDTextFileUtilities::strto32bitInt(std::string inValue) 
 	{
         boost::int_fast32_t outValue = 0;
 		try
@@ -521,7 +521,7 @@ namespace spdlib{
 		return outValue;
 	}
 	
-    boost::int_fast64_t SPDTextFileUtilities::strto64bitInt(std::string inValue) throw(SPDTextFileException)
+    boost::int_fast64_t SPDTextFileUtilities::strto64bitInt(std::string inValue) 
 	{
         boost::int_fast64_t outValue = 0;
 		try
@@ -537,7 +537,7 @@ namespace spdlib{
 		return outValue;
 	}
 	
-	std::string SPDTextFileUtilities::doubletostring(double number) throw(SPDTextFileException)
+	std::string SPDTextFileUtilities::doubletostring(double number) 
 	{
 		std::string outValue = "";
 		try
@@ -551,7 +551,7 @@ namespace spdlib{
 		return outValue;
 	}
 	
-	std::string SPDTextFileUtilities::floattostring(float number) throw(SPDTextFileException)
+	std::string SPDTextFileUtilities::floattostring(float number) 
 	{
 		std::string outValue = "";
 		try
@@ -565,7 +565,7 @@ namespace spdlib{
 		return outValue;
 	}
 	
-	std::string SPDTextFileUtilities::uInt8bittostring(boost::uint_fast8_t number) throw(SPDTextFileException)
+	std::string SPDTextFileUtilities::uInt8bittostring(boost::uint_fast8_t number) 
 	{
 		std::string outValue = "";
 		try
@@ -579,7 +579,7 @@ namespace spdlib{
 		return outValue;
 	}
 	
-	std::string SPDTextFileUtilities::uInt16bittostring(boost::uint_fast16_t number) throw(SPDTextFileException)
+	std::string SPDTextFileUtilities::uInt16bittostring(boost::uint_fast16_t number) 
 	{
 		std::string outValue = "";
 		try
@@ -593,7 +593,7 @@ namespace spdlib{
 		return outValue;
 	}
 	
-	std::string SPDTextFileUtilities::uInt32bittostring(boost::uint_fast32_t number) throw(SPDTextFileException)
+	std::string SPDTextFileUtilities::uInt32bittostring(boost::uint_fast32_t number) 
 	{
 		std::string outValue = "";
 		try
@@ -607,7 +607,7 @@ namespace spdlib{
 		return outValue;
 	}
 	
-	std::string SPDTextFileUtilities::uInt64bittostring(boost::uint_fast64_t number) throw(SPDTextFileException)
+	std::string SPDTextFileUtilities::uInt64bittostring(boost::uint_fast64_t number) 
 	{
 		std::string outValue = "";
 		try
@@ -621,7 +621,7 @@ namespace spdlib{
 		return outValue;
 	}
 	
-	std::string SPDTextFileUtilities::int8bittostring(boost::int_fast8_t number) throw(SPDTextFileException)
+	std::string SPDTextFileUtilities::int8bittostring(boost::int_fast8_t number) 
 	{
 		std::string outValue = "";
 		try
@@ -635,7 +635,7 @@ namespace spdlib{
 		return outValue;
 	}
 	
-	std::string SPDTextFileUtilities::int16bittostring(boost::int_fast16_t number) throw(SPDTextFileException)
+	std::string SPDTextFileUtilities::int16bittostring(boost::int_fast16_t number) 
 	{
 		std::string outValue = "";
 		try
@@ -649,7 +649,7 @@ namespace spdlib{
 		return outValue;
 	}
 	
-	std::string SPDTextFileUtilities::int32bittostring(boost::int_fast32_t number) throw(SPDTextFileException)
+	std::string SPDTextFileUtilities::int32bittostring(boost::int_fast32_t number) 
 	{
 		std::string outValue = "";
 		try
@@ -663,7 +663,7 @@ namespace spdlib{
 		return outValue;
 	}
 	
-	std::string SPDTextFileUtilities::int64bittostring(boost::int_fast64_t number) throw(SPDTextFileException)
+	std::string SPDTextFileUtilities::int64bittostring(boost::int_fast64_t number) 
 	{
 		std::string outValue = "";
 		try

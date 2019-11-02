@@ -574,7 +574,7 @@ namespace spdlib
 		pt_out->waveformOffset = pt->waveformOffset;
 	}
     
-    void SPDPointUtils::verticalHeightBinPoints(std::vector<SPDPoint*> *pts, std::vector<SPDPoint*> **bins, boost::uint_fast32_t numBins, float min, float max, bool ignorePtsOverMax, bool ignoreGrd, float minHeightThres)throw(SPDProcessingException)
+    void SPDPointUtils::verticalHeightBinPoints(std::vector<SPDPoint*> *pts, std::vector<SPDPoint*> **bins, boost::uint_fast32_t numBins, float min, float max, bool ignorePtsOverMax, bool ignoreGrd, float minHeightThres)
     {
         try 
         {
@@ -667,7 +667,7 @@ namespace spdlib
         }
     }
 	
-    void SPDPointUtils::verticalElevationBinPoints(std::vector<SPDPoint*> *pts, std::vector<SPDPoint*> **bins, boost::uint_fast32_t numBins, float min, float max)throw(SPDProcessingException)
+    void SPDPointUtils::verticalElevationBinPoints(std::vector<SPDPoint*> *pts, std::vector<SPDPoint*> **bins, boost::uint_fast32_t numBins, float min, float max)
     {
         try 
         {

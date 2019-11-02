@@ -32,7 +32,7 @@ namespace spdlib
         this->printProgress = printProgress;
     }
         
-    void SPDSetupProcessPulses::processPulsesWithInputImage(SPDPulseProcessor *pulseProcessor, SPDFile *spdInFile, std::string outFile, std::string imageFilePath, bool usingWindow, boost::uint_fast16_t winHSize) throw(SPDProcessingException)
+    void SPDSetupProcessPulses::processPulsesWithInputImage(SPDPulseProcessor *pulseProcessor, SPDFile *spdInFile, std::string outFile, std::string imageFilePath, bool usingWindow, boost::uint_fast16_t winHSize) 
     {
         try 
         {
@@ -53,7 +53,7 @@ namespace spdlib
         }
     }
     
-    void SPDSetupProcessPulses::processPulsesWithOutputImage(SPDPulseProcessor *pulseProcessor, SPDFile *spdInFile, std::string outImagePath, boost::uint_fast16_t numImgBands, float processingResolution, std::string gdalFormat, bool usingWindow, boost::uint_fast16_t winHSize) throw(SPDProcessingException)
+    void SPDSetupProcessPulses::processPulsesWithOutputImage(SPDPulseProcessor *pulseProcessor, SPDFile *spdInFile, std::string outImagePath, boost::uint_fast16_t numImgBands, float processingResolution, std::string gdalFormat, bool usingWindow, boost::uint_fast16_t winHSize) 
     {
         try 
         {
@@ -74,7 +74,7 @@ namespace spdlib
         }
     }
     
-    void SPDSetupProcessPulses::processPulsesWithOutputSPD(SPDPulseProcessor *pulseProcessor, SPDFile *spdInFile, std::string outFile, float processingResolution, bool usingWindow, boost::uint_fast16_t winHSize) throw(SPDProcessingException)
+    void SPDSetupProcessPulses::processPulsesWithOutputSPD(SPDPulseProcessor *pulseProcessor, SPDFile *spdInFile, std::string outFile, float processingResolution, bool usingWindow, boost::uint_fast16_t winHSize) 
     {
         try 
         {
@@ -95,7 +95,7 @@ namespace spdlib
         }
     }
         
-    void SPDSetupProcessPulses::processPulses(SPDPulseProcessor *pulseProcessor, SPDFile *spdInFile, float processingResolution, bool usingWindow, boost::uint_fast16_t winHSize) throw(SPDProcessingException)
+    void SPDSetupProcessPulses::processPulses(SPDPulseProcessor *pulseProcessor, SPDFile *spdInFile, float processingResolution, bool usingWindow, boost::uint_fast16_t winHSize) 
     {
         try 
         {
@@ -134,7 +134,7 @@ namespace spdlib
     }
     
         
-    void SPDProcessPulses::processDataBlockImage(SPDFile *inSPDFile, std::vector<SPDPulse*> ***pulses, float ***imageDataBlock, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast32_t numImgBands, float binSize) throw(SPDProcessingException)
+    void SPDProcessPulses::processDataBlockImage(SPDFile *inSPDFile, std::vector<SPDPulse*> ***pulses, float ***imageDataBlock, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast32_t numImgBands, float binSize) 
     {
         try 
         {
@@ -247,7 +247,7 @@ namespace spdlib
         }
     }
     
-    void SPDProcessPulses::processDataBlock(SPDFile *inSPDFile, std::vector<SPDPulse*> ***pulses, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, float binSize) throw(SPDProcessingException)
+    void SPDProcessPulses::processDataBlock(SPDFile *inSPDFile, std::vector<SPDPulse*> ***pulses, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, float binSize) 
     {
         try 
         {
@@ -361,17 +361,17 @@ namespace spdlib
         }
     }
         
-    void SPDProcessPulses::processDataBlockImage(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses, float ***imageDataBlock, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast32_t numImgBands) throw(SPDProcessingException)
+    void SPDProcessPulses::processDataBlockImage(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses, float ***imageDataBlock, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast32_t numImgBands) 
     {
         throw SPDProcessingException("processDataBlockImage without pulses grid is not implemented.");
     }
     
-    void SPDProcessPulses::processDataBlock(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses) throw(SPDProcessingException)
+    void SPDProcessPulses::processDataBlock(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses) 
     {
         throw SPDProcessingException("processDataBlock without pulses grid is not implemented.");
     }
         
-    std::vector<std::string> SPDProcessPulses::getImageBandDescriptions() throw(SPDProcessingException)
+    std::vector<std::string> SPDProcessPulses::getImageBandDescriptions() 
     {
         try 
         {
@@ -383,7 +383,7 @@ namespace spdlib
         }
     }
     
-    void SPDProcessPulses::setHeaderValues(SPDFile *spdFile) throw(SPDProcessingException)
+    void SPDProcessPulses::setHeaderValues(SPDFile *spdFile) 
     {
         try 
         {

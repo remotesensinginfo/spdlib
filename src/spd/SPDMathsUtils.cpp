@@ -32,7 +32,7 @@ namespace spdlib {
         
     }
     
-    void SPDMathsUtils::applySavitzkyGolaySmoothing(float *dataValuesY, float *dataValuesX, boost::uint_fast32_t numValues, boost::uint_fast16_t winHSize, boost::uint_fast16_t order, bool removeLTZeros) throw(SPDProcessingException)
+    void SPDMathsUtils::applySavitzkyGolaySmoothing(float *dataValuesY, float *dataValuesX, boost::uint_fast32_t numValues, boost::uint_fast16_t winHSize, boost::uint_fast16_t order, bool removeLTZeros) 
     {
         int numCols = 2;
 		int numRows = 0;
@@ -107,7 +107,7 @@ namespace spdlib {
 
     }
     
-    std::vector<GaussianDecompReturnType*>* SPDMathsUtils::fitGaussianMixture(SPDInitDecomposition *initDecomp, float minimumGaussianGap, float *dataValues, float *dataIntervals, boost::uint_fast32_t nVals, float intThreshold) throw(SPDProcessingException)
+    std::vector<GaussianDecompReturnType*>* SPDMathsUtils::fitGaussianMixture(SPDInitDecomposition *initDecomp, float minimumGaussianGap, float *dataValues, float *dataIntervals, boost::uint_fast32_t nVals, float intThreshold) 
     {
         if(nVals < 5)
         {
@@ -472,7 +472,7 @@ namespace spdlib {
         return gaussianPeaks;
     }
     
-    void SPDMathsUtils::decomposeSingleGaussian(boost::uint_fast32_t *waveform, boost::uint_fast16_t waveformLength, boost::uint_fast16_t waveFitWindow, float waveformTimeInterval, float *transAmp, float *transWidth, float *peakTime) throw(SPDProcessingException)
+    void SPDMathsUtils::decomposeSingleGaussian(boost::uint_fast32_t *waveform, boost::uint_fast16_t waveformLength, boost::uint_fast16_t waveFitWindow, float waveformTimeInterval, float *transAmp, float *transWidth, float *peakTime) 
     {
         try 
         {
@@ -855,7 +855,7 @@ namespace spdlib {
         return intersection;
     }
     
-    double SPDMathsUtils::calcValueViaPlaneFitting(SPD3DDataPt *a, SPD3DDataPt *b, SPD3DDataPt *c, double x, double y) throw(SPDProcessingException)
+    double SPDMathsUtils::calcValueViaPlaneFitting(SPD3DDataPt *a, SPD3DDataPt *b, SPD3DDataPt *c, double x, double y) 
     {
         double outVal = 0.0;
         try
@@ -958,7 +958,7 @@ namespace spdlib {
         return outVal;
     }
     
-    void SPDMathsUtils::fitPlane(double *x, double *y, double *z, boost::uint_fast32_t numValues, double normX, double normY, double *a, double *b, double *c) throw(SPDProcessingException)
+    void SPDMathsUtils::fitPlane(double *x, double *y, double *z, boost::uint_fast32_t numValues, double normX, double normY, double *a, double *b, double *c) 
     {
         SPDMatrixUtils matrices;
 		spdlib::Matrix *matrixA = NULL;
@@ -1046,7 +1046,7 @@ namespace spdlib {
         matrices.freeMatrix(outputs);
     }
 
-    double SPDMathsUtils::devFromPlane(double *x, double *y, double *z, boost::uint_fast32_t numValues, double normX, double normY, double a, double b, double c) throw(SPDProcessingException)
+    double SPDMathsUtils::devFromPlane(double *x, double *y, double *z, boost::uint_fast32_t numValues, double normX, double normY, double a, double b, double c) 
     {
         try
         {
@@ -1079,7 +1079,7 @@ namespace spdlib {
 		this->decay = decay;
 	}
 	
-	std::vector<boost::uint_fast32_t>* SPDInitDecompositionZeroCrossingSimple::findInitPoints(boost::uint_fast32_t *waveform, boost::uint_fast16_t waveformLength, float intThreshold) throw(SPDException)
+	std::vector<boost::uint_fast32_t>* SPDInitDecompositionZeroCrossingSimple::findInitPoints(boost::uint_fast32_t *waveform, boost::uint_fast16_t waveformLength, float intThreshold) 
 	{
 		std::vector<boost::uint_fast32_t> *pts = new std::vector<boost::uint_fast32_t>();
 		if(waveformLength > 0)
@@ -1127,7 +1127,7 @@ namespace spdlib {
 		return pts;
 	}
     
-    std::vector<boost::uint_fast32_t>* SPDInitDecompositionZeroCrossingSimple::findInitPoints(float *waveform, boost::uint_fast16_t waveformLength, float intThreshold) throw(SPDException)
+    std::vector<boost::uint_fast32_t>* SPDInitDecompositionZeroCrossingSimple::findInitPoints(float *waveform, boost::uint_fast16_t waveformLength, float intThreshold) 
 	{
 		std::vector<boost::uint_fast32_t> *pts = new std::vector<boost::uint_fast32_t>();
 		if(waveformLength > 0)
@@ -1186,7 +1186,7 @@ namespace spdlib {
 		this->intDecayThres = intDecayThres;
 	}
 	
-	std::vector<boost::uint_fast32_t>* SPDInitDecompositionZeroCrossing::findInitPoints(boost::uint_fast32_t *waveform, boost::uint_fast16_t waveformLength, float intThreshold) throw(SPDException)
+	std::vector<boost::uint_fast32_t>* SPDInitDecompositionZeroCrossing::findInitPoints(boost::uint_fast32_t *waveform, boost::uint_fast16_t waveformLength, float intThreshold) 
 	{
 		std::vector<boost::uint_fast32_t> *pts = new std::vector<boost::uint_fast32_t>();
 		if(waveformLength > 0)
@@ -1295,7 +1295,7 @@ namespace spdlib {
 		return pts;
 	}
     
-    std::vector<boost::uint_fast32_t>* SPDInitDecompositionZeroCrossing::findInitPoints(float *waveform, boost::uint_fast16_t waveformLength, float intThreshold) throw(SPDException)
+    std::vector<boost::uint_fast32_t>* SPDInitDecompositionZeroCrossing::findInitPoints(float *waveform, boost::uint_fast16_t waveformLength, float intThreshold) 
 	{
 		std::vector<boost::uint_fast32_t> *pts = new std::vector<boost::uint_fast32_t>();
 		if(waveformLength > 0)
@@ -1423,7 +1423,7 @@ namespace spdlib {
 
 	}
 	
-	std::vector<boost::uint_fast32_t>* SPDInitDecompositionZeroCrossingNoRinging::findInitPoints(boost::uint_fast32_t *waveform, boost::uint_fast16_t waveformLength, float intThreshold) throw(SPDException)
+	std::vector<boost::uint_fast32_t>* SPDInitDecompositionZeroCrossingNoRinging::findInitPoints(boost::uint_fast32_t *waveform, boost::uint_fast16_t waveformLength, float intThreshold) 
 	{
 		std::vector<boost::uint_fast32_t> *pts = new std::vector<boost::uint_fast32_t>();
 		if(waveformLength > 0)
@@ -1461,7 +1461,7 @@ namespace spdlib {
 		return pts;
 	}
     
-    std::vector<boost::uint_fast32_t>* SPDInitDecompositionZeroCrossingNoRinging::findInitPoints(float *waveform, boost::uint_fast16_t waveformLength, float intThreshold) throw(SPDException)
+    std::vector<boost::uint_fast32_t>* SPDInitDecompositionZeroCrossingNoRinging::findInitPoints(float *waveform, boost::uint_fast16_t waveformLength, float intThreshold) 
 	{
 		std::vector<boost::uint_fast32_t> *pts = new std::vector<boost::uint_fast32_t>();
 		if(waveformLength > 0)

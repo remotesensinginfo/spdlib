@@ -34,7 +34,7 @@ namespace spdlib
         
     }
     
-    void SPDPolyFitGroundFilter::applyGlobalPolyFitGroundFilter(std::string inputFile, std::string outputFile, float grdThres, boost::uint_fast16_t degree, boost::uint_fast16_t iters, boost::uint_fast32_t blockXSize, boost::uint_fast32_t blockYSize, float processingResolution, boost::uint_fast16_t ptSelectClass)throw(SPDProcessingException)
+    void SPDPolyFitGroundFilter::applyGlobalPolyFitGroundFilter(std::string inputFile, std::string outputFile, float grdThres, boost::uint_fast16_t degree, boost::uint_fast16_t iters, boost::uint_fast32_t blockXSize, boost::uint_fast32_t blockYSize, float processingResolution, boost::uint_fast16_t ptSelectClass)
     {
         try 
         {
@@ -297,7 +297,7 @@ namespace spdlib
 
     }
     
-    void SPDPolyFitGroundFilter::applyLocalPolyFitGroundFilter(std::string inputFile, std::string outputFile, float grdThres,boost::uint_fast16_t degree, boost::uint_fast16_t iters, boost::uint_fast32_t blockXSize, boost::uint_fast32_t blockYSize, boost::uint_fast32_t overlap, float processingResolution, boost::uint_fast16_t ptSelectClass)throw(SPDProcessingException)
+    void SPDPolyFitGroundFilter::applyLocalPolyFitGroundFilter(std::string inputFile, std::string outputFile, float grdThres,boost::uint_fast16_t degree, boost::uint_fast16_t iters, boost::uint_fast32_t blockXSize, boost::uint_fast32_t blockYSize, boost::uint_fast32_t overlap, float processingResolution, boost::uint_fast16_t ptSelectClass)
     {
         try
         {
@@ -317,7 +317,7 @@ namespace spdlib
         }
     }
     
-    void SPDPolyFitGroundFilter::buildMinGrid(SPDFile *spdFile, std::vector<SPDPoint*> *minPts, std::vector<SPDPoint*> ***minPtGrid)throw(SPDProcessingException)
+    void SPDPolyFitGroundFilter::buildMinGrid(SPDFile *spdFile, std::vector<SPDPoint*> *minPts, std::vector<SPDPoint*> ***minPtGrid)
     {
         if(minPts->size() > 0)
 		{
@@ -430,7 +430,7 @@ namespace spdlib
         this->binWidth = binWidth;
     }
         
-    void SPDPolyFitGroundLocalFilter::processDataBlock(SPDFile *inSPDFile, std::vector<SPDPulse*> ***pulses, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, float binSize) throw(SPDProcessingException)
+    void SPDPolyFitGroundLocalFilter::processDataBlock(SPDFile *inSPDFile, std::vector<SPDPulse*> ***pulses, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, float binSize) 
     {
         try
         {

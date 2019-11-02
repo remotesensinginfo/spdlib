@@ -58,12 +58,12 @@ namespace spdlib
 	public:
 		SPDLineParserASCIIPulsePerRow();
 		bool haveReadheader();
-		void parseHeader(std::string) throw(SPDIOException);
-		bool parseLine(std::string line, SPDPulse *pl,boost::uint_fast16_t indexCoords) throw(SPDIOException);
+		void parseHeader(std::string) ;
+		bool parseLine(std::string line, SPDPulse *pl,boost::uint_fast16_t indexCoords) ;
 		bool isFileType(std::string fileType);
 		void saveHeaderValues(SPDFile *spdFile);
 		void reset();
-        void parseSchema(std::string schema)throw(SPDIOException){};
+        void parseSchema(std::string schema){};
 		~SPDLineParserASCIIPulsePerRow();
 	};
 	

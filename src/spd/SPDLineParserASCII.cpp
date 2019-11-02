@@ -38,12 +38,12 @@ namespace spdlib
 		return headerRead;
 	}
 	
-	void SPDLineParserASCII::parseHeader(std::string) throw(SPDIOException)
+	void SPDLineParserASCII::parseHeader(std::string) 
 	{
 		
 	}
 	
-	bool SPDLineParserASCII::parseLine(std::string line, SPDPulse *pl, boost::uint_fast16_t) throw(SPDIOException)
+	bool SPDLineParserASCII::parseLine(std::string line, SPDPulse *pl, boost::uint_fast16_t) 
 	{
 		SPDTextFileUtilities textUtils;
 		SPDPointUtils ptUtils;
@@ -260,7 +260,7 @@ namespace spdlib
 		ptCount = 0;
 	}
     
-    void SPDLineParserASCII::parseSchema(std::string schema)throw(SPDIOException)
+    void SPDLineParserASCII::parseSchema(std::string schema)
     {
         SPDTextFileUtilities textUtils;
         XMLCh tempStr[100];

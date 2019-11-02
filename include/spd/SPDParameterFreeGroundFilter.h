@@ -77,23 +77,23 @@ namespace spdlib
         SPDParameterFreeGroundFilter(float grdPtDev, boost::uint_fast16_t classParameters, bool checkForFalseMinma, boost::uint_fast32_t kValue, boost::uint_fast32_t classifyDevThresh, boost::uint_fast32_t topHatStart, bool topHatScales, boost::uint_fast32_t topHatFactor, boost::uint_fast16_t minPointDensity);
         
         // public functions
-        void processDataBlockImage(SPDFile *inSPDFile, std::vector<SPDPulse*> ***pulses, float ***imageDataBlock, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast32_t numImgBands, float binSize) throw(SPDProcessingException);
-		void processDataBlock(SPDFile *inSPDFile, std::vector<SPDPulse*> ***pulses, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, float binSize) throw(SPDProcessingException);
-        void processDataBlockImage(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses, float ***imageDataBlock, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast32_t numImgBands) throw(SPDProcessingException)
+        void processDataBlockImage(SPDFile *inSPDFile, std::vector<SPDPulse*> ***pulses, float ***imageDataBlock, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast32_t numImgBands, float binSize) ;
+		void processDataBlock(SPDFile *inSPDFile, std::vector<SPDPulse*> ***pulses, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, float binSize) ;
+        void processDataBlockImage(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses, float ***imageDataBlock, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, boost::uint_fast32_t numImgBands) 
 		{throw SPDProcessingException("SPDProgressiveMophologicalGrdFilter requires processing with a grid.");};
-        void processDataBlock(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses) throw(SPDProcessingException)
+        void processDataBlock(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses) 
         {throw SPDProcessingException("SPDProgressiveMophologicalGrdFilter requires processing with a grid.");};
         
         boost::uint_fast16_t** generateHoldingElement(boost::uint_fast16_t elSize);
         void deleteHoldingElement(boost::uint_fast16_t** toDelete, boost::uint_fast16_t elSize);
         
-        std::vector<std::string> getImageBandDescriptions() throw(SPDProcessingException)
+        std::vector<std::string> getImageBandDescriptions() 
         {
             std::vector<std::string> bandNames;
             bandNames.push_back("PFF Surface");
             return bandNames;
         }
-        void setHeaderValues(SPDFile *spdFile) throw(SPDProcessingException)
+        void setHeaderValues(SPDFile *spdFile) 
         {
             // Nothing to do...
         }
@@ -129,7 +129,7 @@ namespace spdlib
         float getClassificationThreshold(float mean, float stdDev);
         std::vector<SPDPFFProcessLevel*>* generateHierarchy(float **initElev, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, float pxlRes);
         SPDPFFProcessLevel* interpLevel(SPDPFFProcessLevel *cLevel, SPDPFFProcessLevel *pLevel, double tlY, double tlX);
-        SPDPFFProcessLevel* runSurfaceEstimation(SPDFile *inSPDFile, std::vector<SPDPulse*> ***pulses, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, float binSize) throw(SPDProcessingException);
+        SPDPFFProcessLevel* runSurfaceEstimation(SPDFile *inSPDFile, std::vector<SPDPulse*> ***pulses, SPDXYPoint ***cenPts, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, float binSize) ;
 
 	};
     
@@ -140,9 +140,9 @@ namespace spdlib
 	{
 	public:
 		SPDTPSPFFGrdFilteringInterpolator(float radius);
-		void initInterpolator(float **data, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, double tlEastings, double tlNorthings, float binSize) throw(SPDProcessingException);
-		float getValue(double eastings, double northings) throw(SPDProcessingException);
-		void resetInterpolator() throw(SPDProcessingException);
+		void initInterpolator(float **data, boost::uint_fast32_t xSize, boost::uint_fast32_t ySize, double tlEastings, double tlNorthings, float binSize) ;
+		float getValue(double eastings, double northings) ;
+		void resetInterpolator() ;
 		~SPDTPSPFFGrdFilteringInterpolator();
 	private:
         inline double distance(double eastings, double northings, double cEastings, double cNorthings);

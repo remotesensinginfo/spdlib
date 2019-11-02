@@ -33,7 +33,7 @@ namespace spdlib
 
     }
 
-    SPDLASFileExporter::SPDLASFileExporter(const SPDDataExporter &dataExporter) throw(SPDException) : SPDDataExporter(dataExporter)
+    SPDLASFileExporter::SPDLASFileExporter(const SPDDataExporter &dataExporter)  : SPDDataExporter(dataExporter)
     {
         if(fileOpened)
         {
@@ -41,7 +41,7 @@ namespace spdlib
         }
     }
 
-    SPDLASFileExporter& SPDLASFileExporter::operator=(const SPDLASFileExporter& dataExporter) throw(SPDException)
+    SPDLASFileExporter& SPDLASFileExporter::operator=(const SPDLASFileExporter& dataExporter) 
     {
         if(fileOpened)
         {
@@ -58,7 +58,7 @@ namespace spdlib
         return new SPDLASFileExporter();
     }
 
-    bool SPDLASFileExporter::open(SPDFile *spdFile, std::string outputFile) throw(SPDIOException)
+    bool SPDLASFileExporter::open(SPDFile *spdFile, std::string outputFile) 
     {
         fileOpened = false;
         try
@@ -137,12 +137,12 @@ namespace spdlib
         return fileOpened;
     }
 
-    bool SPDLASFileExporter::reopen(SPDFile *spdFile, std::string outputFile) throw(SPDIOException)
+    bool SPDLASFileExporter::reopen(SPDFile *spdFile, std::string outputFile) 
     {
         throw SPDIOException("No reopen option available.");
     }
 
-    void SPDLASFileExporter::writeDataColumn(std::list<SPDPulse*> *plsIn, boost::uint_fast32_t col, boost::uint_fast32_t row)throw(SPDIOException)
+    void SPDLASFileExporter::writeDataColumn(std::list<SPDPulse*> *plsIn, boost::uint_fast32_t col, boost::uint_fast32_t row)
     {
         SPDPulseUtils pulseUtils;
         SPDPointUtils pointUtils;
@@ -267,7 +267,7 @@ namespace spdlib
         }
     }
 
-    void SPDLASFileExporter::writeDataColumn(std::vector<SPDPulse*> *plsIn, boost::uint_fast32_t col, boost::uint_fast32_t row)throw(SPDIOException)
+    void SPDLASFileExporter::writeDataColumn(std::vector<SPDPulse*> *plsIn, boost::uint_fast32_t col, boost::uint_fast32_t row)
     {
         SPDPulseUtils pulseUtils;
         SPDPointUtils pointUtils;
@@ -391,7 +391,7 @@ namespace spdlib
         }
     }
 
-    void SPDLASFileExporter::finaliseClose() throw(SPDIOException)
+    void SPDLASFileExporter::finaliseClose() 
     {
         if(!this->fileOpened)
         {

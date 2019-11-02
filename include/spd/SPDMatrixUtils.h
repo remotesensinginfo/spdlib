@@ -66,25 +66,25 @@ namespace spdlib{
 	{
 	public:
 		SPDMatrixUtils();
-		Matrix* createMatrix(int n, int m) throw(SPDException);
-		Matrix* createMatrix(Matrix *matrix) throw(SPDException);
-		Matrix* copyMatrix(Matrix *matrix) throw(SPDException);
+		Matrix* createMatrix(int n, int m) ;
+		Matrix* createMatrix(Matrix *matrix) ;
+		Matrix* copyMatrix(Matrix *matrix) ;
 		void freeMatrix(Matrix *matrix);
-		double determinant(Matrix *matrix) throw(SPDException);
-		Matrix* cofactors(Matrix *matrix) throw(SPDException);
-		Matrix* transpose(Matrix *matrix) throw(SPDException);
-		void multipleSingle(Matrix *matrix, double multiple) throw(SPDException);
-		Matrix* multiplication(Matrix *matrixA, Matrix *matrixB) throw(SPDException);
+		double determinant(Matrix *matrix) ;
+		Matrix* cofactors(Matrix *matrix) ;
+		Matrix* transpose(Matrix *matrix) ;
+		void multipleSingle(Matrix *matrix, double multiple) ;
+		Matrix* multiplication(Matrix *matrixA, Matrix *matrixB) ;
 		void printMatrix(Matrix *matrix);
-		void saveMatrix2GridTxt(Matrix *matrix, std::string filepath) throw(SPDException);
-		void saveMatrix2CSV(Matrix *matrix, std::string filepath) throw(SPDException);
-		void saveMatrix2txt(Matrix *matrix, std::string filepath) throw(SPDException);
-		void saveMatrix2Binary(Matrix *matrix, std::string filepath) throw(SPDException);
-		Matrix* readMatrixFromTxt(std::string filepath) throw(SPDException);
-		Matrix* readMatrixFromGridTxt(std::string filepath) throw(SPDException);
-		Matrix* readMatrixFromBinary(std::string filepath) throw(SPDException);
-		Matrix* normalisedMatrix(Matrix *matrix, double min, double max) throw(SPDException);
-		Matrix* duplicateMatrix(Matrix *matrix, int xDuplications, int yDuplications) throw(SPDException);
+		void saveMatrix2GridTxt(Matrix *matrix, std::string filepath) ;
+		void saveMatrix2CSV(Matrix *matrix, std::string filepath) ;
+		void saveMatrix2txt(Matrix *matrix, std::string filepath) ;
+		void saveMatrix2Binary(Matrix *matrix, std::string filepath) ;
+		Matrix* readMatrixFromTxt(std::string filepath) ;
+		Matrix* readMatrixFromGridTxt(std::string filepath) ;
+		Matrix* readMatrixFromBinary(std::string filepath) ;
+		Matrix* normalisedMatrix(Matrix *matrix, double min, double max) ;
+		Matrix* duplicateMatrix(Matrix *matrix, int xDuplications, int yDuplications) ;
 		~SPDMatrixUtils();
 	};
 }

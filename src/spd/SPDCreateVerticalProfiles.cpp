@@ -46,7 +46,7 @@ namespace spdlib
         }
     }
 
-    void SPDCreateVerticalProfiles::processDataColumnImage(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses, float *imageData, SPDXYPoint *cenPts, boost::uint_fast32_t numImgBands, float binSize) throw(SPDProcessingException)
+    void SPDCreateVerticalProfiles::processDataColumnImage(SPDFile *inSPDFile, std::vector<SPDPulse*> *pulses, float *imageData, SPDXYPoint *cenPts, boost::uint_fast32_t numImgBands, float binSize) 
     {
         if(this->numOfBins != numImgBands)
         {
@@ -140,7 +140,7 @@ namespace spdlib
 
     }
 
-    std::vector<std::string> SPDCreateVerticalProfiles::getImageBandDescriptions() throw(SPDProcessingException)
+    std::vector<std::string> SPDCreateVerticalProfiles::getImageBandDescriptions() 
     {
         // Set the band names to the height in the middle of the bin, equal to (upper+lower) / 2
         std::vector<std::string> bandNames;

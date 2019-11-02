@@ -37,7 +37,7 @@ namespace spdlib
         return new SPDASCIIMultiLineReader(convertCoords, outputProjWKT, schema, indexCoords, defineOrigin, originX, originY, originZ, waveNoiseThreshold);
     }
 	
-	std::list<SPDPulse*>* SPDASCIIMultiLineReader::readAllDataToList(std::string inputFile, SPDFile *spdFile)throw(SPDIOException)
+	std::list<SPDPulse*>* SPDASCIIMultiLineReader::readAllDataToList(std::string inputFile, SPDFile *spdFile)
 	{
 		SPDPulseUtils pulseUtils;
         SPDTextFileUtilities textFileUtils;
@@ -263,7 +263,7 @@ namespace spdlib
 		return pulses;
 	}
 	
-	std::vector<SPDPulse*>* SPDASCIIMultiLineReader::readAllDataToVector(std::string inputFile, SPDFile *spdFile)throw(SPDIOException)
+	std::vector<SPDPulse*>* SPDASCIIMultiLineReader::readAllDataToVector(std::string inputFile, SPDFile *spdFile)
 	{
 		SPDPulseUtils pulseUtils;
         SPDTextFileUtilities textFileUtils;
@@ -489,7 +489,7 @@ namespace spdlib
 		return pulses;
 	}
 	
-	void SPDASCIIMultiLineReader::readAndProcessAllData(std::string inputFile, SPDFile *spdFile, SPDImporterProcessor *processor)throw(SPDIOException)
+	void SPDASCIIMultiLineReader::readAndProcessAllData(std::string inputFile, SPDFile *spdFile, SPDImporterProcessor *processor)
 	{
 		SPDPulseUtils pulseUtils;
         SPDTextFileUtilities textFileUtils;
@@ -722,12 +722,12 @@ namespace spdlib
 		return false;
 	}
     
-    void SPDASCIIMultiLineReader::readHeaderInfo(std::string, SPDFile*) throw(SPDIOException)
+    void SPDASCIIMultiLineReader::readHeaderInfo(std::string, SPDFile*)
     {
         // No Header to Read..
     }
 	
-	SPDPoint* SPDASCIIMultiLineReader::convertLineToPoint(std::vector<std::string> *lineTokens)throw(SPDIOException)
+	SPDPoint* SPDASCIIMultiLineReader::convertLineToPoint(std::vector<std::string> *lineTokens)
 	{
 		try 
 		{
