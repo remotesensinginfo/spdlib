@@ -182,8 +182,11 @@ namespace spdlib
 		void initCoordinateSystemTransformation(SPDFile *spdFile) 
 		{
 			pj_in = new OGRSpatialReference();
-			char **inProjWKT = new char*[1];
-			inProjWKT[0] = const_cast<char *>(spdFile->getSpatialReference().c_str());
+
+            char * inProjWKT = new char [spdFile->getSpatialReference().length()+1];
+            std::strcpy (inProjWKT, spdFile->getSpatialReference().c_str());
+
+            //const char *inProjWKT = spdFile->getSpatialReference().c_str();
 			if(pj_in->importFromWkt(inProjWKT) != OGRERR_NONE)
 			{
 				std::string message = std::string("Could not create projection for \'") + spdFile->getSpatialReference() + std::string("\': ") + std::string(CPLGetLastErrorMsg());
@@ -191,8 +194,7 @@ namespace spdlib
 			}
 			
 			pj_out = new OGRSpatialReference();
-			char **outProjWKT = new char*[1];
-			outProjWKT[0] = const_cast<char *>(outputProjWKT.c_str());
+			const char *outProjWKT = outputProjWKT.c_str();
 			if(pj_out->importFromWkt(outProjWKT) != OGRERR_NONE)
 			{
 				std::string message = std::string("Could not create projection for \'") + outputProjWKT + std::string("\': ") + std::string(CPLGetLastErrorMsg());

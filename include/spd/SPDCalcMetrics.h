@@ -74,9 +74,9 @@ namespace spdlib
 	{
 	public:
 		SPDCalcMetrics();
-		void calcMetricToImage(std::string inXMLFilePath, std::string inputSPDFile, std::string outputImage, boost::uint_fast32_t blockXSize=250, boost::uint_fast32_t blockYSize=250, float processingResolution=0, std::string gdalFormat="ENVI") throw (SPDProcessingException);
-        void calcMetricToVectorShp(std::string inXMLFilePath, std::string inputSPDFile, std::string inputVectorShp, std::string outputVectorShp, bool deleteOutShp, bool copyAttributes) throw (SPDProcessingException);
-        void calcMetricForVector2ASCII(std::string inXMLFilePath, std::string inputSPDFile, std::string inputVectorShp, std::string outputASCII) throw (SPDProcessingException);
+		void calcMetricToImage(std::string inXMLFilePath, std::string inputSPDFile, std::string outputImage, boost::uint_fast32_t blockXSize=250, boost::uint_fast32_t blockYSize=250, float processingResolution=0, std::string gdalFormat="KEA");
+        void calcMetricToVectorShp(std::string inXMLFilePath, std::string inputSPDFile, std::string inputVectorShp, std::string outputVectorShp, bool deleteOutShp, bool copyAttributes);
+        void calcMetricForVector2ASCII(std::string inXMLFilePath, std::string inputSPDFile, std::string inputVectorShp, std::string outputASCII);
 		~SPDCalcMetrics();
     protected:
         void parseMetricsXML(std::string inXMLFilePath, std::vector<SPDMetric*> *metrics, std::vector<std::string> *fieldNames) ;

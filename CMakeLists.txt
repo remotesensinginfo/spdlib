@@ -29,10 +29,9 @@ set (PROJECT_HEADER_DIR include)
 set (PROJECT_TOOLS_DIR tools)
 
 # The version number.
-set (SPDLIB_REPO_VERSION 309)
 set (SPDLIB_VERSION_MAJOR 3)
-set (SPDLIB_VERSION_MINOR 3)
-set (SPDLIB_VERSION_PATCH 1)
+set (SPDLIB_VERSION_MINOR 4)
+set (SPDLIB_VERSION_PATCH 0)
 set (SPDLIB_IO_VERSION_MAJOR 3)
 set (SPDLIB_IO_VERSION_MINOR 0)
 set (SPDLIB_IO_VERSION_PATCH 0)
@@ -47,9 +46,9 @@ set (SPDLIB_VERSION "${SPDLIB_VERSION_MAJOR}.${SPDLIB_VERSION_MINOR}.${SPDLIB_VE
 set (SPDLIB_IO_VERSION "${SPDLIB_IO_VERSION_MAJOR}.${SPDLIB_IO_VERSION_MINOR}.${SPDLIB_IO_VERSION_PATCH}")
 set (SPDLIB_ALG_VERSION "${SPDLIB_ALG_VERSION_MAJOR}.${SPDLIB_ALG_VERSION_MINOR}.${SPDLIB_ALG_VERSION_PATCH}")
 set (SPDLIB_NN_VERSION "${SPDLIB_NN_VERSION_MAJOR}.${SPDLIB_NN_VERSION_MINOR}.${SPDLIB_NN_VERSION_PATCH}")
-set (SPDLIB_PACKAGE_VERSION "${SPDLIB_VERSION_MAJOR}.${SPDLIB_VERSION_MINOR}.${SPDLIB_REPO_VERSION}")
-set (SPDLIB_PACKAGE_STRING "SPDLib ${SPDLIB_VERSION_MAJOR}.${SPDLIB_VERSION_MINOR}.${SPDLIB_REPO_VERSION}")
-set (SPDLIB_PACKAGE_BUGREPORT "spdlib-develop@lists.sourceforge.net")
+set (SPDLIB_PACKAGE_VERSION "${SPDLIB_VERSION_MAJOR}.${SPDLIB_VERSION_MINOR}.${SPDLIB_VERSION_PATCH}")
+set (SPDLIB_PACKAGE_STRING "SPDLib ${SPDLIB_VERSION_MAJOR}.${SPDLIB_VERSION_MINOR}.${SPDLIB_VERSION_PATCH}")
+set (SPDLIB_PACKAGE_BUGREPORT "rsgislib-support@googlegroups.com")
 set (SPDLIB_PACKAGE "SPDLib")
 set (SPDLIB_COPYRIGHT_YEAR 2016)
 
@@ -101,7 +100,7 @@ set(MPFR_LIB_PATH /usr/local/lib CACHE PATH "Library PATH for MPFR")
 
 ###############################################################################
 # CMake settings
-cmake_minimum_required(VERSION 2.6.0)
+cmake_minimum_required(VERSION 3.12)
 
 IF(NOT CMAKE_BUILD_TYPE)
   #SET(CMAKE_BUILD_TYPE "DEBUG")
@@ -139,6 +138,8 @@ file(WRITE "README.txt" "${README}")
 
 ###############################################################################
 # Platform and compiler specific settings
+set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_EXTENSIONS OFF)
 
 if(WIN32)
     if (MSVC)
@@ -184,19 +185,19 @@ if(WIN32)
 else()
   # Recommended C++ compilation flags
   # -Weffc++
-  set(RSGISLIB_COMMON_CXX_FLAGS
+  set(SPDLIB_COMMON_CXX_FLAGS
 	"-Wall -Wpointer-arith -Wcast-align -Wcast-qual -Wredundant-decls -Wno-long-long")
 	#"-pedantic -ansi -Wall -Wpointer-arith -Wcast-align -Wcast-qual -Wfloat-equal -Wredundant-decls -Wno-long-long")
 
   if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
 
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC ${RSGISLIB_COMMON_CXX_FLAGS}")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC ${SPDLIB_COMMON_CXX_FLAGS}")
     if (CMAKE_COMPILER_IS_GNUCXX)
-      set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+      set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
     endif()
 
   elseif("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang" OR "${CMAKE_CXX_COMPILER}" MATCHES "clang")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${RSGISLIB_COMMON_CXX_FLAGS} -std=c++11")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SPDLIB_COMMON_CXX_FLAGS}")
   endif()
 endif(WIN32)
 
@@ -214,7 +215,7 @@ if(APPLE)
     # don't add the automatically determined parts of the RPATH
     # which point to directories outside the build tree to the install RPATH
     SET(CMAKE_INSTALL_RPATH_USE_LINK_PATH FALSE)
-    
+
     SET(CMAKE_MACOSX_RPATH TRUE)
 endif(APPLE)
 
@@ -279,16 +280,16 @@ else()
 endif(MSVC)
 
 include_directories(${CGAL_INCLUDE_DIR})
-if (MSVC)
-    file(GLOB CGAL_LIB_NAME ${BOOST_LIB_PATH}/CGAL-${MSVC_STRING}-*.lib )
-    if(NOT CGAL_LIB_NAME)
-        message(FATAL_ERROR "Could not find CGAL lib")
-    endif()
-    message(STATUS "Using CGAL lib " ${CGAL_LIB_NAME})
-    set(CGAL_LIBRARIES -LIBPATH:${CGAL_LIB_PATH} ${CGAL_LIB_NAME})
-else()
-    set(CGAL_LIBRARIES -L${CGAL_LIB_PATH} -lCGAL)
-endif(MSVC)
+#if (MSVC)
+#    file(GLOB CGAL_LIB_NAME ${BOOST_LIB_PATH}/CGAL-${MSVC_STRING}-*.lib )
+#    if(NOT CGAL_LIB_NAME)
+#        message(FATAL_ERROR "Could not find CGAL lib")
+#    endif()
+#    message(STATUS "Using CGAL lib " ${CGAL_LIB_NAME})
+#    set(CGAL_LIBRARIES -LIBPATH:${CGAL_LIB_PATH} ${CGAL_LIB_NAME})
+#else()
+#    set(CGAL_LIBRARIES -L${CGAL_LIB_PATH} -lCGAL)
+#endif(MSVC)
 
 include_directories(${XERCESC_INCLUDE_DIR})
 if (MSVC)

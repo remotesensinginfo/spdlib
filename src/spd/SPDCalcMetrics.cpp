@@ -32,7 +32,7 @@ namespace spdlib
 
     }
 
-    void SPDCalcMetrics::calcMetricToImage(std::string inXMLFilePath, std::string inputSPDFile, std::string outputImage, boost::uint_fast32_t blockXSize, boost::uint_fast32_t blockYSize, float processingResolution, std::string gdalFormat) throw (SPDProcessingException)
+    void SPDCalcMetrics::calcMetricToImage(std::string inXMLFilePath, std::string inputSPDFile, std::string outputImage, boost::uint_fast32_t blockXSize, boost::uint_fast32_t blockYSize, float processingResolution, std::string gdalFormat)
     {
         try
         {
@@ -62,7 +62,7 @@ namespace spdlib
         }
     }
 
-    void SPDCalcMetrics::calcMetricToVectorShp(std::string inXMLFilePath, std::string inputSPDFile, std::string inputVectorShp, std::string outputVectorShp, bool deleteOutShp, bool copyAttributes) throw (SPDProcessingException)
+    void SPDCalcMetrics::calcMetricToVectorShp(std::string inXMLFilePath, std::string inputSPDFile, std::string inputVectorShp, std::string outputVectorShp, bool deleteOutShp, bool copyAttributes)
     {
         try
         {
@@ -88,7 +88,7 @@ namespace spdlib
         }
     }
 
-    void SPDCalcMetrics::calcMetricForVector2ASCII(std::string inXMLFilePath, std::string inputSPDFile, std::string inputVectorShp, std::string outputASCII) throw (SPDProcessingException)
+    void SPDCalcMetrics::calcMetricForVector2ASCII(std::string inXMLFilePath, std::string inputSPDFile, std::string inputVectorShp, std::string outputASCII)
     {
         try
         {
