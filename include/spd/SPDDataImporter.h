@@ -32,6 +32,7 @@
 
 #include <list>
 #include <string>
+#include <cstring>
 
 #include <boost/cstdint.hpp>
 
