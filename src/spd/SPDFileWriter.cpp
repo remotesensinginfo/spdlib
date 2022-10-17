@@ -71,11 +71,12 @@ namespace spdlib
 			}
             
             H5::DataSet datasetSpatialReference = spdOutH5File->createDataSet(SPDFILE_DATASETNAME_SPATIAL_REFERENCE, strTypeAll, dataspaceStrAll);
-			wStrdata = new const char*[numLinesStr];
-			wStrdata[0] = spdFile->getSpatialReference().c_str();			
-			datasetSpatialReference.write((void*)wStrdata, strTypeAll);
+            std::string spatRefStr = spdFile->getSpatialReference();
+            char *spatRefCStr = new char [spatRefStr.length()+1];
+            std::strcpy (spatRefCStr, spatRefStr.c_str());
+			datasetSpatialReference.write((void*)&spatRefCStr, strTypeAll);
 			datasetSpatialReference.close();
-			delete[] wStrdata;
+			delete[] spatRefCStr;
 			
             H5::DataSet datasetFileType = spdOutH5File->createDataSet(SPDFILE_DATASETNAME_FILE_TYPE, uint16bitDataTypeDisk, singleValueDataspace);
             out16bitUintDataValue[0] = spdFile->getFileType();

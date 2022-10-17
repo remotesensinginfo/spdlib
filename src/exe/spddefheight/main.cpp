@@ -76,7 +76,6 @@ int main (int argc, char * const argv[])
 		std::vector<std::string> interpolators;
 		interpolators.push_back("TIN_PLANE");
 		interpolators.push_back("NEAREST_NEIGHBOR");
-		interpolators.push_back("NATURAL_NEIGHBOR_CGAL");
         interpolators.push_back("NATURAL_NEIGHBOR");
 		interpolators.push_back("STDEV_MULTISCALE");
 		interpolators.push_back("TPS_RAD");
@@ -148,13 +147,9 @@ int main (int argc, char * const argv[])
             {
                 interpolator = new spdlib::SPDTINPlaneFitInterpolator(spdlib::SPD_USE_Z, thinGridResArg.getValue(), thinSwitch.getValue(), spdlib::SPD_SELECT_LOWEST, noPtsPerBinArg.getValue());
             }
-            else if(interpolatorStr == "NATURAL_NEIGHBOR_CGAL")
-            {
-                interpolator = new spdlib::SPDNaturalNeighborCGALPointInterpolator(spdlib::SPD_USE_Z, thinGridResArg.getValue(), thinSwitch.getValue(), spdlib::SPD_SELECT_LOWEST, noPtsPerBinArg.getValue());
-            }
             else if(interpolatorStr == "NATURAL_NEIGHBOR")
             {
-                //interpolator = new spdlib::SPDNaturalNeighborCGALPointInterpolator(spdlib::SPD_USE_Z, thinGridResArg.getValue(), thinSwitch.getValue(), spdlib::SPD_SELECT_LOWEST, noPtsPerBinArg.getValue());
+                interpolator = new spdlib::SPDNaturalNeighborCGALPointInterpolator(spdlib::SPD_USE_Z, thinGridResArg.getValue(), thinSwitch.getValue(), spdlib::SPD_SELECT_LOWEST, noPtsPerBinArg.getValue());
             }
             else if(interpolatorStr == "STDEV_MULTISCALE")
             {

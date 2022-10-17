@@ -187,7 +187,6 @@ namespace spdlib
             char * inProjWKT = new char [spdFile->getSpatialReference().length()+1];
             std::strcpy (inProjWKT, spdFile->getSpatialReference().c_str());
 
-            //const char *inProjWKT = spdFile->getSpatialReference().c_str();
 			if(pj_in->importFromWkt(inProjWKT) != OGRERR_NONE)
 			{
 				std::string message = std::string("Could not create projection for \'") + spdFile->getSpatialReference() + std::string("\': ") + std::string(CPLGetLastErrorMsg());
@@ -196,6 +195,7 @@ namespace spdlib
 			
 			pj_out = new OGRSpatialReference();
 			const char *outProjWKT = outputProjWKT.c_str();
+
 			if(pj_out->importFromWkt(outProjWKT) != OGRERR_NONE)
 			{
 				std::string message = std::string("Could not create projection for \'") + outputProjWKT + std::string("\': ") + std::string(CPLGetLastErrorMsg());

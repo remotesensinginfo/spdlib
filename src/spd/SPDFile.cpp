@@ -1283,10 +1283,10 @@ namespace spdlib
         stream << "Scanline: [" << obj.scanlineMin << "," << obj.scanlineMax << "]\n";
         stream << "Scanline Idx: [" << obj.scanlineIdxMin << "," << obj.scanlineIdxMax << "]\n";
 		stream << "Gridding [xSize,ySize] Bin Size: [" << obj.numBinsX << "," << obj.numBinsY << "] " << obj.binSize << std::endl;
-        if(obj.wavelengths.size() > 0)
+        if(!obj.wavelengths.empty())
         {
             stream << "Wavelengths:\n";
-            for(std::vector<float>::iterator iterWavel = obj.wavelengths.begin(); iterWavel != obj.wavelengths.end(); ++iterWavel)
+            for(auto iterWavel = obj.wavelengths.begin(); iterWavel != obj.wavelengths.end(); ++iterWavel)
             {
                 stream << "\t" << *iterWavel << std::endl;
             }
@@ -1295,10 +1295,10 @@ namespace spdlib
         {
             stream << "Wavelengths: \n\tUnknown\n";
         }
-        if(obj.bandwidths.size() > 0)
+        if(!obj.bandwidths.empty())
         {
             stream << "Bandwidths:\n";
-            for(std::vector<float>::iterator iterBand = obj.bandwidths.begin(); iterBand != obj.bandwidths.end(); ++iterBand)
+            for(auto iterBand = obj.bandwidths.begin(); iterBand != obj.bandwidths.end(); ++iterBand)
             {
                 stream << "\t" << *iterBand << std::endl;
             }
@@ -1412,10 +1412,10 @@ namespace spdlib
         stream << "Scanline: [" << obj->scanlineMin << "," << obj->scanlineMax << "]\n";
         stream << "Scanline Idx: [" << obj->scanlineIdxMin << "," << obj->scanlineIdxMax << "]\n";
 		stream << "Gridding [xSize,ySize] Bin Size: [" << obj->numBinsX << "," << obj->numBinsY << "] " << obj->binSize << std::endl;
-        if(obj->wavelengths.size() > 0)
+        if(!obj->wavelengths.empty())
         {
             stream << "Wavelengths:\n";
-            for(std::vector<float>::iterator iterWavel = obj->wavelengths.begin(); iterWavel != obj->wavelengths.end(); ++iterWavel)
+            for(auto iterWavel = obj->wavelengths.begin(); iterWavel != obj->wavelengths.end(); ++iterWavel)
             {
                 stream << "\t" << *iterWavel << std::endl;
             }
@@ -1424,10 +1424,10 @@ namespace spdlib
         {
             stream << "Wavelengths: \n\tUnknown\n";
         }
-        if(obj->bandwidths.size() > 0)
+        if(!obj->bandwidths.empty())
         {
             stream << "Bandwidths:\n";
-            for(std::vector<float>::iterator iterBand = obj->bandwidths.begin(); iterBand != obj->bandwidths.end(); ++iterBand)
+            for(auto iterBand = obj->bandwidths.begin(); iterBand != obj->bandwidths.end(); ++iterBand)
             {
                 stream << "\t" << *iterBand << std::endl;
             }

@@ -32,7 +32,7 @@ namespace spdlib
          Get EPSG projection code from LAS file header and convert to WKT string.
 
          TODO: Needs testing with a range of coordinate systems. Within lasinfo a number of
-         checks for differnent keys are used. Need to confirm only checking for key id 3072 is
+         checks for different keys are used. Need to confirm only checking for key id 3072 is
          sufficient and if not how best to create a WKT file from multiple keys.
 
          */
@@ -43,7 +43,6 @@ namespace spdlib
         {
             if(header->vlr_geo_key_entries[j].key_id == 3072)
             {
-
                 OGRSpatialReference lasSRS;
                 if(lasSRS.importFromEPSG(header->vlr_geo_key_entries[j].value_offset) == 0)
                 {
